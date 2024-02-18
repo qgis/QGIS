@@ -20,7 +20,7 @@ class QgsAttributeForm : QWidget
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       SingleEditMode,
       AddFeatureMode,
@@ -30,7 +30,7 @@ class QgsAttributeForm : QWidget
       IdentifyMode
     };
 
-    enum FilterType
+    enum FilterType /BaseType=IntEnum/
     {
       ReplaceFilter,
       FilterAnd,
@@ -339,16 +339,6 @@ Notify the form widgets that something has changed in case they
 have filter expressions that depend on the parent form scope.
 
 .. versionadded:: 3.14
-%End
-
-    static const QSet<QString> volatileExpressionFunctions();
-%Docstring
-Static function that returns a set of names of volatile expression functions
-to determine whether a widget should be updated "realtime" or not.*
-
-:return: QSet<QString> of volatile expression functions
-
-.. versionadded:: 3.34.4
 %End
 
 };

@@ -59,12 +59,12 @@ QString QgsAddTableFieldAlgorithm::outputName() const
 
 QList<int> QgsAddTableFieldAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVector;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
 }
 
-QgsProcessingFeatureSource::Flag QgsAddTableFieldAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsAddTableFieldAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsAddTableFieldAlgorithm *QgsAddTableFieldAlgorithm::createInstance() const
@@ -115,9 +115,9 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
   } );
   addParameter( fieldTypes.release() );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ),
-                QgsProcessingParameterNumber::Integer, 10, false, 1, 255 ) );
+                Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ),
-                QgsProcessingParameterNumber::Integer, 0, false, 0, 10 ) );
+                Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 10 ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_ALIAS" ), QObject::tr( "Field alias" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_COMMENT" ), QObject::tr( "Field comment" ), QVariant(), false, true ) );

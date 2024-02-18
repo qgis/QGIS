@@ -67,7 +67,7 @@ interface. Ownership of ``geocoder`` is not transferred, and the caller must ens
 exists for the lifetime of this algorithm.
 %End
 
-    virtual void initParameters( const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() );
+    virtual void initParameters( const QVariantMap &configuration = QVariantMap() );
 
     virtual QStringList tags() const;
 
@@ -83,7 +83,7 @@ exists for the lifetime of this algorithm.
   protected:
     virtual QString outputName() const;
 
-    virtual bool prepareAlgorithm( const QMap<QString, QVariant> &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     virtual QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback );
 

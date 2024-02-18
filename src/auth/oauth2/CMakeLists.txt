@@ -3,9 +3,6 @@
 ########################################################
 # Packages
 
-if(NOT QTKEYCHAIN_FOUND)
-  find_package(QtKeychain REQUIRED)
-endif()
 option(WITH_INTERNAL_O2 "Download and locally include source of o2 library" ON)
 
 if(WITH_INTERNAL_O2)

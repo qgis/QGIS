@@ -21,7 +21,7 @@ Contains settings relating to the appearance, spacing and offset for layout grid
 %End
   public:
 
-    enum Style
+    enum Style /BaseType=IntEnum/
     {
       StyleLines,
       StyleDots,

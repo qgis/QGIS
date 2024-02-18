@@ -32,7 +32,7 @@ signal should be used instead of :py:func:`~textChanged`.
 %End
   public:
 
-    enum ClearMode
+    enum ClearMode /BaseType=IntEnum/
     {
       ClearToNull,
       ClearToDefault,

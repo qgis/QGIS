@@ -21,7 +21,7 @@ Abstract base class for authentication method plugins
 %End
   public:
 
-    enum Expansion
+    enum Expansion /BaseType=IntEnum/
     {
       // TODO: Figure out all different authentication expansions current layer providers use
       NetworkRequest,

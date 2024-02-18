@@ -59,18 +59,18 @@ void QgsLayoutMapExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Print layout" ) ) );
   addParameter( new QgsProcessingParameterLayoutItem( QStringLiteral( "MAP" ), QObject::tr( "Map item" ), QVariant(), QStringLiteral( "LAYOUT" ), QgsLayoutItemRegistry::LayoutMap, true ) );
   auto crsParam = std::make_unique< QgsProcessingParameterCrs >( QStringLiteral( "CRS" ), QObject::tr( "Override CRS" ), QVariant(), true );
-  crsParam->setFlags( crsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  crsParam->setFlags( crsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsParam.release() );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extent" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extent" ), Qgis::ProcessingSourceType::VectorPolygon ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH" ), QObject::tr( "Map width" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT" ), QObject::tr( "Map height" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "SCALE" ), QObject::tr( "Map scale" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "ROTATION" ), QObject::tr( "Map rotation" ) ) );
 }
 
-QgsProcessingAlgorithm::Flags QgsLayoutMapExtentToLayerAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsLayoutMapExtentToLayerAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QString QgsLayoutMapExtentToLayerAlgorithm::shortHelpString() const

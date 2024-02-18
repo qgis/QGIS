@@ -62,10 +62,10 @@ QgsRandomExtractAlgorithm *QgsRandomExtractAlgorithm::createInstance() const
 void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVector ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Number of features" ) << QObject::tr( "Percentage of features" ), false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Number/percentage of features" ),
-                QgsProcessingParameterNumber::Integer, 10, false, 0 ) );
+                Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (random)" ) ) );
 }
@@ -162,7 +162,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
       selected.insert( *it );
 
   feedback->pushInfo( QObject::tr( "Adding selected features" ) );
-  fit = source->getFeatures( QgsFeatureRequest().setFilterFids( selected ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  fit = source->getFeatures( QgsFeatureRequest().setFilterFids( selected ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   while ( fit.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )

@@ -52,18 +52,18 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
           << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
+                QObject::tr( "Input layer" ), QList< int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
                 QObject::tr( "Table field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_2" ),
-                QObject::tr( "Input layer 2" ), QList< int>() << QgsProcessing::TypeVector ) );
+                QObject::tr( "Input layer 2" ), QList< int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_2" ),
                 QObject::tr( "Table field 2" ), QVariant(), QStringLiteral( "INPUT_2" ) ) );
 
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS_TO_COPY" ),
                 QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ),
-                QVariant(), QStringLiteral( "INPUT_2" ), QgsProcessingParameterField::Any,
+                QVariant(), QStringLiteral( "INPUT_2" ), Qgis::ProcessingFieldParameterDataType::Any,
                 true, true ) );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
@@ -76,12 +76,12 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ),
                 QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > nonMatchingSink = std::make_unique< QgsProcessingParameterFeatureSink >(
-        QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false );
+        QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false );
   // TODO GUI doesn't support advanced outputs yet
-  //nonMatchingSink->setFlags(nonMatchingSink->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  //nonMatchingSink->setFlags(nonMatchingSink->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( nonMatchingSink.release() );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );
@@ -177,7 +177,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   // cache attributes of input2
   QMultiHash< QVariant, QgsAttributes > input2AttributeCache;
-  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( fields2Fetch ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( fields2Fetch ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
   QgsFeature feat;
@@ -208,7 +208,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   // Create output vector layer with additional attribute
   step = input->featureCount() > 0 ? 50.0 / input->featureCount() : 1;
-  features = input->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  features = input->getFeatures( QgsFeatureRequest(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   i = 0;
   long long joinedCount = 0;
   long long unjoinedCount = 0;

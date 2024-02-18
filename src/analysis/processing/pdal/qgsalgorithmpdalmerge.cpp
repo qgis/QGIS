@@ -59,7 +59,7 @@ QgsPdalMergeAlgorithm *QgsPdalMergeAlgorithm::createInstance() const
 
 void QgsPdalMergeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypePointCloud ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
   createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Merged" ) ) );
 }

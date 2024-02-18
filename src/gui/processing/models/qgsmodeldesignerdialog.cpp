@@ -37,6 +37,7 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsscreenhelper.h"
+#include "qgsmessagelog.h"
 
 #include <QShortcut>
 #include <QKeySequence>
@@ -236,10 +237,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmsModel = new QgsModelerToolboxModel( this );
   mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
 
-  QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
+  QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::Filter::Modeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {
-    filters |= QgsProcessingToolboxProxyModel::FilterShowKnownIssues;
+    filters |= QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues;
   }
   mAlgorithmsTree->setFilters( filters );
   mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );
@@ -1070,7 +1071,7 @@ void QgsModelDesignerDialog::fillInputsTree()
 
   for ( QgsProcessingParameterType *param : std::as_const( available ) )
   {
-    if ( param->flags() & QgsProcessingParameterType::ExposeToModeler )
+    if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
     {
       std::unique_ptr< QTreeWidgetItem > paramItem = std::make_unique< QTreeWidgetItem >();
       paramItem->setText( 0, param->name() );

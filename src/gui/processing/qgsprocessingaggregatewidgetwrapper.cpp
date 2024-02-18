@@ -248,7 +248,7 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingAggregateParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+QgsProcessingParameterDefinition *QgsProcessingAggregateParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
   auto param = std::make_unique< QgsProcessingParameterAggregate >( name, description, mParentLayerComboBox->currentData().toString() );
   param->setFlags( flags );

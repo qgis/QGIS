@@ -227,7 +227,7 @@ If layer is not -1, the renderer should draw only a particular layer from symbol
 Returns debug information about this renderer
 %End
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       SymbolLevels,
       MoreSymbolsPerFeature,
@@ -277,7 +277,7 @@ Subclasses which override this method should call :py:func:`~QgsFeatureRenderer.
 implementation in order to store all common base class properties in the returned DOM element.
 %End
 
-    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 create the SLD UserStyle element following the SLD v1.1 specs with the given name
 
@@ -299,7 +299,7 @@ the UserStyle element of a SLD style document
 :return: the renderer
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 used from subclasses to create SLD Rule elements following SLD v1.1 specs
 %End

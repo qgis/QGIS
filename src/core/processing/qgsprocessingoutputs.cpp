@@ -48,17 +48,17 @@ QString QgsProcessingOutputDefinition::valueAsFormattedString( const QVariant &v
   return valueAsString( value, context, ok );
 }
 
-QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, QgsProcessing::SourceType type )
+QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, Qgis::ProcessingSourceType type )
   : QgsProcessingOutputDefinition( name, description )
   , mDataType( type )
 {}
 
-QgsProcessing::SourceType QgsProcessingOutputVectorLayer::dataType() const
+Qgis::ProcessingSourceType QgsProcessingOutputVectorLayer::dataType() const
 {
   return mDataType;
 }
 
-void QgsProcessingOutputVectorLayer::setDataType( QgsProcessing::SourceType type )
+void QgsProcessingOutputVectorLayer::setDataType( Qgis::ProcessingSourceType type )
 {
   mDataType = type;
 }

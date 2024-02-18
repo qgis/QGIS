@@ -788,6 +788,10 @@ QCheckBox::indicator
     height:0.8em;
 }
 
+QCheckBox::indicator:intermediary {
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+
 QCheckBox::indicator:unchecked {
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }

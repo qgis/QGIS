@@ -47,7 +47,10 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
     def _strip_ignorable_errors(output: str):
         return '\n'.join([e for e in output.splitlines() if e not in (
             'Problem with GRASS installation: GRASS was not found or is not correctly installed',
-            'QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700'
+            'QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700',
+            'MESA: error: ZINK: failed to choose pdev',
+            'glx: failed to create drisw screen',
+            'failed to load driver: zink'
         )
         ])
 

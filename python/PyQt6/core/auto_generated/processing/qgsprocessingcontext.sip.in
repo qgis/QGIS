@@ -29,20 +29,13 @@ expression context.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused,
     };
     typedef QFlags<QgsProcessingContext::Flag> Flags;
 
-
-    enum LogLevel
-    {
-      DefaultLevel,
-      Verbose,
-      ModelDebug,
-    };
 
     QgsProcessingContext();
 %Docstring
@@ -574,7 +567,7 @@ function will be used when creating these outputs.
 .. versionadded:: 3.10
 %End
 
-    LogLevel logLevel() const /HoldGIL/;
+    Qgis::ProcessingLogLevel logLevel() const /HoldGIL/;
 %Docstring
 Returns the logging level for algorithms to use when pushing feedback messages to users.
 
@@ -583,7 +576,7 @@ Returns the logging level for algorithms to use when pushing feedback messages t
 .. versionadded:: 3.20
 %End
 
-    void setLogLevel( LogLevel level ) /HoldGIL/;
+    void setLogLevel( Qgis::ProcessingLogLevel level ) /HoldGIL/;
 %Docstring
 Sets the logging ``level`` for algorithms to use when pushing feedback messages to users.
 
@@ -652,7 +645,7 @@ setting will be ignored.
 .. versionadded:: 3.32
 %End
 
-    QMap<QString, QVariant> exportToMap() const /HoldGIL/;
+    QVariantMap exportToMap() const /HoldGIL/;
 %Docstring
 Exports the context's settings to a variant map.
 

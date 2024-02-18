@@ -22,7 +22,7 @@ information for an HTTP Server for WMS, etc.
 %End
   public:
 
-    enum ConnectionType
+    enum ConnectionType /BaseType=IntEnum/
     {
       ConnectionWfs,
       ConnectionWms,
@@ -32,7 +32,7 @@ information for an HTTP Server for WMS, etc.
     typedef QFlags<QgsNewHttpConnection::ConnectionType> ConnectionTypes;
 
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagShowTestConnection,
       FlagHideAuthenticationGroup,
@@ -78,7 +78,7 @@ Returns the current connection url.
 
   protected:
 
-    enum WfsVersionIndex
+    enum WfsVersionIndex /BaseType=IntEnum/
     {
       WFS_VERSION_MAX,
       WFS_VERSION_1_0,

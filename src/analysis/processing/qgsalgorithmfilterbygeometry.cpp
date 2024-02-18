@@ -47,19 +47,19 @@ QString QgsFilterByGeometryAlgorithm::groupId() const
 void QgsFilterByGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVector ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "POINTS" ),  QObject::tr( "Point features" ),
-                QgsProcessing::TypeVectorPoint, QVariant(), true, true ) );
+                Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "LINES" ),  QObject::tr( "Line features" ),
-                QgsProcessing::TypeVectorLine, QVariant(), true, true ) );
+                Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "POLYGONS" ),  QObject::tr( "Polygon features" ),
-                QgsProcessing::TypeVectorPolygon, QVariant(), true, true ) );
+                Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NO_GEOMETRY" ),  QObject::tr( "Features with no geometry" ),
-                QgsProcessing::TypeVector, QVariant(), true, true ) );
+                Qgis::ProcessingSourceType::Vector, QVariant(), true, true ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "POINT_COUNT" ), QObject::tr( "Total count of point features" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "LINE_COUNT" ), QObject::tr( "Total count of line features" ) ) );
@@ -247,10 +247,10 @@ QString QgsFilterByLayerTypeAlgorithm::groupId() const
   return QStringLiteral( "modelertools" );
 }
 
-QgsProcessingAlgorithm::Flags QgsFilterByLayerTypeAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsFilterByLayerTypeAlgorithm::flags() const
 {
-  Flags f = QgsProcessingAlgorithm::flags();
-  f |= FlagHideFromToolbox | FlagPruneModelBranchesBasedOnAlgorithmResults;
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::PruneModelBranchesBasedOnAlgorithmResults;
   return f;
 }
 
@@ -259,7 +259,7 @@ void QgsFilterByLayerTypeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
   addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "VECTOR" ),  QObject::tr( "Vector features" ),
-                QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false ) );
+                Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "RASTER" ),  QObject::tr( "Raster layer" ), QVariant(), true, false ) );
 }

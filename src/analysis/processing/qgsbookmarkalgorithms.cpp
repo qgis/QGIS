@@ -35,7 +35,7 @@ void QgsBookmarksToLayerAlgorithm::initAlgorithm( const QVariantMap & )
   sourceParam->setMetadata( metadata );
   addParameter( sourceParam.release() );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsBookmarksToLayerAlgorithm::name() const
@@ -166,7 +166,7 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
 void QgsLayerToBookmarksAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
   std::unique_ptr< QgsProcessingParameterEnum > sourceParam = std::make_unique<QgsProcessingParameterEnum >( QStringLiteral( "DESTINATION" ), QObject::tr( "Bookmark destination" ), QStringList() <<
       QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), false, 0 );
@@ -261,7 +261,7 @@ QVariantMap QgsLayerToBookmarksAlgorithm::processAlgorithm( const QVariantMap &p
   req.setSubsetOfAttributes( requiredColumns, source->fields() );
 
   double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
-  QgsFeatureIterator fi = source->getFeatures( req, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator fi = source->getFeatures( req, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   QgsFeature f;
   int current = 0;
   while ( fi.nextFeature( f ) )

@@ -81,9 +81,9 @@ Qgis::WkbType QgsDropMZValuesAlgorithm::outputWkbType( Qgis::WkbType inputWkbTyp
   return wkb;
 }
 
-QgsProcessingFeatureSource::Flag QgsDropMZValuesAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsDropMZValuesAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

@@ -24,7 +24,7 @@ The configuration is specific for one vector layer.
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Field,
       Action
@@ -47,7 +47,7 @@ Constructor for ColumnConfig
       int width;
     };
 
-    enum ActionWidgetStyle
+    enum ActionWidgetStyle /BaseType=IntEnum/
     {
       ButtonList,
       DropDown

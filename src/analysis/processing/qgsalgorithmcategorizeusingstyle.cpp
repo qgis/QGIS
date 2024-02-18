@@ -30,31 +30,31 @@ QgsCategorizeUsingStyleAlgorithm::~QgsCategorizeUsingStyleAlgorithm() = default;
 void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVector ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FIELD" ), QObject::tr( "Categorize using expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style database (leave blank to use saved symbols)" ), QgsProcessingParameterFile::File, QStringLiteral( "xml" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style database (leave blank to use saved symbols)" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "xml" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CASE_SENSITIVE" ), QObject::tr( "Use case-sensitive match to symbol names" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TOLERANT" ), QObject::tr( "Ignore non-alphanumeric characters while matching" ), false ) );
 
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Categorized layer" ) ) );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > failCategories = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_CATEGORIES" ),  QObject::tr( "Non-matching categories" ),
-      QgsProcessing::TypeVector, QVariant(), true, false );
+      Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
   // not supported for outputs yet!
-  //failCategories->setFlags( failCategories->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  //failCategories->setFlags( failCategories->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failCategories.release() );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > failSymbols = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_SYMBOLS" ),  QObject::tr( "Non-matching symbol names" ),
-      QgsProcessing::TypeVector, QVariant(), true, false );
-  //failSymbols->setFlags( failSymbols->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+      Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
+  //failSymbols->setFlags( failSymbols->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failSymbols.release() );
 }
 
-QgsProcessingAlgorithm::Flags QgsCategorizeUsingStyleAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsCategorizeUsingStyleAlgorithm::flags() const
 {
-  Flags f = QgsProcessingAlgorithm::flags();
-  f |= FlagNotAvailableInStandaloneTool;
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool;
   return f;
 }
 

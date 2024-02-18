@@ -61,12 +61,12 @@ QString QgsRenameTableFieldAlgorithm::outputName() const
 
 QList<int> QgsRenameTableFieldAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVector;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
 }
 
-QgsProcessingFeatureSource::Flag QgsRenameTableFieldAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsRenameTableFieldAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsRenameTableFieldAlgorithm *QgsRenameTableFieldAlgorithm::createInstance() const

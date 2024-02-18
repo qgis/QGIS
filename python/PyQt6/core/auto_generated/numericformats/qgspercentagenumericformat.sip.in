@@ -20,7 +20,7 @@ A numeric formatter which returns a text representation of a percentage value.
 %End
   public:
 
-    enum InputValues
+    enum InputValues /BaseType=IntEnum/
     {
       ValuesArePercentage,
       ValuesAreFractions,
@@ -43,9 +43,9 @@ Default constructor
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QMap<QString, QVariant> configuration( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
     InputValues inputValues() const;

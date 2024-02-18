@@ -14,7 +14,7 @@
 
 #include <list>
 
-#include "../untwine/MapFile.hpp"
+#include "../untwine/Common.hpp"
 
 namespace untwine
 {

@@ -643,7 +643,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * I.e. we only reject outputs which we know can NEVER be acceptable, but
      * if there's doubt then we default to returning TRUE.
      */
-    static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
+    static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, Qgis::ProcessingSourceType outputType );
 
     /**
      * Tries to reattach all child algorithms to their linked algorithms.

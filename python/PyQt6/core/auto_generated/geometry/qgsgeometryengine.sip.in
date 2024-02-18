@@ -58,7 +58,7 @@ Example
 %End
   public:
 
-    enum EngineOperationResult
+    enum EngineOperationResult /BaseType=IntEnum/
     {
       Success,
       NothingHappened,

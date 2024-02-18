@@ -63,6 +63,7 @@ void QgsRasterStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Statistics" ),
                 QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COUNT" ), QObject::tr( "Count of non-NoData pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MIN" ), QObject::tr( "Minimum value" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAX" ), QObject::tr( "Maximum value" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "RANGE" ), QObject::tr( "Range" ) ) );
@@ -89,6 +90,7 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
   const QgsRasterBandStats stat = layer->dataProvider()->bandStatistics( band, Qgis::RasterBandStatistic::All, QgsRectangle(), 0 );
 
   QVariantMap outputs;
+  outputs.insert( QStringLiteral( "COUNT" ), stat.elementCount );
   outputs.insert( QStringLiteral( "MIN" ), stat.minimumValue );
   outputs.insert( QStringLiteral( "MAX" ), stat.maximumValue );
   outputs.insert( QStringLiteral( "RANGE" ), stat.range );
@@ -108,6 +110,7 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
 #endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QObject::tr( "<p>Analyzed file: %1 (band %2)</p>\n" ).arg( layer->source() ).arg( band );
+      out << QObject::tr( "<p>Count of non-NoData pixels: %1</p>\n" ).arg( stat.elementCount );
       out << QObject::tr( "<p>Minimum value: %1</p>\n" ).arg( stat.minimumValue, 0, 'g', 16 );
       out << QObject::tr( "<p>Maximum value: %1</p>\n" ).arg( stat.maximumValue, 0, 'g', 16 );
       out << QObject::tr( "<p>Range: %1</p>\n" ).arg( stat.range, 0, 'g', 16 );

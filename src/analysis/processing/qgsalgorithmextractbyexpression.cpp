@@ -47,12 +47,12 @@ QString QgsExtractByExpressionAlgorithm::groupId() const
 void QgsExtractByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVector ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Matching features" ) ) );
   QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching" ),
-      QgsProcessing::TypeVectorAnyGeometry, QVariant(), true );
+      Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
   failOutput->setCreateByDefault( false );
   addParameter( failOutput );
 }
@@ -108,7 +108,7 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
     req.setFilterExpression( expressionString );
     req.setExpressionContext( expressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( req, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+    QgsFeatureIterator it = source->getFeatures( req, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {

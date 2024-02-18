@@ -35,14 +35,14 @@ Create a new configuration widget
 :param parent: A parent widget
 %End
 
-    virtual QMap<QString, QVariant> config() = 0;
+    virtual QVariantMap config() = 0;
 %Docstring
 Create a configuration from the current GUI state
 
 :return: A widget configuration
 %End
 
-    virtual void setConfig( const QMap<QString, QVariant> &config ) = 0;
+    virtual void setConfig( const QVariantMap &config ) = 0;
 %Docstring
 Update the configuration widget to represent the given configuration.
 

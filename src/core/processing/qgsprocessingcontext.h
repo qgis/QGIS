@@ -54,18 +54,6 @@ class CORE_EXPORT QgsProcessingContext
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
-     * Logging level for algorithms to use when pushing feedback messages.
-     *
-     * \since QGIS 3.20
-     */
-    enum LogLevel
-    {
-      DefaultLevel = 0, //!< Default logging level
-      Verbose, //!< Verbose logging
-      ModelDebug, //!< Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34).
-    };
-
-    /**
      * Constructor for QgsProcessingContext.
      */
     QgsProcessingContext();
@@ -665,7 +653,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see setLogLevel()
      * \since QGIS 3.20
      */
-    LogLevel logLevel() const SIP_HOLDGIL;
+    Qgis::ProcessingLogLevel logLevel() const SIP_HOLDGIL;
 
     /**
      * Sets the logging \a level for algorithms to use when pushing feedback messages to users.
@@ -673,7 +661,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see logLevel()
      * \since QGIS 3.20
      */
-    void setLogLevel( LogLevel level ) SIP_HOLDGIL;
+    void setLogLevel( Qgis::ProcessingLogLevel level ) SIP_HOLDGIL;
 
     /**
      * Returns the (optional) temporary folder to use when running algorithms.
@@ -781,7 +769,7 @@ class CORE_EXPORT QgsProcessingContext
     QString mPreferredVectorFormat;
     QString mPreferredRasterFormat;
 
-    LogLevel mLogLevel = DefaultLevel;
+    Qgis::ProcessingLogLevel mLogLevel = Qgis::ProcessingLogLevel::DefaultLevel;
 
     QString mTemporaryFolderOverride;
     int mMaximumThreads = QThread::idealThreadCount();

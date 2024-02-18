@@ -15,7 +15,10 @@ QgsSearchWidgetWrapper.IsNotNull = QgsSearchWidgetWrapper.FilterFlag.IsNotNull
 QgsSearchWidgetWrapper.StartsWith = QgsSearchWidgetWrapper.FilterFlag.StartsWith
 QgsSearchWidgetWrapper.EndsWith = QgsSearchWidgetWrapper.FilterFlag.EndsWith
 QgsSearchWidgetWrapper.FilterFlags = lambda flags=0: QgsSearchWidgetWrapper.FilterFlag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsSearchWidgetWrapper.FilterFlag.__bool__ = lambda flag: bool(_force_int(flag))

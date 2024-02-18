@@ -28,6 +28,7 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprocessingmodelgroupbox.h"
+#include "qgsmessagelog.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -235,7 +236,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
         // check whether it's optional, and if so - is it required?
         bool required = true;
-        if ( destParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        if ( destParam->flags() & Qgis::ProcessingParameterFlag::Optional )
         {
           required = childOutputIsRequired( child.childId(), destParam->name() );
         }
@@ -358,16 +359,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       bool skipGenericLogging = true;
       switch ( context.logLevel() )
       {
-        case QgsProcessingContext::DefaultLevel:
+        case Qgis::ProcessingLogLevel::DefaultLevel:
           // at default log level we skip all the generic logs about prepare steps, step inputs and outputs
           skipGenericLogging = true;
           break;
-        case QgsProcessingContext::Verbose:
+        case Qgis::ProcessingLogLevel::Verbose:
           // at verbose log level we include all the generic logs about prepare steps, step inputs and outputs
           // UNLESS the algorithm specifically tells to skip these (eg raise warning steps and other special cases)
-          skipGenericLogging = childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+          skipGenericLogging = childAlg->flags() & Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
           break;
-        case QgsProcessingContext::ModelDebug:
+        case Qgis::ProcessingLogLevel::ModelDebug:
           // at model debug log level we'll show all the generic logs for step preparation, inputs and outputs
           // for every child algorithm
           skipGenericLogging = false;
@@ -431,14 +432,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       if ( !ok )
       {
-        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        const QString error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
 
       QVariantMap results;
       try
       {
-        if ( ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
+        if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
           auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
@@ -462,7 +463,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
       catch ( QgsProcessingException &e )
       {
-        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
+        const QString error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
         throw QgsProcessingException( error );
       }
 
@@ -559,7 +560,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         }
       }
 
-      if ( childAlg->flags() & QgsProcessingAlgorithm::FlagPruneModelBranchesBasedOnAlgorithmResults )
+      if ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::PruneModelBranchesBasedOnAlgorithmResults )
       {
         // check if any dependent algorithms should be canceled based on the outputs of this algorithm run
         // first find all direct dependencies of this algorithm by looking through all remaining child algorithms
@@ -694,7 +695,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       bool hasAdvancedParams = false;
       for ( const QgsProcessingParameterDefinition *def : params )
       {
-        if ( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
+        if ( def->flags() & Qgis::ProcessingParameterFlag::Advanced )
           hasAdvancedParams = true;
 
         const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
@@ -743,7 +744,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             }
           }
 
-          if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
+          if ( defClone->flags() & Qgis::ProcessingParameterFlag::Advanced )
           {
             lines << indent + indent + QStringLiteral( "param = %1" ).arg( defClone->asPythonString() );
             lines << indent + indent + QStringLiteral( "param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)" );
@@ -868,7 +869,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
             // check whether it's optional, and if so - is it required?
             bool required = true;
-            if ( destParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+            if ( destParam->flags() & Qgis::ProcessingParameterFlag::Optional )
             {
               required = childOutputIsRequired( child.childId(), destParam->name() );
             }
@@ -1247,7 +1248,7 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
         if ( def->type() == QgsProcessingParameterField::typeName() )
         {
           const QgsProcessingParameterField *fieldDef = static_cast< const QgsProcessingParameterField * >( def );
-          if ( !( dataTypes.contains( fieldDef->dataType() ) || fieldDef->dataType() == QgsProcessingParameterField::Any ) )
+          if ( !( dataTypes.contains( static_cast< int >( fieldDef->dataType() ) ) || fieldDef->dataType() == Qgis::ProcessingFieldParameterDataType::Any ) )
           {
             continue;
           }
@@ -1262,13 +1263,13 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           const auto constDataTypes = sourceDef->dataTypes();
           for ( int type : constDataTypes )
           {
-            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer || type == QgsProcessing::TypeVector || type == QgsProcessing::TypeVectorAnyGeometry )
+            if ( dataTypes.contains( type ) || type == static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) || type == static_cast< int >( Qgis::ProcessingSourceType::Vector ) || type == static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) )
             {
               ok = true;
               break;
             }
           }
-          if ( dataTypes.contains( QgsProcessing::TypeMapLayer ) || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) )
+          if ( dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) ) || dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) || dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) )
             ok = true;
 
           if ( !ok )
@@ -1528,9 +1529,9 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
       // Even if an output was hidden in a child algorithm, we want to show it here for the final
       // outputs.
-      param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
+      param->setFlags( param->flags() & ~ static_cast< int >( Qgis::ProcessingParameterFlag::Hidden ) );
       if ( outputIt->isMandatory() )
-        param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagOptional );
+        param->setFlags( param->flags() & ~static_cast< int >( Qgis::ProcessingParameterFlag::Optional ) );
       if ( mInternalVersion != InternalVersion::Version1 && !outputIt->description().isEmpty() )
       {
         QString friendlyName = uniqueSafeName( outputIt->description() );
@@ -1735,21 +1736,21 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   return true;
 }
 
-bool QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType )
+bool QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, Qgis::ProcessingSourceType outputType )
 {
   // This method is intended to be "permissive" rather than "restrictive".
   // I.e. we only reject outputs which we know can NEVER be acceptable, but
   // if there's doubt then we default to returning true.
   return ( acceptableDataTypes.empty()
-           || acceptableDataTypes.contains( outputType )
-           || outputType == QgsProcessing::TypeMapLayer
-           || outputType == QgsProcessing::TypeVector
-           || outputType == QgsProcessing::TypeVectorAnyGeometry
-           || acceptableDataTypes.contains( QgsProcessing::TypeVector )
-           || acceptableDataTypes.contains( QgsProcessing::TypeMapLayer )
-           || ( acceptableDataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) && ( outputType == QgsProcessing::TypeVectorPoint ||
-                outputType == QgsProcessing::TypeVectorLine ||
-                outputType == QgsProcessing::TypeVectorPolygon ) ) );
+           || acceptableDataTypes.contains( static_cast< int >( outputType ) )
+           || outputType == Qgis::ProcessingSourceType::MapLayer
+           || outputType == Qgis::ProcessingSourceType::Vector
+           || outputType == Qgis::ProcessingSourceType::VectorAnyGeometry
+           || acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) )
+           || acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) )
+           || ( acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) && ( outputType == Qgis::ProcessingSourceType::VectorPoint ||
+                outputType == Qgis::ProcessingSourceType::VectorLine ||
+                outputType == Qgis::ProcessingSourceType::VectorPolygon ) ) );
 }
 
 void QgsProcessingModelAlgorithm::reattachAlgorithms() const

@@ -43,7 +43,7 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
 
   public:
 
-    enum Rel
+    enum Rel /BaseType=IntEnum/
     {
       // The following registered link relation types are used
       alternate,
@@ -62,7 +62,7 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       data
     };
 
-    enum ContentType
+    enum ContentType /BaseType=IntEnum/
     {
       GEOJSON,
       OPENAPI3,

@@ -7,7 +7,10 @@ QgsMapToolCapture.NoCapabilities = QgsMapToolCapture.Capability.NoCapabilities
 QgsMapToolCapture.SupportsCurves = QgsMapToolCapture.Capability.SupportsCurves
 QgsMapToolCapture.ValidateGeometries = QgsMapToolCapture.Capability.ValidateGeometries
 QgsMapToolCapture.Capabilities = lambda flags=0: QgsMapToolCapture.Capability(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsMapToolCapture.Capability.__bool__ = lambda flag: bool(_force_int(flag))

@@ -56,7 +56,7 @@ An interface for objects which can create sets of parameter values for processin
     typedef QFlags<QgsProcessingParametersGenerator::Flag> Flags;
 
 
-    virtual QMap<QString, QVariant> createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
+    virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement this interface
 and return a algorithm parameters.
@@ -340,7 +340,7 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setParameterValue`
 %End
 
-    virtual QMap<QString, QVariant> customProperties() const;
+    virtual QVariantMap customProperties() const;
 %Docstring
 Returns any custom properties set by the wrapper.
 %End

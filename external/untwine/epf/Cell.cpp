@@ -32,6 +32,8 @@ void Cell::write()
 void Cell::initialize(const Cell *exclude)
 {
     m_buf = m_cellMgr->getBuffer(exclude);
+    if (!m_buf)
+        throw FatalError("Stopping due to writer failure.");
     m_pos = m_buf->data();
     m_endPos = m_pos + m_pointSize * (BufSize / m_pointSize);
 }

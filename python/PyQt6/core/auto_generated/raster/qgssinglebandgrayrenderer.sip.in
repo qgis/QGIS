@@ -21,7 +21,7 @@ Raster renderer pipe for single band gray.
 #include "qgssinglebandgrayrenderer.h"
 %End
   public:
-    enum Gradient
+    enum Gradient /BaseType=IntEnum/
     {
       BlackToWhite,
       WhiteToBlack
@@ -65,7 +65,7 @@ Takes ownership
     virtual QList<int> usesBands() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     const QgsColorRampLegendNodeSettings *legendSettings() const;

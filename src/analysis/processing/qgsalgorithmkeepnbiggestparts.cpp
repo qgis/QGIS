@@ -55,12 +55,12 @@ QString QgsKeepNBiggestPartsAlgorithm::outputName() const
 
 QList<int> QgsKeepNBiggestPartsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
-QgsProcessing::SourceType QgsKeepNBiggestPartsAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsKeepNBiggestPartsAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 QString QgsKeepNBiggestPartsAlgorithm::shortHelpString() const
@@ -74,16 +74,16 @@ QgsKeepNBiggestPartsAlgorithm *QgsKeepNBiggestPartsAlgorithm::createInstance() c
   return new QgsKeepNBiggestPartsAlgorithm();
 }
 
-QgsProcessingFeatureSource::Flag QgsKeepNBiggestPartsAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsKeepNBiggestPartsAlgorithm::sourceFlags() const
 {
   // skip geometry checks - this algorithm can be used to repair geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 void QgsKeepNBiggestPartsAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > partsToKeep = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "PARTS" ),
-      QObject::tr( "Parts to keep" ), QgsProcessingParameterNumber::Integer,
+      QObject::tr( "Parts to keep" ), Qgis::ProcessingNumberParameterType::Integer,
       1.0, false, 1.0 );
   partsToKeep->setIsDynamic( true );
   partsToKeep->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "PARTS" ), QObject::tr( "Parts to keep" ), QgsPropertyDefinition::IntegerPositive ) );

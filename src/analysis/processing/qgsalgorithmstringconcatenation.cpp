@@ -24,9 +24,9 @@ QString QgsStringConcatenationAlgorithm::name() const
   return QStringLiteral( "stringconcatenation" );
 }
 
-QgsProcessingAlgorithm::Flags QgsStringConcatenationAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsStringConcatenationAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsStringConcatenationAlgorithm::displayName() const

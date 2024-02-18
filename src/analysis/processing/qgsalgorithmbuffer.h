@@ -46,7 +46,7 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QgsBufferAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
-    QgsProcessingAlgorithm::Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
 
     QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
         const QVariantMap &parameters,

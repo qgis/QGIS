@@ -26,7 +26,7 @@ set to a color with an ambiguous hue (e.g., black or white shades).
 %End
   public:
 
-    enum ColorComponent
+    enum ColorComponent /BaseType=IntEnum/
     {
       Multiple,
       Red,
@@ -388,7 +388,7 @@ its length by a single color component (e.g., varying saturation from 0 to 100%)
 %End
   public:
 
-    enum Orientation
+    enum Orientation /BaseType=IntEnum/
     {
       Horizontal,
       Vertical
@@ -543,7 +543,7 @@ of colors.
 %End
   public:
 
-    enum ColorTextFormat
+    enum ColorTextFormat /BaseType=IntEnum/
     {
       HexRgb,
       HexRgbA,

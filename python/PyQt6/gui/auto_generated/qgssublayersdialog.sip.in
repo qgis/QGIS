@@ -21,7 +21,7 @@ class QgsSublayersDialog : QDialog
 %End
   public:
 
-    enum PromptMode
+    enum PromptMode /BaseType=IntEnum/
     {
 
       PromptAlways,
@@ -33,7 +33,7 @@ class QgsSublayersDialog : QDialog
       PromptLoadAll
     };
 
-    enum ProviderType
+    enum ProviderType /BaseType=IntEnum/
     {
       Ogr,
       Gdal,

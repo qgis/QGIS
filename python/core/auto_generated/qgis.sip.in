@@ -428,6 +428,18 @@ The development version
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
 
+    enum class DataItemProviderCapability
+    {
+      NoCapabilities,
+      Files,
+      Directories,
+      Databases,
+      NetworkSources,
+    };
+
+    typedef QFlags<Qgis::DataItemProviderCapability> DataItemProviderCapabilities;
+
+
     enum class BrowserLayerType
       {
       NoType,
@@ -1629,6 +1641,68 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
+    enum class ProcessingSourceType
+      {
+      MapLayer,
+      VectorAnyGeometry,
+      VectorPoint,
+      VectorLine,
+      VectorPolygon,
+      Raster,
+      File,
+      Vector,
+      Mesh,
+      Plugin,
+      PointCloud,
+      Annotation,
+      VectorTile
+    };
+
+
+    enum class ProcessingProviderFlag
+    {
+      DeemphasiseSearchResults,
+      CompatibleWithVirtualRaster,
+    };
+
+    typedef QFlags<Qgis::ProcessingProviderFlag> ProcessingProviderFlags;
+
+
+    enum class ProcessingAlgorithmFlag
+    {
+      HideFromToolbox,
+      HideFromModeler,
+      SupportsBatch,
+      CanCancel,
+      RequiresMatchingCrs,
+      NoThreading,
+      DisplayNameIsLiteral,
+      SupportsInPlaceEdits,
+      KnownIssues,
+      CustomException,
+      PruneModelBranchesBasedOnAlgorithmResults,
+      SkipGenericModelLogging,
+      NotAvailableInStandaloneTool,
+      RequiresProject,
+      Deprecated,
+    };
+
+    typedef QFlags<Qgis::ProcessingAlgorithmFlag> ProcessingAlgorithmFlags;
+
+
+    enum class ProcessingPropertyAvailability
+      {
+      NotAvailable,
+      Available,
+    };
+
+    enum class ProcessingLogLevel
+      {
+      DefaultLevel,
+      Verbose,
+      ModelDebug,
+    };
+
     enum class ProcessingFeatureSourceDefinitionFlag
     {
       OverrideDefaultGeometryCheck,
@@ -1638,6 +1712,62 @@ The development version
     typedef QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> ProcessingFeatureSourceDefinitionFlags;
 
 
+    enum class ProcessingFeatureSourceFlag
+    {
+      SkipGeometryValidityChecks,
+    };
+
+    typedef QFlags<Qgis::ProcessingFeatureSourceFlag> ProcessingFeatureSourceFlags;
+
+
+    enum class ProcessingParameterTypeFlag
+    {
+      ExposeToModeler
+    };
+
+    typedef QFlags<Qgis::ProcessingParameterTypeFlag> ProcessingParameterTypeFlags;
+
+
+    enum class ProcessingParameterFlag
+    {
+      Advanced,
+      Hidden,
+      Optional,
+      IsModelOutput,
+    };
+
+    typedef QFlags<Qgis::ProcessingParameterFlag> ProcessingParameterFlags;
+
+
+    enum class ProcessingFileParameterBehavior
+      {
+      File,
+      Folder,
+    };
+
+    enum class ProcessingNumberParameterType
+      {
+      Integer,
+      Double,
+    };
+
+    enum class ProcessingFieldParameterDataType
+      {
+      Any,
+      Numeric,
+      String,
+      DateTime,
+      Binary,
+      Boolean,
+    };
+
+    enum class ProcessingDateTimeParameterDataType
+      {
+      DateTime,
+      Date,
+      Time,
+    };
+
     enum class ProcessingModelChildParameterSource
     {
       ModelParameter,
@@ -1646,6 +1776,13 @@ The development version
       Expression,
       ExpressionText,
       ModelOutput,
+    };
+
+    enum class ProcessingTinInputLayerType
+      {
+      Vertices,
+      StructureLines,
+      BreakLines
     };
 
     enum class CrsDefinitionFormat
@@ -2757,6 +2894,19 @@ QFlags<Qgis::DateTimeStatistic> operator|(Qgis::DateTimeStatistic f1, QFlags<Qgi
 QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::StringStatistic> f2);
 
 QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
+
+QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
+
+QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
+
+QFlags<Qgis::ProcessingFeatureSourceFlag> operator|(Qgis::ProcessingFeatureSourceFlag f1, QFlags<Qgis::ProcessingFeatureSourceFlag> f2);
+
+QFlags<Qgis::ProcessingParameterTypeFlag> operator|(Qgis::ProcessingParameterTypeFlag f1, QFlags<Qgis::ProcessingParameterTypeFlag> f2);
+
+QFlags<Qgis::ProcessingParameterFlag> operator|(Qgis::ProcessingParameterFlag f1, QFlags<Qgis::ProcessingParameterFlag> f2);
+
+QFlags<Qgis::DataItemProviderCapability> operator|(Qgis::DataItemProviderCapability f1, QFlags<Qgis::DataItemProviderCapability> f2);
+
 
 
 

@@ -60,9 +60,9 @@ QgsPixelCentroidsFromPolygonsAlgorithm *QgsPixelCentroidsFromPolygonsAlgorithm::
 void QgsPixelCentroidsFromPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Pixel centroids" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Pixel centroids" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

@@ -50,10 +50,10 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QStringLiteral( "Input raster" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ROUNDING_DIRECTION" ), QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DECIMAL_PLACES" ), QObject::tr( "Number of decimals places" ), QgsProcessingParameterNumber::Integer, 2 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DECIMAL_PLACES" ), QObject::tr( "Number of decimals places" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
-  std::unique_ptr< QgsProcessingParameterDefinition > baseParameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BASE_N" ), QObject::tr( "Base n for rounding to multiples of n" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
-  baseParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  std::unique_ptr< QgsProcessingParameterDefinition > baseParameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BASE_N" ), QObject::tr( "Base n for rounding to multiples of n" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 1 );
+  baseParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( baseParameter.release() );
 }
 

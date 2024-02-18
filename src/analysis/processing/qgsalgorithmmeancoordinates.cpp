@@ -47,14 +47,14 @@ QString QgsMeanCoordinatesAlgorithm::groupId() const
 void QgsMeanCoordinatesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field" ),
                 QVariant(), QStringLiteral( "INPUT" ),
-                QgsProcessingParameterField::Numeric, false, true ) );
+                Qgis::ProcessingFieldParameterDataType::Numeric, false, true ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "UID" ),
                 QObject::tr( "Unique ID field" ), QVariant(),
-                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Mean coordinates" ), QgsProcessing::TypeVectorPoint ) );
+                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Mean coordinates" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsMeanCoordinatesAlgorithm::shortHelpString() const
@@ -112,7 +112,7 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attributes ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attributes ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
   double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
   int i = 0;

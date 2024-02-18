@@ -47,7 +47,7 @@ class QgsSetZValueAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool supportInPlaceEdit( const QgsMapLayer *l ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

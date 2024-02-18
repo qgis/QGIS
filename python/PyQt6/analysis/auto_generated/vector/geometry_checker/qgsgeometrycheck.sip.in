@@ -89,7 +89,7 @@ is aware of the available geometry checks.
 
     };
 
-    enum ChangeWhat
+    enum ChangeWhat /BaseType=IntEnum/
     {
       ChangeFeature,
       ChangePart,
@@ -97,21 +97,21 @@ is aware of the available geometry checks.
       ChangeNode
     };
 
-    enum ChangeType
+    enum ChangeType /BaseType=IntEnum/
     {
       ChangeAdded,
       ChangeRemoved,
       ChangeChanged
     };
 
-    enum CheckType
+    enum CheckType /BaseType=IntEnum/
     {
       FeatureNodeCheck,
       FeatureCheck,
       LayerCheck
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       AvailableInValidation
     };
@@ -140,13 +140,13 @@ Create a new Change
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
 
-    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QMap<QString, QVariant> &configuration );
+    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
 Create a new geometry check.
 %End
     virtual ~QgsGeometryCheck();
 
-    virtual void prepare( const QgsGeometryCheckContext *context, const QMap<QString, QVariant> &configuration );
+    virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
 Will be run in the main thread before :py:func:`~QgsGeometryCheck.collectErrors` is called (which may be run from a background thread).
 

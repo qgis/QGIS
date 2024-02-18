@@ -38,7 +38,7 @@ It can also be used to display a picture or a web page.
       sipType = NULL;
 %End
   public:
-    enum DocumentViewerContent
+    enum DocumentViewerContent /BaseType=IntEnum/
     {
       NoContent,
       Image,

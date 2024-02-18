@@ -22,7 +22,7 @@ An object which handles north-arrow type behavior for layout items.
 %End
   public:
 
-    enum NorthMode
+    enum NorthMode /BaseType=IntEnum/
     {
       GridNorth,
       TrueNorth,

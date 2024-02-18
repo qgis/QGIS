@@ -93,7 +93,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     QString group() const override;
     QString groupId() const override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
 

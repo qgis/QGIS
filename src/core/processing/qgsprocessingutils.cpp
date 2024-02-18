@@ -713,11 +713,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<i
 {
   return layer && layer->isValid() &&
          ( sourceTypes.isEmpty()
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == Qgis::GeometryType::Point )
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == Qgis::GeometryType::Line )
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorPolygon ) && layer->geometryType() == Qgis::GeometryType::Polygon )
-           || ( sourceTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) && layer->isSpatial() )
-           || sourceTypes.contains( QgsProcessing::TypeVector )
+           || ( sourceTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) && layer->geometryType() == Qgis::GeometryType::Point )
+           || ( sourceTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) && layer->geometryType() == Qgis::GeometryType::Line )
+           || ( sourceTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) && layer->geometryType() == Qgis::GeometryType::Polygon )
+           || ( sourceTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) && layer->isSpatial() )
+           || sourceTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) )
          );
 }
 
@@ -1295,7 +1295,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   const auto parameterDefinitions = algorithm->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *def : parameterDefinitions )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden || def->isDestination() )
+    if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden || def->isDestination() )
       continue;
 
     if ( !getText( def->name() ).isEmpty() )
@@ -1692,12 +1692,12 @@ QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
     delete mSource;
 }
 
-QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request, Flags flags ) const
+QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request, Qgis::ProcessingFeatureSourceFlags flags ) const
 {
   QgsFeatureRequest req( request );
   req.setTransformErrorCallback( mTransformErrorCallback );
 
-  if ( flags & FlagSkipGeometryValidityChecks )
+  if ( flags & Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks )
     req.setInvalidGeometryCheck( Qgis::InvalidGeometryCheck::NoCheck );
   else
   {

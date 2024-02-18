@@ -207,8 +207,29 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 if len(_node.args) >= 4:
                     sys.stderr.write(
                         f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: fragile call to addAction. Use my_action = QAction(...), obj.addAction(my_action) instead.\n')
+            if _node.func.attr == 'desktop':
+                if len(_node.args) == 0:
+                    sys.stderr.write(
+                        f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QDesktopWidget is deprecated and removed in Qt6. Replace with alternative approach instead.\n')
 
-        if isinstance(_node.func, ast.Name) and _node.func.id == 'QDateTime':
+        if isinstance(_node.func, ast.Name) and _node.func.id == 'QVariant':
+            if len(_node.args) == 1 and isinstance(_node.args[0], ast.Attribute) and isinstance(_node.args[0].value, ast.Name) and _node.args[0].value.id == 'QVariant':
+                extra_imports['qgis.core'].update({'NULL'})
+
+                def _fix_null_qvariant(start_index: int, tokens):
+                    assert tokens[start_index].src == 'QVariant'
+                    assert tokens[start_index + 1].src == '('
+                    assert tokens[start_index + 2].src == 'QVariant'
+                    assert tokens[start_index + 3].src == '.'
+                    assert tokens[start_index + 5].src == ')'
+
+                    tokens[start_index] = tokens[start_index]._replace(src='NULL')
+                    for i in range(start_index + 1, start_index + 6):
+                        tokens[i] = tokens[i]._replace(src='')
+
+                custom_updates[Offset(_node.lineno,
+                                      _node.col_offset)] = _fix_null_qvariant
+        elif isinstance(_node.func, ast.Name) and _node.func.id == 'QDateTime':
             if len(_node.args) == 8:
                 # QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts) doesn't work anymore,
                 # so port to more reliable QDateTime(QDate, QTime, ts) form
@@ -275,6 +296,14 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         src='')
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
+        elif isinstance(_node.value, ast.Call):
+            if (isinstance(_node.value.func, ast.Attribute) and
+                _node.value.func.attr == 'fontMetrics' and
+                    _node.attr == 'width'):
+                sys.stderr.write(
+                    f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QFontMetrics.width() '
+                    'has been removed in Qt6. Use QFontMetrics.horizontalAdvance() if plugin can '
+                    'safely require Qt >= 5.11, or QFontMetrics.boundingRect().width() otherwise.\n')
 
     def visit_import(_node: ast.ImportFrom, _parent):
         import_offsets[Offset(node.lineno, node.col_offset)] = (
@@ -334,7 +363,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                                        in ambiguous_enums[
                                            (node.value.id, node.attr)]]
                     sys.stderr.write(f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n')
-            elif (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+            elif (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and not isinstance(parent, ast.Attribute)
                     and (node.value.id, node.attr) in qt_enums):
                 fix_qt_enums[Offset(node.lineno, node.col_offset)] = (node.value.id, qt_enums[(node.value.id, node.attr)], node.attr)
 

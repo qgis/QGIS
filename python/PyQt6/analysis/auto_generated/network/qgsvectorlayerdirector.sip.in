@@ -23,7 +23,7 @@ Determine making the graph from vector line layer
 %End
   public:
 
-    enum Direction
+    enum Direction /BaseType=IntEnum/
     {
       DirectionForward,
       DirectionBackward,

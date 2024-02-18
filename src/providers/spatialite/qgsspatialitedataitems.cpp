@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialitedataitems.h"
-
-#include "qgsapplication.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
 #include "qgsfieldsitem.h"
@@ -24,8 +22,6 @@
 #endif
 
 #include "qgslogger.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsvectorlayer.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -289,9 +285,9 @@ QString QgsSpatiaLiteDataItemProvider::dataProviderKey() const
   return QStringLiteral( "spatialite" );
 }
 
-int QgsSpatiaLiteDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsSpatiaLiteDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Database;
+  return Qgis::DataItemProviderCapability::Databases;
 }
 
 QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )

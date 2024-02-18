@@ -131,10 +131,10 @@ int main( int argc, char *argv[] )
   }
 
   const int verboseIndex = args.indexOf( QLatin1String( "--verbose" ) );
-  QgsProcessingContext::LogLevel logLevel = QgsProcessingContext::DefaultLevel;
+  Qgis::ProcessingLogLevel logLevel = Qgis::ProcessingLogLevel::DefaultLevel;
   if ( verboseIndex >= 0 )
   {
-    logLevel = QgsProcessingContext::Verbose;
+    logLevel = Qgis::ProcessingLogLevel::Verbose;
     args.removeAt( verboseIndex );
   }
 

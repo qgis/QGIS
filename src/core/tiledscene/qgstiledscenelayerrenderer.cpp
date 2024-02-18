@@ -592,6 +592,11 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
         textureId = qMakePair( mCurrentModelId, pbr.baseColorTexture.index );
       }
     }
+    else if ( qgsDoubleNear( pbr.baseColorFactor[3], 0 ) )
+    {
+      // transparent primitive, skip
+      return;
+    }
   }
 
   const QRect outputRect = QRect( QPoint( 0, 0 ), context.renderContext().outputSize() );

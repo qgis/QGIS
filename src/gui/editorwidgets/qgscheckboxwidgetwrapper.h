@@ -70,6 +70,8 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 
     QCheckBox *mCheckBox = nullptr;
     QGroupBox *mGroupBox = nullptr;
+
+    bool mIndeterminateStateEnabled = false;
 };
 
 #endif // QGSCHECKBOXWIDGETWRAPPER_H

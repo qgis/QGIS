@@ -28,7 +28,7 @@ A link arrow item for use in the model designer.
 %End
   public:
 
-    enum Marker
+    enum Marker /BaseType=IntEnum/
     {
       Circle,
       ArrowHead,

@@ -63,7 +63,7 @@ QgsMultiRingConstantBufferAlgorithm *QgsMultiRingConstantBufferAlgorithm::create
 void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber> rings = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "RINGS" ),
-      QObject::tr( "Number of rings" ), QgsProcessingParameterNumber::Integer,
+      QObject::tr( "Number of rings" ), Qgis::ProcessingNumberParameterType::Integer,
       1, false, 0 );
   rings->setIsDynamic( true );
   rings->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
@@ -113,9 +113,9 @@ QgsFields QgsMultiRingConstantBufferAlgorithm::outputFields( const QgsFields &in
   return fields;
 }
 
-QgsProcessingFeatureSource::Flag QgsMultiRingConstantBufferAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsMultiRingConstantBufferAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsMultiRingConstantBufferAlgorithm::sinkFlags() const

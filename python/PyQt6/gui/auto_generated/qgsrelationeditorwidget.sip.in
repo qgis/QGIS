@@ -34,7 +34,7 @@ The default relation widget in QGIS.
 %End
   public:
 
-    enum Button
+    enum Button /BaseType=IntEnum/
     {
       NoButton,
       Link,
@@ -49,7 +49,7 @@ The default relation widget in QGIS.
     typedef QFlags<QgsRelationEditorWidget::Button> Buttons;
 
 
-    QgsRelationEditorWidget( const QMap<QString, QVariant> &config, QWidget *parent /TransferThis/ = 0 );
+    QgsRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
 
@@ -124,13 +124,13 @@ Deletes the currently selected features
 Zooms to the selected features
 %End
 
-    virtual QMap<QString, QVariant> config() const;
+    virtual QVariantMap config() const;
 
 %Docstring
 Returns the current configuration
 %End
 
-    virtual void setConfig( const QMap<QString, QVariant> &config );
+    virtual void setConfig( const QVariantMap &config );
 
 %Docstring
 Defines the current configuration
@@ -175,7 +175,7 @@ Create a new configuration widget
 :param parent: A parent widget
 %End
 
-    virtual QMap<QString, QVariant> config();
+    virtual QVariantMap config();
 
 %Docstring
 Create a configuration from the current GUI state
@@ -183,7 +183,7 @@ Create a configuration from the current GUI state
 :return: A widget configuration
 %End
 
-    virtual void setConfig( const QMap<QString, QVariant> &config );
+    virtual void setConfig( const QVariantMap &config );
 
 %Docstring
 Update the configuration widget to represent the given configuration.

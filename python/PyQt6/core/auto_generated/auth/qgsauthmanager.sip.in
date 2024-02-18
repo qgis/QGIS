@@ -28,7 +28,7 @@ and to utilize configurations through various authentication method plugins
 %End
   public:
 
-    enum MessageLevel
+    enum MessageLevel /BaseType=IntEnum/
     {
       INFO,
       WARNING,

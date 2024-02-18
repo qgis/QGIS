@@ -382,13 +382,15 @@ void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )
 QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
 {
   QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
+  m->setSizeUnit( mSizeUnit );
+  m->setSizeMapUnitScale( mSizeMapUnitScale );
+  m->setOffsetUnit( mOffsetUnit );
+  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
   m->setShape( mShape );
   m->setSymbolWidth( mSymbolWidth );
   m->setSymbolHeight( mSymbolHeight );
   m->setStrokeStyle( mStrokeStyle );
   m->setOffset( mOffset );
-  m->setOffsetUnit( mOffsetUnit );
-  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
   m->setStrokeStyle( mStrokeStyle );
   m->setPenJoinStyle( mPenJoinStyle );
   m->setPenCapStyle( mPenCapStyle );

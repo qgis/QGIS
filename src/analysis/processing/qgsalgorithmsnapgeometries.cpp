@@ -63,10 +63,10 @@ QString QgsSnapGeometriesAlgorithm::groupId() const
   return QStringLiteral( "vectorgeometry" );
 }
 
-QgsProcessingAlgorithm::Flags QgsSnapGeometriesAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsSnapGeometriesAlgorithm::flags() const
 {
-  Flags f = QgsProcessingAlgorithm::flags();
-  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits;
   return f;
 }
 
@@ -82,9 +82,9 @@ bool QgsSnapGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
 void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ),
-                QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
   std::unique_ptr< QgsProcessingParameterDistance > tolParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 10.0, QStringLiteral( "INPUT" ), false, 0.00000001 );
   tolParam->setMetadata(
@@ -109,7 +109,7 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
                               << QObject::tr( "Snap to anchor nodes (single layer only)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "BEHAVIOR" ), QObject::tr( "Behavior" ), options, false, QVariantList() << 0 ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
-                QObject::tr( "Snapped geometry" ), QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "Snapped geometry" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
 
 QgsSnapGeometriesAlgorithm *QgsSnapGeometriesAlgorithm::createInstance() const

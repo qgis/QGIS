@@ -32,7 +32,7 @@ on which is faster for the particular operation.
 %End
   public:
 
-    enum GrayscaleMode
+    enum GrayscaleMode /BaseType=IntEnum/
     {
       GrayscaleLightness,
       GrayscaleLuminosity,
@@ -40,7 +40,7 @@ on which is faster for the particular operation.
       GrayscaleOff
     };
 
-    enum FlipType
+    enum FlipType /BaseType=IntEnum/
     {
       FlipHorizontal,
       FlipVertical

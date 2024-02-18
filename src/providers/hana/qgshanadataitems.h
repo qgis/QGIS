@@ -23,7 +23,6 @@
 #include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgslayeritem.h"
-#include "qgsdataprovider.h"
 
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;
@@ -112,7 +111,7 @@ class QgsHanaDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "SAP HANA" ); }
     QString dataProviderKey() const override { return QStringLiteral( "hana" ); }
-    int capabilities() const override { return QgsDataProvider::Database; }
+    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Databases; }
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 

@@ -236,7 +236,7 @@ QSortFilterProxyModel subclass for QgsLayoutManagerModel
 %End
   public:
 
-    enum Filter
+    enum Filter /BaseType=IntEnum/
     {
       FilterPrintLayouts,
       FilterReports,

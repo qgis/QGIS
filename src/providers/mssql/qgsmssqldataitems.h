@@ -152,7 +152,7 @@ class QgsMssqlDataItemProvider : public QgsDataItemProvider
 
     QString dataProviderKey() const override;
 
-    int capabilities() const override;
+    Qgis::DataItemProviderCapabilities capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

@@ -116,7 +116,7 @@ If ``ui`` is a URL, a local copy of the file will be made and will be used to cr
 ``context`` is provided to save error messages
 %End
 
-    bool setWidgetConfig( const QString &widgetName, const QMap<QString, QVariant> &config );
+    bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 %Docstring
 Set the editor widget config for a widget which is not for a simple field.
 
@@ -139,7 +139,7 @@ Example
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
 %End
 
-    QMap<QString, QVariant> widgetConfig( const QString &widgetName ) const;
+    QVariantMap widgetConfig( const QString &widgetName ) const;
 %Docstring
 Gets the configuration for the editor widget with the given name.
 

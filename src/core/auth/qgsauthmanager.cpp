@@ -44,9 +44,6 @@
 #include <QSslConfiguration>
 #endif
 
-// QtKeyChain library
-#include "keychain.h"
-
 // QGIS includes
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"

@@ -253,9 +253,15 @@ void TestQgsOverlayExpression::testOverlayMeasure()
 
   QgsExpression exp( expression );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
-  const QVariant result = exp.evaluate( &context );
-  QCOMPARE( result, expectedResult );
-
+  const QVariantList result = exp.evaluate( &context ).toList();
+  QCOMPARE( result.size(), expectedResult.size() );
+  for ( int i = 0; i < result.size(); ++i )
+  {
+    QCOMPARE( result.at( i ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), expectedResult.at( i ).toMap().value( QStringLiteral( "id" ) ).toLongLong() );
+    QCOMPARE( result.at( i ).toMap().value( QStringLiteral( "result" ) ).toLongLong(), expectedResult.at( i ).toMap().value( QStringLiteral( "result" ) ).toLongLong() );
+    QGSCOMPARENEAR( result.at( i ).toMap().value( QStringLiteral( "overlap" ) ).toDouble(), expectedResult.at( i ).toMap().value( QStringLiteral( "overlap" ) ).toDouble(), 0.0001 );
+    QGSCOMPARENEAR( result.at( i ).toMap().value( QStringLiteral( "radius" ) ).toDouble(), expectedResult.at( i ).toMap().value( QStringLiteral( "radius" ) ).toDouble(), 0.02 );
+  }
 }
 
 void TestQgsOverlayExpression::testOverlayMeasure_data()

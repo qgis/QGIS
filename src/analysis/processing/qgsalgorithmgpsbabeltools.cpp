@@ -59,7 +59,7 @@ QString QgsConvertGpxFeatureTypeAlgorithm::groupId() const
 
 void QgsConvertGpxFeatureTypeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), QgsProcessingParameterFile::File, QString(), QVariant(), false,
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false,
                 QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "CONVERSION" ), QObject::tr( "Conversion" ),
@@ -255,7 +255,7 @@ QString QgsConvertGpsDataAlgorithm::groupId() const
 
 void QgsConvertGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), QgsProcessingParameterFile::File, QString(), QVariant(), false,
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false,
                 QgsApplication::gpsBabelFormatRegistry()->importFileFilter() + QStringLiteral( ";;%1" ).arg( QObject::tr( "All files (*.*)" ) ) ) );
 
   std::unique_ptr< QgsProcessingParameterString > formatParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "FORMAT" ), QObject::tr( "Format" ) );
@@ -699,7 +699,7 @@ QString QgsUploadGpsDataAlgorithm::groupId() const
 
 void QgsUploadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), QgsProcessingParameterFile::File, QString(), QVariant(), false,
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false,
                 QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
 
   std::unique_ptr< QgsProcessingParameterString > deviceParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );

@@ -20,6 +20,7 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
+  qgsframegraph.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -37,7 +38,6 @@ set(QGIS_3D_SRCS
   qgswindow3dengine.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
-  qgsshadowrenderingframegraph.cpp
   qgspostprocessingentity.cpp
   qgsrenderpassquad.cpp
   qgsambientocclusionrenderentity.cpp
@@ -126,6 +126,7 @@ set(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsframegraph.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
@@ -139,7 +140,6 @@ set(QGIS_3D_HDRS
   qgswindow3dengine.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
-  qgsshadowrenderingframegraph.h
   qgspostprocessingentity.h
   qgspreviewquad.h
   qgsshadowsettings.h

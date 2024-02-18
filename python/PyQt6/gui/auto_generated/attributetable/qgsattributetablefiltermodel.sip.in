@@ -18,7 +18,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 %End
   public:
 
-    enum FilterMode
+    enum FilterMode /BaseType=IntEnum/
     {
       ShowAll,
       ShowSelected,
@@ -28,7 +28,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ShowInvalid,
     };
 
-    enum ColumnType
+    enum ColumnType /BaseType=IntEnum/
     {
       ColumnTypeField,
       ColumnTypeActionButton

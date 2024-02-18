@@ -27,7 +27,7 @@ showing an embedded form due to relations)
 
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       SingleEditMode,
       AddFeatureMode,
@@ -38,14 +38,14 @@ showing an embedded form due to relations)
       IdentifyMode
     };
 
-    enum RelationMode
+    enum RelationMode /BaseType=IntEnum/
     {
       Undefined,
       Multiple,
       Single
     };
 
-    enum FormMode
+    enum FormMode /BaseType=IntEnum/
     {
       Embed,
       StandaloneDialog,

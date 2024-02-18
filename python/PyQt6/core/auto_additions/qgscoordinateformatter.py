@@ -6,7 +6,10 @@ QgsCoordinateFormatter.FormatDecimalDegrees = QgsCoordinateFormatter.Format.Form
 QgsCoordinateFormatter.FlagDegreesUseStringSuffix = QgsCoordinateFormatter.FormatFlag.FlagDegreesUseStringSuffix
 QgsCoordinateFormatter.FlagDegreesPadMinutesSeconds = QgsCoordinateFormatter.FormatFlag.FlagDegreesPadMinutesSeconds
 QgsCoordinateFormatter.FormatFlags = lambda flags=0: QgsCoordinateFormatter.FormatFlag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsCoordinateFormatter.FormatFlag.__bool__ = lambda flag: bool(_force_int(flag))

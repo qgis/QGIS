@@ -16,13 +16,13 @@ class QgsManageConnectionsDialog : QDialog
 #include "qgsmanageconnectionsdialog.h"
 %End
   public:
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       Export,
       Import
     };
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       WMS,
       PostGIS,

@@ -1232,7 +1232,11 @@ cmsHTRANSFORM PDFLittleCMS::getTransformBetweenColorSpaces(const PDFCMS::ColorSp
 QString getInfoFromProfile(cmsHPROFILE profile, cmsInfoType infoType)
 {
     QLocale locale;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QString country = QLocale::territoryToString(locale.territory());
+#else
+    QString country = QLocale::countryToString(locale.country());
+#endif
     QString language = QLocale::languageToString(locale.language());
 
     char countryCode[3] = { };
@@ -1493,7 +1497,11 @@ PDFCMSSettings PDFCMSManager::getDefaultSettings() const
 
 void PDFCMSManager::setDocument(const PDFDocument* document)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     std::optional<QMutexLocker<QRecursiveMutex>> lock;
+#else
+    std::optional<QMutexLocker> lock;
+#endif
     lock.emplace(&m_mutex);
 
     if (m_document == document)

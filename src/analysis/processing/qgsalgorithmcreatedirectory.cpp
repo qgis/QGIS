@@ -23,9 +23,9 @@ QString QgsCreateDirectoryAlgorithm::name() const
   return QStringLiteral( "createdirectory" );
 }
 
-QgsProcessingAlgorithm::Flags QgsCreateDirectoryAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsCreateDirectoryAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsCreateDirectoryAlgorithm::displayName() const

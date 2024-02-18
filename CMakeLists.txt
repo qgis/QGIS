@@ -398,7 +398,7 @@ if(WITH_CORE)
   endif()
 
   if (NOT WITH_INTERNAL_POLY2TRI)
-    find_package(Poly2Tri REQUIRED)
+    find_package(poly2tri REQUIRED)
   endif()
 
   if (WITH_SPATIALITE)
@@ -492,6 +492,14 @@ if(WITH_CORE)
       set (HAVE_QTGAMEPAD TRUE)
   endif()
 
+  set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
+  if (WITH_PDF4QT)
+    set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
+    message(STATUS "PDF4Qt enabled")
+  else()
+    message(STATUS "PDF4Qt disabled")
+  endif()
+
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
@@ -568,7 +576,11 @@ if(WITH_CORE)
   endif()
 
   # Password helper
-  find_package(QtKeychain REQUIRED)
+  if(BUILD_WITH_QT6)
+    find_package(Qt6Keychain CONFIG REQUIRED)
+  else()
+    find_package(Qt5Keychain CONFIG REQUIRED)
+  endif()
   # Master password hash and authentication encryption
   find_package(QCA REQUIRED)
   # Check for runtime dependency of qca-ossl plugin

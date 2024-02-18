@@ -36,7 +36,7 @@ QString QgsCellStatisticsAlgorithmBase::groupId() const
 void QgsCellStatisticsAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layers" ), QgsProcessing::TypeRaster ) );
+                QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
 
   addSpecificAlgorithmParams();
 
@@ -44,8 +44,8 @@ void QgsCellStatisticsAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, false );
-  output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999, false );
+  output_nodata_parameter->setFlags( output_nodata_parameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( output_nodata_parameter.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),
@@ -416,7 +416,7 @@ QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::crea
 void QgsCellStatisticsPercentileAlgorithm::addSpecificAlgorithmParams()
 {
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Nearest rank" ) << QObject::tr( "Inclusive linear interpolation (PERCENTILE.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTILE.EXC)" ), false, 0, false ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PERCENTILE" ), QObject::tr( "Percentile" ), QgsProcessingParameterNumber::Double, 0.25, false, 0.0, 1.0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PERCENTILE" ), QObject::tr( "Percentile" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 1.0 ) );
 }
 
 bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -557,7 +557,7 @@ QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFrom
 void QgsCellStatisticsPercentRankFromValueAlgorithm::addSpecificAlgorithmParams()
 {
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QgsProcessingParameterNumber::Double, 10, false ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), Qgis::ProcessingNumberParameterType::Double, 10, false ) );
 }
 
 bool QgsCellStatisticsPercentRankFromValueAlgorithm::prepareSpecificAlgorithmParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

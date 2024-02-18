@@ -86,7 +86,7 @@ Constructor for HistoryEntryOptions.
         Qgis::HistoryProviderBackends storageBackends;
     };
 
-    long long addEntry( const QString &providerId, const QMap<QString, QVariant> &entry, bool &ok /Out/, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+    long long addEntry( const QString &providerId, const QVariantMap &entry, bool &ok /Out/, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 %Docstring
 Adds an ``entry`` to the history logs.
 
@@ -137,7 +137,7 @@ Returns the entry with matching ID, from the specified ``backend``.
 :return: matching entry if found
 %End
 
-    bool updateEntry( long long id, const QMap<QString, QVariant> &entry, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile );
+    bool updateEntry( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile );
 %Docstring
 Updates the existing entry with matching ``id``.
 
@@ -174,7 +174,7 @@ Emitted when an ``entry`` is added.
 .. versionadded:: 3.32
 %End
 
-    void entryUpdated( long long id, const QMap<QString, QVariant> &entry, Qgis::HistoryProviderBackend backend );
+    void entryUpdated( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend );
 %Docstring
 Emitted when an ``entry`` is updated.
 

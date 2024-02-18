@@ -36,7 +36,7 @@ Base class to build new relation widgets.
   public:
 
 
-    QgsAbstractRelationEditorWidget( const QMap<QString, QVariant> &config, QWidget *parent /TransferThis/ = 0 );
+    QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
 %End
@@ -167,12 +167,12 @@ Sets force suppress form popup status with ``forceSuppressFormPopup``
 configured for this widget
 %End
 
-    virtual QMap<QString, QVariant> config() const = 0;
+    virtual QVariantMap config() const = 0;
 %Docstring
 Returns the widget configuration
 %End
 
-    virtual void setConfig( const QMap<QString, QVariant> &config ) = 0;
+    virtual void setConfig( const QVariantMap &config ) = 0;
 %Docstring
 Defines the widget configuration
 %End
@@ -353,14 +353,14 @@ Create a new configuration widget
 :param parent: A parent widget
 %End
 
-    virtual QMap<QString, QVariant> config() = 0;
+    virtual QVariantMap config() = 0;
 %Docstring
 Create a configuration from the current GUI state
 
 :return: A widget configuration
 %End
 
-    virtual void setConfig( const QMap<QString, QVariant> &config ) = 0;
+    virtual void setConfig( const QVariantMap &config ) = 0;
 %Docstring
 Update the configuration widget to represent the given configuration.
 
@@ -430,7 +430,7 @@ Returns the machine readable identifier name of this widget type
 Returns the human readable identifier name of this widget type
 %End
 
-    virtual QgsAbstractRelationEditorWidget *create( const QMap<QString, QVariant> &config, QWidget *parent = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = 0 ) const = 0 /Factory/;
 %Docstring
 Override this in your implementation.
 Create a new relation widget. Call :py:func:`QgsEditorWidgetRegistry.create()`

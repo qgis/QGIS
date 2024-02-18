@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-2299</y>
-        <width>517</width>
-        <height>3237</height>
+        <y>0</y>
+        <width>362</width>
+        <height>1883</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -872,7 +872,7 @@
           <item row="4" column="1">
            <widget class="QgsDoubleSpinBox" name="mMaxSymbolSizeSpinBox">
             <property name="suffix">
-             <string>mm</string>
+             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -893,7 +893,7 @@
           <item row="3" column="1">
            <widget class="QgsDoubleSpinBox" name="mMinSymbolSizeSpinBox">
             <property name="suffix">
-             <string>mm</string>
+             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -1488,7 +1488,6 @@
   <tabstop>mGroupSpaceSpinBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

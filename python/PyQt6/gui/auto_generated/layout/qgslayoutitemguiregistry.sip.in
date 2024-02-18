@@ -29,7 +29,7 @@ the components related to the GUI behavior of a layout item.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagNoCreationTools,
     };
@@ -231,7 +231,7 @@ Returns a reference to the item group with matching ``id``.
 Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
 %End
 
-    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item, const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() );
+    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item, const QVariantMap &properties = QVariantMap() );
 %Docstring
 Called when a newly created item of the associated metadata ``metadataId`` has been added to a layout.
 

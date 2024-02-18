@@ -64,7 +64,7 @@ Constructor for QgsPointDistanceRenderer.
 :param labelAttributeName: optional attribute for labeling points
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 

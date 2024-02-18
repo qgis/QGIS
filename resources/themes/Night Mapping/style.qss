@@ -789,13 +789,20 @@ QCheckBox::indicator {
     height:0.8em;
 }
 
+QCheckBox::indicator:intermediary {
+    background-color: @toggleoff;
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+
 QCheckBox::indicator:unchecked {
     background-color: @toggleoff;
+    image: none;
 }
 
 QCheckBox::indicator:unchecked:disabled {
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
+    image: none;
 }
 
 QCheckBox::indicator:checked {

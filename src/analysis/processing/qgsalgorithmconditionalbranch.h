@@ -47,7 +47,7 @@ class QgsConditionalBranchAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsConditionalBranchAlgorithm *createInstance() const override SIP_FACTORY;

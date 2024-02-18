@@ -43,7 +43,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye bookworm jammy kinetic lunar"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye bookworm jammy kinetic lunar mantic noble"))
 	DISTRIBUTION := sid
 endif
 
@@ -121,7 +121,7 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar mantic noble"))
 	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 

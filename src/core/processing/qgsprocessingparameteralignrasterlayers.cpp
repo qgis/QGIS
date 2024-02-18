@@ -36,7 +36,7 @@ QString QgsProcessingParameterAlignRasterLayers::type() const
 bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+    return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( input ) ) )
   {
@@ -46,7 +46,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
   if ( input.type() == QVariant::String )
   {
     if ( input.toString().isEmpty() )
-      return mFlags & FlagOptional;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
     if ( !context )
       return true;
@@ -57,7 +57,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
   else if ( input.type() == QVariant::List )
   {
     if ( input.toList().isEmpty() )
-      return mFlags & FlagOptional;;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;;
 
     const QVariantList layerList = input.toList();
     for ( const QVariant &variantLayer : layerList )
@@ -104,7 +104,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
   {
     const auto constToStringList = input.toStringList();
     if ( constToStringList.isEmpty() )
-      return mFlags & FlagOptional;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
     if ( !context )
       return true;

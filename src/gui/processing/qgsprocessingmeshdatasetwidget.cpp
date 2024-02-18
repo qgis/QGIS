@@ -801,7 +801,7 @@ QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::QgsProcessingMeshDatase
 QgsProcessingParameterDefinition *QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::createParameter(
   const QString &name,
   const QString &description,
-  QgsProcessingParameterDefinition::Flags flags ) const
+  Qgis::ProcessingParameterFlags flags ) const
 {
   QSet<int> supportedDataType;
   supportedDataType.insert( QgsMeshDatasetGroupMetadata::DataOnEdges );
@@ -881,7 +881,7 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingMeshDatasetTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+QgsProcessingParameterDefinition *QgsProcessingMeshDatasetTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
   std::unique_ptr<QgsProcessingParameterMeshDatasetTime> param = std::make_unique<QgsProcessingParameterMeshDatasetTime>(
         name, description, mMeshLayerParameterName, mParentDatasetComboBox->currentData().toString() );

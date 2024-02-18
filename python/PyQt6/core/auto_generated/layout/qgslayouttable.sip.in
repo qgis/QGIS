@@ -79,7 +79,7 @@ the table to span over multiple frames
 %End
   public:
 
-    enum HeaderHAlignment
+    enum HeaderHAlignment /BaseType=IntEnum/
     {
       FollowColumn,
       HeaderLeft,
@@ -87,27 +87,27 @@ the table to span over multiple frames
       HeaderRight
     };
 
-    enum HeaderMode
+    enum HeaderMode /BaseType=IntEnum/
     {
       FirstFrame,
       AllFrames,
       NoHeaders
     };
 
-    enum EmptyTableMode
+    enum EmptyTableMode /BaseType=IntEnum/
     {
       HeadersOnly,
       HideTable,
       ShowMessage
     };
 
-    enum WrapBehavior
+    enum WrapBehavior /BaseType=IntEnum/
     {
       TruncateText,
       WrapText
     };
 
-    enum CellStyleGroup
+    enum CellStyleGroup /BaseType=IntEnum/
     {
       OddColumns,
       EvenColumns,

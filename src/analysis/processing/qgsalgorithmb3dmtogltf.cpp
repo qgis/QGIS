@@ -65,7 +65,7 @@ QgsB3DMToGltfAlgorithm *QgsB3DMToGltfAlgorithm::createInstance() const
 
 void QgsB3DMToGltfAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), QgsProcessingParameterFile::File,
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), Qgis::ProcessingFileParameterBehavior::File,
                 QStringLiteral( "b3dm" ), QVariant(), false, QStringLiteral( "B3DM (*.b3dm *.B3DM)" ) ) );
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output file" ), QStringLiteral( "GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)" ) ) );

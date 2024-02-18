@@ -34,9 +34,9 @@ Default constructor
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QMap<QString, QVariant> configuration( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 };
 

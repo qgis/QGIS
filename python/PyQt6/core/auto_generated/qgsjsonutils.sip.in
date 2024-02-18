@@ -225,7 +225,7 @@ take precedence over attributes included via :py:func:`~QgsJsonExporter.attribut
 %End
 
     QString exportFeature( const QgsFeature &feature,
-                           const QMap<QString, QVariant> &extraProperties = QMap<QString, QVariant>(),
+                           const QVariantMap &extraProperties = QVariantMap(),
                            const QVariant &id = QVariant(),
                            int indent = -1 ) const;
 %Docstring

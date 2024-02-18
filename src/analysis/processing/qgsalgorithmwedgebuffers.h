@@ -41,7 +41,7 @@ class QgsWedgeBuffersAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsWedgeBuffersAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -49,7 +49,7 @@ class QgsWedgeBuffersAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

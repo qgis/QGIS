@@ -39,7 +39,7 @@ A spatial index for :py:class:`QgsFeature` objects.
   public:
 
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagStoreFeatureGeometries,
     };

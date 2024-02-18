@@ -46,7 +46,7 @@ class QgsRoundnessAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   protected:
     QString outputName() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
 
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

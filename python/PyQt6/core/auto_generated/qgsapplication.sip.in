@@ -75,7 +75,7 @@ to change due to centralization.
 %End
   public:
 
-    enum StyleSheetType
+    enum StyleSheetType /BaseType=IntEnum/
     {
       Qt,
       WebBrowser,
@@ -355,7 +355,7 @@ Since QGIS 3.20, the optional ``fillColor`` and ``strokeColor`` arguments can be
 control the color of parameter based SVG icons.
 %End
 
-    enum Cursor
+    enum Cursor /BaseType=IntEnum/
     {
       ZoomIn,
       ZoomOut,
@@ -558,7 +558,7 @@ deletes provider registry and map layer registry
 Gets application icon
 %End
 
-    enum endian_t
+    enum endian_t /BaseType=IntEnum/
     {
       XDR,
       NDR
@@ -1048,7 +1048,7 @@ in a widget or sending it to a web browser.
 \copydoc :py:func:`~QgsApplication.nullRepresentation`
 %End
 
-    static QMap<QString, QVariant> customVariables();
+    static QVariantMap customVariables();
 %Docstring
 Custom expression variables for this application.
 This does not include generated variables (like system name, user name etc.)
@@ -1058,7 +1058,7 @@ This does not include generated variables (like system name, user name etc.)
 .. versionadded:: 3.0
 %End
 
-    static void setCustomVariables( const QMap<QString, QVariant> &customVariables );
+    static void setCustomVariables( const QVariantMap &customVariables );
 %Docstring
 Custom expression variables for this application.
 Do not include generated variables (like system name, user name etc.)

@@ -23,7 +23,7 @@ Layout item for node based polyline shapes.
 %End
   public:
 
-    enum MarkerMode
+    enum MarkerMode /BaseType=IntEnum/
     {
       NoMarker,
       ArrowHead,

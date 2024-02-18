@@ -490,6 +490,13 @@ if (WITH_DESKTOP)
   ADD_PYTHON_TEST(PyQgsAppStartup test_qgsappstartup.py)
 endif()
 
+if (WITH_PDF4QT)
+  ADD_PYTHON_TEST(PyQgsPdfRenderer test_qgspdfrenderer.py)
+  if (WITH_QTWEBENGINE)
+    ADD_PYTHON_TEST(PyQgsWebEnginePage test_qgswebenginepage.py)
+  endif()
+endif()
+
 if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsImportIntoPostGIS test_processing_importintopostgis.py)
   ADD_PYTHON_TEST(PyQgsLayerMetadataProviderPostgres test_qgslayermetadataprovider_postgres.py)

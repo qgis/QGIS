@@ -55,6 +55,12 @@ class CORE_EXPORT QgsEditorWidgetSetup
      */
     bool isNull() const { return mType.isEmpty(); }
 
+    // TODO c++20 - replace with = default
+    bool operator==( const QgsEditorWidgetSetup &other ) const
+    {
+      return mType == other.mType && mConfig == other.mConfig;
+    }
+
   private:
     QString mType;
     QVariantMap mConfig;

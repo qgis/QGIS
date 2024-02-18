@@ -447,23 +447,29 @@ if __name__ == '__main__':
     # HTTPS is enabled if any of PKI or OAuth2 are enabled too
     if HTTPS_ENABLED:
         if QGIS_SERVER_OAUTH2_AUTH:
-            server.socket = ssl.wrap_socket(
+            ssl_version = ssl.PROTOCOL_TLS
+            context = ssl.SSLContext(ssl_version)
+            context.verify_mode = ssl.CERT_NONE  # No certs for OAuth2
+            context.load_cert_chain(certfile=QGIS_SERVER_OAUTH2_CERTIFICATE,
+                                    keyfile=QGIS_SERVER_OAUTH2_KEY)
+            context.load_verify_locations(cafile=QGIS_SERVER_OAUTH2_AUTHORITY)
+
+            server.socket = context.wrap_socket(
                 server.socket,
-                certfile=QGIS_SERVER_OAUTH2_CERTIFICATE,
-                ca_certs=QGIS_SERVER_OAUTH2_AUTHORITY,
-                keyfile=QGIS_SERVER_OAUTH2_KEY,
-                server_side=True,
-                # cert_reqs=ssl.CERT_REQUIRED,  # No certs for OAuth2
-                ssl_version=ssl.PROTOCOL_TLSv1_2)
+                server_side=True
+            )
         else:
-            server.socket = ssl.wrap_socket(
+            ssl_version = ssl.PROTOCOL_TLS
+            context = ssl.SSLContext(ssl_version)
+            context.verify_mode = ssl.CERT_REQUIRED
+            context.load_cert_chain(certfile=QGIS_SERVER_PKI_CERTIFICATE,
+                                    keyfile=QGIS_SERVER_PKI_KEY)
+            context.load_verify_locations(cafile=QGIS_SERVER_PKI_AUTHORITY)
+
+            server.socket = context.wrap_socket(
                 server.socket,
-                certfile=QGIS_SERVER_PKI_CERTIFICATE,
-                keyfile=QGIS_SERVER_PKI_KEY,
-                ca_certs=QGIS_SERVER_PKI_AUTHORITY,
-                cert_reqs=ssl.CERT_REQUIRED,
-                server_side=True,
-                ssl_version=ssl.PROTOCOL_TLSv1_2)
+                server_side=True
+            )
 
     print('Starting server on %s://%s:%s, use <Ctrl-C> to stop' %
           ('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, server.server_port), flush=True)

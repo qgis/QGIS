@@ -3066,6 +3066,40 @@ QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QS
   CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
 }
 
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QObject::tr( "Calculating constrainedDelaunayTriangulation requires a QGIS build based on GEOS 3.11 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSConstrainedDelaunayTriangulation_r( geosinit()->ctxt, mGeos.get() ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit()->ctxt, geos.get() ) != 0 )
+    {
+      return nullptr;
+    }
+
+    std::unique_ptr< QgsAbstractGeometry > res = fromGeos( geos.get() );
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( res.get() ) )
+    {
+      return std::unique_ptr< QgsAbstractGeometry >( collection->extractPartsByType( Qgis::WkbType::Polygon, true ) );
+    }
+    else
+    {
+      return res;
+    }
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
 
 //! Extract coordinates of linestring's endpoints. Returns false on error.
 static bool _linestringEndpoints( const GEOSGeometry *linestring, double &x1, double &y1, double &x2, double &y2 )

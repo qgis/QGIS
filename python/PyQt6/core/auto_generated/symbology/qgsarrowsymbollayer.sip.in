@@ -29,7 +29,7 @@ Simple constructor
 %End
     ~QgsArrowSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Create a new QgsArrowSymbolLayer
 
@@ -171,7 +171,7 @@ Returns whether the arrow is repeated along the line or not
 Sets whether the arrow is repeated along the line
 %End
 
-    enum HeadType
+    enum HeadType /BaseType=IntEnum/
     {
       HeadSingle,
       HeadReversed,
@@ -187,7 +187,7 @@ Gets the current head type
 Sets the head type
 %End
 
-    enum ArrowType
+    enum ArrowType /BaseType=IntEnum/
     {
       ArrowPlain,
       ArrowLeftHalf,
@@ -203,7 +203,7 @@ Gets the current arrow type
 Sets the arrow type
 %End
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QString layerType() const;
 

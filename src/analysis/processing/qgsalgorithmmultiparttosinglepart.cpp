@@ -68,10 +68,10 @@ QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInst
 }
 
 
-QgsProcessingFeatureSource::Flag QgsMultipartToSinglepartAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsMultipartToSinglepartAlgorithm::sourceFlags() const
 {
   // skip geometry checks - this algorithm can be used to repair geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsMultipartToSinglepartAlgorithm::sinkFlags() const

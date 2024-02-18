@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstringstatisticalsummary.h"
+#include "qgsvariantutils.h"
 #include <QString>
 #include <QStringList>
 #include <QObject>
@@ -67,7 +68,7 @@ void QgsStringStatisticalSummary::addString( const QString &string )
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( value.type() == QVariant::String )
+  if ( QgsVariantUtils::isNull( value ) || value.type() == QVariant::String )
   {
     testString( value.toString() );
   }
@@ -100,7 +101,7 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
   const auto constValues = values;
   for ( const QVariant &variant : constValues )
   {
-    if ( variant.type() == QVariant::String )
+    if ( QgsVariantUtils::isNull( variant ) || variant.type() == QVariant::String )
     {
       testString( variant.toString() );
     }

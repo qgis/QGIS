@@ -77,12 +77,12 @@ QString QgsWedgeBuffersAlgorithm::shortHelpString() const
 
 QList<int> QgsWedgeBuffersAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPoint;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
 }
 
-QgsProcessing::SourceType QgsWedgeBuffersAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsWedgeBuffersAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 QgsWedgeBuffersAlgorithm *QgsWedgeBuffersAlgorithm::createInstance() const
@@ -92,34 +92,34 @@ QgsWedgeBuffersAlgorithm *QgsWedgeBuffersAlgorithm::createInstance() const
 
 void QgsWedgeBuffersAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > azimuth = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "AZIMUTH" ), QObject::tr( "Azimuth (degrees from North)" ), QgsProcessingParameterNumber::Double, 0, false );
+  std::unique_ptr< QgsProcessingParameterNumber > azimuth = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "AZIMUTH" ), QObject::tr( "Azimuth (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
   azimuth->setIsDynamic( true );
   azimuth->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Azimuth" ), QObject::tr( "Azimuth (degrees from North)" ), QgsPropertyDefinition::Double ) );
   azimuth->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( azimuth.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > width = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "WIDTH" ), QObject::tr( "Wedge width (in degrees)" ), QgsProcessingParameterNumber::Double, 45, false, 0, 360.0 );
+  std::unique_ptr< QgsProcessingParameterNumber > width = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "WIDTH" ), QObject::tr( "Wedge width (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 45, false, 0, 360.0 );
   width->setIsDynamic( true );
   width->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Width" ), QObject::tr( "Wedge width (in degrees)" ), QgsPropertyDefinition::DoublePositive ) );
   width->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( width.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > outerRadius = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTER_RADIUS" ), QObject::tr( "Outer radius" ), QgsProcessingParameterNumber::Double, 1, false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > outerRadius = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTER_RADIUS" ), QObject::tr( "Outer radius" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 );
   outerRadius->setIsDynamic( true );
   outerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Outer radius" ), QObject::tr( "Outer radius" ), QgsPropertyDefinition::DoublePositive ) );
   outerRadius->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( outerRadius.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > innerRadius = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INNER_RADIUS" ), QObject::tr( "Inner radius" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > innerRadius = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INNER_RADIUS" ), QObject::tr( "Inner radius" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   innerRadius->setIsDynamic( true );
   innerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Inner radius" ), QObject::tr( "Inner radius" ), QgsPropertyDefinition::DoublePositive ) );
   innerRadius->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( innerRadius.release() );
 }
 
-QgsProcessingFeatureSource::Flag QgsWedgeBuffersAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsWedgeBuffersAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 bool QgsWedgeBuffersAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

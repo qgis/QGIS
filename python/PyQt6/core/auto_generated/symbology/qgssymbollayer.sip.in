@@ -408,14 +408,14 @@ The default implementation does nothing.
 Shall be reimplemented by subclasses to create a deep copy of the instance.
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 %Docstring
 Saves the symbol layer as SLD
 %End
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
-    virtual QMap<QString, QVariant> properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 %Docstring
 Should be reimplemented by subclasses to return a string map that
 contains the configuration information for the symbol layer. This
@@ -709,7 +709,7 @@ Constructor for QgsSymbolLayer.
 
 
 
-    void restoreOldDataDefinedProperties( const QMap<QString, QVariant> &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
 
@@ -780,14 +780,14 @@ Abstract base class for marker symbol layers.
 %End
   public:
 
-    enum HorizontalAnchorPoint
+    enum HorizontalAnchorPoint /BaseType=IntEnum/
     {
       Left,
       HCenter,
       Right,
     };
 
-    enum VerticalAnchorPoint
+    enum VerticalAnchorPoint /BaseType=IntEnum/
     {
       Top,
       VCenter,
@@ -1056,10 +1056,10 @@ the vertical anchor point is aligned with the marker's desired location.
 .. seealso:: :py:func:`horizontalAnchorPoint`
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 %Docstring
 Writes the symbol layer definition as a SLD XML element.
 
@@ -1158,7 +1158,7 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 %End
   public:
 
-    enum RenderRingFilter
+    enum RenderRingFilter /BaseType=IntEnum/
     {
       AllRings,
       ExteriorRingOnly,

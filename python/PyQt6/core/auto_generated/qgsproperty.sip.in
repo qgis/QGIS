@@ -27,7 +27,7 @@ commonly used property types, such as colors and blend modes.
 %End
   public:
 
-    enum StandardPropertyTemplate
+    enum StandardPropertyTemplate /BaseType=IntEnum/
     {
       Boolean,
       Integer,
@@ -59,7 +59,7 @@ commonly used property types, such as colors and blend modes.
       Custom,
     };
 
-    enum DataType
+    enum DataType /BaseType=IntEnum/
     {
 
       DataTypeString,
@@ -187,7 +187,7 @@ can be grouped using a :py:class:`QgsPropertyCollection` for easier bulk storage
 %End
   public:
 
-    static QMap<QString, QVariant> propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
+    static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
 %Docstring
 Convert a map of QgsProperty to a map of QVariant
 This is useful to save a map of properties
@@ -195,7 +195,7 @@ This is useful to save a map of properties
 .. versionadded:: 3.20
 %End
 
-    static QMap<QString, QgsProperty> variantMapToPropertyMap( const QMap<QString, QVariant> &variantMap );
+    static QMap<QString, QgsProperty> variantMapToPropertyMap( const QVariantMap &variantMap );
 %Docstring
 Convert a map of QVariant to a map of QgsProperty
 This is useful to restore a map of properties.
@@ -518,7 +518,7 @@ Calculates the current value of the property and interprets it as an boolean.
 
     QVariant toVariant() const;
 %Docstring
-Saves this property to a QMap<QString, QVariant>, wrapped in a QVariant.
+Saves this property to a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
@@ -526,7 +526,7 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
     bool loadVariant( const QVariant &property );
 %Docstring
-Loads this property from a QMap<QString, QVariant>, wrapped in a QVariant.
+Loads this property from a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`

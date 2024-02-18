@@ -29,7 +29,7 @@ Responsible for reading native point cloud data and returning the indexed data.
 %End
   public:
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       NoCapabilities,
       ReadLayerMetadata,
@@ -41,7 +41,7 @@ Responsible for reading native point cloud data and returning the indexed data.
     typedef QFlags<QgsPointCloudDataProvider::Capability> Capabilities;
 
 
-    enum PointCloudIndexGenerationState
+    enum PointCloudIndexGenerationState /BaseType=IntEnum/
     {
       NotIndexed,
       Indexing,
@@ -147,7 +147,7 @@ This method will not attempt to calculate the data bounds, rather it will return
 are included in the data source's metadata.
 %End
 
-    virtual QMap<QString, QVariant> originalMetadata() const;
+    virtual QVariantMap originalMetadata() const;
 %Docstring
 Returns a representation of the original metadata included in a point cloud dataset.
 
@@ -155,7 +155,7 @@ This is a free-form dictionary of values, the contents and structure of which wi
 dataset.
 %End
 
-    virtual QgsPointCloudRenderer *createRenderer( const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() ) const /Factory/;
+    virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
 Creates a new 2D point cloud renderer, using provider backend specific information.
 

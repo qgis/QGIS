@@ -984,7 +984,7 @@ Returns the current auxiliary layer.
      virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
 
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 Writes the symbology of the layer into the document provided in SLD 1.1 format
 

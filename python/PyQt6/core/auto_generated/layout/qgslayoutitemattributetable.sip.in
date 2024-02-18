@@ -23,7 +23,7 @@ A layout table subclass that displays attributes from a vector layer.
 %End
   public:
 
-    enum ContentSource
+    enum ContentSource /BaseType=IntEnum/
     {
       LayerAttributes,
       AtlasFeature,

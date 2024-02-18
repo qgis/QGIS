@@ -57,7 +57,7 @@ QgsApplyLayerStyleAlgorithm *QgsApplyLayerStyleAlgorithm::createInstance() const
 void QgsApplyLayerStyleAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style file" ),  QgsProcessingParameterFile::File, QStringLiteral( "qml" ) ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style file" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "qml" ) ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Styled" ) ) );
 }
 

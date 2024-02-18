@@ -110,7 +110,7 @@ void QgsProcessingBatchAlgorithmDialogBase::executeNext()
   mQueuedParameters.pop_front();
 
   mCurrentStepTimer.restart();
-  if ( !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNoThreading ) )
+  if ( !( algorithm()->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) )
   {
     QgsProcessingAlgRunnerTask *task = new QgsProcessingAlgRunnerTask( algorithm(), mCurrentParameters, *mTaskContext, mBatchFeedback.get(), QgsTask::CanCancel | QgsTask::Hidden );
     if ( task->algorithmCanceled() )

@@ -34,7 +34,7 @@ effect will be drawn using the original picture, not the blurred version.
 %End
   public:
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsEffectStack effect. This method ignores
 the map parameter, and always returns an empty effect stack.
@@ -70,13 +70,13 @@ Creates a new QgsEffectStack effect from a single initial effect.
     virtual bool readProperties( const QDomElement &element );
 
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 %Docstring
 Unused for QgsEffectStack, will always return an empty string map
 %End
 
-    virtual void readProperties( const QMap<QString, QVariant> &props );
+    virtual void readProperties( const QVariantMap &props );
 
 %Docstring
 Unused for QgsEffectStack, props parameter will be ignored

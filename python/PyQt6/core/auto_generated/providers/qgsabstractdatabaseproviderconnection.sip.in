@@ -277,7 +277,7 @@ Returns the table comment.
 Sets the table ``comment``.
 %End
 
-        QMap<QString, QVariant> info() const;
+        QVariantMap info() const;
 %Docstring
 Returns additional information about the table.
 
@@ -285,7 +285,7 @@ Provider classes may use this property
 to store custom bits of information.
 %End
 
-        void setInfo( const QMap<QString, QVariant> &info );
+        void setInfo( const QVariantMap &info );
 %Docstring
 Sets additional information about the table to ``info``.
 
@@ -328,7 +328,7 @@ This information is calculated from the geometry columns types.
       QString geometryColumnName;
     };
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       CreateVectorTable,
       DropRasterTable,
@@ -364,7 +364,7 @@ This information is calculated from the geometry columns types.
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
 
-    enum GeometryColumnCapability
+    enum GeometryColumnCapability /BaseType=IntEnum/
     {
       Z,
       M,
@@ -385,7 +385,7 @@ Creates a new connection with ``name`` by reading its configuration from the set
 If a connection with this name cannot be found, an empty connection will be returned.
 %End
 
-    QgsAbstractDatabaseProviderConnection( const QString &uri, const QMap<QString, QVariant> &configuration );
+    QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration );
 %Docstring
 Creates a new connection from the given ``uri`` and ``configuration``.
 

@@ -54,7 +54,7 @@ Performs raster layer calculations.
 %End
   public:
 
-    enum Result
+    enum Result /BaseType=IntEnum/
     {
       Success,
       CreateOutputError,

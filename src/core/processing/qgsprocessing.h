@@ -19,6 +19,7 @@
 #define QGSPROCESSING_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include <QString>
@@ -42,24 +43,6 @@ class CORE_EXPORT QgsProcessing
     Q_GADGET
 
   public:
-
-    //! Data source types enum
-    enum SourceType
-    {
-      TypeMapLayer = -2, //!< Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
-      TypeVectorAnyGeometry = -1, //!< Any vector layer with geometry
-      TypeVectorPoint = 0, //!< Vector point layers
-      TypeVectorLine = 1, //!< Vector line layers
-      TypeVectorPolygon = 2, //!< Vector polygon layers
-      TypeRaster = 3, //!< Raster layers
-      TypeFile = 4, //!< Files (i.e. non map layer sources, such as text files)
-      TypeVector = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
-      TypeMesh = 6, //!< Mesh layers \since QGIS 3.6
-      TypePlugin = 7, //!< Plugin layers \since QGIS 3.22
-      TypePointCloud = 8, //!< Point cloud layers \since QGIS 3.22
-      TypeAnnotation = 9, //!< Annotation layers \since QGIS 3.22
-      TypeVectorTile = 10 //!< Vector tile layers \since QGIS 3.32
-    };
 
     //! Available Python output types
     enum class PythonOutputType SIP_MONKEYPATCH_SCOPEENUM
@@ -86,35 +69,35 @@ class CORE_EXPORT QgsProcessing
      *
      * \since QGIS 3.6
      */
-    static QString sourceTypeToString( SourceType type )
+    static QString sourceTypeToString( Qgis::ProcessingSourceType type )
     {
       switch ( type )
       {
-        case QgsProcessing::TypeMapLayer:
+        case Qgis::ProcessingSourceType::MapLayer:
           return QStringLiteral( "TypeMapLayer" );
-        case QgsProcessing::TypeVectorAnyGeometry:
+        case Qgis::ProcessingSourceType::VectorAnyGeometry:
           return QStringLiteral( "TypeVectorAnyGeometry" );
-        case QgsProcessing::TypeVectorPoint:
+        case Qgis::ProcessingSourceType::VectorPoint:
           return QStringLiteral( "TypeVectorPoint" );
-        case QgsProcessing::TypeVectorLine:
+        case Qgis::ProcessingSourceType::VectorLine:
           return QStringLiteral( "TypeVectorLine" );
-        case QgsProcessing::TypeVectorPolygon:
+        case Qgis::ProcessingSourceType::VectorPolygon:
           return QStringLiteral( "TypeVectorPolygon" );
-        case QgsProcessing::TypeRaster:
+        case Qgis::ProcessingSourceType::Raster:
           return QStringLiteral( "TypeRaster" );
-        case QgsProcessing::TypeFile:
+        case Qgis::ProcessingSourceType::File:
           return QStringLiteral( "TypeFile" );
-        case QgsProcessing::TypeVector:
+        case Qgis::ProcessingSourceType::Vector:
           return QStringLiteral( "TypeVector" );
-        case QgsProcessing::TypeMesh:
+        case Qgis::ProcessingSourceType::Mesh:
           return QStringLiteral( "TypeMesh" );
-        case QgsProcessing::TypePlugin:
+        case Qgis::ProcessingSourceType::Plugin:
           return QStringLiteral( "TypePlugin" );
-        case QgsProcessing::TypePointCloud:
+        case Qgis::ProcessingSourceType::PointCloud:
           return QStringLiteral( "TypePointCloud" );
-        case QgsProcessing::TypeAnnotation:
+        case Qgis::ProcessingSourceType::Annotation:
           return QStringLiteral( "TypeAnnotation" );
-        case QgsProcessing::TypeVectorTile:
+        case Qgis::ProcessingSourceType::VectorTile:
           return QStringLiteral( "TypeVectorTile" );
       }
       return QString();

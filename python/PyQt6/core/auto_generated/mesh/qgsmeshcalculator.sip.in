@@ -32,7 +32,7 @@ Resulting dataset is always scalar
 %End
   public:
 
-    enum Result
+    enum Result /BaseType=IntEnum/
     {
       Success,
       Canceled,

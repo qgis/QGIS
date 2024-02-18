@@ -169,7 +169,7 @@ Abstract base class for storage of elevation profiles.
     {
       QString layerIdentifier;
       QgsGeometry geometry;
-      QMap<QString, QVariant> attributes;
+      QVariantMap attributes;
     };
 
     virtual ~QgsAbstractProfileResults();

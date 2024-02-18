@@ -30,7 +30,7 @@ Holds metadata about mesh driver
 
   public:
 
-    enum MeshDriverCapability
+    enum MeshDriverCapability /BaseType=IntEnum/
     {
       CanWriteFaceDatasets,
       CanWriteVertexDatasets,
@@ -143,7 +143,7 @@ library object.
 %End
   public:
 
-    enum ProviderMetadataCapability
+    enum ProviderMetadataCapability /BaseType=IntEnum/
     {
       PriorityForUri,
       LayerTypesForUri,
@@ -153,7 +153,7 @@ library object.
     typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
 
 
-    enum ProviderCapability
+    enum ProviderCapability /BaseType=IntEnum/
     {
       FileBasedUris,
       SaveLayerMetadata,
@@ -411,7 +411,7 @@ Class factory to return a pointer to a newly created :py:class:`QgsDataProvider`
 .. versionadded:: 3.10
 %End
 
-    static void setBoolParameter( QMap<QString, QVariant> &uri, const QString &parameter, const QVariant &value );
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
 %Docstring
 Sets the ``value`` into the ``uri`` ``parameter`` as a bool.
 eg. "yes" value will be saved as ``True``, 0 will be saved as ``False``
@@ -419,7 +419,7 @@ eg. "yes" value will be saved as ``True``, 0 will be saved as ``False``
 .. versionadded:: 3.14
 %End
 
-    static bool boolParameter( const QMap<QString, QVariant> &uri, const QString &parameter, bool defaultValue = false );
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
 %Docstring
 Returns the ``parameter`` value in the ``uri`` as a bool.
 eg. "yes" value will be returned as ``True``, 0 will be returned as ``False``
@@ -494,7 +494,7 @@ Returns pyramid resampling methods available for provider
 .. versionadded:: 3.10
 %End
 
-    virtual QMap<QString, QVariant> decodeUri( const QString &uri ) const;
+    virtual QVariantMap decodeUri( const QString &uri ) const;
 %Docstring
 Breaks a provider data source URI into its component paths (e.g. file path, layer name).
 
@@ -518,7 +518,7 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 .. versionadded:: 3.10
 %End
 
-    virtual QString encodeUri( const QMap<QString, QVariant> &parts ) const;
+    virtual QString encodeUri( const QVariantMap &parts ) const;
 %Docstring
 Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
 
@@ -739,7 +739,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 %End
 
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QMap<QString, QVariant> &configuration ) throw( QgsProviderConnectionException ) /Factory/;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call

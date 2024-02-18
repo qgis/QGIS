@@ -49,9 +49,9 @@ QString QgsMergeLinesAlgorithm::outputName() const
   return QObject::tr( "Merged" );
 }
 
-QgsProcessing::SourceType QgsMergeLinesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsMergeLinesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 Qgis::WkbType QgsMergeLinesAlgorithm::outputWkbType( Qgis::WkbType ) const
@@ -68,7 +68,7 @@ QString QgsMergeLinesAlgorithm::shortHelpString() const
 
 QList<int> QgsMergeLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
 QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const

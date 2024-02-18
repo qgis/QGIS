@@ -74,9 +74,9 @@ QString QgsTiledSceneDataItemProvider::dataProviderKey() const
   return QStringLiteral( "tiled-scene" );
 }
 
-int QgsTiledSceneDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsTiledSceneDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsTiledSceneDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

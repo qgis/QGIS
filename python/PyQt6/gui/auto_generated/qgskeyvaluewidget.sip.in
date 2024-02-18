@@ -13,7 +13,7 @@
 class QgsKeyValueWidget: QgsTableWidgetBase
 {
 %Docstring(signature="appended")
-Widget allowing to edit a QMap<QString, QVariant>, using a table.
+Widget allowing to edit a QVariantMap, using a table.
 
 .. versionadded:: 3.0
 %End
@@ -28,16 +28,16 @@ Widget allowing to edit a QMap<QString, QVariant>, using a table.
 Constructor.
 %End
 
-    void setMap( const QMap<QString, QVariant> &map );
+    void setMap( const QVariantMap &map );
 %Docstring
 Set the initial value of the widget.
 %End
 
-    QMap<QString, QVariant> map() const;
+    QVariantMap map() const;
 %Docstring
 Gets the edit value.
 
-:return: the QMap<QString, QVariant>
+:return: the QVariantMap
 %End
 
 };

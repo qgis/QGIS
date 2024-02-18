@@ -71,12 +71,12 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::outputName() const
 
 QList<int> QgsRectanglesOvalsDiamondsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPoint;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
 }
 
-QgsProcessing::SourceType QgsRectanglesOvalsDiamondsAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsRectanglesOvalsDiamondsAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 Qgis::WkbType QgsRectanglesOvalsDiamondsAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
@@ -115,13 +115,13 @@ void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
   heightParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( heightParam.release() );
 
-  auto rotationParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), QgsProcessingParameterNumber::Double, 0.0, true, -360.0, 360.0 );
+  auto rotationParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0, true, -360.0, 360.0 );
   rotationParam->setIsDynamic( true );
   rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Rotation" ), QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
   rotationParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( rotationParam.release() );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 36, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 36, false, 1 ) );
 }
 
 bool QgsRectanglesOvalsDiamondsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

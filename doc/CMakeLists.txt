@@ -78,6 +78,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
+      ${CMAKE_SOURCE_DIR}/src/core/pdf
       ${CMAKE_SOURCE_DIR}/src/core/plot
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
       ${CMAKE_SOURCE_DIR}/src/core/processing
@@ -97,6 +98,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/core/vector
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
+      ${CMAKE_SOURCE_DIR}/src/core/web
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/actions
       ${CMAKE_SOURCE_DIR}/src/gui/annotations

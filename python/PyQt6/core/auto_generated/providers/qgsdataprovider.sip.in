@@ -44,24 +44,11 @@ Abstract base class for spatial data provider implementations.
 %End
   public:
 
-
-    enum DataCapability
-    {
-      NoDataCapabilities,
-      File,
-      Dir,
-      Database,
-      Net
-    };
-    typedef QFlags<QgsDataProvider::DataCapability> DataCapabilities;
-
-
-    enum ProviderProperty
+    enum ProviderProperty /BaseType=IntEnum/
     {
       EvaluateDefaultValues,
       CustomData
     };
-
 
     struct ProviderOptions
     {
@@ -70,7 +57,7 @@ Abstract base class for spatial data provider implementations.
 
     };
 
-    enum ReadFlag
+    enum ReadFlag /BaseType=IntEnum/
     {
       FlagTrustDataSource,
       SkipFeatureCount,

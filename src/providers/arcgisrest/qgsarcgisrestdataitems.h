@@ -265,9 +265,7 @@ class QgsArcGisRestDataItemProvider : public QgsDataItemProvider
     QgsArcGisRestDataItemProvider();
 
     QString name() override;
-
-    int capabilities() const override;
-
+    Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

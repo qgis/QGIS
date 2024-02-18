@@ -59,7 +59,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
-    def test_definition_file(self):
+    def definition_file(self):
         return 'gdal_algorithm_vector_tests.yaml'
 
     def testOgr2Ogr(self):

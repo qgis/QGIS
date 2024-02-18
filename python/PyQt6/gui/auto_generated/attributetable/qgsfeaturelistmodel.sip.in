@@ -31,7 +31,7 @@ Constructor for FeatureInfo.
         bool isEdited;
     };
 
-    enum Role
+    enum Role /BaseType=IntEnum/
     {
       FeatureInfoRole,
       FeatureRole

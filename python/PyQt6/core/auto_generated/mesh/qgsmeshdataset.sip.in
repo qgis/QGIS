@@ -144,7 +144,7 @@ value by value (slower) with :py:func:`~QgsMeshDatasetValue.active` or :py:func:
 #include "qgsmeshdataset.h"
 %End
   public:
-    enum DataType
+    enum DataType /BaseType=IntEnum/
     {
       ActiveFlagInteger,
       ScalarDouble,
@@ -390,7 +390,7 @@ such as whether the data is vector or scalar, name
 %End
   public:
 
-    enum DataType
+    enum DataType /BaseType=IntEnum/
     {
       DataOnFaces,
       DataOnVertices,
@@ -627,7 +627,7 @@ Abstract class that represents a dataset group
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       None,
       Persistent,

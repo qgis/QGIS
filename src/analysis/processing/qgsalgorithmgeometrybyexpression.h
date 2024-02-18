@@ -51,7 +51,7 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
 
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

@@ -54,7 +54,7 @@ The optional ``endpoint`` argument can be used to specify a non-default endpoint
 Returns the URL generated for geocoding the specified ``address``.
 %End
 
-    QgsGeocoderResult jsonToResult( const QMap<QString, QVariant> &json ) const;
+    QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 %Docstring
 Converts a JSON result returned from the Nominatim service to a geocoder result object.
 %End

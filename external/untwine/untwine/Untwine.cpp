@@ -14,6 +14,8 @@
 #include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
 
+#include <regex>
+
 #include "Common.hpp"
 #include "Config.hpp"
 #include "ProgressWriter.hpp"
@@ -26,13 +28,11 @@ namespace untwine
 
 void addArgs(pdal::ProgramArgs& programArgs, Options& options, pdal::Arg * &tempArg)
 {
-    programArgs.add("output_dir,o", "Output directory/filename for single-file output",
-        options.outputName).setPositional();
+    programArgs.add("output_dir,o", "Output filename", options.outputName).setPositional();
+    programArgs.addSynonym("output_dir", "output_file");
     programArgs.add("files,i", "Input files/directory", options.inputFiles).setPositional();
-    programArgs.add("single_file,s", "Create a single output file", options.singleFile);
+    programArgs.add("single_file,s", "Deprecated and ingored.", options.dummy);
     tempArg = &(programArgs.add("temp_dir", "Temp directory", options.tempDir));
-    programArgs.add("preserve_temp_dir", "Remove files from the temp directory",
-        options.preserveTempDir);
     programArgs.add("cube", "Make a cube, rather than a rectangular solid", options.doCube, true);
     programArgs.add("level", "Set an initial tree level, rather than guess based on data",
         options.level, -1);
@@ -80,18 +80,10 @@ bool handleOptions(pdal::StringList& arglist, Options& options)
 
         if (!tempArg->set())
         {
-            if (options.singleFile)
-                options.tempDir = options.outputName + "_tmp";
-            else
-            {
-                throw FatalError("This version of Untwine does not support EPT output.");
-                //options.tempDir = options.outputName + "/temp";
-            }
+            options.tempDir = options.outputName + "_tmp";
         }
-        if (options.singleFile)
-            options.stats = true;
+        options.stats = true;
 
-        //
         if (options.progressFd == 1 && options.progressDebug)
         {
             std::cerr << "'--progress_fd' set to 1. Disabling '--progressDebug'.\n";
@@ -105,30 +97,30 @@ bool handleOptions(pdal::StringList& arglist, Options& options)
     return true;
 }
 
-void createDirs(const Options& options)
+bool createDirs(const Options& options)
 {
-    if (!options.singleFile)
-    {
-        if (!pdal::FileUtils::createDirectory(options.outputName))
-            throw FatalError("Couldn't create output directory: " + options.outputName + "'.");
-        pdal::FileUtils::deleteFile(options.outputName + "/ept.json");
-        pdal::FileUtils::deleteDirectory(options.outputName + "/ept-data");
-        pdal::FileUtils::deleteDirectory(options.outputName + "/ept-hierarchy");
-        pdal::FileUtils::createDirectory(options.outputName + "/ept-data");
-        pdal::FileUtils::createDirectory(options.outputName + "/ept-hierarchy");
-    }
-
     bool tempExists = pdal::FileUtils::fileExists(options.tempDir);
     if (tempExists && !pdal::FileUtils::isDirectory(options.tempDir))
         throw FatalError("Can't use temp directory - exists as a regular or special file.");
-    if (!options.preserveTempDir)
-        pdal::FileUtils::deleteDirectory(options.tempDir);
     if (!tempExists && !pdal::FileUtils::createDirectory(options.tempDir))
         throw FatalError("Couldn't create temp directory: '" + options.tempDir + "'.");
+    return tempExists;
+}
+
+void cleanup(const std::string& dir, bool rmdir)
+{
+    std::regex re("[0-9]+-[0-9]+-[0-9]+-[0-9]+.bin");
+    std::smatch sm;
+
+    const std::vector<std::string>& files = directoryList(dir);
+    for (const std::string& f : files)
+        if (std::regex_match(f, sm, re))
+            pdal::FileUtils::deleteFile(dir + "/" + f);
+    if (rmdir)
+        pdal::FileUtils::deleteDirectory(dir);
 }
 
 } // namespace untwine
-
 
 #ifdef _WIN32
 int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] )
@@ -149,13 +141,15 @@ int main(int argc, char *argv[])
     BaseInfo common;
     Options& options = common.opts;
     ProgressWriter progress;
+    bool tempDirExists = false;
+    int status = 0;
 
     try
     {
         if (!handleOptions(arglist, options))
             return 0;
         progress.init(options.progressFd, options.progressDebug);
-        createDirs(options);
+        tempDirExists = createDirs(options);
 
         epf::Epf preflight(common);
         preflight.run(progress);
@@ -166,30 +160,31 @@ int main(int argc, char *argv[])
     catch (const char *s)
     {
         progress.writeErrorMessage(std::string("Error: ") + s + "\n");
-        return -1;
+        status = -1;
     }
     catch (const pdal::pdal_error& err)
     {
         progress.writeErrorMessage(err.what());
-        return -1;
+        status = -1;
     }
     catch (const untwine::FatalError& err)
     {
-        std::cerr << "FATAL ERROR: " << err.what() << "!\n";
         progress.writeErrorMessage(err.what());
-        return -1;
+        status = -1;
     }
     catch (const std::exception& ex)
     {
         progress.writeErrorMessage(ex.what());
-        return -1;
+        status = -1;
     }
     catch (...)
     {
         progress.writeErrorMessage("Unknown/unexpected exception.");
-        return -1;
+        status = -1;
     }
 
-    return 0;
+    cleanup(common.opts.tempDir, !tempDirExists);
+
+    return status;
 }
 

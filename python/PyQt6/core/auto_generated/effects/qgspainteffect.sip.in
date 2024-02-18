@@ -78,7 +78,7 @@ and render the result to the render context's paint device.
 %End
   public:
 
-    enum DrawMode
+    enum DrawMode /BaseType=IntEnum/
     {
       Modifier,
       Render,
@@ -107,7 +107,7 @@ Duplicates an effect by creating a deep copy of the effect
 :return: clone of paint effect
 %End
 
-    virtual QMap<QString, QVariant> properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 %Docstring
 Returns the properties describing the paint effect encoded in a
 string format.
@@ -119,7 +119,7 @@ string format.
 .. seealso:: :py:func:`saveProperties`
 %End
 
-    virtual void readProperties( const QMap<QString, QVariant> &props ) = 0;
+    virtual void readProperties( const QVariantMap &props ) = 0;
 %Docstring
 Reads a string map of an effect's properties and restores the effect
 to the state described by the properties map.
@@ -342,7 +342,7 @@ If no alterations are performed then the original picture will be rendered as a 
 Constructor for QgsDrawSourceEffect
 %End
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new :py:class:`QgsDrawSource` effect from a properties string map.
 
@@ -354,9 +354,9 @@ Creates a new :py:class:`QgsDrawSource` effect from a properties string map.
     virtual QString type() const;
     virtual QgsDrawSourceEffect *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
-    virtual void readProperties( const QMap<QString, QVariant> &props );
+    virtual void readProperties( const QVariantMap &props );
 
 
     void setOpacity( const double opacity );

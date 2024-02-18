@@ -65,7 +65,7 @@ QgsDensifyGeometriesByIntervalAlgorithm *QgsDensifyGeometriesByIntervalAlgorithm
 
 QList<int> QgsDensifyGeometriesByIntervalAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 void QgsDensifyGeometriesByIntervalAlgorithm::initParameters( const QVariantMap &configuration )

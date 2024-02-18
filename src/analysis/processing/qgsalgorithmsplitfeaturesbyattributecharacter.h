@@ -45,7 +45,7 @@ class QgsSplitFeaturesByAttributeCharacterAlgorithm : public QgsProcessingFeatur
     QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsSplitFeaturesByAttributeCharacterAlgorithm *createInstance() const override SIP_FACTORY;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
 

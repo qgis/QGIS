@@ -55,7 +55,7 @@ void QgsRasterSurfaceVolumeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ),
                 QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "LEVEL" ),
-                QObject::tr( "Base level" ), QgsProcessingParameterNumber::Double, 0 ) );
+                QObject::tr( "Base level" ), Qgis::ProcessingNumberParameterType::Double, 0 ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
                 QObject::tr( "Method" ), QStringList()
                 << QObject::tr( "Count Only Above Base Level" )
@@ -66,7 +66,7 @@ void QgsRasterSurfaceVolumeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ),
                 QObject::tr( "Surface volume report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_TABLE" ),
-                QObject::tr( "Surface volume table" ), QgsProcessing::TypeVector, QVariant(), true, false ) );
+                QObject::tr( "Surface volume table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "VOLUME" ), QObject::tr( "Volume" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "PIXEL_COUNT" ), QObject::tr( "Pixel count" ) ) );

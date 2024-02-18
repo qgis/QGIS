@@ -63,14 +63,14 @@ void QgsUnionAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ), QList< int >(), QVariant(), true ) );
 
   std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
-  prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  prefix->setFlags( prefix->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( prefix.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Union" ) ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
-      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
-  gridSize->setFlags( gridSize->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+      QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }
 

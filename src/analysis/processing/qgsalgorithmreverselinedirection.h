@@ -42,13 +42,13 @@ class QgsReverseLineDirectionAlgorithm : public QgsProcessingFeatureBasedAlgorit
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsReverseLineDirectionAlgorithm  *createInstance() const override SIP_FACTORY;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QList<int> inputLayerTypes() const override;
 
   protected:
 
     QString outputName() const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };

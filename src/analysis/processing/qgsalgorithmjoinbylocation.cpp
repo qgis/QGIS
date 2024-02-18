@@ -29,7 +29,7 @@
 void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Join to features in" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "Join to features in" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
   QVariantMap predicateMetadata;
@@ -40,10 +40,10 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
   predicateParam->setMetadata( predicateMetadata );
   addParameter( predicateParam.release() );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "JOIN" ),
-                QObject::tr( "By comparing to" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "By comparing to" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "JOIN_FIELDS" ),
                 QObject::tr( "Fields to add (leave empty to use all fields)" ),
-                QVariant(), QStringLiteral( "JOIN" ), QgsProcessingParameterField::Any, true, true ) );
+                QVariant(), QStringLiteral( "JOIN" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   QStringList joinMethods;
   joinMethods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
@@ -57,8 +57,8 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
                 false ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ),
                 QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );
 }
 

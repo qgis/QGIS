@@ -74,9 +74,9 @@ QgsExtractSpecificVerticesAlgorithm *QgsExtractSpecificVerticesAlgorithm::create
   return new QgsExtractSpecificVerticesAlgorithm();
 }
 
-QgsProcessing::SourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPoint;
+  return Qgis::ProcessingSourceType::VectorPoint;
 }
 
 QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -111,9 +111,9 @@ Qgis::WkbType QgsExtractSpecificVerticesAlgorithm::outputWkbType( Qgis::WkbType 
   return outputWkbType;
 }
 
-QgsProcessingFeatureSource::Flag QgsExtractSpecificVerticesAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsExtractSpecificVerticesAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsExtractSpecificVerticesAlgorithm::sinkFlags() const

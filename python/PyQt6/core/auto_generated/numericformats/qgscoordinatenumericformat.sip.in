@@ -47,9 +47,9 @@ Default constructor
 
     virtual QgsGeographicCoordinateNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QMap<QString, QVariant> configuration( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
     AngleFormat angleFormat() const;
@@ -110,7 +110,7 @@ Sets whether directional suffixes (e.g. "N") should be included.
 .. seealso:: :py:func:`showDirectionalSuffix`
 %End
 
-    virtual void setConfiguration( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context );
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 
 
 };

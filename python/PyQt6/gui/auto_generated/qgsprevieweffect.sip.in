@@ -21,7 +21,7 @@ color blindness modes.
 #include "qgsprevieweffect.h"
 %End
   public:
-    enum PreviewMode
+    enum PreviewMode /BaseType=IntEnum/
     {
       PreviewGrayscale,
       PreviewMono,

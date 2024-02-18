@@ -50,11 +50,11 @@ QString QgsExportToPostgresqlAlgorithm::groupId() const
 
 void QgsExportToPostgresqlAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Layer to export" ), QList<int>() << QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Layer to export" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterProviderConnection( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QStringLiteral( "postgres" ) ) );
   addParameter( new QgsProcessingParameterDatabaseSchema( QStringLiteral( "SCHEMA" ), QObject::tr( "Schema (schema name)" ), QStringLiteral( "DATABASE" ), QStringLiteral( "public" ), true ) );
   addParameter( new QgsProcessingParameterDatabaseTable( QStringLiteral( "TABLENAME" ), QObject::tr( "Table to export to (leave blank to use layer name)" ), QStringLiteral( "DATABASE" ), QStringLiteral( "SCHEMA" ), QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "PRIMARY_KEY" ), QObject::tr( "Primary key field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "PRIMARY_KEY" ), QObject::tr( "Primary key field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "GEOMETRY_COLUMN" ), QObject::tr( "Geometry column" ), QStringLiteral( "geom" ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QStringLiteral( "UTF-8" ), false, true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite" ), true ) );

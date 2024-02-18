@@ -20,20 +20,20 @@ A symbol layer class for displaying displacement arrows based on point layer att
 #include "qgsvectorfieldsymbollayer.h"
 %End
   public:
-    enum VectorFieldType
+    enum VectorFieldType /BaseType=IntEnum/
     {
       Cartesian,
       Polar,
       Height
     };
 
-    enum AngleOrientation
+    enum AngleOrientation /BaseType=IntEnum/
     {
       ClockwiseFromNorth,
       CounterclockwiseFromEast
     };
 
-    enum AngleUnits
+    enum AngleUnits /BaseType=IntEnum/
     {
       Degrees,
       Radians
@@ -42,7 +42,7 @@ A symbol layer class for displaying displacement arrows based on point layer att
     QgsVectorFieldSymbolLayer();
     ~QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() );
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates the symbol layer
 %End
@@ -69,12 +69,12 @@ Creates the symbol layer
 
     virtual QgsVectorFieldSymbolLayer *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual bool usesMapUnits() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );

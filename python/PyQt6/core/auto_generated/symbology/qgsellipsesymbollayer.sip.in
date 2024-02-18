@@ -20,7 +20,7 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
 %End
   public:
 
-    enum Shape
+    enum Shape /BaseType=IntEnum/
     {
       Circle,
       Rectangle,
@@ -57,7 +57,7 @@ Returns ``True`` if a ``shape`` has a fill.
     QgsEllipseSymbolLayer();
     ~QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates the symbol layer
 %End
@@ -73,12 +73,12 @@ Creates the symbol layer
 
     virtual QgsEllipseSymbolLayer *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;

@@ -52,7 +52,7 @@ class TestQgisAlgorithms2(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
-    def test_definition_file(self):
+    def definition_file(self):
         return 'qgis_algorithm_tests2.yaml'
 
 

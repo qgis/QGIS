@@ -61,21 +61,21 @@ QgsSaveFeaturesAlgorithm *QgsSaveFeaturesAlgorithm::createInstance() const
 
 void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector features" ), QList<int>() << QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector features" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Saved features" ), QgsVectorFileWriter::fileFilterString(), QVariant(), false ) );
 
   std::unique_ptr< QgsProcessingParameterString > param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
-  param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
   param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
-  param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
   param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
-  param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
 
   std::unique_ptr< QgsProcessingParameterEnum > paramEnum = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "ACTION_ON_EXISTING_FILE" ), QObject::tr( "Action to take on pre-existing file" ), QStringList() << QObject::tr( "Create or overwrite file" ) << QObject::tr( "Create or overwrite layer" ) << QObject::tr( "Append features to existing layer, but do not create new fields" ) << QObject::tr( "Append features to existing layer, and create new fields if needed" ), false, 0 );
-  paramEnum->setFlags( paramEnum->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  paramEnum->setFlags( paramEnum->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramEnum.release() );
 
   addOutput( new QgsProcessingOutputString( QStringLiteral( "FILE_PATH" ), QObject::tr( "File name and path" ) ) );
@@ -140,7 +140,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   long long i = 0;
 
-  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
   {

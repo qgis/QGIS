@@ -57,12 +57,12 @@ QString QgsExtractZMValuesAlgorithmBase::outputName() const
 
 QList<int> QgsExtractZMValuesAlgorithmBase::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorAnyGeometry;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry );
 }
 
-QgsProcessingFeatureSource::Flag QgsExtractZMValuesAlgorithmBase::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsExtractZMValuesAlgorithmBase::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 void QgsExtractZMValuesAlgorithmBase::initParameters( const QVariantMap & )

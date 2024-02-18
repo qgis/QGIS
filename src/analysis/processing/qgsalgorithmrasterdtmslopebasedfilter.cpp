@@ -72,12 +72,12 @@ void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > radiusParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "RADIUS" ),
-      QObject::tr( "Kernel radius (pixels)" ), QgsProcessingParameterNumber::Integer, 5, false, 1, 1000 );
+      QObject::tr( "Kernel radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1, 1000 );
   radiusParam->setHelp( QObject::tr( "The radius of the filter kernel (in pixels). Must be large enough to reach ground cells next to non-ground objects." ) );
   addParameter( radiusParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > terrainSlopeParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TERRAIN_SLOPE" ),
-      QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), QgsProcessingParameterNumber::Double, 30, false, 0, 1000 );
+      QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
   terrainSlopeParam->setHelp( QObject::tr( "The approximate terrain slope in %. The terrain slope must be adjusted to account for the ratio of height units vs raster pixel dimensions. Used to relax the filter criterium in steeper terrain." ) );
   addParameter( terrainSlopeParam.release() );
 
@@ -87,7 +87,7 @@ void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( filterModificationParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > stDevParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "STANDARD_DEVIATION" ),
-      QObject::tr( "Standard deviation" ), QgsProcessingParameterNumber::Double, 0.1, false, 0, 1000 );
+      QObject::tr( "Standard deviation" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0, 1000 );
   stDevParam->setHelp( QObject::tr( "The standard deviation used to calculate a 5% confidence interval applied to the height threshold." ) );
   addParameter( stDevParam.release() );
 

@@ -25,9 +25,9 @@ QString QgsSaveLogToFileAlgorithm::name() const
   return QStringLiteral( "savelog" );
 }
 
-QgsProcessingAlgorithm::Flags QgsSaveLogToFileAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsSaveLogToFileAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsSaveLogToFileAlgorithm::displayName() const

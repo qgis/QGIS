@@ -25,15 +25,12 @@
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
-#include "qgsdataprovider.h"
 #include "qgsmimedatautils.h"
 #include "qgslogger.h"
-#include "qgsproviderregistry.h"
 #include "qgsbrowsermodel.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsdirectoryitem.h"
-#include "qgsprojectitem.h"
 #include "qgslayeritem.h"
 #include "qgsfavoritesitem.h"
 #include "qgslayermetadata.h"
@@ -824,8 +821,8 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
 
 QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
 {
-  int capabilities = pr->capabilities();
-  if ( capabilities == QgsDataProvider::NoDataCapabilities )
+  const Qgis::DataItemProviderCapabilities capabilities = pr->capabilities();
+  if ( capabilities == Qgis::DataItemProviderCapabilities( Qgis::DataItemProviderCapability::NoCapabilities ) )
   {
     QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
     return nullptr;

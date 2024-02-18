@@ -59,7 +59,7 @@ of the symbol is transferred to the renderer.
     virtual QgsSingleSymbolRenderer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;

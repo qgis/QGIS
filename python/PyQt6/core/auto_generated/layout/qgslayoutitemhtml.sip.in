@@ -22,7 +22,7 @@ A layout multiframe subclass for HTML content.
 %End
   public:
 
-    enum ContentMode
+    enum ContentMode /BaseType=IntEnum/
     {
       Url,
       ManualHtml

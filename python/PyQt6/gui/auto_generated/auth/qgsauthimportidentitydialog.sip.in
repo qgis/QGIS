@@ -20,18 +20,18 @@ Widget for importing an identity certificate/key bundle into the authentication 
 #include "qgsauthimportidentitydialog.h"
 %End
   public:
-    enum IdentityType
+    enum IdentityType /BaseType=IntEnum/
     {
       CertIdentity,
     };
 
-    enum BundleTypes
+    enum BundleTypes /BaseType=IntEnum/
     {
       PkiPaths,
       PkiPkcs12,
     };
 
-    enum Validity
+    enum Validity /BaseType=IntEnum/
     {
       Valid,
       Invalid,

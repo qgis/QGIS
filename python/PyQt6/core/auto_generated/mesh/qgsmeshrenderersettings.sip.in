@@ -97,7 +97,7 @@ Represents a mesh renderer settings for scalar datasets
 %End
   public:
 
-    enum DataResamplingMethod
+    enum DataResamplingMethod /BaseType=IntEnum/
     {
 
       NoResampling,
@@ -209,7 +209,7 @@ Represents a mesh renderer settings for vector datasets displayed with arrows
 %End
   public:
 
-    enum ArrowScalingMethod
+    enum ArrowScalingMethod /BaseType=IntEnum/
     {
 
       MinMax,
@@ -330,7 +330,7 @@ Represents a streamline renderer settings for vector datasets displayed by strea
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-    enum SeedingStartPointsMethod
+    enum SeedingStartPointsMethod /BaseType=IntEnum/
     {
 
       MeshGridded,
@@ -437,7 +437,7 @@ Represents a renderer settings for vector datasets
 %End
   public:
 
-    enum Symbology
+    enum Symbology /BaseType=IntEnum/
     {
       //! Displaying vector dataset with arrows
       Arrows,

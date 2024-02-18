@@ -28,7 +28,7 @@ of feature and attribute information from a spatial datasource.
   public:
 
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       NoCapabilities,
       AddFeatures,
@@ -545,7 +545,7 @@ Clear recorded errors
 Gets recorded errors
 %End
 
-    virtual QgsFeatureRenderer *createRenderer( const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() ) const /Factory/;
+    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
 Creates a new vector layer feature renderer, using provider backend specific information.
 
@@ -562,7 +562,7 @@ providers will return ``None``.
 .. versionadded:: 3.2
 %End
 
-    virtual QgsAbstractVectorLayerLabeling *createLabeling( const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() ) const /Factory/;
+    virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
 Creates labeling settings, using provider backend specific information.
 
@@ -610,7 +610,7 @@ Discover the available relations with the given layers.
 .. versionadded:: 3.0
 %End
 
-    virtual QMap<QString, QVariant> metadata() const;
+    virtual QVariantMap metadata() const;
 %Docstring
 Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
 

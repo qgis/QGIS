@@ -70,13 +70,13 @@ relevant symbology elements to render them.
       BlendMode,
     };
 
-    enum DrawOrder
+    enum DrawOrder /BaseType=IntEnum/
     {
       OrderBelowAllLabels,
       OrderBelowIndividualLabels,
     };
 
-    enum AnchorPoint
+    enum AnchorPoint /BaseType=IntEnum/
     {
       PoleOfInaccessibility,
       PointOnExterior,
@@ -84,7 +84,7 @@ relevant symbology elements to render them.
       Centroid,
     };
 
-    enum LabelAnchorPoint
+    enum LabelAnchorPoint /BaseType=IntEnum/
     {
       LabelPointOnExterior,
       LabelCentroid,
@@ -116,7 +116,7 @@ Duplicates a callout by creating a deep copy of the callout.
 Caller takes ownership of the returned object.
 %End
 
-    virtual QMap<QString, QVariant> properties( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the properties describing the callout encoded in a
 string format.
@@ -129,7 +129,7 @@ in their returned value.
 .. seealso:: :py:func:`saveProperties`
 %End
 
-    virtual void readProperties( const QMap<QString, QVariant> &props, const QgsReadWriteContext &context );
+    virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
 %Docstring
 Reads a string map of an callout's properties and restores the callout
 to the state described by the properties map.
@@ -490,7 +490,7 @@ A simple direct line callout style.
     ~QgsSimpleLineCallout();
 
 
-    static QgsCallout *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
 Creates a new QgsSimpleLineCallout, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -501,9 +501,9 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual QgsSimpleLineCallout *clone() const;
 
-    virtual QMap<QString, QVariant> properties( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 
-    virtual void readProperties( const QMap<QString, QVariant> &props, const QgsReadWriteContext &context );
+    virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
 
     virtual void startRender( QgsRenderContext &context );
 
@@ -753,7 +753,7 @@ Draws straight (right angled) lines as callouts.
     QgsManhattanLineCallout();
 
 
-    static QgsCallout *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
 Creates a new QgsManhattanLineCallout, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -788,7 +788,7 @@ Draws curved lines as callouts.
 %End
   public:
 
-    enum Orientation
+    enum Orientation /BaseType=IntEnum/
     {
       Automatic,
       Clockwise,
@@ -798,7 +798,7 @@ Draws curved lines as callouts.
     QgsCurvedLineCallout();
 
 
-    static QgsCallout *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
 Creates a new QgsCurvedLineCallout, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -809,7 +809,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual QgsCurvedLineCallout *clone() const;
 
-    virtual QMap<QString, QVariant> properties( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 
 
     double curvature() const;
@@ -871,7 +871,7 @@ A cartoon talking bubble callout style.
     ~QgsBalloonCallout();
 
 
-    static QgsCallout *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
 Creates a new QgsBalloonCallout, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -882,9 +882,9 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual QgsBalloonCallout *clone() const;
 
-    virtual QMap<QString, QVariant> properties( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 
-    virtual void readProperties( const QMap<QString, QVariant> &props, const QgsReadWriteContext &context );
+    virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
 
     virtual void startRender( QgsRenderContext &context );
 

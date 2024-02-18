@@ -29,7 +29,10 @@ QgsVectorFileWriter.CreateOrOverwriteFile = QgsVectorFileWriter.ActionOnExisting
 QgsVectorFileWriter.CreateOrOverwriteLayer = QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteLayer
 QgsVectorFileWriter.AppendToLayerNoNewFields = QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerNoNewFields
 QgsVectorFileWriter.AppendToLayerAddFields = QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerAddFields
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsVectorFileWriter.EditionCapability.__bool__ = lambda flag: bool(_force_int(flag))

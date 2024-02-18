@@ -112,7 +112,7 @@ A line edit widget with toolbutton for setting a raster image path.
 %End
   public:
 
-    enum Format
+    enum Format /BaseType=IntEnum/
     {
       Svg,
       Image,

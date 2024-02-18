@@ -243,7 +243,7 @@ Returns the feature's attributes as a map of field name to value.
     }
     else
     {
-      QMap<QString, QVariant> *v = new QMap<QString, QVariant>( sipCpp->attributeMap() );
+      QVariantMap *v = new QVariantMap( sipCpp->attributeMap() );
       const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
       sipRes = sipConvertFromNewType( v, qvariantmap_type, Py_None );
     }

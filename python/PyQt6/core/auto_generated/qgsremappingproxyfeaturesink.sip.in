@@ -122,15 +122,15 @@ Sets the ``fields`` for the destination sink.
 
     QVariant toVariant() const;
 %Docstring
-Saves this remapping definition to a QMap<QString, QVariant>, wrapped in a QVariant.
+Saves this remapping definition to a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
 %End
 
-    bool loadVariant( const QMap<QString, QVariant> &map );
+    bool loadVariant( const QVariantMap &map );
 %Docstring
-Loads this remapping definition from a QMap<QString, QVariant>, wrapped in a QVariant.
+Loads this remapping definition from a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`

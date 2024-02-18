@@ -122,9 +122,9 @@ QString QgsQlrDataItemProvider::name()
   return QStringLiteral( "QLR" );
 }
 
-int QgsQlrDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsQlrDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataItemProviderCapability::Files;
 }
 
 QgsDataItem *QgsQlrDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -158,9 +158,9 @@ QString QgsQptDataItemProvider::name()
   return QStringLiteral( "QPT" );
 }
 
-int QgsQptDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsQptDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataItemProviderCapability::Files;
 }
 
 QgsDataItem *QgsQptDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -304,9 +304,9 @@ QString QgsPyDataItemProvider::name()
   return QStringLiteral( "py" );
 }
 
-int QgsPyDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsPyDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataItemProviderCapability::Files;
 }
 
 QgsDataItem *QgsPyDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -433,9 +433,9 @@ QString QgsStyleXmlDataItemProvider::name()
   return QStringLiteral( "style_xml" );
 }
 
-int QgsStyleXmlDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsStyleXmlDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataItemProviderCapability::Files;
 }
 
 QgsDataItem *QgsStyleXmlDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -585,9 +585,9 @@ QString QgsProjectDataItemProvider::name()
   return QStringLiteral( "project_item" );
 }
 
-int QgsProjectDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsProjectDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataItemProviderCapability::Files;
 }
 
 QgsDataItem *QgsProjectDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -609,9 +609,9 @@ QString QgsBookmarksDataItemProvider::name()
   return QStringLiteral( "bookmarks_item" );
 }
 
-int QgsBookmarksDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsBookmarksDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Database;
+  return Qgis::DataItemProviderCapability::Databases;
 }
 
 QgsDataItem *QgsBookmarksDataItemProvider::createDataItem( const QString &, QgsDataItem *parentItem )
@@ -1302,9 +1302,9 @@ QString QgsHtmlDataItemProvider::name()
   return QStringLiteral( "html" );
 }
 
-int QgsHtmlDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsHtmlDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataItemProviderCapability::Files;
 }
 
 QgsDataItem *QgsHtmlDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

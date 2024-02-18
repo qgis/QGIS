@@ -47,7 +47,7 @@ QString QgsExtractByAttributeAlgorithm::groupId() const
 void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVector ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Selection attribute" ), QVariant(), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OPERATOR" ), QObject::tr( "Operator" ), QStringList()
                 << QObject::tr( "=" )
@@ -65,7 +65,7 @@ void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (attribute)" ) ) );
   QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Extracted (non-matching)" ),
-      QgsProcessing::TypeVectorAnyGeometry, QVariant(), true );
+      Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
   failOutput->setCreateByDefault( false );
   addParameter( failOutput );
 }
@@ -190,7 +190,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     req.setFilterExpression( expr );
     req.setExpressionContext( expressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( req, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+    QgsFeatureIterator it = source->getFeatures( req, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {
@@ -212,7 +212,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     expressionContext.setFields( source->fields() );
     expression.prepare( &expressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+    QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {

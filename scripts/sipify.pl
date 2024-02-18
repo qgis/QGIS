@@ -1010,7 +1010,7 @@ sub replace_macros {
     if ( $is_qt6 )
     {
         # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
-        $line =~ s/(\s|QList<\s*|QVector<\s*)QVariantMap/$1QMap<QString, QVariant>/g;
+        $line =~ s/(QList<\s*|QVector<\s*)QVariantMap/$1QMap<QString, QVariant>/g;
     }
     return $line;
 }
@@ -1605,7 +1605,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if (defined $py_enum_type and $py_enum_type eq "IntFlag") {
           push @ENUM_INTFLAG_TYPES, $enum_cpp_name;
         }
-        if ( defined $enum_type and $enum_type eq "int" ) {
+        if (defined $enum_type and ($enum_type eq "int" or $enum_type eq "quint32")) {
           push @ENUM_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
           if ( $is_qt6 eq 1 ) {
             if (defined $py_enum_type) {
@@ -1614,10 +1614,14 @@ while ($LINE_IDX < $LINE_COUNT){
               $enum_decl .= " /BaseType=IntEnum/"
             }
           }
-        }
-        elsif (defined $isclass)
-        {
+        } elsif (defined $enum_type) {
+          exit_with_error("Unhandled enum type $enum_type for $enum_cpp_name");
+        } elsif (defined $isclass) {
           push @ENUM_CLASS_NON_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
+        } elsif ($is_qt6 eq 1) {
+          # non class enum in qt6 -- we always want these to be IntEnums
+          # for compatibility with qt5 code
+          $enum_decl .= " /BaseType=IntEnum/"
         }
 
         write_output("ENU1", "$enum_decl");
@@ -1669,6 +1673,9 @@ while ($LINE_IDX < $LINE_COUNT){
                     $comment =~ s/::/./g;
                     $comment =~ s/\"/\\"/g;
                     $comment =~ s/\\since .*?([\d\.]+)/\\n.. versionadded:: $1\\n/i;
+                    $comment =~ s/\\deprecated (.*)/\\n.. deprecated:: $1\\n/i;
+                    $comment =~ s/^\\n+//;
+                    $comment =~ s/\\n+$//;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ( defined $enum_value and ($enum_value =~ m/.*\<\<.*/ or $enum_value =~ m/.*0x0.*/)) {
                        if (none { $_ eq "${ACTUAL_CLASS}::$enum_qualname" } @ENUM_INTFLAG_TYPES) {
@@ -1829,7 +1836,7 @@ while ($LINE_IDX < $LINE_COUNT){
           if ( $is_qt6 ) {
             dbg_info("monkey patching operators for non class enum");
             if ($HAS_PUSHED_FORCE_INT eq 0) {
-              push @OUTPUT_PYTHON, "def _force_int(v): return v if isinstance(v, int) else int(v.value)\n\n\n";
+              push @OUTPUT_PYTHON, "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n";
               $HAS_PUSHED_FORCE_INT = 1;
             }
             push @OUTPUT_PYTHON, "$py_flag.__bool__ = lambda flag: bool(_force_int(flag))\n";

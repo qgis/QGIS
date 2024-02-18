@@ -27,7 +27,7 @@ user name, password, schema, password, and SQL where clause.
 
   public:
 
-    enum SslMode
+    enum SslMode /BaseType=IntEnum/
     {
       SslPrefer,
       SslDisable,

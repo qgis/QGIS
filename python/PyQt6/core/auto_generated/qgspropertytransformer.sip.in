@@ -122,7 +122,7 @@ Writes the current state of the transform into an XML element
 
     QVariant toVariant() const;
 %Docstring
-Saves this curve transformer to a QMap<QString, QVariant>, wrapped in a QVariant.
+Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
@@ -130,7 +130,7 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
     bool loadVariant( const QVariant &transformer );
 %Docstring
-Load this curve transformer from a QMap<QString, QVariant>, wrapped in a QVariant.
+Load this curve transformer from a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
@@ -163,7 +163,7 @@ Possible uses include transformers which map a value into a scaled size or color
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       GenericNumericTransformer,
       SizeScaleTransformer,
@@ -204,7 +204,7 @@ Returns a clone of the transformer.
 
     virtual bool loadVariant( const QVariant &transformer );
 %Docstring
-Loads this transformer from a QMap<QString, QVariant>, wrapped in a QVariant.
+Loads this transformer from a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.readVariant to read it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
@@ -212,7 +212,7 @@ You can use :py:class:`QgsXmlUtils`.readVariant to read it from an XML document.
 
     virtual QVariant toVariant() const;
 %Docstring
-Saves this transformer to a QMap<QString, QVariant>, wrapped in a QVariant.
+Saves this transformer to a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
@@ -461,7 +461,7 @@ scaling methods.
 %End
   public:
 
-    enum ScaleType
+    enum ScaleType /BaseType=IntEnum/
     {
       Linear,
       Area,

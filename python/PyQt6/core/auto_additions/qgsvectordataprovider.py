@@ -25,7 +25,10 @@ QgsVectorDataProvider.CreateLabeling = QgsVectorDataProvider.Capability.CreateLa
 QgsVectorDataProvider.ReloadData = QgsVectorDataProvider.Capability.ReloadData
 QgsVectorDataProvider.FeatureSymbology = QgsVectorDataProvider.Capability.FeatureSymbology
 QgsVectorDataProvider.Capabilities = lambda flags=0: QgsVectorDataProvider.Capability(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsVectorDataProvider.Capability.__bool__ = lambda flag: bool(_force_int(flag))

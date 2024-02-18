@@ -84,7 +84,7 @@ Converts an ESRI REST field ``type`` to a QVariant type.
 Converts an ESRI REST geometry ``type`` to a WKB type.
 %End
 
-    static QgsAbstractGeometry *convertGeometry( const QMap<QString, QVariant> &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs /Out/ = 0 ) /Factory/;
+    static QgsAbstractGeometry *convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs /Out/ = 0 ) /Factory/;
 %Docstring
 Converts an ESRI REST ``geometry`` JSON definition to a :py:class:`QgsAbstractGeometry`.
 
@@ -99,19 +99,19 @@ Caller takes ownership of the returned object.
          - crs: will be set to the parsed geometry CRS
 %End
 
-    static QgsCoordinateReferenceSystem convertSpatialReference( const QMap<QString, QVariant> &spatialReferenceMap );
+    static QgsCoordinateReferenceSystem convertSpatialReference( const QVariantMap &spatialReferenceMap );
 %Docstring
 Converts a spatial reference JSON definition to a :py:class:`QgsCoordinateReferenceSystem` value.
 %End
 
-    static QgsSymbol *convertSymbol( const QMap<QString, QVariant> &definition ) /Factory/;
+    static QgsSymbol *convertSymbol( const QVariantMap &definition ) /Factory/;
 %Docstring
 Converts a symbol JSON ``definition`` to a :py:class:`QgsSymbol`.
 
 Caller takes ownership of the returned symbol.
 %End
 
-    static QgsFeatureRenderer *convertRenderer( const QMap<QString, QVariant> &rendererData ) /Factory/;
+    static QgsFeatureRenderer *convertRenderer( const QVariantMap &rendererData ) /Factory/;
 %Docstring
 Converts renderer JSON ``data`` to an equivalent :py:class:`QgsFeatureRenderer`.
 
@@ -150,7 +150,7 @@ Converts an ESRI fill ``style`` to a Qt brush style.
 Converts a date time ``value`` to a QDateTime.
 %End
 
-    static QMap<QString, QVariant> geometryToJson( const QgsGeometry &geometry, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
 Converts a ``geometry`` to an ArcGIS REST JSON representation.
 
@@ -159,7 +159,7 @@ Returns an empty map if the geometry cannot be converted.
 .. versionadded:: 3.28
 %End
 
-    static QMap<QString, QVariant> crsToJson( const QgsCoordinateReferenceSystem &crs );
+    static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Converts a ``crs`` to an ArcGIS REST JSON representation.
 
@@ -186,7 +186,7 @@ Returns a null rectangle if the value cannot be converted.
     typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;
 
 
-    static QMap<QString, QVariant> featureToJson( const QgsFeature &feature,
+    static QVariantMap featureToJson( const QgsFeature &feature,
                                       const QgsArcGisRestContext &context,
                                       const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
                                       QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
@@ -203,7 +203,7 @@ Converts a variant to a REST attribute value.
 .. versionadded:: 3.28
 %End
 
-    static QMap<QString, QVariant> fieldDefinitionToJson( const QgsField &field );
+    static QVariantMap fieldDefinitionToJson( const QgsField &field );
 %Docstring
 Converts a ``field``'s definition to an ArcGIS REST JSON representation.
 

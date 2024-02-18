@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsNativeAlgorithms: public QgsProcessingProvider
     QString helpId() const override;
     QString name() const override;
     bool supportsNonFileBasedOutput() const override;
-    Flags flags() const override;
+    Qgis::ProcessingProviderFlags flags() const override;
 
   protected:
 

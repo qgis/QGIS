@@ -82,7 +82,7 @@ void QgsSnapToGridAlgorithm::initParameters( const QVariantMap & )
   addParameter( vSpacing.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > zSpacing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ZSPACING" ),
-      QObject::tr( "Z Grid Spacing" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Z Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double,
       0, false, 0 );
   zSpacing->setIsDynamic( true );
   zSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ZSPACING" ), QObject::tr( "Z Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
@@ -90,7 +90,7 @@ void QgsSnapToGridAlgorithm::initParameters( const QVariantMap & )
   addParameter( zSpacing.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > mSpacing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MSPACING" ),
-      QObject::tr( "M Grid Spacing" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "M Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double,
       0, false, 0 );
   mSpacing->setIsDynamic( true );
   mSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MSPACING" ), QObject::tr( "M Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
@@ -154,9 +154,9 @@ QgsFeatureList QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature
   return QgsFeatureList() << f;
 }
 
-QgsProcessingFeatureSource::Flag QgsSnapToGridAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsSnapToGridAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 ///@endcond

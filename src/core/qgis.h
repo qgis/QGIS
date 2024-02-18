@@ -701,6 +701,33 @@ class CORE_EXPORT Qgis
     Q_FLAG( BrowserItemCapabilities )
 
     /**
+     * Capabilities for data item providers.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapability
+     *
+     * \since QGIS 3.36
+     */
+    enum class DataItemProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, DataCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoCapabilities SIP_MONKEYPATCH_COMPAT_NAME( NoDataCapabilities ) = 0, //!< No capabilities
+      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1, //!< Can provides items which corresponds to files
+      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1, //!< Can provides items which corresponds to directories
+      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2, //!< Can provides items which corresponds to databases
+      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3, //!< Network/internet source
+    };
+    Q_ENUM( DataItemProviderCapability )
+
+    /**
+     * Capabilities for data item providers.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapabilities
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( DataItemProviderCapabilities, DataItemProviderCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, DataCapabilities )
+    Q_FLAG( DataItemProviderCapabilities )
+
+    /**
      * Browser item layer types
      *
      * \since QGIS 3.20
@@ -2799,6 +2826,123 @@ class CORE_EXPORT Qgis
     Q_FLAG( HistoryProviderBackends )
 
     /**
+     * Processing data source types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessing::SourceType
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingSourceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessing, SourceType ) : int
+      {
+      MapLayer SIP_MONKEYPATCH_COMPAT_NAME( TypeMapLayer ) = -2, //!< Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
+      VectorAnyGeometry SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorAnyGeometry ) = -1, //!< Any vector layer with geometry
+      VectorPoint SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPoint ) = 0, //!< Vector point layers
+      VectorLine SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorLine ) = 1, //!< Vector line layers
+      VectorPolygon SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPolygon ) = 2, //!< Vector polygon layers
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( TypeRaster ) = 3, //!< Raster layers
+      File SIP_MONKEYPATCH_COMPAT_NAME( TypeFile ) = 4, //!< Files (i.e. non map layer sources, such as text files)
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( TypeVector ) = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( TypeMesh ) = 6, //!< Mesh layers \since QGIS 3.6
+      Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7, //!< Plugin layers \since QGIS 3.22
+      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8, //!< Point cloud layers \since QGIS 3.22
+      Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9, //!< Annotation layers \since QGIS 3.22
+      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10 //!< Vector tile layers \since QGIS 3.32
+    };
+    Q_ENUM( ProcessingSourceType )
+
+
+    /**
+     * Flags indicating how and when an processing provider operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingProvider::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingProviderFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingProvider, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DeemphasiseSearchResults SIP_MONKEYPATCH_COMPAT_NAME( FlagDeemphasiseSearchResults ) = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+      CompatibleWithVirtualRaster SIP_MONKEYPATCH_COMPAT_NAME( FlagCompatibleWithVirtualRaster ) = 1 << 2, //!< The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36
+    };
+    Q_ENUM( ProcessingProviderFlag );
+
+    /**
+     * Flags indicating how and when an processing provider operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingProvider::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingProviderFlags, ProcessingProviderFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingProvider, Flags )
+    Q_FLAG( ProcessingProviderFlags )
+
+    /**
+     * Flags indicating how and when an algorithm operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingAlgorithm::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingAlgorithmFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingAlgorithm, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      HideFromToolbox SIP_MONKEYPATCH_COMPAT_NAME( FlagHideFromToolbox ) = 1 << 1, //!< Algorithm should be hidden from the toolbox
+      HideFromModeler SIP_MONKEYPATCH_COMPAT_NAME( FlagHideFromModeler ) = 1 << 2, //!< Algorithm should be hidden from the modeler
+      SupportsBatch SIP_MONKEYPATCH_COMPAT_NAME( FlagSupportsBatch ) = 1 << 3,  //!< Algorithm supports batch mode
+      CanCancel SIP_MONKEYPATCH_COMPAT_NAME( FlagCanCancel ) = 1 << 4, //!< Algorithm can be canceled
+      RequiresMatchingCrs SIP_MONKEYPATCH_COMPAT_NAME( FlagRequiresMatchingCrs ) = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
+      NoThreading SIP_MONKEYPATCH_COMPAT_NAME( FlagNoThreading ) = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
+      DisplayNameIsLiteral SIP_MONKEYPATCH_COMPAT_NAME( FlagDisplayNameIsLiteral ) = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
+      SupportsInPlaceEdits SIP_MONKEYPATCH_COMPAT_NAME( FlagSupportsInPlaceEdits ) = 1 << 8, //!< Algorithm supports in-place editing
+      KnownIssues SIP_MONKEYPATCH_COMPAT_NAME( FlagKnownIssues ) = 1 << 9, //!< Algorithm has known issues
+      CustomException SIP_MONKEYPATCH_COMPAT_NAME( FlagCustomException ) = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
+      PruneModelBranchesBasedOnAlgorithmResults SIP_MONKEYPATCH_COMPAT_NAME( FlagPruneModelBranchesBasedOnAlgorithmResults ) = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
+      SkipGenericModelLogging SIP_MONKEYPATCH_COMPAT_NAME( FlagSkipGenericModelLogging ) = 1 << 12, //!< When running as part of a model, the generic algorithm setup and results logging should be skipped
+      NotAvailableInStandaloneTool SIP_MONKEYPATCH_COMPAT_NAME( FlagNotAvailableInStandaloneTool ) = 1 << 13, //!< Algorithm should not be available from the standalone "qgis_process" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as "select by..." style algorithms.
+      RequiresProject SIP_MONKEYPATCH_COMPAT_NAME( FlagRequiresProject ) = 1 << 14, //!< The algorithm requires that a valid QgsProject is available from the processing context in order to execute
+      Deprecated SIP_MONKEYPATCH_COMPAT_NAME( FlagDeprecated ) = HideFromToolbox | HideFromModeler, //!< Algorithm is deprecated
+    };
+    Q_ENUM( ProcessingAlgorithmFlag );
+
+    /**
+     * Flags indicating how and when an algorithm operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingAlgorithm::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingAlgorithmFlags, ProcessingAlgorithmFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingAlgorithm, Flags )
+    Q_FLAG( ProcessingAlgorithmFlags )
+
+    /**
+     * Property availability, used for QgsProcessingAlgorithm::VectorProperties
+     * in order to determine if properties are available or not.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingAlgorithm::PropertyAvailability
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingPropertyAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingAlgorithm, PropertyAvailability ) : int
+      {
+      NotAvailable, //!< Properties are not available
+      Available, //!< Properties are available
+    };
+    Q_ENUM( ProcessingPropertyAvailability )
+
+    /**
+     * Logging level for algorithms to use when pushing feedback messages.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingContext::LogLevel
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingLogLevel SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingContext, LogLevel ) : int
+      {
+      DefaultLevel = 0, //!< Default logging level
+      Verbose, //!< Verbose logging
+      ModelDebug, //!< Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34).
+    };
+    Q_ENUM( ProcessingLogLevel )
+
+    /**
      * Flags which control behavior for a Processing feature source.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag
@@ -2823,6 +2967,145 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProcessingFeatureSourceDefinitionFlags )
 
     /**
+     * Flags which control how QgsProcessingFeatureSource fetches features.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSource::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFeatureSourceFlag SIP_ENUM_BASETYPE( IntFlag ) SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingFeatureSource, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      SkipGeometryValidityChecks SIP_MONKEYPATCH_COMPAT_NAME( FlagSkipGeometryValidityChecks ) = 1 << 1, //!< Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. "repair geometry" type algorithms).
+    };
+    Q_ENUM( ProcessingFeatureSourceFlag )
+
+    /**
+     * Flags which control how QgsProcessingFeatureSource fetches features.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSource::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingFeatureSourceFlags, ProcessingFeatureSourceFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingFeatureSource, Flags )
+    Q_FLAG( ProcessingFeatureSourceFlags )
+
+    /**
+     * Flags which dictate the behavior of Processing parameter types.
+     *
+     * Each parameter type can offer a number of additional flags to fine tune its behavior
+     * and capabilities.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterType::ParameterFlag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingParameterTypeFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterType, ParameterFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ExposeToModeler = 1 //!< Is this parameter available in the modeler. Is set to on by default.
+    };
+    Q_ENUM( ProcessingParameterTypeFlag )
+
+    /**
+     * Flags which dictate the behavior of Processing parameter types.
+     *
+     * Each parameter type can offer a number of additional flags to fine tune its behavior
+     * and capabilities.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterType::ParameterFlags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingParameterTypeFlags, ProcessingParameterTypeFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingParameterType, ParameterFlags )
+    Q_FLAG( ProcessingParameterTypeFlags )
+
+    /**
+     * Flags which dictate the behavior of Processing parameters.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterDefinition::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingParameterFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterDefinition, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Advanced SIP_MONKEYPATCH_COMPAT_NAME( FlagAdvanced ) = 1 << 1, //!< Parameter is an advanced parameter which should be hidden from users by default
+      Hidden SIP_MONKEYPATCH_COMPAT_NAME( FlagHidden ) = 1 << 2, //!< Parameter is hidden and should not be shown to users
+      Optional SIP_MONKEYPATCH_COMPAT_NAME( FlagOptional ) = 1 << 3, //!< Parameter is optional
+      IsModelOutput SIP_MONKEYPATCH_COMPAT_NAME( FlagIsModelOutput ) = 1 << 4, //!< Destination parameter is final output. The parameter name will be used.
+    };
+    Q_ENUM( ProcessingParameterFlag )
+
+    /**
+     * Flags which dictate the behavior of Processing parameters.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterDefinition::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingParameterFlags, ProcessingParameterFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingParameterDefinition, Flags )
+    Q_FLAG( ProcessingParameterFlags )
+
+    /**
+     * Flags which dictate the behavior of QgsProcessingParameterFile.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterFile::Behavior
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFileParameterBehavior SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterFile, Behavior ) : int
+      {
+      File = 0, //!< Parameter is a single file
+      Folder, //!< Parameter is a folder
+    };
+    Q_ENUM( ProcessingFileParameterBehavior )
+
+    /**
+     * Processing numeric parameter data types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterNumber::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingNumberParameterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterNumber, Type ) : int
+      {
+      Integer, //!< Integer values
+      Double, //!< Double/float values
+    };
+    Q_ENUM( ProcessingNumberParameterType )
+
+    /**
+     * Processing field parameter data types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterField::DataType
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFieldParameterDataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterField, DataType ) : int
+      {
+      Any = -1, //!< Accepts any field
+      Numeric = 0, //!< Accepts numeric fields
+      String = 1, //!< Accepts string fields
+      DateTime = 2, //!< Accepts datetime fields
+      Binary = 3, //!< Accepts binary fields, since QGIS 3.34
+      Boolean = 4, //!< Accepts boolean fields, since QGIS 3.34
+    };
+    Q_ENUM( ProcessingFieldParameterDataType )
+
+    /**
+     * Processing date time parameter data types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterDateTime::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingDateTimeParameterDataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterDateTime, Type ) : int
+      {
+      DateTime, //!< Datetime values
+      Date, //!< Date values
+      Time, //!< Time values
+    };
+    Q_ENUM( ProcessingDateTimeParameterDataType )
+
+    /**
      * Processing model child parameter sources.
      *
      * \since QGIS 3.34
@@ -2837,6 +3120,21 @@ class CORE_EXPORT Qgis
       ModelOutput, //!< Parameter value is linked to an output parameter for the model
     };
     Q_ENUM( ProcessingModelChildParameterSource )
+
+    /**
+     * Defines the type of input layer for a Processing TIN input.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterTinInputLayers::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingTinInputLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterTinInputLayers, Type ) : int
+      {
+      Vertices, //!< Input that adds only vertices
+      StructureLines, //!< Input that adds add structure lines
+      BreakLines //!< Input that adds vertices and break lines
+    };
+    Q_ENUM( ProcessingTinInputLayerType )
 
     /**
      * CRS definition formats.
@@ -4673,6 +4971,13 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Statistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DateTimeStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
+
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

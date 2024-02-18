@@ -23,7 +23,7 @@ If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsM
 #include "qgsidentifymenu.h"
 %End
   public:
-    enum MenuLevel
+    enum MenuLevel /BaseType=IntEnum/
     {
       LayerLevel,
       FeatureLevel

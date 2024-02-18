@@ -346,7 +346,7 @@
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
         <DiagramCategory lineSizeType="MM" minimumSize="0" backgroundColor="#ffffff" penColor="#000000" sizeScale="3x:0,0,0,0,0,0" opacity="1" width="15" sizeType="MM" rotationOffset="270" spacingUnitScale="3x:0,0,0,0,0,0" penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" spacing="5" maxScaleDenominator="1e+08" showAxis="1" height="15" spacingUnit="MM" labelPlacementMethod="XHeight" barWidth="5" enabled="0" minScaleDenominator="0" direction="0" backgroundAlpha="255" scaleBasedVisibility="0" diagramOrientation="Up" scaleDependency="Area" penAlpha="255">
-          <fontProperties description="Sans Serif,9,-1,5,50,0,0,0,0,0" style=""/>
+          <fontProperties description="QGIS Vera Sans,9,-1,5,50,0,0,0,0,0" style="Bold"/>
           <axisSymbol>
             <symbol clip_to_extent="1" force_rhr="0" name="" type="line" alpha="1">
               <data_defined_properties>
@@ -2361,7 +2361,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <LabelFont description="DejaVu Sans,10,-1,5,50,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0" style="Bold"/>
         <FontColor green="0" red="0" alpha="255" blue="0"/>
       </LayoutItem>
       <LayoutItem positionOnPage="21.3911,46,mm" keepLayerSet="false" outlineWidthM="0.3,mm" followPreset="false" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" size="242,104,mm" followPresetName="" positionLock="false" mapFlags="1" isTemporal="0" opacity="1" excludeFromExports="0" background="true" labelMargin="0,mm" frame="false" type="65639" groupUuid="" mapRotation="0" zValue="3" frameJoinStyle="miter" drawCanvasItems="true" itemRotation="0" visibility="1" referencePoint="0" id="" position="21.3911,46,mm" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" blendMode="0">
@@ -2612,7 +2612,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <LabelFont description="DejaVu Sans,12,-1,5,75,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,12,-1,5,75,0,0,0,0,0" style="Bold"/>
         <FontColor green="0" red="0" alpha="255" blue="0"/>
       </LayoutItem>
       <LayoutItem positionOnPage="49.9838,9.33411,mm" outlineWidthM="0.3,mm" templateUuid="{4f60a368-b33d-4bd1-950a-76a48f3c8695}" size="215.03,28.0023,mm" labelText="QGIS Mapserver" positionLock="false" opacity="1" excludeFromExports="0" background="false" valign="32" frame="false" type="65641" groupUuid="" marginX="1" zValue="1" frameJoinStyle="miter" itemRotation="0" visibility="1" referencePoint="0" id="" position="49.9838,9.33411,mm" uuid="{4f60a368-b33d-4bd1-950a-76a48f3c8695}" htmlState="0" blendMode="0" halign="1" marginY="1">
@@ -2630,7 +2630,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <LabelFont description="DejaVu Sans,48,-1,5,75,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,48,-1,5,75,0,0,0,0,0" style="Bold"/>
         <FontColor green="0" red="0" alpha="255" blue="0"/>
       </LayoutItem>
       <customproperties>
@@ -2792,7 +2792,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <LabelFont description="DejaVu Sans,10,-1,5,50,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0" style="Bold"/>
         <FontColor green="0" red="0" alpha="255" blue="0"/>
       </LayoutItem>
       <LayoutItem positionOnPage="21.3911,46,mm" keepLayerSet="false" outlineWidthM="0.3,mm" followPreset="false" templateUuid="{98195e4d-0084-4747-b15b-507220be6d8a}" size="242,104,mm" followPresetName="" positionLock="false" mapFlags="1" isTemporal="0" opacity="1" excludeFromExports="0" background="true" labelMargin="0,mm" frame="false" type="65639" groupUuid="" mapRotation="0" zValue="3" frameJoinStyle="miter" drawCanvasItems="true" itemRotation="0" visibility="1" referencePoint="0" id="" position="21.3911,46,mm" uuid="{98195e4d-0084-4747-b15b-507220be6d8a}" blendMode="0">
@@ -3043,7 +3043,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <LabelFont description="DejaVu Sans,12,-1,5,75,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,12,-1,5,75,0,0,0,0,0" style="Bold"/>
         <FontColor green="0" red="0" alpha="255" blue="0"/>
       </LayoutItem>
       <LayoutItem positionOnPage="49.9838,9.33411,mm" outlineWidthM="0.3,mm" templateUuid="{faa8706c-3878-455c-9fd5-607cdd8739f3}" size="215.03,28.0023,mm" labelText="QGIS Mapserver" positionLock="false" opacity="1" excludeFromExports="0" background="false" valign="32" frame="false" type="65641" groupUuid="" marginX="1" zValue="1" frameJoinStyle="miter" itemRotation="0" visibility="1" referencePoint="0" id="" position="49.9838,9.33411,mm" uuid="{faa8706c-3878-455c-9fd5-607cdd8739f3}" htmlState="0" blendMode="0" halign="1" marginY="1">
@@ -3061,7 +3061,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <LabelFont description="DejaVu Sans,48,-1,5,75,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,48,-1,5,75,0,0,0,0,0" style="Bold"/>
         <FontColor green="0" red="0" alpha="255" blue="0"/>
       </LayoutItem>
       <customproperties>

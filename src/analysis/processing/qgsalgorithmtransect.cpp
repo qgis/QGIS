@@ -49,7 +49,7 @@ QString QgsTransectAlgorithm::groupId() const
 void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+                QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
   std::unique_ptr< QgsProcessingParameterDistance > length = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ),
       5.0, QStringLiteral( "INPUT" ), false, 0 );
   length->setIsDynamic( true );
@@ -57,7 +57,7 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
   length->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( length.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > angle = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees from the original line at the vertices" ), QgsProcessingParameterNumber::Double,
+  std::unique_ptr< QgsProcessingParameterNumber > angle = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees from the original line at the vertices" ), Qgis::ProcessingNumberParameterType::Double,
       90.0, false, 0, 360 );
   angle->setIsDynamic( true );
   angle->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees" ), QgsPropertyDefinition::Double ) );
@@ -65,7 +65,7 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( angle.release() );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Transect" ), QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );
 
 }
 

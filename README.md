@@ -3,6 +3,8 @@
 [![🧪 QGIS tests](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/qgis/QGIS/badge)](https://securityscorecards.dev/viewer/?uri=github.com/qgis/QGIS)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/1581/badge)](https://www.bestpractices.dev/projects/1581)
 [![🪟 MingW64 Windows 64bit Build](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5869837.svg)](https://doi.org/10.5281/zenodo.5869837)
 
@@ -28,16 +30,16 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
   - [Translations](#translations)
   - [Other ways to contribute](#other-ways-to-contribute)
 
-## Features 
+## Features
 
 ### 1. Flexible and powerful spatial data management
 
 - Support for raster, vector, mesh, and point cloud data in a range of industry-standard formats
     - *Raster formats include*: GeoPackage, GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
-    - *Vector formats include*: GeoPackage, ESRI shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](https://www.gdal.org/ogr_formats.html). 
+    - *Vector formats include*: GeoPackage, ESRI shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](https://www.gdal.org/ogr_formats.html).
     - *Mesh formats include*: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
     - *Point-cloud format*: LAS/LAZ and EPT datasets.
-- Data abstraction framework, with local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), and web services (WMS, WCS, WFS, ArcGIS REST) all accessed through a unified data model and browser interface, and as flexible layers in user-created projects 
+- Data abstraction framework, with local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), and web services (WMS, WCS, WFS, ArcGIS REST) all accessed through a unified data model and browser interface, and as flexible layers in user-created projects
 - Spatial data creation via visual and numerical digitizing and editing, as well as georeferencing of raster and vector data
 - On-the-fly reprojection between coordinate reference systems (CRS)
 - Nominatim (OpenStreetMap) geocoder access
@@ -57,11 +59,11 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 - Respect for embedded styling in many spatial data sources (e.g. KML and TAB files, Mapbox-GL styled vector tiles)
 - In particular, near-complete replication (and significant extension) of symbology options that are available in proprietary software by ESRI
 - Advanced styling using data-defined overrides, blending modes, and draw effects
-- 500+ built-in color ramps (cpt-city, ColorBrewer, etc.) 
+- 500+ built-in color ramps (cpt-city, ColorBrewer, etc.)
 - Create and update maps with specified scale, extent, style, and decorations via saved layouts
 - Generate multiple maps (and reports) automatically using QGIS Atlas and QGIS Reports
 - Display and export elevation profile plots with flexible symbology
-- Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization 
+- Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization
 - On-the-fly rendering enhancements using geometry generators (e.g. create and style new geometries from existing features)
 - Preview modes for inclusive map making (e.g. monochrome, color blindness)
 
@@ -76,7 +78,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 ### 3. Advanced and robust geospatial analysis
 - Powerful processing framework with 200+ native processing algorithms
 - Access to 1000+ processing algorithms via providers such as GDAL, SAGA, GRASS, OrfeoToolbox, as well as custom models and processing scripts
-- Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
+- Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible
 - Immediate visualization of geospatial query and geoprocessing results
 - Model designer and batch processing
 
@@ -92,7 +94,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 
 - Fully customizable user experience, including user interface and application settings that cater to power-users and beginners alike
 - Rich [expression engine](https://docs.qgis.org/testing/en/docs/user_manual/working_with_vector/expression.html) for maximum flexibility in visualization and processing
-- Broad and varied [plugin ecosystem](https://plugins.qgis.org/) that includes data connectors, digitizing aids, advanced analysis and charting tools, 
+- Broad and varied [plugin ecosystem](https://plugins.qgis.org/) that includes data connectors, digitizing aids, advanced analysis and charting tools,
 in-the-field data capture, conversion of ESRI style files, etc.
 - Style manager for creating, storing, and managing styles
 - [QGIS style hub](https://plugins.qgis.org/styles/) for easy sharing of styles
@@ -132,12 +134,12 @@ Headless map server -- running on Linux, macOS, Windows, or in a docker containe
 ## Under the hood
 
 QGIS is developed using the [Qt toolkit](https://qt.io) and C++, since 2002, and has a pleasing, easy to use graphical
-user interface with multilingual support. It is maintained by an active developer team and supported by vibrant 
-community of GIS professionals and enthusiasts as well as geospatial data publishers and end-users. 
+user interface with multilingual support. It is maintained by an active developer team and supported by vibrant
+community of GIS professionals and enthusiasts as well as geospatial data publishers and end-users.
 
 ### Versions and release cycle
 
-QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, the **Latest Release (LR)** branch, and the **Development (Nightly)** branch. 
+QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, the **Latest Release (LR)** branch, and the **Development (Nightly)** branch.
 
 Every month, there is a **Point Release** that provides bug-fixes to the LTR and LR.
 
@@ -206,7 +208,7 @@ If you wish to contribute patches you can:
 
 If you commit a new feature, add `[FEATURE]` to your commit message AND give a clear description of the new feature. The label `Needs documentation` will be added by maintainers and will automatically create an issue on the QGIS-Documentation repo, where you or others should write documentation about it.
 
-For large-scale changes, you can open a [QEP (QGIS Enhancement Proposal)](https://github.com/qgis/QGIS-Enhancement-Proposals). QEPs are used in the process of creating and discussing new enhancements or policy for QGIS. 
+For large-scale changes, you can open a [QEP (QGIS Enhancement Proposal)](https://github.com/qgis/QGIS-Enhancement-Proposals). QEPs are used in the process of creating and discussing new enhancements or policy for QGIS.
 
 ### Translations
 

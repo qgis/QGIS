@@ -363,7 +363,7 @@ Converts a string to a Python string literal. E.g. by replacing ' with \'.
 %End
 
 
-    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QMap<QString, QVariant> &createOptions = QMap<QString, QVariant>() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
+    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
 %Docstring
 Creates a feature sink ready for adding features. The ``destination`` specifies a destination
 URI for the resultant layer. It may be updated in place to reflect the actual destination
@@ -432,7 +432,7 @@ but not changing the ``basename``.
 .. seealso:: :py:func:`tempFolder`
 %End
 
-    static QString formatHelpMapAsHtml( const QMap<QString, QVariant> &map, const QgsProcessingAlgorithm *algorithm );
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
 %Docstring
 Returns a HTML formatted version of the help text encoded in a variant ``map`` for
 a specified ``algorithm``.
@@ -612,7 +612,7 @@ This method returns a fallback value of "mbtiles".
 .. versionadded:: 3.32
 %End
 
-    static QMap<QString, QVariant> removePointerValuesFromMap( const QMap<QString, QVariant> &map );
+    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
 %Docstring
 Removes any raw pointer values from an input ``map``, replacing them with
 appropriate string values where possible.
@@ -620,7 +620,7 @@ appropriate string values where possible.
 .. versionadded:: 3.26
 %End
 
-    static QMap<QString, QVariant> preprocessQgisProcessParameters( const QMap<QString, QVariant> &parameters, bool &ok, QString &error );
+    static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
 %Docstring
 Pre-processes a set of ``parameter`` values for the qgis_process command.
 
@@ -655,13 +655,6 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
 %End
   public:
 
-    enum Flag
-    {
-      FlagSkipGeometryValidityChecks,
-    };
-    typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
-
-
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
                                 long long featureLimit = -1, const QString &filterExpression = QString() );
 %Docstring
@@ -679,7 +672,7 @@ Since QGIS 3.32, the optional ``filterExpression`` can be used to specify an exp
 
     ~QgsProcessingFeatureSource();
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Qgis::ProcessingFeatureSourceFlags flags ) const;
 %Docstring
 Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
 An optional ``request`` can be used to optimise the returned

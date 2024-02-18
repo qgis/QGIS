@@ -81,7 +81,7 @@ void QgsTranslateAlgorithm::initParameters( const QVariantMap & )
   addParameter( yOffset.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > zOffset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_Z" ),
-      QObject::tr( "Offset distance (z-axis)" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Offset distance (z-axis)" ), Qgis::ProcessingNumberParameterType::Double,
       0.0 );
   zOffset->setIsDynamic( true );
   zOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_Z" ), QObject::tr( "Offset distance (z-axis)" ), QgsPropertyDefinition::Double ) );
@@ -89,7 +89,7 @@ void QgsTranslateAlgorithm::initParameters( const QVariantMap & )
   addParameter( zOffset.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > mOffset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_M" ),
-      QObject::tr( "Offset distance (m values)" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Offset distance (m values)" ), Qgis::ProcessingNumberParameterType::Double,
       0.0 );
   mOffset->setIsDynamic( true );
   mOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_M" ), QObject::tr( "Offset distance (m values)" ), QgsPropertyDefinition::Double ) );

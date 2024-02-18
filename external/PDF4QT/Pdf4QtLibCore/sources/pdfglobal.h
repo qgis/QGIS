@@ -18,9 +18,12 @@
 #ifndef PDFGLOBAL_H
 #define PDFGLOBAL_H
 
+#include <QCoreApplication>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtSystemDetection>
 #include <QtCompilerDetection>
-#include <QCoreApplication>
+#endif
 
 #include <limits>
 #include <tuple>

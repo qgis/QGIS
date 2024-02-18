@@ -171,7 +171,7 @@ Returns const reference to origin of min/max values
 Sets origin of min/max values
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 Used from subclasses to create SLD Rule elements following SLD v1.0 specs
 

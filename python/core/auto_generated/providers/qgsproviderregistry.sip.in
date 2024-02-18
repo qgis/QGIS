@@ -96,7 +96,7 @@ Creates a new instance of a provider.
 .. seealso:: :py:func:`createRasterDataProvider`
 %End
 
- int providerCapabilities( const QString &providerKey ) const /Deprecated/;
+ Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const /Deprecated/;
 %Docstring
 Returns the provider capabilities
 

@@ -76,25 +76,25 @@ QgsMapLayerProxyModel.WritableLayer.is_monkey_patched = True
 QgsMapLayerProxyModel.WritableLayer.__doc__ = ""
 QgsMapLayerProxyModel.MeshLayer = Qgis.LayerFilter.MeshLayer
 QgsMapLayerProxyModel.MeshLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.MeshLayer.__doc__ = "QgsMeshLayer \n.. versionadded:: 3.6\n"
+QgsMapLayerProxyModel.MeshLayer.__doc__ = "QgsMeshLayer \n.. versionadded:: 3.6"
 QgsMapLayerProxyModel.VectorTileLayer = Qgis.LayerFilter.VectorTileLayer
 QgsMapLayerProxyModel.VectorTileLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.VectorTileLayer.__doc__ = "QgsVectorTileLayer \n.. versionadded:: 3.14\n"
+QgsMapLayerProxyModel.VectorTileLayer.__doc__ = "QgsVectorTileLayer \n.. versionadded:: 3.14"
 QgsMapLayerProxyModel.PointCloudLayer = Qgis.LayerFilter.PointCloudLayer
 QgsMapLayerProxyModel.PointCloudLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.PointCloudLayer.__doc__ = "QgsPointCloudLayer \n.. versionadded:: 3.18\n"
+QgsMapLayerProxyModel.PointCloudLayer.__doc__ = "QgsPointCloudLayer \n.. versionadded:: 3.18"
 QgsMapLayerProxyModel.AnnotationLayer = Qgis.LayerFilter.AnnotationLayer
 QgsMapLayerProxyModel.AnnotationLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.AnnotationLayer.__doc__ = "QgsAnnotationLayer \n.. versionadded:: 3.22\n"
+QgsMapLayerProxyModel.AnnotationLayer.__doc__ = "QgsAnnotationLayer \n.. versionadded:: 3.22"
 QgsMapLayerProxyModel.TiledSceneLayer = Qgis.LayerFilter.TiledSceneLayer
 QgsMapLayerProxyModel.TiledSceneLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.TiledSceneLayer.__doc__ = "QgsTiledSceneLayer \n.. versionadded:: 3.34\n"
+QgsMapLayerProxyModel.TiledSceneLayer.__doc__ = "QgsTiledSceneLayer \n.. versionadded:: 3.34"
 QgsMapLayerProxyModel.All = Qgis.LayerFilter.All
 QgsMapLayerProxyModel.All.is_monkey_patched = True
 QgsMapLayerProxyModel.All.__doc__ = ""
 QgsMapLayerProxyModel.SpatialLayer = Qgis.LayerFilter.SpatialLayer
 QgsMapLayerProxyModel.SpatialLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.SpatialLayer.__doc__ = "\n.. versionadded:: 3.24\n"
+QgsMapLayerProxyModel.SpatialLayer.__doc__ = ".. versionadded:: 3.24"
 Qgis.LayerFilter.__doc__ = "Filter for layers\n\n.. versionadded:: 3.34.\n\n" + '* ``RasterLayer``: ' + Qgis.LayerFilter.RasterLayer.__doc__ + '\n' + '* ``NoGeometry``: ' + Qgis.LayerFilter.NoGeometry.__doc__ + '\n' + '* ``PointLayer``: ' + Qgis.LayerFilter.PointLayer.__doc__ + '\n' + '* ``LineLayer``: ' + Qgis.LayerFilter.LineLayer.__doc__ + '\n' + '* ``PolygonLayer``: ' + Qgis.LayerFilter.PolygonLayer.__doc__ + '\n' + '* ``HasGeometry``: ' + Qgis.LayerFilter.HasGeometry.__doc__ + '\n' + '* ``VectorLayer``: ' + Qgis.LayerFilter.VectorLayer.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerFilter.PluginLayer.__doc__ + '\n' + '* ``WritableLayer``: ' + Qgis.LayerFilter.WritableLayer.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerFilter.MeshLayer.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerFilter.VectorTileLayer.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerFilter.PointCloudLayer.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerFilter.AnnotationLayer.__doc__ + '\n' + '* ``TiledSceneLayer``: ' + Qgis.LayerFilter.TiledSceneLayer.__doc__ + '\n' + '* ``All``: ' + Qgis.LayerFilter.All.__doc__ + '\n' + '* ``SpatialLayer``: ' + Qgis.LayerFilter.SpatialLayer.__doc__
 # --
 Qgis.LayerFilters = lambda flags=0: Qgis.LayerFilter(flags)
@@ -757,6 +757,35 @@ Qgis.BrowserItemCapabilities = lambda flags=0: Qgis.BrowserItemCapability(flags)
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
 Qgis.BrowserItemCapabilities.baseClass = Qgis
 BrowserItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsDataProvider.DataCapability = Qgis.DataItemProviderCapability
+# monkey patching scoped based enum
+QgsDataProvider.NoDataCapabilities = Qgis.DataItemProviderCapability.NoCapabilities
+QgsDataProvider.DataCapability.NoDataCapabilities = Qgis.DataItemProviderCapability.NoCapabilities
+QgsDataProvider.NoDataCapabilities.is_monkey_patched = True
+QgsDataProvider.NoDataCapabilities.__doc__ = "No capabilities"
+QgsDataProvider.File = Qgis.DataItemProviderCapability.Files
+QgsDataProvider.DataCapability.File = Qgis.DataItemProviderCapability.Files
+QgsDataProvider.File.is_monkey_patched = True
+QgsDataProvider.File.__doc__ = "Can provides items which corresponds to files"
+QgsDataProvider.Dir = Qgis.DataItemProviderCapability.Directories
+QgsDataProvider.DataCapability.Dir = Qgis.DataItemProviderCapability.Directories
+QgsDataProvider.Dir.is_monkey_patched = True
+QgsDataProvider.Dir.__doc__ = "Can provides items which corresponds to directories"
+QgsDataProvider.Database = Qgis.DataItemProviderCapability.Databases
+QgsDataProvider.DataCapability.Database = Qgis.DataItemProviderCapability.Databases
+QgsDataProvider.Database.is_monkey_patched = True
+QgsDataProvider.Database.__doc__ = "Can provides items which corresponds to databases"
+QgsDataProvider.Net = Qgis.DataItemProviderCapability.NetworkSources
+QgsDataProvider.DataCapability.Net = Qgis.DataItemProviderCapability.NetworkSources
+QgsDataProvider.Net.is_monkey_patched = True
+QgsDataProvider.Net.__doc__ = "Network/internet source"
+Qgis.DataItemProviderCapability.__doc__ = "Capabilities for data item providers.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsDataProvider`.DataCapability\n\n.. versionadded:: 3.36\n\n" + '* ``NoDataCapabilities``: ' + Qgis.DataItemProviderCapability.NoCapabilities.__doc__ + '\n' + '* ``File``: ' + Qgis.DataItemProviderCapability.Files.__doc__ + '\n' + '* ``Dir``: ' + Qgis.DataItemProviderCapability.Directories.__doc__ + '\n' + '* ``Database``: ' + Qgis.DataItemProviderCapability.Databases.__doc__ + '\n' + '* ``Net``: ' + Qgis.DataItemProviderCapability.NetworkSources.__doc__
+# --
+Qgis.DataItemProviderCapability.baseClass = Qgis
+Qgis.DataItemProviderCapabilities = lambda flags=0: Qgis.DataItemProviderCapability(flags)
+QgsDataProvider.DataCapabilities = Qgis.DataItemProviderCapabilities
+Qgis.DataItemProviderCapabilities.baseClass = Qgis
+DataItemProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
 # monkey patching scoped based enum
 QgsLayerItem.NoType = Qgis.BrowserLayerType.NoType
@@ -2815,6 +2844,174 @@ Qgis.HistoryProviderBackend.baseClass = Qgis
 Qgis.HistoryProviderBackends = lambda flags=0: Qgis.HistoryProviderBackend(flags)
 Qgis.HistoryProviderBackends.baseClass = Qgis
 HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessing.SourceType = Qgis.ProcessingSourceType
+# monkey patching scoped based enum
+QgsProcessing.TypeMapLayer = Qgis.ProcessingSourceType.MapLayer
+QgsProcessing.SourceType.TypeMapLayer = Qgis.ProcessingSourceType.MapLayer
+QgsProcessing.TypeMapLayer.is_monkey_patched = True
+QgsProcessing.TypeMapLayer.__doc__ = "Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)"
+QgsProcessing.TypeVectorAnyGeometry = Qgis.ProcessingSourceType.VectorAnyGeometry
+QgsProcessing.SourceType.TypeVectorAnyGeometry = Qgis.ProcessingSourceType.VectorAnyGeometry
+QgsProcessing.TypeVectorAnyGeometry.is_monkey_patched = True
+QgsProcessing.TypeVectorAnyGeometry.__doc__ = "Any vector layer with geometry"
+QgsProcessing.TypeVectorPoint = Qgis.ProcessingSourceType.VectorPoint
+QgsProcessing.SourceType.TypeVectorPoint = Qgis.ProcessingSourceType.VectorPoint
+QgsProcessing.TypeVectorPoint.is_monkey_patched = True
+QgsProcessing.TypeVectorPoint.__doc__ = "Vector point layers"
+QgsProcessing.TypeVectorLine = Qgis.ProcessingSourceType.VectorLine
+QgsProcessing.SourceType.TypeVectorLine = Qgis.ProcessingSourceType.VectorLine
+QgsProcessing.TypeVectorLine.is_monkey_patched = True
+QgsProcessing.TypeVectorLine.__doc__ = "Vector line layers"
+QgsProcessing.TypeVectorPolygon = Qgis.ProcessingSourceType.VectorPolygon
+QgsProcessing.SourceType.TypeVectorPolygon = Qgis.ProcessingSourceType.VectorPolygon
+QgsProcessing.TypeVectorPolygon.is_monkey_patched = True
+QgsProcessing.TypeVectorPolygon.__doc__ = "Vector polygon layers"
+QgsProcessing.TypeRaster = Qgis.ProcessingSourceType.Raster
+QgsProcessing.SourceType.TypeRaster = Qgis.ProcessingSourceType.Raster
+QgsProcessing.TypeRaster.is_monkey_patched = True
+QgsProcessing.TypeRaster.__doc__ = "Raster layers"
+QgsProcessing.TypeFile = Qgis.ProcessingSourceType.File
+QgsProcessing.SourceType.TypeFile = Qgis.ProcessingSourceType.File
+QgsProcessing.TypeFile.is_monkey_patched = True
+QgsProcessing.TypeFile.__doc__ = "Files (i.e. non map layer sources, such as text files)"
+QgsProcessing.TypeVector = Qgis.ProcessingSourceType.Vector
+QgsProcessing.SourceType.TypeVector = Qgis.ProcessingSourceType.Vector
+QgsProcessing.TypeVector.is_monkey_patched = True
+QgsProcessing.TypeVector.__doc__ = "Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry."
+QgsProcessing.TypeMesh = Qgis.ProcessingSourceType.Mesh
+QgsProcessing.SourceType.TypeMesh = Qgis.ProcessingSourceType.Mesh
+QgsProcessing.TypeMesh.is_monkey_patched = True
+QgsProcessing.TypeMesh.__doc__ = "Mesh layers \n.. versionadded:: 3.6"
+QgsProcessing.TypePlugin = Qgis.ProcessingSourceType.Plugin
+QgsProcessing.SourceType.TypePlugin = Qgis.ProcessingSourceType.Plugin
+QgsProcessing.TypePlugin.is_monkey_patched = True
+QgsProcessing.TypePlugin.__doc__ = "Plugin layers \n.. versionadded:: 3.22"
+QgsProcessing.TypePointCloud = Qgis.ProcessingSourceType.PointCloud
+QgsProcessing.SourceType.TypePointCloud = Qgis.ProcessingSourceType.PointCloud
+QgsProcessing.TypePointCloud.is_monkey_patched = True
+QgsProcessing.TypePointCloud.__doc__ = "Point cloud layers \n.. versionadded:: 3.22"
+QgsProcessing.TypeAnnotation = Qgis.ProcessingSourceType.Annotation
+QgsProcessing.SourceType.TypeAnnotation = Qgis.ProcessingSourceType.Annotation
+QgsProcessing.TypeAnnotation.is_monkey_patched = True
+QgsProcessing.TypeAnnotation.__doc__ = "Annotation layers \n.. versionadded:: 3.22"
+QgsProcessing.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
+QgsProcessing.SourceType.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
+QgsProcessing.TypeVectorTile.is_monkey_patched = True
+QgsProcessing.TypeVectorTile.__doc__ = "Vector tile layers \n.. versionadded:: 3.32"
+Qgis.ProcessingSourceType.__doc__ = "Processing data source types.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessing`.SourceType\n\n.. versionadded:: 3.36\n\n" + '* ``TypeMapLayer``: ' + Qgis.ProcessingSourceType.MapLayer.__doc__ + '\n' + '* ``TypeVectorAnyGeometry``: ' + Qgis.ProcessingSourceType.VectorAnyGeometry.__doc__ + '\n' + '* ``TypeVectorPoint``: ' + Qgis.ProcessingSourceType.VectorPoint.__doc__ + '\n' + '* ``TypeVectorLine``: ' + Qgis.ProcessingSourceType.VectorLine.__doc__ + '\n' + '* ``TypeVectorPolygon``: ' + Qgis.ProcessingSourceType.VectorPolygon.__doc__ + '\n' + '* ``TypeRaster``: ' + Qgis.ProcessingSourceType.Raster.__doc__ + '\n' + '* ``TypeFile``: ' + Qgis.ProcessingSourceType.File.__doc__ + '\n' + '* ``TypeVector``: ' + Qgis.ProcessingSourceType.Vector.__doc__ + '\n' + '* ``TypeMesh``: ' + Qgis.ProcessingSourceType.Mesh.__doc__ + '\n' + '* ``TypePlugin``: ' + Qgis.ProcessingSourceType.Plugin.__doc__ + '\n' + '* ``TypePointCloud``: ' + Qgis.ProcessingSourceType.PointCloud.__doc__ + '\n' + '* ``TypeAnnotation``: ' + Qgis.ProcessingSourceType.Annotation.__doc__ + '\n' + '* ``TypeVectorTile``: ' + Qgis.ProcessingSourceType.VectorTile.__doc__
+# --
+Qgis.ProcessingSourceType.baseClass = Qgis
+QgsProcessingProvider.Flag = Qgis.ProcessingProviderFlag
+# monkey patching scoped based enum
+QgsProcessingProvider.FlagDeemphasiseSearchResults = Qgis.ProcessingProviderFlag.DeemphasiseSearchResults
+QgsProcessingProvider.Flag.FlagDeemphasiseSearchResults = Qgis.ProcessingProviderFlag.DeemphasiseSearchResults
+QgsProcessingProvider.FlagDeemphasiseSearchResults.is_monkey_patched = True
+QgsProcessingProvider.FlagDeemphasiseSearchResults.__doc__ = "Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues."
+QgsProcessingProvider.FlagCompatibleWithVirtualRaster = Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster
+QgsProcessingProvider.Flag.FlagCompatibleWithVirtualRaster = Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster
+QgsProcessingProvider.FlagCompatibleWithVirtualRaster.is_monkey_patched = True
+QgsProcessingProvider.FlagCompatibleWithVirtualRaster.__doc__ = "The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36"
+Qgis.ProcessingProviderFlag.__doc__ = "Flags indicating how and when an processing provider operates and should be exposed to users.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingProvider`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``FlagDeemphasiseSearchResults``: ' + Qgis.ProcessingProviderFlag.DeemphasiseSearchResults.__doc__ + '\n' + '* ``FlagCompatibleWithVirtualRaster``: ' + Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster.__doc__
+# --
+Qgis.ProcessingProviderFlag.baseClass = Qgis
+Qgis.ProcessingProviderFlags = lambda flags=0: Qgis.ProcessingProviderFlag(flags)
+QgsProcessingProvider.Flags = Qgis.ProcessingProviderFlags
+Qgis.ProcessingProviderFlags.baseClass = Qgis
+ProcessingProviderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingAlgorithm.Flag = Qgis.ProcessingAlgorithmFlag
+# monkey patching scoped based enum
+QgsProcessingAlgorithm.FlagHideFromToolbox = Qgis.ProcessingAlgorithmFlag.HideFromToolbox
+QgsProcessingAlgorithm.Flag.FlagHideFromToolbox = Qgis.ProcessingAlgorithmFlag.HideFromToolbox
+QgsProcessingAlgorithm.FlagHideFromToolbox.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagHideFromToolbox.__doc__ = "Algorithm should be hidden from the toolbox"
+QgsProcessingAlgorithm.FlagHideFromModeler = Qgis.ProcessingAlgorithmFlag.HideFromModeler
+QgsProcessingAlgorithm.Flag.FlagHideFromModeler = Qgis.ProcessingAlgorithmFlag.HideFromModeler
+QgsProcessingAlgorithm.FlagHideFromModeler.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagHideFromModeler.__doc__ = "Algorithm should be hidden from the modeler"
+QgsProcessingAlgorithm.FlagSupportsBatch = Qgis.ProcessingAlgorithmFlag.SupportsBatch
+QgsProcessingAlgorithm.Flag.FlagSupportsBatch = Qgis.ProcessingAlgorithmFlag.SupportsBatch
+QgsProcessingAlgorithm.FlagSupportsBatch.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagSupportsBatch.__doc__ = "Algorithm supports batch mode"
+QgsProcessingAlgorithm.FlagCanCancel = Qgis.ProcessingAlgorithmFlag.CanCancel
+QgsProcessingAlgorithm.Flag.FlagCanCancel = Qgis.ProcessingAlgorithmFlag.CanCancel
+QgsProcessingAlgorithm.FlagCanCancel.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagCanCancel.__doc__ = "Algorithm can be canceled"
+QgsProcessingAlgorithm.FlagRequiresMatchingCrs = Qgis.ProcessingAlgorithmFlag.RequiresMatchingCrs
+QgsProcessingAlgorithm.Flag.FlagRequiresMatchingCrs = Qgis.ProcessingAlgorithmFlag.RequiresMatchingCrs
+QgsProcessingAlgorithm.FlagRequiresMatchingCrs.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagRequiresMatchingCrs.__doc__ = "Algorithm requires that all input layers have matching coordinate reference systems"
+QgsProcessingAlgorithm.FlagNoThreading = Qgis.ProcessingAlgorithmFlag.NoThreading
+QgsProcessingAlgorithm.Flag.FlagNoThreading = Qgis.ProcessingAlgorithmFlag.NoThreading
+QgsProcessingAlgorithm.FlagNoThreading.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagNoThreading.__doc__ = "Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe."
+QgsProcessingAlgorithm.FlagDisplayNameIsLiteral = Qgis.ProcessingAlgorithmFlag.DisplayNameIsLiteral
+QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral = Qgis.ProcessingAlgorithmFlag.DisplayNameIsLiteral
+QgsProcessingAlgorithm.FlagDisplayNameIsLiteral.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagDisplayNameIsLiteral.__doc__ = "Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'."
+QgsProcessingAlgorithm.FlagSupportsInPlaceEdits = Qgis.ProcessingAlgorithmFlag.SupportsInPlaceEdits
+QgsProcessingAlgorithm.Flag.FlagSupportsInPlaceEdits = Qgis.ProcessingAlgorithmFlag.SupportsInPlaceEdits
+QgsProcessingAlgorithm.FlagSupportsInPlaceEdits.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagSupportsInPlaceEdits.__doc__ = "Algorithm supports in-place editing"
+QgsProcessingAlgorithm.FlagKnownIssues = Qgis.ProcessingAlgorithmFlag.KnownIssues
+QgsProcessingAlgorithm.Flag.FlagKnownIssues = Qgis.ProcessingAlgorithmFlag.KnownIssues
+QgsProcessingAlgorithm.FlagKnownIssues.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagKnownIssues.__doc__ = "Algorithm has known issues"
+QgsProcessingAlgorithm.FlagCustomException = Qgis.ProcessingAlgorithmFlag.CustomException
+QgsProcessingAlgorithm.Flag.FlagCustomException = Qgis.ProcessingAlgorithmFlag.CustomException
+QgsProcessingAlgorithm.FlagCustomException.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagCustomException.__doc__ = "Algorithm raises custom exception notices, don't use the standard ones"
+QgsProcessingAlgorithm.FlagPruneModelBranchesBasedOnAlgorithmResults = Qgis.ProcessingAlgorithmFlag.PruneModelBranchesBasedOnAlgorithmResults
+QgsProcessingAlgorithm.Flag.FlagPruneModelBranchesBasedOnAlgorithmResults = Qgis.ProcessingAlgorithmFlag.PruneModelBranchesBasedOnAlgorithmResults
+QgsProcessingAlgorithm.FlagPruneModelBranchesBasedOnAlgorithmResults.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagPruneModelBranchesBasedOnAlgorithmResults.__doc__ = "Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm"
+QgsProcessingAlgorithm.FlagSkipGenericModelLogging = Qgis.ProcessingAlgorithmFlag.SkipGenericModelLogging
+QgsProcessingAlgorithm.Flag.FlagSkipGenericModelLogging = Qgis.ProcessingAlgorithmFlag.SkipGenericModelLogging
+QgsProcessingAlgorithm.FlagSkipGenericModelLogging.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagSkipGenericModelLogging.__doc__ = "When running as part of a model, the generic algorithm setup and results logging should be skipped"
+QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool = Qgis.ProcessingAlgorithmFlag.NotAvailableInStandaloneTool
+QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool = Qgis.ProcessingAlgorithmFlag.NotAvailableInStandaloneTool
+QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool.__doc__ = "Algorithm should not be available from the standalone \"qgis_process\" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as \"select by...\" style algorithms."
+QgsProcessingAlgorithm.FlagRequiresProject = Qgis.ProcessingAlgorithmFlag.RequiresProject
+QgsProcessingAlgorithm.Flag.FlagRequiresProject = Qgis.ProcessingAlgorithmFlag.RequiresProject
+QgsProcessingAlgorithm.FlagRequiresProject.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagRequiresProject.__doc__ = "The algorithm requires that a valid QgsProject is available from the processing context in order to execute"
+QgsProcessingAlgorithm.FlagDeprecated = Qgis.ProcessingAlgorithmFlag.Deprecated
+QgsProcessingAlgorithm.Flag.FlagDeprecated = Qgis.ProcessingAlgorithmFlag.Deprecated
+QgsProcessingAlgorithm.FlagDeprecated.is_monkey_patched = True
+QgsProcessingAlgorithm.FlagDeprecated.__doc__ = "Algorithm is deprecated"
+Qgis.ProcessingAlgorithmFlag.__doc__ = "Flags indicating how and when an algorithm operates and should be exposed to users.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingAlgorithm`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``FlagHideFromToolbox``: ' + Qgis.ProcessingAlgorithmFlag.HideFromToolbox.__doc__ + '\n' + '* ``FlagHideFromModeler``: ' + Qgis.ProcessingAlgorithmFlag.HideFromModeler.__doc__ + '\n' + '* ``FlagSupportsBatch``: ' + Qgis.ProcessingAlgorithmFlag.SupportsBatch.__doc__ + '\n' + '* ``FlagCanCancel``: ' + Qgis.ProcessingAlgorithmFlag.CanCancel.__doc__ + '\n' + '* ``FlagRequiresMatchingCrs``: ' + Qgis.ProcessingAlgorithmFlag.RequiresMatchingCrs.__doc__ + '\n' + '* ``FlagNoThreading``: ' + Qgis.ProcessingAlgorithmFlag.NoThreading.__doc__ + '\n' + '* ``FlagDisplayNameIsLiteral``: ' + Qgis.ProcessingAlgorithmFlag.DisplayNameIsLiteral.__doc__ + '\n' + '* ``FlagSupportsInPlaceEdits``: ' + Qgis.ProcessingAlgorithmFlag.SupportsInPlaceEdits.__doc__ + '\n' + '* ``FlagKnownIssues``: ' + Qgis.ProcessingAlgorithmFlag.KnownIssues.__doc__ + '\n' + '* ``FlagCustomException``: ' + Qgis.ProcessingAlgorithmFlag.CustomException.__doc__ + '\n' + '* ``FlagPruneModelBranchesBasedOnAlgorithmResults``: ' + Qgis.ProcessingAlgorithmFlag.PruneModelBranchesBasedOnAlgorithmResults.__doc__ + '\n' + '* ``FlagSkipGenericModelLogging``: ' + Qgis.ProcessingAlgorithmFlag.SkipGenericModelLogging.__doc__ + '\n' + '* ``FlagNotAvailableInStandaloneTool``: ' + Qgis.ProcessingAlgorithmFlag.NotAvailableInStandaloneTool.__doc__ + '\n' + '* ``FlagRequiresProject``: ' + Qgis.ProcessingAlgorithmFlag.RequiresProject.__doc__ + '\n' + '* ``FlagDeprecated``: ' + Qgis.ProcessingAlgorithmFlag.Deprecated.__doc__
+# --
+Qgis.ProcessingAlgorithmFlag.baseClass = Qgis
+Qgis.ProcessingAlgorithmFlags = lambda flags=0: Qgis.ProcessingAlgorithmFlag(flags)
+QgsProcessingAlgorithm.Flags = Qgis.ProcessingAlgorithmFlags
+Qgis.ProcessingAlgorithmFlags.baseClass = Qgis
+ProcessingAlgorithmFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingAlgorithm.PropertyAvailability = Qgis.ProcessingPropertyAvailability
+# monkey patching scoped based enum
+QgsProcessingAlgorithm.NotAvailable = Qgis.ProcessingPropertyAvailability.NotAvailable
+QgsProcessingAlgorithm.NotAvailable.is_monkey_patched = True
+QgsProcessingAlgorithm.NotAvailable.__doc__ = "Properties are not available"
+QgsProcessingAlgorithm.Available = Qgis.ProcessingPropertyAvailability.Available
+QgsProcessingAlgorithm.Available.is_monkey_patched = True
+QgsProcessingAlgorithm.Available.__doc__ = "Properties are available"
+Qgis.ProcessingPropertyAvailability.__doc__ = "Property availability, used for :py:class:`QgsProcessingAlgorithm`.VectorProperties\nin order to determine if properties are available or not.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingAlgorithm`.PropertyAvailability\n\n.. versionadded:: 3.36\n\n" + '* ``NotAvailable``: ' + Qgis.ProcessingPropertyAvailability.NotAvailable.__doc__ + '\n' + '* ``Available``: ' + Qgis.ProcessingPropertyAvailability.Available.__doc__
+# --
+Qgis.ProcessingPropertyAvailability.baseClass = Qgis
+QgsProcessingContext.LogLevel = Qgis.ProcessingLogLevel
+# monkey patching scoped based enum
+QgsProcessingContext.DefaultLevel = Qgis.ProcessingLogLevel.DefaultLevel
+QgsProcessingContext.DefaultLevel.is_monkey_patched = True
+QgsProcessingContext.DefaultLevel.__doc__ = "Default logging level"
+QgsProcessingContext.Verbose = Qgis.ProcessingLogLevel.Verbose
+QgsProcessingContext.Verbose.is_monkey_patched = True
+QgsProcessingContext.Verbose.__doc__ = "Verbose logging"
+QgsProcessingContext.ModelDebug = Qgis.ProcessingLogLevel.ModelDebug
+QgsProcessingContext.ModelDebug.is_monkey_patched = True
+QgsProcessingContext.ModelDebug.__doc__ = "Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34)."
+Qgis.ProcessingLogLevel.__doc__ = "Logging level for algorithms to use when pushing feedback messages.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingContext`.LogLevel\n\n.. versionadded:: 3.36\n\n" + '* ``DefaultLevel``: ' + Qgis.ProcessingLogLevel.DefaultLevel.__doc__ + '\n' + '* ``Verbose``: ' + Qgis.ProcessingLogLevel.Verbose.__doc__ + '\n' + '* ``ModelDebug``: ' + Qgis.ProcessingLogLevel.ModelDebug.__doc__
+# --
+Qgis.ProcessingLogLevel.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
@@ -2832,6 +3029,115 @@ Qgis.ProcessingFeatureSourceDefinitionFlags = lambda flags=0: Qgis.ProcessingFea
 QgsProcessingFeatureSourceDefinition.Flags = Qgis.ProcessingFeatureSourceDefinitionFlags
 Qgis.ProcessingFeatureSourceDefinitionFlags.baseClass = Qgis
 ProcessingFeatureSourceDefinitionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingFeatureSource.Flag = Qgis.ProcessingFeatureSourceFlag
+# monkey patching scoped based enum
+QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks = Qgis.ProcessingFeatureSourceFlag.SkipGeometryValidityChecks
+QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks = Qgis.ProcessingFeatureSourceFlag.SkipGeometryValidityChecks
+QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks.is_monkey_patched = True
+QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks.__doc__ = "Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. \"repair geometry\" type algorithms)."
+Qgis.ProcessingFeatureSourceFlag.__doc__ = "Flags which control how :py:class:`QgsProcessingFeatureSource` fetches features.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingFeatureSource`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``FlagSkipGeometryValidityChecks``: ' + Qgis.ProcessingFeatureSourceFlag.SkipGeometryValidityChecks.__doc__
+# --
+Qgis.ProcessingFeatureSourceFlag.baseClass = Qgis
+Qgis.ProcessingFeatureSourceFlags = lambda flags=0: Qgis.ProcessingFeatureSourceFlag(flags)
+QgsProcessingFeatureSource.Flags = Qgis.ProcessingFeatureSourceFlags
+Qgis.ProcessingFeatureSourceFlags.baseClass = Qgis
+ProcessingFeatureSourceFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingParameterType.ParameterFlag = Qgis.ProcessingParameterTypeFlag
+# monkey patching scoped based enum
+QgsProcessingParameterType.ExposeToModeler = Qgis.ProcessingParameterTypeFlag.ExposeToModeler
+QgsProcessingParameterType.ExposeToModeler.is_monkey_patched = True
+QgsProcessingParameterType.ExposeToModeler.__doc__ = "Is this parameter available in the modeler. Is set to on by default."
+Qgis.ProcessingParameterTypeFlag.__doc__ = "Flags which dictate the behavior of Processing parameter types.\n\nEach parameter type can offer a number of additional flags to fine tune its behavior\nand capabilities.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterType`.ParameterFlag\n\n.. versionadded:: 3.36\n\n" + '* ``ExposeToModeler``: ' + Qgis.ProcessingParameterTypeFlag.ExposeToModeler.__doc__
+# --
+Qgis.ProcessingParameterTypeFlag.baseClass = Qgis
+Qgis.ProcessingParameterTypeFlags = lambda flags=0: Qgis.ProcessingParameterTypeFlag(flags)
+QgsProcessingParameterType.ParameterFlags = Qgis.ProcessingParameterTypeFlags
+Qgis.ProcessingParameterTypeFlags.baseClass = Qgis
+ProcessingParameterTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingParameterDefinition.Flag = Qgis.ProcessingParameterFlag
+# monkey patching scoped based enum
+QgsProcessingParameterDefinition.FlagAdvanced = Qgis.ProcessingParameterFlag.Advanced
+QgsProcessingParameterDefinition.Flag.FlagAdvanced = Qgis.ProcessingParameterFlag.Advanced
+QgsProcessingParameterDefinition.FlagAdvanced.is_monkey_patched = True
+QgsProcessingParameterDefinition.FlagAdvanced.__doc__ = "Parameter is an advanced parameter which should be hidden from users by default"
+QgsProcessingParameterDefinition.FlagHidden = Qgis.ProcessingParameterFlag.Hidden
+QgsProcessingParameterDefinition.Flag.FlagHidden = Qgis.ProcessingParameterFlag.Hidden
+QgsProcessingParameterDefinition.FlagHidden.is_monkey_patched = True
+QgsProcessingParameterDefinition.FlagHidden.__doc__ = "Parameter is hidden and should not be shown to users"
+QgsProcessingParameterDefinition.FlagOptional = Qgis.ProcessingParameterFlag.Optional
+QgsProcessingParameterDefinition.Flag.FlagOptional = Qgis.ProcessingParameterFlag.Optional
+QgsProcessingParameterDefinition.FlagOptional.is_monkey_patched = True
+QgsProcessingParameterDefinition.FlagOptional.__doc__ = "Parameter is optional"
+QgsProcessingParameterDefinition.FlagIsModelOutput = Qgis.ProcessingParameterFlag.IsModelOutput
+QgsProcessingParameterDefinition.Flag.FlagIsModelOutput = Qgis.ProcessingParameterFlag.IsModelOutput
+QgsProcessingParameterDefinition.FlagIsModelOutput.is_monkey_patched = True
+QgsProcessingParameterDefinition.FlagIsModelOutput.__doc__ = "Destination parameter is final output. The parameter name will be used."
+Qgis.ProcessingParameterFlag.__doc__ = "Flags which dictate the behavior of Processing parameters.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterDefinition`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``FlagAdvanced``: ' + Qgis.ProcessingParameterFlag.Advanced.__doc__ + '\n' + '* ``FlagHidden``: ' + Qgis.ProcessingParameterFlag.Hidden.__doc__ + '\n' + '* ``FlagOptional``: ' + Qgis.ProcessingParameterFlag.Optional.__doc__ + '\n' + '* ``FlagIsModelOutput``: ' + Qgis.ProcessingParameterFlag.IsModelOutput.__doc__
+# --
+Qgis.ProcessingParameterFlag.baseClass = Qgis
+Qgis.ProcessingParameterFlags = lambda flags=0: Qgis.ProcessingParameterFlag(flags)
+QgsProcessingParameterDefinition.Flags = Qgis.ProcessingParameterFlags
+Qgis.ProcessingParameterFlags.baseClass = Qgis
+ProcessingParameterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingParameterFile.Behavior = Qgis.ProcessingFileParameterBehavior
+# monkey patching scoped based enum
+QgsProcessingParameterFile.File = Qgis.ProcessingFileParameterBehavior.File
+QgsProcessingParameterFile.File.is_monkey_patched = True
+QgsProcessingParameterFile.File.__doc__ = "Parameter is a single file"
+QgsProcessingParameterFile.Folder = Qgis.ProcessingFileParameterBehavior.Folder
+QgsProcessingParameterFile.Folder.is_monkey_patched = True
+QgsProcessingParameterFile.Folder.__doc__ = "Parameter is a folder"
+Qgis.ProcessingFileParameterBehavior.__doc__ = "Flags which dictate the behavior of :py:class:`QgsProcessingParameterFile`.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterFile`.Behavior\n\n.. versionadded:: 3.36\n\n" + '* ``File``: ' + Qgis.ProcessingFileParameterBehavior.File.__doc__ + '\n' + '* ``Folder``: ' + Qgis.ProcessingFileParameterBehavior.Folder.__doc__
+# --
+Qgis.ProcessingFileParameterBehavior.baseClass = Qgis
+QgsProcessingParameterNumber.Type = Qgis.ProcessingNumberParameterType
+# monkey patching scoped based enum
+QgsProcessingParameterNumber.Integer = Qgis.ProcessingNumberParameterType.Integer
+QgsProcessingParameterNumber.Integer.is_monkey_patched = True
+QgsProcessingParameterNumber.Integer.__doc__ = "Integer values"
+QgsProcessingParameterNumber.Double = Qgis.ProcessingNumberParameterType.Double
+QgsProcessingParameterNumber.Double.is_monkey_patched = True
+QgsProcessingParameterNumber.Double.__doc__ = "Double/float values"
+Qgis.ProcessingNumberParameterType.__doc__ = "Processing numeric parameter data types.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterNumber`.Type\n\n.. versionadded:: 3.36\n\n" + '* ``Integer``: ' + Qgis.ProcessingNumberParameterType.Integer.__doc__ + '\n' + '* ``Double``: ' + Qgis.ProcessingNumberParameterType.Double.__doc__
+# --
+Qgis.ProcessingNumberParameterType.baseClass = Qgis
+QgsProcessingParameterField.DataType = Qgis.ProcessingFieldParameterDataType
+# monkey patching scoped based enum
+QgsProcessingParameterField.Any = Qgis.ProcessingFieldParameterDataType.Any
+QgsProcessingParameterField.Any.is_monkey_patched = True
+QgsProcessingParameterField.Any.__doc__ = "Accepts any field"
+QgsProcessingParameterField.Numeric = Qgis.ProcessingFieldParameterDataType.Numeric
+QgsProcessingParameterField.Numeric.is_monkey_patched = True
+QgsProcessingParameterField.Numeric.__doc__ = "Accepts numeric fields"
+QgsProcessingParameterField.String = Qgis.ProcessingFieldParameterDataType.String
+QgsProcessingParameterField.String.is_monkey_patched = True
+QgsProcessingParameterField.String.__doc__ = "Accepts string fields"
+QgsProcessingParameterField.DateTime = Qgis.ProcessingFieldParameterDataType.DateTime
+QgsProcessingParameterField.DateTime.is_monkey_patched = True
+QgsProcessingParameterField.DateTime.__doc__ = "Accepts datetime fields"
+QgsProcessingParameterField.Binary = Qgis.ProcessingFieldParameterDataType.Binary
+QgsProcessingParameterField.Binary.is_monkey_patched = True
+QgsProcessingParameterField.Binary.__doc__ = "Accepts binary fields, since QGIS 3.34"
+QgsProcessingParameterField.Boolean = Qgis.ProcessingFieldParameterDataType.Boolean
+QgsProcessingParameterField.Boolean.is_monkey_patched = True
+QgsProcessingParameterField.Boolean.__doc__ = "Accepts boolean fields, since QGIS 3.34"
+Qgis.ProcessingFieldParameterDataType.__doc__ = "Processing field parameter data types.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterField`.DataType\n\n.. versionadded:: 3.36\n\n" + '* ``Any``: ' + Qgis.ProcessingFieldParameterDataType.Any.__doc__ + '\n' + '* ``Numeric``: ' + Qgis.ProcessingFieldParameterDataType.Numeric.__doc__ + '\n' + '* ``String``: ' + Qgis.ProcessingFieldParameterDataType.String.__doc__ + '\n' + '* ``DateTime``: ' + Qgis.ProcessingFieldParameterDataType.DateTime.__doc__ + '\n' + '* ``Binary``: ' + Qgis.ProcessingFieldParameterDataType.Binary.__doc__ + '\n' + '* ``Boolean``: ' + Qgis.ProcessingFieldParameterDataType.Boolean.__doc__
+# --
+Qgis.ProcessingFieldParameterDataType.baseClass = Qgis
+QgsProcessingParameterDateTime.Type = Qgis.ProcessingDateTimeParameterDataType
+# monkey patching scoped based enum
+QgsProcessingParameterDateTime.DateTime = Qgis.ProcessingDateTimeParameterDataType.DateTime
+QgsProcessingParameterDateTime.DateTime.is_monkey_patched = True
+QgsProcessingParameterDateTime.DateTime.__doc__ = "Datetime values"
+QgsProcessingParameterDateTime.Date = Qgis.ProcessingDateTimeParameterDataType.Date
+QgsProcessingParameterDateTime.Date.is_monkey_patched = True
+QgsProcessingParameterDateTime.Date.__doc__ = "Date values"
+QgsProcessingParameterDateTime.Time = Qgis.ProcessingDateTimeParameterDataType.Time
+QgsProcessingParameterDateTime.Time.is_monkey_patched = True
+QgsProcessingParameterDateTime.Time.__doc__ = "Time values"
+Qgis.ProcessingDateTimeParameterDataType.__doc__ = "Processing date time parameter data types.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterDateTime`.Type\n\n.. versionadded:: 3.36\n\n" + '* ``DateTime``: ' + Qgis.ProcessingDateTimeParameterDataType.DateTime.__doc__ + '\n' + '* ``Date``: ' + Qgis.ProcessingDateTimeParameterDataType.Date.__doc__ + '\n' + '* ``Time``: ' + Qgis.ProcessingDateTimeParameterDataType.Time.__doc__
+# --
+Qgis.ProcessingDateTimeParameterDataType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProcessingModelChildParameterSource.ModelParameter.__doc__ = "Parameter value is taken from a parent model parameter"
 Qgis.ProcessingModelChildParameterSource.ChildOutput.__doc__ = "Parameter value is taken from an output generated by a child algorithm"
@@ -2842,6 +3148,20 @@ Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__ = "Parameter value 
 Qgis.ProcessingModelChildParameterSource.__doc__ = "Processing model child parameter sources.\n\n.. versionadded:: 3.34\n\n" + '* ``ModelParameter``: ' + Qgis.ProcessingModelChildParameterSource.ModelParameter.__doc__ + '\n' + '* ``ChildOutput``: ' + Qgis.ProcessingModelChildParameterSource.ChildOutput.__doc__ + '\n' + '* ``StaticValue``: ' + Qgis.ProcessingModelChildParameterSource.StaticValue.__doc__ + '\n' + '* ``Expression``: ' + Qgis.ProcessingModelChildParameterSource.Expression.__doc__ + '\n' + '* ``ExpressionText``: ' + Qgis.ProcessingModelChildParameterSource.ExpressionText.__doc__ + '\n' + '* ``ModelOutput``: ' + Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__
 # --
 Qgis.ProcessingModelChildParameterSource.baseClass = Qgis
+QgsProcessingParameterTinInputLayers.Type = Qgis.ProcessingTinInputLayerType
+# monkey patching scoped based enum
+QgsProcessingParameterTinInputLayers.Vertices = Qgis.ProcessingTinInputLayerType.Vertices
+QgsProcessingParameterTinInputLayers.Vertices.is_monkey_patched = True
+QgsProcessingParameterTinInputLayers.Vertices.__doc__ = "Input that adds only vertices"
+QgsProcessingParameterTinInputLayers.StructureLines = Qgis.ProcessingTinInputLayerType.StructureLines
+QgsProcessingParameterTinInputLayers.StructureLines.is_monkey_patched = True
+QgsProcessingParameterTinInputLayers.StructureLines.__doc__ = "Input that adds add structure lines"
+QgsProcessingParameterTinInputLayers.BreakLines = Qgis.ProcessingTinInputLayerType.BreakLines
+QgsProcessingParameterTinInputLayers.BreakLines.is_monkey_patched = True
+QgsProcessingParameterTinInputLayers.BreakLines.__doc__ = "Input that adds vertices and break lines"
+Qgis.ProcessingTinInputLayerType.__doc__ = "Defines the type of input layer for a Processing TIN input.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingParameterTinInputLayers`.Type\n\n.. versionadded:: 3.36\n\n" + '* ``Vertices``: ' + Qgis.ProcessingTinInputLayerType.Vertices.__doc__ + '\n' + '* ``StructureLines``: ' + Qgis.ProcessingTinInputLayerType.StructureLines.__doc__ + '\n' + '* ``BreakLines``: ' + Qgis.ProcessingTinInputLayerType.BreakLines.__doc__
+# --
+Qgis.ProcessingTinInputLayerType.baseClass = Qgis
 QgsCoordinateReferenceSystem.Format = Qgis.CrsDefinitionFormat
 # monkey patching scoped based enum
 QgsCoordinateReferenceSystem.FormatWkt = Qgis.CrsDefinitionFormat.Wkt
@@ -3292,10 +3612,10 @@ QgsAction.OpenUrl.is_monkey_patched = True
 QgsAction.OpenUrl.__doc__ = "Open URL action"
 QgsAction.SubmitUrlEncoded = Qgis.AttributeActionType.SubmitUrlEncoded
 QgsAction.SubmitUrlEncoded.is_monkey_patched = True
-QgsAction.SubmitUrlEncoded.__doc__ = "POST data to an URL, using \"application/x-www-form-urlencoded\" or \"application/json\" if the body is valid JSON \n.. versionadded:: 3.24\n"
+QgsAction.SubmitUrlEncoded.__doc__ = "POST data to an URL, using \"application/x-www-form-urlencoded\" or \"application/json\" if the body is valid JSON \n.. versionadded:: 3.24"
 QgsAction.SubmitUrlMultipart = Qgis.AttributeActionType.SubmitUrlMultipart
 QgsAction.SubmitUrlMultipart.is_monkey_patched = True
-QgsAction.SubmitUrlMultipart.__doc__ = "POST data to an URL using \"multipart/form-data\"  \n.. versionadded:: 3.24\n"
+QgsAction.SubmitUrlMultipart.__doc__ = "POST data to an URL using \"multipart/form-data\"  \n.. versionadded:: 3.24"
 Qgis.AttributeActionType.__doc__ = "Attribute action types.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsAction`.ActionType\n\n.. versionadded:: 3.30\n\n" + '* ``Generic``: ' + Qgis.AttributeActionType.Generic.__doc__ + '\n' + '* ``GenericPython``: ' + Qgis.AttributeActionType.GenericPython.__doc__ + '\n' + '* ``Mac``: ' + Qgis.AttributeActionType.Mac.__doc__ + '\n' + '* ``Windows``: ' + Qgis.AttributeActionType.Windows.__doc__ + '\n' + '* ``Unix``: ' + Qgis.AttributeActionType.Unix.__doc__ + '\n' + '* ``OpenUrl``: ' + Qgis.AttributeActionType.OpenUrl.__doc__ + '\n' + '* ``SubmitUrlEncoded``: ' + Qgis.AttributeActionType.SubmitUrlEncoded.__doc__ + '\n' + '* ``SubmitUrlMultipart``: ' + Qgis.AttributeActionType.SubmitUrlMultipart.__doc__
 # --
 Qgis.AttributeActionType.baseClass = Qgis

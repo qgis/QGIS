@@ -1,0 +1,11 @@
+g.version
+g.version - Display GRASS GIS version info. <p>Prints only version if run with no options checked.
+General (g.*)
+QgsProcessingParameterBoolean|-c|Print copyright message|False
+QgsProcessingParameterBoolean|-x|Print citation options|False
+QgsProcessingParameterBoolean|-b|Print build information|False
+QgsProcessingParameterBoolean|-r|Print GIS library revision number and date|True
+QgsProcessingParameterBoolean|-e|Print info for additional libraries|True
+QgsProcessingParameterBoolean|-g|Print in shell script style (with Git commit reference)|False
+QgsProcessingParameterBoolean|--verbose|Print verbose output|False
+QgsProcessingParameterFileDestination|html|Output file|Html files (*.html)|grass_version_info.html|True

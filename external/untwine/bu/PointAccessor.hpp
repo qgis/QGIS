@@ -13,7 +13,6 @@
 #pragma once
 
 #include "../untwine/Common.hpp"
-#include "../untwine/MapFile.hpp"
 #include "../untwine/Point.hpp"
 
 #include "FileInfo.hpp"

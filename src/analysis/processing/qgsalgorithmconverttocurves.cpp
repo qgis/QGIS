@@ -62,13 +62,13 @@ QgsConvertToCurvesAlgorithm *QgsConvertToCurvesAlgorithm::createInstance() const
 
 QList<int> QgsConvertToCurvesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 void QgsConvertToCurvesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > tolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ),
-      QObject::tr( "Maximum distance tolerance" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Maximum distance tolerance" ), Qgis::ProcessingNumberParameterType::Double,
       0.000001, false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum distance tolerance" ), QgsPropertyDefinition::DoublePositive ) );
@@ -76,7 +76,7 @@ void QgsConvertToCurvesAlgorithm::initParameters( const QVariantMap & )
   addParameter( tolerance.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > angleTolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
-      QObject::tr( "Maximum angle tolerance" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Maximum angle tolerance" ), Qgis::ProcessingNumberParameterType::Double,
       0.000001, false, 0, 45.0 );
   angleTolerance->setIsDynamic( true );
   angleTolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Maximum angle tolerance" ), QgsPropertyDefinition::DoublePositive ) );

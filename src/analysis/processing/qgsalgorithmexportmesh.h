@@ -52,7 +52,7 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
   private:
 
     virtual QSet<int> supportedDataType() const = 0;
-    virtual QgsProcessing::SourceType sinkType() const = 0;
+    virtual Qgis::ProcessingSourceType sinkType() const = 0;
     virtual Qgis::WkbType sinkGeometryType() const = 0;
     virtual QgsGeometry meshElement( int index ) const = 0;
     virtual QgsMesh::ElementType meshElementType() const = 0;
@@ -80,7 +80,7 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
     {
       return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
     }
-    QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPoint;}
+    Qgis::ProcessingSourceType sinkType() const override {return Qgis::ProcessingSourceType::VectorPoint;}
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType()const override {return QgsMesh::Vertex;}
 };
@@ -102,7 +102,7 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
     {
       return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
     }
-    QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPolygon;}
+    Qgis::ProcessingSourceType sinkType() const override {return Qgis::ProcessingSourceType::VectorPolygon;}
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType()const override {return QgsMesh::Face;}
 };
@@ -124,7 +124,7 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
     {
       return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
     }
-    QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorLine;}
+    Qgis::ProcessingSourceType sinkType() const override {return Qgis::ProcessingSourceType::VectorLine;}
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType()const override {return QgsMesh::Edge;}
 };

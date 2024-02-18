@@ -4,7 +4,10 @@ QgsFeatureRenderer.MoreSymbolsPerFeature = QgsFeatureRenderer.Capability.MoreSym
 QgsFeatureRenderer.Filter = QgsFeatureRenderer.Capability.Filter
 QgsFeatureRenderer.ScaleDependent = QgsFeatureRenderer.Capability.ScaleDependent
 QgsFeatureRenderer.Capabilities = lambda flags=0: QgsFeatureRenderer.Capability(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsFeatureRenderer.Capability.__bool__ = lambda flag: bool(_force_int(flag))

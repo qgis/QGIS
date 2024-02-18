@@ -62,7 +62,7 @@ QgsAggregateAlgorithm *QgsAggregateAlgorithm::createInstance() const
 
 void QgsAggregateAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "GROUP_BY" ), QObject::tr( "Group by expression (NULL to group all features)" ), QStringLiteral( "NULL" ), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterAggregate( QStringLiteral( "AGGREGATES" ), QObject::tr( "Aggregates" ), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Aggregated" ) ) );

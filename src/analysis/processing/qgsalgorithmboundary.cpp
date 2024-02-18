@@ -60,7 +60,7 @@ QString QgsBoundaryAlgorithm::shortHelpString() const
 
 QList<int> QgsBoundaryAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 bool QgsBoundaryAlgorithm::supportInPlaceEdit( const QgsMapLayer * ) const
@@ -73,9 +73,9 @@ QgsBoundaryAlgorithm *QgsBoundaryAlgorithm::createInstance() const
   return new QgsBoundaryAlgorithm();
 }
 
-QgsProcessingFeatureSource::Flag QgsBoundaryAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsBoundaryAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 Qgis::WkbType QgsBoundaryAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const

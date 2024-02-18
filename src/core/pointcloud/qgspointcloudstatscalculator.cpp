@@ -58,6 +58,9 @@ struct StatsProcessor
 
     QgsPointCloudStatistics operator()( IndexedPointCloudNode node )
     {
+      if ( mIndex->nodePointCount( node ) < 1 )
+        return QgsPointCloudStatistics();
+
       std::unique_ptr<QgsPointCloudBlock> block = nullptr;
       if ( mIndex->accessType() == QgsPointCloudIndex::Local )
       {
@@ -213,9 +216,7 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
 
   feedback->setProgress( 0 );
 
-  QThreadPool::globalInstance()->releaseThread();
   QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex.get(), mRequest, feedback, 100.0 / ( double )nodes.size() ) );
-  QThreadPool::globalInstance()->reserveThread();
 
   for ( QgsPointCloudStatistics &s : list )
   {

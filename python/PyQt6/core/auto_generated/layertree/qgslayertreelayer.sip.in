@@ -186,7 +186,7 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 .. versionadded:: 3.14
 %End
 
-    enum LegendNodesSplitBehavior
+    enum LegendNodesSplitBehavior /BaseType=IntEnum/
     {
       UseDefaultLegendSetting,
       AllowSplittingLegendNodesOverMultipleColumns,

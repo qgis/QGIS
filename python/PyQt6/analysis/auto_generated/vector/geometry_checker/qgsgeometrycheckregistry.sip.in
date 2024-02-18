@@ -39,7 +39,7 @@ Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usuall
 
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QMap<QString, QVariant> &geometryCheckConfig ) /Factory/;
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) /Factory/;
 %Docstring
 Create a new geometryCheck of type ``checkId``
 Pass the ``context`` and ``geometryCheckConfiguration`` to the newly created check.

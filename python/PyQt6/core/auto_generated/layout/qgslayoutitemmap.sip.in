@@ -298,7 +298,7 @@ Layout graphical items for displaying a map.
 %End
   public:
 
-    enum AtlasScalingMode
+    enum AtlasScalingMode /BaseType=IntEnum/
     {
       Fixed,
 
@@ -307,7 +307,7 @@ Layout graphical items for displaying a map.
       Auto
     };
 
-    enum MapItemFlag
+    enum MapItemFlag /BaseType=IntEnum/
     {
       ShowPartialLabels,
       ShowUnplacedLabels,

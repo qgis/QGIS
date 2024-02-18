@@ -60,7 +60,7 @@ QgsPdalThinByRadiusAlgorithm *QgsPdalThinByRadiusAlgorithm::createInstance() con
 void QgsPdalThinByRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SAMPLING_RADIUS" ), QObject::tr( "Sampling radius (in map units)" ), QgsProcessingParameterNumber::Double, 1.0, false, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SAMPLING_RADIUS" ), QObject::tr( "Sampling radius (in map units)" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 1e-9 ) );
   createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned (by radius)" ) ) );
 }

@@ -33,6 +33,10 @@ from utilities import unitTestDataPath
 start_app()
 
 
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
+
 class TestQgsRasterFileWriter(QgisTestCase):
 
     def __init__(self, methodName):
@@ -115,7 +119,11 @@ class TestQgsRasterFileWriter(QgisTestCase):
     def testExtensionsForFormat(self):
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('not format'), [])
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GTiff'), ['tiff', 'tif'])
-        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GPKG'), ['gpkg'])
+        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0):
+            self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GPKG'), ['gpkg'])
+        else:
+            self.assertCountEqual(
+                QgsRasterFileWriter.extensionsForFormat('GPKG'), ['gpkg', 'gpkg.zip'])
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('JPEG'), ['jpg', 'jpeg'])
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('AAIGrid'), ['asc'])
 

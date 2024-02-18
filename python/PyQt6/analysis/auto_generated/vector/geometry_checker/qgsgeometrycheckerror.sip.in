@@ -28,7 +28,7 @@ This represents an error reported by a geometry check.
 %End
   public:
 
-    enum Status
+    enum Status /BaseType=IntEnum/
     {
       StatusPending,
       StatusFixFailed,
@@ -36,7 +36,7 @@ This represents an error reported by a geometry check.
       StatusObsolete
     };
 
-    enum ValueType
+    enum ValueType /BaseType=IntEnum/
     {
       ValueLength,
       ValueArea,

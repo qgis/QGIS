@@ -21,7 +21,7 @@ Holder for the widget type and its configuration for a field.
 %End
   public:
 
-    QgsEditorWidgetSetup( const QString &type, const QMap<QString, QVariant> &config );
+    QgsEditorWidgetSetup( const QString &type, const QVariantMap &config );
 %Docstring
 Constructor
 %End
@@ -37,7 +37,7 @@ Constructor for QgsEditorWidgetSetup
 :return: the widget type to use
 %End
 
-    QMap<QString, QVariant> config() const;
+    QVariantMap config() const;
 %Docstring
 
 :return: the widget configuration to used
@@ -48,6 +48,8 @@ Constructor for QgsEditorWidgetSetup
 
 :return: ``True`` if there is no widget configured.
 %End
+
+    bool operator==( const QgsEditorWidgetSetup &other ) const;
 
 };
 

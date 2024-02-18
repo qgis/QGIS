@@ -68,13 +68,13 @@ This is the base class for all map layer types (vector, raster).
 %End
   public:
 
-    enum PropertyType
+    enum PropertyType /BaseType=IntEnum/
     {
       Style,
       Metadata,
     };
 
-    enum LayerFlag
+    enum LayerFlag /BaseType=IntEnum/
     {
       Identifiable,
       Removable,
@@ -84,7 +84,7 @@ This is the base class for all map layer types (vector, raster).
     typedef QFlags<QgsMapLayer::LayerFlag> LayerFlags;
 
 
-    enum StyleCategory
+    enum StyleCategory /BaseType=IntEnum/
     {
       LayerConfiguration,
       Symbology,
@@ -635,7 +635,7 @@ or layer with temporary data (as temporary mesh layer dataset)
 .. versionadded:: 3.10.1
 %End
 
-    enum ReadFlag
+    enum ReadFlag /BaseType=IntEnum/
     {
       FlagDontResolveLayers,
       FlagTrustLayerMetadata,

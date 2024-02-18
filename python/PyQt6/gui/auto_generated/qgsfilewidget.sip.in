@@ -28,7 +28,7 @@ The :py:class:`QgsFileWidget` class creates a widget for selecting a file or a f
 %End
   public:
 
-    enum StorageMode
+    enum StorageMode /BaseType=IntEnum/
     {
       GetFile,
       GetDirectory,
@@ -36,7 +36,7 @@ The :py:class:`QgsFileWidget` class creates a widget for selecting a file or a f
       SaveFile,
     };
 
-    enum RelativeStorage
+    enum RelativeStorage /BaseType=IntEnum/
     {
       Absolute,
       RelativeProject,

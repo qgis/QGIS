@@ -631,14 +631,14 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
   return metadata->createProvider( dataSource, options, flags );
 }
 
-int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
+Qgis::DataItemProviderCapabilities QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
 {
   const QList< QgsDataItemProvider * > itemProviders = dataItemProviders( providerKey );
-  int ret = QgsDataProvider::NoDataCapabilities;
+  Qgis::DataItemProviderCapabilities ret;
   //concat flags
   for ( const QgsDataItemProvider *itemProvider : itemProviders )
   {
-    ret = ret | itemProvider->capabilities();
+    ret |= itemProvider->capabilities();
   }
   return ret;
 }

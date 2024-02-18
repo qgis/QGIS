@@ -884,8 +884,13 @@ void PDFDiff::finalizeGraphicsPieces(PDFDiffPageContext& context)
             continue;
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QByteArrayView view(reinterpret_cast<const char*>(info.hash.data()), info.hash.size());
         hasher.addData(view);
+#else
+        hasher.addData(reinterpret_cast<const char*>(info.hash.data()), info.hash.size());
+#endif
+
     }
 
     QByteArray hash = hasher.result();

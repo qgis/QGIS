@@ -68,12 +68,12 @@ QgsRoundnessAlgorithm *QgsRoundnessAlgorithm::createInstance() const
 
 QList<int> QgsRoundnessAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
-QgsProcessing::SourceType QgsRoundnessAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsRoundnessAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 QgsFields QgsRoundnessAlgorithm::outputFields( const QgsFields &inputFields ) const

@@ -49,7 +49,7 @@ class QgsPolygonsToLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   protected:
     QString outputName() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
