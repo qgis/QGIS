@@ -23,6 +23,7 @@ import os
 import json
 import warnings
 from pathlib import Path
+from typing import Optional
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
@@ -748,7 +749,10 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         wrapper = self.wrappers[row][self.parameter_to_column[parameter_name]]
         return wrapper.parameterValue()
 
-    def parametersForRow(self, row, destinationProject=None, warnOnInvalid=True):
+    def parametersForRow(self,
+                         row: int,
+                         destinationProject: Optional[QgsProject] = None,
+                         warnOnInvalid=True):
         """
         Returns the parameters dictionary corresponding to a row in the batch table
         """
