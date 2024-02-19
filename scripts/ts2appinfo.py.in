@@ -68,7 +68,7 @@ for qm in sorted(glob(sys.argv[1] + "/output/i18n/qgis_*.qm")):
             continue
         strings[s][lang] = translation
 
-for elem in ['name', 'summary', 'description']:
+for elem in ['name', 'summary']:
     for c in r.iter(elem):
         if c.attrib:
             continue
@@ -81,6 +81,23 @@ for elem in ['name', 'summary', 'description']:
             e.text = strings[s][lang]
             e.tail = c.tail
             r.append(e)
+
+# we need to do description separately because it's the <p> that we translate
+descriptionElement = r.find('description')
+descriptionString = None
+for c in descriptionElement.iter('p'):
+    descriptionString = et.tostring(c).decode("utf-8")
+
+for lang in strings[descriptionString]:
+    translated = strings[descriptionString][lang]
+    try:
+        translatedElement = et.fromstring(translated)
+        translatedElement.attrib={"xml:lang": lang}
+        translatedElement.tail = "\n    "
+        descriptionElement.append(translatedElement)
+    except:
+        print("Skipping:", lang, translated)
+        continue
 
 d.write(sys.argv[1] + "/org.qgis.qgis.appdata.xml", encoding="UTF-8", xml_declaration=True)
 
