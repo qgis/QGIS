@@ -45,8 +45,6 @@ Sets the context in which the renderer widget is shown, e.g., the associated map
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -54,15 +52,11 @@ Sets the context in which the renderer widget is shown, e.g., the associated map
 Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
     void applyChanges();
@@ -107,8 +101,6 @@ and by connecting the slot contextMenuViewCategories(const QPoint&).
 %Docstring
 Creates widget to setup data-defined size legend.
 Returns newly created panel - may be ``None`` if it could not be opened. Ownership is transferred to the caller.
-
-.. versionadded:: 3.0
 %End
 
     virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
@@ -201,8 +193,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -210,15 +200,11 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
   public slots:

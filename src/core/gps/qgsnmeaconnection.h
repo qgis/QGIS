@@ -24,7 +24,6 @@
 /**
  * \ingroup core
  * \brief Evaluates NMEA sentences coming from a GPS device
- * \since QGIS 1.4
  */
 class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
 {

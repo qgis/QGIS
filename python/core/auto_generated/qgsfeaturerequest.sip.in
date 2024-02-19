@@ -86,8 +86,6 @@ and implementation if ordering is done on the server.
 In case the fallback code needs to be used, a limit set on the request will be respected
 for the features returned by the iterator but internally all features will be requested
 from the provider.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode
@@ -145,8 +143,6 @@ The expression
 Prepare the expression with the given context.
 
 .. seealso:: :py:func:`QgsExpression.prepare`
-
-.. versionadded:: 3.0
 %End
 
         bool ascending() const;
@@ -191,8 +187,6 @@ Dumps the content to an SQL equivalent
 %Docstring(signature="appended")
 Represents a list of OrderByClauses, with the most important first and the least
 important last.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode
@@ -448,8 +442,6 @@ Sets invalid geometry checking behavior.
    directly from a :py:class:`QgsVectorDataProvider`.
 
 .. seealso:: :py:func:`invalidGeometryCheck`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
@@ -457,8 +449,6 @@ Sets invalid geometry checking behavior.
 Returns the invalid geometry checking behavior.
 
 .. seealso:: :py:func:`setInvalidGeometryCheck`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
@@ -468,8 +458,6 @@ Sets a callback function to use when encountering an invalid geometry and
 called using the feature with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
-
-.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -516,8 +504,6 @@ filter expressions are combined using AND, so only features matching both
 the existing expression and the additional expression will be returned.
 
 Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterExpression.
-
-.. versionadded:: 2.14
 %End
 
     QgsExpressionContext *expressionContext();
@@ -527,8 +513,6 @@ Returns the expression context used to evaluate filter expressions.
 .. seealso:: :py:func:`setExpressionContext`
 
 .. seealso:: :py:func:`filterExpression`
-
-.. versionadded:: 2.12
 %End
 
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
@@ -538,8 +522,6 @@ Sets the expression context used to evaluate filter expressions.
 .. seealso:: :py:func:`expressionContext`
 
 .. seealso:: :py:func:`setFilterExpression`
-
-.. versionadded:: 2.12
 %End
 
     QgsFeatureRequest &disableFilter();
@@ -553,9 +535,6 @@ Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterTy
    Spatial filters will be left in place.
 
 :return: The object the method is called on for chaining
-
-
-.. versionadded:: 2.12
 %End
 
 
@@ -567,8 +546,6 @@ Adds a new OrderByClause, appending it as the least important one.
 :param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
                   If the order is ascending, by default nulls are last
                   If the order is descending, by default nulls are first
-
-.. versionadded:: 2.14
 %End
 
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
@@ -578,22 +555,16 @@ Adds a new OrderByClause, appending it as the least important one.
 :param expression: The expression to use for ordering
 :param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
-
-.. versionadded:: 2.14
 %End
 
     OrderBy orderBy() const;
 %Docstring
 Returns a list of order by clauses specified for this feature request.
-
-.. versionadded:: 2.14
 %End
 
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 %Docstring
 Set a list of order by clauses.
-
-.. versionadded:: 2.14
 %End
 
     QgsFeatureRequest &setLimit( long long limit );
@@ -603,8 +574,6 @@ Set the maximum number of features to request.
 :param limit: maximum number of features, or -1 to request all features.
 
 .. seealso:: :py:func:`limit`
-
-.. versionadded:: 2.14
 %End
 
     long long limit() const;
@@ -612,8 +581,6 @@ Set the maximum number of features to request.
 Returns the maximum number of features to request, or -1 if no limit set.
 
 .. seealso:: :py:func:`setLimit`
-
-.. versionadded:: 2.14
 %End
 
     QgsFeatureRequest &setFlags( Qgis::FeatureRequestFlags flags );
@@ -725,8 +692,6 @@ Sets a subset of attributes by names that will be fetched.
 Set a simplification method for geometries that will be fetched.
 
 .. seealso:: :py:func:`simplifyMethod`
-
-.. versionadded:: 2.2
 %End
 
     const QgsSimplifyMethod &simplifyMethod() const;
@@ -734,8 +699,6 @@ Set a simplification method for geometries that will be fetched.
 Returns the simplification method for geometries that will be fetched.
 
 .. seealso:: :py:func:`setSimplifyMethod`
-
-.. versionadded:: 2.2
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -747,8 +710,6 @@ and all features will be left with their original geometry.
 .. seealso:: :py:func:`setDestinationCrs`
 
 .. seealso:: :py:func:`transformContext`
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransformContext transformContext() const;
@@ -759,8 +720,6 @@ and reprojection is required
 .. seealso:: :py:func:`setDestinationCrs`
 
 .. seealso:: :py:func:`destinationCrs`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -785,8 +744,6 @@ original geometry in the source CRS, so these values are not affected by
 any destination CRS transform present in the feature request.
 
 .. seealso:: :py:func:`destinationCrs`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
@@ -798,8 +755,6 @@ called using the feature which encountered the transform error as a parameter.
 .. seealso:: :py:func:`transformErrorCallback`
 
 .. seealso:: :py:func:`setDestinationCrs`
-
-.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -825,9 +780,6 @@ Check if a feature is accepted by this requests filter
 :param feature: The feature which will be tested
 
 :return: ``True``, if the filter accepts the feature
-
-
-.. versionadded:: 2.1
 %End
 
  int connectionTimeout() const /Deprecated/;
@@ -841,8 +793,6 @@ at this moment. A negative value (which is set by default) will wait forever.
 
 .. deprecated::
    Use :py:func:`~QgsFeatureRequest.timeout` instead.
-
-.. versionadded:: 3.0
 %End
 
  QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated/;
@@ -856,8 +806,6 @@ at this moment. A negative value (which is set by default) will wait forever.
 
 .. deprecated::
    Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
-
-.. versionadded:: 3.0
 %End
 
     int timeout() const;
@@ -959,8 +907,6 @@ class QgsAbstractFeatureSource
 {
 %Docstring(signature="appended")
 Base class that can be used for any class that is capable of returning features
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

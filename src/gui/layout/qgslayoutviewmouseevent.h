@@ -30,7 +30,6 @@ class QgsLayoutItem;
  *
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordinates in pixel space it also knows the coordinates the layout space.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
 {

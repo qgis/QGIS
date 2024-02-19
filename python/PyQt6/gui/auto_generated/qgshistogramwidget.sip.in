@@ -17,8 +17,6 @@ class QgsHistogramWidget : QWidget
 {
 %Docstring(signature="appended")
 Graphical histogram for displaying distributions of field values.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

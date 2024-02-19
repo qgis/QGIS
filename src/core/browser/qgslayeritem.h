@@ -75,19 +75,16 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     /**
      * Returns the supported CRS
-     *  \since QGIS 2.8
      */
     QStringList supportedCrs() const { return mSupportedCRS; }
 
     /**
      * Returns the supported formats
-     *  \since QGIS 2.8
      */
     QStringList supportedFormats() const { return mSupportFormats; }
 
     /**
      * Returns comments of the layer
-     * \since QGIS 2.12
      */
     virtual QString comments() const { return QString(); }
 

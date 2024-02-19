@@ -15,8 +15,6 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring(signature="appended")
 Wraps a date/time edit widget for searching.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

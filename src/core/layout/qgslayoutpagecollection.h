@@ -35,7 +35,6 @@ class QgsMargins;
  * \ingroup core
  * \class QgsLayoutPageCollection
  * \brief A manager for a collection of pages in a layout.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSerializableObject
 {

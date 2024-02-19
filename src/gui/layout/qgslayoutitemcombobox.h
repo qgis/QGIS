@@ -29,7 +29,6 @@
  * \ingroup gui
  * \brief The QgsLayoutItemComboBox class is a combo box which displays items of
  * a matching type from a layout.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
 {

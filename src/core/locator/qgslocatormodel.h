@@ -37,7 +37,6 @@ class QgsLocatorProxyModel;
  * Note that this class should generally be used with a QgsLocatorProxyModel
  * in order to ensure correct sorting of results by priority and match level.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
 {
@@ -141,7 +140,6 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
  * Note that this class should generally be used with a QgsLocatorProxyModel
  * in order to ensure correct sorting of results by priority and match level.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorAutomaticModel : public QgsLocatorModel
 {
@@ -196,7 +194,6 @@ class CORE_EXPORT QgsLocatorAutomaticModel : public QgsLocatorModel
  * \ingroup core
  * \brief A sort proxy model for QgsLocatorModel, which automatically sorts
  * results by precedence.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorProxyModel : public QSortFilterProxyModel
 {

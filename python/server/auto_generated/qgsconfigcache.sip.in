@@ -16,8 +16,6 @@ class QgsConfigCache : QObject
 {
 %Docstring(signature="appended")
 Cache for server configuration.
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
@@ -57,8 +55,6 @@ value is ``False``).
 :param settings: QGIS server settings
 
 :return: the project or ``None`` if an error happened
-
-.. versionadded:: 3.0
 %End
 
     QString strategyName() const;

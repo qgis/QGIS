@@ -80,8 +80,6 @@ implemented as map tools.
     virtual Flags flags() const;
 %Docstring
 Returns the flags for the map tool.
-
-.. versionadded:: 2.16
 %End
 
     ~QgsMapTool();
@@ -204,8 +202,6 @@ returns pointer to the tool's map canvas
 Emit map tool changed with the old tool
 
 .. seealso:: :py:func:`setToolName`
-
-.. versionadded:: 2.3
 %End
 
     static double searchRadiusMM();
@@ -213,24 +209,18 @@ Emit map tool changed with the old tool
 Gets search radius in mm. Used by identify, tip etc.
 The values is currently set in identify tool options (move somewhere else?)
 and defaults to :py:class:`Qgis`.DEFAULT_SEARCH_RADIUS_MM.
-
-.. versionadded:: 2.3
 %End
 
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
 Gets search radius in map units for given context. Used by identify, tip etc.
 The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
-
-.. versionadded:: 2.3
 %End
 
     static double searchRadiusMU( QgsMapCanvas *canvas );
 %Docstring
 Gets search radius in map units for given canvas. Used by identify, tip etc.
 The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
-
-.. versionadded:: 2.3
 %End
 
     virtual void populateContextMenu( QMenu *menu );

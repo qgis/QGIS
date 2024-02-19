@@ -43,7 +43,6 @@ class QgsScreenHelper;
  * mode (without settings for color) is also available when the resultant font is
  * used only in a QFont object.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsFontButton : public QToolButton
 {

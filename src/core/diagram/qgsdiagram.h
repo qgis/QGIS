@@ -59,7 +59,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
     /**
      * Returns an instance that is equivalent to this one
-     * \since QGIS 2.4
     */
     virtual QgsDiagram *clone() const = 0 SIP_FACTORY;
 
@@ -69,7 +68,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
      * Returns a prepared expression for the specified context.
      * \param expression expression string
      * \param context expression context
-     * \since QGIS 2.12
      */
     QgsExpression *getExpression( const QString &expression, const QgsExpressionContext &context );
 
@@ -90,7 +88,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
      * \param value value to return legend item size for
      * \param s diagram settings
      * \param is interpolation settings
-     * \since QGIS 2.16
      */
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
 
@@ -144,7 +141,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
      * \param value value to calculate corresponding circular size for
      * \param s diagram settings
      * \param is interpolation settings
-     * \since QGIS 2.16
      */
     QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
 

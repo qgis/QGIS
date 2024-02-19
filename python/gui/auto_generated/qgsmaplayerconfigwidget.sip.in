@@ -93,8 +93,6 @@ class QgsMapLayerConfigWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 A panel widget that can be shown in the map style dock
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

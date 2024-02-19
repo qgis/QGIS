@@ -32,7 +32,6 @@
  * \ingroup core
  * \class QgsStringReplacement
  * \brief A representation of a single string replacement.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsStringReplacement
@@ -109,7 +108,6 @@ class CORE_EXPORT QgsStringReplacement
  * \ingroup core
  * \class QgsStringReplacementCollection
  * \brief A collection of string replacements (specified using QgsStringReplacement objects).
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsStringReplacementCollection
@@ -177,7 +175,6 @@ class CORE_EXPORT QgsStringReplacementCollection
  * \ingroup core
  * \class QgsStringUtils
  * \brief Utility functions for working with strings.
- * \since QGIS 2.11
  */
 
 class CORE_EXPORT QgsStringUtils
@@ -189,7 +186,6 @@ class CORE_EXPORT QgsStringUtils
      * \param string input string
      * \param capitalization capitalization type to apply
      * \returns capitalized string
-     * \since QGIS 3.0
      */
     static QString capitalize( const QString &string, Qgis::Capitalization capitalization );
 
@@ -251,7 +247,7 @@ class CORE_EXPORT QgsStringUtils
      * \param search search term string
      * \return Normalized value of how likely is the \a search to be in the \a candidate
      * \note Use this function only to calculate the fuzzy score between two strings and later compare these values, but do not depend on the actual numbers. They are implementation detail that may change in a future release.
-     * \since 3.14
+     * \since QGIS 3.14
      */
     static double fuzzyScore( const QString &candidate, const QString &search );
 
@@ -261,7 +257,6 @@ class CORE_EXPORT QgsStringUtils
      * \param string string to insert links into
      * \param foundLinks if specified, will be set to TRUE if any links were inserted into the string
      * \returns string with inserted links
-     * \since QGIS 3.0
      */
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
 

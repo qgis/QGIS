@@ -31,7 +31,6 @@ class QgsAccessControl;
 /**
  * \ingroup server
  * \brief RAII class to restore layer filters on destruction
- * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
@@ -70,7 +69,6 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
      * Applies filters from access control on layer.
      * \param accessControl The access control instance
      * \param mapLayer The layer on which the filter has to be applied
-     * \since QGIS 3.0
      */
     static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer );
 

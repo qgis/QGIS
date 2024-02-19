@@ -37,7 +37,6 @@
  *
  * A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsUserProfileManager : public QObject
 {

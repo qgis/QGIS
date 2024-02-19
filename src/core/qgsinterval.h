@@ -40,7 +40,6 @@ class QString;
  * \ingroup core
  * \class QgsInterval
  * \brief A representation of the interval between two datetime values.
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsInterval
@@ -300,7 +299,7 @@ class CORE_EXPORT QgsInterval
      *
      * Returns 0.0 if the original duration was not set.
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     double originalDuration() const { return mOriginalDuration; }
 
@@ -315,7 +314,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see originalDuration()
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     Qgis::TemporalUnit originalUnit() const { return mOriginalUnit; }
 
@@ -375,7 +374,6 @@ Q_DECLARE_METATYPE( QgsInterval )
  * \param datetime1 start datetime
  * \param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
 
@@ -386,7 +384,6 @@ QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &
  * \param date1 start date
  * \param date2 date to subtract, ie subtract date2 from date1
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 QgsInterval CORE_EXPORT operator-( QDate date1, QDate date2 );
 
@@ -395,7 +392,6 @@ QgsInterval CORE_EXPORT operator-( QDate date1, QDate date2 );
  * \param time1 start time
  * \param time2 time to subtract, ie subtract time2 from time1
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 QgsInterval CORE_EXPORT operator-( QTime time1, QTime time2 );
 
@@ -404,7 +400,6 @@ QgsInterval CORE_EXPORT operator-( QTime time1, QTime time2 );
  * \param start initial datetime
  * \param interval interval to add
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 QDateTime CORE_EXPORT operator+( const QDateTime &start, const QgsInterval &interval );
 

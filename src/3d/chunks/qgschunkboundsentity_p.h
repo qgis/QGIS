@@ -53,7 +53,6 @@ class AABBMesh;
  * \ingroup 3d
  * \brief Draws bounds of axis aligned bounding boxes
  * \note Not available in Python bindings
- * \since QGIS 3.0
  */
 class QgsChunkBoundsEntity : public Qt3DCore::QEntity
 {

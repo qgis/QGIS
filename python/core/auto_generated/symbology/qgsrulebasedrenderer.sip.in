@@ -137,10 +137,6 @@ Returns ``True`` if this rule or one of its children needs the geometry to be ap
 %End
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
-%Docstring
-
-.. versionadded:: 2.6
-%End
 
         bool isFilterOK( const QgsFeature &f, QgsRenderContext *context = 0 ) const;
 %Docstring
@@ -174,8 +170,6 @@ A scale of 0 indicates no maximum scale visibility.
 .. seealso:: :py:func:`minimumScale`
 
 .. seealso:: :py:func:`setMaximumScale`
-
-.. versionadded:: 3.0
 %End
 
         double minimumScale() const;
@@ -187,8 +181,6 @@ A scale of 0 indicates no minimum scale visibility.
 .. seealso:: :py:func:`maximumScale`
 
 .. seealso:: :py:func:`setMinimumScale`
-
-.. versionadded:: 3.0
 %End
 
         QgsExpression *filter() const;
@@ -222,15 +214,11 @@ Returns if this rule is active
         QString ruleKey() const;
 %Docstring
 Unique rule identifier (for identification of rule within renderer)
-
-.. versionadded:: 2.6
 %End
 
         void setRuleKey( const QString &key );
 %Docstring
 Override the assigned rule key (should be used just internally by rule-based renderer)
-
-.. versionadded:: 2.6
 %End
 
         void setSymbol( QgsSymbol *sym /Transfer/ );
@@ -346,8 +334,6 @@ tell which symbols will be used to render the feature
         QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );
 %Docstring
 Returns which legend keys match the feature
-
-.. versionadded:: 2.14
 %End
 
         QgsRuleBasedRenderer::RuleList rulesForFeature( const QgsFeature &feature, QgsRenderContext *context = 0, bool onlyActive = true );
@@ -432,8 +418,6 @@ take child rule out, set parent as ``None``
         QgsRuleBasedRenderer::Rule *findRuleByKey( const QString &key );
 %Docstring
 Try to find a rule given its unique key
-
-.. versionadded:: 2.6
 %End
 
         void setIsElse( bool iselse );
@@ -577,8 +561,6 @@ Creates a new QgsRuleBasedRenderer from an existing ``renderer``.
 Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
-
-.. versionadded:: 2.5
 %End
 
     static void convertToDataDefinedSymbology( QgsSymbol *symbol, const QString &sizeScaleField, const QString &rotationField = QString() );

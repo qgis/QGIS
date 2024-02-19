@@ -69,7 +69,6 @@ class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
  *
  * \see QgsProjectionSelectionDialog.
  * \see QgsProjectionSelectionWidget
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::QgsProjectionSelectorBase
@@ -93,7 +92,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Returns the CRS currently selected in the widget.
      * \see setCrs()
-     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -101,14 +99,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Sets whether a "no/invalid" projection option should be shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \see showNoProjection()
-     * \since QGIS 3.0
      */
     void setShowNoProjection( bool show );
 
     /**
      * Sets whether to show the bounds preview map.
      * \see showBoundsMap()
-     * \since QGIS 3.0
      */
     void setShowBoundsMap( bool show );
 
@@ -116,7 +112,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \see setShowNoProjection()
-     * \since QGIS 3.0
      */
     bool showNoProjection() const;
 
@@ -130,7 +125,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Returns whether the bounds preview map is shown.
      * \see setShowBoundsMap()
-     * \since QGIS 3.0
      */
     bool showBoundsMap() const;
 
@@ -145,7 +139,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * The initial "preview" rectangle for the bounds overview map.
      * \see previewRect()
-     * \since QGIS 3.0
      */
     QgsRectangle previewRect() const;
 
@@ -170,14 +163,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Sets the initial \a crs to show within the dialog.
      * \see crs()
-     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Sets the initial "preview" rectangle for the bounds overview map.
      * \see previewRect()
-     * \since QGIS 3.0
      */
     void setPreviewRect( const QgsRectangle &rect );
 
@@ -221,7 +212,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Emitted when a projection is double clicked in the list.
-     * \since QGIS 2.14
      */
     void projectionDoubleClicked();
 

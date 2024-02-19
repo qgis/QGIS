@@ -144,7 +144,6 @@ class CORE_EXPORT QgsLabelPosition
 
     /**
      * ID of the associated label provider.
-     * \since QGIS 2.14
      */
     QString providerID;
 

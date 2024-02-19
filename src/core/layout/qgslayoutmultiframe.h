@@ -42,7 +42,6 @@ class QgsLayoutItemRenderContext;
  * \class QgsLayoutMultiFrame
  * \brief Abstract base class for layout items with the ability to distribute the content to
  * several frames (QgsLayoutFrame items).
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface

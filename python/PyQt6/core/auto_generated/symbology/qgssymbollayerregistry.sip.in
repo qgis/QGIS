@@ -61,8 +61,6 @@ When saving is ``True``, paths are converted from absolute to relative,
 when saving is ``False``, paths are converted from relative to absolute.
 This ensures that paths in project files can be relative, but in symbol layer
 instances the paths are always absolute
-
-.. versionadded:: 3.0
 %End
 
     virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
@@ -157,8 +155,6 @@ create a new instance of symbol layer given symbol layer name and SLD
 Resolve paths in properties of a particular symbol layer.
 This normally means converting relative paths to absolute paths when loading
 and converting absolute paths to relative paths when saving.
-
-.. versionadded:: 3.0
 %End
 
     void resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const;

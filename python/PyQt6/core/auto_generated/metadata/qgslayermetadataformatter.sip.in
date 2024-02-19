@@ -14,8 +14,6 @@ class QgsLayerMetadataFormatter
 {
 %Docstring(signature="appended")
 Class for metadata formatter.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

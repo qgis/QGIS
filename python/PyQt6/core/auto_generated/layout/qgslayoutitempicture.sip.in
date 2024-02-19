@@ -13,8 +13,6 @@ class QgsLayoutItemPicture: QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

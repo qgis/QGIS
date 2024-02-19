@@ -70,8 +70,6 @@ Populate widget with user-defined options. String should contain
 key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
 
 .. seealso:: :py:func:`options`
-
-.. versionadded:: 3.0
 %End
 
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );

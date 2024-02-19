@@ -41,7 +41,6 @@ class CombinedCoordinateReferenceSystemsProxyModel;
  * \class QgsProjectionSelectionWidget
  * \ingroup gui
  * \brief A widget for selecting a projection.
- * \since QGIS 2.7
  */
 class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {
@@ -95,14 +94,12 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     /**
      * Returns whether the specified CRS option is visible in the widget.
      * \see setOptionVisible()
-     * \since QGIS 3.0
      */
     bool optionVisible( CrsOption option ) const;
 
     /**
      * Sets the text to show for the not set option. Note that this option is not shown
      * by default and must be set visible by calling setOptionVisible().
-     * \since QGIS 3.0
      */
     void setNotSetText( const QString &text );
 
@@ -110,7 +107,6 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Sets a \a message to show in the dialog. If an empty string is
      * passed, the message will be a generic
      * 'define the CRS for this layer'.
-     * \since QGIS 3.0
      */
     void setMessage( const QString &text );
 
@@ -208,7 +204,6 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /**
      * Emitted when the not set option is selected.
-     * \since QGIS 3.0
      */
     void cleared();
 

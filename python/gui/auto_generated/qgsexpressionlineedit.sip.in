@@ -23,8 +23,6 @@ choice as it gives users direct access to select fields from a drop-down list.
 :py:class:`QgsExpressionLineEdit` also supports a multiline editor mode which is useful where
 more space is available for the widget, but where :py:class:`QgsExpressionBuilderWidget`
 is too complex or large for use.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

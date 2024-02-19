@@ -16,8 +16,6 @@ class QgsVariableEditorWidget : QWidget
 A tree based widget for editing expression context scope variables. The widget allows editing
 variables from a :py:class:`QgsExpressionContextScope`, and can optionally also show inherited
 variables from a :py:class:`QgsExpressionContext`.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode

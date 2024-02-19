@@ -34,7 +34,6 @@ class QgsFillSymbol;
  * \ingroup core
  * \brief The QgsScaleBarSettings class stores the appearance and layout settings
  * for scalebar drawing with QgsScaleBarRenderer.
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsScaleBarSettings
 {

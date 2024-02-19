@@ -110,7 +110,6 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
  * \ingroup gui
  * \class QgsMapLayerConfigWidget
  * \brief A panel widget that can be shown in the map style dock
- * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 {

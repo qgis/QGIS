@@ -87,14 +87,12 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     /**
      * Returns the band used by the renderer
-     * \since QGIS 2.7
      */
     int band() const { return mBand; }
 
     /**
      * Sets the band used by the renderer.
      * \see band
-     * \since QGIS 2.10
      */
     void setBand( int bandNo );
 

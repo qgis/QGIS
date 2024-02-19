@@ -56,7 +56,6 @@ class QgsSettingsEntryString;
  * encounters an individual result, it will usually be triggered many times for a single
  * call to fetchResults().
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLocator : public QObject
 {

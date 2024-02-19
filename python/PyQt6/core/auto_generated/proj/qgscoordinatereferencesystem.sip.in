@@ -251,8 +251,6 @@ returned values can be safely passed to :py:func:`~QgsCoordinateReferenceSystem.
 QgsCoordinateReferenceSystem object.
 
 .. seealso:: :py:func:`fromSrsId`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -265,8 +263,6 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 :return: matching CRS, or an invalid CRS if string could not be matched
 
 .. seealso:: :py:func:`createFromOgcWmsCrs`
-
-.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
@@ -276,8 +272,6 @@ Creates a CRS from a given EPSG ID.
 :param epsg: epsg CRS ID
 
 :return: matching CRS, or an invalid CRS if string could not be matched
-
-.. versionadded:: 3.0
 %End
 
  static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 ) /Deprecated/;
@@ -314,8 +308,6 @@ Creates a CRS from a WKT spatial ref sys definition string.
 :return: matching CRS, or an invalid CRS if string could not be matched
 
 .. seealso:: :py:func:`createFromWkt`
-
-.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
@@ -329,8 +321,6 @@ Creates a CRS from a specified QGIS SRS ID.
 .. seealso:: :py:func:`createFromSrsId`
 
 .. seealso:: :py:func:`validSrsIds`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -975,8 +965,6 @@ Returns the approximate bounds for the region the CRS is usable within.
 
 The returned bounds represent the latitude and longitude extent for the
 projection in the WGS 84 CRS.
-
-.. versionadded:: 3.0
 %End
 
     QString toOgcUri() const;
@@ -1150,8 +1138,6 @@ Cleans the list of recently used CRS.
 Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
 This should be called whenever the srs database has been modified in order to ensure
 that outdated CRS objects are not created.
-
-.. versionadded:: 3.0
 %End
 
 };

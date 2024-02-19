@@ -79,15 +79,11 @@ The short title is used to label user interface elements like buttons
     QUuid id() const;
 %Docstring
 Returns a unique id for this action.
-
-.. versionadded:: 3.0
 %End
 
     bool isValid() const;
 %Docstring
 Returns ``True`` if this action was a default constructed one.
-
-.. versionadded:: 3.0
 %End
 
     QString iconPath() const;
@@ -105,15 +101,11 @@ The icon
 Returns the command that is executed by this action.
 How the content is interpreted depends on the :py:func:`~QgsAction.type` and
 the :py:func:`~QgsAction.actionScope`.
-
-.. versionadded:: 3.0
 %End
 
     QString notificationMessage() const;
 %Docstring
 Returns the notification message that triggers the action
-
-.. versionadded:: 3.0
 %End
 
     Qgis::AttributeActionType type() const;
@@ -147,15 +139,11 @@ Checks if the action is runable on the current platform
     void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
 %Docstring
 Run this action.
-
-.. versionadded:: 3.0
 %End
 
     void run( const QgsExpressionContext &expressionContext ) const;
 %Docstring
 Run this action.
-
-.. versionadded:: 3.0
 %End
 
     QSet<QString> actionScopes() const;
@@ -165,8 +153,6 @@ Action scopes may offer additional variables like the clicked
 coordinate.
 
 .. seealso:: :py:class:`QgsActionScope`
-
-.. versionadded:: 3.0
 %End
 
     void setActionScopes( const QSet<QString> &actionScopes );
@@ -174,38 +160,28 @@ coordinate.
 The action scopes define where an action will be available.
 Action scopes may offer additional variables like the clicked
 coordinate.
-
-.. versionadded:: 3.0
 %End
 
     void readXml( const QDomNode &actionNode );
 %Docstring
 Reads an XML definition from actionNode
 into this object.
-
-.. versionadded:: 3.0
 %End
 
     void writeXml( QDomNode &actionsNode ) const;
 %Docstring
 Appends an XML definition for this action as a new
 child node to actionsNode.
-
-.. versionadded:: 3.0
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 %Docstring
 Sets an expression context scope to use for running the action.
-
-.. versionadded:: 3.0
 %End
 
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
 Returns an expression context scope used for running the action.
-
-.. versionadded:: 3.0
 %End
 
     QString html( ) const;

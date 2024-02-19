@@ -113,7 +113,6 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * widget.
      * \param widget widget which may be contained within a panel widget
      * \returns parent panel widget if found, otherwise NULLPTR
-     * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
 

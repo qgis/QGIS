@@ -43,7 +43,6 @@ namespace Qt3DCore
  * Renderers may store some custom properties (e.g. materials, sizes) that are written to and read from
  * XML. It is therefore not recommended to store large amount of data within a renderer (e.g. arrays of vertices).
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
 {

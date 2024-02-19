@@ -40,7 +40,6 @@ class QgsLayoutMultiFrame;
  * GUI behavior of QgsLayoutItems.
  *
  * \note In C++ you can use QgsLayoutItemMetadata convenience class.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemAbstractMetadata
 {
@@ -130,7 +129,6 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
  * \ingroup core
  * \brief Convenience metadata class that uses static functions to create layout items and their configuration widgets.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 {
@@ -184,7 +182,6 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
  * GUI behavior of QgsLayoutMultiFrames.
  *
  * \note In C++ you can use QgsLayoutMultiFrameMetadata convenience class.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
 {
@@ -268,7 +265,6 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
  * \ingroup core
  * \brief Convenience metadata class that uses static functions to create layout multiframes and their configuration widgets.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstractMetadata
 {
@@ -324,7 +320,6 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
  * A companion class, QgsLayoutItemGuiRegistry, handles the GUI behavior
  * of layout items.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 {

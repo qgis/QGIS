@@ -26,7 +26,6 @@
  * \brief Provides a list of features based on filter conditions.
  * Features are fetched asynchronously.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
 {

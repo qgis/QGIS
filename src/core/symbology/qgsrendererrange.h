@@ -141,7 +141,6 @@ class CORE_EXPORT QgsRendererRange
      * Returns TRUE if the range should be rendered.
      *
      * \see setRenderState()
-     * \since QGIS 2.6
      */
     bool renderState() const;
 
@@ -149,7 +148,6 @@ class CORE_EXPORT QgsRendererRange
      * Sets whether the range should be rendered.
      *
      * \see renderState()
-     * \since QGIS 2.6
      */
     void setRenderState( bool render );
 
@@ -212,7 +210,6 @@ typedef QList<QgsRendererRange> QgsRangeList;
 /**
  * \ingroup core
  * \class QgsRendererRangeLabelFormat
- * \since QGIS 2.6
  * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
  */
 class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED

@@ -56,7 +56,6 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * Defines if a title label should be shown for this widget.
      * Only has an effect after widget() has been called at least once.
      *
-     * \since QGIS 2.18
      * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED bool showLabel() const SIP_DEPRECATED;
@@ -65,35 +64,30 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * Defines if a title label should be shown for this widget.
      * Only has an effect after widget() has been called at least once.
      *
-     * \since QGIS 2.18
      * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED void setShowLabel( bool showLabel ) SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     * \since QGIS 2.18
      * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     * \since QGIS 2.18
      * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     * \since QGIS 2.18
      * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
     Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     * \since QGIS 2.18
      * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
     Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
@@ -187,7 +181,6 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     /**
      * The relation for which this wrapper is created.
      *
-     * \since QGIS 3.0
      */
     QgsRelation relation() const;
 
@@ -234,7 +227,6 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     /**
      * Sets the visibility of the wrapper's widget.
      * \param visible set to TRUE to show widget, FALSE to hide widget
-     * \since QGIS 2.16
      */
     void setVisible( bool visible );
 

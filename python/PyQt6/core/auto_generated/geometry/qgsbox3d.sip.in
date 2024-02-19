@@ -26,8 +26,6 @@ extent of a geometry or collection of geometries.
    remains available in PyQGIS for compatibility.
 
 .. seealso:: :py:class:`QgsRectangle`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

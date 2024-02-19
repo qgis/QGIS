@@ -132,8 +132,6 @@ Obtain a formatted HTML string containing assorted metadata for this data provid
     void setUri( const QgsDataSourceUri &uri );
 %Docstring
 Set the data source specification.
-
-.. versionadded:: 3.0
 %End
 
     void setUri( const QString &uri );
@@ -146,8 +144,6 @@ Set the data source specification.
     QgsDataSourceUri uri() const;
 %Docstring
 Gets the data source specification.
-
-.. versionadded:: 3.0
 %End
 
     virtual Qgis::DataProviderFlags flags() const;
@@ -363,8 +359,6 @@ after accessing data by :py:func:`~QgsDataProvider.block`, :py:func:`~QgsDataPro
     virtual void invalidateConnections( const QString &connection );
 %Docstring
 Invalidate connections corresponding to specified name
-
-.. versionadded:: 2.16
 %End
 
     virtual bool enterUpdateMode();
@@ -387,8 +381,6 @@ a concept of stack of calls that must be handled by the provider. Only the first
 call to :py:func:`~QgsDataProvider.enterUpdateMode` will really turn update mode on.
 
 :return: ``True`` in case of success (or no-op implementation), ``False`` in case of failure.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool leaveUpdateMode();
@@ -406,24 +398,18 @@ a concept of stack of calls that must be handled by the provider. Only the last
 call to :py:func:`~QgsDataProvider.leaveUpdateMode` will really turn update mode off.
 
 :return: ``True`` in case of success (or no-op implementation), ``False`` in case of failure.
-
-.. versionadded:: 2.16
 %End
 
     void setProviderProperty( ProviderProperty property, const QVariant &value );
 %Docstring
 Allows setting arbitrary properties on the provider.
 It depends on the provider which properties are supported.
-
-.. versionadded:: 2.16
 %End
 
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Gets the current value of a certain provider property.
 It depends on the provider which properties are supported.
-
-.. versionadded:: 2.16
 %End
 
     virtual void setListening( bool isListening );
@@ -434,8 +420,6 @@ If set, the provider will issue notify signals.
 The default implementation does nothing.
 
 .. seealso:: :py:func:`notify`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -446,8 +430,6 @@ Returns layer metadata collected from the provider's source.
 Individual data providers must implement this method if they support collecting metadata.
 
 .. seealso:: :py:func:`writeLayerMetadata`
-
-.. versionadded:: 3.0
 %End
 
     virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata );
@@ -458,8 +440,6 @@ on individual provider capabilities.
 Returns ``True`` if metadata was successfully written to the data provider.
 
 .. seealso:: :py:func:`layerMetadata`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -515,8 +495,6 @@ feature ids should be invalidated.
 Emitted when the datasource issues a notification.
 
 .. seealso:: :py:func:`setListening`
-
-.. versionadded:: 3.0
 %End
 
 

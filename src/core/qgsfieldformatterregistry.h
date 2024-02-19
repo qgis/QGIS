@@ -35,7 +35,6 @@ class QgsVectorLayer;
  * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::fieldFormatterRegistry().
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 {

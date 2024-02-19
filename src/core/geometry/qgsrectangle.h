@@ -102,14 +102,12 @@ class CORE_EXPORT QgsRectangle
     /**
     * Creates a new rectangle from a \a wkt string.
     * The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
-    * \since QGIS 3.0
     */
     static QgsRectangle fromWkt( const QString &wkt );
 
     /**
      * Creates a new rectangle, given the specified \a center point
      * and \a width and \a height.
-     * \since QGIS 3.0
      */
     static QgsRectangle fromCenterAndSize( const QgsPointXY &center, double width, double height );
 
@@ -249,14 +247,12 @@ class CORE_EXPORT QgsRectangle
      * \see width()
      * \see height()
      * \see perimeter()
-     * \since QGIS 3.0
      */
     double area() const SIP_HOLDGIL { return ( mXmax - mXmin ) * ( mYmax - mYmin ); }
 
     /**
      * Returns the perimeter of the rectangle.
      * \see area()
-     * \since QGIS 3.0
      */
     double perimeter() const SIP_HOLDGIL { return 2 * ( mXmax - mXmin ) + 2 * ( mYmax - mYmin ); }
 
@@ -345,7 +341,6 @@ class CORE_EXPORT QgsRectangle
      * Gets rectangle enlarged by buffer.
      * \note In earlier QGIS releases this method was named buffer().
      * \see grow()
-     * \since QGIS 3.0
     */
     QgsRectangle buffered( double width ) const
     {
@@ -467,25 +462,21 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Returns a rectangle offset from this one in the direction of the reversed vector.
-     * \since QGIS 3.0
      */
     QgsRectangle operator-( QgsVector v ) const;
 
     /**
      * Returns a rectangle offset from this one in the direction of the vector.
-     * \since QGIS 3.0
      */
     QgsRectangle operator+( QgsVector v ) const;
 
     /**
      * Moves this rectangle in the direction of the reversed vector.
-     * \since QGIS 3.0
      */
     QgsRectangle &operator-=( QgsVector v );
 
     /**
      * Moves this rectangle in the direction of the vector.
-     * \since QGIS 3.0
      */
     QgsRectangle &operator+=( QgsVector v );
 
@@ -510,7 +501,6 @@ class CORE_EXPORT QgsRectangle
      *
      * \see setNull()
      *
-     * \since QGIS 2.4
      */
     bool isNull() const
     {
@@ -620,7 +610,6 @@ class CORE_EXPORT QgsRectangle
     /**
      * Converts the rectangle to a 3D box, with the specified
      * \a zMin and \a zMax z values.
-     * \since QGIS 3.0
      */
     QgsBox3D toBox3d( double zMin, double zMax ) const;
 

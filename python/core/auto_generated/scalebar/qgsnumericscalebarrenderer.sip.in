@@ -12,8 +12,6 @@ class QgsNumericScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring(signature="appended")
 A scale bar style that draws text in the form of '1:XXXXX'.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

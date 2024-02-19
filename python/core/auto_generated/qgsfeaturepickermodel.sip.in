@@ -13,8 +13,6 @@ class QgsFeaturePickerModel : QgsFeaturePickerModelBase
 %Docstring(signature="appended")
 Provides a list of features based on filter conditions.
 Features are fetched asynchronously.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -313,7 +313,6 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
  * \ingroup core
  * \class QgsLayoutItemMap
  * \brief Layout graphical items for displaying a map.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {

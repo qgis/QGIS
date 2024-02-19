@@ -80,8 +80,6 @@ Read rectangle from GML3 Envelope
 Exports the geometry to GML
 
 :return: QDomElement
-
-.. versionadded:: 2.16
 %End
 
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision = 17 );
@@ -113,8 +111,6 @@ Exports the rectangle to GML2 Box
 Exports the rectangle to GML2 Box
 
 :return: QDomElement
-
-.. versionadded:: 2.16
 %End
 
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
@@ -132,8 +128,6 @@ Exports the rectangle to GML3 Envelope
 Exports the rectangle to GML3 Envelope
 
 :return: QDomElement
-
-.. versionadded:: 2.16
 %End
 
 

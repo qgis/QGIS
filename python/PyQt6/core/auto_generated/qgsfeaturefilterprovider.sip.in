@@ -19,8 +19,6 @@ Abstract interface for use by classes that filter the features or attributes of 
 
 A :py:class:`QgsFeatureFilterProvider` provides a method for modifying a :py:class:`QgsFeatureRequest` in place to apply
 additional filters to the request, since QGIS 3.18 a method to filter allowed attributes is also available.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode

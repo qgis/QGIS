@@ -45,7 +45,6 @@ class QgsSnappingConfig;
  * When working with map canvas, it may be useful to use derived class QgsMapCanvasSnappingUtils
  * which keeps the configuration in sync with map canvas (e.g. current view, active layer).
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsSnappingUtils : public QObject
 {
@@ -171,7 +170,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /**
      * Gets extra information about the instance
-     * \since QGIS 2.14
      */
     QString dump();
 
@@ -241,7 +239,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Toggles the state of snapping
      *
-     * \since QGIS 3.0
      */
     void toggleEnabled();
 

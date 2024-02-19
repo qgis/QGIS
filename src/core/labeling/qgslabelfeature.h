@@ -51,7 +51,6 @@ class QgsGeometry;
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
- * \since QGIS 2.12
  */
 class CORE_EXPORT QgsLabelFeature
 {
@@ -85,7 +84,6 @@ class CORE_EXPORT QgsLabelFeature
      * \param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
      * will be applied to the label candidates (this is the default behavior).
      * \see permissibleZone()
-     * \since QGIS 3.0
      */
     void setPermissibleZone( const QgsGeometry &geometry );
 
@@ -95,14 +93,12 @@ class CORE_EXPORT QgsLabelFeature
      * generated which are not contained within the zone.
      * \see setPermissibleZone()
      * \see permissibleZonePrepared()
-     * \since QGIS 3.0
      */
     QgsGeometry permissibleZone() const { return mPermissibleZone; }
 
     /**
      * Returns a GEOS prepared geometry representing the label's permissibleZone().
      * \see permissibleZone()
-     * \since QGIS 3.0
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
     const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared.get(); }
@@ -188,7 +184,6 @@ class CORE_EXPORT QgsLabelFeature
      * Returns the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
      * \see setZIndex()
-     * \since QGIS 2.14
      */
     double zIndex() const { return mZIndex; }
 
@@ -197,7 +192,6 @@ class CORE_EXPORT QgsLabelFeature
      * z-index labels.
      * \param zIndex z-index for label
      * \see zIndex()
-     * \since QGIS 2.14
      */
     void setZIndex( double zIndex ) { mZIndex = zIndex; }
 

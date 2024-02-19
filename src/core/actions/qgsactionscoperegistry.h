@@ -39,7 +39,6 @@
  * QgsApplication.actionScopeRegistry()
  * \endcode
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsActionScopeRegistry : public QObject
 {
@@ -54,35 +53,30 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
      * want to use QgsApplication::actionScopeRegistry() to get access
      * to that one instead.
      *
-     * \since QGIS 3.0
      */
     explicit QgsActionScopeRegistry( QObject *parent = nullptr );
 
     /**
      * Gets all registered action scopes.
      *
-     * \since QGIS 3.0
      */
     QSet<QgsActionScope> actionScopes() const;
 
     /**
      * Register an additional action scope.
      *
-     * \since QGIS 3.0
      */
     void registerActionScope( const QgsActionScope &actionScope );
 
     /**
      * Unregister an additional action scope.
      *
-     * \since QGIS 3.0
      */
     void unregisterActionScope( const QgsActionScope &actionScope );
 
     /**
      * Gets an action scope by its id.
      *
-     * \since QGIS 3.0
      */
     QgsActionScope actionScope( const QString &id );
 
@@ -92,7 +86,6 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
      * Emitted whenever a new action scope is registered or an action scope
      * is unregistered.
      *
-     * \since QGIS 3.0
      */
     void actionScopesChanged();
 

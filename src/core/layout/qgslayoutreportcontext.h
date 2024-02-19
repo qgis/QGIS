@@ -27,7 +27,6 @@
  * \ingroup core
  * \class QgsLayoutReportContext
  * \brief Stores information relating to the current reporting context for a layout.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutReportContext : public QObject
 {

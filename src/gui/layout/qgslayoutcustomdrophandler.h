@@ -28,7 +28,6 @@ class QgsLayoutItem;
  * \ingroup gui
  * \brief Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
 {

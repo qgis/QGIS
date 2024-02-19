@@ -19,8 +19,6 @@ The content is given by :py:class:`QgsLayerTreeModel` instance. Various layout p
 within :py:class:`QgsLegendRenderer`.
 
 All spacing and sizes are in millimeters.
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode

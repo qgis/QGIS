@@ -145,7 +145,6 @@ class GUI_EXPORT QgsSvgParameterValueDelegate : public QItemDelegate
  * \ingroup gui
  * \class QgsSvgSelectorLoader
  * \brief Recursively loads SVG images from a path in a background thread.
- * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 {
@@ -211,7 +210,6 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
  * \ingroup gui
  * \class QgsSvgGroupLoader
  * \brief Recursively loads SVG paths in a background thread.
- * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgGroupLoader : public QThread
 {

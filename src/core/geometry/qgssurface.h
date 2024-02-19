@@ -59,7 +59,6 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      * Should be used by qgsgeometry_cast<QgsSurface *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsSurface *cast( const QgsAbstractGeometry *geom )
     {

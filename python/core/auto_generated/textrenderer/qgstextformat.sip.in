@@ -18,8 +18,6 @@ Container for all settings relating to text rendering.
 .. note::
 
    :py:class:`QgsTextFormat` objects are implicitly shared.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

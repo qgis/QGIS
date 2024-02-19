@@ -30,7 +30,6 @@ namespace QgsWms
    * \ingroup server
    * \class QgsWms::QgsMapRendererJobProxy
    * \brief Proxy for sequential or parallel map render job
-   * \since QGIS 3.0
    */
   class QgsMapRendererJobProxy
   {

@@ -156,7 +156,6 @@ class CORE_EXPORT QgsPolymorphicRelation
 
     /**
      * Generate a (project-wide) unique id for this relation
-     * \since QGIS 3.0
      */
     void generateId();
 

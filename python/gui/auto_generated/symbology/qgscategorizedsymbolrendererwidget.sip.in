@@ -48,8 +48,6 @@ name.
 .. seealso:: :py:func:`matchToSymbolsFromLibrary`
 
 .. seealso:: :py:func:`matchToSymbolsFromXml`
-
-.. versionadded:: 2.9
 %End
 
   public slots:
@@ -79,8 +77,6 @@ matching name.
 .. seealso:: :py:func:`matchToSymbolsFromXml`
 
 .. seealso:: :py:func:`matchToSymbols`
-
-.. versionadded:: 2.9
 %End
 
     void matchToSymbolsFromXml();
@@ -91,8 +87,6 @@ from the XML file with a matching name.
 .. seealso:: :py:func:`matchToSymbolsFromLibrary`
 
 .. seealso:: :py:func:`matchToSymbols`
-
-.. versionadded:: 2.9
 %End
 
   protected:

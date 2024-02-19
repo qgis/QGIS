@@ -37,7 +37,6 @@ class QgsVectorLayer;
  * \brief QgsGeometrySnapper allows a geometry to be snapped to the geometries within a
  * different reference layer. Vertices in the geometries will be modified to
  * match the reference layer features within a specified snap tolerance.
- * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 {
@@ -131,7 +130,6 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
  * The returned QgsGeometryMap can be passed to QgsVectorDataProvider::changeGeometryValues() to save
  * the snapped geometries back to the source layer.
  *
- * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsInternalGeometrySnapper
 {

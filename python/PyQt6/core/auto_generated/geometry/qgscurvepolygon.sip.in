@@ -14,8 +14,6 @@ class QgsCurvePolygon: QgsSurface
 {
 %Docstring(signature="appended")
 Curve polygon geometry type
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -185,8 +183,6 @@ parameter is specified then only rings smaller than this minimum
 area will be removed.
 
 .. seealso:: :py:func:`removeInteriorRing`
-
-.. versionadded:: 3.0
 %End
 
     void removeInvalidRings();
@@ -194,8 +190,6 @@ area will be removed.
 Removes any interior rings which are not valid from the polygon.
 
 For example, this removes unclosed rings and rings with less than 4 vertices.
-
-.. versionadded:: 3.0
 %End
 
     void forceRHR();

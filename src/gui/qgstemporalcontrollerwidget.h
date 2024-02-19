@@ -103,7 +103,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      *
      * \note Updates will only be made if the \a timeStep is valid.
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     void updateTimeStepInputs( const QgsInterval &timeStep );
 

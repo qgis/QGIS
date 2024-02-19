@@ -46,7 +46,6 @@ class QTextCodec;
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 class CORE_EXPORT QgsGmlStreamingParser
 {
@@ -403,7 +402,6 @@ class CORE_EXPORT QgsGml : public QObject
 
     /**
      * Returns features spatial reference system
-     * \since QGIS 2.1
      */
     QgsCoordinateReferenceSystem crs() const;
 

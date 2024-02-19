@@ -284,7 +284,6 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Returns the labeling property definitions.
-     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -294,7 +293,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * labels to be drawn for the layer itself. In this case drawLabels can be set
      * to FALSE and obstacle set to TRUE, which will result in the layer acting
      * as an obstacle but having no labels of its own.
-     * \since QGIS 2.12
      */
     bool drawLabels = true;
 
@@ -690,20 +688,17 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Read settings from a DOM element
-     * \since QGIS 2.12
      */
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /**
      * Write settings into a DOM element
-     * \since QGIS 2.12
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
-     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
@@ -712,7 +707,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see setDataDefinedProperties()
      * \see Property
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
@@ -721,14 +715,12 @@ class CORE_EXPORT QgsPalLayerSettings
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
      * Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \see setFormat()
-     * \since QGIS 3.0
      */
     const QgsTextFormat &format() const { return mFormat; }
 
@@ -736,7 +728,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \param format label text format
      * \see format()
-     * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
 
@@ -901,7 +892,6 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Reads labeling configuration from layer's custom properties to support loading of simple labeling from QGIS 2.x projects.
-     * \since QGIS 3.0
      */
     void readFromLayerCustomProperties( QgsVectorLayer *layer );
 
@@ -1021,7 +1011,6 @@ class CORE_EXPORT QgsPalLabeling
 
     /**
      * Called to find out whether a specified \a layer is used for labeling.
-     * \since QGIS 2.4
      */
     static bool staticWillUseLayer( const QgsMapLayer *layer );
 
@@ -1036,7 +1025,6 @@ class CORE_EXPORT QgsPalLabeling
      * \param clipGeometry geometry to clip features to, if applicable
      * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns prepared geometry
-     * \since QGIS 2.9
      */
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) SIP_FACTORY;
 
@@ -1048,7 +1036,6 @@ class CORE_EXPORT QgsPalLabeling
      * \param clipGeometry geometry to clip features to, if applicable
      * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns TRUE if geometry requires preparation
-     * \since QGIS 2.9
      */
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
 
@@ -1062,7 +1049,6 @@ class CORE_EXPORT QgsPalLabeling
      * argument controls whether the lines should be wrapped to an ideal maximum of \a autoWrapLength characters, or
      * if FALSE then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
      *
-     * \since QGIS 2.9
      */
     static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
 
@@ -1072,7 +1058,6 @@ class CORE_EXPORT QgsPalLabeling
      * allowed to be split apart (e.g., Arabic and Indic based scripts)
      * \param text string to split
      * \returns list of graphemes
-     * \since QGIS 2.10
      */
     static QStringList splitToGraphemes( const QString &text );
 
@@ -1110,7 +1095,6 @@ class CORE_EXPORT QgsPalLabeling
      * \param geom geometry
      * \param minSize minimum size for geometry
      * \returns TRUE if geometry exceeds minimum size
-     * \since QGIS 2.9
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry &geom, double minSize );
 

@@ -28,8 +28,6 @@ suitable to use the compact :py:class:`QgsProjectionSelectionWidget` widget.
 .. seealso:: :py:class:`QgsProjectionSelectionDialog`
 
 .. seealso:: :py:class:`QgsProjectionSelectionWidget`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -54,8 +52,6 @@ the behavior of older QGIS releases. The ``filter`` can be altered to also inclu
 Returns the CRS currently selected in the widget.
 
 .. seealso:: :py:func:`setCrs`
-
-.. versionadded:: 3.0
 %End
 
     void setShowNoProjection( bool show );
@@ -64,8 +60,6 @@ Sets whether a "no/invalid" projection option should be shown. If this
 option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoProjection`
-
-.. versionadded:: 3.0
 %End
 
     void setShowBoundsMap( bool show );
@@ -73,8 +67,6 @@ option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` wil
 Sets whether to show the bounds preview map.
 
 .. seealso:: :py:func:`showBoundsMap`
-
-.. versionadded:: 3.0
 %End
 
     bool showNoProjection() const;
@@ -83,8 +75,6 @@ Returns whether the "no/invalid" projection option is shown. If this
 option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`setShowNoProjection`
-
-.. versionadded:: 3.0
 %End
 
     void setNotSetText( const QString &text );
@@ -100,8 +90,6 @@ by default and must be set visible by calling :py:func:`~QgsProjectionSelectionT
 Returns whether the bounds preview map is shown.
 
 .. seealso:: :py:func:`setShowBoundsMap`
-
-.. versionadded:: 3.0
 %End
 
     bool hasValidSelection() const;
@@ -117,8 +105,6 @@ headers (such as "Geographic Coordinate Systems")
 The initial "preview" rectangle for the bounds overview map.
 
 .. seealso:: :py:func:`previewRect`
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
@@ -146,8 +132,6 @@ Sets ``filters`` for the available CRS.
 Sets the initial ``crs`` to show within the dialog.
 
 .. seealso:: :py:func:`crs`
-
-.. versionadded:: 3.0
 %End
 
     void setPreviewRect( const QgsRectangle &rect );
@@ -155,8 +139,6 @@ Sets the initial ``crs`` to show within the dialog.
 Sets the initial "preview" rectangle for the bounds overview map.
 
 .. seealso:: :py:func:`previewRect`
-
-.. versionadded:: 3.0
 %End
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
@@ -203,8 +185,6 @@ Notifies others that the widget is now fully initialized, including deferred sel
     void projectionDoubleClicked();
 %Docstring
 Emitted when a projection is double clicked in the list.
-
-.. versionadded:: 2.14
 %End
 
     void hasValidSelectionChanged( bool isValid );

@@ -15,8 +15,6 @@ class QgsServerSettingsEnv : QObject
 {
 %Docstring(signature="appended")
 Provides some enum describing the environment currently supported for configuration.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -72,8 +70,6 @@ class QgsServerSettings
 {
 %Docstring(signature="appended")
 Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

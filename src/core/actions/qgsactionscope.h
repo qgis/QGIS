@@ -42,7 +42,6 @@
  *   <dd>Show in attribute table and work on the layer or selection.</dd>
  * </dl>
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsActionScope
 {
@@ -56,7 +55,6 @@ class CORE_EXPORT QgsActionScope
     /**
      * Creates a new invalid action scope.
      *
-     * \since QGIS 3.0
      */
     explicit QgsActionScope();
 
@@ -77,7 +75,6 @@ class CORE_EXPORT QgsActionScope
      * This can be an `field_name` for the attribute which was clicked or
      * `click_x` and `click_y` for actions which are available as map canvas clicks.
      *
-     * \since QGIS 3.0
      */
     QgsExpressionContextScope expressionContextScope() const;
 
@@ -89,7 +86,6 @@ class CORE_EXPORT QgsActionScope
     /**
      * A unique identifier for this action scope.
      *
-     * \since QGIS 3.0
      */
     QString id() const;
 
@@ -100,7 +96,6 @@ class CORE_EXPORT QgsActionScope
      * The title is a human readable and translated string that will be
      * presented to the user in the properties dialog.
      *
-     * \since QGIS 3.0
      */
     QString title() const;
     //! \copydoc title()
@@ -111,7 +106,6 @@ class CORE_EXPORT QgsActionScope
      * are available. It is not necessary to list the available expression variables
      * in here, they are extracted automatically from the expressionContextScope().
      *
-     * \since QGIS 3.0
      */
     QString description() const;
     //! \copydoc description()
@@ -120,7 +114,6 @@ class CORE_EXPORT QgsActionScope
     /**
      * Returns if this scope is valid.
      *
-     * \since QGIS 3.0
      */
     bool isValid() const;
 #ifdef SIP_RUN

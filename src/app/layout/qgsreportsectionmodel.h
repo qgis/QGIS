@@ -24,7 +24,6 @@
  * \ingroup app
  * \class QgsReportSectionModel
  * \brief A model for managing the sections in a QgsReport.
- * \since QGIS 3.0
  */
 class QgsReportSectionModel : public QAbstractItemModel
 {

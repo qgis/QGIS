@@ -43,7 +43,6 @@ class QgsSymbol;
  * which should be applied to a property of an object. Eg, this widget
  * is used for controlling data defined overrides in symbology, labeling
  * and layouts.
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
@@ -212,7 +211,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Updates list of fields.
      *
-     * \since QGIS 3.0
      */
     void updateFieldLists();
 

@@ -27,7 +27,6 @@ class QgsSurface;
  * \ingroup core
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
@@ -100,7 +99,6 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
      * Should be used by qgsgeometry_cast<QgsMultiSurface *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsMultiSurface *cast( const QgsAbstractGeometry *geom )
     {

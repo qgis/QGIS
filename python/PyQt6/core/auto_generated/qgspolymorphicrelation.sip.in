@@ -114,8 +114,6 @@ A (project-wide) unique id for this relation
     void generateId();
 %Docstring
 Generate a (project-wide) unique id for this relation
-
-.. versionadded:: 3.0
 %End
 
     QString referencingLayerId() const;

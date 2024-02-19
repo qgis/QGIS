@@ -330,7 +330,6 @@ namespace QgsWms
    * \ingroup server
    * \class QgsWms::QgsWmsParameters
    * \brief Provides an interface to retrieve and manipulate WMS parameters received from the client.
-   * \since QGIS 3.0
    */
   class QgsWmsParameters : public QgsServerParameters
   {

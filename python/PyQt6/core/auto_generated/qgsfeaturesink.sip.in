@@ -13,8 +13,6 @@ class QgsFeatureSink
 {
 %Docstring(signature="appended")
 An interface for objects which accept features via addFeature(s) methods.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

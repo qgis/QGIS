@@ -226,7 +226,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
-     * \since QGIS 2.8
      */
     QString crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const;
 
@@ -380,7 +379,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.
-     * \since QGIS 2.3
      */
     void addToolBar( QToolBar *toolBar, Qt::ToolBarArea area = Qt::TopToolBarArea );
 
@@ -621,7 +619,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
-    //! \since QGIS 2.4
     QAction *actionSetLayerScaleVisibility() { return mActionSetLayerScaleVisibility; }
     QAction *actionSetLayerCrs() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCrsFromLayer() { return mActionSetProjectCRSFromLayer; }
@@ -674,7 +671,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
     QMenu *newLayerMenu() { return mNewLayerMenu; }
-    //! \since QGIS 2.5
     QMenu *addLayerMenu() { return mAddLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
@@ -773,7 +769,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! A a map decoration \a item
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
-    //! \since QGIS 2.1
     static QString normalizedMenuName( const QString &name );
 
     void parseVersionInfo( QNetworkReply *reply, int &latestVersion, QStringList &versionInfo );
@@ -885,7 +880,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
       * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.
-      * \since 3.0
       */
     bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer = nullptr );
 
@@ -1285,7 +1279,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Refreshes the state of the layer actions toolbar action
-     * \since QGIS 2.1
     */
     void refreshActionFeatureAction();
 
@@ -1302,13 +1295,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Reload connections emitting the connectionsChanged signal
-     * \since QGIS 3.0
      */
     void reloadConnections();
 
     /**
      * Shows the layout manager dialog.
-     * \since QGIS 3.0
      */
     void showLayoutManager();
 
@@ -1469,7 +1460,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Slot to handle user rotation input;
-     * \since QGIS 2.8
      */
     void userRotation();
 
@@ -2065,31 +2055,26 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Disable any preview modes shown on the map canvas
-     * \since QGIS 2.3
     */
     void disablePreviewMode();
 
     /**
      * Enable a monochrome preview mode on the map canvas
-     * \since QGIS 2.3
     */
     void activateMonoPreview();
 
     /**
      * Enable a grayscale preview mode on the map canvas
-     * \since QGIS 2.3
     */
     void activateGrayscalePreview();
 
     /**
      * Enable a color blindness (protanopia) preview mode on the map canvas
-     * \since QGIS 2.3
     */
     void activateProtanopePreview();
 
     /**
      * Enable a color blindness (deuteranopia) preview mode on the map canvas
-     * \since QGIS 2.3
     */
     void activateDeuteranopePreview();
 
@@ -2171,7 +2156,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
-     * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
@@ -2180,7 +2164,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
-     * \since QGIS 3.0
      */
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
@@ -2188,7 +2171,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
-     * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 
@@ -2199,7 +2181,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Emitted when a layer has been saved using save as
-     * \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 

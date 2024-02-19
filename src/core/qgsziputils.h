@@ -45,7 +45,6 @@ namespace QgsZipUtils
    * \param checkConsistency Perform additional stricter consistency checks on the archive, and error if they fail (since QGIS 3.30)
    * \returns FALSE if the zip filename does not exist, the output directory
    * does not exist or is not writable.
-   * \since QGIS 3.0
    */
   CORE_EXPORT bool unzip( const QString &zip, const QString &dir, QStringList &files SIP_OUT, bool checkConsistency = true );
 
@@ -55,7 +54,6 @@ namespace QgsZipUtils
    *  also returned.
    * \param zip The zip filename
    * \param files The absolute path to files to embed within the zip
-   * \since QGIS 3.0
    */
   CORE_EXPORT bool zip( const QString &zip, const QStringList &files );
 

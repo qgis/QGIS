@@ -28,7 +28,6 @@
  * QgsVectorLayer::countSymbolFeatures() and connect to the signal
  * QgsVectorLayer::symbolFeatureCountMapChanged().
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
 {

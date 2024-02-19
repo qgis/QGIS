@@ -41,7 +41,6 @@ class QgsLayoutItem;
  * \brief Abstract base class for all layout view tools.
  * Layout view tools are user interactive tools for manipulating and adding items
  * to QgsLayoutView widgets.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewTool : public QObject
 {

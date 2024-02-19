@@ -108,8 +108,6 @@ legends and the layer tree.
 Returns ``True`` if the category is currently enabled and should be rendered.
 
 .. seealso:: :py:func:`setRenderState`
-
-.. versionadded:: 2.5
 %End
 
     void setRenderState( bool render );
@@ -117,8 +115,6 @@ Returns ``True`` if the category is currently enabled and should be rendered.
 Sets whether the category is currently enabled and should be rendered.
 
 .. seealso:: :py:func:`renderState`
-
-.. versionadded:: 2.5
 %End
 
 
@@ -217,8 +213,6 @@ Returns the index for the category with the specified value (or -1 if not found)
     int categoryIndexForLabel( const QString &val );
 %Docstring
 Returns the index of the category with the specified label (or -1 if the label was not found, or is not unique).
-
-.. versionadded:: 2.5
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
@@ -273,8 +267,6 @@ and is reflected in whether the category is checked with the project's layer tre
 .. seealso:: :py:func:`updateCategorySymbol`
 
 .. seealso:: :py:func:`updateCategoryLabel`
-
-.. versionadded:: 2.5
 %End
 
     void addCategory( const QgsRendererCategory &category );
@@ -398,8 +390,6 @@ Sets the source color ramp.
 Update the color ramp used and all symbols colors.
 
 :param ramp: color ramp. Ownership is transferred to the renderer
-
-.. versionadded:: 2.5
 %End
 
     virtual bool legendSymbolItemsCheckable() const;
@@ -419,8 +409,6 @@ Creates a new QgsCategorizedSymbolRenderer from an existing ``renderer``.
 Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
-
-.. versionadded:: 2.5
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
@@ -432,16 +420,12 @@ different symbol sizes collapsed in one legend node or separated across multiple
 When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
 Takes ownership of the passed settings objects. ``None`` is a valid input that disables data-defined
 size legend.
-
-.. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
 Returns configuration of appearance of legend when using data-defined size for marker symbols.
 Will return ``None`` if the functionality is disabled.
-
-.. versionadded:: 3.0
 %End
 
     int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,

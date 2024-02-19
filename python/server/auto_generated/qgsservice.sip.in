@@ -19,8 +19,6 @@ Class defining interfaces for QGIS server services
 
 This class provides methods for executing server requests
 They are registered at runtime for a given service name.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -31,7 +31,6 @@ class QgsFeatureFilterProvider;
  * \ingroup core
  * \class QgsLayoutRenderContext
  * \brief Stores information relating to the current rendering settings for a layout.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutRenderContext : public QObject
 {

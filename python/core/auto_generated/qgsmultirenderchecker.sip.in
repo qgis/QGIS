@@ -39,8 +39,6 @@ For every control image there may be one or several randomly named anomaly image
 allowed anomalies.
 For every control image, the allowed mismatch and color tolerance values will be calculated
 individually.
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
@@ -111,8 +109,6 @@ Sets the largest allowable difference in size between the rendered and the expec
 
 :param xTolerance: x tolerance in pixels
 :param yTolerance: y tolerance in pixels
-
-.. versionadded:: 3.0
 %End
 
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
@@ -170,8 +166,6 @@ class QgsLayoutChecker : QgsMultiRenderChecker
 {
 %Docstring(signature="appended")
 Renders a layout to an image and compares with an expected output
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

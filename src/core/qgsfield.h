@@ -118,7 +118,6 @@ class CORE_EXPORT QgsField
      * field alias if set, otherwise the field name.
      * \see name()
      * \see alias()
-     * \since QGIS 3.0
      */
     QString displayName() const;
 
@@ -166,7 +165,6 @@ class CORE_EXPORT QgsField
      * If the field is a collection, gets its element's type.
      * When all the elements don't need to have the same type, this returns
      * QVariant::Invalid.
-     * \since QGIS 3.0
      */
     QVariant::Type subType() const;
 
@@ -251,7 +249,6 @@ class CORE_EXPORT QgsField
      * Returns if this field is numeric. Any integer or floating point type
      * will return TRUE for this.
      *
-     * \since QGIS 2.18
      */
     bool isNumeric() const;
 
@@ -277,7 +274,6 @@ class CORE_EXPORT QgsField
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
-     * \since QGIS 3.0
      */
     void setSubType( QVariant::Type subType );
 
@@ -309,7 +305,6 @@ class CORE_EXPORT QgsField
      * \returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
      * \see setDefaultValueDefinition()
-     * \since QGIS 3.0
      */
     QgsDefaultValue defaultValueDefinition() const;
 
@@ -318,21 +313,18 @@ class CORE_EXPORT QgsField
      * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
      * a default constructed QgsDefaultValue() to reset.
      * \see defaultValueDefinition()
-     * \since QGIS 3.0
      */
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
 
     /**
      * Returns constraints which are present for the field.
      * \see setConstraints()
-     * \since QGIS 3.0
      */
     const QgsFieldConstraints &constraints() const;
 
     /**
      * Sets constraints which are present for the field.
      * \see constraints()
-     * \since QGIS 3.0
      */
     void setConstraints( const QgsFieldConstraints &constraints );
 
@@ -340,7 +332,6 @@ class CORE_EXPORT QgsField
      * Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
      * \see setAlias()
-     * \since QGIS 3.0
      */
     QString alias() const;
 
@@ -348,7 +339,6 @@ class CORE_EXPORT QgsField
      * Sets the alias for the field (the friendly displayed name of the field ).
      * \param alias field alias, or empty string to remove an existing alias
      * \see alias()
-     * \since QGIS 3.0
      */
     void setAlias( const QString &alias );
 

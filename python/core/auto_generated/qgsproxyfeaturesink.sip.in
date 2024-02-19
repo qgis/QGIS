@@ -20,8 +20,6 @@ objects. Since it is not always possible to create an entirely new :py:class:`Qg
 (e.g. if the feature sink is a layer's data provider), a new :py:class:`QgsProxyFeatureSink`
 can instead be returned which forwards features on to the destination sink. The
 proxy sink can be safely deleted without affecting the destination sink.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -35,7 +35,6 @@ class QgsProject;
  * \ingroup core
  * \brief Assorted functions for dealing with layer trees.
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeUtils
 {
@@ -69,7 +68,7 @@ class CORE_EXPORT QgsLayerTreeUtils
 
     /**
      * Stores in a layer's originalXmlProperties the layer properties information
-     * \since 3.6
+     * \since QGIS 3.6
      */
     static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 

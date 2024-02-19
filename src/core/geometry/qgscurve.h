@@ -30,7 +30,6 @@ class QgsLineString;
  * \ingroup core
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 {
@@ -43,7 +42,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     /**
      * Checks whether this curve exactly equals another curve.
-     * \since QGIS 3.0
      */
     virtual bool equals( const QgsCurve &other ) const = 0;
 
@@ -169,7 +167,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     /**
      * Returns a reversed copy of the curve, where the direction of the curve has been flipped.
-     * \since QGIS 2.14
      */
     virtual QgsCurve *reversed() const = 0 SIP_FACTORY;
 
@@ -305,7 +302,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsCurve *cast( const QgsAbstractGeometry *geom )
     {

@@ -15,8 +15,6 @@ class QgsAttributeTableConfig
 %Docstring(signature="appended")
 This is a container for configuration of the attribute table.
 The configuration is specific for one vector layer.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -247,15 +245,11 @@ Sets whether the specified column should be hidden.
     Qt::SortOrder sortOrder() const;
 %Docstring
 Gets the sort order
-
-.. versionadded:: 2.16
 %End
 
     void setSortOrder( Qt::SortOrder sortOrder );
 %Docstring
 Set the sort order
-
-.. versionadded:: 2.16
 %End
 
     bool hasSameColumns( const QgsAttributeTableConfig &other ) const;

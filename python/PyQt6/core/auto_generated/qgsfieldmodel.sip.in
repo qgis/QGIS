@@ -18,8 +18,6 @@ The :py:class:`QgsFieldModel` class is a model to display the list of fields in 
 (optionally associated with a vector layer).
 If allowed, expressions might be added to the end of the model.
 It can be associated with a :py:class:`QgsMapLayerModel` to dynamically display a layer and its fields.
-
-.. versionadded:: 2.3
 %End
 
 %TypeHeaderCode
@@ -74,8 +72,6 @@ Returns ``True`` if the model allows custom expressions to be created and displa
 Sets whether an optional empty field ("not set") option is present in the model.
 
 .. seealso:: :py:func:`allowEmptyFieldName`
-
-.. versionadded:: 3.0
 %End
 
     bool allowEmptyFieldName() const;
@@ -83,8 +79,6 @@ Sets whether an optional empty field ("not set") option is present in the model.
 Returns ``True`` if the model allows the empty field ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyFieldName`
-
-.. versionadded:: 3.0
 %End
 
     bool isField( const QString &expression ) const;
@@ -135,8 +129,6 @@ Returns the layer associated with the model.
 %Docstring
 Returns a HTML formatted tooltip string for a ``field``, containing details
 like the field name, alias and type.
-
-.. versionadded:: 3.0
 %End
 
     static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );

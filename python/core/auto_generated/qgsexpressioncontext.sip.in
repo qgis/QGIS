@@ -16,8 +16,6 @@ class QgsScopedExpressionFunction : QgsExpressionFunction
 Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
 standard :py:class:`QgsExpression`.Function in that it requires an implemented
 :py:func:`~clone` method.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -36,8 +34,6 @@ standard :py:class:`QgsExpression`.Function in that it requires an implemented
                                  bool isContextual = true );
 %Docstring
 Create a new QgsScopedExpressionFunction
-
-.. versionadded:: 2.12
 %End
 
     QgsScopedExpressionFunction( const QString &fnname,
@@ -51,8 +47,6 @@ Create a new QgsScopedExpressionFunction
                                  bool isContextual = true );
 %Docstring
 Create a new QgsScopedExpressionFunction using named parameters.
-
-.. versionadded:: 3.0
 %End
 
     virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
@@ -85,8 +79,6 @@ the project file's location. :py:class:`QgsExpressionContextScope` can encapsula
 and functions(which are calculated only when an expression is evaluated).
 
 See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContextScope` objects.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -229,16 +221,12 @@ by users.
 %Docstring
 Tests whether the variable with the specified ``name`` is static and can
 be cached.
-
-.. versionadded:: 3.0
 %End
 
     QString description( const QString &name ) const;
 %Docstring
 Returns the translated description for the variable with the specified ``name``
 (if set).
-
-.. versionadded:: 3.0
 %End
 
     int variableCount() const;
@@ -298,8 +286,6 @@ Adds a function to the scope.
 Returns ``True`` if the scope has a feature associated with it.
 
 .. seealso:: :py:func:`feature`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeature feature() const;
@@ -309,8 +295,6 @@ Sets the feature associated with the scope.
 .. seealso:: :py:func:`setFeature`
 
 .. seealso:: :py:func:`hasFeature`
-
-.. versionadded:: 3.0
 %End
 
     void setFeature( const QgsFeature &feature );
@@ -332,8 +316,6 @@ Removes any feature associated with the scope.
 .. seealso:: :py:func:`setFeature`
 
 .. seealso:: :py:func:`hasFeature`
-
-.. versionadded:: 3.0
 %End
 
     bool hasGeometry() const;
@@ -498,8 +480,6 @@ where scopes added later to the stack will override conflicting variables and fu
 lower in the stack.
 
 See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContext` objects.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -516,8 +496,6 @@ Constructor for QgsExpressionContext
 %Docstring
 Initializes the context with given list of scopes.
 Ownership of the scopes is transferred to the stack.
-
-.. versionadded:: 3.0
 %End
 
     QgsExpressionContext( const QgsExpressionContext &other );
@@ -561,8 +539,6 @@ variable set.
 %Docstring
 Returns a map of variable name to value representing all the expression variables
 contained by the context.
-
-.. versionadded:: 3.0
 %End
 
     bool isHighlightedVariable( const QString &name ) const;
@@ -678,8 +654,6 @@ Returns the index of the first scope with a matching name within the context.
 :param scopeName: name of scope to find
 
 :return: index of scope, or -1 if scope was not found within the context.
-
-.. versionadded:: 3.0
 %End
 
     QStringList variableNames() const;
@@ -723,8 +697,6 @@ Returns a translated description string for the variable with specified ``name``
 
 If no specific description has been provided for the variable, the value from
 :py:func:`QgsExpression.variableHelpText()` will be returned.
-
-.. versionadded:: 3.0
 %End
 
     bool hasFunction( const QString &name ) const;
@@ -781,8 +753,6 @@ any matching variables or functions provided by existing scopes within the
 context. Ownership of the scopes is transferred to the stack.
 
 :param scopes: scopes to append to context
-
-.. versionadded:: 3.0
 %End
 
     QgsExpressionContextScope *popScope();
@@ -808,8 +778,6 @@ existing features within the context.
 Returns ``True`` if the context has a feature associated with it.
 
 .. seealso:: :py:func:`feature`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeature feature() const;
@@ -872,8 +840,6 @@ Sets the original value variable value for the context.
 
 :param value: value for original value variable. This usually represents an original widget
               value before any data defined overrides have been applied.
-
-.. versionadded:: 2.12
 %End
 
     void setCachedValue( const QString &key, const QVariant &value ) const;
@@ -890,8 +856,6 @@ expression context.
 .. seealso:: :py:func:`cachedValue`
 
 .. seealso:: :py:func:`clearCachedValues`
-
-.. versionadded:: 2.16
 %End
 
     bool hasCachedValue( const QString &key ) const;
@@ -905,8 +869,6 @@ Returns ``True`` if the expression context contains a cached value with a matchi
 .. seealso:: :py:func:`cachedValue`
 
 .. seealso:: :py:func:`clearCachedValues`
-
-.. versionadded:: 2.16
 %End
 
     QVariant cachedValue( const QString &key ) const;
@@ -923,8 +885,6 @@ of an expensive expression sub-calculation.
 .. seealso:: :py:func:`hasCachedValue`
 
 .. seealso:: :py:func:`clearCachedValues`
-
-.. versionadded:: 2.16
 %End
 
     void clearCachedValues() const;
@@ -936,8 +896,6 @@ Clears all cached values from the context.
 .. seealso:: :py:func:`hasCachedValue`
 
 .. seealso:: :py:func:`cachedValue`
-
-.. versionadded:: 2.16
 %End
 
     QList< QgsMapLayerStore * > layerStores() const;

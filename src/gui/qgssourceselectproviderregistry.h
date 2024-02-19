@@ -35,7 +35,6 @@ class QgsAbstractDataSourceWidget;
  * QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::sourceSelectProviderRegistry().
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
 {

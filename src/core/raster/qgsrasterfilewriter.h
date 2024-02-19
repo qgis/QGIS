@@ -43,7 +43,6 @@ class CORE_EXPORT QgsRasterFileWriter
 
     /**
      * Options for sorting and filtering raster formats.
-     * \since QGIS 3.0
      */
     enum RasterFormatOption SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -62,7 +61,6 @@ class CORE_EXPORT QgsRasterFileWriter
      * Ownership of the returned provider is passed to the caller.
      * \returns Instance of data provider in editing mode (on success) or NULLPTR on error.
      * \note Does not work with tiled mode enabled.
-     * \since QGIS 3.0
      */
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
         int width, int height,
@@ -75,7 +73,6 @@ class CORE_EXPORT QgsRasterFileWriter
      * Ownership of the returned provider is passed to the caller.
      * \returns Instance of data provider in editing mode (on success) or NULLPTR on error.
      * \note Does not work with tiled mode enabled.
-     * \since QGIS 3.0
      */
     QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
         int width, int height,
@@ -115,7 +112,6 @@ class CORE_EXPORT QgsRasterFileWriter
 
     /**
      * Returns the output URL (filename) for the raster.
-     * \since QGIS 3.0
      */
     QString outputUrl() const { return mOutputUrl; }
 
@@ -288,7 +284,6 @@ class CORE_EXPORT QgsRasterFileWriter
 
     /**
      * Details of available filters and formats.
-     * \since QGIS 3.0
      */
     struct FilterFormatDetails
     {
@@ -317,7 +312,6 @@ class CORE_EXPORT QgsRasterFileWriter
      * returned formats.
      *
      * \see supportedFiltersAndFormats()
-     * \since QGIS 3.0
      */
     static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
 
@@ -329,7 +323,6 @@ class CORE_EXPORT QgsRasterFileWriter
      * Note that this method works for all GDAL drivers, including those without create support
      * (and which are not supported by QgsRasterFileWriter).
      *
-     * \since QGIS 3.0
      */
     static QString driverForExtension( const QString &extension );
 
@@ -342,7 +335,6 @@ class CORE_EXPORT QgsRasterFileWriter
      * Note that this method works for all GDAL drivers, including those without create support
      * (and which are not supported by QgsRasterFileWriter).
      *
-     * \since QGIS 3.0
      */
     static QStringList extensionsForFormat( const QString &format );
 

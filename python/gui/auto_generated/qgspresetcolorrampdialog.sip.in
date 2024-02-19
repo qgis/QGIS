@@ -13,8 +13,6 @@ class QgsPresetColorRampWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 A widget which allows users to modify the properties of a :py:class:`QgsPresetSchemeColorRamp`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -59,8 +57,6 @@ class QgsPresetColorRampDialog : QDialog
 {
 %Docstring(signature="appended")
 A dialog which allows users to modify the properties of a :py:class:`QgsPresetSchemeColorRamp`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

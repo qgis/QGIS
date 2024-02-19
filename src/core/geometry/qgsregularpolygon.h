@@ -36,7 +36,6 @@
  * A regular polygon is a polygon that is equiangular (all angles are equal in measure) and equilateral (all sides have the same length).
  * The regular polygon is defined by a center point with a number of sides/vertices, a radius and the first vertex.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRegularPolygon
 {

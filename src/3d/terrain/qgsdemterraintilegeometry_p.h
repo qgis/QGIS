@@ -61,7 +61,6 @@ namespace QgsRayCastingUtils
 /**
  * \ingroup 3d
  * \brief Stores attributes and vertex/index buffers for one terrain tile based on DEM.
- * \since QGIS 3.0
  */
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 class DemTerrainTileGeometry : public Qt3DRender::QGeometry

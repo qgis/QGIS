@@ -96,7 +96,6 @@ namespace SpatialIndex SIP_SKIP
  *
  * Works with one layer.
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsPointLocator : public QObject
 {
@@ -121,25 +120,21 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     /**
      * Gets associated layer
-     * \since QGIS 2.14
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
     /**
      * Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
-     * \since QGIS 2.14
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
      * Gets extent of the area point locator covers - if NULLPTR then it caches the whole layer
-     * \since QGIS 2.14
      */
     const QgsRectangle *extent() const { return mExtent.get(); }
 
     /**
      * Configure extent - if not NULLPTR, it will index only that area
-     * \since QGIS 2.14
      */
     void setExtent( const QgsRectangle *extent );
 
@@ -262,7 +257,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
          * Convenient method to return a point on an edge with linear
          * interpolation of the Z value.
          * The parameter \a destinationCrs depends of where the instance of this Match is created (geom.cache: layer CRS, map canvas snapper: dest CRS)
-         * \since 3.10
+         * \since QGIS 3.10
          */
         QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem() ) const
         {
@@ -374,7 +369,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Find nearest centroid to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \since 3.12
+     * \since QGIS 3.12
      */
     Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
@@ -382,7 +377,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Find nearest middle of segment to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \since 3.12
+     * \since QGIS 3.12
      */
     Match nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
@@ -390,7 +385,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Find nearest line endpoint (start or end vertex) to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \since 3.20
+     * \since QGIS 3.20
      */
     Match nearestLineEndpoints( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
@@ -407,7 +402,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * This will first perform a pointInPolygon and return first result.
      * If no match is found and tolerance is not 0, it will return nearestEdge.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \since QGIS 3.0
      */
     Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
@@ -454,7 +448,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     /**
      * Returns how many geometries are cached in the index
-     * \since QGIS 2.14
      */
     int cachedGeometryCount() const { return mGeoms.count(); }
 

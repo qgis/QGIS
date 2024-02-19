@@ -17,8 +17,6 @@ Values will be represented as a colon-delimited and
 comma-separated list.
 
 E.g. "color: yellow, amount: 5"
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

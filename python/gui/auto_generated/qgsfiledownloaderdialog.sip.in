@@ -22,8 +22,6 @@ cancellation.
 .. note::
 
    Until QGIS 3.0 this functionality was available via :py:class:`QgsFileDownloader`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

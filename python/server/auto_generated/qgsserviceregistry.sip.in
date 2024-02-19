@@ -22,8 +22,6 @@ services.
 
 IMPORTANT: The registry hold ownership of registered services and
 will call 'delete'  on cleanup
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

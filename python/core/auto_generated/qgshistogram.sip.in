@@ -17,8 +17,6 @@ class QgsHistogram
 {
 %Docstring(signature="appended")
 Calculator for a numeric histogram from a list of values.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

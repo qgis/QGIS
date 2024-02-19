@@ -30,7 +30,6 @@ class QgsFields;
  * \ingroup core
  * \brief This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsAttributeTableConfig
@@ -302,13 +301,11 @@ class CORE_EXPORT QgsAttributeTableConfig
 
     /**
      * Gets the sort order
-     * \since QGIS 2.16
      */
     Qt::SortOrder sortOrder() const;
 
     /**
      * Set the sort order
-     * \since QGIS 2.16
      */
     void setSortOrder( Qt::SortOrder sortOrder );
 

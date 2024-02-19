@@ -63,16 +63,12 @@ Copy constructor
 %Docstring
 Creates a new rectangle from a ``wkt`` string.
 The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
-
-.. versionadded:: 3.0
 %End
 
     static QgsRectangle fromCenterAndSize( const QgsPointXY &center, double width, double height );
 %Docstring
 Creates a new rectangle, given the specified ``center`` point
 and ``width`` and ``height``.
-
-.. versionadded:: 3.0
 %End
 
     void set( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true );
@@ -185,8 +181,6 @@ Returns the area of the rectangle.
 .. seealso:: :py:func:`height`
 
 .. seealso:: :py:func:`perimeter`
-
-.. versionadded:: 3.0
 %End
 
     double perimeter() const /HoldGIL/;
@@ -194,8 +188,6 @@ Returns the area of the rectangle.
 Returns the perimeter of the rectangle.
 
 .. seealso:: :py:func:`area`
-
-.. versionadded:: 3.0
 %End
 
     QgsPointXY center() const /HoldGIL/;
@@ -241,8 +233,6 @@ Gets rectangle enlarged by buffer.
    In earlier QGIS releases this method was named :py:func:`~QgsRectangle.buffer`.
 
 .. seealso:: :py:func:`grow`
-
-.. versionadded:: 3.0
 %End
 
     QgsRectangle intersect( const QgsRectangle &rect ) const;
@@ -322,8 +312,6 @@ Test if the rectangle is null (holding no spatial information).
 A null rectangle is also an empty rectangle.
 
 .. seealso:: :py:func:`setNull`
-
-.. versionadded:: 2.4
 %End
 
     QString asWktCoordinates() const;
@@ -373,8 +361,6 @@ Swap x/y coordinates in the rectangle.
 %Docstring
 Converts the rectangle to a 3D box, with the specified
 ``zMin`` and ``zMax`` z values.
-
-.. versionadded:: 3.0
 %End
 
     operator QVariant() const;

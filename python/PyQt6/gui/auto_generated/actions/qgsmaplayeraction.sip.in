@@ -49,8 +49,6 @@ Creates a map layer action which can run on a specific type of layer
     Qgis::MapLayerActionFlags flags() const;
 %Docstring
 Layer behavior flags.
-
-.. versionadded:: 3.0
 %End
 
  virtual bool canRunUsingLayer( QgsMapLayer *layer ) const /Deprecated/;
@@ -129,8 +127,6 @@ Returns availibity of action
     bool isEnabledOnlyWhenEditable() const;
 %Docstring
 Returns ``True`` if the action is only enabled for layers in editable mode.
-
-.. versionadded:: 3.0
 %End
 
   signals:

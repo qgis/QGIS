@@ -18,8 +18,6 @@ Contains methods and classes relating the datum transformations.
 .. seealso:: :py:class:`QgsCoordinateTransformContext`
 
 .. seealso:: :py:class:`QgsCoordinateTransform`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -85,7 +85,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Returns the editor widget property definitions.
-     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -174,7 +173,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \returns Validity status of this widget.
      *
-     * \since QGIS 2.12
      */
     virtual bool valid() const = 0;
 
@@ -184,7 +182,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * \see setDataDefinedProperties()
      *
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; } SIP_SKIP
 
@@ -192,7 +189,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
 
@@ -201,7 +197,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
 

@@ -56,8 +56,6 @@ which can be slow due to recurring canvas repaints.
 %Docstring
 Set the attribute table config which should be used to control
 the appearance of the attribute table.
-
-.. versionadded:: 2.16
 %End
 
     QList<QgsFeatureId> selectedFeaturesIds() const;
@@ -156,8 +154,6 @@ Emitted when a column in the view has been resized.
 
 :param column: column index (starts at 0)
 :param width: new width in pixel
-
-.. versionadded:: 2.16
 %End
 
     void finished();

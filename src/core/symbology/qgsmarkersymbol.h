@@ -57,14 +57,12 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * multiple symbol layers, this will correspond just to the angle of
      * the first symbol layer.
      * \see setAngle()
-     * \since QGIS 2.16
      */
     double angle() const;
 
     /**
      * Set data defined angle for whole symbol (including all symbol layers).
      * \see dataDefinedAngle()
-     * \since QGIS 3.0
      */
     void setDataDefinedAngle( const QgsProperty &property );
 
@@ -73,7 +71,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \returns data defined angle, or invalid property if angle is not set
      * at the marker level.
      * \see setDataDefinedAngle()
-     * \since QGIS 3.0
      */
     QgsProperty dataDefinedAngle() const;
 
@@ -82,7 +79,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
      * \param lineAngle Angle in degrees, valid values are between 0 and 360
-     * \since QGIS 2.9
      */
     void setLineAngle( double lineAngle ) const;
 
@@ -131,7 +127,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see sizeUnit()
      * \see setSizeMapUnitScale()
      * \see setSize()
-     * \since QGIS 2.16
      */
     void setSizeUnit( Qgis::RenderUnit unit ) const;
 
@@ -141,7 +136,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see setSizeUnit()
      * \see sizeMapUnitScale()
      * \see size()
-     * \since QGIS 2.16
      */
     Qgis::RenderUnit sizeUnit() const;
 
@@ -151,7 +145,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see sizeMapUnitScale()
      * \see setSizeUnit()
      * \see setSize()
-     * \since QGIS 2.16
      */
     void setSizeMapUnitScale( const QgsMapUnitScale &scale ) const;
 
@@ -162,14 +155,12 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      * \see size()
-     * \since QGIS 2.16
      */
     QgsMapUnitScale sizeMapUnitScale() const;
 
     /**
      * Set data defined size for whole symbol (including all symbol layers).
      * \see dataDefinedSize()
-     * \since QGIS 3.0
      */
     void setDataDefinedSize( const QgsProperty &property ) const;
 
@@ -178,7 +169,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \returns data defined size, or invalid property if size is not set
      * at the marker level.
      * \see setDataDefinedSize
-     * \since QGIS 3.0
      */
     QgsProperty dataDefinedSize() const;
 
@@ -218,7 +208,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \param feature feature being rendered at point (optional). If not specified, the bounds calculation will not
      * include data defined parameters such as offset and rotation
      * \returns approximate symbol bounds, in painter units
-     * \since QGIS 2.14
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 

@@ -30,7 +30,6 @@
  * \brief A paint effect which applies transformations (such as move,
  * scale and rotate) to a picture.
  *
- * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS

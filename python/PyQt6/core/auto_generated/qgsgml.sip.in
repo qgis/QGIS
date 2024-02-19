@@ -72,8 +72,6 @@ Gets feature ids map
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns features spatial reference system
-
-.. versionadded:: 2.1
 %End
 
   signals:

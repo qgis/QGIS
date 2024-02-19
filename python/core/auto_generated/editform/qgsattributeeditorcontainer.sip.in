@@ -141,8 +141,6 @@ Set the number of columns in this group.
 
 %Docstring
 Creates a deep copy of this element. To be implemented by subclasses.
-
-.. versionadded:: 3.0
 %End
 
     QgsOptionalExpression visibilityExpression() const;
@@ -150,8 +148,6 @@ Creates a deep copy of this element. To be implemented by subclasses.
 The visibility expression is used in the attribute form to
 show or hide this container based on an expression incorporating
 the field value controlled by editor widgets.
-
-.. versionadded:: 3.0
 %End
 
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
@@ -159,8 +155,6 @@ the field value controlled by editor widgets.
 The visibility expression is used in the attribute form to
 show or hide this container based on an expression incorporating
 the field value controlled by editor widgets.
-
-.. versionadded:: 3.0
 %End
 
 

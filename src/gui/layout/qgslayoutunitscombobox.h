@@ -28,7 +28,6 @@ class QgsLayoutMeasurementConverter;
  * \ingroup gui
  * \brief A custom combo box for selecting units for layout settings.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
 {

@@ -52,7 +52,6 @@ class CORE_EXPORT QgsProcessingAlgorithmInformation
  *
  * QgsProcessingRegistry is not usually directly created, but rather accessed through
  * QgsApplication::processingRegistry().
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingRegistry : public QObject
 {

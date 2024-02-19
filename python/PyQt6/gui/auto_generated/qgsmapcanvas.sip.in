@@ -50,8 +50,6 @@ Constructor
     double magnificationFactor() const;
 %Docstring
 Returns the magnification factor
-
-.. versionadded:: 2.16
 %End
 
     void setLayers( const QList<QgsMapLayer *> &layers );
@@ -64,8 +62,6 @@ to first clear the theme association by calling :py:func:`~QgsMapCanvas.setTheme
 empty string before :py:func:`~QgsMapCanvas.setLayers` calls can be made.
 
 .. seealso:: :py:func:`layers`
-
-.. versionadded:: 3.0
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -73,8 +69,6 @@ empty string before :py:func:`~QgsMapCanvas.setLayers` calls can be made.
     const QgsMapSettings &mapSettings() const /KeepReference/;
 %Docstring
 Gets access to properties used for map rendering
-
-.. versionadded:: 2.4
 %End
 
 
@@ -98,15 +92,11 @@ update the canvas temporal range.
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets destination coordinate reference system
-
-.. versionadded:: 2.4
 %End
 
     void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 %Docstring
 Resets the ``flags`` for the canvas' map settings.
-
-.. versionadded:: 3.0
 %End
 
     const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
@@ -115,8 +105,6 @@ Gets access to the labeling results (may be ``None``).
 
 Since QGIS 3.20, if the ``allowOutdatedResults`` flag is ``False`` then outdated labeling results (e.g.
 as a result of an ongoing canvas render) will not be returned, and instead ``None`` will be returned.
-
-.. versionadded:: 2.4
 %End
 
     const QgsRenderedItemResults *renderedItemResults( bool allowOutdatedResults = true ) const;
@@ -137,8 +125,6 @@ Set whether to cache images of rendered layers
 .. seealso:: :py:func:`isCachingEnabled`
 
 .. seealso:: :py:func:`cache`
-
-.. versionadded:: 2.4
 %End
 
     bool isCachingEnabled() const;
@@ -148,15 +134,11 @@ Check whether images of rendered layers are curerently being cached
 .. seealso:: :py:func:`setCachingEnabled`
 
 .. seealso:: :py:func:`cache`
-
-.. versionadded:: 2.4
 %End
 
     void clearCache();
 %Docstring
 Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
-
-.. versionadded:: 2.4
 %End
 
     QgsMapRendererCache *cache();
@@ -178,36 +160,26 @@ Blocks until the rendering job has finished.
 In almost all cases you do NOT want to call this, as it will hang the UI
 until the rendering job is complete. It's included in API solely for
 unit testing and standalone Python scripts.
-
-.. versionadded:: 3.0
 %End
 
     void setParallelRenderingEnabled( bool enabled );
 %Docstring
 Set whether the layers are rendered in parallel or sequentially
-
-.. versionadded:: 2.4
 %End
 
     bool isParallelRenderingEnabled() const;
 %Docstring
 Check whether the layers are rendered in parallel or sequentially
-
-.. versionadded:: 2.4
 %End
 
     void setMapUpdateInterval( int timeMilliseconds );
 %Docstring
 Set how often map preview should be updated while it is being rendered (in milliseconds)
-
-.. versionadded:: 2.4
 %End
 
     int mapUpdateInterval() const;
 %Docstring
 Find out how often map preview should be updated while it is being rendered (in milliseconds)
-
-.. versionadded:: 2.4
 %End
 
     double scale() const;
@@ -275,29 +247,21 @@ Sets the canvas to the specified ``extent``.
     double rotation() const;
 %Docstring
 Gets the current map canvas rotation in clockwise degrees
-
-.. versionadded:: 2.8
 %End
 
     void setRotation( double degrees );
 %Docstring
 Set the rotation of the map canvas in clockwise degrees
-
-.. versionadded:: 2.8
 %End
 
     void setCenter( const QgsPointXY &center );
 %Docstring
 Set the center of the map canvas, in geographical coordinates
-
-.. versionadded:: 2.8
 %End
 
     QgsPointXY center() const;
 %Docstring
 Gets map center, in geographical coordinates
-
-.. versionadded:: 2.8
 %End
 
     void zoomToFullExtent();
@@ -379,8 +343,6 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
    If the features or geometries are already available, :py:func:`~QgsMapCanvas.flashGeometries` is much more efficient.
 
 .. seealso:: :py:func:`flashGeometries`
-
-.. versionadded:: 3.0
 %End
 
     void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
@@ -396,8 +358,6 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 ``flashes`` and ``duration`` of each flash (in milliseconds).
 
 .. seealso:: :py:func:`flashFeatureIds`
-
-.. versionadded:: 3.0
 %End
 
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
@@ -446,15 +406,11 @@ Read property of QColor bgColor.
     void setSelectionColor( const QColor &color );
 %Docstring
 Set color of selected vector features
-
-.. versionadded:: 2.4
 %End
 
     QColor selectionColor() const;
 %Docstring
 Returns color for selected features
-
-.. versionadded:: 3.0
 %End
 
     void updateScale();
@@ -542,8 +498,6 @@ are dictated by the canvas' :py:func:`~QgsMapCanvas.destinationCrs` map units.
 Returns the stored overrides of styles for layers.
 
 .. seealso:: :py:func:`setLayerStyleOverrides`
-
-.. versionadded:: 2.12
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
@@ -556,8 +510,6 @@ to first clear the theme association by calling :py:func:`~QgsMapCanvas.setTheme
 empty string before :py:func:`~QgsMapCanvas.setLayerStyleOverrides` calls can be made.
 
 .. seealso:: :py:func:`layerStyleOverrides`
-
-.. versionadded:: 2.12
 %End
 
     void setTheme( const QString &theme );
@@ -578,8 +530,6 @@ If an empty string is passed then the current theme association will be
 cleared.
 
 .. seealso:: :py:func:`theme`
-
-.. versionadded:: 3.0
 %End
 
     QString theme() const;
@@ -587,8 +537,6 @@ cleared.
 Returns the map's theme shown in the canvas, if set.
 
 .. seealso:: :py:func:`setTheme`
-
-.. versionadded:: 3.0
 %End
 
     const QgsMapToPixel *getCoordinateTransform();
@@ -645,8 +593,6 @@ and does a pan if rect is empty (point extent)
 Returns whether the scale is locked, so zooming can be performed using magnication.
 
 .. seealso:: :py:func:`setScaleLocked`
-
-.. versionadded:: 2.16
 %End
 
     void enableAntiAliasing( bool flag );
@@ -687,8 +633,6 @@ Enables a preview mode for the map canvas
 :param previewEnabled: set to ``True`` to enable a preview mode
 
 .. seealso:: :py:func:`setPreviewMode`
-
-.. versionadded:: 2.3
 %End
 
     bool previewModeEnabled() const;
@@ -700,8 +644,6 @@ Returns whether a preview mode is enabled for the map canvas
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
 .. seealso:: :py:func:`previewMode`
-
-.. versionadded:: 2.3
 %End
 
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
@@ -716,8 +658,6 @@ previewModeEnabled is ``True``.
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
 .. seealso:: :py:func:`previewModeEnabled`
-
-.. versionadded:: 2.3
 %End
 
     QgsPreviewEffect::PreviewMode previewMode() const;
@@ -730,8 +670,6 @@ previewModeEnabled is ``True``.
 .. seealso:: :py:func:`setPreviewMode`
 
 .. seealso:: :py:func:`previewModeEnabled`
-
-.. versionadded:: 2.3
 %End
 
     QgsSnappingUtils *snappingUtils() const;
@@ -741,8 +679,6 @@ If no snapping utils instance has been associated previously, an internal will b
 (so map tools do not need to test for existence of the instance).
 
 Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
-
-.. versionadded:: 2.8
 %End
 
     void setSnappingUtils( QgsSnappingUtils *utils );
@@ -752,8 +688,6 @@ The instance is not owned by the canvas, so it is possible to use one instance i
 
 For main canvas in QGIS, do not associate a different instance from the existing one (it is updated from
 the project's snapping configuration).
-
-.. versionadded:: 2.8
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
@@ -768,8 +702,6 @@ context scope for the canvas.
 .. seealso:: :py:func:`expressionContextScope`
 
 .. seealso:: :py:func:`defaultExpressionContextScope`
-
-.. versionadded:: 2.12
 %End
 
     QgsExpressionContextScope &expressionContextScope();
@@ -781,8 +713,6 @@ overrides for expression evaluation for the map canvas render.
 .. seealso:: :py:func:`setExpressionContextScope`
 
 .. seealso:: :py:func:`defaultExpressionContextScope`
-
-.. versionadded:: 2.12
 %End
 
 
@@ -817,8 +747,6 @@ Sets segmentation tolerance type (maximum angle or maximum difference between cu
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
 %Docstring
 Returns a list of all annotation items in the canvas.
-
-.. versionadded:: 3.0
 %End
 
     bool annotationsVisible() const;
@@ -826,8 +754,6 @@ Returns a list of all annotation items in the canvas.
 Returns ``True`` if annotations are visible within the map canvas.
 
 .. seealso:: :py:func:`setAnnotationsVisible`
-
-.. versionadded:: 3.0
 %End
 
     void setAnnotationsVisible( bool visible );
@@ -835,22 +761,16 @@ Returns ``True`` if annotations are visible within the map canvas.
 Sets whether annotations are ``visible`` in the canvas.
 
 .. seealso:: :py:func:`annotationsVisible`
-
-.. versionadded:: 3.0
 %End
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
 %Docstring
 Sets global labeling engine settings in the internal map settings
-
-.. versionadded:: 3.0
 %End
 
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 %Docstring
 Returns global labeling engine settings from the internal map settings
-
-.. versionadded:: 3.0
 %End
 
     bool previewJobsEnabled() const;
@@ -861,8 +781,6 @@ out-of-canvas areas when panning or zooming out the map) are enabled
 for the canvas.
 
 .. seealso:: :py:func:`setPreviewJobsEnabled`
-
-.. versionadded:: 3.0
 %End
 
     void setPreviewJobsEnabled( bool enabled );
@@ -873,8 +791,6 @@ out-of-canvas areas when panning or zooming out the map) are ``enabled``
 for the canvas.
 
 .. seealso:: :py:func:`previewJobsEnabled`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -960,8 +876,6 @@ clears the cache and refreshes the canvas.
 
    Consider using the less expensive :py:func:`~QgsMapCanvas.redrawAllLayers` method if a layer reload
    from the data provider is not required.
-
-.. versionadded:: 2.9
 %End
 
     void redrawAllLayers();
@@ -1006,8 +920,6 @@ Sets whether a user has disabled canvas renders via the GUI.
     void stopRendering();
 %Docstring
 stop rendering (if there is any right now)
-
-.. versionadded:: 2.4
 %End
 
     void readProject( const QDomDocument & );
@@ -1028,8 +940,6 @@ in order to render marker point, labels, ... bigger.
 
 :param factor: The factor of magnification
 :param center: Optional point to re-center the map
-
-.. versionadded:: 2.16
 %End
 
     void setScaleLocked( bool isLocked );
@@ -1037,8 +947,6 @@ in order to render marker point, labels, ... bigger.
 Lock the scale, so zooming can be performed using magnication
 
 .. seealso:: :py:func:`scaleLocked`
-
-.. versionadded:: 2.16
 %End
 
     void zoomIn();
@@ -1154,22 +1062,16 @@ Emitted when the extents of the map change
     void rotationChanged( double );
 %Docstring
 Emitted when the rotation of the map changes
-
-.. versionadded:: 2.8
 %End
 
     void magnificationChanged( double );
 %Docstring
 Emitted when the scale of the map changes
-
-.. versionadded:: 2.16
 %End
 
     void canvasColorChanged();
 %Docstring
 Emitted when canvas background color changes
-
-.. versionadded:: 3.0
 %End
 
 
@@ -1220,8 +1122,6 @@ Emit key release event
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 %Docstring
 Emit map tool changed with the old tool
-
-.. versionadded:: 2.3
 %End
 
     void selectionChanged( QgsMapLayer *layer );
@@ -1246,29 +1146,21 @@ Emitted when zoom next status changed
     void destinationCrsChanged();
 %Docstring
 Emitted when map CRS has changed
-
-.. versionadded:: 2.4
 %End
 
     void transformContextChanged();
 %Docstring
 Emitted when the canvas transform context is changed.
-
-.. versionadded:: 3.0
 %End
 
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
 Emitted when the current layer is changed
-
-.. versionadded:: 2.8
 %End
 
     void layerStyleOverridesChanged();
 %Docstring
 Emitted when the configuration of overridden layer styles changes
-
-.. versionadded:: 2.12
 %End
 
     void themeChanged( const QString &theme );
@@ -1276,8 +1168,6 @@ Emitted when the configuration of overridden layer styles changes
 Emitted when the canvas has been assigned a different map theme.
 
 .. seealso:: :py:func:`setTheme`
-
-.. versionadded:: 3.0
 %End
 
     void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );

@@ -38,7 +38,6 @@ class QgsVectorLayer;
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
  *
- * \since QGIS 3.0
  */
 class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
 {
@@ -54,7 +53,6 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
  * \ingroup core
  * \brief 3D renderer that renders all features of a vector layer with the same 3D symbol.
  * The appearance is completely defined by the symbol.
- * \since QGIS 3.0
  */
 class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRenderer
 {

@@ -25,8 +25,6 @@ picture for the following drop shadow effect without actually drawing the blurre
 picture to the paint device. If the blur effect had a Render drawMode then the
 blurred picture will be drawn on the paint device, but the following drop shadow
 effect will be drawn using the original picture, not the blurred version.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

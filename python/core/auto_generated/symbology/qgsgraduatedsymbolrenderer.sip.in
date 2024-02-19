@@ -68,10 +68,6 @@ Returns a list of all ranges used in the classification.
     bool updateRangeUpperValue( int rangeIndex, double value );
     bool updateRangeLowerValue( int rangeIndex, double value );
     bool updateRangeRenderState( int rangeIndex, bool render );
-%Docstring
-
-.. versionadded:: 2.5
-%End
 
     void addClass( QgsSymbol *symbol );
     void addClass( const QgsRendererRange &range ) /PyName=addClassRange/;
@@ -97,8 +93,6 @@ value becomes a break between two classes.
 :param breakValue: position to insert break
 :param updateSymbols: set to ``True`` to reapply ramp colors to the new
                       symbol ranges
-
-.. versionadded:: 2.9
 %End
 
     void deleteClass( int idx );
@@ -114,8 +108,6 @@ Moves the category at index position from to index position to.
 Tests whether classes assigned to the renderer have ranges which overlap.
 
 :return: ``True`` if ranges overlap
-
-.. versionadded:: 2.10
 %End
 
     bool rangesHaveGaps() const;
@@ -123,8 +115,6 @@ Tests whether classes assigned to the renderer have ranges which overlap.
 Tests whether classes assigned to the renderer have gaps between the ranges.
 
 :return: ``True`` if ranges have gaps
-
-.. versionadded:: 2.10
 %End
 
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
@@ -271,8 +261,6 @@ Recalculate classes for a layer
 :param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
-.. versionadded:: 2.6
-
 .. deprecated:: QGIS 3.10
 %End
 
@@ -289,8 +277,6 @@ Recalculate classes for a layer
 %Docstring
 Returns the label format used to generate default classification labels
 
-.. versionadded:: 2.6
-
 .. deprecated:: QGIS 3.10
    use :py:func:`~QgsGraduatedSymbolRenderer.classificationMethod` and :py:class:`QgsClassificationMethod`.setLabelFormat instead
 %End
@@ -302,8 +288,6 @@ Set the label format used to generate default classification labels
 :param labelFormat: The string appended to classification labels
 :param updateRanges: If ``True`` then ranges ending with the old unit string are updated to the new.
 
-.. versionadded:: 2.6
-
 .. deprecated:: QGIS 3.10
    use :py:func:`~QgsGraduatedSymbolRenderer.classificationMethod` and :py:class:`QgsClassificationMethod`.setLabelFormat instead
 %End
@@ -314,8 +298,6 @@ Set the label format used to generate default classification labels
 Reset the label decimal places to a numberbased on the minimum class interval
 
 :param updateRanges: if ``True`` then ranges currently using the default label will be updated
-
-.. versionadded:: 2.6
 %End
 
 
@@ -429,22 +411,16 @@ set varying symbol size for classes
 .. note::
 
    the classes must already be set so that symbols exist
-
-.. versionadded:: 2.10
 %End
 
     double minSymbolSize() const;
 %Docstring
 Returns the min symbol size when graduated by size
-
-.. versionadded:: 2.10
 %End
 
     double maxSymbolSize() const;
 %Docstring
 Returns the max symbol size when graduated by size
-
-.. versionadded:: 2.10
 %End
 
     Qgis::GraduatedMethod graduatedMethod() const;
@@ -452,8 +428,6 @@ Returns the max symbol size when graduated by size
 Returns the method used for graduation (either size or color).
 
 .. seealso:: :py:func:`setGraduatedMethod`
-
-.. versionadded:: 2.10
 %End
 
     void setGraduatedMethod( Qgis::GraduatedMethod method );
@@ -461,8 +435,6 @@ Returns the method used for graduation (either size or color).
 Set the ``method`` used for graduation (either size or color).
 
 .. seealso:: :py:func:`graduatedMethod`
-
-.. versionadded:: 2.10
 %End
 
     virtual bool legendSymbolItemsCheckable() const;
@@ -480,8 +452,6 @@ Set the ``method`` used for graduation (either size or color).
 creates a QgsGraduatedSymbolRenderer from an existing renderer.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
-
-.. versionadded:: 2.6
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
@@ -493,16 +463,12 @@ different symbol sizes collapsed in one legend node or separated across multiple
 When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
 Takes ownership of the passed settings objects. ``None`` is a valid input that disables data-defined
 size legend.
-
-.. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
 Returns configuration of appearance of legend when using data-defined size for marker symbols.
 Will return ``None`` if the functionality is disabled.
-
-.. versionadded:: 3.0
 %End
 
     void updateRangeLabels();

@@ -50,8 +50,6 @@ scales window, event, and desktop geometry. The Cocoa platform plugin sets
 the scaling ratio as QWindow.devicePixelRatio().
 To properly render the map on such systems, the map settings device pixel
 ratio shall be set accordingly.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -164,8 +162,6 @@ by the device pixel ratio.
 Returns the rotation of the resulting map image, in degrees clockwise.
 
 .. seealso:: :py:func:`setRotation`
-
-.. versionadded:: 2.8
 %End
 
     void setRotation( double rotation );
@@ -173,8 +169,6 @@ Returns the rotation of the resulting map image, in degrees clockwise.
 Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
 .. seealso:: :py:func:`rotation`
-
-.. versionadded:: 2.8
 %End
 
     double outputDpi() const;
@@ -221,8 +215,6 @@ Set the magnification factor.
 :param center: optional point to re-center the map
 
 .. seealso:: :py:func:`magnificationFactor`
-
-.. versionadded:: 2.16
 %End
 
     double magnificationFactor() const;
@@ -230,8 +222,6 @@ Set the magnification factor.
 Returns the magnification factor.
 
 .. seealso:: :py:func:`setMagnificationFactor`
-
-.. versionadded:: 2.16
 %End
 
     QStringList layerIds( bool expandGroupLayers = false ) const;
@@ -282,8 +272,6 @@ The layers are stored in the reverse order of how they are rendered (layer with 
 Returns the map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
 
 .. seealso:: :py:func:`setLayerStyleOverrides`
-
-.. versionadded:: 2.8
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
@@ -291,8 +279,6 @@ Returns the map of map layer style overrides (key: layer ID, value: style name) 
 Sets the map of map layer style ``overrides`` (key: layer ID, value: style name) where a different style should be used instead of the current one.
 
 .. seealso:: :py:func:`layerStyleOverrides`
-
-.. versionadded:: 2.8
 %End
 
  QString customRenderFlags() const;
@@ -302,8 +288,6 @@ Returns custom rendering flags. Layers might honour these to alter their renderi
 :return: custom flags strings, separated by ';'
 
 .. seealso:: :py:func:`setCustomRenderFlags`
-
-.. versionadded:: 2.16
 
 .. deprecated::
    use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
@@ -316,8 +300,6 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 :param customRenderFlags: custom flags strings, separated by ';'
 
 .. seealso:: :py:func:`customRenderFlags`
-
-.. versionadded:: 2.16
 
 .. deprecated::
    use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
@@ -385,8 +367,6 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 :return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
-
-.. versionadded:: 3.0
 %End
 
     QString ellipsoid() const;
@@ -395,8 +375,6 @@ Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
 
 .. seealso:: :py:func:`setEllipsoid`
-
-.. versionadded:: 3.0
 %End
 
     void setBackgroundColor( const QColor &color );
@@ -488,8 +466,6 @@ Returns the actual extent derived from requested extent that takes output image 
     QPolygonF visiblePolygon() const;
 %Docstring
 Returns the visible area as a polygon (may be rotated)
-
-.. versionadded:: 2.8
 %End
 
     QPolygonF visiblePolygonWithBuffer() const;
@@ -518,8 +494,6 @@ Sets the expression context. This context is used for all expression evaluation
 associated with this map settings.
 
 .. seealso:: :py:func:`expressionContext`
-
-.. versionadded:: 2.12
 %End
 
     const QgsExpressionContext &expressionContext() const;
@@ -528,8 +502,6 @@ Gets the expression context. This context should be used for all expression eval
 associated with this map settings.
 
 .. seealso:: :py:func:`setExpressionContext`
-
-.. versionadded:: 2.12
 %End
 
     QgsCoordinateTransformContext transformContext() const;
@@ -539,8 +511,6 @@ information regarding which datum transforms should be used when transforming po
 from a source to destination coordinate reference system.
 
 .. seealso:: :py:func:`setTransformContext`
-
-.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -550,8 +520,6 @@ information regarding which datum transforms should be used when transforming po
 from a source to destination coordinate reference system.
 
 .. seealso:: :py:func:`transformContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsPathResolver &pathResolver() const;
@@ -560,8 +528,6 @@ Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`setPathResolver`
-
-.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -570,8 +536,6 @@ Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`pathResolver`
-
-.. versionadded:: 3.0
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -582,8 +546,6 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
 :param layer: The layer
 :param referenceExtent: A reference extent based on which to perform the computation. If not specified, the layer extent is used
-
-.. versionadded:: 2.12
 %End
 
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
@@ -739,9 +701,6 @@ Sets the global configuration of the labeling engine.
    text render format from the label engine ``settings``.
 
 .. seealso:: :py:func:`labelingEngineSettings`
-
-
-.. versionadded:: 3.0
 %End
 
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
@@ -749,8 +708,6 @@ Sets the global configuration of the labeling engine.
 Returns the global configuration of the labeling engine.
 
 .. seealso:: :py:func:`setLabelingEngineSettings`
-
-.. versionadded:: 3.0
 %End
 
     QgsGeometry labelBoundaryGeometry() const;

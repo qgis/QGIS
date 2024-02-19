@@ -37,8 +37,6 @@ The following subclasses are available:
 - :py:class:`QgsMapRendererSequentialJob` - renders map in one background thread to an image
 - :py:class:`QgsMapRendererParallelJob` - renders map in multiple background threads to an image
 - :py:class:`QgsMapRendererCustomPainterJob` - renders map with given QPainter in one background thread
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -86,8 +84,6 @@ If so, any previously stored labeling results (see :py:func:`~QgsMapRendererJob.
 should be retained.
 
 .. seealso:: :py:func:`takeLabelingResults`
-
-.. versionadded:: 3.0
 %End
 
     QStringList layersRedrawnFromCache() const;
@@ -123,16 +119,12 @@ Set the feature filter provider used by the :py:class:`QgsRenderContext` of
 each LayerRenderJob.
 Ownership is not transferred and the provider must not be deleted
 before the render job.
-
-.. versionadded:: 3.0
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
 Returns the feature filter provider used by the :py:class:`QgsRenderContext` of
 each LayerRenderJob.
-
-.. versionadded:: 3.0
 %End
 
     struct Error
@@ -174,8 +166,6 @@ Returns the total time it took to finish the job (in milliseconds).
 Returns map settings with which this job was started.
 
 :return: A :py:class:`QgsMapSettings` instance with render settings
-
-.. versionadded:: 2.8
 %End
 
 
@@ -189,8 +179,6 @@ Returns map settings with which this job was started.
 Emitted when the layers are rendered.
 Rendering labels is not yet done. If the fully rendered layer including labels is required use
 :py:func:`~QgsMapRendererJob.finished` instead.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -255,8 +243,6 @@ class QgsMapRendererQImageJob : QgsMapRendererJob /Abstract/
 Intermediate base class adding functionality that allows client to query the rendered image.
 
 The image can be queried even while the rendering is still in progress to get intermediate result
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

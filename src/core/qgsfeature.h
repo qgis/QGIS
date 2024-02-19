@@ -250,7 +250,6 @@ class CORE_EXPORT QgsFeature
      *
      * \see setAttributes()
      * \see attributeMap()
-     * \since QGIS 2.9
      */
     QgsAttributes attributes() const;
 
@@ -492,7 +491,6 @@ class CORE_EXPORT QgsFeature
     /**
      * Returns TRUE if the feature has an associated geometry.
      * \see geometry()
-     * \since QGIS 3.0.
      */
     bool hasGeometry() const;
 
@@ -558,7 +556,6 @@ class CORE_EXPORT QgsFeature
      * Removes any geometry associated with the feature.
      * \see setGeometry()
      * \see hasGeometry()
-     * \since QGIS 3.0
      */
     void clearGeometry();
 
@@ -567,7 +564,6 @@ class CORE_EXPORT QgsFeature
      * \param fields The attribute fields which this feature holds
      * \param initAttributes If TRUE, attributes are initialized. Clears any data previously assigned.
      * \see fields()
-     * \since QGIS 2.9
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 

@@ -20,8 +20,6 @@ Base class for the definition of processing outputs.
 
 Output definitions encapsulate the properties regarding the outputs from algorithms, such
 as generated layers or calculated values.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -174,8 +172,6 @@ A map layer output for processing algorithms, where layers may be either vector 
 
 If the actual layer output type is known (e.g. always vector or always raster), use
 :py:class:`QgsProcessingOutputVectorLayer` or :py:class:`QgsProcessingOutputRasterLayer` instead.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -202,8 +198,6 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A vector layer output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -242,8 +236,6 @@ class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A raster layer output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -301,8 +293,6 @@ the number and nature of the output layers is not predefined.
    should only ever be used when the number of output layers is not
    fixed - e.g. as a result of processing all layers in a specified
    folder.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -330,8 +320,6 @@ class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A HTML file output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -387,8 +375,6 @@ class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A numeric output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -415,8 +401,6 @@ class QgsProcessingOutputString : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A string output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -467,8 +451,6 @@ class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A folder output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -496,8 +478,6 @@ class QgsProcessingOutputFile : QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
 A file output for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

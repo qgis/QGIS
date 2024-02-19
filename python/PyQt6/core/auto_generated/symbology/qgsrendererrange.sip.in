@@ -130,8 +130,6 @@ Sets the upper bound of the range.
 Returns ``True`` if the range should be rendered.
 
 .. seealso:: :py:func:`setRenderState`
-
-.. versionadded:: 2.6
 %End
 
     void setRenderState( bool render );
@@ -139,8 +137,6 @@ Returns ``True`` if the range should be rendered.
 Sets whether the range should be rendered.
 
 .. seealso:: :py:func:`renderState`
-
-.. versionadded:: 2.6
 %End
 
     QString dump() const;
@@ -195,8 +191,6 @@ typedef QList<QgsRendererRange> QgsRangeList;
 class QgsRendererRangeLabelFormat /Deprecated/
 {
 %Docstring(signature="appended")
-
-.. versionadded:: 2.6
 
 .. deprecated:: QGIS 3.10
   use :py:class:`QgsClassificationMethod` instead

@@ -15,8 +15,6 @@ class QgsPaintEffectWidget : QWidget
 {
 %Docstring(signature="appended")
 Base class for effect properties widgets.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

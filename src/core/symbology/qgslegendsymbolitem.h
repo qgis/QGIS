@@ -31,7 +31,6 @@ class QgsSymbol;
  * that can be used by legend model for rendering of legend.
  *
  * \see QgsSymbolLegendNode
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSymbolItem
 {
@@ -44,7 +43,6 @@ class CORE_EXPORT QgsLegendSymbolItem
 
     /**
      * Construct item. Does not take ownership of symbol (makes internal clone)
-     * \since QGIS 2.8
      */
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
     ~QgsLegendSymbolItem();
@@ -102,13 +100,11 @@ class CORE_EXPORT QgsLegendSymbolItem
      * rather than QgsSymbolLegendNode instance as usual. Passing NULLPTR removes any data-defined size legend settings.
      *
      * Takes ownership of the settings object.
-     * \since QGIS 3.0
      */
     void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
      * Returns extra information for data-defined size legend rendering. Normally it returns NULLPTR.
-     * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 

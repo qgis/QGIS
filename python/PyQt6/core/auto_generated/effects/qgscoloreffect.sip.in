@@ -14,8 +14,6 @@ class QgsColorEffect : QgsPaintEffect /NoDefaultCtors/
 %Docstring(signature="appended")
 A paint effect which alters the colors (e.g., brightness, contrast) in a
 source picture.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

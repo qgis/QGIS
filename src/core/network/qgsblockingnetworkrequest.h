@@ -103,7 +103,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * can be retrieved by calling errorMessage().
      *
      * \see get()
-     * \since 3.22
+     * \since QGIS 3.22
      */
     ErrorCode post( QNetworkRequest &request, QIODevice *data, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
      * can be retrieved by calling errorMessage().
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
      * can be retrieved by calling errorMessage().
      *
-     * \since 3.22
+     * \since QGIS 3.22
      */
     ErrorCode put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback = nullptr );
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * This is an overloaded function.
      *
      * Performs a "put" operation on the specified \a request, using the given \a data.
-     * \since 3.18
+     * \since QGIS 3.18
      */
     ErrorCode put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = nullptr );
 
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
      * can be retrieved by calling errorMessage().
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     ErrorCode deleteResource( QNetworkRequest &request, QgsFeedback *feedback = nullptr );
 

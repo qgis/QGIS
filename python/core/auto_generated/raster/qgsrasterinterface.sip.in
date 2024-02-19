@@ -15,8 +15,6 @@ class QgsRasterBlockFeedback : QgsFeedback
 {
 %Docstring(signature="appended")
 Feedback object tailored for raster block reading.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

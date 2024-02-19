@@ -16,8 +16,6 @@ class QgsVectorLayerUtils
 {
 %Docstring(signature="appended")
 Contains utility methods for working with :py:class:`QgsVectorLayers`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -29,8 +27,6 @@ Contains utility methods for working with :py:class:`QgsVectorLayers`.
 {
 %Docstring(signature="appended")
 Contains mainly the QMap with :py:class:`QgsVectorLayer` and :py:class:`QgsFeatureIds` do list all the duplicated features
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -46,15 +42,11 @@ Constructor for QgsDuplicateFeatureContext
         QList<QgsVectorLayer *> layers() const;
 %Docstring
 Returns all the layers on which features have been duplicated
-
-.. versionadded:: 3.0
 %End
 
         QgsFeatureIds duplicatedFeatures( QgsVectorLayer *layer ) const;
 %Docstring
 Returns the duplicated features in the given layer
-
-.. versionadded:: 3.0
 %End
 
 
@@ -104,8 +96,6 @@ Create a feature iterator for a specified field name or expression.
 :param selectedOnly: set to ``True`` to get values from selected features only
 
 :return: feature iterator
-
-.. versionadded:: 3.0
 %End
 
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 );
@@ -121,8 +111,6 @@ Fetches all values from a specified field name or expression.
 :return: list of fetched values
 
 .. seealso:: :py:func:`getDoubleValues`
-
-.. versionadded:: 3.0
 %End
 
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 );
@@ -140,8 +128,6 @@ invalid expression results are skipped.
 :return: list of fetched values
 
 .. seealso:: :py:func:`getValues`
-
-.. versionadded:: 3.0
 %End
 
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
@@ -225,8 +211,6 @@ The duplicated feature will be automatically inserted into the layer.
 ``maxDepth`` the maximum depth to duplicate children in relations, 0 is unlimited depth (in any case, limited to 100)
 ``depth`` the current depth, not exposed in Python
 ``referencedLayersBranch`` the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
-
-.. versionadded:: 3.0
 %End
 
 

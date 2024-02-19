@@ -53,7 +53,6 @@ class CORE_EXPORT QgsMimeDataUtils
 
       /**
        * Returns whether the object contains valid data
-       * \since QGIS 3.0
        */
       bool isValid() const { return !layerType.isEmpty(); }
 
@@ -175,7 +174,6 @@ class CORE_EXPORT QgsMimeDataUtils
 
     /**
      * Returns encoded URI list from a list of layer tree nodes.
-     * \since QGIS 3.0
      */
     static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
 

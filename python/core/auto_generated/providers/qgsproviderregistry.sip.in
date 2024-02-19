@@ -102,8 +102,6 @@ Returns the provider capabilities
 
 :param providerKey: identifier of the provider
 
-.. versionadded:: 2.6
-
 .. deprecated::
    QGIS 3.10 (use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider)
 %End

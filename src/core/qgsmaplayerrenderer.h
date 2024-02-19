@@ -47,7 +47,6 @@ class QgsRenderedItemDetails;
  * 3. renderer job (in worker thread) calls QgsMapLayerRenderer::render()
  * 4. renderer job (again in GUI thread) will check errors() and report them
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapLayerRenderer
 {
@@ -98,7 +97,6 @@ class CORE_EXPORT QgsMapLayerRenderer
 
     /**
      * Access to feedback object of the layer renderer (may be NULLPTR)
-     * \since QGIS 3.0
      */
     virtual QgsFeedback *feedback() const;
 

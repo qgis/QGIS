@@ -13,8 +13,6 @@ class QgsCompoundCurve: QgsCurve
 {
 %Docstring(signature="appended")
 Compound curve geometry type
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode

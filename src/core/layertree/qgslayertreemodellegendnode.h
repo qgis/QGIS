@@ -47,7 +47,6 @@ class QgsTextDocumentMetrics;
  * The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
  * and customized look.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
@@ -395,7 +394,6 @@ Q_DECLARE_METATYPE( QgsLayerTreeModelLegendNode::NodeTypes )
  * \brief Implementation of legend node interface for displaying preview of vector symbols and their labels
  * and allowing interaction with the symbol / renderer.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -433,10 +431,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * Set the icon size
-     * \since QGIS 2.10
      */
     void setIconSize( QSize sz );
-    //! \since QGIS 2.10
     QSize iconSize() const { return mIconSize; }
 
     /**
@@ -444,7 +440,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * the size for multiple icons it is more efficient to create a single
      * render context in advance and use the variant which accepts a QgsRenderContext
      * argument.
-     * \since QGIS 2.10
      */
     QSize minimumIconSize() const;
 
@@ -452,14 +447,12 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Calculates the minimum icon size to prevent cropping. When evaluating
      * the size for multiple icons it is more efficient to create a single
      * render context in advance and call this method instead of minimumIconSize().
-     * \since QGIS 2.18
      */
     QSize minimumIconSize( QgsRenderContext *context ) const;
 
     /**
      * Returns the symbol used by the legend node.
      * \see setSymbol()
-     * \since QGIS 2.14
      */
     const QgsSymbol *symbol() const;
 
@@ -468,7 +461,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * to the associated vector layer's renderer.
      * \param symbol new symbol for node. Ownership is transferred.
      * \see symbol()
-     * \since QGIS 2.14
      */
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
@@ -592,7 +584,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
  * \ingroup core
  * \brief Implementation of legend node interface for displaying arbitrary label with icon.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -632,7 +623,6 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
  * \ingroup core
  * \brief Implementation of legend node interface for displaying arbitrary raster image
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -670,7 +660,6 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
  * \ingroup core
  * \brief Implementation of legend node interface for displaying raster legend entries
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -730,7 +719,6 @@ class QgsImageFetcher;
  * \ingroup core
  * \brief Implementation of legend node interface for displaying WMS legend entries
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -787,7 +775,6 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 /**
  * \ingroup core
  * \brief Produces legend node with a marker symbol
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
 {

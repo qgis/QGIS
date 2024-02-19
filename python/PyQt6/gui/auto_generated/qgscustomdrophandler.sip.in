@@ -30,8 +30,6 @@ Implementations have three approaches they can use to handle drops.
   explorer to QGIS will lock the explorer window until the drop handling has
   been complete). Accordingly :py:func:`~handleMimeData` implementations must return
   quickly and defer any intensive or slow processing.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

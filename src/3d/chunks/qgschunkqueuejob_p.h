@@ -52,7 +52,6 @@ namespace Qt3DCore
  * 1. chunk loaders: prepares all data needed for creation of entities (ChunkLoader sub-class)
  * 2. chunk updaters: given a chunk with already existing entity, it updates the entity (e.g. update texture or geometry)
  *
- * \since QGIS 3.0
  */
 class QgsChunkQueueJob : public QObject
 {
@@ -90,7 +89,6 @@ class QgsChunkQueueJob : public QObject
  * \brief Base class for factories of chunk queue jobs.
  *
  * Derived classes need to implement createJob() method that will create a specific job for given chunk node.
- * \since QGIS 3.0
  */
 class QgsChunkQueueJobFactory
 {

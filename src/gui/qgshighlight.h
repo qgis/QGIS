@@ -128,7 +128,6 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
      * Fill color for the highlight.
      * Will be used for polygons and points.
      *
-     * \since QGIS 2.4
      */
     void setFillColor( const QColor &fillColor );
 
@@ -154,14 +153,12 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     /**
      * Set line / stroke buffer in millimeters.
      *
-     * \since QGIS 2.4
      */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
     /**
      * Set minimum line / stroke width in millimeters.
      *
-     * \since QGIS 2.4
      */
     void setMinWidth( double width ) { mMinWidth = width; }
 

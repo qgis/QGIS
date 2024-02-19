@@ -69,8 +69,6 @@ Allows the client to specify a context menu provider with custom actions. Also i
 with a set of default actions that can be used when building context menu.
 
 .. seealso:: :py:class:`QgsLayerTreeModel`
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -220,8 +218,6 @@ Gets current group node. If a layer is current node, the function will return pa
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 %Docstring
 Gets current legend node. May be ``None`` if current node is not a legend node.
-
-.. versionadded:: 2.14
 %End
 
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
@@ -337,15 +333,11 @@ Force refresh of layer symbology. Normally not needed as the changes of layer's 
     void expandAllNodes();
 %Docstring
 Enhancement of QTreeView.expandAll() that also records expanded state in layer tree nodes
-
-.. versionadded:: 2.18
 %End
 
     void collapseAllNodes();
 %Docstring
 Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
-
-.. versionadded:: 2.18
 %End
 
     void setLayerMarkWidth( int width );
@@ -447,8 +439,6 @@ Implementation of this interface can be implemented to allow QgsLayerTreeView
 instance to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayerTreeView`
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

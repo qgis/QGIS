@@ -30,8 +30,6 @@ whether ranges overlap or during calculation of range intersections.
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -140,8 +138,6 @@ QgsRange which stores a range of double values.
 .. seealso:: :py:class:`QgsDateRange`
 
 .. seealso:: :py:class:`QgsDateTimeRange`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -202,8 +198,6 @@ class QgsIntRange : QgsRangeintBase
 .. seealso:: :py:class:`QgsDateRange`
 
 .. seealso:: :py:class:`QgsDateTimeRange`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -265,8 +259,6 @@ whether ranges overlap or during calculation of range intersections.
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -393,8 +385,6 @@ typedef QgsTemporalRange< QDate > QgsDateRange;
 @DOCSTRINGSTEMPLATE@QgsDateRange(QDate(2017,1,1),QDate()) is treated as a range containing all dates after 2017-1-1.
 @DOCSTRINGSTEMPLATE@
 @DOCSTRINGSTEMPLATE@.. seealso:: :py:class:`QgsDateTimeRange`
-@DOCSTRINGSTEMPLATE@
-@DOCSTRINGSTEMPLATE@.. versionadded:: 3.0
 @DOCSTRINGSTEMPLATE@%End
 
 
@@ -408,8 +398,6 @@ typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @DOCSTRINGSTEMPLATE@QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is treated as a range containing all dates after 2017-1-1.
 @DOCSTRINGSTEMPLATE@
 @DOCSTRINGSTEMPLATE@.. seealso:: :py:class:`QgsDateRange`
-@DOCSTRINGSTEMPLATE@
-@DOCSTRINGSTEMPLATE@.. versionadded:: 3.0
 @DOCSTRINGSTEMPLATE@%End
 
 

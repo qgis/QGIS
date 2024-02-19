@@ -29,7 +29,6 @@ class QgsLabelSearchTree;
 /**
  * \ingroup core
  * \brief Class that stores computed placement from labeling engine.
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLabelingResults
 {

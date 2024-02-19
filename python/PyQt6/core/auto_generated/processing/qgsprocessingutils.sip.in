@@ -16,8 +16,6 @@ class QgsProcessingUtils
 {
 %Docstring(signature="appended")
 Utility functions for use with processing classes.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -646,8 +644,6 @@ class QgsProcessingFeatureSource : QgsFeatureSource
 %Docstring(signature="appended")
 :py:class:`QgsFeatureSource` subclass which proxies methods to an underlying :py:class:`QgsFeatureSource`, modifying
 results according to the settings in a :py:class:`QgsProcessingContext`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -13,8 +13,6 @@ class QgsDockWidget : QDockWidget
 {
 %Docstring(signature="appended")
 :py:class:`QgsDockWidget` subclass with more fine-grained control over how the widget is closed or opened.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

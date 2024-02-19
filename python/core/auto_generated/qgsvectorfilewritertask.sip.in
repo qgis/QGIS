@@ -19,8 +19,6 @@ QGIS interface.
 .. seealso:: :py:class:`QgsVectorLayerExporterTask`
 
 .. seealso:: :py:class:`QgsRasterFileWriterTask`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -30,7 +30,6 @@ class QgsReadWriteContext;
  * \ingroup core
  * \class QgsLayoutGridSettings
  * \brief Contains settings relating to the appearance, spacing and offset for layout grids.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
 {

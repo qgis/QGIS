@@ -127,8 +127,6 @@ Returns a new instance equivalent to this one except for the id which
 is still unique.
 
 :return: a new layer instance
-
-.. versionadded:: 3.0
 %End
 
     Qgis::LayerType type() const;
@@ -184,8 +182,6 @@ Returns the map layer properties of this layer.
 Returns the extension of a Property.
 
 :return: The extension
-
-.. versionadded:: 3.0
 %End
 
     QString id() const;
@@ -198,8 +194,6 @@ Returns the layer's unique ID, which is used to access this layer from :py:class
 Set the display ``name`` of the layer.
 
 .. seealso:: :py:func:`name`
-
-.. versionadded:: 2.16
 %End
 
     QString name() const;
@@ -513,8 +507,6 @@ Synchronises with changes in the datasource
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 /Factory/;
 %Docstring
 Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
-
-.. versionadded:: 2.4
 %End
 
     virtual QgsRectangle extent() const;
@@ -620,8 +612,6 @@ Returns ``True`` if the layer has been modified since last commit/save.
     virtual bool isSpatial() const;
 %Docstring
 Returns ``True`` if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool isTemporary() const;
@@ -690,8 +680,6 @@ Invoked by :py:func:`QgsProject.write()`.
     virtual void resolveReferences( QgsProject *project );
 %Docstring
 Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
-
-.. versionadded:: 3.0
 %End
 
     QStringList customPropertyKeys() const;
@@ -699,8 +687,6 @@ Resolve references to other layers (kept as layer IDs after reading XML) into la
 Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
 
 .. seealso:: :py:func:`customProperty`
-
-.. versionadded:: 3.0
 %End
 
     void setCustomProperty( const QString &key, const QVariant &value );
@@ -722,8 +708,6 @@ Read a custom property from layer. Properties are stored in a map and saved in p
     void setCustomProperties( const QgsObjectCustomProperties &properties );
 %Docstring
 Set custom properties for layer. Current properties are dropped.
-
-.. versionadded:: 3.0
 %End
 
     const QgsObjectCustomProperties &customProperties() const;
@@ -765,8 +749,6 @@ Deletes a style from the database
 
 :return: - ``True`` in case of success
          - msgError: will be set to a descriptive error message if any occurs
-
-.. versionadded:: 3.0
 %End
 
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
@@ -822,8 +804,6 @@ after accessing data by :py:func:`~QgsMapLayer.draw` etc.
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the layer's spatial reference system.
-
-.. versionadded:: 1.4
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
@@ -843,8 +823,6 @@ or a default transform context if the layer does not have a valid data provider.
     static QString formatLayerName( const QString &name );
 %Docstring
 A convenience function to capitalize and format a layer ``name``.
-
-.. versionadded:: 3.0
 %End
 
     virtual QString metadataUri() const;
@@ -854,8 +832,6 @@ Retrieve the metadata URI for this layer
 record in the users style table in their personal qgis.db)
 
 :return: a QString with the metadata file name
-
-.. versionadded:: 3.0
 %End
 
     void exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const;
@@ -864,8 +840,6 @@ Export the current metadata of this layer as named metadata in a QDomDocument
 
 :param doc: the target QDomDocument
 :param errorMsg: this QString will be initialized on error
-
-.. versionadded:: 3.0
 %End
 
     virtual QString saveDefaultMetadata( bool &resultFlag /Out/ );
@@ -877,8 +851,6 @@ record in the users style table in their personal qgis.db)
 
 :return: - a QString with any status messages
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default metadata.
-
-.. versionadded:: 3.0
 %End
 
     QString saveNamedMetadata( const QString &uri, bool &resultFlag );
@@ -896,8 +868,6 @@ record in the users style table in their personal qgis.db)
                    we did not manage to save the default metadata.
 
 :return: a QString with any status messages
-
-.. versionadded:: 3.0
 %End
 
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag /Out/ );
@@ -914,8 +884,6 @@ record in the users style table in their personal qgis.db)
 
 :return: - a QString with any status messages
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default metadata.
-
-.. versionadded:: 3.0
 %End
 
     virtual QString loadDefaultMetadata( bool &resultFlag );
@@ -928,8 +896,6 @@ record in the users metadata table in their personal qgis.db)
                    we did not manage to load the default metadata.
 
 :return: a QString with any status messages
-
-.. versionadded:: 3.0
 %End
 
     bool loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd );
@@ -941,8 +907,6 @@ Retrieve a named metadata for this layer from a sqlite database.
 :param qmd: will be set to QMD xml metadata content from database
 
 :return: ``True`` if style was successfully loaded
-
-.. versionadded:: 3.0
 %End
 
     bool importNamedMetadata( QDomDocument &document, QString &errorMessage );
@@ -953,8 +917,6 @@ Import the metadata of this layer from a QDomDocument
 :param errorMessage: this QString will be initialized on error
 
 :return: ``True`` on success
-
-.. versionadded:: 3.0
 %End
 
     virtual QString styleURI() const;
@@ -1024,8 +986,6 @@ Import the properties of this layer from a QDomDocument
 :param categories: the style categories to import
 
 :return: ``True`` on success
-
-.. versionadded:: 2.8
 %End
 
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, const QgsReadWriteContext &context = QgsReadWriteContext(),
@@ -1190,8 +1150,6 @@ Read the style for the current layer from the DOM node supplied.
 .. note::
 
    To be implemented in subclasses. Default implementation does nothing and returns ``False``.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
@@ -1232,8 +1190,6 @@ Write just the symbology information for the layer into the document
 .. note::
 
    There is a confusion of terms with the GUI. This method actually writes what is known as the symbology in the application.
-
-.. versionadded:: 2.16
 %End
 
 
@@ -1352,8 +1308,6 @@ Returns pointer to layer's undo stack
     QUndoStack *undoStackStyles();
 %Docstring
 Returns pointer to layer's style undo stack
-
-.. versionadded:: 2.16
 %End
 
     void setLegendUrl( const QString &legendUrl );
@@ -1381,36 +1335,26 @@ Returns the format for a URL based layer legend.
 Assign a legend controller to the map layer. The object will be responsible for providing legend items.
 
 :param legend: Takes ownership of the object. Can be ``None``.
-
-.. versionadded:: 2.6
 %End
 
     QgsMapLayerLegend *legend() const;
 %Docstring
 Can be ``None``.
-
-.. versionadded:: 2.6
 %End
 
     QgsMapLayerStyleManager *styleManager() const;
 %Docstring
 Gets access to the layer's style manager. Style manager allows switching between multiple styles.
-
-.. versionadded:: 2.8
 %End
 
     void setRenderer3D( QgsAbstract3DRenderer *renderer /Transfer/ );
 %Docstring
 Sets 3D renderer for the layer. Takes ownership of the renderer.
-
-.. versionadded:: 3.0
 %End
 
     QgsAbstract3DRenderer *renderer3D() const;
 %Docstring
 Returns 3D renderer associated with the layer. May be ``None``.
-
-.. versionadded:: 3.0
 %End
 
     bool isInScaleRange( double scale ) const;
@@ -1425,8 +1369,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 .. seealso:: :py:func:`maximumScale`
 
 .. seealso:: :py:func:`hasScaleBasedVisibility`
-
-.. versionadded:: 2.16
 %End
 
     double minimumScale() const;
@@ -1513,8 +1455,6 @@ auto refresh is only active when :py:func:`~QgsMapLayer.hasAutoRefreshEnabled` i
 .. seealso:: :py:func:`hasAutoRefreshEnabled`
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
-
-.. versionadded:: 3.0
 %End
 
     void setAutoRefreshInterval( int interval );
@@ -1529,8 +1469,6 @@ canvas must be refreshed separately in order to view the refreshed layer.
 .. seealso:: :py:func:`autoRefreshInterval`
 
 .. seealso:: :py:func:`setAutoRefreshEnabled`
-
-.. versionadded:: 3.0
 %End
 
  void setAutoRefreshEnabled( bool enabled ) /Deprecated/;
@@ -1563,8 +1501,6 @@ Returns a reference to the layer's metadata store.
 .. seealso:: :py:func:`setMetadata`
 
 .. seealso:: :py:func:`metadataChanged`
-
-.. versionadded:: 3.0
 %End
 
     virtual void setMetadata( const QgsLayerMetadata &metadata );
@@ -1574,15 +1510,11 @@ Sets the layer's ``metadata`` store.
 .. seealso:: :py:func:`metadata`
 
 .. seealso:: :py:func:`metadataChanged`
-
-.. versionadded:: 3.0
 %End
 
     virtual QString htmlMetadata() const;
 %Docstring
 Obtain a formatted HTML string containing assorted metadata for this layer.
-
-.. versionadded:: 3.0
 %End
 
     virtual QDateTime timestamp() const;
@@ -1596,22 +1528,16 @@ Gets the list of dependencies. This includes data dependencies set by the user (
 as well as dependencies given by the provider
 
 :return: a set of :py:class:`QgsMapLayerDependency`
-
-.. versionadded:: 3.0
 %End
 
     QString refreshOnNotifyMessage() const;
 %Docstring
 Returns the message that should be notified by the provider to triggerRepaint
-
-.. versionadded:: 3.0
 %End
 
     bool isRefreshOnNotifyEnabled() const;
 %Docstring
 Returns ``True`` if the refresh on provider nofification is enabled
-
-.. versionadded:: 3.0
 %End
 
     QString originalXmlProperties() const;
@@ -1705,10 +1631,6 @@ The mapTip is a pretty, html representation for feature information.
 
 It may also contain embedded expressions.
 
-.. note::
-
-   this method was only available for vector layers since QGIS 3.0
-
 .. versionadded:: 3.30
 %End
 
@@ -1717,10 +1639,6 @@ It may also contain embedded expressions.
 The mapTip is a pretty, html representation for feature information.
 
 It may also contain embedded expressions.
-
-.. note::
-
-   this method was only available for vector layers since QGIS 3.0
 
 .. versionadded:: 3.30
 %End
@@ -1822,8 +1740,6 @@ Will emit a :py:func:`~QgsMapLayer.request3DUpdate` signal.
     void emitStyleChanged();
 %Docstring
 Triggers an emission of the :py:func:`~QgsMapLayer.styleChanged` signal.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
@@ -1835,15 +1751,11 @@ Sets the list of dependencies.
 :param layers: set of :py:class:`QgsMapLayerDependency`. Only user-defined dependencies will be added
 
 :return: ``False`` if a dependency cycle has been detected
-
-.. versionadded:: 3.0
 %End
 
     void setRefreshOnNotifyEnabled( bool enabled );
 %Docstring
 Set whether provider notification is connected to triggerRepaint
-
-.. versionadded:: 3.0
 %End
 
     void setRefreshOnNofifyMessage( const QString &message );
@@ -1851,8 +1763,6 @@ Set whether provider notification is connected to triggerRepaint
 Set the notification message that triggers repaint
 If refresh on notification is enabled, the notification will triggerRepaint only
 if the notification message is equal to:param message:
-
-.. versionadded:: 3.0
 %End
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
@@ -1894,8 +1804,6 @@ Emit a signal with status (e.g. to be caught by QgisApp and display a msg on sta
     void nameChanged();
 %Docstring
 Emitted when the name has been changed
-
-.. versionadded:: 2.16
 %End
 
     void crsChanged();
@@ -1961,22 +1869,16 @@ mode or layer opacity changes.
    to ensure that the signal is only emitted when appropriate.
 
 .. seealso:: :py:func:`rendererChanged`
-
-.. versionadded:: 2.16
 %End
 
     void legendChanged();
 %Docstring
 Signal emitted when legend of the layer has changed
-
-.. versionadded:: 2.6
 %End
 
     void renderer3DChanged();
 %Docstring
 Signal emitted when 3D renderer associated with the layer has changed.
-
-.. versionadded:: 3.0
 %End
 
     void request3DUpdate();
@@ -2002,8 +1904,6 @@ Emitted when dependencies are changed.
 Emitted in the destructor when the layer is about to be deleted,
 but it is still in a perfectly valid state: the last chance for
 other pieces of code for some cleanup if they use the layer.
-
-.. versionadded:: 3.0
 %End
 
     void autoRefreshIntervalChanged( int interval );
@@ -2011,8 +1911,6 @@ other pieces of code for some cleanup if they use the layer.
 Emitted when the auto refresh interval changes.
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
-
-.. versionadded:: 3.0
 %End
 
     void metadataChanged();
@@ -2022,8 +1920,6 @@ Emitted when the layer's metadata is changed.
 .. seealso:: :py:func:`setMetadata`
 
 .. seealso:: :py:func:`metadata`
-
-.. versionadded:: 3.0
 %End
 
     void flagsChanged();
@@ -2094,10 +1990,6 @@ Emitted when modifications has been done on layer
 %Docstring
 Emitted when the map tip template changes
 
-.. note::
-
-   this method was only available for vector layers since QGIS 3.0
-
 .. versionadded:: 3.30
 %End
 
@@ -2117,8 +2009,6 @@ Emitted when map tips are enabled or disabled for the layer.
 Copies attributes like name, short name, ... into another layer.
 
 :param layer: The copy recipient
-
-.. versionadded:: 3.0
 %End
 
     virtual void setExtent( const QgsRectangle &rect );
@@ -2206,16 +2096,12 @@ Write style manager's configuration (if exists). To be called by subclasses.
                            StyleCategories categories = AllStyleCategories ) const;
 %Docstring
 Write style data common to all layer types
-
-.. versionadded:: 3.0
 %End
 
     void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                           StyleCategories categories = AllStyleCategories );
 %Docstring
 Read style data common to all layer types
-
-.. versionadded:: 3.0
 %End
 
     void setProviderType( const QString &providerType );

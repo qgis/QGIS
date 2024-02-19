@@ -185,13 +185,13 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * Set \a messageBar to report messages
-     * \since 3.22
+     * \since QGIS 3.22
      */
     void setMessageBar( QgsMessageBar *messageBar );
 
     /**
      * Returns message bar used to report messages
-     * \since 3.22
+     * \since QGIS 3.22
      */
     QgsMessageBar *messageBar() const;
 

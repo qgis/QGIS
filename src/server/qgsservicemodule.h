@@ -36,7 +36,6 @@ class QgsServerInterface;
  * For dynamic modules, a QgsServiceModule instance is returned from the
  * QGS_ServiceModule_Init() entry point.
  *
- * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServiceModule
 {

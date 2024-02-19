@@ -50,7 +50,6 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     /**
      * Emitted when dialog settings are applied
-     * \since QGIS 2.9
      */
     void applied();
 

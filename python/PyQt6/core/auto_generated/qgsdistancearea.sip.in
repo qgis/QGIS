@@ -54,8 +54,6 @@ Returns whether calculations will use the ellipsoid. Calculations will only use 
 ellipsoid if a valid :py:func:`~QgsDistanceArea.ellipsoid` has been set.
 
 .. seealso:: :py:func:`ellipsoid`
-
-.. versionadded:: 2.14
 %End
 
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -63,8 +61,6 @@ ellipsoid if a valid :py:func:`~QgsDistanceArea.ellipsoid` has been set.
 Sets source spatial reference system ``crs``.
 
 .. seealso:: :py:func:`sourceCrs`
-
-.. versionadded:: 2.2
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
@@ -172,8 +168,6 @@ Measures the area of a geometry.
 .. seealso:: :py:func:`measurePerimeter`
 
 .. seealso:: :py:func:`areaUnits`
-
-.. versionadded:: 2.12
 %End
 
     double measureLength( const QgsGeometry &geometry ) const;
@@ -190,8 +184,6 @@ Measures the length of a geometry.
 .. seealso:: :py:func:`measureArea`
 
 .. seealso:: :py:func:`measurePerimeter`
-
-.. versionadded:: 2.12
 %End
 
     double measurePerimeter( const QgsGeometry &geometry ) const;
@@ -208,8 +200,6 @@ Measures the perimeter of a polygon geometry.
 .. seealso:: :py:func:`measureArea`
 
 .. seealso:: :py:func:`measurePerimeter`
-
-.. versionadded:: 2.12
 %End
 
     double measureLine( const QVector<QgsPointXY> &points ) const;
@@ -255,8 +245,6 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 .. note::
 
    The input Point must be in the coordinate reference system being used
-
-.. versionadded:: 3.0
 %End
 
     Qgis::DistanceUnit lengthUnits() const;
@@ -264,8 +252,6 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 Returns the units of distance for length calculations made by this object.
 
 .. seealso:: :py:func:`areaUnits`
-
-.. versionadded:: 2.14
 %End
 
     Qgis::AreaUnit areaUnits() const;
@@ -273,8 +259,6 @@ Returns the units of distance for length calculations made by this object.
 Returns the units of area for areal calculations made by this object.
 
 .. seealso:: :py:func:`lengthUnits`
-
-.. versionadded:: 2.14
 %End
 
     double measurePolygon( const QVector<QgsPointXY> &points ) const;
@@ -302,8 +286,6 @@ Returns an distance formatted as a friendly string.
 :return: formatted distance string
 
 .. seealso:: :py:func:`formatArea`
-
-.. versionadded:: 2.16
 %End
 
     static QString formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit = false );
@@ -319,8 +301,6 @@ Returns an area formatted as a friendly string.
 :return: formatted area string
 
 .. seealso:: :py:func:`formatDistance`
-
-.. versionadded:: 2.14
 %End
 
     double convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const;
@@ -335,8 +315,6 @@ different distance unit.
 :return: converted distance
 
 .. seealso:: :py:func:`convertAreaMeasurement`
-
-.. versionadded:: 2.14
 %End
 
     double convertAreaMeasurement( double area, Qgis::AreaUnit toUnits ) const;
@@ -351,8 +329,6 @@ different areal unit.
 :return: converted area
 
 .. seealso:: :py:func:`convertLengthMeasurement`
-
-.. versionadded:: 2.14
 %End
 
     QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2 ) const;
@@ -365,8 +341,6 @@ location of the projected point.
 :param azimuth: - azimuth in radians, clockwise from North
 
 :return: p2 - location of projected point as longitude/latitude.
-
-.. versionadded:: 3.0
 %End
 
     QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;

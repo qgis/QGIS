@@ -95,7 +95,6 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
  * \brief A line edit with an autocompleter which takes unique values from a vector layer's fields.
  * The autocompleter is populated from the vector layer in the background to ensure responsive
  * interaction with the widget.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 {

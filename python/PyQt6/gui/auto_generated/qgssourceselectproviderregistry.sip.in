@@ -17,8 +17,6 @@ When created, it automatically adds providers from data provider plugins (e.g. P
 
 :py:class:`QgsSourceSelectProviderRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.sourceSelectProviderRegistry()`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

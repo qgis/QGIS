@@ -31,8 +31,6 @@ method. This will perform the paint effect on the intercepted drawing operations
 and render the result to the render context's paint device.
 
 .. seealso:: :py:class:`QgsPaintEffectRegistry`
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -328,8 +326,6 @@ The draw source effect can be used to draw an unaltered copy of the original sou
 picture. Minor changes like lowering the opacity and applying a blend mode are
 supported, however these changes will force the resultant output to be rasterized.
 If no alterations are performed then the original picture will be rendered as a vector.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -410,8 +406,6 @@ class QgsEffectPainter
 {
 %Docstring(signature="appended")
 A class to manager painter saving and restoring required for effect drawing
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -424,8 +418,6 @@ A class to manager painter saving and restoring required for effect drawing
 QgsEffectPainter constructor
 
 :param renderContext: the :py:class:`QgsRenderContext` object
-
-.. versionadded:: 3.0
 %End
 
     QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect );
@@ -434,8 +426,6 @@ QgsEffectPainter constructor alternative if no painter translation is needed
 
 :param renderContext: the :py:class:`QgsRenderContext` object
 :param effect: the :py:class:`QgsPaintEffect` object
-
-.. versionadded:: 3.0
 %End
     ~QgsEffectPainter();
 

@@ -68,7 +68,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Changes values of attributes (but does not commit it).
      * \returns TRUE if attributes are well updated, FALSE otherwise
-     * \since QGIS 3.0
      */
     virtual bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
 
@@ -85,7 +84,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Renames an attribute field (but does not commit it)
      * \param attr attribute index
      * \param newName new name of field
-     * \since QGIS 2.16
     */
     virtual bool renameAttribute( int attr, const QString &newName );
 
@@ -127,7 +125,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns TRUE if the specified feature ID has been added but not committed.
      * \param id feature ID
      * \see addedFeatures()
-     * \since QGIS 3.0
      */
     bool isFeatureAdded( QgsFeatureId id ) const { return mAddedFeatures.contains( id ); }
 
@@ -141,7 +138,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns TRUE if the specified feature ID has had an attribute changed but not committed.
      * \param id feature ID
      * \see changedAttributeValues()
-     * \since QGIS 3.0
      */
     bool isFeatureAttributesChanged( QgsFeatureId id ) const { return mChangedAttributeValues.contains( id ); }
 
@@ -155,7 +151,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns TRUE if the specified attribute has been deleted but not committed.
      * \param index attribute index
      * \see deletedAttributeIds()
-     * \since QGIS 3.0
      */
     bool isAttributeDeleted( int index ) const { return mDeletedAttributeIds.contains( index ); }
 
@@ -174,7 +169,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns TRUE if the specified feature ID has had its geometry changed but not committed.
      * \param id feature ID
      * \see changedGeometries()
-     * \since QGIS 3.0
      */
     bool isFeatureGeometryChanged( QgsFeatureId id ) const { return mChangedGeometries.contains( id ); }
 
@@ -188,7 +182,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns TRUE if the specified feature ID has been deleted but not committed.
      * \param id feature ID
      * \see deletedFeatureIds()
-     * \since QGIS 3.0
      */
     bool isFeatureDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
 
@@ -238,7 +231,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Emitted when an attribute has been renamed
      * \param idx attribute index
      * \param newName new attribute name
-     * \since QGIS 2.16
      */
     void attributeRenamed( int idx, const QString &newName );
 
@@ -250,7 +242,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Emitted after committing an attribute rename
      * \param layerId ID of layer
      * \param renamedAttributes map of field index to new name
-     * \since QGIS 2.16
      */
     void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );

@@ -14,8 +14,6 @@ class QgsColorSwatchDelegate : QAbstractItemDelegate
 A delegate for showing a color swatch in a list
 
 .. seealso:: :py:class:`QgsColorSchemeList`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -39,8 +37,6 @@ class QgsColorSchemeModel: QAbstractItemModel
 A model for colors in a color scheme
 
 .. seealso:: :py:class:`QgsColorSchemeList`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -145,8 +141,6 @@ class QgsColorSchemeList: QTreeView
 An editable list of color swatches, taken from an associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorSchemeList`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -204,8 +198,6 @@ Returns whether the color scheme list has been modified
 Returns the scheme currently selected in the list.
 
 .. seealso:: :py:func:`setScheme`
-
-.. versionadded:: 3.0
 %End
 
   public slots:
@@ -254,8 +246,6 @@ Copies colors from the list to the clipboard
 Displays a file picker dialog allowing users to import colors into the list from a file.
 
 .. seealso:: :py:func:`showExportColorsDialog`
-
-.. versionadded:: 3.0
 %End
 
     void showExportColorsDialog();
@@ -263,8 +253,6 @@ Displays a file picker dialog allowing users to import colors into the list from
 Displays a file picker dialog allowing users to export colors from the list into a file.
 
 .. seealso:: :py:func:`showImportColorsDialog`
-
-.. versionadded:: 3.0
 %End
 
   signals:

@@ -59,7 +59,6 @@ class QgsSettingsProxy;
  * - Providers
  * - Misc
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSettings : public QObject
 {

@@ -21,8 +21,6 @@ A simple registry of tracer instances associated to map canvas instances
 is kept for convenience. (Map tools do not need to create their local
 tracer instances and map canvas API is not "polluted" by this optional
 functionality).
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode
@@ -49,16 +47,12 @@ The action is used to determine whether tracing is currently enabled by the user
     QAction *actionEnableSnapping() const;
 %Docstring
 Access to action that user may use to toggle snapping on/off. May be ``None`` if no action was associated.
-
-.. versionadded:: 3.0
 %End
 
     void setActionEnableSnapping( QAction *action );
 %Docstring
 Assign "enable snapping" checkable action to the tracer.
 The action is used to determine whether snapping is currently enabled by the user.
-
-.. versionadded:: 3.0
 %End
 
     static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );

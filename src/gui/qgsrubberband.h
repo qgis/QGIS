@@ -116,13 +116,11 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
 
       /**
        * A diamond is used to highlight points (◇)
-       * \since QGIS 3.0
        */
       ICON_DIAMOND,
 
       /**
        * A diamond is used to highlight points (◆)
-       * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
 
@@ -154,7 +152,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Sets the fill color for the rubberband
      *  \param color  The color used to render this rubberband
-     *  \since QGIS 2.6
      */
     void setFillColor( const QColor &color );
 
@@ -166,7 +163,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Sets the stroke color for the rubberband
      *  \param color  The color used to render this rubberband
-     *  \since QGIS 2.6
      */
     void setStrokeColor( const QColor &color );
 
@@ -179,7 +175,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
      * Set to an invalid color to avoid drawing the secondary stroke.
      *  \param color  The color used to render a secondary stroke color to this rubberband
-     *  \since QGIS 3.0
      */
     void setSecondaryStrokeColor( const QColor &color );
 
@@ -264,7 +259,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * \param doUpdate set to TRUE to update the map canvas immediately
      * \param geometryIndex The index of the feature part (in case of multipart geometries)
      * \param ringIndex     The index of the polygon ring (in case of polygons with holes)
-     * \since QGIS 2.16
      */
     void closePoints( bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
@@ -360,7 +354,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * If additional geometries are to be added then set \a doUpdate to FALSE to defer costly repaint and bounding rectangle calculations for better performance.
      * After adding the final geometry updatePosition() should be called.
      *
-     * \since QGIS 3.0
      */
     void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool doUpdate = true );
 

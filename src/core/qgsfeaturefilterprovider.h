@@ -36,7 +36,6 @@ class QgsFeatureRequest;
  * A QgsFeatureFilterProvider provides a method for modifying a QgsFeatureRequest in place to apply
  * additional filters to the request, since QGIS 3.18 a method to filter allowed attributes is also available.
  *
- * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsFeatureFilterProvider

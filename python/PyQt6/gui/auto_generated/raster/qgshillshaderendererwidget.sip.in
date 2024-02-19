@@ -15,8 +15,6 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
 Renderer widget for the hill shade renderer.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

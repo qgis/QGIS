@@ -32,7 +32,6 @@
  * Some properties of a QgsLayoutTableColumn are applicable only in certain contexts.
  * For instance, the attribute and setAttribute methods only have an effect
  * for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutTableColumn
 {

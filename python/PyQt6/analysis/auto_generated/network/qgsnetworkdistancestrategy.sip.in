@@ -13,8 +13,6 @@ class QgsNetworkDistanceStrategy : QgsNetworkStrategy
 %Docstring(signature="appended")
 Strategy for calculating edge cost based on its length. Should be
 used for finding shortest path between two points.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

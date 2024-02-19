@@ -28,7 +28,6 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \brief A map tool that emits an extent from a rectangle drawn onto the map canvas.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
 {

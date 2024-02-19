@@ -18,8 +18,6 @@ The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 .. seealso:: :py:class:`QgsMapLayerProxyModel`
 
 .. seealso:: :py:class:`QgsFieldModel`
-
-.. versionadded:: 2.3
 %End
 
 %TypeHeaderCode
@@ -94,8 +92,6 @@ Sets whether an optional empty layer ("not set") option is present in the model.
 Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text and icon for the empty layer item to be set.
 
 .. seealso:: :py:func:`allowEmptyLayer`
-
-.. versionadded:: 3.0
 %End
 
     bool allowEmptyLayer() const;
@@ -103,8 +99,6 @@ Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text an
 Returns ``True`` if the model allows the empty layer ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyLayer`
-
-.. versionadded:: 3.0
 %End
 
     void setShowCrs( bool showCrs );
@@ -112,8 +106,6 @@ Returns ``True`` if the model allows the empty layer ("not set") choice.
 Sets whether the CRS of layers is also included in the model's display role.
 
 .. seealso:: :py:func:`showCrs`
-
-.. versionadded:: 3.0
 %End
 
     bool showCrs() const;
@@ -121,8 +113,6 @@ Sets whether the CRS of layers is also included in the model's display role.
 Returns ``True`` if the model includes layer's CRS in the display role.
 
 .. seealso:: :py:func:`setShowCrs`
-
-.. versionadded:: 3.0
 %End
 
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
@@ -152,8 +142,6 @@ indexFromLayer returns the model index for a given layer
 Returns the map layer corresponding to the specified ``index``.
 
 .. seealso:: :py:func:`indexFromLayer`
-
-.. versionadded:: 3.0
 %End
 
     void setAdditionalItems( const QStringList &items );
@@ -163,8 +151,6 @@ These may represent additional layers such as layers which are not included in t
 or paths to layers which have not yet been loaded into QGIS.
 
 .. seealso:: :py:func:`additionalItems`
-
-.. versionadded:: 3.0
 %End
 
     QStringList additionalItems() const;
@@ -172,8 +158,6 @@ or paths to layers which have not yet been loaded into QGIS.
 Returns the list of additional (non map layer) items included at the end of the model.
 
 .. seealso:: :py:func:`setAdditionalItems`
-
-.. versionadded:: 3.0
 %End
 
     void setAdditionalLayers( const QList<QgsMapLayer *> &layers );
@@ -230,8 +214,6 @@ Returns the list of additional layers added to the model.
     static QIcon iconForLayer( QgsMapLayer *layer );
 %Docstring
 Returns the icon corresponding to a specified map ``layer``.
-
-.. versionadded:: 3.0
 %End
 
   protected slots:

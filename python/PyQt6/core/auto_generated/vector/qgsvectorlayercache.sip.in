@@ -59,8 +59,6 @@ Enable or disable the caching of geometries
 Returns ``True`` if the cache will fetch and cache feature geometries.
 
 .. seealso:: :py:func:`setCacheGeometry`
-
-.. versionadded:: 3.0
 %End
 
     void setCacheSubsetOfAttributes( const QgsAttributeList &attributes );
@@ -120,8 +118,6 @@ a result of a call to :py:func:`~QgsVectorLayerCache.setFullCache` or by through
 all available features being cached.
 
 .. seealso:: :py:func:`setFullCache`
-
-.. versionadded:: 3.0
 %End
 
     void addCacheIndex( QgsAbstractCacheIndex *cacheIndex /Transfer/ );
@@ -183,8 +179,6 @@ Check if a certain feature id is cached.
 Returns the set of feature IDs for features which are cached.
 
 .. seealso:: :py:func:`isFidCached`
-
-.. versionadded:: 3.0
 %End
 
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );

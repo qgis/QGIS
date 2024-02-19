@@ -34,7 +34,6 @@ class QgsFeature;
  * \class QgsKernelDensityEstimation
  * \ingroup analysis
  * \brief Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
- * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {

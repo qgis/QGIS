@@ -13,8 +13,6 @@ class QgsTriangle : QgsPolygon
 {
 %Docstring(signature="appended")
 Triangle geometry type.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

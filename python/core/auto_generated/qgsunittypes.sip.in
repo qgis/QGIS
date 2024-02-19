@@ -15,8 +15,6 @@ class QgsUnitTypes
 {
 %Docstring(signature="appended")
 Helper functions for various unit types.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode
@@ -116,8 +114,6 @@ Returns a translated abbreviation representing a distance unit.
 :param unit: unit to convert to string
 
 .. seealso:: :py:func:`stringToDistanceUnit`
-
-.. versionadded:: 3.0
 %End
 
     static Qgis::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -187,8 +183,6 @@ Returns a translated abbreviation representing an areal unit.
 :param unit: unit to convert to string
 
 .. seealso:: :py:func:`stringToAreaUnit`
-
-.. versionadded:: 3.0
 %End
 
     static Qgis::AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -469,8 +463,6 @@ It will convert between different units (e.g. from meters to kilometers or milli
 if appropriate, unless forced otherwise with ``keepBaseUnit``.
 The value will also be rounded to ``decimals`` (be prepared that the returned value is still a double so it will require
 further formatting when converting to a string).
-
-.. versionadded:: 3.0
 %End
 
     static QgsUnitTypes::AreaValue scaledArea( double area, Qgis::AreaUnit unit, int decimals, bool keepBaseUnit = false );
@@ -480,8 +472,6 @@ It will convert between different units (e.g. from square meters to square kilom
 if appropriate, unless forced otherwise with ``keepBaseUnit``.
 The value will also be rounded to ``decimals`` (be prepared that the returned value is still a double so it will require
 further formatting when converting to a string).
-
-.. versionadded:: 3.0
 %End
 
     static QString formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit = false );
@@ -497,8 +487,6 @@ Returns an distance formatted as a friendly string.
 :return: formatted distance string
 
 .. seealso:: :py:func:`formatArea`
-
-.. versionadded:: 3.0
 %End
 
     static QString formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit = false );
@@ -514,8 +502,6 @@ Returns an area formatted as a friendly string.
 :return: formatted area string
 
 .. seealso:: :py:func:`formatDistance`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -546,8 +532,6 @@ Decodes a render unit from a string.
     static QString toString( Qgis::RenderUnit unit );
 %Docstring
 Returns a translated string representing a render ``unit``.
-
-.. versionadded:: 3.0
 %End
 
     static QString toAbbreviatedString( Qgis::RenderUnit unit );
@@ -570,8 +554,6 @@ Encodes a layout unit to a string.
 :return: encoded string
 
 .. seealso:: :py:func:`decodeLayoutUnit`
-
-.. versionadded:: 3.0
 %End
 
     static Qgis::LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -584,29 +566,21 @@ Decodes a layout unit from a string.
          - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
-
-.. versionadded:: 3.0
 %End
 
     static Qgis::LayoutUnitType unitType( Qgis::LayoutUnit units );
 %Docstring
 Returns the type for a unit of measurement.
-
-.. versionadded:: 3.0
 %End
 
     static QString toAbbreviatedString( Qgis::LayoutUnit unit );
 %Docstring
 Returns a translated abbreviation representing a layout ``unit`` (e.g. "mm").
-
-.. versionadded:: 3.0
 %End
 
     static QString toString( Qgis::LayoutUnit unit );
 %Docstring
 Returns a translated string representing a layout ``unit``.
-
-.. versionadded:: 3.0
 %End
 
 };

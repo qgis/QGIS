@@ -65,22 +65,16 @@ Returns provider key
     QStringList supportedCrs() const;
 %Docstring
 Returns the supported CRS
-
-.. versionadded:: 2.8
 %End
 
     QStringList supportedFormats() const;
 %Docstring
 Returns the supported formats
-
-.. versionadded:: 2.8
 %End
 
     virtual QString comments() const;
 %Docstring
 Returns comments of the layer
-
-.. versionadded:: 2.12
 %End
 
     static QString layerTypeAsString( Qgis::BrowserLayerType layerType );

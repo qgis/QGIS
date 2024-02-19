@@ -12,8 +12,6 @@ class QgsFieldConditionalFormatWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 A widget for customizing conditional formatting options.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode

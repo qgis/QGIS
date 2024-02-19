@@ -13,8 +13,6 @@ class QgsPainting
 {
 %Docstring(signature="appended")
 Contains miscellaneous painting utility functions.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

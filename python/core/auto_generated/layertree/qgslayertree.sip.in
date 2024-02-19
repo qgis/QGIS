@@ -15,8 +15,6 @@ Namespace with helper functions for layer tree operations.
 
 Only generally useful routines should be here. Miscellaneous utility functions for work
 with the layer tree are in :py:class:`QgsLayerTreeUtils` class.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -27,15 +25,11 @@ with the layer tree are in :py:class:`QgsLayerTreeUtils` class.
     static bool isGroup( QgsLayerTreeNode *node );
 %Docstring
 Check whether the node is a valid group node
-
-.. versionadded:: 2.4
 %End
 
     static bool isLayer( const QgsLayerTreeNode *node );
 %Docstring
 Check whether the node is a valid layer node
-
-.. versionadded:: 2.4
 %End
 
 
@@ -64,8 +58,6 @@ If you need the current layer order that is active, prefer using :py:func:`~QgsL
 .. seealso:: :py:func:`layerOrder`
 
 .. seealso:: :py:func:`hasCustomLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
     void setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder );
@@ -79,8 +71,6 @@ If you need the current layer order that is active, prefer using :py:func:`~QgsL
 .. seealso:: :py:func:`layerOrder`
 
 .. seealso:: :py:func:`hasCustomLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
     void setCustomLayerOrder( const QStringList &customLayerOrder ) /PyName=setCustomLayerOrderByIds/;
@@ -94,8 +84,6 @@ If you need the current layer order that is active, prefer using :py:func:`~QgsL
 .. seealso:: :py:func:`layerOrder`
 
 .. seealso:: :py:func:`hasCustomLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
     QList<QgsMapLayer *> layerOrder() const;
@@ -106,8 +94,6 @@ customLayerOrder or the layer order derived from the tree.
 This property is read only.
 
 .. seealso:: :py:func:`customLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
     bool hasCustomLayerOrder() const;
@@ -116,8 +102,6 @@ Determines if the layer order should be derived from the layer tree
 or if a custom override order shall be used instead.
 
 .. seealso:: :py:func:`customLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
     void setHasCustomLayerOrder( bool hasCustomLayerOrder );
@@ -126,8 +110,6 @@ Determines if the layer order should be derived from the layer tree
 or if a custom override order shall be used instead.
 
 .. seealso:: :py:func:`setCustomLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
     static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
@@ -136,16 +118,12 @@ Load the layer tree from an XML element.
 It is not required that layers are loaded at this point.
 :py:func:`~QgsLayerTree.resolveReferences` needs to be called after loading the layers and
 before using the tree.
-
-.. versionadded:: 3.0
 %End
 
     void readLayerOrderFromXml( const QDomElement &doc );
 %Docstring
 Load the layer order from an XML element.
 Make sure that this is only called after the layers are loaded.
-
-.. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -157,8 +135,6 @@ Make sure that this is only called after the layers are loaded.
     void clear();
 %Docstring
 Clear any information from this layer tree.
-
-.. versionadded:: 3.0
 %End
 
   signals:
@@ -166,15 +142,11 @@ Clear any information from this layer tree.
     void customLayerOrderChanged();
 %Docstring
 Emitted when the custom layer order has changed.
-
-.. versionadded:: 3.0
 %End
 
     void layerOrderChanged();
 %Docstring
 Emitted when the layer order has changed.
-
-.. versionadded:: 3.0
 %End
 
     void hasCustomLayerOrderChanged( bool hasCustomLayerOrder );
@@ -182,8 +154,6 @@ Emitted when the layer order has changed.
 Emitted when the hasCustomLayerOrder flag changes.
 
 .. seealso:: :py:func:`hasCustomLayerOrder`
-
-.. versionadded:: 3.0
 %End
 
 };

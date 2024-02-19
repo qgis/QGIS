@@ -31,7 +31,6 @@ class QgsFields;
  * \class QgsMemoryProviderUtils
  * \ingroup core
  * \brief Utility functions for use with the memory vector data provider.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsMemoryProviderUtils
 {

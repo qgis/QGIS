@@ -35,7 +35,6 @@
  * \brief Contains enumerations and other constants for use in processing algorithms
  * and parameters.
  *
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsProcessing

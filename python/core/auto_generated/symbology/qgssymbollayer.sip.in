@@ -172,8 +172,6 @@ class QgsSymbolLayer
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the symbol layer property definitions.
-
-.. versionadded:: 3.0
 %End
 
     virtual ~QgsSymbolLayer();
@@ -192,8 +190,6 @@ Returns flags which control the symbol layer's behavior.
 Returns ``True`` if symbol layer is enabled and will be drawn.
 
 .. seealso:: :py:func:`setEnabled`
-
-.. versionadded:: 3.0
 %End
 
     void setEnabled( bool enabled );
@@ -203,8 +199,6 @@ layers are not drawn, but remain part of the symbol and can be re-enabled
 when desired.
 
 .. seealso:: :py:func:`enabled`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::SymbolLayerUserFlags userFlags() const;
@@ -269,8 +263,6 @@ This property is not supported by all symbol layer types, only those with a stro
 .. seealso:: :py:func:`setColor`
 
 .. seealso:: :py:func:`setFillColor`
-
-.. versionadded:: 2.1
 %End
 
     virtual QColor strokeColor() const;
@@ -285,8 +277,6 @@ layers without a stroke component will return an invalid QColor.
 .. seealso:: :py:func:`color`
 
 .. seealso:: :py:func:`fillColor`
-
-.. versionadded:: 2.1
 %End
 
     virtual void setFillColor( const QColor &color );
@@ -300,8 +290,6 @@ This property is not supported by all symbol layer types, only those with a fill
 .. seealso:: :py:func:`setColor`
 
 .. seealso:: :py:func:`setStrokeColor`
-
-.. versionadded:: 2.1
 %End
 
     virtual QColor fillColor() const;
@@ -316,8 +304,6 @@ layers without a fill component will return an invalid QColor.
 .. seealso:: :py:func:`color`
 
 .. seealso:: :py:func:`strokeColor`
-
-.. versionadded:: 2.1
 %End
 
     virtual QString layerType() const = 0;
@@ -540,8 +526,6 @@ will be overwritten.
 .. seealso:: :py:func:`dataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
@@ -601,8 +585,6 @@ Returns the current paint effect for the layer.
 :return: paint effect
 
 .. seealso:: :py:func:`setPaintEffect`
-
-.. versionadded:: 2.9
 %End
 
     void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
@@ -612,8 +594,6 @@ Sets the current paint effect for the layer.
 :param effect: paint effect. Ownership is transferred to the layer.
 
 .. seealso:: :py:func:`paintEffect`
-
-.. versionadded:: 2.9
 %End
 
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
@@ -622,8 +602,6 @@ Prepares all data defined property expressions for evaluation. This should
 be called prior to evaluating data defined properties.
 
 :param context: symbol render context
-
-.. versionadded:: 2.12
 %End
 
     QgsPropertyCollection &dataDefinedProperties();
@@ -633,8 +611,6 @@ Returns a reference to the symbol layer's property collection, used for data def
 .. seealso:: :py:func:`setDataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
 
@@ -645,8 +621,6 @@ Sets the symbol layer's property collection, used for data defined overrides.
 :param collection: property collection. Existing properties will be replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
-
-.. versionadded:: 3.0
 %End
 
     virtual bool hasDataDefinedProperties() const;
@@ -712,8 +686,6 @@ Constructor for QgsSymbolLayer.
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
-
-.. versionadded:: 3.0
 %End
 
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
@@ -728,8 +700,6 @@ Copies all data defined properties of this layer to another symbol layer.
 Copies paint effect of this layer to another symbol layer
 
 :param destLayer: destination layer
-
-.. versionadded:: 2.9
 %End
 
     void installMasks( QgsRenderContext &context, bool recursive );
@@ -846,8 +816,6 @@ is usually used for orienting symbols to match a line's angle.
 .. seealso:: :py:func:`setAngle`
 
 .. seealso:: :py:func:`angle`
-
-.. versionadded:: 2.9
 %End
 
     virtual void setSize( double size );
@@ -1085,8 +1053,6 @@ Returns the approximate bounding box of the marker symbol layer, taking into acc
 any data defined overrides and offsets which are set for the marker layer.
 
 :return: approximate symbol bounds, in painter units
-
-.. versionadded:: 2.14
 %End
 
   protected:

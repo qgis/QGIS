@@ -27,7 +27,6 @@
  * \brief A grid of color swatches, which allows for user selection. Colors are taken from an
  * associated QgsColorScheme.
  * \see QgsColorGridAction
- * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 {
@@ -183,7 +182,6 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
  * \class QgsColorSwatchGridAction
  * \brief A color swatch grid which can be embedded into a menu.
  * \see QgsColorSwatchGrid
- * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
@@ -236,7 +234,6 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * from the widget. If set to FALSE, the colorChanged signal will be emitted but the menu will
      * stay open.
      * \see dismissOnColorSelection()
-     * \since QGIS 2.14
      */
     void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
 
@@ -244,7 +241,6 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
      * \see setDismissOnColorSelection
-     * \since QGIS 2.14
      */
     bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
 

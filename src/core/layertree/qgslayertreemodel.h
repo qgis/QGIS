@@ -52,7 +52,6 @@ class QgsLayerTreeFilterSettings;
  * whether to allow changes to the layer tree.
  *
  * \see QgsLayerTreeView
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 {
@@ -139,14 +138,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Returns legend node for given index. Returns NULLPTR for invalid index
-     * \since QGIS 2.6
      */
     static QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index );
 
     /**
      * Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
      * If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
-     * \since QGIS 2.6
      */
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
 
@@ -155,20 +152,17 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is TRUE)
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
      * \see layerOriginalLegendNodes()
-     * \since QGIS 2.6
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
 
     /**
      * Returns original (unfiltered) list of legend nodes attached to a particular layer node
      * \see layerLegendNodes()
-     * \since QGIS 2.14
      */
     QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
 
     /**
      * Returns legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
-     * \since QGIS 2.18
      */
     QgsLayerTreeModelLegendNode *legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
 
@@ -178,7 +172,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \param layerId map layer ID
      * \param ruleKey legend node rule key
      * \returns QgsLayerTreeModelLegendNode if found
-     * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;
 
@@ -187,7 +180,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Reset the model and use a new root group node
-     * \since QGIS 2.6
      */
     void setRootGroup( QgsLayerTree *newRootGroup );
 
@@ -217,7 +209,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * Setting \a scale <= 0 will disable the functionality.
      * \see legendFilterByScale()
-     * \since QGIS 2.6
      */
     void setLegendFilterByScale( double scale );
 
@@ -226,7 +217,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale <= 0 indicates that no scale filtering is being performed.
      * \see setLegendFilterByScale()
-     * \since QGIS 2.6
      */
     double legendFilterByScale() const { return mLegendFilterByScale; }
 
@@ -250,7 +240,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Returns the current map settings used for the current legend filter (or NULLPTR if none is enabled)
-     * \since QGIS 2.14
      */
     const QgsMapSettings *legendFilterMapSettings() const;
 
@@ -277,26 +266,22 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Give the layer tree model hints about the currently associated map view
      * so that legend nodes that use map units can be scaled correctly
-     * \since QGIS 2.6
      */
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
 
     /**
      * Gets hints about map view - to be used in legend nodes. Arguments that are not NULLPTR will receive values.
      * If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
-     * \since QGIS 2.6
      */
     void legendMapViewData( double *mapUnitsPerPixel SIP_OUT, int *dpi SIP_OUT, double *scale  SIP_OUT ) const;
 
     /**
      * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-     * \since QGIS 2.10
      */
     QMap<QString, QString> layerStyleOverrides() const;
 
     /**
      * Sets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-     * \since QGIS 2.10
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
@@ -388,7 +373,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Updates model when node's name has changed
-     * \since QGIS 3.0
      */
     void nodeNameChanged( QgsLayerTreeNode *node, const QString &name );
 
@@ -428,7 +412,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Updates layer data for scale dependent layers, should be called when map scale changes.
      * Emits dataChanged() for all scale dependent layers.
-     * \since QGIS 2.16
      */
     void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex(), double previousScale = 0.0 );
 

@@ -47,7 +47,6 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     /**
      * Returns a new instance equivalent to this one.
      * \returns a new layer instance
-     * \since QGIS 3.0
      */
     QgsPluginLayer *clone() const override = 0;
 
@@ -59,7 +58,6 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 
     /**
      * Set source string. This is used for example in layer tree to show tooltip.
-     * \since QGIS 2.16
      */
     void setSource( const QString &source );
 

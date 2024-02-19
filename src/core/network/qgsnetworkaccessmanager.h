@@ -263,8 +263,6 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
  * If no proxy factories are there or none returns a proxy for an URL a
  * fallback proxy can be set.  There's also a exclude list that defines URLs
  * that the fallback proxy should not be used for, then no proxy will be used.
- *
- * \since 1.5
  */
 class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 {

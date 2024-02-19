@@ -32,7 +32,6 @@
  * - PresenceDependency && FromProvider: virtual layers for instance which may depend on other layers already loaded to work
  * - DataDependency && FromUser: dependencies given by the user, mainly to represent database triggers
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsMapLayerDependency
 {

@@ -37,8 +37,6 @@ and various parameters and outputs.
 
 :py:class:`QgsProcessingRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.processingRegistry()`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

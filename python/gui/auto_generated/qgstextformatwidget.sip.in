@@ -25,8 +25,6 @@ Additionally, the widget can handle labeling settings due to the large overlap b
 the text renderer settings and the labeling settings. This mode is possible by
 subclassing :py:class:`QgsTextFormatWidget` and calling the protected constructor with a mode
 of Labeling.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -86,8 +84,6 @@ Deactivate a field from data defined properties and update the
 corresponding button.
 
 :param key: The property key to deactivate
-
-.. versionadded:: 3.0
 %End
 
   public slots:
@@ -215,8 +211,6 @@ A simple dialog for customizing text formatting settings.
 :py:class:`QgsTextFormatDialog` provides a dialog for controlling the appearance of text rendered
 using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
 a :py:class:`QgsTextFormat`, including shadow, background and buffer.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -265,8 +259,6 @@ A panel widget for customizing text formatting settings.
 :py:class:`QgsTextFormatPanelWidget` provides a panel widget for controlling the appearance of text rendered
 using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
 a :py:class:`QgsTextFormat`, including shadow, background and buffer.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -29,7 +29,6 @@ class QgsMapCanvas;
  * \ingroup app
  * \class QgsSelectByFormDialog
  * \brief A dialog for selecting features from a layer, using a form based off the layer's editor widgets.
- * \since QGIS 2.16
  */
 
 class APP_EXPORT QgsSelectByFormDialog : public QDialog
@@ -53,7 +52,6 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
      * Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * \param messageBar target message bar
-     * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
 

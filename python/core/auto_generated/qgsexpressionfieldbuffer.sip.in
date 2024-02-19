@@ -14,8 +14,6 @@ class QgsExpressionFieldBuffer
 {
 %Docstring(signature="appended")
 Buffers information about expression fields for a vector layer.
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -56,8 +54,6 @@ Renames an expression field at a given index
 
 :param index: The index of the expression to change
 :param name: New name for field
-
-.. versionadded:: 3.0
 %End
 
     void updateExpression( int index, const QString &exp );
@@ -66,8 +62,6 @@ Changes the expression at a given index
 
 :param index: The index of the expression to change
 :param exp: The new expression to set
-
-.. versionadded:: 2.9
 %End
 
     void writeXml( QDomNode &layer_node, QDomDocument &document ) const;

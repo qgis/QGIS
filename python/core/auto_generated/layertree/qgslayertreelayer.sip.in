@@ -22,8 +22,6 @@ once the layer is loaded.
 A map layer is supposed to be present in one layer tree just once. It is
 however possible that temporarily a layer exists in one tree more than just
 once, e.g. while reordering items with drag and drop.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -70,8 +68,6 @@ Returns the map layer associated with this node.
 Returns the layer's name.
 
 .. seealso:: :py:func:`setName`
-
-.. versionadded:: 3.0
 %End
 
     virtual void setName( const QString &n );
@@ -80,8 +76,6 @@ Returns the layer's name.
 Sets the layer's name.
 
 .. seealso:: :py:func:`name`
-
-.. versionadded:: 3.0
 %End
 
     void setUseLayerName( bool use = true );
@@ -109,8 +103,6 @@ Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeLayer
 %Docstring
 Read layer node from XML. Returns new instance.
 Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeLayer.resolveReferences` internally).
-
-.. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -126,8 +118,6 @@ Also resolves textual references to layers from the project (calls :py:func:`~Qg
 
 %Docstring
 Resolves reference to layer from stored layer ID (if it has not been resolved already)
-
-.. versionadded:: 3.0
 %End
 
     void setLabelExpression( const QString &expression );
@@ -225,8 +215,6 @@ Emitted when a previously unavailable layer got loaded.
     void layerWillBeUnloaded();
 %Docstring
 Emitted when a previously available layer got unloaded (from layer registry).
-
-.. versionadded:: 2.6
 %End
 
   protected:

@@ -142,13 +142,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     SIP_END
 #endif
 
-    //! \since QGIS 2.8
     Qgis::BrowserItemState state() const;
 
     /**
      * Set item state. It also take care about starting/stopping loading icon animation.
      * \param state
-     * \since QGIS 2.8
      */
     virtual void setState( Qgis::BrowserItemState state );
 
@@ -203,7 +201,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      * created menus is correctly handled by parenting them to the specified parent widget.
      * \param parent a parent widget of the menu
      * \returns list of menus
-     * \since QGIS 3.0
      */
     virtual QList<QMenu *> menus( QWidget *parent );
 
@@ -239,7 +236,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Called when a user double clicks on the item. Subclasses should return TRUE
      * if they have implemented a double-click handler and do not want the default
      * double-click behavior for items.
-     * \since QGIS 3.0
      */
     virtual bool handleDoubleClick();
 
@@ -248,7 +244,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Default implementation returns FALSE.
      * A draggable item has to implement mimeUris() that will be used to pass data.
      * \see mimeUris()
-     * \since QGIS 3.0
      */
     virtual bool hasDragEnabled() const { return false; }
 
@@ -257,7 +252,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
      * \deprecated since QGIS 3.18, use mimeUris() instead
-     * \since QGIS 3.0
      */
     Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const SIP_DEPRECATED;
 
@@ -385,14 +379,12 @@ class CORE_EXPORT QgsDataItem : public QObject
      * sort key.
      *
      * \see setSortKey()
-     * \since QGIS 3.0
      */
     virtual QVariant sortKey() const;
 
     /**
      * Sets a custom sorting \a key for the item.
      * \see sortKey()
-     * \since QGIS 3.0
      */
     void setSortKey( const QVariant &key );
 
@@ -519,7 +511,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Will request a repaint of this icon.
      *
-     * \since QGIS 3.0
      */
     void updateIcon();
 

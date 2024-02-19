@@ -45,7 +45,6 @@ class QgsScreenHelper;
  *
  * QgsLayoutView manages the layout interaction tools and mouse/key events.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutView: public QGraphicsView
 {
@@ -597,7 +596,6 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
  * instances to provide custom context menus (opened upon right-click).
  *
  * \see QgsLayoutView
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewMenuProvider
 {

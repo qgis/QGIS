@@ -56,7 +56,6 @@ namespace Qt3DCore
  *
  * \note Not available in Python bindings
  *
- * \since QGIS 3.0
  */
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry

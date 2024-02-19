@@ -17,8 +17,6 @@ class QgsTracer : QObject
 Utility class that construct a planar graph from the input vector
 layers and provides shortest path search for tracing of existing
 features.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode
@@ -75,32 +73,24 @@ Sets extent to which graph's features will be limited (empty extent means no lim
 %Docstring
 Gets offset in map units that should be applied to the traced paths returned from :py:func:`~QgsTracer.findShortestPath`.
 Positive offset for right side, negative offset for left side.
-
-.. versionadded:: 3.0
 %End
 
     void setOffset( double offset );
 %Docstring
 Set offset in map units that should be applied to the traced paths returned from :py:func:`~QgsTracer.findShortestPath`.
 Positive offset for right side, negative offset for left side.
-
-.. versionadded:: 3.0
 %End
 
 
     void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
 %Docstring
 Gets extra parameters for offset curve algorithm (used when offset is non-zero)
-
-.. versionadded:: 3.0
 %End
 
 
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 %Docstring
 Set extra parameters for offset curve algorithm (used when offset is non-zero)
-
-.. versionadded:: 3.0
 %End
 
     int maxFeatureCount() const;
@@ -129,8 +119,6 @@ Whether the internal data structures have been initialized
 %Docstring
 Whether there was an error during graph creation due to noding exception,
 indicating some input data topology problems
-
-.. versionadded:: 2.16
 %End
 
     enum PathError /BaseType=IntEnum/

@@ -38,7 +38,6 @@ class CORE_EXPORT QgsTolerance
      * Static function to get vertex tolerance value.
      * The value is read from settings and transformed if necessary.
      * \returns value of vertex tolerance in map units (not layer units)
-     * \since QGIS 2.8
      */
     static double vertexSearchRadius( const QgsMapSettings &mapSettings );
 
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsTolerance
      * \param mapSettings settings of the map
      * \param units type of units to be translated
      * \returns value of tolerance in map units
-     * \since QGIS 2.8
      */
     static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units );
 

@@ -29,8 +29,6 @@ open layout designer dialogs.
    signal. Plugins must also listen for the QgisInterface.layoutDesignerWillBeClosed
    signal and gracefully cleanup any customizations before the designer dialog is
    deleted.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

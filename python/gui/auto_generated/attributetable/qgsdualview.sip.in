@@ -83,8 +83,6 @@ Change the current view mode.
 Returns the current view mode.
 
 .. seealso:: :py:func:`setView`
-
-.. versionadded:: 2.16
 %End
 
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
@@ -228,8 +226,6 @@ saveEditChanges
     void setMultiEditEnabled( bool enabled );
 %Docstring
 Sets whether multi edit mode is enabled.
-
-.. versionadded:: 2.16
 %End
 
     void toggleSearchMode( bool enabled );
@@ -237,22 +233,16 @@ Sets whether multi edit mode is enabled.
 Toggles whether search mode should be enabled in the form.
 
 :param enabled: set to ``True`` to switch on search mode
-
-.. versionadded:: 2.16
 %End
 
     void copyCellContent() const;
 %Docstring
 Copy the content of the selected cell in the clipboard.
-
-.. versionadded:: 1.16
 %End
 
     void cancelProgress( );
 %Docstring
 Cancel the progress dialog (if any)
-
-.. versionadded:: 3.0
 %End
 
     void parentFormValueChanged( const QString &attribute, const QVariant &value );
@@ -285,8 +275,6 @@ Emitted when a filter expression is set using the view.
 
 :param expression: filter expression
 :param type: filter type
-
-.. versionadded:: 2.16
 %End
 
     void formModeChanged( QgsAttributeEditorContext::Mode mode );
@@ -321,8 +309,6 @@ class QgsAttributeTableAction : QAction
     QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx );
 %Docstring
 Create a new attribute table action.
-
-.. versionadded:: 3.0
 %End
 
   public slots:

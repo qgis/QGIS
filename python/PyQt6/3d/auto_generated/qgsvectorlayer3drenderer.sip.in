@@ -22,8 +22,6 @@ Metadata for vector layer 3D renderer to allow creation of its instances from XM
 
    This is not considered stable API, and may change in future QGIS releases. It is
    exposed to the Python bindings as a tech preview only.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -45,8 +43,6 @@ class QgsVectorLayer3DRenderer : QgsAbstractVectorLayer3DRenderer
 %Docstring(signature="appended")
 3D renderer that renders all features of a vector layer with the same 3D symbol.
 The appearance is completely defined by the symbol.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

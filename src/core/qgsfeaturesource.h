@@ -32,7 +32,6 @@ class QgsFeedback;
  * \ingroup core
  * \brief An interface for objects which provide features via a getFeatures method.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFeatureSource
 {
@@ -167,7 +166,6 @@ class CORE_EXPORT QgsFeatureSource
      * The returned value is a new instance and the caller takes responsibility
      * for its ownership.
      *
-     * \since QGIS 3.0
      */
     QgsVectorLayer *materialize( const QgsFeatureRequest &request,
                                  QgsFeedback *feedback = nullptr ) SIP_FACTORY;

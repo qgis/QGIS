@@ -94,7 +94,6 @@ namespace pal
       /**
        * Adds a candidate label position to the problem.
        * \param position label candidate position. Ownership is transferred to Problem.
-       * \since QGIS 2.12
        */
       void addCandidatePosition( std::unique_ptr< LabelPosition > position );
 

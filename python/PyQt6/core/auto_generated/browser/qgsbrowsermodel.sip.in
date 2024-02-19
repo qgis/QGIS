@@ -220,8 +220,6 @@ If ``name`` is specified, it will be used as the favorite's name. Otherwise
 the name will be set to match ``directory``.
 
 .. seealso:: :py:func:`removeFavorite`
-
-.. versionadded:: 3.0
 %End
 
     void removeFavorite( const QModelIndex &index );
@@ -229,8 +227,6 @@ the name will be set to match ``directory``.
 Removes a favorite directory from its corresponding model index.
 
 .. seealso:: :py:func:`addFavoriteDirectory`
-
-.. versionadded:: 3.0
 %End
 
 

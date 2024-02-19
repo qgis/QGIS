@@ -60,15 +60,11 @@ and appearance.
     QString name() const;
 %Docstring
 Returns the current connection name.
-
-.. versionadded:: 3.0
 %End
 
     QString url() const;
 %Docstring
 Returns the current connection url.
-
-.. versionadded:: 3.0
 %End
 
   public slots:
@@ -91,15 +87,11 @@ Returns the current connection url.
 %Docstring
 Returns ``True`` if dialog settings are valid, or ``False`` if current
 settings are not valid and the dialog should not be acceptable.
-
-.. versionadded:: 3.0
 %End
 
     QPushButton *testConnectButton();
 %Docstring
 Returns the "test connection" button.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -114,8 +106,6 @@ Returns the "test connection" button.
 Returns the QSettings key for WFS related settings for the connection.
 
 .. seealso:: :py:func:`wmsSettingsKey`
-
-.. versionadded:: 3.0
 %End
 
     virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
@@ -123,16 +113,12 @@ Returns the QSettings key for WFS related settings for the connection.
 Returns the QSettings key for WMS related settings for the connection.
 
 .. seealso:: :py:func:`wfsSettingsKey`
-
-.. versionadded:: 3.0
 %End
 
     void updateServiceSpecificSettings();
 %Docstring
 Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS
 and WMS related settings).
-
-.. versionadded:: 3.0
 %End
 
 };

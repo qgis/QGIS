@@ -82,8 +82,6 @@ width of each symbol layer using the provided render ``context``.
 Set data defined width for whole symbol (including all symbol layers).
 
 .. seealso:: :py:func:`dataDefinedWidth`
-
-.. versionadded:: 3.0
 %End
 
     QgsProperty dataDefinedWidth() const;
@@ -94,8 +92,6 @@ Returns data defined width for whole symbol (including all symbol layers).
          at the line level. Caller takes responsibility for deleting the returned object.
 
 .. seealso:: :py:func:`setDataDefinedWidth`
-
-.. versionadded:: 3.0
 %End
 
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );

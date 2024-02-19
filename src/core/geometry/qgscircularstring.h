@@ -29,7 +29,6 @@
  * \ingroup core
  * \class QgsCircularString
  * \brief Circular string geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {
@@ -303,7 +302,6 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom )
     {

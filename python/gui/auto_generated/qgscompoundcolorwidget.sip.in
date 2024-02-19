@@ -15,8 +15,6 @@ class QgsCompoundColorWidget : QgsPanelWidget
 %Docstring(signature="appended")
 A custom QGIS widget for selecting a color, including options for selecting colors via
 hue wheel, color swatches, and a color sampler.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -54,8 +52,6 @@ Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to ``True``.
 
 :param allowOpacity: set to ``False`` to disable opacity modification
-
-.. versionadded:: 3.0
 %End
 
     void setDiscarded( bool discarded );
@@ -64,8 +60,6 @@ Sets whether the widget's color has been "discarded" and the selected color shou
 be stored in the recent color list.
 
 :param discarded: set to ``True`` to avoid adding color to recent color list on widget destruction.
-
-.. versionadded:: 3.0
 %End
 
     static QgsUserColorScheme *importUserPaletteFromFile( QWidget *parent );

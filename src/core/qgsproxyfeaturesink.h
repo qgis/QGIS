@@ -34,7 +34,6 @@
  * can instead be returned which forwards features on to the destination sink. The
  * proxy sink can be safely deleted without affecting the destination sink.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
 {

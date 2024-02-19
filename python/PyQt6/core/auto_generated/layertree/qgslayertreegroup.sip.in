@@ -18,8 +18,6 @@ Group names do not need to be unique within one tree nor within one parent.
 
 While a layer tree group is typically used for hierarchical organisation of a :py:class:`QgsProject`,
 they can optionally be associated with a :py:class:`QgsGroupLayer` for map rendering purposes.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -114,8 +112,6 @@ Remove all child nodes. The nodes will be deleted.
     QgsLayerTreeLayer *findLayer( QgsMapLayer *layer ) const;
 %Docstring
 Find layer node representing the map layer. Searches recursively the whole sub-tree.
-
-.. versionadded:: 3.0
 %End
 
     QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
@@ -173,8 +169,6 @@ Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeGroup
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
 Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeGroup.resolveReferences` internally).
-
-.. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -205,8 +199,6 @@ Returns a clone of the group. The children are cloned too.
 
 %Docstring
 Calls :py:func:`~QgsLayerTreeGroup.resolveReferences` on child tree nodes
-
-.. versionadded:: 3.0
 %End
 
     virtual void setItemVisibilityCheckedRecursive( bool checked );
@@ -218,8 +210,6 @@ Check or uncheck a node and all its children (taking into account exclusion rule
     bool isMutuallyExclusive() const;
 %Docstring
 Returns whether the group is mutually exclusive (only one child can be checked at a time)
-
-.. versionadded:: 2.12
 %End
 
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
@@ -227,8 +217,6 @@ Returns whether the group is mutually exclusive (only one child can be checked a
 Set whether the group is mutually exclusive (only one child can be checked at a time).
 The initial child index determines which child should be initially checked. The default value
 of -1 will determine automatically (either first one currently checked or none)
-
-.. versionadded:: 2.12
 %End
 
     QgsGroupLayer *groupLayer();

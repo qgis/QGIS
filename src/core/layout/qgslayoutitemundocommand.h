@@ -37,7 +37,6 @@ SIP_NO_FILE
  * recreating a deleted item when the undo stack rolls back past
  * the item deletion command.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
 {
@@ -88,7 +87,6 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
  * layout item deletion. When applied (e.g. as a result of a 'redo' action),
  * the associated layout item is deleted and removed from the layout.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoCommand
 {
@@ -116,7 +114,6 @@ class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoComman
  * layout item creation. When applied (e.g. as a result of a 'redo' action),
  * the associated layout item is recreated and added to the layout.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutItemAddItemCommand: public QgsLayoutItemUndoCommand
 {

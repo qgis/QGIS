@@ -73,7 +73,7 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
      * Sets a description label
      * \param description a description string
      * \note the description will be displayed at the bottom of the dialog
-     * \since 3.8
+     * \since QGIS 3.8
      */
     void setDescription( const QString &description );
 
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
      * Sets a description label
      * \param description a description string
      * \note the description will be displayed at the bottom of the dialog
-     * \since 3.8
+     * \since QGIS 3.8
      */
     void setDescription( const QString &description );
 

@@ -149,22 +149,16 @@ if no feature is related, it returns an invalid feature
     void showIndeterminateState();
 %Docstring
 Sets the widget to display in an indeterminate "mixed value" state.
-
-.. versionadded:: 2.16
 %End
 
     bool allowAddFeatures() const;
 %Docstring
 Determines if a button for adding new features should be shown.
-
-.. versionadded:: 2.16
 %End
 
     void setAllowAddFeatures( bool allowAddFeatures );
 %Docstring
 Determines if a button for adding new features should be shown.
-
-.. versionadded:: 2.16
 %End
 
     QgsRelation relation() const;

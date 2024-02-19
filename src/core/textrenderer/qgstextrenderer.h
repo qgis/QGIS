@@ -36,7 +36,6 @@ class QFontMetricsF;
   * \ingroup core
   * \brief Handles rendering text using rich formatting options, including drop shadows, buffers
   * and background shapes.
-  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTextRenderer
 {

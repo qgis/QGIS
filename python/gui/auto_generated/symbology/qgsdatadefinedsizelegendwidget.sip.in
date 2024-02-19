@@ -16,8 +16,6 @@ class QgsDataDefinedSizeLegendWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 Widget for configuration of appearance of legend for marker symbols with data-defined size.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

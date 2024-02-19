@@ -12,8 +12,6 @@ class QgsLayoutGuide : QObject
 {
 %Docstring(signature="appended")
 Contains the configuration for a single snap guide used by a layout.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -128,8 +126,6 @@ class QgsLayoutGuideCollection : QAbstractTableModel, QgsLayoutSerializableObjec
 {
 %Docstring(signature="appended")
 Stores and manages the snap guides used by a layout.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -268,8 +264,6 @@ class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -83,13 +83,11 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
 
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
-     * \since QGIS 3.0
      */
     bool checkGeometryType() const;
 
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
-     * \since QGIS 3.0
      */
     void setCheckGeometryType( bool checkGeometryType );
     // TODO QGIS 4: remove if GRASS plugin is dropped
@@ -110,19 +108,16 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
 
     /**
      * individual layer per digitizing session
-     * \since QGIS 3.0
     */
     QgsMapLayer *mLayer = nullptr;
 
     /**
      * layer used before digitizing session
-     * \since QGIS 3.0
     */
     QgsMapLayer *mCurrentLayer = nullptr;
 
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
-     * \since QGIS 2.12
     */
     bool mCheckGeometryType;
 

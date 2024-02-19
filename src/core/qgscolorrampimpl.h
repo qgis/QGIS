@@ -33,7 +33,6 @@ typedef QColor( *InterpolateColorFunc )( const QColor &c1, const QColor &c2, con
  * \ingroup core
  * \class QgsGradientStop
  * \brief Represents a color stop within a QgsGradientColorRamp color ramp.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsGradientStop
 {
@@ -131,7 +130,6 @@ typedef QList<QgsGradientStop> QgsGradientStopsList;
  * \class QgsGradientColorRamp
  * \brief Gradient color ramp, which smoothly interpolates between two colors and also
  * supports optional extra color stops.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
 {
@@ -257,7 +255,6 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      * \param gradient gradient to copy stops into
      * \param opacity opacity multiplier. Opacity of colors will be multiplied
      * by this factor before adding to the gradient.
-     * \since QGIS 2.1
      */
     void addStopsToGradient( QGradient *gradient, double opacity = 1 ) const;
 
@@ -335,7 +332,6 @@ Q_DECLARE_METATYPE( QgsGradientColorRamp )
  * \ingroup core
  * \class QgsLimitedRandomColorRamp
  * \brief Constrained random color ramp, which returns random colors based on preset parameters.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 {
@@ -381,7 +377,6 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 
     /**
      * Gets a list of random colors
-     * \since QGIS 2.4
      */
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
@@ -487,7 +482,6 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
  * \class QgsRandomColorRamp
  * \brief Totally random color ramp. Returns colors generated at random, but constrained
  * to some hardcoded saturation and value ranges to prevent ugly color generation.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 {
@@ -509,7 +503,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
      * this method pregenerates a set of visually distinct colors which are returned
      * by subsequent calls to color().
      * \param colorCount number of unique colors
-     * \since QGIS 2.5
      */
     virtual void setTotalColorCount( int colorCount );
 
@@ -538,7 +531,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
  * \ingroup core
  * \class QgsPresetSchemeColorRamp
  * \brief A scheme based color ramp consisting of a list of predefined colors.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColorScheme
 {
@@ -610,7 +602,6 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
  * \ingroup core
  * \class QgsColorBrewerColorRamp
  * \brief Color ramp utilising "Color Brewer" preset color schemes.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 {

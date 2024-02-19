@@ -219,7 +219,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      *
      * \returns true if data source has metadata, false otherwise.
      *
-     * \since QGIS 3.0
      */
     bool hasMetadata() const override;
 
@@ -227,7 +226,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * Launch a listening thead to listen to postgres NOTIFY on "qgis" channel
      * the notification is transformed into a Qt signal.
      *
-     * \since QGIS 3.0
      */
     void setListening( bool isListening ) override;
 

@@ -25,7 +25,6 @@
 /**
  * \ingroup gui
  * \brief Layout view tool for adding node based items to a layout.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
 {

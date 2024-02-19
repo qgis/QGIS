@@ -25,7 +25,6 @@ class QgsProject;
 /**
  * \ingroup core
  * \brief Stores global configuration for labeling engine
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLabelingEngineSettings
 {

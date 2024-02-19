@@ -50,7 +50,6 @@ class QgsLayout;
  * For every control image, the allowed mismatch and color tolerance values will be calculated
  * individually.
  *
- * \since QGIS 2.8
  */
 
 class CORE_EXPORT QgsMultiRenderChecker
@@ -118,7 +117,6 @@ class CORE_EXPORT QgsMultiRenderChecker
      * Sets the largest allowable difference in size between the rendered and the expected image.
      * \param xTolerance x tolerance in pixels
      * \param yTolerance y tolerance in pixels
-     * \since QGIS 3.0
      */
     void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
 
@@ -198,7 +196,6 @@ class CORE_EXPORT QgsMultiRenderChecker
  * \ingroup core
  * \class QgsLayoutChecker
  * \brief Renders a layout to an image and compares with an expected output
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
 {

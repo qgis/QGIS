@@ -37,7 +37,6 @@ class QgsAggregateToolButton;
  * of the editor widget depending on a number of possible modes. For instance, if the parent attribute
  * form is in the multi edit mode, this widget will show both the editor widget and a tool button for
  * controlling the multi edit results.
- * \since QGIS 2.16
  */
 class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
 {

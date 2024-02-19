@@ -16,8 +16,6 @@ class QgsLegendModel : QgsLayerTreeModel
 Item model implementation based on layer tree model for layout legend.
 
 Overrides some functionality of :py:class:`QgsLayerTreeModel` to better fit the needs of layout legends.
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -65,8 +63,6 @@ class QgsLayoutItemLegend : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for map legends.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

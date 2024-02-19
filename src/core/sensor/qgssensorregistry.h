@@ -87,7 +87,6 @@ typedef std::function<QgsAbstractSensor *( QObject *parent )> QgsSensorCreateFun
  * \ingroup core
  * \brief Convenience metadata class that uses static functions to create sensors and their configuration widgets.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSensorMetadata : public QgsSensorAbstractMetadata
 {

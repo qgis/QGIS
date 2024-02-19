@@ -105,8 +105,6 @@ Takes ownership of the provided node
         void append( QgsExpressionNode::NamedNode *node /Transfer/ );
 %Docstring
 Adds a named node. Takes ownership of the provided node.
-
-.. versionadded:: 2.16
 %End
 
         int count() const;
@@ -124,8 +122,6 @@ Reserves size for the node list.
         bool hasNamedNodes() const;
 %Docstring
 Returns ``True`` if list contains any named nodes
-
-.. versionadded:: 2.16
 %End
 
         QList<QgsExpressionNode *> list();
@@ -136,15 +132,11 @@ Gets a list of all the nodes.
         QgsExpressionNode *at( int i );
 %Docstring
 Gets the node at position i in the list.
-
-.. versionadded:: 3.0
 %End
 
         QStringList names() const;
 %Docstring
 Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-
-.. versionadded:: 2.16
 %End
 
         QgsExpressionNode::NodeList *clone() const /Factory/;
@@ -181,8 +173,6 @@ the original expression, it's just guaranteed to behave the same way.
 Evaluate this node with the given context and parent.
 This will return a cached value if it has been determined to be static
 during the :py:func:`~QgsExpressionNode.prepare` execution.
-
-.. versionadded:: 2.12
 %End
 
     virtual QgsExpressionNode *clone() const = 0;
@@ -251,8 +241,6 @@ Returns ``True`` if this node can be evaluated for a static value. This is used 
 the :py:func:`~QgsExpressionNode.prepare` step and in case it returns ``True``, the value of this node will already
 be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
 to :py:func:`~QgsExpressionNode.eval`). In case this returns ``True``, :py:func:`~QgsExpressionNode.prepareNode` will never be called.
-
-.. versionadded:: 3.0
 %End
 
     bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
@@ -261,8 +249,6 @@ Prepare this node for evaluation.
 This will check if the node content is static and in this case cache the value.
 If it's not static it will call :py:func:`~QgsExpressionNode.prepareNode` to allow the node to do initialization
 work like for example resolving a column name to an attribute index.
-
-.. versionadded:: 2.12
 %End
 
     int parserFirstLine;

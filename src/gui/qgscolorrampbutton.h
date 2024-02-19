@@ -31,7 +31,6 @@ class QgsStyle;
  * \brief A cross platform button subclass for selecting color ramps. Will open color ramp dialogs when clicked.
  * Offers live updates to button from color ramp dialog. An attached drop-down menu allows for access to
  * saved color ramps, as well as option to invert the current color ramp and create new ramps.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsColorRampButton : public QToolButton
 {

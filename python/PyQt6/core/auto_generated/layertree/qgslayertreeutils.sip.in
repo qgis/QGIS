@@ -14,8 +14,6 @@ class QgsLayerTreeUtils
 {
 %Docstring(signature="appended")
 Assorted functions for dealing with layer trees.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

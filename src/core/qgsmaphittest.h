@@ -38,7 +38,6 @@ class QgsLayerTreeFilterSettings;
  * \brief Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
  * will be visible on the map - this is useful for content based legend.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapHitTest
 {
@@ -91,7 +90,6 @@ class CORE_EXPORT QgsMapHitTest
      * \param symbol symbol to find
      * \param layer vector layer
      * \see legendKeyVisible()
-     * \since QGIS 2.12
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
@@ -100,7 +98,6 @@ class CORE_EXPORT QgsMapHitTest
      * \param ruleKey legend rule key
      * \param layer vector layer
      * \see symbolVisible()
-     * \since QGIS 2.14
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 

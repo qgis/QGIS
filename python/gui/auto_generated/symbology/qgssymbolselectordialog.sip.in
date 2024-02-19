@@ -57,8 +57,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -66,8 +64,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbol *symbol();
@@ -109,8 +105,6 @@ Lock the current active symbol layer.
     void duplicateLayer();
 %Docstring
 Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-
-.. versionadded:: 2.14
 %End
 
     void layerChanged();
@@ -180,8 +174,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -189,8 +181,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbol *symbol();
@@ -221,8 +211,6 @@ Returns a reference to the dialog's button box.
     void duplicateLayer();
 %Docstring
 Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-
-.. versionadded:: 2.14
 %End
 
     void layerChanged();

@@ -34,7 +34,6 @@
  * ensuring that only geographic coordinates and not projected coordinates are formatted to degree
  * based formats.
  *
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsCoordinateFormatter

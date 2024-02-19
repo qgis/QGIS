@@ -34,7 +34,6 @@
  * to believe that addition of two QgsLayoutPoints with different unit types would automatically convert
  * units. Instead, all unit conversion must be handled by a QgsLayoutMeasurementConverter so that
  * conversion between paper and screen units can be correctly performed.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutPoint
 {

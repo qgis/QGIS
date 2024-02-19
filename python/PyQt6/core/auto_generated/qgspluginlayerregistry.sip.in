@@ -35,8 +35,6 @@ Returns new layer of this type. Return ``None`` on error
     virtual QgsPluginLayer *createLayer( const QString &uri ) /Factory/;
 %Docstring
 Returns new layer of this type, using layer URI (specific to this plugin layer type). Return ``None`` on error.
-
-.. versionadded:: 2.10
 %End
 
     virtual bool showLayerProperties( QgsPluginLayer *layer );

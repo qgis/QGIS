@@ -766,7 +766,7 @@ class CORE_EXPORT Qgis
 
     /**
      * Different methods of HTTP requests
-     * \since 3.22
+     * \since QGIS 3.22
      */
     enum class HttpMethod : int
     {
@@ -4815,7 +4815,6 @@ class CORE_EXPORT Qgis
 
     /**
      * Identify search radius in mm
-     * \since QGIS 2.3
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
@@ -4826,19 +4825,16 @@ class CORE_EXPORT Qgis
      * Default highlight color.  The transparency is expected to only be applied to polygon
      * fill. Lines and outlines are rendered opaque.
      *
-     *  \since QGIS 2.3
      */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
     /**
      * Default highlight buffer in mm.
-     *  \since QGIS 2.3
      */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
     /**
      * Default highlight line/stroke minimum width in mm.
-     * \since QGIS 2.3
      */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
@@ -4846,14 +4842,12 @@ class CORE_EXPORT Qgis
      * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * \since QGIS 2.15
      */
     static const double SCALE_PRECISION;
 
     /**
      * Default Z coordinate value.
      * This value have to be assigned to the Z coordinate for the vertex.
-     * \since QGIS 3.0
      */
     static const double DEFAULT_Z_COORDINATE;
 
@@ -4867,19 +4861,16 @@ class CORE_EXPORT Qgis
     /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
      * to account for differences in the default font sizes across different platforms.
-     *  \since QGIS 3.0
      */
     static const double UI_SCALE_FACTOR;
 
     /**
      * Default snapping distance tolerance.
-     *  \since QGIS 3.0
      */
     static const double DEFAULT_SNAP_TOLERANCE;
 
     /**
      * Default snapping distance units.
-     *  \since QGIS 3.0
      */
     static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
@@ -5011,7 +5002,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
  * for the lifetime of QgsSignalBlocker object.
  * \see whileBlocking()
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
@@ -5053,7 +5043,6 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
  *
  * \see QgsSignalBlocker
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
@@ -5131,7 +5120,7 @@ inline bool qgsNanCompatibleEquals( double a, double b )
  * \param a first number
  * \param b second number
  * \param epsilon maximum difference allowable between numbers
- * \since 3.36
+ * \since QGIS 3.36
  */
 template<typename T>
 inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )
@@ -5192,7 +5181,6 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 /**
  * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
  *
- * \since QGIS 3.0
  */
 inline double qgsRound( double number, int places )
 {
@@ -5471,7 +5459,6 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
  * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to double if possible
  * \see permissiveToInt
- * \since QGIS 2.9
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
@@ -5482,7 +5469,6 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to int if possible
  * \see permissiveToDouble
- * \since QGIS 2.9
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 

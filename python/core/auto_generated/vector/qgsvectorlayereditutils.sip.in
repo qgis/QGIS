@@ -56,8 +56,6 @@ Deletes a vertex from a feature.
 
 :param featureId: ID of feature to remove vertex from
 :param vertex: index of vertex to delete
-
-.. versionadded:: 2.14
 %End
 
  Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /Deprecated/;

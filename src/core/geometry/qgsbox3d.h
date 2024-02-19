@@ -38,7 +38,6 @@ class QgsVector3D;
  * remains available in PyQGIS for compatibility.
  *
  * \see QgsRectangle
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsBox3D
 {

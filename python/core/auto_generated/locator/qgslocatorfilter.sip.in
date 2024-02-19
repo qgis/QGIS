@@ -15,8 +15,6 @@ class QgsLocatorResult
 {
 %Docstring(signature="appended")
 Encapsulates properties of an individual matching result found by a :py:class:`QgsLocatorFilter`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -97,8 +95,6 @@ Abstract base class for filters which collect locator results.
 
    If the configuration of the filter is changed outside of the main application settings,
    one needs to invalidate current results of the locator widget: see QgisInterface.invalidateLocatorResults
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -30,7 +30,6 @@ class QgsDistanceArea;
 /**
  * \ingroup core
  * \brief A layout item subclass for text labels.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 {

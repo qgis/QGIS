@@ -65,13 +65,11 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     virtual void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
     /**
      * Returns the status of expression compilation for filter expression requests.
-     * \since QGIS 2.16
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
 
@@ -83,7 +81,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      *
      * If you want to check if the iterator successfully completed, better use QgsFeatureIterator::isClosed().
      *
-     * \since QGIS 3.0
      */
     virtual bool isValid() const
     {
@@ -151,7 +148,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * has no effect and will be shortcut.
      * Iterators should call this method before returning features to ensure that any
      * QgsFeatureRequest::destinationCrs() set on the request is respected.
-     * \since QGIS 3.0
      */
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 
@@ -163,7 +159,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Iterators should call this method and use the returned rectangle for filtering
      * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
      * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
-     * \since QGIS 3.0
      */
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
@@ -243,7 +238,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * and a local order by will be triggered instead.
      * By default returns FALSE
      *
-     * \since QGIS 2.14
      */
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 
@@ -251,7 +245,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Setup the orderby. Internally calls prepareOrderBy and if FALSE is returned will
      * cache all features and order them with local expression evaluation.
      *
-     * \since QGIS 2.14
      */
     void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 };
@@ -352,7 +345,6 @@ class CORE_EXPORT QgsFeatureIterator
      *
      * \see isClosed to check if the iterator successfully completed and returned all the features.
      *
-     * \since QGIS 3.0
      */
     bool isValid() const;
 
@@ -365,13 +357,11 @@ class CORE_EXPORT QgsFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
     /**
      * Returns the status of expression compilation for filter expression requests.
-     * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
 

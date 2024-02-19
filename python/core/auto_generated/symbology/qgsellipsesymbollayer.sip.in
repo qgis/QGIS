@@ -169,15 +169,11 @@ Encodes a shape to its string representation.
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
 Gets stroke join style.
-
-.. versionadded:: 2.16
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
 %Docstring
 Set stroke join style.
-
-.. versionadded:: 2.16
 %End
 
     Qt::PenCapStyle penCapStyle() const;

@@ -23,8 +23,6 @@ configuration:
 
 - 3 => "three"
 - 5 => "(5)"
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

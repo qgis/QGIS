@@ -76,7 +76,6 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
     /**
      * Returns the currently active layer for the widget
-     * \since QGIS 2.12
      */
     QgsVectorLayer *layer() const { return mLayer; }
 

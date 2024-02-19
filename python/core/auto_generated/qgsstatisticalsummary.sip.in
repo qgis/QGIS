@@ -19,8 +19,6 @@ Statistics are calculated by calling :py:func:`~calculate` and passing a list of
 individual statistics can then be retrieved using the associated methods. Note that not all statistics
 are calculated by default. Statistics which require slower computations are only calculated by
 specifying the statistic in the constructor or via :py:func:`~setStatistics`.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -91,8 +89,6 @@ values to a list and calling :py:func:`~QgsStatisticalSummary.calculate`.
 .. seealso:: :py:func:`addVariant`
 
 .. seealso:: :py:func:`finalize`
-
-.. versionadded:: 2.16
 %End
 
     void addVariant( const QVariant &value );
@@ -119,8 +115,6 @@ values to a list and calling :py:func:`~QgsStatisticalSummary.calculate`.
 .. seealso:: :py:func:`calculate`
 
 .. seealso:: :py:func:`finalize`
-
-.. versionadded:: 2.16
 %End
 
     void finalize();
@@ -131,8 +125,6 @@ any calculated statistics.
 .. seealso:: :py:func:`addValue`
 
 .. seealso:: :py:func:`addVariant`
-
-.. versionadded:: 2.16
 %End
 
     double statistic( Qgis::Statistic stat ) const;
@@ -153,8 +145,6 @@ Returns calculated count of values
     int countMissing() const;
 %Docstring
 Returns the number of missing (null) values
-
-.. versionadded:: 2.16
 %End
 
     double sum() const;
