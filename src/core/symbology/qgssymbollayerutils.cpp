@@ -5418,23 +5418,3 @@ void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbol *symbol )
 {
   changeSymbolLayerIds( symbol, []() { return QUuid::createUuid().toString(); } );
 }
-
-uint QgsSymbolLayerUtils::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop )
-{
-  uint hashValue = 0;
-  QSet< QString > fields = prop.referencedFields();
-  QSet< QString >::const_iterator it = fields.constBegin();
-  for ( ; it != fields.constEnd(); ++it )
-  {
-    QVariant attValue = fet.attribute( *it );
-    if ( it == fields.constBegin() )
-    {
-      hashValue =  qHash( attValue );
-    }
-    else
-    {
-      hashValue = hashValue ^ qHash( attValue );
-    }
-  }
-  return hashValue;
-}
