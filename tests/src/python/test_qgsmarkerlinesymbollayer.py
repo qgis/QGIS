@@ -21,7 +21,7 @@ __copyright__ = '(C) 2018, Nyall Dawson'
 
 import os
 
-from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -37,11 +37,9 @@ from qgis.core import (
     QgsMapSettings,
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
-    QgsMultiRenderChecker,
     QgsProperty,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSimpleMarkerSymbolLayer,
     QgsSingleSymbolRenderer,
@@ -63,13 +61,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsMarkerLineSymbolLayer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_markerline"
 
     def testWidth(self):
         ms = QgsMapSettings()
@@ -119,7 +113,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_multiple_placement', 'markerline_multiple_placement', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_multiple_placement', 'markerline_multiple_placement', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testFirstVertexNoRespectMultipart(self):
         line_symbol = QgsLineSymbol()
@@ -138,7 +136,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_first_no_respect_multipart', 'markerline_first_no_respect_multipart', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_no_respect_multipart', 'markerline_first_no_respect_multipart', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testFirstVertexRespectMultipart(self):
         line_symbol = QgsLineSymbol()
@@ -157,7 +159,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_first_respect_multipart', 'markerline_first_respect_multipart', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_respect_multipart', 'markerline_first_respect_multipart', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testLastVertexNoRespectMultipart(self):
         line_symbol = QgsLineSymbol()
@@ -176,7 +182,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_last_no_respect_multipart', 'markerline_last_no_respect_multipart', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_last_no_respect_multipart', 'markerline_last_no_respect_multipart', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testLastVertexRespectMultipart(self):
         line_symbol = QgsLineSymbol()
@@ -195,7 +205,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_last_respect_multipart', 'markerline_last_respect_multipart', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_last_respect_multipart', 'markerline_last_respect_multipart', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testFirstLastVertexNoRespectMultipart(self):
         line_symbol = QgsLineSymbol()
@@ -214,7 +228,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_first_last_no_respect_multipart', 'markerline_first_last_no_respect_multipart', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_last_no_respect_multipart', 'markerline_first_last_no_respect_multipart', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testFirstLastVertexRespectMultipart(self):
         line_symbol = QgsLineSymbol()
@@ -233,7 +251,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_first_last_respect_multipart', 'markerline_first_last_respect_multipart', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_last_respect_multipart', 'markerline_first_last_respect_multipart', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testInnerVerticesLine(self):
         line_symbol = QgsLineSymbol()
@@ -251,7 +273,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(line_symbol, g)
-        assert self.imageCheck('markerline_inner_vertices_line', 'markerline_inner_vertices_line', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_inner_vertices_line', 'markerline_inner_vertices_line', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testInnerVerticesPolygon(self):
         fill_symbol = QgsFillSymbol()
@@ -269,7 +295,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0))')
         rendered_image = self.renderGeometry(fill_symbol, g)
-        assert self.imageCheck('markerline_inner_vertices_polygon', 'markerline_inner_vertices_polygon', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_inner_vertices_polygon', 'markerline_inner_vertices_polygon', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRingFilter(self):
         # test filtering rings during rendering
@@ -310,12 +340,20 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('markerline_exterioronly', 'markerline_exterioronly', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_exterioronly', 'markerline_exterioronly', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly)
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('markerline_interioronly', 'markerline_interioronly', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_interioronly', 'markerline_interioronly', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRingNumberVariable(self):
         # test test geometry_ring_num variable
@@ -329,7 +367,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('markerline_ring_num', 'markerline_ring_num', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_ring_num', 'markerline_ring_num', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testPartNum(self):
         # test geometry_part_num variable
@@ -356,7 +398,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         # rendering test
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g, buffer=4)
-        assert self.imageCheck('part_num_variable', 'part_num_variable', rendered_image)
+        self.assertTrue(
+            self.image_check('part_num_variable', 'part_num_variable', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyCharacter,
                                       QgsProperty.fromExpression('@geometry_part_count'))
@@ -364,7 +410,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         # rendering test
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g, buffer=4)
-        assert self.imageCheck('part_count_variable', 'part_count_variable', rendered_image)
+        self.assertTrue(
+            self.image_check('part_count_variable', 'part_count_variable', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testPartNumPolygon(self):
         # test geometry_part_num variable
@@ -384,7 +434,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         # rendering test - a polygon with a smaller part first
         g = QgsGeometry.fromWkt('MultiPolygon(((0 0, 2 0, 2 2, 0 0)),((10 0, 10 10, 0 10, 10 0)))')
         rendered_image = self.renderGeometry(s, g, buffer=4)
-        assert self.imageCheck('poly_part_num_variable', 'poly_part_num_variable', rendered_image)
+        self.assertTrue(
+            self.image_check('poly_part_num_variable', 'poly_part_num_variable', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testCompoundCurve(self):
         # test rendering compound curve with markers at vertices and curve points
@@ -417,7 +471,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('CompoundCurve (CircularString (2606642.3863534671254456 1228883.61571401031687856, 2606656.45901552261784673 1228882.30281259422190487, 2606652.60236761253327131 1228873.80998155777342618, 2606643.65822671446949244 1228875.45110832806676626, 2606642.3863534671254456 1228883.65674217976629734))')
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_compoundcurve', 'markerline_compoundcurve', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_compoundcurve', 'markerline_compoundcurve', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testCompoundCurveInnerVertices(self):
         # test rendering compound curve with markers at inner vertices and curve points
@@ -439,7 +497,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('CompoundCurve (CircularString (2606642.3863534671254456 1228883.61571401031687856, 2606656.45901552261784673 1228882.30281259422190487, 2606652.60236761253327131 1228873.80998155777342618, 2606643.65822671446949244 1228875.45110832806676626, 2606642.3863534671254456 1228883.65674217976629734))')
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_compoundcurve_inner_vertices', 'markerline_compoundcurve_inner_vertices', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_compoundcurve_inner_vertices', 'markerline_compoundcurve_inner_vertices', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMultiCurve(self):
         # test rendering multi curve with markers at vertices and curve points
@@ -472,7 +534,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('MultiCurve (CompoundCurve (CircularString (2606668.74491960229352117 1228910.0701227153185755, 2606667.84593895543366671 1228899.48981202743016183, 2606678.70285907341167331 1228879.78139015776105225, 2606701.64743852475658059 1228866.43043032777495682, 2606724.96578619908541441 1228864.70617623627185822)),LineString (2606694.16802780656144023 1228913.44624055083841085, 2606716.84054400492459536 1228890.51009044284000993, 2606752.43112175865098834 1228906.59175890940241516))')
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_multicurve', 'markerline_multicurve', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_multicurve', 'markerline_multicurve', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testCurvePolygon(self):
         # test rendering curve polygon with markers at vertices and curve points
@@ -505,7 +571,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('CurvePolygon (CompoundCurve (CircularString (2606711.1353147104382515 1228875.77055342611856759, 2606715.00784672703593969 1228870.79158369055949152, 2606721.16240653907880187 1228873.35022091586142778),(2606721.16240653907880187 1228873.35022091586142778, 2606711.1353147104382515 1228875.77055342611856759)))')
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_curvepolygon', 'markerline_curvepolygon', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_curvepolygon', 'markerline_curvepolygon', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMultiSurve(self):
         # test rendering multisurface with markers at vertices and curve points
@@ -538,7 +608,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('MultiSurface (CurvePolygon (CompoundCurve (CircularString (2606664.83926784340292215 1228868.83649749564938247, 2606666.84044930292293429 1228872.22980518848635256, 2606668.05855975672602654 1228875.62311288132332265, 2606674.45363963954150677 1228870.05460794945247471, 2606680.58769585331901908 1228866.00874108518473804, 2606680.7182076876051724 1228865.05165429995395243, 2606679.97864062618464231 1228864.61661485210061073, 2606671.93041084241122007 1228867.87941071065142751, 2606664.83926784340292215 1228868.79299355088733137),(2606664.83926784340292215 1228868.79299355088733137, 2606664.83926784340292215 1228868.83649749564938247))),Polygon ((2606677.23432376980781555 1228875.74241803237237036, 2606674.27243852382525802 1228874.75512295053340495, 2606675.61874999897554517 1228871.97274590120650828, 2606678.84989754017442465 1228870.35717213083989918, 2606680.64497950719669461 1228873.31905737658962607, 2606677.23432376980781555 1228875.74241803237237036)))')
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_multisurface', 'markerline_multisurface', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_multisurface', 'markerline_multisurface', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMultiSurfaceOnePart(self):
         # test rendering multisurface with one part with markers at vertices and curve points
@@ -571,7 +645,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('MultiSurface (CurvePolygon (CompoundCurve (CircularString (2606664.83926784340292215 1228868.83649749564938247, 2606666.84044930292293429 1228872.22980518848635256, 2606668.05855975672602654 1228875.62311288132332265, 2606674.45363963954150677 1228870.05460794945247471, 2606680.58769585331901908 1228866.00874108518473804, 2606680.7182076876051724 1228865.05165429995395243, 2606679.97864062618464231 1228864.61661485210061073, 2606671.93041084241122007 1228867.87941071065142751, 2606664.83926784340292215 1228868.79299355088733137),(2606664.83926784340292215 1228868.79299355088733137, 2606664.83926784340292215 1228868.83649749564938247))))')
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_one_part_multisurface', 'markerline_one_part_multisurface', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_one_part_multisurface', 'markerline_one_part_multisurface', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMarkerAverageAngle(self):
         s = QgsLineSymbol()
@@ -594,7 +672,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_average_angle', 'markerline_average_angle', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_average_angle', 'markerline_average_angle', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMarkerAverageAngleRing(self):
         s = QgsLineSymbol()
@@ -617,7 +699,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 10 0, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_ring_average_angle', 'markerline_ring_average_angle', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_ring_average_angle', 'markerline_ring_average_angle', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMarkerAverageAngleCenter(self):
         s = QgsLineSymbol()
@@ -639,7 +725,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_center_average_angle', 'markerline_center_average_angle', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_center_average_angle', 'markerline_center_average_angle', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRingNoDupe(self):
         s = QgsLineSymbol()
@@ -662,7 +752,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 10 0, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_ring_no_dupes', 'markerline_ring_no_dupes', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_ring_no_dupes', 'markerline_ring_no_dupes', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testSinglePoint(self):
         s = QgsLineSymbol()
@@ -685,7 +779,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_single', 'markerline_single', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_single', 'markerline_single', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testNoPoint(self):
         s = QgsLineSymbol()
@@ -708,7 +806,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_none', 'markerline_none', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_none', 'markerline_none', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testFirstVertexOffsetPercentage(self):
         s = QgsLineSymbol()
@@ -731,7 +833,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_first_offset_percent', 'markerline_first_offset_percent', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_offset_percent', 'markerline_first_offset_percent', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testClosedRingFirstVertexOffsetLarge(self):
         """
@@ -757,7 +863,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_first_large_offset', 'markerline_first_large_offset', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_large_offset', 'markerline_first_large_offset', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testClosedRingFirstVertexOffsetNegative(self):
         """
@@ -783,7 +893,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_first_negative_offset', 'markerline_first_negative_offset', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_first_negative_offset', 'markerline_first_negative_offset', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testIntervalOffsetPercentage(self):
         s = QgsLineSymbol()
@@ -807,7 +921,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_interval_offset_percent', 'markerline_interval_offset_percent', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_interval_offset_percent', 'markerline_interval_offset_percent', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testClosedRingIntervalOffsetLarge(self):
         """
@@ -834,7 +952,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_interval_large_offset', 'markerline_interval_large_offset', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_interval_large_offset', 'markerline_interval_large_offset', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testClosedRingIntervalOffsetNegative(self):
         """
@@ -861,7 +983,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_interval_large_offset', 'markerline_interval_large_offset', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_interval_large_offset', 'markerline_interval_large_offset', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testCenterSegment(self):
         s = QgsLineSymbol()
@@ -882,7 +1008,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_segmentcenter', 'markerline_segmentcenter', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_segmentcenter', 'markerline_segmentcenter', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testMarkerDataDefinedAngleLine(self):
         """Test issue https://github.com/qgis/QGIS/issues/38716"""
@@ -907,7 +1037,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # Now with DD
 
@@ -934,7 +1068,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+        self.assertTrue(
+            self.image_check('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testDataDefinedAnglePolygon(self):
         # test rendering curve polygon with markers at vertices and curve points
@@ -957,7 +1095,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         # rendering test with non data-defined angle
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_datadefinedanglepolygon', 'markerline_datadefinedanglepolygon', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_datadefinedanglepolygon', 'markerline_datadefinedanglepolygon', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         s = QgsFillSymbol()
 
@@ -976,7 +1118,11 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         # rendering test with data-defined angle
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('markerline_datadefinedanglepolygon', 'markerline_datadefinedanglepolygon', rendered_image))
+        self.assertTrue(
+            self.image_check('markerline_datadefinedanglepolygon', 'markerline_datadefinedanglepolygon', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testOpacityWithDataDefinedColor(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -1014,13 +1160,13 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         ms.setLayers([line_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_markerline')
-        renderchecker.setControlName('expected_markerline_opacityddcolor')
-        res = renderchecker.runTest('expected_markerline_opacityddcolor')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'markerline_opacityddcolor',
+                'markerline_opacityddcolor',
+                ms
+            )
+        )
 
     def testDataDefinedOpacity(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -1057,13 +1203,13 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         ms.setLayers([line_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_markerline')
-        renderchecker.setControlName('expected_markerline_ddopacity')
-        res = renderchecker.runTest('expected_markerline_ddopacity')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'markerline_ddopacity',
+                'markerline_ddopacity',
+                ms
+            )
+        )
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
@@ -1097,21 +1243,6 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_markerline")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

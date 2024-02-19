@@ -244,7 +244,7 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
 
   QgsLayoutItemPicture *picture2 = new QgsLayoutItemPicture( &l );
   l.addItem( picture2 );
-  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'d:/bad' || 'robot'" ) ) );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'d:/bad' || 'robot'" ) ) );
   l.refresh();
 
   QgsLayoutPictureSourceValidityCheck check4;
@@ -253,14 +253,14 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
   QCOMPARE( res.size(), 1 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
-  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "''" ) ) );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "''" ) ) );
   l.refresh();
   QgsLayoutPictureSourceValidityCheck check5;
   QVERIFY( check5.prepareCheck( &context, &f ) );
   res = check5.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
 
-  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( QStringLiteral( TEST_DATA_DIR ) + "/sam' || 'ple_svg.svg" ) ) );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( QStringLiteral( TEST_DATA_DIR ) + "/sam' || 'ple_svg.svg" ) ) );
   l.refresh();
   QgsLayoutPictureSourceValidityCheck check6;
   QVERIFY( check6.prepareCheck( &context, &f ) );

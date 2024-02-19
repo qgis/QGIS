@@ -41,7 +41,7 @@ magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
     static const double MIN_Y;
 
 
-    enum Boundary
+    enum Boundary /BaseType=IntEnum/
     {
       XMax,
       XMin,

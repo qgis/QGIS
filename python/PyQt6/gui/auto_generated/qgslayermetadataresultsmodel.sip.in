@@ -55,13 +55,13 @@ Load/Reload model data synchronously.
 Load/Reload model data asynchronously using threads.
 %End
 
-    enum Roles
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      //! Layer metadata role
-      Metadata
+      Metadata,
     };
 
-    enum Sections
+    enum Sections /BaseType=IntEnum/
     {
       //! Metadata identifier
       Identifier,

@@ -21,7 +21,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
 from qgis.core import QgsProcessingParameterString
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 
 
 def processCommand(alg, parameters, context, feedback):
@@ -49,6 +49,6 @@ def processOutputs(alg, parameters, context, feedback):
     # We need to export each of the output
     for output in outputs:
         fileName = os.path.join(outputDir, output)
-        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(output, fileName, True,
                               outFormat, createOpt, metaOpt)

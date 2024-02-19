@@ -20,7 +20,7 @@ __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 from processing.tools.system import getTempFilename
 
 

@@ -47,18 +47,18 @@ QString QgsAddUniqueValueIndexAlgorithm::groupId() const
 void QgsAddUniqueValueIndexAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << QgsProcessing::TypeVector ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Class field" ), QVariant(),
-                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any ) );
+                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ),
                 QObject::tr( "Output field name" ), QStringLiteral( "NUM_FIELD" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > classedOutput = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true );
+  std::unique_ptr< QgsProcessingParameterFeatureSink > classedOutput = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
   classedOutput->setCreateByDefault( true );
   addParameter( classedOutput.release() );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > summaryOutput = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "SUMMARY_OUTPUT" ),  QObject::tr( "Class summary" ),
-      QgsProcessing::TypeVector, QVariant(), true );
+      Qgis::ProcessingSourceType::Vector, QVariant(), true );
   summaryOutput->setCreateByDefault( false );
   addParameter( summaryOutput.release() );
 }
@@ -103,7 +103,7 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
 
   QHash< QVariant, int > classes;
 
-  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
   const long count = source->featureCount();
   const double step = count > 0 ? 100.0 / count : 1;

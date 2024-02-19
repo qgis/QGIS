@@ -24,7 +24,7 @@ related to GUI classes.
 %End
   public:
 
-    enum ProjectCrsBehavior
+    enum ProjectCrsBehavior /BaseType=IntEnum/
     {
       UseCrsOfFirstLayerAdded,
       UsePresetCrs,
@@ -206,7 +206,7 @@ Returns the global input controller manager.
 .. versionadded:: 3.32
 %End
 
-    enum HigFlag
+    enum HigFlag /BaseType=IntEnum/
     {
       HigMenuTextIsTitleCase,
       HigDialogTitleIsTitleCase

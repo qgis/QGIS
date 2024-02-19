@@ -66,9 +66,9 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Desired extent" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ),
-                QgsProcessingParameterNumber::Double, 1, false, 0 ) );
+                Qgis::ProcessingNumberParameterType::Double, 1, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Constant value" ),
-                QgsProcessingParameterNumber::Double, 1, false ) );
+                Qgis::ProcessingNumberParameterType::Double, 1, false ) );
 
   QStringList rasterDataTypes; //currently supported raster data types that can be handled QgsRasterBlock::writeValue()
   rasterDataTypes << QStringLiteral( "Byte" )
@@ -81,7 +81,7 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
 
   //QGIS3: parameter set to Float32 by default so that existing models/scripts don't break
   std::unique_ptr< QgsProcessingParameterDefinition > rasterTypeParameter = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "OUTPUT_TYPE" ), QObject::tr( "Output raster data type" ),  rasterDataTypes, false, 5, false );
-  rasterTypeParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Constant" ) ) );

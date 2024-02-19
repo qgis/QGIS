@@ -119,6 +119,30 @@ void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
   connect( selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLayoutItemsListView::updateSelection );
 }
 
+void QgsLayoutItemsListView::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Space )
+  {
+    const auto constSelectedIndexes = selectionModel()->selectedIndexes();
+    if ( !constSelectedIndexes.isEmpty() )
+    {
+      const bool isFirstItemVisible = mModel->itemFromIndex( constSelectedIndexes[0] )->isVisible();
+
+      for ( const QModelIndex &index : constSelectedIndexes )
+      {
+        if ( QgsLayoutItem *item = mModel->itemFromIndex( index ) )
+        {
+          item->setVisibility( !isFirstItemVisible );
+        }
+      }
+      //return here, because otherwise it will just invert visibility for each item instead setting all the same
+      return;
+    }
+  }
+
+  QTreeView::keyPressEvent( event );
+}
+
 void QgsLayoutItemsListView::updateSelection()
 {
   // Do nothing if we are currenlty updating the selection

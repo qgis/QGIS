@@ -110,7 +110,7 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
 %End
 
 
-    enum ExportResult
+    enum ExportResult /BaseType=IntEnum/
     {
       Success,
       Canceled,

@@ -24,8 +24,8 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
 
   setPanelTitle( tr( "Obstacle Settings" ) );
 
-  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), QgsLabelObstacleSettings::PolygonInterior );
-  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), QgsLabelObstacleSettings::PolygonBoundary );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), static_cast<int>( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonBoundary ) );
 
   connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
@@ -38,15 +38,14 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
       emit changed();
   } );
 
-  registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor );
-
+  registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::Property::ObstacleFactor );
 }
 
 void QgsLabelObstacleSettingsWidget::setSettings( const QgsLabelObstacleSettings &settings )
 {
   mBlockSignals = true;
   mObstacleFactorSlider->setValue( static_cast< int >( std::round( settings.factor() * 5 ) ) );
-  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( settings.type() ) );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( static_cast< int >( settings.type() ) ) );
   mBlockSignals = false;
 }
 
@@ -66,5 +65,5 @@ void QgsLabelObstacleSettingsWidget::setGeometryType( Qgis::GeometryType type )
 
 void QgsLabelObstacleSettingsWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
-  properties.setProperty( QgsPalLayerSettings::ObstacleFactor, mDataDefinedProperties.property( QgsPalLayerSettings::ObstacleFactor ) );
+  properties.setProperty( QgsPalLayerSettings::Property::ObstacleFactor, mDataDefinedProperties.property( QgsPalLayerSettings::Property::ObstacleFactor ) );
 }

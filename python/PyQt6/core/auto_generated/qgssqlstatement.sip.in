@@ -108,13 +108,13 @@ Returns a quoted version of a string (in single quotes)
 .. seealso:: :py:func:`quotedIdentifier`
 %End
 
-    enum UnaryOperator
+    enum UnaryOperator /BaseType=IntEnum/
     {
       uoNot,
       uoMinus,
     };
 
-    enum BinaryOperator
+    enum BinaryOperator /BaseType=IntEnum/
     {
       // logical
       boOr,
@@ -147,7 +147,7 @@ Returns a quoted version of a string (in single quotes)
       boConcat,
     };
 
-    enum JoinType
+    enum JoinType /BaseType=IntEnum/
     {
       jtDefault,
       jtLeft,
@@ -164,7 +164,7 @@ Returns a quoted version of a string (in single quotes)
 
 
 
-    enum NodeType
+    enum NodeType /BaseType=IntEnum/
     {
       ntUnaryOperator,
       ntBinaryOperator,

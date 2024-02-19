@@ -12,14 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsapplication.h"
 #include "qgswcsdataitems.h"
-#include "qgswcsprovider.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
-
-#include "qgssettings.h"
 
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"
@@ -229,9 +225,9 @@ QString QgsWcsDataItemProvider::dataProviderKey() const
   return QStringLiteral( "wcs" );
 }
 
-int QgsWcsDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsWcsDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

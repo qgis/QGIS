@@ -45,7 +45,7 @@ class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorith
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -58,8 +58,8 @@ class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorith
     QString mDefaultFieldPrefix;
   private:
 
-    QList< QgsStatisticalSummary::Statistic > mSelectedStats;
-    QgsStatisticalSummary::Statistics mStats = QgsStatisticalSummary::All;
+    QList< Qgis::Statistic > mSelectedStats;
+    Qgis::Statistics mStats = Qgis::Statistic::All;
     QString mPrefix;
     QgsFields mNewFields;
 

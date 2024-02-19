@@ -69,21 +69,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   public:
 
-    // TODO QGIS 4: (re)move DataCapability as this enum is really meant for data items rather than data providers
-
-    /**
-     * Used in browser model to understand which items for which providers should be populated
-     */
-    enum DataCapability
-    {
-      NoDataCapabilities  = 0,
-      File                = 1,
-      Dir                 = 1 << 1,
-      Database            = 1 << 2,
-      Net                 = 1 << 3  // Internet source
-    };
-    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
-
     /**
      * Properties are used to pass custom configuration options into data providers.
      * This enum defines a list of custom properties which can be used on different
@@ -96,7 +81,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
       EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
-
 
     /**
      * Setting options for creating vector data providers.
@@ -119,7 +103,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Flags which control dataprovider construction.
      * \since QGIS 3.16
      */
-    enum ReadFlag
+    enum ReadFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagTrustDataSource = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
       SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.

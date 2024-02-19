@@ -28,22 +28,23 @@ from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFeatureRequest,
     QgsFillSymbol,
-    QgsMultiRenderChecker,
     QgsProject,
     QgsRectangle,
     QgsRenderContext,
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
-from qgis.testing import unittest
+from qgis.testing import unittest, QgisTestCase
 from qgis.testing.mocked import get_iface
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, start_app
 
 TEST_DATA_DIR = unitTestDataPath()
 
+start_app()
 
-class TestQgsSingleSymbolRenderer(unittest.TestCase):
+
+class TestQgsSingleSymbolRenderer(QgisTestCase):
 
     def setUp(self):
         self.iface = get_iface()
@@ -69,14 +70,21 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         self.renderer.setOrderByEnabled(True)
 
         # Setup rendering check
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlName('expected_singlesymbol_orderby')
-        self.assertTrue(renderchecker.runTest('singlesymbol_orderby'))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'singlesymbol_orderby',
+                'singlesymbol_orderby',
+                self.mapsettings)
+        )
 
         # disable order by and retest
         self.renderer.setOrderByEnabled(False)
-        self.assertTrue(renderchecker.runTest('single'))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'singlesymbol_noorderby',
+                'singlesymbol_noorderby',
+                self.mapsettings)
+        )
 
     def testUsedAttributes(self):
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)

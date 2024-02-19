@@ -175,24 +175,24 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   //set initial state of frame style controls
   toggleFrameControls( false, false, false, false );
 
-  registerDataDefinedButton( mEnabledDDBtn, QgsLayoutObject::MapGridEnabled );
-  registerDataDefinedButton( mIntervalXDDBtn, QgsLayoutObject::MapGridIntervalX );
-  registerDataDefinedButton( mIntervalYDDBtn, QgsLayoutObject::MapGridIntervalY );
-  registerDataDefinedButton( mOffsetXDDBtn, QgsLayoutObject::MapGridOffsetX );
-  registerDataDefinedButton( mOffsetYDDBtn, QgsLayoutObject::MapGridOffsetY );
-  registerDataDefinedButton( mFrameSizeDDBtn, QgsLayoutObject::MapGridFrameSize );
-  registerDataDefinedButton( mFrameMarginDDBtn, QgsLayoutObject::MapGridFrameMargin );
-  registerDataDefinedButton( mLabelDistDDBtn, QgsLayoutObject::MapGridLabelDistance );
-  registerDataDefinedButton( mCrossWidthDDBtn, QgsLayoutObject::MapGridCrossSize );
-  registerDataDefinedButton( mFrameLineThicknessDDBtn, QgsLayoutObject::MapGridFrameLineThickness );
-  registerDataDefinedButton( mAnnotationDisplayLeftDDBtn, QgsLayoutObject::MapGridAnnotationDisplayLeft );
-  registerDataDefinedButton( mAnnotationDisplayRightDDBtn, QgsLayoutObject::MapGridAnnotationDisplayRight );
-  registerDataDefinedButton( mAnnotationDisplayTopDDBtn, QgsLayoutObject::MapGridAnnotationDisplayTop );
-  registerDataDefinedButton( mAnnotationDisplayBottomDDBtn, QgsLayoutObject::MapGridAnnotationDisplayBottom );
-  registerDataDefinedButton( mFrameDivisionsLeftDDBtn, QgsLayoutObject::MapGridFrameDivisionsLeft );
-  registerDataDefinedButton( mFrameDivisionsRightDDBtn, QgsLayoutObject::MapGridFrameDivisionsRight );
-  registerDataDefinedButton( mFrameDivisionsTopDDBtn, QgsLayoutObject::MapGridFrameDivisionsTop );
-  registerDataDefinedButton( mFrameDivisionsBottomDDBtn, QgsLayoutObject::MapGridFrameDivisionsBottom );
+  registerDataDefinedButton( mEnabledDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridEnabled );
+  registerDataDefinedButton( mIntervalXDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridIntervalX );
+  registerDataDefinedButton( mIntervalYDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridIntervalY );
+  registerDataDefinedButton( mOffsetXDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridOffsetX );
+  registerDataDefinedButton( mOffsetYDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridOffsetY );
+  registerDataDefinedButton( mFrameSizeDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameSize );
+  registerDataDefinedButton( mFrameMarginDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameMargin );
+  registerDataDefinedButton( mLabelDistDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridLabelDistance );
+  registerDataDefinedButton( mCrossWidthDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridCrossSize );
+  registerDataDefinedButton( mFrameLineThicknessDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameLineThickness );
+  registerDataDefinedButton( mAnnotationDisplayLeftDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayLeft );
+  registerDataDefinedButton( mAnnotationDisplayRightDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayRight );
+  registerDataDefinedButton( mAnnotationDisplayTopDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayTop );
+  registerDataDefinedButton( mAnnotationDisplayBottomDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayBottom );
+  registerDataDefinedButton( mFrameDivisionsLeftDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsLeft );
+  registerDataDefinedButton( mFrameDivisionsRightDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight );
+  registerDataDefinedButton( mFrameDivisionsTopDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop );
+  registerDataDefinedButton( mFrameDivisionsBottomDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom );
 
   // call to initially populate mAnnotationFormatComboBox
   onCrsChanged();

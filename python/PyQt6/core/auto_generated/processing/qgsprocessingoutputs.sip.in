@@ -211,7 +211,7 @@ A vector layer output for processing algorithms.
 %End
   public:
 
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry );
 %Docstring
 Constructor for QgsProcessingOutputVectorLayer.
 %End
@@ -222,14 +222,14 @@ Returns the type name for the output class.
 %End
     virtual QString type() const;
 
-    QgsProcessing::SourceType dataType() const;
+    Qgis::ProcessingSourceType dataType() const;
 %Docstring
 Returns the layer type for the output layer.
 
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( QgsProcessing::SourceType type );
+    void setDataType( Qgis::ProcessingSourceType type );
 %Docstring
 Sets the layer ``type`` for the output layer.
 

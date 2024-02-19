@@ -50,9 +50,9 @@ QString QgsSplitWithLinesAlgorithm::groupId() const
 void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+                QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
-                QObject::tr( "Split layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+                QObject::tr( "Split layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Split" ) ) );
 }
 
@@ -67,10 +67,10 @@ QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
   return new QgsSplitWithLinesAlgorithm();
 }
 
-QgsProcessingAlgorithm::Flags QgsSplitWithLinesAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsSplitWithLinesAlgorithm::flags() const
 {
-  Flags f = QgsProcessingAlgorithm::flags();
-  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits;
   return f;
 }
 

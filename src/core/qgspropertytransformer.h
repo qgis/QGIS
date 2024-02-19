@@ -615,11 +615,13 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * \param maxValue maximum expected value
      * \param ramp source color ramp. Ownership is transferred to the transformer.
      * \param nullColor color to return for null values
+     * \param rampName name of the source color ramp (since QGIS 3.36)
      */
     QgsColorRampTransformer( double minValue = 0.0,
                              double maxValue = 1.0,
                              QgsColorRamp *ramp SIP_TRANSFER = nullptr,
-                             const QColor &nullColor = QColor( 0, 0, 0, 0 ) );
+                             const QColor &nullColor = QColor( 0, 0, 0, 0 ),
+                             const QString &rampName = QString() );
 
     //! Copy constructor
     QgsColorRampTransformer( const QgsColorRampTransformer &other );

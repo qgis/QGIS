@@ -15,9 +15,6 @@
 
 #include "qgsprocessingparameterfieldmap.h"
 
-#include "qgsvectorlayer.h"
-
-
 QgsProcessingParameterFieldMapping::QgsProcessingParameterFieldMapping( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
@@ -37,7 +34,7 @@ QString QgsProcessingParameterFieldMapping::type() const
 bool QgsProcessingParameterFieldMapping::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+    return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( input.type() != QVariant::List )
     return false;
@@ -70,14 +67,14 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
 {
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterFieldMapping('%1', %2" )
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mParentLayerParameterName.isEmpty() )
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
-      if ( mFlags & FlagOptional )
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
         code += QLatin1String( ", optional=True" );
       code += ')';
       return code;

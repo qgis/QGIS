@@ -24,7 +24,7 @@ Contains general functions and values related to Processing GUI components.
 %End
   public:
 
-    enum WidgetType
+    enum WidgetType /BaseType=IntEnum/
     {
       Standard,
       Batch,

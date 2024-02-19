@@ -72,7 +72,7 @@ QgsSymbolWidgetContext QgsCalloutWidget::context() const
 
 void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key )
 {
-  button->init( key, callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), mVectorLayer, true );
+  button->init( static_cast< int >( key ), callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), mVectorLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsCalloutWidget::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsCalloutWidget::createAuxiliaryField );
 
@@ -94,7 +94,7 @@ void QgsCalloutWidget::createAuxiliaryField()
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
-  const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[key];
+  const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
@@ -216,18 +216,18 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
 
   whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
 
-  registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
-  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
-  registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::OffsetFromLabel );
-  registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
-  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
-  registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::LabelAnchorPointPosition );
-  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::BlendMode );
+  registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::Property::MinimumCalloutLength );
+  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::Property::OffsetFromAnchor );
+  registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::Property::OffsetFromLabel );
+  registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::Property::DrawCalloutToAllParts );
+  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::Property::AnchorPointPosition );
+  registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::Property::LabelAnchorPointPosition );
+  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::Property::BlendMode );
 
-  registerDataDefinedButton( mOriginXDDBtn, QgsCallout::OriginX );
-  registerDataDefinedButton( mOriginYDDBtn, QgsCallout::OriginY );
-  registerDataDefinedButton( mDestXDDBtn, QgsCallout::DestinationX );
-  registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
+  registerDataDefinedButton( mOriginXDDBtn, QgsCallout::Property::OriginX );
+  registerDataDefinedButton( mOriginYDDBtn, QgsCallout::Property::OriginY );
+  registerDataDefinedButton( mDestXDDBtn, QgsCallout::Property::DestinationX );
+  registerDataDefinedButton( mDestYDDBtn, QgsCallout::Property::DestinationY );
 }
 
 void QgsSimpleLineCalloutWidget::setGeometryType( Qgis::GeometryType type )
@@ -441,20 +441,20 @@ void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
   whileBlocking( mCurvatureSpinBox )->setValue( mCallout->curvature() * 100.0 );
   whileBlocking( mCurvatureSlider )->setValue( mCallout->curvature() * 1000.0 );
 
-  registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
-  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
-  registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::OffsetFromLabel );
-  registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
-  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
-  registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::LabelAnchorPointPosition );
-  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::BlendMode );
-  registerDataDefinedButton( mCalloutCurvatureDDBtn, QgsCallout::Curvature );
-  registerDataDefinedButton( mCalloutOrientationDDBtn, QgsCallout::Orientation );
+  registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::Property::MinimumCalloutLength );
+  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::Property::OffsetFromAnchor );
+  registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::Property::OffsetFromLabel );
+  registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::Property::DrawCalloutToAllParts );
+  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::Property::AnchorPointPosition );
+  registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::Property::LabelAnchorPointPosition );
+  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::Property::BlendMode );
+  registerDataDefinedButton( mCalloutCurvatureDDBtn, QgsCallout::Property::Curvature );
+  registerDataDefinedButton( mCalloutOrientationDDBtn, QgsCallout::Property::Orientation );
 
-  registerDataDefinedButton( mOriginXDDBtn, QgsCallout::OriginX );
-  registerDataDefinedButton( mOriginYDDBtn, QgsCallout::OriginY );
-  registerDataDefinedButton( mDestXDDBtn, QgsCallout::DestinationX );
-  registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
+  registerDataDefinedButton( mOriginXDDBtn, QgsCallout::Property::OriginX );
+  registerDataDefinedButton( mOriginYDDBtn, QgsCallout::Property::OriginY );
+  registerDataDefinedButton( mDestXDDBtn, QgsCallout::Property::DestinationX );
+  registerDataDefinedButton( mDestYDDBtn, QgsCallout::Property::DestinationY );
 }
 
 void QgsCurvedLineCalloutWidget::setGeometryType( Qgis::GeometryType type )
@@ -686,15 +686,15 @@ void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
 
   whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
 
-  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
-  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
-  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::BlendMode );
+  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::Property::OffsetFromAnchor );
+  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::Property::AnchorPointPosition );
+  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::Property::BlendMode );
 
-  registerDataDefinedButton( mDestXDDBtn, QgsCallout::DestinationX );
-  registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
-  registerDataDefinedButton( mMarginsDDBtn, QgsCallout::Margins );
-  registerDataDefinedButton( mWedgeWidthDDBtn, QgsCallout::WedgeWidth );
-  registerDataDefinedButton( mCornerRadiusDDBtn, QgsCallout::CornerRadius );
+  registerDataDefinedButton( mDestXDDBtn, QgsCallout::Property::DestinationX );
+  registerDataDefinedButton( mDestYDDBtn, QgsCallout::Property::DestinationY );
+  registerDataDefinedButton( mMarginsDDBtn, QgsCallout::Property::Margins );
+  registerDataDefinedButton( mWedgeWidthDDBtn, QgsCallout::Property::WedgeWidth );
+  registerDataDefinedButton( mCornerRadiusDDBtn, QgsCallout::Property::CornerRadius );
 }
 
 void QgsBalloonCalloutWidget::setGeometryType( Qgis::GeometryType type )

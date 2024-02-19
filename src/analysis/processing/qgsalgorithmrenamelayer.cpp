@@ -24,9 +24,9 @@ QString QgsRenameLayerAlgorithm::name() const
   return QStringLiteral( "renamelayer" );
 }
 
-QgsProcessingAlgorithm::Flags QgsRenameLayerAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsRenameLayerAlgorithm::flags() const
 {
-  return FlagHideFromToolbox;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox;
 }
 
 QString QgsRenameLayerAlgorithm::displayName() const

@@ -35,9 +35,9 @@ Default constructor
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QMap<QString, QVariant> configuration( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
     virtual double suggestSampleValue() const;
 
@@ -156,7 +156,7 @@ Converts numbers in an ``input`` string to unicode subscript equivalents.
 
   protected:
 
-    virtual void setConfiguration( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context );
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 %Docstring
 Sets the format's ``configuration``.
 %End

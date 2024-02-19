@@ -243,7 +243,7 @@
       </renderer-v2>
       <labeling type="simple">
         <settings calloutType="simple">
-          <text-style textColor="23,23,237,255" isExpression="0" fontWeight="50" previewBkgrdColor="255,255,255,255" fontLetterSpacing="0" fontCapitals="0" fontSize="10" fontStrikeout="0" fontWordSpacing="0" fieldName="name" fontUnderline="0" textOpacity="1" blendMode="0" fontItalic="0" fontSizeUnit="Point" multilineHeight="1" useSubstitutions="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" namedStyle="" fontFamily="Sans">
+          <text-style textColor="23,23,237,255" isExpression="0" fontWeight="50" previewBkgrdColor="255,255,255,255" fontLetterSpacing="0" fontCapitals="0" fontSize="16" fontStrikeout="0" fontWordSpacing="0" fieldName="name" fontUnderline="0" textOpacity="1" blendMode="0" fontItalic="0" fontSizeUnit="Point" multilineHeight="1" useSubstitutions="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" namedStyle="Bold" fontFamily="QGIS Vera Sans">
             <text-buffer bufferColor="255,255,255,255" bufferOpacity="1" bufferDraw="0" bufferNoFill="1" bufferBlendMode="0" bufferSize="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="128"/>
             <background shapeRadiiUnit="MM" shapeOffsetY="0" shapeJoinStyle="64" shapeSizeX="0" shapeOffsetX="0" shapeBorderWidthUnit="MM" shapeBorderWidth="0" shapeRadiiY="0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBlendMode="0" shapeSVGFile="" shapeBorderColor="0,0,0,3" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeSizeUnit="MM" shapeType="0" shapeOpacity="0.29" shapeOffsetUnit="MM" shapeRotationType="0" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeRotation="0" shapeRadiiX="0" shapeFillColor="251,154,153,128" shapeSizeY="0" shapeDraw="1" shapeSizeType="0">
               <symbol clip_to_extent="1" force_rhr="0" name="markerSymbol" type="marker" alpha="1">
@@ -328,7 +328,7 @@
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
         <DiagramCategory penAlpha="255" barWidth="5" enabled="0" width="15" minimumSize="0" height="15" scaleBasedVisibility="0" penColor="#000000" scaleDependency="Area" opacity="1" lineSizeScale="3x:0,0,0,0,0,0" minScaleDenominator="0" maxScaleDenominator="1e+08" sizeScale="3x:0,0,0,0,0,0" diagramOrientation="Up" labelPlacementMethod="XHeight" rotationOffset="270" backgroundAlpha="255" backgroundColor="#ffffff" penWidth="0" sizeType="MM" lineSizeType="MM">
-          <fontProperties style="" description="Sans,9,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="" description="QGIS Vera Sans,9,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
       </SingleCategoryDiagramRenderer>

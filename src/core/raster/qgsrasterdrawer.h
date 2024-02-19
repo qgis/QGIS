@@ -88,6 +88,7 @@ class CORE_EXPORT QgsRasterDrawer
     QgsRasterIterator *mIterator = nullptr;
     double mDpiTarget = -1.0;
     double mDpiScaleFactor = 1.0;
+    double mDevicePixelRatio = 1.0;
 };
 
 #endif // QGSRASTERDRAWER_H

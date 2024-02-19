@@ -735,6 +735,8 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
 
   // note we actually truncate an extra character, as we'll be replacing it with the ... character
   const int truncateFrom = string.length() / 2 - ( charactersToTruncate + 1 ) / 2;
+  if ( truncateFrom <= 0 )
+    return QChar( 0x2026 );
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   return string.leftRef( truncateFrom ) + QString( QChar( 0x2026 ) ) + string.midRef( truncateFrom + charactersToTruncate + 1 );

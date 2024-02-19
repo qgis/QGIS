@@ -18,7 +18,6 @@
 
 #include "Reprocessor.hpp"
 #include "../untwine/Common.hpp"
-#include "../untwine/MapFile.hpp"
 
 namespace untwine
 {

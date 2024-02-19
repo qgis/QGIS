@@ -68,6 +68,8 @@ def createContext(feedback=None):
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     if invalid_features_method is None:
         invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid
+    else:
+        invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck(int(invalid_features_method))
     context.setInvalidGeometryCheck(invalid_features_method)
 
     settings = QgsSettings()

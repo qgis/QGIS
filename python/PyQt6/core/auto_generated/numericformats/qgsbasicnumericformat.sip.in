@@ -20,7 +20,7 @@ A numeric formatter which returns a simple text representation of a value.
 %End
   public:
 
-    enum RoundingType
+    enum RoundingType /BaseType=IntEnum/
     {
       DecimalPlaces,
       SignificantFigures,
@@ -41,9 +41,9 @@ Default constructor
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QMap<QString, QVariant> configuration( const QgsReadWriteContext &context ) const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
     int numberDecimalPlaces() const;
@@ -160,7 +160,7 @@ then the QGIS locale separator is used instead.
 
   protected:
 
-    virtual void setConfiguration( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context );
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 %Docstring
 Sets the format's ``configuration``.
 %End

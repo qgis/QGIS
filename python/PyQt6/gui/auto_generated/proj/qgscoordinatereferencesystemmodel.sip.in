@@ -24,16 +24,17 @@ A tree model for display of known coordinate reference systems.
 %End
   public:
 
-    enum Roles
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      RoleNodeType,
-      RoleName,
-      RoleAuthId,
-      RoleDeprecated,
-      RoleType,
-      RoleGroupId,
-      RoleWkt,
-      RoleProj,
+      NodeType,
+      Name,
+      AuthId,
+      Deprecated,
+      Type,
+      GroupId,
+      Wkt,
+      Proj,
     };
 
     QgsCoordinateReferenceSystemModel( QObject *parent /TransferThis/ = 0 );
@@ -87,7 +88,7 @@ A sort/filter proxy model for coordinate reference systems.
 %End
   public:
 
-    enum Filter
+    enum Filter /BaseType=IntEnum/
     {
       FilterHorizontal,
       FilterVertical,

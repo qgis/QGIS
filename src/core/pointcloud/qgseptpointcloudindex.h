@@ -27,8 +27,6 @@
 #include <QFile>
 
 #include "qgspointcloudindex.h"
-#include "qgspointcloudattribute.h"
-#include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
 
 ///@cond PRIVATE
@@ -54,9 +52,9 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
     bool hasStatisticsMetadata() const override;
-    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
+    QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
+    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;

@@ -90,16 +90,12 @@ void PyramidManager::run()
     }
 
     createHierarchy();
-    if (m_b.opts.singleFile)
-    {
-        m_copc.writeChunkTable();
-        m_copc.writeHierarchy(m_childCounts);
-        m_copc.updateHeader(m_stats);
-        // The header is last because we don't have the evlr position until the end.
-        m_copc.writeHeader();
-    }
-    else
-        writeHierarchy();
+
+    m_copc.writeChunkTable();
+    m_copc.writeHierarchy(m_childCounts);
+    m_copc.updateHeader(m_stats);
+    // The header is last because we don't have the evlr position until the end.
+    m_copc.writeHeader();
 }
 
 // Take the item off the queue and stick it on the complete list. If we have all 8 octants,
@@ -210,76 +206,6 @@ void PyramidManager::createHierarchy()
     };
     calcCounts(VoxelKey(0, 0, 0, 0));
 }
-
-void PyramidManager::writeHierarchy()
-{
-    std::deque<VoxelKey> roots;
-
-    roots.push_back(VoxelKey(0, 0, 0, 0));
-    while (roots.size())
-    {
-        VoxelKey k = roots.front();
-        roots.pop_front();
-        auto newRoots = emitRoot(k);
-        roots.insert(roots.end(), newRoots.begin(), newRoots.end());
-    }
-}
-
-std::deque<VoxelKey> PyramidManager::emitRoot(const VoxelKey& root)
-{
-    int level = root.level();
-    int stopLevel = level + LevelBreak;
-
-    Entries entries;
-    entries.push_back({root, m_written[root]});
-    std::deque<VoxelKey> roots = emit(root, stopLevel, entries);
-
-    std::string filename = m_b.opts.outputName + "/ept-hierarchy/" + root.toString() + ".json";
-    std::ofstream out(toNative(filename));
-
-    out << "{\n";
-
-    for (auto it = entries.begin(); it != entries.end(); ++it)
-    {
-        if (it != entries.begin())
-            out << ",\n";
-        out << "\"" << it->first << "\": " << it->second;
-    }
-    out << "\n";
-
-    out << "}\n";
-
-    return roots;
-}
-
-
-std::deque<VoxelKey> PyramidManager::emit(const VoxelKey& p, int stopLevel, Entries& entries)
-{
-    std::deque<VoxelKey> roots;
-
-    for (int i = 0; i < 8; ++i)
-    {
-        VoxelKey c = p.child(i);
-        auto ci = m_childCounts.find(c);
-        if (ci != m_childCounts.end())
-        {
-
-            if (c.level() != stopLevel || ci->second <= MinHierarchySize)
-            {
-                entries.push_back({c, m_written[c]});
-                auto r = emit(c, stopLevel, entries);
-                roots.insert(roots.end(), r.begin(), r.end());
-            }
-            else
-            {
-                entries.push_back({c, -1});
-                roots.push_back(c);
-            }
-        }
-    }
-    return roots;
-}
-
 
 Stats *PyramidManager::stats(pdal::Dimension::Id id)
 {

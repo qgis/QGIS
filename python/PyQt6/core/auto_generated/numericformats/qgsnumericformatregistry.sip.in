@@ -58,7 +58,7 @@ a default :py:class:`QgsFallbackNumericFormat` with a null id will be returned i
 The caller takes ownership of the returned object.
 %End
 
-    QgsNumericFormat *create( const QString &id, const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const /TransferBack/;
+    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const /TransferBack/;
 %Docstring
 Creates a new numeric format by ``id``, using the supplied ``configuration``. If there is no such ``id`` registered,
 a default :py:class:`QgsFallbackNumericFormat` with a null id will be returned instead.

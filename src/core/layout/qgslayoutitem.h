@@ -330,7 +330,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Flags for controlling how an item behaves.
      * \since QGIS 3.4.3
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagOverridesPaint = 1 << 1,  //!< Item overrides the default layout item painting method
       FlagProvidesClipPath = 1 << 2, //!< Item can act as a clipping path provider (see clipPath())
@@ -1045,7 +1045,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * QgsLayoutObject::AllProperties then all data defined properties for the item will be
      * refreshed.
     */
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
     /**
      * Sets the layout item's \a rotation, in degrees clockwise.

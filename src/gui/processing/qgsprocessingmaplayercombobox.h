@@ -19,7 +19,6 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include <QTreeView>
-#include "qgsprocessingtoolboxmodel.h"
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
@@ -148,7 +147,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     long long mFeatureLimit = -1;
     QString mFilterExpression;
     bool mIsOverridingDefaultGeometryCheck = false;
-    QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+    Qgis::InvalidGeometryCheck mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
     QPointer< QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
 

@@ -25,7 +25,7 @@ picture.
 %End
   public:
 
-    enum GlowColorType
+    enum GlowColorType /BaseType=IntEnum/
     {
       SingleColor,
       ColorRamp
@@ -35,9 +35,9 @@ picture.
     QgsGlowEffect( const QgsGlowEffect &other );
     ~QgsGlowEffect();
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
-    virtual void readProperties( const QMap<QString, QVariant> &props );
+    virtual void readProperties( const QVariantMap &props );
 
 
     void setSpread( const double spread );
@@ -359,7 +359,7 @@ A paint effect which draws a glow outside of a picture.
 %End
   public:
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsOuterGlowEffect effect from a properties string map.
 
@@ -395,7 +395,7 @@ A paint effect which draws a glow within a picture.
 %End
   public:
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsInnerGlowEffect effect from a properties string map.
 

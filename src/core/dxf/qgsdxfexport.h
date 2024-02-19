@@ -101,7 +101,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     };
 
     //! Export flags
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagNoMText = 1 << 1, //!< Export text as TEXT elements. If not set, text will be exported as MTEXT elements.
     };
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      *
      * \since QGIS 3.12
      */
-    enum DxfPolylineFlag
+    enum DxfPolylineFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       Closed = 1, //!< This is a closed polyline (or a polygon mesh closed in the M direction)
       Curve = 2, //!< Curve-fit vertices have been added
@@ -204,6 +204,12 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \returns an ExportResult
      */
     ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+
+    /**
+     * Returns any feedback message produced while export to dxf file.
+     * \since QGIS 3.36
+     */
+    const QString feedbackMessage() const { return mFeedbackMessage; }
 
     /**
      * Set reference \a scale for output.
@@ -629,6 +635,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QMap< QString, QMap<QgsFeatureId, QString> > mDxfLayerNames;
     QgsCoordinateReferenceSystem mCrs;
     QgsMapSettings mMapSettings;
+    QList<QgsMapLayer *> mLayerList;
     QHash<QString, int> mLayerNameAttribute;
     double mFactor = 1.0;
     bool mForce2d = false;
@@ -644,6 +651,8 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     // Internal cache for layer related information required during rendering
     QList<DxfLayerJob *> mJobs;
     std::unique_ptr<QgsLabelingEngine> mLabelingEngine;
+
+    QString mFeedbackMessage;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )

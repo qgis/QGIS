@@ -58,11 +58,11 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 void QgsPdalAlgorithmBase::createCommonParameters()
 {
   std::unique_ptr< QgsProcessingParameterExpression > filterParam = std::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, Qgis::ExpressionType::PointCloud );
-  filterParam->setFlags( filterParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  filterParam->setFlags( filterParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( filterParam.release() );
 
   std::unique_ptr< QgsProcessingParameterExtent > extentParam = std::make_unique< QgsProcessingParameterExtent >( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true );
-  extentParam->setFlags( extentParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  extentParam->setFlags( extentParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extentParam.release() );
 }
 

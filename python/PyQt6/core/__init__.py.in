@@ -159,3 +159,251 @@ PROJECT_SCALES = Qgis.defaultProjectScales()
 GEOPROJ4 = geoProj4()
 GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
 GEO_NONE = geoNone()
+
+# TODO QGIS 4.0 - remove, require use of explicit getter/setter
+
+QgsAbstractMetadataBaseValidator.ValidationResult.identifier = property(QgsAbstractMetadataBaseValidator.ValidationResult._identifier)
+QgsAbstractMetadataBaseValidator.ValidationResult.identifier = QgsAbstractMetadataBaseValidator.ValidationResult.identifier.setter(QgsAbstractMetadataBaseValidator.ValidationResult.setIdentifier)
+
+
+# TODO QGIS 4.0 - remove, replaced by Qgis.LinePlacementFlags
+class LinePlacementFlags:
+  OnLine = 1
+  AboveLine = 2
+  BelowLine = 4
+  MapOrientation = 8
+
+QgsPalLayerSettings.LinePlacementFlags = LinePlacementFlags
+QgsPalLayerSettings.OnLine = QgsPalLayerSettings.LinePlacementFlags.OnLine
+QgsPalLayerSettings.AboveLine = QgsPalLayerSettings.LinePlacementFlags.AboveLine
+QgsPalLayerSettings.BelowLine = QgsPalLayerSettings.LinePlacementFlags.BelowLine
+QgsPalLayerSettings.MapOrientation = QgsPalLayerSettings.LinePlacementFlags.MapOrientation
+
+
+def get_placement_flags(self):
+    return self.lineSettings().placementFlags()
+
+
+def set_placement_flags(self, flags):
+    self.lineSettings().setPlacementFlags(Qgis.LabelLinePlacementFlags(flags))
+
+
+QgsPalLayerSettings.placementFlags = property(get_placement_flags)
+QgsPalLayerSettings.placementFlags = QgsPalLayerSettings.placementFlags.setter(set_placement_flags)
+
+
+def get_merge_lines(self):
+    return self.lineSettings().mergeLines()
+
+
+def set_merge_lines(self, merge):
+    self.lineSettings().setMergeLines(merge)
+
+
+QgsPalLayerSettings.mergeLines = property(get_merge_lines)
+QgsPalLayerSettings.mergeLines = QgsPalLayerSettings.mergeLines.setter(set_merge_lines)
+
+
+def get_add_direction_symbol(self):
+    return self.lineSettings().addDirectionSymbol()
+
+
+def set_add_direction_symbol(self, add):
+    self.lineSettings().setAddDirectionSymbol(add)
+
+
+QgsPalLayerSettings.addDirectionSymbol = property(get_add_direction_symbol)
+QgsPalLayerSettings.addDirectionSymbol = QgsPalLayerSettings.addDirectionSymbol.setter(set_add_direction_symbol)
+
+
+def get_left_direction_symbol(self):
+    return self.lineSettings().leftDirectionSymbol()
+
+
+def set_left_direction_symbol(self, symbol):
+    self.lineSettings().setLeftDirectionSymbol(symbol)
+
+
+QgsPalLayerSettings.leftDirectionSymbol = property(get_left_direction_symbol)
+QgsPalLayerSettings.leftDirectionSymbol = QgsPalLayerSettings.leftDirectionSymbol.setter(set_left_direction_symbol)
+
+
+def get_right_direction_symbol(self):
+    return self.lineSettings().rightDirectionSymbol()
+
+
+def set_right_direction_symbol(self, symbol):
+    self.lineSettings().setRightDirectionSymbol(symbol)
+
+
+QgsPalLayerSettings.rightDirectionSymbol = property(get_right_direction_symbol)
+QgsPalLayerSettings.rightDirectionSymbol = QgsPalLayerSettings.rightDirectionSymbol.setter(set_right_direction_symbol)
+
+
+def get_reverse_direction_symbol(self):
+    return self.lineSettings().reverseDirectionSymbol()
+
+
+def set_reverse_direction_symbol(self, reverse):
+    self.lineSettings().setReverseDirectionSymbol(reverse)
+
+
+QgsPalLayerSettings.reverseDirectionSymbol = property(get_reverse_direction_symbol)
+QgsPalLayerSettings.reverseDirectionSymbol = QgsPalLayerSettings.reverseDirectionSymbol.setter(set_reverse_direction_symbol)
+
+
+# TODO QGIS 4.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
+class DirectionSymbols:
+  SymbolLeftRight = 0
+  SymbolAbove = 1
+  SymbolBelow = 2
+
+QgsPalLayerSettings.DirectionSymbols = DirectionSymbols
+QgsPalLayerSettings.SymbolLeftRight = QgsPalLayerSettings.DirectionSymbols.SymbolLeftRight
+QgsPalLayerSettings.SymbolAbove = QgsPalLayerSettings.DirectionSymbols.SymbolAbove
+QgsPalLayerSettings.SymbolBelow = QgsPalLayerSettings.DirectionSymbols.SymbolBelow
+
+
+def get_direction_symbol_placement(self):
+    return self.lineSettings().directionSymbolPlacement()
+
+
+def set_direction_symbol_placement(self, flags):
+    self.lineSettings().setDirectionSymbolPlacement(QgsLabelLineSettings.DirectionSymbolPlacement(flags))
+
+
+QgsPalLayerSettings.placeDirectionSymbol = property(get_direction_symbol_placement)
+QgsPalLayerSettings.placeDirectionSymbol = QgsPalLayerSettings.placeDirectionSymbol.setter(set_direction_symbol_placement)
+
+
+def get_overrun_distance(self):
+    return self.lineSettings().overrunDistance()
+
+
+def set_overrun_distance(self, distance):
+    self.lineSettings().setOverrunDistance(distance)
+
+
+QgsPalLayerSettings.overrunDistance = property(get_overrun_distance)
+QgsPalLayerSettings.overrunDistance = QgsPalLayerSettings.overrunDistance.setter(set_overrun_distance)
+
+
+def get_overrun_distance_unit(self):
+    return self.lineSettings().overrunDistanceUnit()
+
+
+def set_overrun_distance_unit(self, unit):
+    self.lineSettings().setOverrunDistanceUnit(unit)
+
+
+QgsPalLayerSettings.overrunDistanceUnit = property(get_overrun_distance_unit)
+QgsPalLayerSettings.overrunDistanceUnit = QgsPalLayerSettings.overrunDistanceUnit.setter(set_overrun_distance_unit)
+
+
+def get_overrun_distance_scale(self):
+    return self.lineSettings().overrunDistanceMapUnitScale()
+
+
+def set_overrun_distance_scale(self, scale):
+    self.lineSettings().setOverrunDistanceMapUnitScale(scale)
+
+
+QgsPalLayerSettings.overrunDistanceMapUnitScale = property(get_overrun_distance_scale)
+QgsPalLayerSettings.overrunDistanceMapUnitScale = QgsPalLayerSettings.overrunDistanceMapUnitScale.setter(set_overrun_distance_scale)
+
+
+def get_limit_num_labels(self):
+    return self.thinningSettings().limitNumberOfLabelsEnabled()
+
+
+def set_limit_num_labels(self, limit):
+    self.thinningSettings().setLimitNumberLabelsEnabled(limit)
+
+
+QgsPalLayerSettings.limitNumLabels = property(get_limit_num_labels)
+QgsPalLayerSettings.limitNumLabels = QgsPalLayerSettings.limitNumLabels.setter(set_limit_num_labels)
+
+
+
+def get_max_num_labels(self):
+    return self.thinningSettings().maximumNumberLabels()
+
+
+def set_max_num_labels(self, limit):
+    self.thinningSettings().setMaximumNumberLabels(limit)
+
+
+QgsPalLayerSettings.maxNumLabels = property(get_max_num_labels)
+QgsPalLayerSettings.maxNumLabels = QgsPalLayerSettings.maxNumLabels.setter(set_max_num_labels)
+
+
+
+def get_min_feature_size(self):
+    return self.thinningSettings().minimumFeatureSize()
+
+
+def set_min_feature_size(self, limit):
+    self.thinningSettings().setMinimumFeatureSize(limit)
+
+
+QgsPalLayerSettings.minFeatureSize = property(get_min_feature_size)
+QgsPalLayerSettings.minFeatureSize = QgsPalLayerSettings.minFeatureSize.setter(set_min_feature_size)
+
+
+
+def get_is_obstacle(self):
+    return self.obstacleSettings().isObstacle()
+
+
+def set_is_obstacle(self, enabled):
+    self.obstacleSettings().setIsObstacle(enabled)
+
+
+QgsPalLayerSettings.obstacle = property(get_is_obstacle)
+QgsPalLayerSettings.obstacle = QgsPalLayerSettings.obstacle.setter(set_is_obstacle)
+
+
+def get_obstacle_factor(self):
+    return self.obstacleSettings().factor()
+
+
+def set_obstacle_factor(self, factor):
+    self.obstacleSettings().setFactor(factor)
+
+
+QgsPalLayerSettings.obstacleFactor = property(get_obstacle_factor)
+QgsPalLayerSettings.obstacleFactor = QgsPalLayerSettings.obstacleFactor.setter(set_obstacle_factor)
+
+
+
+# TODO QGIS 4.0 - remove, replaced by QgsLabelObstacleSettings.ObstacleType
+
+QgsPalLayerSettings.ObstacleType = QgsLabelObstacleSettings.ObstacleType
+QgsPalLayerSettings.PolygonInterior = QgsLabelObstacleSettings.ObstacleType.PolygonInterior
+QgsPalLayerSettings.PolygonBoundary = QgsLabelObstacleSettings.ObstacleType.PolygonBoundary
+QgsPalLayerSettings.PolygonWhole = QgsLabelObstacleSettings.ObstacleType.PolygonWhole
+
+
+def get_obstacle_type(self):
+    return self.obstacleSettings().type()
+
+
+def set_obstacle_type(self, _type):
+    self.obstacleSettings().setType(QgsLabelObstacleSettings.ObstacleType(_type))
+
+
+QgsPalLayerSettings.obstacleType = property(get_obstacle_type)
+QgsPalLayerSettings.obstacleType = QgsPalLayerSettings.obstacleType.setter(set_obstacle_type)
+
+
+def get_display_all(self):
+    return self.placementSettings().overlapHandling() == Qgis.LabelOverlapHandling.AllowOverlapIfRequired
+
+
+def set_display_all(self, enabled):
+    self.placementSettings().setOverlapHandling(Qgis.LabelOverlapHandling.AllowOverlapIfRequired if enabled else Qgis.LabelOverlapHandling.PreventOverlap)
+    self.placementSettings().setAllowDegradedPlacement(enabled)
+
+
+QgsPalLayerSettings.displayAll = property(get_display_all)
+QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(set_display_all)

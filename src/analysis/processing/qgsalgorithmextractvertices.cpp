@@ -64,9 +64,9 @@ QgsExtractVerticesAlgorithm *QgsExtractVerticesAlgorithm::createInstance() const
   return new QgsExtractVerticesAlgorithm();
 }
 
-QgsProcessing::SourceType QgsExtractVerticesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsExtractVerticesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPoint;
+  return Qgis::ProcessingSourceType::VectorPoint;
 }
 
 QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -100,9 +100,9 @@ Qgis::WkbType QgsExtractVerticesAlgorithm::outputWkbType( Qgis::WkbType inputWkb
   return outputWkbType;
 }
 
-QgsProcessingFeatureSource::Flag QgsExtractVerticesAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsExtractVerticesAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsExtractVerticesAlgorithm::sinkFlags() const

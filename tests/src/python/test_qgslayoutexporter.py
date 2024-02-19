@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import os
 import subprocess
 import tempfile
+from typing import Optional
 
 from osgeo import gdal
 from qgis.PyQt.QtCore import (
@@ -144,25 +145,9 @@ class TestQgsLayoutExporter(QgisTestCase):
         cls.basetestpath = tempfile.mkdtemp()
         cls.dots_per_meter = int(96 / 25.4 * 1000)
 
-    def setUp(self):
-        self.report = "<h1>Python QgsLayoutExporter Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
-
-    def checkImage(self, name, reference_image, rendered_image, size_tolerance=0):
-        checker = QgsMultiRenderChecker()
-        checker.setControlPathPrefix("layout_exporter")
-        checker.setControlName("expected_layoutexporter_" + reference_image)
-        checker.setRenderedImage(rendered_image)
-        checker.setColorTolerance(2)
-        checker.setSizeTolerance(size_tolerance, size_tolerance)
-        result = checker.runTest(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+    @classmethod
+    def control_path_prefix(cls):
+        return "layout_exporter"
 
     def testRenderPage(self):
         l = QgsLayout(QgsProject.instance())
@@ -193,9 +178,11 @@ class TestQgsLayoutExporter(QgisTestCase):
         exporter.renderPage(painter, 0)
         painter.end()
 
-        rendered_file_path = os.path.join(self.basetestpath, 'test_renderpage.png')
-        output_image.save(rendered_file_path, "PNG")
-        self.assertTrue(self.checkImage('renderpage', 'renderpage', rendered_file_path))
+        self.assertTrue(
+            self.image_check('layoutexporter_renderpage', 'layoutexporter_renderpage', output_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderPageToImage(self):
         l = QgsLayout(QgsProject.instance())
@@ -227,7 +214,11 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         rendered_file_path = os.path.join(self.basetestpath, 'test_rendertoimagepage.png')
         image.save(rendered_file_path, "PNG")
-        self.assertTrue(self.checkImage('rendertoimagepage', 'rendertoimagepage', rendered_file_path))
+        self.assertTrue(
+            self.image_check('layoutexporter_rendertoimagepage', 'layoutexporter_rendertoimagepage', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderRegion(self):
         l = QgsLayout(QgsProject.instance())
@@ -261,9 +252,11 @@ class TestQgsLayoutExporter(QgisTestCase):
         exporter.renderRegion(painter, QRectF(5, 10, 110, 100))
         painter.end()
 
-        rendered_file_path = os.path.join(self.basetestpath, 'test_renderregion.png')
-        output_image.save(rendered_file_path, "PNG")
-        self.assertTrue(self.checkImage('renderregion', 'renderregion', rendered_file_path))
+        self.assertTrue(
+            self.image_check('layoutexporter_renderregion', 'layoutexporter_renderregion', output_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderRegionToImage(self):
         l = QgsLayout(QgsProject.instance())
@@ -286,26 +279,32 @@ class TestQgsLayoutExporter(QgisTestCase):
         image = exporter.renderRegionToImage(QRectF(5, 10, 110, 100), size)
         self.assertFalse(image.isNull())
 
-        rendered_file_path = os.path.join(self.basetestpath, 'test_rendertoimageregionsize.png')
-        image.save(rendered_file_path, "PNG")
-        self.assertTrue(self.checkImage('rendertoimageregionsize', 'rendertoimageregionsize', rendered_file_path))
+        self.assertTrue(
+            self.image_check('layoutexporter_rendertoimageregionsize', 'layoutexporter_rendertoimageregionsize', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # using layout dpi
         l.renderContext().setDpi(40)
         image = exporter.renderRegionToImage(QRectF(5, 10, 110, 100))
         self.assertFalse(image.isNull())
 
-        rendered_file_path = os.path.join(self.basetestpath, 'test_rendertoimageregiondpi.png')
-        image.save(rendered_file_path, "PNG")
-        self.assertTrue(self.checkImage('rendertoimageregiondpi', 'rendertoimageregiondpi', rendered_file_path))
+        self.assertTrue(
+            self.image_check('layoutexporter_rendertoimageregiondpi', 'layoutexporter_rendertoimageregiondpi', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # overriding dpi
         image = exporter.renderRegionToImage(QRectF(5, 10, 110, 100), QSize(), 80)
         self.assertFalse(image.isNull())
 
-        rendered_file_path = os.path.join(self.basetestpath, 'test_rendertoimageregionoverridedpi.png')
-        image.save(rendered_file_path, "PNG")
-        self.assertTrue(self.checkImage('rendertoimageregionoverridedpi', 'rendertoimageregionoverridedpi', rendered_file_path))
+        self.assertTrue(
+            self.image_check('layoutexporter_rendertoimageregionoverridedpi', 'layoutexporter_rendertoimageregionoverridedpi', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testExportToImage(self):
         md = QgsProject.instance().metadata()
@@ -354,9 +353,20 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_file_path = os.path.join(self.basetestpath, 'test_exporttoimagedpi.png')
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.ExportResult.Success)
 
-        self.assertTrue(self.checkImage('exporttoimagedpi_page1', 'exporttoimagedpi_page1', rendered_file_path))
+        image = QImage(rendered_file_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagedpi_page1', 'layoutexporter_exporttoimagedpi_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
+
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagedpi_2.png')
-        self.assertTrue(self.checkImage('exporttoimagedpi_page2', 'exporttoimagedpi_page2', page2_path))
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagedpi_page2', 'layoutexporter_exporttoimagedpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         for f in (rendered_file_path, page2_path):
             d = gdal.Open(f)
@@ -374,9 +384,20 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_file_path = os.path.join(self.basetestpath, 'test_exporttoimagecropped.png')
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.ExportResult.Success)
 
-        self.assertTrue(self.checkImage('exporttoimagecropped_page1', 'exporttoimagecropped_page1', rendered_file_path))
+        image = QImage(rendered_file_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagecropped_page1', 'layoutexporter_exporttoimagecropped_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
+
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagecropped_2.png')
-        self.assertTrue(self.checkImage('exporttoimagecropped_page2', 'exporttoimagecropped_page2', page2_path))
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagecropped_page2', 'layoutexporter_exporttoimagecropped_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # specific pages
         settings.cropToContents = False
@@ -386,8 +407,14 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.ExportResult.Success)
 
         self.assertFalse(os.path.exists(rendered_file_path))
+
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagepages_2.png')
-        self.assertTrue(self.checkImage('exporttoimagedpi_page2', 'exporttoimagedpi_page2', page2_path))
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagedpi_page2', 'layoutexporter_exporttoimagedpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # image size
         settings.imageSize = QSize(600, 851)
@@ -395,7 +422,12 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.ExportResult.Success)
         self.assertFalse(os.path.exists(rendered_file_path))
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesize_2.png')
-        self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagesize_page2', 'layoutexporter_exporttoimagesize_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # image size with incorrect aspect ratio
         # this can happen as a result of data defined page sizes
@@ -404,8 +436,12 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.ExportResult.Success)
 
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesizebadaspect_2.png')
-        im = QImage(page2_path)
-        self.assertTrue(self.checkImage('exporttoimagesize_badaspect', 'exporttoimagedpi_page2', page2_path), f'{im.width()}x{im.height()}')
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttoimagesize_badaspect', 'layoutexporter_exporttoimagedpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testExportToPdf(self):
         md = QgsProject.instance().metadata()
@@ -465,8 +501,20 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttopdfdpi2.png')
         pdfToPng(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
 
-        self.assertTrue(self.checkImage('exporttopdfdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
-        self.assertTrue(self.checkImage('exporttopdfdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttopdfdpi_page1', 'layoutexporter_exporttopdfdpi_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('layoutexporter_exporttopdfdpi_page2', 'layoutexporter_exporttopdfdpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
 
         d = gdal.Open(pdf_file_path)
         metadata = d.GetMetadata()
@@ -582,7 +630,13 @@ class TestQgsLayoutExporter(QgisTestCase):
         dpi = 80
         pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
 
-        self.assertTrue(self.checkImage('test_exporttopdfdpi_skip_first', 'exporttopdfdpi_page2', rendered_page_1, size_tolerance=1))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('test_exporttopdfdpi_skip_first', 'layoutexporter_exporttopdfdpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
 
     def testExportToSvg(self):
         md = QgsProject.instance().metadata()
@@ -658,8 +712,21 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttosvgdpi2.png')
         svgToPng(svg_file_path_2, rendered_page_2, width=467)
 
-        self.assertTrue(self.checkImage('exporttosvgdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
-        self.assertTrue(self.checkImage('exporttosvgdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('exporttosvgdpi_page1', 'layoutexporter_exporttopdfdpi_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('exporttosvgdpi_page2',
+                             'layoutexporter_exporttopdfdpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
 
         # no metadata
         settings.exportMetadata = False
@@ -682,8 +749,20 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttosvglayered2.png')
         svgToPng(svg_file_path_2, rendered_page_2, width=467)
 
-        self.assertTrue(self.checkImage('exporttosvglayered_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
-        self.assertTrue(self.checkImage('exporttosvglayered_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('exporttosvglayered_page1', 'layoutexporter_exporttopdfdpi_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('exporttosvglayered_page2', 'layoutexporter_exporttopdfdpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
 
         for f in [svg_file_path, svg_file_path_2]:
             checkMetadata(f, True)
@@ -794,8 +873,20 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttopdfdpi2.png')
         pdfToPng(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
 
-        self.assertTrue(self.checkImage('printdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
-        self.assertTrue(self.checkImage('printdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('printdpi_page1', 'layoutexporter_exporttopdfdpi_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('printdpi_page2', 'layoutexporter_exporttopdfdpi_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=1)
+        )
 
     def testExportWorldFile(self):
         l = QgsLayout(QgsProject.instance())
@@ -949,9 +1040,19 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(result, QgsLayoutExporter.ExportResult.Success, error)
 
         page1_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Basse-Normandie.png')
-        self.assertTrue(self.checkImage('iteratortoimage1', 'iteratortoimage1', page1_path))
+        image = QImage(page1_path)
+        self.assertTrue(
+            self.image_check('iteratortoimage1', 'layoutexporter_iteratortoimage1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
         page2_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Bretagne.png')
-        self.assertTrue(self.checkImage('iteratortoimage2', 'iteratortoimage2', page2_path))
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('iteratortoimage2', 'layoutexporter_iteratortoimage2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
         page3_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Centre.png')
         self.assertTrue(os.path.exists(page3_path))
         page4_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Pays de la Loire.png')
@@ -973,11 +1074,23 @@ class TestQgsLayoutExporter(QgisTestCase):
         page1_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Basse-Normandie.svg')
         rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Basse-Normandie.png')
         svgToPng(page1_path, rendered_page_1, width=935)
-        self.assertTrue(self.checkImage('iteratortosvg1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('iteratortosvg1', 'layoutexporter_iteratortoimage1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
         page2_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Bretagne.svg')
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Bretagne.png')
         svgToPng(page2_path, rendered_page_2, width=935)
-        self.assertTrue(self.checkImage('iteratortosvg2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('iteratortosvg2', 'layoutexporter_iteratortoimage2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
         page3_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Centre.svg')
         self.assertTrue(os.path.exists(page3_path))
         page4_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Pays de la Loire.svg')
@@ -1000,11 +1113,23 @@ class TestQgsLayoutExporter(QgisTestCase):
         page1_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Basse-Normandie.pdf')
         rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Basse-Normandie.png')
         pdfToPng(page1_path, rendered_page_1, dpi=80, page=1)
-        self.assertTrue(self.checkImage('iteratortopdf1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('iteratortopdf1', 'layoutexporter_iteratortoimage1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
         page2_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Bretagne.pdf')
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Bretagne.png')
         pdfToPng(page2_path, rendered_page_2, dpi=80, page=1)
-        self.assertTrue(self.checkImage('iteratortopdf2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('iteratortopdf2', 'layoutexporter_iteratortoimage2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
         page3_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Centre.pdf')
         self.assertTrue(os.path.exists(page3_path))
         page4_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Pays de la Loire.pdf')
@@ -1026,11 +1151,23 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single1.png')
         pdfToPng(pdf_path, rendered_page_1, dpi=80, page=1)
-        self.assertTrue(self.checkImage('iteratortopdfsingle1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('iteratortopdfsingle1', 'layoutexporter_iteratortoimage1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
 
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single2.png')
         pdfToPng(pdf_path, rendered_page_2, dpi=80, page=2)
-        self.assertTrue(self.checkImage('iteratortopdfsingle2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('iteratortopdfsingle2', 'layoutexporter_iteratortoimage2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
 
         rendered_page_3 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single3.png')
         pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
@@ -1059,11 +1196,23 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         rendered_page_1 = os.path.join(self.basetestpath, 'test_printiterator1.png')
         pdfToPng(pdf_path, rendered_page_1, dpi=80, page=1)
-        self.assertTrue(self.checkImage('printeriterator1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+        image = QImage(rendered_page_1)
+        self.assertTrue(
+            self.image_check('printeriterator1', 'layoutexporter_iteratortoimage1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
 
         rendered_page_2 = os.path.join(self.basetestpath, 'test_printiterator2.png')
         pdfToPng(pdf_path, rendered_page_2, dpi=80, page=2)
-        self.assertTrue(self.checkImage('printiterator2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+        image = QImage(rendered_page_2)
+        self.assertTrue(
+            self.image_check('printiterator2', 'layoutexporter_iteratortoimage2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             size_tolerance=2)
+        )
 
         rendered_page_3 = os.path.join(self.basetestpath, 'test_printiterator3.png')
         pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
@@ -1118,9 +1267,19 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(result, QgsLayoutExporter.ExportResult.Success, error)
 
         page1_path = os.path.join(self.basetestpath, 'test_report_0001.png')
-        self.assertTrue(self.checkImage('report_page1', 'report_page1', page1_path))
+        image = QImage(page1_path)
+        self.assertTrue(
+            self.image_check('report_page1', 'layoutexporter_report_page1', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
         page2_path = os.path.join(self.basetestpath, 'test_report_0002.png')
-        self.assertTrue(self.checkImage('report_page2', 'report_page2', page2_path))
+        image = QImage(page2_path)
+        self.assertTrue(
+            self.image_check('report_page2', 'layoutexporter_report_page2', image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRequiresRasterization(self):
         """

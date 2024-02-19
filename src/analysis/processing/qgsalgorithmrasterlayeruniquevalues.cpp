@@ -57,7 +57,7 @@ void QgsRasterLayerUniqueValuesReportAlgorithm::initAlgorithm( const QVariantMap
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ),
                 QObject::tr( "Unique values report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_TABLE" ),
-                QObject::tr( "Unique values table" ), QgsProcessing::TypeVector, QVariant(), true, false ) );
+                QObject::tr( "Unique values table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
 
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );

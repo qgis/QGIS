@@ -353,10 +353,25 @@ void QgsSerialPortSensor::setPortName( const QString &portName )
   mPortName = portName;
 }
 
+QSerialPort::BaudRate QgsSerialPortSensor::baudRate() const
+{
+  return mBaudRate;
+}
+
+void QgsSerialPortSensor::setBaudRate( const QSerialPort::BaudRate &baudRate )
+{
+  if ( mBaudRate == baudRate )
+    return;
+
+  mBaudRate = baudRate;
+}
+
+
 void QgsSerialPortSensor::handleConnect()
 {
   mSerialPort->setPortName( mPortName );
-  mSerialPort->setBaudRate( QSerialPort::Baud9600 );
+  mSerialPort->setBaudRate( mBaudRate );
+
   if ( mSerialPort->open( QIODevice::ReadOnly ) )
   {
     setStatus( Qgis::DeviceConnectionStatus::Connected );
@@ -401,14 +416,14 @@ void QgsSerialPortSensor::handleError( QSerialPort::SerialPortError error )
 bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const
 {
   element.setAttribute( QStringLiteral( "portName" ), mPortName );
-
+  element.setAttribute( QStringLiteral( "baudRate" ), static_cast<int>( mBaudRate ) );
   return true;
 }
 
 bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
   mPortName = element.attribute( QStringLiteral( "portName" ) );
-
+  mBaudRate = static_cast< QSerialPort::BaudRate >( element.attribute( QStringLiteral( "baudRate" ) ).toInt() );
   return true;
 }
 #endif

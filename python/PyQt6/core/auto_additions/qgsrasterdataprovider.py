@@ -21,3 +21,13 @@ QgsRasterDataProvider.ResamplingMethod.Mode.__doc__ = "Mode (selects the value w
 QgsRasterDataProvider.ResamplingMethod.Gauss.__doc__ = "Gauss blurring"
 QgsRasterDataProvider.ResamplingMethod.__doc__ = "Resampling method for provider-level resampling.\n\n.. versionadded:: 3.16\n\n" + '* ``Nearest``: ' + QgsRasterDataProvider.ResamplingMethod.Nearest.__doc__ + '\n' + '* ``Bilinear``: ' + QgsRasterDataProvider.ResamplingMethod.Bilinear.__doc__ + '\n' + '* ``Cubic``: ' + QgsRasterDataProvider.ResamplingMethod.Cubic.__doc__ + '\n' + '* ``CubicSpline``: ' + QgsRasterDataProvider.ResamplingMethod.CubicSpline.__doc__ + '\n' + '* ``Lanczos``: ' + QgsRasterDataProvider.ResamplingMethod.Lanczos.__doc__ + '\n' + '* ``Average``: ' + QgsRasterDataProvider.ResamplingMethod.Average.__doc__ + '\n' + '* ``Mode``: ' + QgsRasterDataProvider.ResamplingMethod.Mode.__doc__ + '\n' + '* ``Gauss``: ' + QgsRasterDataProvider.ResamplingMethod.Gauss.__doc__
 # --
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+
+QgsRasterDataProvider.ProviderCapability.__bool__ = lambda flag: bool(_force_int(flag))
+QgsRasterDataProvider.ProviderCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsRasterDataProvider.ProviderCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsRasterDataProvider.ProviderCapability.__or__ = lambda flag1, flag2: QgsRasterDataProvider.ProviderCapability(_force_int(flag1) | _force_int(flag2))

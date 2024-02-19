@@ -150,8 +150,8 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
     return;
 
   const QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
-  mModel->setFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
-  mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
+  mModel->setFeature( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::FeatureId ) ).value<QgsFeatureId>() );
+  mLineEdit->setText( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
   mLineEdit->setFont( mModel->data( modelIndex, Qt::FontRole ).value<QFont>() );
   QPalette palette = mLineEdit->palette();
   palette.setBrush( mLineEdit->foregroundRole(), mModel->data( modelIndex, Qt::ForegroundRole ).value<QBrush>() );
@@ -160,8 +160,8 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
 
 void QgsFeaturePickerWidget::onActivated( QModelIndex modelIndex )
 {
-  setFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
-  mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
+  setFeature( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::FeatureId ) ).value<QgsFeatureId>() );
+  mLineEdit->setText( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
 }
 
 void QgsFeaturePickerWidget::storeLineEditState()
@@ -201,7 +201,7 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
     if ( currentIndex >= topLeft.row() && currentIndex <= bottomRight.row() )
     {
       const QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
-      mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
+      mLineEdit->setText( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
     }
   }
 }
@@ -221,14 +221,14 @@ void QgsFeaturePickerWidget::focusOutEvent( QFocusEvent *event )
 {
   Q_UNUSED( event )
   QWidget::focusOutEvent( event );
-  mLineEdit->setText( mModel->data( currentModelIndex(), QgsFeaturePickerModel::ValueRole ).toString() );
+  mLineEdit->setText( mModel->data( currentModelIndex(), static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
 }
 
 void QgsFeaturePickerWidget::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Escape )
   {
-    mLineEdit->setText( mModel->data( currentModelIndex(), QgsFeaturePickerModel::ValueRole ).toString() );
+    mLineEdit->setText( mModel->data( currentModelIndex(), static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
   }
   QWidget::keyReleaseEvent( event );
 }

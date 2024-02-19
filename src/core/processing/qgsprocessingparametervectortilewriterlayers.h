@@ -51,7 +51,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "vectortilewriterlayers" ); }

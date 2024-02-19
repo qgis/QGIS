@@ -24,7 +24,7 @@ including min and max value.
 %End
   public:
 
-    enum BoundsType
+    enum BoundsType /BaseType=IntEnum/
     {
       IncludeMinAndMax,
       IncludeMax,

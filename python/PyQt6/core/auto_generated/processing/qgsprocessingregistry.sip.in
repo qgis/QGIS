@@ -87,7 +87,7 @@ Returns ``False`` if the provider could not be removed (eg provider does not exi
 .. seealso:: :py:func:`addProvider`
 %End
 
-    QgsProcessingProvider *providerById( const QString &id ) /HoldGIL/;
+    QgsProcessingProvider *providerById( const QString &id ) const /HoldGIL/;
 %Docstring
 Returns a matching provider by provider ID.
 %End
@@ -120,7 +120,7 @@ is returned.
 %End
 
 
-    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() ) const /TransferBack/;
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
 %Docstring
 Creates a new instance of an algorithm by its ID. If no matching algorithm is found, ``None``
 is returned. Callers take responsibility for deleting the returned object.

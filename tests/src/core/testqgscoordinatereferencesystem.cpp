@@ -1818,7 +1818,11 @@ void TestQgsCoordinateReferenceSystem::noProj()
   QVERIFY( crs.isValid() );
   QgsDebugMsgLevel( crs.toWkt(), 1 );
   QVERIFY( crs.toWkt().startsWith( QLatin1String( "PROJCS[\"Carthage (Paris) / Tunisia Mining Grid\"," ) ) );
+#if (PROJ_VERSION_MAJOR>9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR >= 2 ) )
+  QVERIFY( crs.toWkt().contains( QLatin1String( "PROJECTION[\"Tunisia_Mining_Grid\"]" ) ) );
+#else
   QVERIFY( crs.toWkt().contains( QLatin1String( "PROJECTION[\"Tunisia_Mapping_Grid\"]" ) ) );
+#endif
 }
 
 void TestQgsCoordinateReferenceSystem::customProjString()

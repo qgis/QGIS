@@ -39,6 +39,7 @@
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
+#include "qgsscrollarea.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -396,10 +397,16 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
       mOptTreeModel->appendRow( item );
   }
 
+  QgsScrollArea *scrollArea = new QgsScrollArea();
+  scrollArea->setWidgetResizable( true );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  scrollArea->setObjectName( widget->objectName() );
+  scrollArea->setWidget( widget );
+
   if ( newPage < 0 )
-    mOptStackedWidget->addWidget( widget );
+    mOptStackedWidget->addWidget( scrollArea );
   else
-    mOptStackedWidget->insertWidget( newPage, widget );
+    mOptStackedWidget->insertWidget( newPage, scrollArea );
 }
 
 void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before, const QStringList &path, const QString &key )
@@ -492,7 +499,12 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
         }
       }
 
-      mOptStackedWidget->insertWidget( page, widget );
+      QgsScrollArea *scrollArea = new QgsScrollArea();
+      scrollArea->setWidgetResizable( true );
+      scrollArea->setFrameShape( QFrame::NoFrame );
+      scrollArea->setWidget( widget );
+      scrollArea->setObjectName( widget->objectName() );
+      mOptStackedWidget->insertWidget( page, scrollArea );
       return;
     }
   }

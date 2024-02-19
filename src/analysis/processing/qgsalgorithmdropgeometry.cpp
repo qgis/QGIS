@@ -75,14 +75,14 @@ Qgis::WkbType QgsDropGeometryAlgorithm::outputWkbType( Qgis::WkbType ) const
   return Qgis::WkbType::NoGeometry;
 }
 
-QgsProcessingFeatureSource::Flag QgsDropGeometryAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsDropGeometryAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
 {
-  return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+  return QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 }
 
 QgsFeatureList QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )

@@ -580,23 +580,31 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
 
           QgsCoordinateTransform ct( crsWGS84, crs, mOptions.transformContext );
-
-          QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
-          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
-          QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
-          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
-
-          QgsDebugMsgLevel( featureType.bbox.toString(), 2 );
-          QgsDebugMsgLevel( ptMinBack.toString(), 2 );
-          QgsDebugMsgLevel( ptMaxBack.toString(), 2 );
-
-          if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
-               std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
-               std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
-               std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+          try
           {
-            QgsDebugMsgLevel( QStringLiteral( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" ), 2 );
-            featureType.bboxSRSIsWGS84 = true;
+
+            QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
+            QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
+            QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
+            QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
+
+            QgsDebugMsgLevel( featureType.bbox.toString(), 2 );
+            QgsDebugMsgLevel( ptMinBack.toString(), 2 );
+            QgsDebugMsgLevel( ptMaxBack.toString(), 2 );
+
+            if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
+                 std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
+                 std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
+                 std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+            {
+              QgsDebugMsgLevel( QStringLiteral( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" ), 2 );
+              featureType.bboxSRSIsWGS84 = true;
+            }
+
+          }
+          catch ( const QgsCsException & )
+          {
+            // can be silently ignored
           }
         }
       }

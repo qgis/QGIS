@@ -19,7 +19,6 @@
 #include <QVariant>
 
 #include "qgsfeature.h"
-#include "qgsfeaturerequest.h"
 #include "qgis_analysis.h"
 
 #ifdef SIP_RUN

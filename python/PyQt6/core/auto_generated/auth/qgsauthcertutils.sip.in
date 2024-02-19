@@ -23,7 +23,7 @@ Utilities for working with certificates and keys
 #include "qgsauthcertutils.h"
 %End
   public:
-    enum CaCertSource
+    enum CaCertSource /BaseType=IntEnum/
     {
       SystemRoot,
       FromFile,
@@ -31,7 +31,7 @@ Utilities for working with certificates and keys
       Connection
     };
 
-    enum CertTrustPolicy
+    enum CertTrustPolicy /BaseType=IntEnum/
     {
       DefaultTrust,
       Trusted,
@@ -39,7 +39,7 @@ Utilities for working with certificates and keys
       NoPolicy
     };
 
-    enum CertUsageType
+    enum CertUsageType /BaseType=IntEnum/
     {
       UndeterminedUsage,
       AnyOrUnspecifiedUsage,
@@ -54,7 +54,7 @@ Utilities for working with certificates and keys
       CRLSigningUsage
     };
 
-    enum ConstraintGroup
+    enum ConstraintGroup /BaseType=IntEnum/
     {
       KeyUsage,
       ExtendedKeyUsage

@@ -20,6 +20,7 @@ from osgeo import ogr
 from qgis.PyQt.QtCore import QByteArray, QVariant
 from qgis.core import (
     Qgis,
+    QgsBox3D,
     QgsDataSourceUri,
     QgsDefaultValue,
     QgsFeature,
@@ -37,8 +38,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
-    QgsWkbTypes,
-)
+    QgsWkbTypes, NULL)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
@@ -107,7 +107,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         sql += "VALUES (1, 'toto 1', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
         cur.execute(sql)
 
-        # table with Z dimension geometry
+        # table with Z dimension geometry, 1 point
         sql = "CREATE TABLE test_z (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_z', 'geometry', 4326, 'POINT', 'XYZ')"
@@ -115,6 +115,16 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         sql = "INSERT INTO test_z (id, name, geometry) "
         sql += "VALUES (1, 'toto 2', GeomFromText('POINT Z (0 0 1)', 4326))"
         cur.execute(sql)
+
+        # table with Z dimension geometry, multiple points
+        sql = "CREATE TABLE test_z2 (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_z2', 'geometry', 4326, 'POINT', 'XYZ')"
+        cur.execute(sql)
+        for i in range(2, 12):
+            sql = "INSERT INTO test_z2 (id, name, geometry) "
+            sql += f"VALUES ({i-1}, 'toto 2', GeomFromText('POINT Z ({i-4} {i+1} {i})', 4326))"
+            cur.execute(sql)
 
         # table with M value geometry
         sql = "CREATE TABLE test_m (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
@@ -1858,7 +1868,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         f.setGeometry(g)
         f.fields()
         f.fields().names()
-        f.setAttribute(1, QVariant(QVariant.String))
+        f.setAttribute(1, NULL)
         f.setAttribute(0, 'Autogenerate')
         self.assertTrue(layer.addFeatures([f]))
         self.assertFalse(layer.commitChanges())
@@ -1924,6 +1934,21 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(layer.dataProvider().changeGeometryValues({feature.id(): geom}))
 
         _check_feature()
+
+    def test_extent(self):
+        layer2D = QgsVectorLayer(
+            f"dbname={self.dbname} table='(select * from test_q)' (geometry)",
+            "test_pg_query1", "spatialite")
+        self.assertTrue(layer2D.isValid())
+        self.assertEqual(layer2D.extent(), QgsRectangle(0, 0, 1, 1))
+        self.assertEqual(layer2D.extent3D(), QgsBox3D(0, 0, float('nan'), 1, 1, float('nan')))
+
+        layer3D = QgsVectorLayer(
+            f"dbname={self.dbname} table='test_z2' (geometry) key='id'",
+            "test_z2", "spatialite")
+        self.assertTrue(layer3D.isValid())
+        self.assertEqual(layer3D.extent(), QgsRectangle(-2, 3, 7, 12))
+        self.assertEqual(layer3D.extent3D(), QgsBox3D(-2, 3, 2, 7, 12, 11))
 
 
 if __name__ == '__main__':

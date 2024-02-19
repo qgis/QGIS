@@ -106,7 +106,7 @@ Abstract base class for filters which collect locator results.
 %End
   public:
 
-    enum Priority
+    enum Priority /BaseType=IntEnum/
     {
       Highest,
       High,
@@ -115,7 +115,7 @@ Abstract base class for filters which collect locator results.
       Lowest
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagFast,
     };

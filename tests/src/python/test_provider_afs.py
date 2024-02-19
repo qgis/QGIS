@@ -1027,7 +1027,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
-        self.assertEqual([f['dt'] for f in features], [QDateTime(2017, 5, 3, 0, 0, 0, 0, Qt.TimeSpec.UTC).toLocalTime(), NULL])
+        self.assertEqual([f['dt'] for f in features], [QDateTime(QDate(2017, 5, 3), QTime(0, 0, 0, 0), Qt.TimeSpec.UTC).toLocalTime(), NULL])
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """

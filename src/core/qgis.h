@@ -129,8 +129,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34. Prior to 3.34 this was available as QgsMapLayerProxyModel::Filter.
      */
-    enum class LayerFilter SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerProxyModel, Filter ) : int
-      {
+    enum class LayerFilter SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerProxyModel, Filter ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       RasterLayer = 1,
       NoGeometry = 2,
       PointLayer = 4,
@@ -304,7 +304,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.24
      */
-    enum class VectorLayerTypeFlag : int
+    enum class VectorLayerTypeFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SqlQuery = 1 << 0 //!< SQL query layer
     };
@@ -340,11 +340,44 @@ class CORE_EXPORT Qgis
     Q_ENUM( FeatureCountState )
 
     /**
+     * Enumeration of spatial index presence states.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureSource::SpatialIndexPresence
+     * \since QGIS 3.36
+     */
+    enum class SpatialIndexPresence SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, SpatialIndexPresence ) : int
+      {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexUnknown ) = 0, //!< Spatial index presence cannot be determined, index may or may not exist
+      NotPresent SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexNotPresent ) = 1, //!< No spatial index exists for the source
+      Present SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexPresent ) = 2, //!< A valid spatial index exists for the source
+    };
+    Q_ENUM( SpatialIndexPresence )
+
+    /**
+     * Possible return value for QgsFeatureSource::hasFeatures() to determine if a source is empty.
+     *
+     * It is implemented as a three-value logic, so it can return if
+     * there are features available for sure, if there are no features
+     * available for sure or if there might be features available but
+     * there is no guarantee for this.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureSource::FeatureAvailability
+     * \since QGIS 3.36
+     */
+    enum class FeatureAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, FeatureAvailability ) : int
+      {
+      NoFeaturesAvailable = 0, //!< There are certainly no features available in this source
+      FeaturesAvailable, //!< There is at least one feature available in this source
+      FeaturesMaybeAvailable //!< There may be features available in this source
+    };
+    Q_ENUM( FeatureAvailability )
+
+    /**
      * Attribute editing capabilities which may be supported by vector data providers.
      *
      * \since QGIS 3.32
      */
-    enum class VectorDataProviderAttributeEditCapability
+    enum class VectorDataProviderAttributeEditCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       EditAlias = 1 << 0, //!< Allows editing aliases
       EditComment = 1 << 1, //!< Allows editing comments
@@ -420,7 +453,7 @@ class CORE_EXPORT Qgis
      * Options for named list nodes
      * \since QGIS 3.30
      */
-    enum class SettingsTreeNodeOption : int
+    enum class SettingsTreeNodeOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NamedListSelectedItemSetting = 1 << 0, //!< Creates a setting to store which is the current item
     };
@@ -450,7 +483,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class SldExportOption : int
+    enum class SldExportOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoOptions = 0,                      //!< Default SLD export
       Svg = 1 << 0,                       //!< Export complex styles to separate SVG files for better compatibility with OGC servers
@@ -465,7 +498,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class SldExportVendorExtension : int
+    enum class SldExportVendorExtension : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoVendorExtension = 0,             //!< No vendor extensions
       GeoServerVendorExtension = 1 << 1, //!< Use GeoServer vendor extensions when required
@@ -478,7 +511,7 @@ class CORE_EXPORT Qgis
      * Settings options
      * \since QGIS 3.26
      */
-    enum class SettingsOption : int
+    enum class SettingsOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SaveFormerValue = 1 << 1, //<! Save the former value of the settings
       SaveEnumFlagAsInt = 1 << 2, //! The enum/flag will be saved as an integer value instead of text
@@ -503,8 +536,8 @@ class CORE_EXPORT Qgis
      * SnappingTypeFlag defines on what object the snapping is performed
      * \since QGIS 3.26
      */
-    enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingTypes ) : int
-      {
+    enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingTypes ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       NoSnap SIP_MONKEYPATCH_COMPAT_NAME( NoSnapFlag ) = 0, //!< No snapping
       Vertex SIP_MONKEYPATCH_COMPAT_NAME( VertexFlag ) = 1 << 0, //!< On vertices
       Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentFlag ) = 1 << 1, //!< On segments
@@ -523,8 +556,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.20
      */
-    enum class SymbolRenderHint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, RenderHint ) : int
-      {
+    enum class SymbolRenderHint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, RenderHint ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
     Q_ENUM( SymbolRenderHint )
@@ -549,7 +582,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.20
      */
-    enum class SymbolFlag : int
+    enum class SymbolFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
     };
@@ -563,8 +596,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.20
      */
-    enum class SymbolPreviewFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, PreviewFlag ) : int
-      {
+    enum class SymbolPreviewFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, PreviewFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
     Q_ENUM( SymbolPreviewFlag )
@@ -581,7 +614,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class SymbolLayerFlag : int
+    enum class SymbolLayerFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
     };
@@ -599,7 +632,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34
      */
-    enum class SymbolLayerUserFlag : int
+    enum class SymbolLayerUserFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       DisableSelectionRecoloring = 1 << 0, //!< If present, indicates that the symbol layer should not be recolored when rendering selected features
     };
@@ -650,8 +683,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.20
      */
-    enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int
-      {
+    enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       NoCapabilities = 0, //!< Item has no capabilities
       SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
       Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
@@ -666,6 +699,33 @@ class CORE_EXPORT Qgis
     //! Browser item capabilities
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataItem, Capabilities )
     Q_FLAG( BrowserItemCapabilities )
+
+    /**
+     * Capabilities for data item providers.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapability
+     *
+     * \since QGIS 3.36
+     */
+    enum class DataItemProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, DataCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoCapabilities SIP_MONKEYPATCH_COMPAT_NAME( NoDataCapabilities ) = 0, //!< No capabilities
+      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1, //!< Can provides items which corresponds to files
+      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1, //!< Can provides items which corresponds to directories
+      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2, //!< Can provides items which corresponds to databases
+      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3, //!< Network/internet source
+    };
+    Q_ENUM( DataItemProviderCapability )
+
+    /**
+     * Capabilities for data item providers.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapabilities
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( DataItemProviderCapabilities, DataItemProviderCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, DataCapabilities )
+    Q_FLAG( DataItemProviderCapabilities )
 
     /**
      * Browser item layer types
@@ -741,7 +801,7 @@ class CORE_EXPORT Qgis
      * Capabilities supported by a QgsVectorFileWriter object.
      * \since QGIS 3.32
      */
-    enum class VectorFileWriterCapability : int
+    enum class VectorFileWriterCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       FieldAliases = 1 << 0, //!< Writer can support field aliases
       FieldComments = 1 << 2, //!< Writer can support field comments
@@ -759,7 +819,7 @@ class CORE_EXPORT Qgis
      * SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
      * \since QGIS 3.22
      */
-    enum class SqlLayerDefinitionCapability : int
+    enum class SqlLayerDefinitionCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SubsetStringFilter = 1 << 1,  //!< SQL layer definition supports subset string filter
       GeometryColumn = 1 << 2,      //!< SQL layer definition supports geometry column
@@ -930,8 +990,8 @@ class CORE_EXPORT Qgis
      * \note Prior to QGIS 3.32 this was available as QgsLabeling::LinePlacementFlag
      * \since QGIS 3.32
      */
-    enum class LabelLinePlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, LinePlacementFlag ) : int
-      {
+    enum class LabelLinePlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, LinePlacementFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       OnLine = 1, //!< Labels can be placed directly over a line feature.
       AboveLine = 2, //!< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature.
       BelowLine = 4, //!< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed above the line feature.
@@ -955,8 +1015,8 @@ class CORE_EXPORT Qgis
      * \note Prior to QGIS 3.32 this was available as QgsLabeling::PolygonPlacementFlag
      * \since QGIS 3.32
      */
-    enum class LabelPolygonPlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, PolygonPlacementFlag ) : int
-      {
+    enum class LabelPolygonPlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, PolygonPlacementFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature
       AllowPlacementInsideOfPolygon = 1 << 1, //!< Labels can be placed inside a polygon feature
     };
@@ -1026,7 +1086,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class SublayerQueryFlag : int
+    enum class SublayerQueryFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
@@ -1043,7 +1103,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class SublayerFlag : int
+    enum class SublayerFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SystemTable = 1 << 0, //!< Sublayer is a system or internal table, which should be hidden by default
     };
@@ -1088,7 +1148,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.28
      */
-    enum class RasterRendererFlag : int
+    enum class RasterRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       InternalLayerOpacityHandling = 1 << 0, //!< The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied.
     };
@@ -1225,7 +1285,7 @@ class CORE_EXPORT Qgis
      * \note FieldConfigurationFlag are expressed in the negative forms so that default flags is NoFlag.
      * \since QGIS 3.34
      */
-    enum class FieldConfigurationFlag : int
+    enum class FieldConfigurationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoFlag = 0, //!< No flag is defined
       NotSearchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
@@ -1301,7 +1361,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.28
      */
-    enum class SelectionFlag : int
+    enum class SelectionFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SingleFeatureSelection = 1 << 0, //!< Select only a single feature, picking the "best" match for the selection geometry
       ToggleSelection = 1 << 1, //!< Enables a "toggle" selection mode, where previously selected matching features will be deselected and previously deselected features will be selected. This flag works only when the SingleFeatureSelection flag is also set.
@@ -1446,7 +1506,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class GpsInformationComponent : int
+    enum class GpsInformationComponent : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Location = 1 << 0, //!< 2D location (latitude/longitude), as a QgsPointXY value
       Altitude = 1 << 1, //!< Altitude/elevation above or below the mean sea level
@@ -1484,7 +1544,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class BabelFormatCapability : int
+    enum class BabelFormatCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Import = 1 << 0, //!< Format supports importing
       Export = 1 << 1, //!< Format supports exporting
@@ -1503,7 +1563,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class BabelCommandFlag : int
+    enum class BabelCommandFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       QuoteFilePaths = 1 << 0, //!< File paths should be enclosed in quotations and escaped
     };
@@ -1561,8 +1621,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class GeometryValidityFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, ValidityFlag ) : int
-      {
+    enum class GeometryValidityFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, ValidityFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       AllowSelfTouchingHoles SIP_MONKEYPATCH_COMPAT_NAME( FlagAllowSelfTouchingHoles ) = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
     };
     //! Geometry validity flags
@@ -1645,6 +1705,65 @@ class CORE_EXPORT Qgis
     Q_ENUM( MakeValidMethod )
 
     /**
+     * Flags for controlling feature requests.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class FeatureRequestFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoFlags            = 0, //!< No flags are set
+      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
+      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect     = 4,   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      IgnoreStaticNodesDuringExpressionCompilation = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)
+      EmbeddedSymbols    = 16,  //!< Retrieve any embedded feature symbology (since QGIS 3.20)
+    };
+    Q_ENUM( FeatureRequestFlag )
+
+    /**
+     * Flags for controlling feature requests.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( FeatureRequestFlags, FeatureRequestFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsFeatureRequest, Flags )
+    Q_FLAG( FeatureRequestFlags )
+
+    /**
+     * Types of feature request filters.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::FilterType
+     *
+     * \since QGIS 3.36
+     */
+    enum class FeatureRequestFilterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, FilterType ) : int
+      {
+      NoFilter SIP_MONKEYPATCH_COMPAT_NAME( FilterNone ), //!< No filter is applied
+      Fid SIP_MONKEYPATCH_COMPAT_NAME( FilterFid ), //!< Filter using feature ID
+      Expression SIP_MONKEYPATCH_COMPAT_NAME( FilterExpression ), //!< Filter using expression
+      Fids SIP_MONKEYPATCH_COMPAT_NAME( FilterFids ) //!< Filter using feature IDs
+    };
+    Q_ENUM( FeatureRequestFilterType )
+
+    /**
+     * Methods for handling of features with invalid geometries
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::InvalidGeometryCheck
+     *
+     * \since QGIS 3.36
+     */
+    enum class InvalidGeometryCheck SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, InvalidGeometryCheck ) : int
+      {
+      NoCheck SIP_MONKEYPATCH_COMPAT_NAME( GeometryNoCheck ) = 0, //!< No invalid geometry checking
+      SkipInvalid SIP_MONKEYPATCH_COMPAT_NAME( GeometrySkipInvalid ) = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
+      AbortOnInvalid SIP_MONKEYPATCH_COMPAT_NAME( GeometryAbortOnInvalid ) = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+    };
+    Q_ENUM( InvalidGeometryCheck )
+
+    /**
      * Feature request spatial filter types.
      *
      * \since QGIS 3.22
@@ -1662,7 +1781,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class FileOperationFlag : int
+    enum class FileOperationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IncludeMetadataFile = 1 << 0, //!< Indicates that any associated .qmd metadata file should be included with the operation
       IncludeStyleFile = 1 << 1, //!< Indicates that any associated .qml styling file should be included with the operation
@@ -1677,7 +1796,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class MapLayerProperty : int
+    enum class MapLayerProperty : int SIP_ENUM_BASETYPE( IntFlag )
     {
       UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
       IsBasemapLayer = 1 << 1, //!< Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26.
@@ -1705,7 +1824,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class DataProviderFlag : int
+    enum class DataProviderFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IsBasemapSource = 1 << 1, //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
     };
@@ -1858,7 +1977,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class AnnotationItemFlag : int
+    enum class AnnotationItemFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
     };
@@ -1872,7 +1991,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class AnnotationItemGuiFlag : int
+    enum class AnnotationItemGuiFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagNoCreationTools = 1 << 0,  //!< Do not show item creation tools for the item type
     };
@@ -2027,7 +2146,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.28
      */
-    enum class RasterTemporalCapabilityFlag : int
+    enum class RasterTemporalCapabilityFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RequestedTimesMustExactlyMatchAllAvailableTemporalRanges = 1 << 0, //!< If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges().
     };
@@ -2058,7 +2177,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class CoordinateTransformationFlag  : int
+    enum class CoordinateTransformationFlag  : int SIP_ENUM_BASETYPE( IntFlag )
     {
       BallparkTransformsAreAppropriate = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
       IgnoreImpossibleTransformations = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::isTransformationPossible() and QgsCoordinateTransform::isValid().
@@ -2078,8 +2197,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class MapSettingsFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapSettings, Flag ) : int
-      {
+    enum class MapSettingsFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapSettings, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
@@ -2109,8 +2228,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class RenderContextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, Flag ) : int
-      {
+    enum class RenderContextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
       UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
@@ -2142,7 +2261,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34
      */
-    enum class MapLayerRendererFlag : int
+    enum class MapLayerRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RenderPartialOutputs = 1 << 0,  //!< The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents.
       RenderPartialOutputOverPreviousCachedImage = 1 << 1,//!< When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image.
@@ -2178,8 +2297,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class LabelingFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, Flag ) : int
-      {
+    enum class LabelingFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
       UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
       // TODO QGIS 4.0: remove
@@ -2395,8 +2514,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.24
      */
-    enum class MarkerLinePlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemplatedLineSymbolLayerBase, Placement ) : int
-      {
+    enum class MarkerLinePlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemplatedLineSymbolLayerBase, Placement ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       Interval = 1 << 0, //!< Place symbols at regular intervals
       Vertex = 1 << 1, //!< Place symbols on every vertex in the line
       LastVertex = 1 << 2, //!< Place symbols on the last vertex in the line
@@ -2620,7 +2739,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.24
      */
-    enum class TextRendererFlag : int
+    enum class TextRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       WrapLines = 1 << 0, //!< Automatically wrap long lines of text
     };
@@ -2671,7 +2790,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class ViewSyncModeFlag : int
+    enum class ViewSyncModeFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Sync3DTo2D = 1 << 0, //!< Synchronize 3D view camera to the main map canvas extent
       Sync2DTo3D = 1 << 1, //!< Update the 2D main canvas extent to include the viewed area from the 3D view
@@ -2697,7 +2816,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.24
      */
-    enum class HistoryProviderBackend : int
+    enum class HistoryProviderBackend : int SIP_ENUM_BASETYPE( IntFlag )
     {
       LocalProfile = 1 << 0, //!< Local profile
 //      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
@@ -2705,6 +2824,286 @@ class CORE_EXPORT Qgis
     Q_ENUM( HistoryProviderBackend )
     Q_DECLARE_FLAGS( HistoryProviderBackends, HistoryProviderBackend )
     Q_FLAG( HistoryProviderBackends )
+
+    /**
+     * Processing data source types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessing::SourceType
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingSourceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessing, SourceType ) : int
+      {
+      MapLayer SIP_MONKEYPATCH_COMPAT_NAME( TypeMapLayer ) = -2, //!< Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
+      VectorAnyGeometry SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorAnyGeometry ) = -1, //!< Any vector layer with geometry
+      VectorPoint SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPoint ) = 0, //!< Vector point layers
+      VectorLine SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorLine ) = 1, //!< Vector line layers
+      VectorPolygon SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPolygon ) = 2, //!< Vector polygon layers
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( TypeRaster ) = 3, //!< Raster layers
+      File SIP_MONKEYPATCH_COMPAT_NAME( TypeFile ) = 4, //!< Files (i.e. non map layer sources, such as text files)
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( TypeVector ) = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( TypeMesh ) = 6, //!< Mesh layers \since QGIS 3.6
+      Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7, //!< Plugin layers \since QGIS 3.22
+      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8, //!< Point cloud layers \since QGIS 3.22
+      Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9, //!< Annotation layers \since QGIS 3.22
+      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10 //!< Vector tile layers \since QGIS 3.32
+    };
+    Q_ENUM( ProcessingSourceType )
+
+
+    /**
+     * Flags indicating how and when an processing provider operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingProvider::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingProviderFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingProvider, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DeemphasiseSearchResults SIP_MONKEYPATCH_COMPAT_NAME( FlagDeemphasiseSearchResults ) = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+      CompatibleWithVirtualRaster SIP_MONKEYPATCH_COMPAT_NAME( FlagCompatibleWithVirtualRaster ) = 1 << 2, //!< The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36
+    };
+    Q_ENUM( ProcessingProviderFlag );
+
+    /**
+     * Flags indicating how and when an processing provider operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingProvider::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingProviderFlags, ProcessingProviderFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingProvider, Flags )
+    Q_FLAG( ProcessingProviderFlags )
+
+    /**
+     * Flags indicating how and when an algorithm operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingAlgorithm::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingAlgorithmFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingAlgorithm, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      HideFromToolbox SIP_MONKEYPATCH_COMPAT_NAME( FlagHideFromToolbox ) = 1 << 1, //!< Algorithm should be hidden from the toolbox
+      HideFromModeler SIP_MONKEYPATCH_COMPAT_NAME( FlagHideFromModeler ) = 1 << 2, //!< Algorithm should be hidden from the modeler
+      SupportsBatch SIP_MONKEYPATCH_COMPAT_NAME( FlagSupportsBatch ) = 1 << 3,  //!< Algorithm supports batch mode
+      CanCancel SIP_MONKEYPATCH_COMPAT_NAME( FlagCanCancel ) = 1 << 4, //!< Algorithm can be canceled
+      RequiresMatchingCrs SIP_MONKEYPATCH_COMPAT_NAME( FlagRequiresMatchingCrs ) = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
+      NoThreading SIP_MONKEYPATCH_COMPAT_NAME( FlagNoThreading ) = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
+      DisplayNameIsLiteral SIP_MONKEYPATCH_COMPAT_NAME( FlagDisplayNameIsLiteral ) = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
+      SupportsInPlaceEdits SIP_MONKEYPATCH_COMPAT_NAME( FlagSupportsInPlaceEdits ) = 1 << 8, //!< Algorithm supports in-place editing
+      KnownIssues SIP_MONKEYPATCH_COMPAT_NAME( FlagKnownIssues ) = 1 << 9, //!< Algorithm has known issues
+      CustomException SIP_MONKEYPATCH_COMPAT_NAME( FlagCustomException ) = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
+      PruneModelBranchesBasedOnAlgorithmResults SIP_MONKEYPATCH_COMPAT_NAME( FlagPruneModelBranchesBasedOnAlgorithmResults ) = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
+      SkipGenericModelLogging SIP_MONKEYPATCH_COMPAT_NAME( FlagSkipGenericModelLogging ) = 1 << 12, //!< When running as part of a model, the generic algorithm setup and results logging should be skipped
+      NotAvailableInStandaloneTool SIP_MONKEYPATCH_COMPAT_NAME( FlagNotAvailableInStandaloneTool ) = 1 << 13, //!< Algorithm should not be available from the standalone "qgis_process" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as "select by..." style algorithms.
+      RequiresProject SIP_MONKEYPATCH_COMPAT_NAME( FlagRequiresProject ) = 1 << 14, //!< The algorithm requires that a valid QgsProject is available from the processing context in order to execute
+      Deprecated SIP_MONKEYPATCH_COMPAT_NAME( FlagDeprecated ) = HideFromToolbox | HideFromModeler, //!< Algorithm is deprecated
+    };
+    Q_ENUM( ProcessingAlgorithmFlag );
+
+    /**
+     * Flags indicating how and when an algorithm operates and should be exposed to users.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingAlgorithm::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingAlgorithmFlags, ProcessingAlgorithmFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingAlgorithm, Flags )
+    Q_FLAG( ProcessingAlgorithmFlags )
+
+    /**
+     * Property availability, used for QgsProcessingAlgorithm::VectorProperties
+     * in order to determine if properties are available or not.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingAlgorithm::PropertyAvailability
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingPropertyAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingAlgorithm, PropertyAvailability ) : int
+      {
+      NotAvailable, //!< Properties are not available
+      Available, //!< Properties are available
+    };
+    Q_ENUM( ProcessingPropertyAvailability )
+
+    /**
+     * Logging level for algorithms to use when pushing feedback messages.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingContext::LogLevel
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingLogLevel SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingContext, LogLevel ) : int
+      {
+      DefaultLevel = 0, //!< Default logging level
+      Verbose, //!< Verbose logging
+      ModelDebug, //!< Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34).
+    };
+    Q_ENUM( ProcessingLogLevel )
+
+    /**
+     * Flags which control behavior for a Processing feature source.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFeatureSourceDefinitionFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingFeatureSourceDefinition, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      OverrideDefaultGeometryCheck SIP_MONKEYPATCH_COMPAT_NAME( FlagOverrideDefaultGeometryCheck ) = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+      CreateIndividualOutputPerInputFeature SIP_MONKEYPATCH_COMPAT_NAME( FlagCreateIndividualOutputPerInputFeature ) = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+    };
+    Q_ENUM( ProcessingFeatureSourceDefinitionFlag )
+
+    /**
+     * Flags which control behavior for a Processing feature source.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingFeatureSourceDefinitionFlags, ProcessingFeatureSourceDefinitionFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingFeatureSourceDefinition, Flags )
+    Q_FLAG( ProcessingFeatureSourceDefinitionFlags )
+
+    /**
+     * Flags which control how QgsProcessingFeatureSource fetches features.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSource::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFeatureSourceFlag SIP_ENUM_BASETYPE( IntFlag ) SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingFeatureSource, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      SkipGeometryValidityChecks SIP_MONKEYPATCH_COMPAT_NAME( FlagSkipGeometryValidityChecks ) = 1 << 1, //!< Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. "repair geometry" type algorithms).
+    };
+    Q_ENUM( ProcessingFeatureSourceFlag )
+
+    /**
+     * Flags which control how QgsProcessingFeatureSource fetches features.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSource::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingFeatureSourceFlags, ProcessingFeatureSourceFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingFeatureSource, Flags )
+    Q_FLAG( ProcessingFeatureSourceFlags )
+
+    /**
+     * Flags which dictate the behavior of Processing parameter types.
+     *
+     * Each parameter type can offer a number of additional flags to fine tune its behavior
+     * and capabilities.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterType::ParameterFlag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingParameterTypeFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterType, ParameterFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ExposeToModeler = 1 //!< Is this parameter available in the modeler. Is set to on by default.
+    };
+    Q_ENUM( ProcessingParameterTypeFlag )
+
+    /**
+     * Flags which dictate the behavior of Processing parameter types.
+     *
+     * Each parameter type can offer a number of additional flags to fine tune its behavior
+     * and capabilities.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterType::ParameterFlags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingParameterTypeFlags, ProcessingParameterTypeFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingParameterType, ParameterFlags )
+    Q_FLAG( ProcessingParameterTypeFlags )
+
+    /**
+     * Flags which dictate the behavior of Processing parameters.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterDefinition::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingParameterFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterDefinition, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Advanced SIP_MONKEYPATCH_COMPAT_NAME( FlagAdvanced ) = 1 << 1, //!< Parameter is an advanced parameter which should be hidden from users by default
+      Hidden SIP_MONKEYPATCH_COMPAT_NAME( FlagHidden ) = 1 << 2, //!< Parameter is hidden and should not be shown to users
+      Optional SIP_MONKEYPATCH_COMPAT_NAME( FlagOptional ) = 1 << 3, //!< Parameter is optional
+      IsModelOutput SIP_MONKEYPATCH_COMPAT_NAME( FlagIsModelOutput ) = 1 << 4, //!< Destination parameter is final output. The parameter name will be used.
+    };
+    Q_ENUM( ProcessingParameterFlag )
+
+    /**
+     * Flags which dictate the behavior of Processing parameters.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterDefinition::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingParameterFlags, ProcessingParameterFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingParameterDefinition, Flags )
+    Q_FLAG( ProcessingParameterFlags )
+
+    /**
+     * Flags which dictate the behavior of QgsProcessingParameterFile.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterFile::Behavior
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFileParameterBehavior SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterFile, Behavior ) : int
+      {
+      File = 0, //!< Parameter is a single file
+      Folder, //!< Parameter is a folder
+    };
+    Q_ENUM( ProcessingFileParameterBehavior )
+
+    /**
+     * Processing numeric parameter data types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterNumber::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingNumberParameterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterNumber, Type ) : int
+      {
+      Integer, //!< Integer values
+      Double, //!< Double/float values
+    };
+    Q_ENUM( ProcessingNumberParameterType )
+
+    /**
+     * Processing field parameter data types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterField::DataType
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFieldParameterDataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterField, DataType ) : int
+      {
+      Any = -1, //!< Accepts any field
+      Numeric = 0, //!< Accepts numeric fields
+      String = 1, //!< Accepts string fields
+      DateTime = 2, //!< Accepts datetime fields
+      Binary = 3, //!< Accepts binary fields, since QGIS 3.34
+      Boolean = 4, //!< Accepts boolean fields, since QGIS 3.34
+    };
+    Q_ENUM( ProcessingFieldParameterDataType )
+
+    /**
+     * Processing date time parameter data types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterDateTime::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingDateTimeParameterDataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterDateTime, Type ) : int
+      {
+      DateTime, //!< Datetime values
+      Date, //!< Date values
+      Time, //!< Time values
+    };
+    Q_ENUM( ProcessingDateTimeParameterDataType )
 
     /**
      * Processing model child parameter sources.
@@ -2721,6 +3120,21 @@ class CORE_EXPORT Qgis
       ModelOutput, //!< Parameter value is linked to an output parameter for the model
     };
     Q_ENUM( ProcessingModelChildParameterSource )
+
+    /**
+     * Defines the type of input layer for a Processing TIN input.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterTinInputLayers::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingTinInputLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterTinInputLayers, Type ) : int
+      {
+      Vertices, //!< Input that adds only vertices
+      StructureLines, //!< Input that adds add structure lines
+      BreakLines //!< Input that adds vertices and break lines
+    };
+    Q_ENUM( ProcessingTinInputLayerType )
 
     /**
      * CRS definition formats.
@@ -2867,7 +3281,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class ProjectFlag : int
+    enum class ProjectFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       EvaluateDefaultValuesOnProviderSide = 1 << 0, //!< If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed.
       TrustStoredLayerStatistics = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
@@ -2883,7 +3297,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class PlotToolFlag : int
+    enum class PlotToolFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ShowContextMenu = 1 << 0, //!< Show a context menu when right-clicking with the tool.
     };
@@ -2980,7 +3394,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class ProfileGeneratorFlag : int
+    enum class ProfileGeneratorFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RespectsMaximumErrorMapUnit = 1 << 0, //!< Generated profile respects the QgsProfileGenerationContext::maximumErrorMapUnits() property.
       RespectsDistanceRange = 1 << 1, //!< Generated profile respects the QgsProfileGenerationContext::distanceRange() property.
@@ -3064,8 +3478,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class ProjectReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, ReadFlag ) : int
-      {
+    enum class ProjectReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, ReadFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       DontResolveLayers SIP_MONKEYPATCH_COMPAT_NAME( FlagDontResolveLayers ) = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
       DontLoadLayouts SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoadLayouts ) = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
       TrustLayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustLayerMetadata ) = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
@@ -3094,7 +3508,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26.1
      */
-    enum class ProjectCapability : int
+    enum class ProjectCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ProjectStyles = 1 << 0, //!< Enable the project embedded style library. Enabling this flag can increase the time required to clear and load projects.
     };
@@ -3191,7 +3605,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class RelationshipCapability : int
+    enum class RelationshipCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       MultipleFieldKeys = 1 << 0, //!< Supports multiple field keys (as opposed to a singular field)
       ForwardPathLabel = 1 << 1, //!< Supports forward path labels
@@ -3261,7 +3675,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.32
      */
-    enum class ScriptLanguageCapability : int
+    enum class ScriptLanguageCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Reformat = 1 << 0, //!< Language supports automatic code reformatting
       CheckSyntax = 1 << 1, //!< Language supports syntax checking
@@ -3295,7 +3709,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.32
      */
-    enum class LayerTreeFilterFlag : int
+    enum class LayerTreeFilterFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SkipVisibilityCheck = 1 << 0, //!< If set, the standard visibility check should be skipped
     };
@@ -3317,7 +3731,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.36
      */
-    enum class LegendJsonRenderFlag : int
+    enum class LegendJsonRenderFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ShowRuleDetails = 1 << 0, //!< If set, the rule expression of a rule based renderer legend item will be added to the JSON
     };
@@ -3347,7 +3761,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class MapLayerActionTarget : int
+    enum class MapLayerActionTarget : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Layer = 1 << 0, //!< Action targets a complete layer
       SingleFeature = 1 << 1, //!< Action targets a single feature from a layer
@@ -3373,7 +3787,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class MapLayerActionFlag : int
+    enum class MapLayerActionFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
     };
@@ -3531,8 +3945,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class RasterIdentifyFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, IdentifyFormat ) : int
-      {
+    enum class RasterIdentifyFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, IdentifyFormat ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
       Undefined SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatUndefined ) = 0, //!< Undefined
       Value SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatValue ) = 1, //!< Numerical pixel value
       Text SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatText ) = 1 << 1, //!< WMS text
@@ -3860,7 +4274,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.32
      */
-    enum class DatabaseProviderConnectionCapability2 : int
+    enum class DatabaseProviderConnectionCapability2 : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
       SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
@@ -3874,7 +4288,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34
      */
-    enum class ProviderStyleStorageCapability
+    enum class ProviderStyleStorageCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SaveToDatabase = 1 << 1,
       LoadFromDatabase = 1 << 2,
@@ -4010,7 +4424,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.32
      */
-    enum class VectorTileProviderFlag : int
+    enum class VectorTileProviderFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       AlwaysUseTileMatrixSetFromProvider = 1 << 1, //!< Vector tile layer must always use the tile matrix set from the data provider, and should never store, restore or override the definition of this matrix set.
     };
@@ -4028,7 +4442,7 @@ class CORE_EXPORT Qgis
      * Enumeration with capabilities that vector tile data providers might implement.
      * \since QGIS 3.32
      */
-    enum class VectorTileProviderCapability : int
+    enum class VectorTileProviderCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
     };
@@ -4061,7 +4475,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34
      */
-    enum class TiledSceneProviderCapability : int
+    enum class TiledSceneProviderCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
     };
@@ -4121,7 +4535,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34
      */
-    enum class TiledSceneRequestFlag : int
+    enum class TiledSceneRequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoHierarchyFetch = 1 << 0,  //!< Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required.
     };
@@ -4140,7 +4554,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.34
      */
-    enum class TiledSceneRendererFlag : int
+    enum class TiledSceneRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RequiresTextures = 1 << 0,  //!< Renderer requires textures
       ForceRasterRender = 1 << 1, //!< Layer should always be rendered as a raster image
@@ -4178,6 +4592,226 @@ class CORE_EXPORT Qgis
       RA_Q3 = 12, //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
     };
     Q_ENUM( GdalResampleAlgorithm )
+
+
+    /**
+     * Statistics to be calculated during a zonal statistics operation.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsZonalStatistics::Statistic.
+     */
+    enum class ZonalStatistic : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1,  //!< Pixel count
+      Sum = 2,  //!< Sum of pixel values
+      Mean = 4,  //!< Mean of pixel values
+      Median = 8, //!< Median of pixel values
+      StDev = 16, //!< Standard deviation of pixel values
+      Min = 32,  //!< Min of pixel values
+      Max = 64,  //!< Max of pixel values
+      Range = 128, //!< Range of pixel values (max - min)
+      Minority = 256, //!< Minority of pixel values
+      Majority = 512, //!< Majority of pixel values
+      Variety = 1024, //!< Variety (count of distinct) pixel values
+      Variance = 2048, //!< Variance of pixel values
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics
+      Default = Count | Sum | Mean, //!< Default statistics
+    };
+    Q_ENUM( ZonalStatistic )
+
+    /**
+     * Statistics to be calculated during a zonal statistics operation.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsZonalStatistics::Statistic.
+     */
+    Q_DECLARE_FLAGS( ZonalStatistics, ZonalStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( Qgis, ZonalStatistics )
+    Q_FLAG( ZonalStatistics )
+
+    /**
+     * Zonal statistics result codes.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsZonalStatistics::Result.
+     */
+    enum class ZonalStatisticResult : int
+    {
+      Success = 0, //!< Success
+      LayerTypeWrong = 1, //!< Layer is not a polygon layer
+      LayerInvalid, //!< Layer is invalid
+      RasterInvalid, //!< Raster layer is invalid
+      RasterBandInvalid, //!< The raster band does not exist on the raster layer
+      FailedToCreateField = 8, //!< Output fields could not be created
+      Canceled = 9 //!< Algorithm was canceled
+    };
+    Q_ENUM( ZonalStatisticResult )
+
+    /**
+     * Available aggregates to calculate. Not all aggregates are available for all field
+     * types.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsAggregateCalculator::Aggregate.
+     */
+    enum class Aggregate SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAggregateCalculator, Aggregate ) : int
+      {
+      Count, //!< Count
+      CountDistinct, //!< Number of distinct values
+      CountMissing, //!< Number of missing (null) values
+      Min, //!< Min of values
+      Max, //!< Max of values
+      Sum, //!< Sum of values
+      Mean, //!< Mean of values (numeric fields only)
+      Median, //!< Median of values (numeric fields only)
+      StDev, //!< Standard deviation of values (numeric fields only)
+      StDevSample,//!< Sample standard deviation of values (numeric fields only)
+      Range, //!< Range of values (max - min) (numeric and datetime fields only)
+      Minority, //!< Minority of values
+      Majority, //!< Majority of values
+      FirstQuartile, //!< First quartile (numeric fields only)
+      ThirdQuartile, //!< Third quartile (numeric fields only)
+      InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
+      StringMinimumLength, //!< Minimum length of string (string fields only)
+      StringMaximumLength, //!< Maximum length of string (string fields only)
+      StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      GeometryCollect, //!< Create a multipart geometry from aggregated geometries
+      ArrayAggregate, //!< Create an array of values
+      StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+    };
+    Q_ENUM( Aggregate )
+
+    /**
+     * Available generic statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStatisticalSummary::Statistic.
+     */
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1 << 0,  //!< Count
+      CountMissing = 1 << 15, //!< Number of missing (null) values
+      Sum = 1 << 1,  //!< Sum of values
+      Mean = 1 << 2,  //!< Mean of values
+      Median = 1 << 3, //!< Median of values
+      StDev = 1 << 4, //!< Standard deviation of values
+      StDevSample = 1 << 5, //!< Sample standard deviation of values
+      Min = 1 << 6,  //!< Min of values
+      Max = 1 << 7,  //!< Max of values
+      Range = 1 << 8, //!< Range of values (max - min)
+      Minority = 1 << 9, //!< Minority of values
+      Majority = 1 << 10, //!< Majority of values
+      Variety = 1 << 11, //!< Variety (count of distinct) values
+      FirstQuartile = 1 << 12, //!< First quartile
+      ThirdQuartile = 1 << 13, //!< Third quartile
+      InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
+      First = 1 << 16, //!< First value (since QGIS 3.6)
+      Last = 1 << 17, //!< Last value (since QGIS 3.6)
+      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last //!< All statistics
+    };
+    Q_ENUM( Statistic )
+
+    /**
+     * Statistics to be calculated for generic values.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStatisticalSummary::Statistics.
+     */
+    Q_DECLARE_FLAGS( Statistics, Statistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsStatisticalSummary, Statistics )
+    Q_FLAG( Statistics )
+
+    /**
+     * Available date/time statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsDateTimeStatisticalSummary::Statistic.
+     */
+    enum class DateTimeStatistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDateTimeStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1,  //!< Count
+      CountDistinct = 2,  //!< Number of distinct datetime values
+      CountMissing = 4,  //!< Number of missing (null) values
+      Min = 8, //!< Minimum (earliest) datetime value
+      Max = 16, //!< Maximum (latest) datetime value
+      Range = 32, //!< Interval between earliest and latest datetime value
+      All = Count | CountDistinct | CountMissing | Min | Max | Range, //!< All statistics
+    };
+    Q_ENUM( DateTimeStatistic )
+
+    /**
+     * Statistics to be calculated for date/time values.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsDateTimeStatisticalSummary::Statistic.
+     */
+    Q_DECLARE_FLAGS( DateTimeStatistics, DateTimeStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDateTimeStatisticalSummary, Statistics )
+    Q_FLAG( DateTimeStatistics )
+
+    /**
+     * Available string statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStringStatisticalSummary::Statistic.
+     */
+    enum class StringStatistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStringStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1,  //!< Count
+      CountDistinct = 2,  //!< Number of distinct string values
+      CountMissing = 4,  //!< Number of missing (null) values
+      Min = 8, //!< Minimum string value
+      Max = 16, //!< Maximum string value
+      MinimumLength = 32, //!< Minimum length of string
+      MaximumLength = 64, //!< Maximum length of string
+      MeanLength = 128, //!< Mean length of strings
+      Minority = 256, //!< Minority of strings
+      Majority = 512, //!< Majority of strings
+      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength | Minority | Majority, //!< All statistics
+    };
+    Q_ENUM( StringStatistic )
+
+    /**
+     * Statistics to be calculated for string values.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStringStatisticalSummary::Statistic.
+     */
+    Q_DECLARE_FLAGS( StringStatistics, StringStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsStringStatisticalSummary, Statistics )
+    Q_FLAG( StringStatistics )
+
+    /**
+     * Available raster band statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsRasterBandStats::Stats.
+     */
+    enum class RasterBandStatistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterBandStats, Stats ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoStatistic = 0, //!< No statistic
+      Min = 1, //!< Minimum
+      Max = 1 << 1, //!< Maximum
+      Range = 1 << 2, //!< Range
+      Sum = 1 << 3, //!< Sum
+      Mean = 1 << 4, //!< Mean
+      StdDev = 1 << 5, //!< Standard deviation
+      SumOfSquares = 1 << 6, //!< Sum of squares
+      All = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares //!< All available statistics
+    };
+    Q_ENUM( RasterBandStatistic )
+
+    /**
+     * Statistics to be calculated for raster bands.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsRasterBandStats::Stats.
+     */
+    Q_DECLARE_FLAGS( RasterBandStatistics, RasterBandStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( Qgis, RasterBandStatistics )
+    Q_FLAG( RasterBandStatistics )
+
+    /**
+     * OGC SensorThings API entity types.
+     *
+     * \since QGIS 3.36
+     */
+    enum class SensorThingsEntity : int
+    {
+      Invalid, //!< An invalid/unknown entity
+      Thing, //!< A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks
+      Location, //!< A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing
+      HistoricalLocation, //!< A Thing’s HistoricalLocation entity set provides the times of the current (i.e., last known) and previous locations of the Thing
+      Datastream, //!< A Datastream groups a collection of Observations measuring the same ObservedProperty and produced by the same Sensor
+      Sensor, //!< A Sensor is an instrument that observes a property or phenomenon with the goal of producing an estimate of the value of the property
+      ObservedProperty, //!< An ObservedProperty specifies the phenomenon of an Observation
+      Observation, //!< An Observation is the act of measuring or otherwise determining the value of a property
+      FeatureOfInterest, //!< In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed
+    };
+    Q_ENUM( SensorThingsEntity )
 
     /**
      * Identify search radius in mm
@@ -4349,6 +4983,19 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRequestFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceDefinitionFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ZonalStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Statistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DateTimeStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
 
 
 // hack to workaround warnings when casting void pointers
@@ -4375,7 +5022,7 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
      * Constructor for QgsSignalBlocker
      * \param object QObject to block signals from
      */
-    explicit QgsSignalBlocker( Object * object )
+    explicit QgsSignalBlocker( Object *object )
       : mObject( object )
       , mPreviousState( object->blockSignals( true ) )
     {}

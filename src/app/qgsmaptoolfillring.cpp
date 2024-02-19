@@ -129,7 +129,10 @@ void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureI
   if ( fit.nextFeature( f ) )
   {
     //create QgsFeature with wkb representation
-    QgsFeature ft = QgsVectorLayerUtils::createFeature( vlayer, geometry, f.attributes().toMap(), &context );
+    const QgsFeature ft1 = QgsVectorLayerUtils::createFeature( vlayer, geometry, f.attributes().toMap(), &context );
+
+    // make feature compatible with layer
+    QgsFeature ft { QgsVectorLayerUtils::makeFeatureCompatible( ft1, vlayer ).at( 0 ) };
 
     bool res = false;
     if ( QApplication::keyboardModifiers() == Qt::ControlModifier )

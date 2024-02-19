@@ -4547,7 +4547,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
       break;
     }
 
-    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::MapRotation ) )
+    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::MapRotation ) )
     {
       allowGeoPdfExport = false;
       dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
@@ -4926,7 +4926,7 @@ bool QgsLayoutDesignerDialog::checkBeforeExport( )
   if ( mLayout )
   {
     QgsLayoutValidityCheckContext context( mLayout );
-    return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+    return QgsValidityCheckResultsWidget::runChecks( static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck ), &context, tr( "Checking Layout" ),
            tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
   }
   else

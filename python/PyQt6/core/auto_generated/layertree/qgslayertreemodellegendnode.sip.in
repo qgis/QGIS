@@ -47,14 +47,15 @@ and customized look.
 %End
   public:
 
-    enum LegendNodeRoles
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      RuleKeyRole,
-      ParentRuleKeyRole,
-      NodeTypeRole,
+      RuleKey,
+      ParentRuleKey,
+      NodeType,
     };
 
-    enum NodeTypes
+    enum NodeTypes /BaseType=IntEnum/
     {
       SimpleLegend,
       SymbolLegend,
@@ -499,7 +500,7 @@ Evaluates  and returns the text label of the current node
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsSymbolLegendNode: %1 \"%2\"" ).arg(
-                    sipCpp->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString(),
+                    sipCpp->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(),
                     sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End

@@ -135,7 +135,7 @@ void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *
 
 QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-  const QColor ambient = dataDefinedProperties().valueAsColor( Ambient, expressionContext, mAmbient );
+  const QColor ambient = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Ambient, expressionContext, mAmbient );
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 3 );

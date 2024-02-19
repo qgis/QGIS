@@ -32,7 +32,7 @@ When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func
 %End
   public:
 
-    enum ExtentState
+    enum ExtentState /BaseType=IntEnum/
     {
       OriginalExtent,
       CurrentExtent,
@@ -41,7 +41,7 @@ When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func
       DrawOnCanvas,
     };
 
-    enum WidgetStyle
+    enum WidgetStyle /BaseType=IntEnum/
     {
       CondensedStyle,
       ExpandedStyle,

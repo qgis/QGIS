@@ -203,7 +203,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       for ( const auto &relation : std::as_const( relations ) )
       {
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
-        req.setFlags( QgsFeatureRequest::NoGeometry );
+        req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
         QgsVectorLayer *childLayer = relation.referencingLayer();
         json relatedFeatureAttributes;
         if ( childLayer )

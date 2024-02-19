@@ -25,7 +25,7 @@ result will be communicated to users, but not prevent them from proceeding.
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Warning,
       Critical,
@@ -70,10 +70,10 @@ Checks must be registered in the application's :py:class:`QgsValidityCheckRegist
 %End
   public:
 
-    enum Type
-    {
-      TypeLayoutCheck,
-      TypeUserCheck,
+    enum class Type /BaseType=IntEnum/
+      {
+      LayoutCheck,
+      UserCheck,
     };
 
     virtual ~QgsAbstractValidityCheck();

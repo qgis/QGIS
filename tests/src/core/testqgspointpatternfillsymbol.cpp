@@ -310,8 +310,8 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
-  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
-  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
 }
@@ -445,7 +445,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 10 );
   pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
-  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyMarkerClipping, QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::MarkerClipping, QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
   const bool res = imageCheck( "symbol_pointfill_datadefined_clip", layer.get() );
   QVERIFY( res );
 }
@@ -466,8 +466,8 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
 
-  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
-  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -555,9 +555,9 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 10 );
-  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomOffsetX, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 5 else 10 end" ) ) );
-  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomOffsetY, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 3 else 6 end" ) ) );
-  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomSeed, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 1 else 2 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::RandomOffsetX ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 5 else 10 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::RandomOffsetY ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 3 else 6 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::RandomSeed ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 1 else 2 end" ) ) );
 
   const bool res = imageCheck( "symbol_pointfill_data_defined_random_offset", layer.get() );
   QVERIFY( res );
@@ -608,7 +608,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 6 );
   pointPatternFill->setAngle( 25 );
-  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then -10 else 25 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::Angle ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then -10 else 25 end" ) ) );
 
   const bool res = imageCheck( "symbol_pointfill_data_defined_angle", layer.get() );
   QVERIFY( res );

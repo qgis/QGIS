@@ -42,8 +42,8 @@ void QgsWriteVectorTilesBaseAlgorithm::addBaseParameters()
 {
   addParameter( new QgsProcessingParameterVectorTileWriterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_ZOOM" ), QObject::tr( "Minimum zoom level" ), QgsProcessingParameterNumber::Integer, 0, false, 0, 24 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level" ), QgsProcessingParameterNumber::Integer, 3, false, 0, 24 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_ZOOM" ), QObject::tr( "Minimum zoom level" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 24 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level" ), Qgis::ProcessingNumberParameterType::Integer, 3, false, 0, 24 ) );
 
   // optional extent
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true ) );

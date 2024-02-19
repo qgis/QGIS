@@ -58,7 +58,7 @@ class TestExportToPostGis(QgisTestCase):
         settings.setValue('database', 'qgis_test')
 
     def test_import(self):
-        """Test algorithm with CamelCaseSchema"""
+        """Test algorithm with CamelCase'singlequote'Schema"""
 
         alg = self.registry.createAlgorithmById("qgis:importintopostgis")
         self.assertIsNotNone(alg)
@@ -76,7 +76,7 @@ class TestExportToPostGis(QgisTestCase):
             'LOWERCASE_NAMES': True,
             'OVERWRITE': True,
             'PRIMARY_KEY': None,
-            'SCHEMA': 'CamelCaseSchema',
+            'SCHEMA': "CamelCase'singlequote'Schema",
             'TABLENAME': table_name
         }
 
@@ -90,7 +90,7 @@ class TestExportToPostGis(QgisTestCase):
         # Check that data have been imported correctly
         exported = QgsVectorLayer(unitTestDataPath() + '/points.shp', 'exported')
         self.assertTrue(exported.isValid())
-        imported = QgsVectorLayer(f"service='qgis_test' table=\"CamelCaseSchema\".\"{table_name}\" (geom)", 'imported', 'postgres')
+        imported = QgsVectorLayer(f"service='qgis_test' table=\"CamelCase'singlequote'Schema\".\"{table_name}\" (geom)", 'imported', 'postgres')
         self.assertTrue(imported.isValid())
         imported_fields = [f.name() for f in imported.fields()]
         for f in exported.fields():

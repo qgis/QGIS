@@ -80,7 +80,7 @@ takes ownership of symbol, symbol may be ``None``
         ~Rule();
 
 
-        enum RegisterResult
+        enum RegisterResult /BaseType=IntEnum/
         {
           Filtered,
           Inactive,

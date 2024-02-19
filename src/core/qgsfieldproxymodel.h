@@ -36,7 +36,7 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
   public:
 
     //! Field type filters
-    enum Filter
+    enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       String = 1, //!< String fields
       Int = 2, //!< Integer fields

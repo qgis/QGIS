@@ -785,6 +785,11 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
     const QByteArray svgContent = QgsApplication::svgCache()->svgContent( path, 16, fillColor, strokeColor, 1, 1 );
 
     const QString iconPath = sIconCacheDir()->filePath( cacheKey + QStringLiteral( ".svg" ) );
+    if ( const QDir dir = QFileInfo( iconPath ).dir(); !dir.exists() )
+    {
+      dir.mkpath( "." );
+    }
+
     QFile f( iconPath );
     if ( f.open( QFile::WriteOnly | QFile::Truncate ) )
     {

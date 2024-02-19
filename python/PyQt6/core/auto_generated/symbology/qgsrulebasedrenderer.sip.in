@@ -25,7 +25,7 @@ the rules and draws features with symbols from rules that match.
 %End
   public:
 
-    enum FeatureFlags
+    enum FeatureFlags /BaseType=IntEnum/
     {
       FeatIsSelected,
       FeatDrawMarkers
@@ -92,7 +92,7 @@ A rule matches if both filter and scale range match.
 #include "qgsrulebasedrenderer.h"
 %End
       public:
-        enum RenderResult
+        enum RenderResult /BaseType=IntEnum/
         {
           Filtered,
           Inactive,
@@ -287,7 +287,7 @@ Sets if this rule is active
 clone this rule, return new instance
 %End
 
-        void toSld( QDomDocument &doc, QDomElement &element, QMap<QString, QVariant> props ) const;
+        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 %Docstring
 Saves the symbol layer as SLD
 %End
@@ -513,7 +513,7 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual QgsRuleBasedRenderer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;

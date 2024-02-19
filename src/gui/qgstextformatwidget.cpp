@@ -654,19 +654,19 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
     }
     else if ( QgsFieldExpressionWidget *w = qobject_cast< QgsFieldExpressionWidget *>( widget ) )
     {
-      connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
+      connect( w, SIGNAL( fieldChanged( QString ) ), this, slot );
     }
     else if ( QgsOpacityWidget *w = qobject_cast< QgsOpacityWidget *>( widget ) )
     {
-      connect( w, SIGNAL( opacityChanged( double ) ), this,  slot );
+      connect( w, SIGNAL( opacityChanged( double ) ), this, slot );
     }
     else if ( QgsScaleWidget *w = qobject_cast< QgsScaleWidget *>( widget ) )
     {
-      connect( w, SIGNAL( scaleChanged( double ) ), this,  slot );
+      connect( w, SIGNAL( scaleChanged( double ) ), this, slot );
     }
     else if ( QgsUnitSelectionWidget *w = qobject_cast<QgsUnitSelectionWidget *>( widget ) )
     {
-      connect( w, SIGNAL( changed() ), this,  slot );
+      connect( w, SIGNAL( changed() ), this, slot );
     }
     else if ( QComboBox *w = qobject_cast<QComboBox *>( widget ) )
     {
@@ -718,162 +718,159 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
 void QgsTextFormatWidget::populateDataDefinedButtons()
 {
   // text style
-  registerDataDefinedButton( mFontDDBtn, QgsPalLayerSettings::Family );
-  registerDataDefinedButton( mFontStyleDDBtn, QgsPalLayerSettings::FontStyle );
-  registerDataDefinedButton( mFontUnderlineDDBtn, QgsPalLayerSettings::Underline );
-  registerDataDefinedButton( mFontStrikeoutDDBtn, QgsPalLayerSettings::Strikeout );
-  registerDataDefinedButton( mFontBoldDDBtn, QgsPalLayerSettings::Bold );
-  registerDataDefinedButton( mFontItalicDDBtn, QgsPalLayerSettings::Italic );
-  registerDataDefinedButton( mFontSizeDDBtn, QgsPalLayerSettings::Size );
-  registerDataDefinedButton( mFontUnitsDDBtn, QgsPalLayerSettings::FontSizeUnit );
-  registerDataDefinedButton( mFontColorDDBtn, QgsPalLayerSettings::Color );
-  registerDataDefinedButton( mFontOpacityDDBtn, QgsPalLayerSettings::FontOpacity );
-  registerDataDefinedButton( mFontCaseDDBtn, QgsPalLayerSettings::FontCase );
-  registerDataDefinedButton( mFontLetterSpacingDDBtn, QgsPalLayerSettings::FontLetterSpacing );
-  registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::FontWordSpacing );
-  registerDataDefinedButton( mFontBlendModeDDBtn, QgsPalLayerSettings::FontBlendMode );
-  registerDataDefinedButton( mFontStretchDDBtn, QgsPalLayerSettings::FontStretchFactor );
+  registerDataDefinedButton( mFontDDBtn, QgsPalLayerSettings::Property::Family );
+  registerDataDefinedButton( mFontStyleDDBtn, QgsPalLayerSettings::Property::FontStyle );
+  registerDataDefinedButton( mFontUnderlineDDBtn, QgsPalLayerSettings::Property::Underline );
+  registerDataDefinedButton( mFontStrikeoutDDBtn, QgsPalLayerSettings::Property::Strikeout );
+  registerDataDefinedButton( mFontBoldDDBtn, QgsPalLayerSettings::Property::Bold );
+  registerDataDefinedButton( mFontItalicDDBtn, QgsPalLayerSettings::Property::Italic );
+  registerDataDefinedButton( mFontSizeDDBtn, QgsPalLayerSettings::Property::Size );
+  registerDataDefinedButton( mFontUnitsDDBtn, QgsPalLayerSettings::Property::FontSizeUnit );
+  registerDataDefinedButton( mFontColorDDBtn, QgsPalLayerSettings::Property::Color );
+  registerDataDefinedButton( mFontOpacityDDBtn, QgsPalLayerSettings::Property::FontOpacity );
+  registerDataDefinedButton( mFontCaseDDBtn, QgsPalLayerSettings::Property::FontCase );
+  registerDataDefinedButton( mFontLetterSpacingDDBtn, QgsPalLayerSettings::Property::FontLetterSpacing );
+  registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::Property::FontWordSpacing );
+  registerDataDefinedButton( mFontBlendModeDDBtn, QgsPalLayerSettings::Property::FontBlendMode );
+  registerDataDefinedButton( mFontStretchDDBtn, QgsPalLayerSettings::Property::FontStretchFactor );
 
   // text formatting
-  registerDataDefinedButton( mWrapCharDDBtn, QgsPalLayerSettings::MultiLineWrapChar );
-  registerDataDefinedButton( mAutoWrapLengthDDBtn, QgsPalLayerSettings::AutoWrapLength );
-  registerDataDefinedButton( mFontLineHeightDDBtn, QgsPalLayerSettings::MultiLineHeight );
-  registerDataDefinedButton( mFontMultiLineAlignDDBtn, QgsPalLayerSettings::MultiLineAlignment );
-  registerDataDefinedButton( mTextOrientationDDBtn, QgsPalLayerSettings::TextOrientation );
+  registerDataDefinedButton( mWrapCharDDBtn, QgsPalLayerSettings::Property::MultiLineWrapChar );
+  registerDataDefinedButton( mAutoWrapLengthDDBtn, QgsPalLayerSettings::Property::AutoWrapLength );
+  registerDataDefinedButton( mFontLineHeightDDBtn, QgsPalLayerSettings::Property::MultiLineHeight );
+  registerDataDefinedButton( mFontMultiLineAlignDDBtn, QgsPalLayerSettings::Property::MultiLineAlignment );
+  registerDataDefinedButton( mTextOrientationDDBtn, QgsPalLayerSettings::Property::TextOrientation );
 
-  registerDataDefinedButton( mDirectSymbDDBtn, QgsPalLayerSettings::DirSymbDraw );
+  registerDataDefinedButton( mDirectSymbDDBtn, QgsPalLayerSettings::Property::DirSymbDraw );
   mDirectSymbDDBtn->registerCheckedWidget( mDirectSymbChkBx );
-  registerDataDefinedButton( mDirectSymbLeftDDBtn, QgsPalLayerSettings::DirSymbLeft );
-  registerDataDefinedButton( mDirectSymbRightDDBtn, QgsPalLayerSettings::DirSymbRight );
+  registerDataDefinedButton( mDirectSymbLeftDDBtn, QgsPalLayerSettings::Property::DirSymbLeft );
+  registerDataDefinedButton( mDirectSymbRightDDBtn, QgsPalLayerSettings::Property::DirSymbRight );
 
-  registerDataDefinedButton( mDirectSymbPlacementDDBtn, QgsPalLayerSettings::DirSymbPlacement );
-  registerDataDefinedButton( mDirectSymbRevDDBtn, QgsPalLayerSettings::DirSymbReverse );
+  registerDataDefinedButton( mDirectSymbPlacementDDBtn, QgsPalLayerSettings::Property::DirSymbPlacement );
+  registerDataDefinedButton( mDirectSymbRevDDBtn, QgsPalLayerSettings::Property::DirSymbReverse );
 
-  registerDataDefinedButton( mFormatNumDDBtn, QgsPalLayerSettings::NumFormat );
+  registerDataDefinedButton( mFormatNumDDBtn, QgsPalLayerSettings::Property::NumFormat );
   mFormatNumDDBtn->registerCheckedWidget( mFormatNumChkBx );
-  registerDataDefinedButton( mFormatNumDecimalsDDBtn, QgsPalLayerSettings::NumDecimals );
-  registerDataDefinedButton( mFormatNumPlusSignDDBtn, QgsPalLayerSettings::NumPlusSign );
+  registerDataDefinedButton( mFormatNumDecimalsDDBtn, QgsPalLayerSettings::Property::NumDecimals );
+  registerDataDefinedButton( mFormatNumPlusSignDDBtn, QgsPalLayerSettings::Property::NumPlusSign );
 
   // text buffer
-  registerDataDefinedButton( mBufferDrawDDBtn, QgsPalLayerSettings::BufferDraw );
-  registerDataDefinedButton( mBufferSizeDDBtn, QgsPalLayerSettings::BufferSize );
-  registerDataDefinedButton( mBufferUnitsDDBtn, QgsPalLayerSettings::BufferUnit );
-  registerDataDefinedButton( mBufferColorDDBtn, QgsPalLayerSettings::BufferColor );
-  registerDataDefinedButton( mBufferOpacityDDBtn, QgsPalLayerSettings::BufferOpacity );
-  registerDataDefinedButton( mBufferJoinStyleDDBtn, QgsPalLayerSettings::BufferJoinStyle );
-  registerDataDefinedButton( mBufferBlendModeDDBtn, QgsPalLayerSettings::BufferBlendMode );
+  registerDataDefinedButton( mBufferDrawDDBtn, QgsPalLayerSettings::Property::BufferDraw );
+  registerDataDefinedButton( mBufferSizeDDBtn, QgsPalLayerSettings::Property::BufferSize );
+  registerDataDefinedButton( mBufferUnitsDDBtn, QgsPalLayerSettings::Property::BufferUnit );
+  registerDataDefinedButton( mBufferColorDDBtn, QgsPalLayerSettings::Property::BufferColor );
+  registerDataDefinedButton( mBufferOpacityDDBtn, QgsPalLayerSettings::Property::BufferOpacity );
+  registerDataDefinedButton( mBufferJoinStyleDDBtn, QgsPalLayerSettings::Property::BufferJoinStyle );
+  registerDataDefinedButton( mBufferBlendModeDDBtn, QgsPalLayerSettings::Property::BufferBlendMode );
 
   // mask
-  registerDataDefinedButton( mEnableMaskDDBtn, QgsPalLayerSettings::MaskEnabled );
+  registerDataDefinedButton( mEnableMaskDDBtn, QgsPalLayerSettings::Property::MaskEnabled );
   mEnableMaskDDBtn->registerCheckedWidget( mEnableMaskChkBx );
-  registerDataDefinedButton( mMaskBufferSizeDDBtn, QgsPalLayerSettings::MaskBufferSize );
-  registerDataDefinedButton( mMaskBufferUnitsDDBtn, QgsPalLayerSettings::MaskBufferUnit );
-  registerDataDefinedButton( mMaskOpacityDDBtn, QgsPalLayerSettings::MaskOpacity );
-  registerDataDefinedButton( mMaskJoinStyleDDBtn, QgsPalLayerSettings::MaskJoinStyle );
+  registerDataDefinedButton( mMaskBufferSizeDDBtn, QgsPalLayerSettings::Property::MaskBufferSize );
+  registerDataDefinedButton( mMaskBufferUnitsDDBtn, QgsPalLayerSettings::Property::MaskBufferUnit );
+  registerDataDefinedButton( mMaskOpacityDDBtn, QgsPalLayerSettings::Property::MaskOpacity );
+  registerDataDefinedButton( mMaskJoinStyleDDBtn, QgsPalLayerSettings::Property::MaskJoinStyle );
 
   // background
-  registerDataDefinedButton( mShapeDrawDDBtn, QgsPalLayerSettings::ShapeDraw );
+  registerDataDefinedButton( mShapeDrawDDBtn, QgsPalLayerSettings::Property::ShapeDraw );
   mShapeDrawDDBtn->registerCheckedWidget( mShapeDrawChkBx );
-  registerDataDefinedButton( mShapeTypeDDBtn, QgsPalLayerSettings::ShapeKind );
-  registerDataDefinedButton( mShapeSVGPathDDBtn, QgsPalLayerSettings::ShapeSVGFile );
-  registerDataDefinedButton( mShapeSizeTypeDDBtn, QgsPalLayerSettings::ShapeSizeType );
-  registerDataDefinedButton( mShapeSizeXDDBtn, QgsPalLayerSettings::ShapeSizeX );
-  registerDataDefinedButton( mShapeSizeYDDBtn, QgsPalLayerSettings::ShapeSizeY );
-  registerDataDefinedButton( mShapeSizeUnitsDDBtn, QgsPalLayerSettings::ShapeSizeUnits );
-  registerDataDefinedButton( mShapeRotationTypeDDBtn, QgsPalLayerSettings::ShapeRotationType );
-  registerDataDefinedButton( mShapeRotationDDBtn, QgsPalLayerSettings::ShapeRotation );
-  registerDataDefinedButton( mShapeOffsetDDBtn, QgsPalLayerSettings::ShapeOffset );
-  registerDataDefinedButton( mShapeOffsetUnitsDDBtn, QgsPalLayerSettings::ShapeOffsetUnits );
-  registerDataDefinedButton( mShapeRadiusDDBtn, QgsPalLayerSettings::ShapeRadii );
-  registerDataDefinedButton( mShapeRadiusUnitsDDBtn, QgsPalLayerSettings::ShapeRadiiUnits );
-  registerDataDefinedButton( mShapeOpacityDDBtn, QgsPalLayerSettings::ShapeOpacity );
-  registerDataDefinedButton( mShapeBlendModeDDBtn, QgsPalLayerSettings::ShapeBlendMode );
-  registerDataDefinedButton( mShapeFillColorDDBtn, QgsPalLayerSettings::ShapeFillColor );
-  registerDataDefinedButton( mShapeStrokeColorDDBtn, QgsPalLayerSettings::ShapeStrokeColor );
-  registerDataDefinedButton( mShapeStrokeWidthDDBtn, QgsPalLayerSettings::ShapeStrokeWidth );
-  registerDataDefinedButton( mShapeStrokeUnitsDDBtn, QgsPalLayerSettings::ShapeStrokeWidthUnits );
+  registerDataDefinedButton( mShapeTypeDDBtn, QgsPalLayerSettings::Property::ShapeKind );
+  registerDataDefinedButton( mShapeSVGPathDDBtn, QgsPalLayerSettings::Property::ShapeSVGFile );
+  registerDataDefinedButton( mShapeSizeTypeDDBtn, QgsPalLayerSettings::Property::ShapeSizeType );
+  registerDataDefinedButton( mShapeSizeXDDBtn, QgsPalLayerSettings::Property::ShapeSizeX );
+  registerDataDefinedButton( mShapeSizeYDDBtn, QgsPalLayerSettings::Property::ShapeSizeY );
+  registerDataDefinedButton( mShapeSizeUnitsDDBtn, QgsPalLayerSettings::Property::ShapeSizeUnits );
+  registerDataDefinedButton( mShapeRotationTypeDDBtn, QgsPalLayerSettings::Property::ShapeRotationType );
+  registerDataDefinedButton( mShapeRotationDDBtn, QgsPalLayerSettings::Property::ShapeRotation );
+  registerDataDefinedButton( mShapeOffsetDDBtn, QgsPalLayerSettings::Property::ShapeOffset );
+  registerDataDefinedButton( mShapeOffsetUnitsDDBtn, QgsPalLayerSettings::Property::ShapeOffsetUnits );
+  registerDataDefinedButton( mShapeRadiusDDBtn, QgsPalLayerSettings::Property::ShapeRadii );
+  registerDataDefinedButton( mShapeRadiusUnitsDDBtn, QgsPalLayerSettings::Property::ShapeRadiiUnits );
+  registerDataDefinedButton( mShapeOpacityDDBtn, QgsPalLayerSettings::Property::ShapeOpacity );
+  registerDataDefinedButton( mShapeBlendModeDDBtn, QgsPalLayerSettings::Property::ShapeBlendMode );
+  registerDataDefinedButton( mShapeFillColorDDBtn, QgsPalLayerSettings::Property::ShapeFillColor );
+  registerDataDefinedButton( mShapeStrokeColorDDBtn, QgsPalLayerSettings::Property::ShapeStrokeColor );
+  registerDataDefinedButton( mShapeStrokeWidthDDBtn, QgsPalLayerSettings::Property::ShapeStrokeWidth );
+  registerDataDefinedButton( mShapeStrokeUnitsDDBtn, QgsPalLayerSettings::Property::ShapeStrokeWidthUnits );
 
   // drop shadows
-  registerDataDefinedButton( mShadowDrawDDBtn, QgsPalLayerSettings::ShadowDraw );
+  registerDataDefinedButton( mShadowDrawDDBtn, QgsPalLayerSettings::Property::ShadowDraw );
   mShadowDrawDDBtn->registerCheckedWidget( mShadowDrawChkBx );
-  registerDataDefinedButton( mShadowUnderDDBtn, QgsPalLayerSettings::ShadowUnder );
-  registerDataDefinedButton( mShadowOffsetAngleDDBtn, QgsPalLayerSettings::ShadowOffsetAngle );
-  registerDataDefinedButton( mShadowOffsetDDBtn, QgsPalLayerSettings::ShadowOffsetDist );
-  registerDataDefinedButton( mShadowOffsetUnitsDDBtn, QgsPalLayerSettings::ShadowOffsetUnits );
-  registerDataDefinedButton( mShadowRadiusDDBtn, QgsPalLayerSettings::ShadowRadius );
-  registerDataDefinedButton( mShadowRadiusUnitsDDBtn, QgsPalLayerSettings::ShadowRadiusUnits );
-  registerDataDefinedButton( mShadowOpacityDDBtn, QgsPalLayerSettings::ShadowOpacity );
-  registerDataDefinedButton( mShadowScaleDDBtn, QgsPalLayerSettings::ShadowScale );
-  registerDataDefinedButton( mShadowColorDDBtn, QgsPalLayerSettings::ShadowColor );
-  registerDataDefinedButton( mShadowBlendDDBtn, QgsPalLayerSettings::ShadowBlendMode );
+  registerDataDefinedButton( mShadowUnderDDBtn, QgsPalLayerSettings::Property::ShadowUnder );
+  registerDataDefinedButton( mShadowOffsetAngleDDBtn, QgsPalLayerSettings::Property::ShadowOffsetAngle );
+  registerDataDefinedButton( mShadowOffsetDDBtn, QgsPalLayerSettings::Property::ShadowOffsetDist );
+  registerDataDefinedButton( mShadowOffsetUnitsDDBtn, QgsPalLayerSettings::Property::ShadowOffsetUnits );
+  registerDataDefinedButton( mShadowRadiusDDBtn, QgsPalLayerSettings::Property::ShadowRadius );
+  registerDataDefinedButton( mShadowRadiusUnitsDDBtn, QgsPalLayerSettings::Property::ShadowRadiusUnits );
+  registerDataDefinedButton( mShadowOpacityDDBtn, QgsPalLayerSettings::Property::ShadowOpacity );
+  registerDataDefinedButton( mShadowScaleDDBtn, QgsPalLayerSettings::Property::ShadowScale );
+  registerDataDefinedButton( mShadowColorDDBtn, QgsPalLayerSettings::Property::ShadowColor );
+  registerDataDefinedButton( mShadowBlendDDBtn, QgsPalLayerSettings::Property::ShadowBlendMode );
 
   // placement
-  registerDataDefinedButton( mCentroidDDBtn, QgsPalLayerSettings::CentroidWhole );
-  registerDataDefinedButton( mPointQuadOffsetDDBtn, QgsPalLayerSettings::OffsetQuad );
-  registerDataDefinedButton( mPointPositionOrderDDBtn, QgsPalLayerSettings::PredefinedPositionOrder );
-  registerDataDefinedButton( mLinePlacementFlagsDDBtn, QgsPalLayerSettings::LinePlacementOptions );
-  registerDataDefinedButton( mPointOffsetDDBtn, QgsPalLayerSettings::OffsetXY );
-  registerDataDefinedButton( mPointOffsetUnitsDDBtn, QgsPalLayerSettings::OffsetUnits );
-  registerDataDefinedButton( mLineDistanceDDBtn, QgsPalLayerSettings::LabelDistance );
-  registerDataDefinedButton( mLineDistanceUnitDDBtn, QgsPalLayerSettings::DistanceUnits );
-  registerDataDefinedButton( mPriorityDDBtn, QgsPalLayerSettings::Priority );
-  registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::PolygonLabelOutside );
-  registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::AllowDegradedPlacement );
-  registerDataDefinedButton( mOverlapHandlingDBtn, QgsPalLayerSettings::OverlapHandling );
+  registerDataDefinedButton( mCentroidDDBtn, QgsPalLayerSettings::Property::CentroidWhole );
+  registerDataDefinedButton( mPointQuadOffsetDDBtn, QgsPalLayerSettings::Property::OffsetQuad );
+  registerDataDefinedButton( mPointPositionOrderDDBtn, QgsPalLayerSettings::Property::PredefinedPositionOrder );
+  registerDataDefinedButton( mLinePlacementFlagsDDBtn, QgsPalLayerSettings::Property::LinePlacementOptions );
+  registerDataDefinedButton( mPointOffsetDDBtn, QgsPalLayerSettings::Property::OffsetXY );
+  registerDataDefinedButton( mPointOffsetUnitsDDBtn, QgsPalLayerSettings::Property::OffsetUnits );
+  registerDataDefinedButton( mLineDistanceDDBtn, QgsPalLayerSettings::Property::LabelDistance );
+  registerDataDefinedButton( mLineDistanceUnitDDBtn, QgsPalLayerSettings::Property::DistanceUnits );
+  registerDataDefinedButton( mPriorityDDBtn, QgsPalLayerSettings::Property::Priority );
+  registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::Property::PolygonLabelOutside );
+  registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::Property::AllowDegradedPlacement );
+  registerDataDefinedButton( mOverlapHandlingDBtn, QgsPalLayerSettings::Property::OverlapHandling );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
   //                        QgsPropertyOverrideButton::AnyType, QgsPropertyOverrideButton::double180RotDesc() );
-  registerDataDefinedButton( mMaxCharAngleDDBtn, QgsPalLayerSettings::CurvedCharAngleInOut );
-  registerDataDefinedButton( mRepeatDistanceDDBtn, QgsPalLayerSettings::RepeatDistance );
-  registerDataDefinedButton( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::RepeatDistanceUnit );
-  registerDataDefinedButton( mOverrunDistanceDDBtn, QgsPalLayerSettings::OverrunDistance );
+  registerDataDefinedButton( mMaxCharAngleDDBtn, QgsPalLayerSettings::Property::CurvedCharAngleInOut );
+  registerDataDefinedButton( mRepeatDistanceDDBtn, QgsPalLayerSettings::Property::RepeatDistance );
+  registerDataDefinedButton( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::Property::RepeatDistanceUnit );
+  registerDataDefinedButton( mOverrunDistanceDDBtn, QgsPalLayerSettings::Property::OverrunDistance );
 
   // data defined-only
-  registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::PositionX );
-  registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::PositionY );
-  registerDataDefinedButton( mCoordPointDDBtn, QgsPalLayerSettings::PositionPoint );
-  registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Hali );
-  registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
-  registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
+  registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::Property::PositionX );
+  registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::Property::PositionY );
+  registerDataDefinedButton( mCoordPointDDBtn, QgsPalLayerSettings::Property::PositionPoint );
+  registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Property::Hali );
+  registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Property::Vali );
+  registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::Property::LabelRotation );
 
   updateDataDefinedAlignment();
 
   // rendering
   const QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
                                      "Value of 0 disables the specific limit." );
-  registerDataDefinedButton( mScaleBasedVisibilityDDBtn, QgsPalLayerSettings::ScaleVisibility );
+  registerDataDefinedButton( mScaleBasedVisibilityDDBtn, QgsPalLayerSettings::Property::ScaleVisibility );
   mScaleBasedVisibilityDDBtn->registerCheckedWidget( mScaleBasedVisibilityChkBx );
-  registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::MinimumScale );
+  registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::Property::MinimumScale );
   mScaleBasedVisibilityMinDDBtn->setUsageInfo( ddScaleVisInfo );
-  registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::MaximumScale );
+  registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::Property::MaximumScale );
   mScaleBasedVisibilityMaxDDBtn->setUsageInfo( ddScaleVisInfo );
 
-  registerDataDefinedButton( mFontLimitPixelDDBtn, QgsPalLayerSettings::FontLimitPixel );
+  registerDataDefinedButton( mFontLimitPixelDDBtn, QgsPalLayerSettings::Property::FontLimitPixel );
   mFontLimitPixelDDBtn->registerCheckedWidget( mFontLimitPixelChkBox );
-  registerDataDefinedButton( mFontMinPixelDDBtn, QgsPalLayerSettings::FontMinPixel );
-  registerDataDefinedButton( mFontMaxPixelDDBtn, QgsPalLayerSettings::FontMaxPixel );
+  registerDataDefinedButton( mFontMinPixelDDBtn, QgsPalLayerSettings::Property::FontMinPixel );
+  registerDataDefinedButton( mFontMaxPixelDDBtn, QgsPalLayerSettings::Property::FontMaxPixel );
 
-  registerDataDefinedButton( mShowLabelDDBtn, QgsPalLayerSettings::Show );
+  registerDataDefinedButton( mShowLabelDDBtn, QgsPalLayerSettings::Property::Show );
 
-  registerDataDefinedButton( mAlwaysShowDDBtn, QgsPalLayerSettings::AlwaysShow );
+  registerDataDefinedButton( mAlwaysShowDDBtn, QgsPalLayerSettings::Property::AlwaysShow );
 
-  registerDataDefinedButton( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle );
-  registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
+  registerDataDefinedButton( mIsObstacleDDBtn, QgsPalLayerSettings::Property::IsObstacle );
+  registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::Property::ZIndex );
 
-  registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::CalloutDraw );
+  registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::Property::CalloutDraw );
 
-  registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::LabelAllParts );
+  registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::Property::LabelAllParts );
 }
 
 void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
   QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
 
-  if ( !vLayer )
-    return;
-
-  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), vLayer, true );
+  button->init( static_cast< int >( key ), mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), vLayer, true );
   if ( !mButtons.contains( key ) )
   {
     connect( button, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updateProperty );
@@ -1859,7 +1856,7 @@ void QgsTextFormatWidget::createAuxiliaryField()
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
-  const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[key];
+  const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
   if ( !vLayer->auxiliaryLayer()->exists( def ) )

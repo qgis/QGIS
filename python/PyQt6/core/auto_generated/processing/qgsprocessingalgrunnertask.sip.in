@@ -24,7 +24,7 @@ class QgsProcessingAlgRunnerTask : QgsTask
   public:
 
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
-                                const QMap<QString, QVariant> &parameters,
+                                const QVariantMap &parameters,
                                 QgsProcessingContext &context,
                                 QgsProcessingFeedback *feedback = 0,
                                 QgsTask::Flags flags = QgsTask::CanCancel );
@@ -47,7 +47,7 @@ Returns ``True`` if the algorithm was canceled.
 
   signals:
 
-    void executed( bool successful, const QMap<QString, QVariant> &results );
+    void executed( bool successful, const QVariantMap &results );
 %Docstring
 Emitted when the algorithm has finished execution. If the algorithm completed
 execution without errors then ``successful`` will be ``True``. The ``results`` argument

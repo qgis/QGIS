@@ -13,3 +13,17 @@ QgsNewHttpConnection.WFS_VERSION_1_0 = QgsNewHttpConnection.WfsVersionIndex.WFS_
 QgsNewHttpConnection.WFS_VERSION_1_1 = QgsNewHttpConnection.WfsVersionIndex.WFS_VERSION_1_1
 QgsNewHttpConnection.WFS_VERSION_2_0 = QgsNewHttpConnection.WfsVersionIndex.WFS_VERSION_2_0
 QgsNewHttpConnection.WFS_VERSION_API_FEATURES_1_0 = QgsNewHttpConnection.WfsVersionIndex.WFS_VERSION_API_FEATURES_1_0
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+
+QgsNewHttpConnection.ConnectionType.__bool__ = lambda flag: bool(_force_int(flag))
+QgsNewHttpConnection.ConnectionType.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsNewHttpConnection.ConnectionType.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsNewHttpConnection.ConnectionType.__or__ = lambda flag1, flag2: QgsNewHttpConnection.ConnectionType(_force_int(flag1) | _force_int(flag2))
+QgsNewHttpConnection.Flag.__bool__ = lambda flag: bool(_force_int(flag))
+QgsNewHttpConnection.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsNewHttpConnection.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsNewHttpConnection.Flag.__or__ = lambda flag1, flag2: QgsNewHttpConnection.Flag(_force_int(flag1) | _force_int(flag2))

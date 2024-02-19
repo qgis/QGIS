@@ -20,7 +20,7 @@ A fill symbol type, for rendering Polygon and MultiPolygon geometries.
 %End
   public:
 
-    static QgsFillSymbol *createSimple( const QMap<QString, QVariant> &properties ) /Factory/;
+    static QgsFillSymbol *createSimple( const QVariantMap &properties ) /Factory/;
 %Docstring
 Create a fill symbol with one symbol layer: SimpleFill with specified properties.
 This is a convenience method for easier creation of fill symbols.

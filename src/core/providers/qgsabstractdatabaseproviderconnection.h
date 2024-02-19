@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Flags can be useful for filtering the tables returned
      * from tables().
      */
-    enum TableFlag
+    enum class TableFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractDatabaseProviderConnection, TableFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Aspatial = 1 << 1,          //!< Aspatial table (it does not contain any geometry column)
       Vector = 1 << 2,            //!< Vector table (it does contain one geometry column)
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      *
      * \see Qgis::DatabaseProviderConnectionCapability2
      */
-    enum Capability
+    enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
       CreateVectorTable = 1 << 1,                     //!< Can CREATE a vector (or aspatial) table/layer
       DropRasterTable = 1 << 2,                       //!< Can DROP a raster table/layer
@@ -524,7 +524,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      *
      * \since QGIS 3.16
      */
-    enum GeometryColumnCapability
+    enum GeometryColumnCapability SIP_ENUM_BASETYPE( IntFlag )
     {
       Z = 1 << 1,                    //!< Supports Z dimension
       M = 1 << 2,                    //!< Supports M dimension

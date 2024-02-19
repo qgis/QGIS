@@ -18,7 +18,7 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
 %Docstring
 Creates the symbol layer
 %End
@@ -64,7 +64,7 @@ that is created by this generator.
     virtual QgsSymbolLayer *clone() const /Factory/;
 
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );

@@ -50,7 +50,7 @@ from MetaSearch.dialogs.recorddialog import RecordDialog
 from MetaSearch.dialogs.apidialog import APIRequestResponseDialog
 from MetaSearch.search_backend import get_catalog_service
 from MetaSearch.util import (clean_ows_url, get_connections_from_file,
-                             get_ui_class, get_help_url, highlight_content,
+                             get_ui_class, get_help_url,
                              normalize_text, open_url, render_template,
                              serialize_string, StaticContext)
 
@@ -888,18 +888,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def show_api(self):
         """show API request / response"""
 
-        crd = APIRequestResponseDialog()
-        request_html = highlight_content(self.context, self.catalog.request,
-                                         self.catalog.format)
-        response_html = highlight_content(self.context, self.catalog.response,
-                                          self.catalog.format)
-        style = QgsApplication.reportStyleSheet()
-        crd.txtbrAPIRequest.clear()
-        crd.txtbrAPIResponse.clear()
-        crd.txtbrAPIRequest.document().setDefaultStyleSheet(style)
-        crd.txtbrAPIResponse.document().setDefaultStyleSheet(style)
-        crd.txtbrAPIRequest.setHtml(request_html)
-        crd.txtbrAPIResponse.setHtml(response_html)
+        crd = APIRequestResponseDialog(
+            self.catalog.request,
+            self.catalog.response,
+            self.catalog.format
+        )
         crd.exec()
 
     def reset_buttons(self, services=True, api=True, navigation=True):

@@ -30,7 +30,7 @@ from typing import (
 
 from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QDir, QDirIterator, QDate, QUrl, QFileInfo,
-                              QLocale, QByteArray)
+                              QLocale, QByteArray, QT_VERSION_STR)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
@@ -349,11 +349,7 @@ class Repositories(QObject):
             reposXML = QDomDocument()
             content = reply.readAll()
             # Fix lonely ampersands in metadata
-            a = QByteArray()
-            a.append("& ")
-            b = QByteArray()
-            b.append("&amp; ")
-            content = content.replace(a, b)
+            content = content.replace(b"& ", b"&amp; ")
             reposXML.setContent(content)
             plugins_tag = reposXML.elementsByTagName("plugins")
             if plugins_tag.size():
@@ -585,7 +581,12 @@ class Plugins(QObject):
         if os.path.exists(metadataFile):
             version = normalizeVersion(pluginMetadata("version"))
 
-        if version:
+        qt_version = int(QT_VERSION_STR.split('.')[0])
+        supports_qt6 = pluginMetadata("supportsQt6").strip().upper() in ("TRUE", "YES")
+        if qt_version == 6 and not supports_qt6:
+            error = "incompatible"
+            errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Plugin does not support Qt6 versions of QGIS")
+        elif version:
             qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
             if not qgisMinimumVersion:
                 qgisMinimumVersion = "0"

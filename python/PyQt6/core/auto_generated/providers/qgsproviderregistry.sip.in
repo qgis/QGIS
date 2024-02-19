@@ -35,7 +35,7 @@ ogr and postgres.
   public:
 
 
-    enum WidgetMode
+    enum WidgetMode /BaseType=IntEnum/
     {
 
       None,
@@ -96,7 +96,7 @@ Creates a new instance of a provider.
 .. seealso:: :py:func:`createRasterDataProvider`
 %End
 
- int providerCapabilities( const QString &providerKey ) const /Deprecated/;
+ Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const /Deprecated/;
 %Docstring
 Returns the provider capabilities
 
@@ -134,7 +134,7 @@ Returns list of raster pyramid resampling methods
 .. versionadded:: 3.10
 %End
 
-    QMap<QString, QVariant> decodeUri( const QString &providerKey, const QString &uri );
+    QVariantMap decodeUri( const QString &providerKey, const QString &uri );
 %Docstring
 Breaks a provider data source URI into its component paths (e.g. file path, layer name).
 
@@ -150,7 +150,7 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 .. versionadded:: 3.4
 %End
 
-    QString encodeUri( const QString &providerKey, const QMap<QString, QVariant> &parts );
+    QString encodeUri( const QString &providerKey, const QVariantMap &parts );
 %Docstring
 Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
 

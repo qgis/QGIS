@@ -45,13 +45,10 @@
 #pragma clang diagnostic ignored "-Wregister"
 #endif
 
-#pragma warning(push)
-#pragma warning(disable:5033)
 #ifndef CMS_NO_REGISTER_KEYWORD
 #define CMS_NO_REGISTER_KEYWORD
 #endif
 #include <lcms2.h>
-#pragma warning(pop)
 
 #ifdef PDF4QT_COMPILER_CLANG
 #pragma clang diagnostic pop
@@ -581,7 +578,7 @@ QColor PDFColorScale::map(PDFReal value) const
         fractionValue = 1.0;
     }
 
-    Q_ASSERT(index + 1 < static_cast<int>(m_colorScales.size()));
+    Q_ASSERT(index + 1 < static_cast< int >(m_colorScales.size()));
 
     const QColor& leftValue = m_colorScales[index];
     const QColor& rightValue = m_colorScales[index + 1];

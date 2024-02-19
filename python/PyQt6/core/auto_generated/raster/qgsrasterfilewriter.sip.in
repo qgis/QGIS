@@ -22,7 +22,7 @@ data providers can be used by calling :py:func:`~setOutputFormat` and :py:func:`
 %End
   public:
 
-    enum RasterFormatOption
+    enum RasterFormatOption /BaseType=IntEnum/
     {
       SortRecommended,
     };

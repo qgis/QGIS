@@ -154,7 +154,6 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     void computeValuesFromLayer();
     void updatePreview();
 
-
   private:
 
     QgsPropertyDefinition mDefinition;
@@ -170,7 +169,6 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
     bool computeValuesFromExpression( const QString &expression, double &minValue, double &maxValue ) const;
     bool computeValuesFromField( const QString &fieldName, double &minValue, double &maxValue ) const;
-
 };
 
 #ifndef SIP_RUN

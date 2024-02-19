@@ -710,7 +710,7 @@ typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQV
 
     QgsSettingsEntryVariantMap( const QString &name,
                                 QgsSettingsTreeNode *parent,
-                                const QMap<QString, QVariant> &defaultValue = QMap<QString, QVariant>(),
+                                const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
@@ -726,7 +726,7 @@ Constructor for QgsSettingsEntryVariantMap.
   private:
     QgsSettingsEntryVariantMap( const QString &key,
                                 const QString &section,
-                                const QMap<QString, QVariant> &defaultValue = QMap<QString, QVariant>(),
+                                const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
@@ -742,7 +742,7 @@ Constructor for QgsSettingsEntryVariantMap.
 
     QgsSettingsEntryVariantMap( const QString &key,
                                 const QString &pluginName,
-                                const QMap<QString, QVariant> &defaultValue = QMap<QString, QVariant>(),
+                                const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
@@ -761,7 +761,7 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-    virtual QMap<QString, QVariant> convertFromVariant( const QVariant &value ) const;
+    virtual QVariantMap convertFromVariant( const QVariant &value ) const;
 
 };
 

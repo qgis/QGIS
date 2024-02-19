@@ -629,6 +629,41 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         critical_postgis_logs = list(filter(lambda log: log[2] == Qgis.MessageLevel.Critical and log[1] == "PostGIS", list(log_spy)))
         self.assertEqual(len(critical_postgis_logs), 0, list(log_spy))
 
+    def testSparseTiles(self):
+        """Test issue GH #55784"""
+
+        rl = QgsRasterLayer(
+            self.dbconn + " key=\'rid\' srid=3035 sslmode=disable table={table} schema={schema}".format(
+                table='raster_sparse_3035', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
+
+        dp = rl.dataProvider()
+
+        r = dp.identify(QgsPointXY(4080317.72, 2430635.68), Qgis.RasterIdentifyFormat.Value).results()
+        self.assertEqual(r[1], -9999.0)
+
+        # tile request returned no tiles, check nodata
+        ext = QgsRectangle.fromCenterAndSize(QgsPointXY(4080317.72, 2430635.68), 1, 1)
+        b = dp.block(1, ext, 1, 1)
+        self.assertTrue(b.isValid())
+        self.assertEqual(b.value(0, 0), -9999.0)
+        self.assertTrue(b.isNoData(0, 0))
+
+        # tile request returned one tile with value and nodata in two adjacent cells
+        ext = QgsRectangle(4080186, 2430632, 4080216, 2430649)
+        b = dp.block(1, ext, 2, 1)
+        self.assertEqual(b.value(0, 1), -9999.0)
+        self.assertEqual(int(b.value(0, 0)), 223)
+
+        # Multiple nodata tiles
+        ext = QgsRectangle(4080272, 2430686, 4080302, 2430703)
+        b = dp.block(1, ext, 2, 1)
+        self.assertEqual(b.value(0, 1), -9999.0)
+        self.assertEqual(b.value(0, 0), -9999.0)
+        self.assertTrue(b.isNoData(0, 0))
+        self.assertTrue(b.isNoData(0, 1))
+
 
 if __name__ == '__main__':
     unittest.main()

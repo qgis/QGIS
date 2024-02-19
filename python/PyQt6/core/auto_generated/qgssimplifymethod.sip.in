@@ -21,7 +21,7 @@ This class contains information about how to simplify geometries fetched from a 
 #include "qgssimplifymethod.h"
 %End
   public:
-    enum MethodType
+    enum MethodType /BaseType=IntEnum/
     {
       NoSimplification,
       OptimizeForRendering,

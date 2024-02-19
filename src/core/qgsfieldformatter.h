@@ -85,7 +85,7 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * \since QGIS 3.12
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       CanProvideAvailableValues =  1   //!< Can provide possible values
     };

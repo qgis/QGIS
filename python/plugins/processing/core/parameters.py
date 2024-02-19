@@ -21,7 +21,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import sys
 
-from qgis.core import (QgsRasterLayer,
+from qgis.core import (Qgis,
+                       QgsRasterLayer,
                        QgsVectorLayer,
                        QgsMapLayer,
                        QgsCoordinateReferenceSystem,
@@ -159,7 +160,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterRange:
                 if len(params) > 2:
                     try:
-                        params[2] = int(params[2])
+                        params[2] = Qgis.ProcessingNumberParameterType(int(params[2]))
                     except ValueError:
                         params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
                 if len(params) > 4:
@@ -194,7 +195,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterMultipleLayers:
                 if len(params) > 2:
                     try:
-                        params[2] = int(params[2])
+                        params[2] = Qgis.ProcessingSourceType(int(params[2]))
                     except ValueError:
                         params[2] = getattr(QgsProcessing, params[2].split(".")[1])
                 if len(params) > 4:
@@ -211,7 +212,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterField:
                 if len(params) > 4:
                     try:
-                        params[4] = int(params[4])
+                        params[4] = Qgis.ProcessingFieldParameterDataType(int(params[4]))
                     except ValueError:
                         params[4] = getattr(QgsProcessingParameterField, params[4].split(".")[1])
                 if len(params) > 5:
@@ -223,7 +224,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterFile:
                 if len(params) > 2:
                     try:
-                        params[2] = int(params[2])
+                        params[2] = Qgis.ProcessingFileParameterBehavior(int(params[2]))
                     except ValueError:
                         params[2] = getattr(QgsProcessingParameterFile, params[2].split(".")[1])
                 if len(params) > 5:
@@ -231,7 +232,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterNumber:
                 if len(params) > 2:
                     try:
-                        params[2] = int(params[2])
+                        params[2] = Qgis.ProcessingNumberParameterType(int(params[2]))
                     except ValueError:
                         params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
                 if len(params) > 3:
@@ -276,7 +277,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterVectorDestination:
                 if len(params) > 2:
                     try:
-                        params[2] = int(params[2])
+                        params[2] = Qgis.ProcessingSourceType(int(params[2]))
                     except ValueError:
                         params[2] = getattr(QgsProcessing, params[2].split(".")[1])
                 if len(params) > 4:

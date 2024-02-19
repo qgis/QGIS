@@ -179,8 +179,8 @@ void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context
       {
         simpleFill->setStrokeWidth( getSymbolWidth( context, simpleFill->strokeWidth(), simpleFill->outputUnit() ) );
       }
-      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
-      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty() );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty() );
     }
   }
 }

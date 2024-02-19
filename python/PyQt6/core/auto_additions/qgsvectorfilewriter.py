@@ -29,3 +29,17 @@ QgsVectorFileWriter.CreateOrOverwriteFile = QgsVectorFileWriter.ActionOnExisting
 QgsVectorFileWriter.CreateOrOverwriteLayer = QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteLayer
 QgsVectorFileWriter.AppendToLayerNoNewFields = QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerNoNewFields
 QgsVectorFileWriter.AppendToLayerAddFields = QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerAddFields
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+
+QgsVectorFileWriter.EditionCapability.__bool__ = lambda flag: bool(_force_int(flag))
+QgsVectorFileWriter.EditionCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsVectorFileWriter.EditionCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsVectorFileWriter.EditionCapability.__or__ = lambda flag1, flag2: QgsVectorFileWriter.EditionCapability(_force_int(flag1) | _force_int(flag2))
+QgsVectorFileWriter.VectorFormatOption.__bool__ = lambda flag: bool(_force_int(flag))
+QgsVectorFileWriter.VectorFormatOption.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsVectorFileWriter.VectorFormatOption.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsVectorFileWriter.VectorFormatOption.__or__ = lambda flag1, flag2: QgsVectorFileWriter.VectorFormatOption(_force_int(flag1) | _force_int(flag2))

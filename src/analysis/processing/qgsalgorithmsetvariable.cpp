@@ -25,11 +25,11 @@ QString QgsSetProjectVariableAlgorithm::name() const
   return QStringLiteral( "setprojectvariable" );
 }
 
-QgsProcessingAlgorithm::Flags QgsSetProjectVariableAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsSetProjectVariableAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::FlagHideFromToolbox
-         | QgsProcessingAlgorithm::FlagSkipGenericModelLogging
-         | QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox
+         | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging
+         | Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool;
 }
 
 QString QgsSetProjectVariableAlgorithm::displayName() const

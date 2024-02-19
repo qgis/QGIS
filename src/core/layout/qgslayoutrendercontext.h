@@ -41,7 +41,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
   public:
 
     //! Flags for controlling how a layout is rendered
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDebug = 1 << 1,  //!< Debug/testing mode, items are drawn as solid rectangles.
       FlagOutlineOnly = 1 << 2, //!< Render items as outlines only.

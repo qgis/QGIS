@@ -49,7 +49,7 @@ class QgsPromoteToMultipartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   protected:
     QString outputName() const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

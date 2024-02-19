@@ -43,7 +43,7 @@ class CORE_EXPORT QgsScaleBarRenderer
      * Flags which control scalebar renderer behavior.
      * \since QGIS 3.14
      */
-    enum class Flag
+    enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagUsesLineSymbol = 1 << 0, //!< Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
       FlagUsesFillSymbol = 1 << 1, //!< Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )

@@ -297,7 +297,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
     connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
     {
       mCopyAsQgisProcessCommand->setEnabled( algorithm()
-                                             && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+                                             && !( algorithm()->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool ) );
       mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
     } );
   }
@@ -331,7 +331,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
 {
   mAlgorithm.reset( algorithm );
   QString title;
-  if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
+  if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::DisplayNameIsLiteral ) )
   {
     title = QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase );
   }
@@ -597,12 +597,12 @@ void QgsProcessingAlgorithmDialogBase::urlClicked( const QUrl &url )
     QDesktopServices::openUrl( url );
 }
 
-QgsProcessingContext::LogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
+Qgis::ProcessingLogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
 {
   return mLogLevel;
 }
 
-void QgsProcessingAlgorithmDialogBase::setLogLevel( QgsProcessingContext::LogLevel level )
+void QgsProcessingAlgorithmDialogBase::setLogLevel( Qgis::ProcessingLogLevel level )
 {
   mLogLevel = level;
 }
@@ -977,17 +977,17 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   setupUi( this );
   setPanelTitle( tr( "Algorithm Settings" ) );
 
-  mComboInvalidFeatureFiltering->addItem( tr( "Do not Filter (Better Performance)" ), QgsFeatureRequest::GeometryNoCheck );
-  mComboInvalidFeatureFiltering->addItem( tr( "Skip (Ignore) Features with Invalid Geometries" ), QgsFeatureRequest::GeometrySkipInvalid );
-  mComboInvalidFeatureFiltering->addItem( tr( "Stop Algorithm Execution When a Geometry is Invalid" ), QgsFeatureRequest::GeometryAbortOnInvalid );
+  mComboInvalidFeatureFiltering->addItem( tr( "Do not Filter (Better Performance)" ), QVariant::fromValue( Qgis::InvalidGeometryCheck::NoCheck ) );
+  mComboInvalidFeatureFiltering->addItem( tr( "Skip (Ignore) Features with Invalid Geometries" ), QVariant::fromValue( Qgis::InvalidGeometryCheck::SkipInvalid ) );
+  mComboInvalidFeatureFiltering->addItem( tr( "Stop Algorithm Execution When a Geometry is Invalid" ), QVariant::fromValue( Qgis::InvalidGeometryCheck::AbortOnInvalid ) );
 
   mTemporaryFolderWidget->setDialogTitle( tr( "Select Temporary Directory" ) );
   mTemporaryFolderWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mTemporaryFolderWidget->lineEdit()->setPlaceholderText( tr( "Default" ) );
 
-  mLogLevelComboBox->addItem( tr( "Default" ), QgsProcessingContext::LogLevel::DefaultLevel );
-  mLogLevelComboBox->addItem( tr( "Verbose" ), QgsProcessingContext::LogLevel::Verbose );
-  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), QgsProcessingContext::LogLevel::ModelDebug );
+  mLogLevelComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::ProcessingLogLevel::DefaultLevel ) );
+  mLogLevelComboBox->addItem( tr( "Verbose" ), static_cast< int >( Qgis::ProcessingLogLevel::Verbose ) );
+  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), static_cast< int >( Qgis::ProcessingLogLevel::ModelDebug ) );
 
   mDistanceUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::DistanceUnit::Unknown ) );
   for ( Qgis::DistanceUnit unit :
@@ -1059,7 +1059,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
 
 void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
 {
-  whileBlocking( mComboInvalidFeatureFiltering )->setCurrentIndex( mComboInvalidFeatureFiltering->findData( static_cast< int >( context->invalidGeometryCheck() ) ) );
+  whileBlocking( mComboInvalidFeatureFiltering )->setCurrentIndex( mComboInvalidFeatureFiltering->findData( QVariant::fromValue( context->invalidGeometryCheck() ) ) );
   whileBlocking( mDistanceUnitsCombo )->setCurrentIndex( mDistanceUnitsCombo->findData( QVariant::fromValue( context->distanceUnit() ) ) );
   whileBlocking( mAreaUnitsCombo )->setCurrentIndex( mAreaUnitsCombo->findData( QVariant::fromValue( context->areaUnit() ) ) );
   whileBlocking( mTemporaryFolderWidget )->setFilePath( context->temporaryFolder() );
@@ -1067,9 +1067,9 @@ void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingConte
   whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( context->logLevel() ) ) );
 }
 
-QgsFeatureRequest::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
+Qgis::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
 {
-  return static_cast< QgsFeatureRequest::InvalidGeometryCheck >( mComboInvalidFeatureFiltering->currentData().toInt() );
+  return mComboInvalidFeatureFiltering->currentData().value< Qgis::InvalidGeometryCheck >();
 }
 
 Qgis::DistanceUnit QgsProcessingContextOptionsWidget::distanceUnit() const
@@ -1092,14 +1092,14 @@ int QgsProcessingContextOptionsWidget::maximumThreads() const
   return mThreadsSpinBox->value();
 }
 
-void QgsProcessingContextOptionsWidget::setLogLevel( QgsProcessingContext::LogLevel level )
+void QgsProcessingContextOptionsWidget::setLogLevel( Qgis::ProcessingLogLevel level )
 {
   whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( level ) ) );
 }
 
-QgsProcessingContext::LogLevel QgsProcessingContextOptionsWidget::logLevel() const
+Qgis::ProcessingLogLevel QgsProcessingContextOptionsWidget::logLevel() const
 {
-  return static_cast< QgsProcessingContext::LogLevel >( mLogLevelComboBox->currentData().toInt() );
+  return static_cast< Qgis::ProcessingLogLevel >( mLogLevelComboBox->currentData().toInt() );
 }
 
 ///@endcond

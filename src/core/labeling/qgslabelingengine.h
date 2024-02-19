@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Default priority of labels
     double mPriority = 0.5;
     //! Type of the obstacle of feature geometries
-    QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
+    QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonBoundary;
     //! How to handle labels that would be upside down
     Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 

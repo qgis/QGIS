@@ -99,7 +99,8 @@ class QgsFieldPrivate : public QSharedData
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints )  && ( flags == other.flags )
                && ( splitPolicy == other.splitPolicy )
-               && ( isReadOnly == other.isReadOnly ) );
+               && ( isReadOnly == other.isReadOnly )
+               && ( editorWidgetSetup == other.editorWidgetSetup ) );
     }
 
     //! Name

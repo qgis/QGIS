@@ -27,7 +27,7 @@ QGraphicsScene subclass representing the model designer.
 %End
   public:
 
-    enum ZValues
+    enum ZValues /BaseType=IntEnum/
     {
       GroupBox,
       ArrowLink,
@@ -38,7 +38,7 @@ QGraphicsScene subclass representing the model designer.
 
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagHideControls,
       FlagHideComments,
@@ -124,12 +124,12 @@ not correctly emit signals to allow the scene's model to update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
-    void setChildAlgorithmResults( const QMap<QString, QVariant> &results );
+    void setChildAlgorithmResults( const QVariantMap &results );
 %Docstring
 Sets the results for child algorithms for the last model execution.
 %End
 
-    void setChildAlgorithmInputs( const QMap<QString, QVariant> &inputs );
+    void setChildAlgorithmInputs( const QVariantMap &inputs );
 %Docstring
 Sets the inputs for child algorithms for the last model execution.
 %End

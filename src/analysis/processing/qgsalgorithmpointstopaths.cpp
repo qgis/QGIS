@@ -63,7 +63,7 @@ QString QgsPointsToPathsAlgorithm::groupId() const
 void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
+                QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLOSE_PATH" ),
                 QObject::tr( "Create closed paths" ), false, true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "ORDER_EXPRESSION" ),
@@ -73,7 +73,7 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "GROUP_EXPRESSION" ),
                 QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
-                QObject::tr( "Paths" ), QgsProcessing::TypeVectorLine ) );
+                QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
   // TODO QGIS 4: remove parameter. move logic to separate algorithm if needed.
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_TEXT_DIR" ),
                 QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
@@ -82,16 +82,16 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
   // backwards compatibility parameters
   // TODO QGIS 4: remove compatibility parameters and their logic
   QgsProcessingParameterField *orderField = new QgsProcessingParameterField( QStringLiteral( "ORDER_FIELD" ),
-      QObject::tr( "Order field" ), QVariant(), QString(), QgsProcessingParameterField::Any, false, true );
-  orderField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
+      QObject::tr( "Order field" ), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  orderField->setFlags( orderField->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( orderField );
   QgsProcessingParameterField *groupField = new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELD" ),
-      QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
-  groupField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
+      QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  groupField->setFlags( orderField->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( groupField );
   QgsProcessingParameterString *dateFormat = new QgsProcessingParameterString( QStringLiteral( "DATE_FORMAT" ),
       QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
-  dateFormat->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  dateFormat->setFlags( orderField->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( dateFormat );
 }
 
@@ -222,7 +222,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QHash< QVariant, QVector< QPair< QVariant, QgsPoint > > > allPoints;
 
   const QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( requiredFields, source->fields() );
-  QgsFeatureIterator fit = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator fit = source->getFeatures( request, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   QgsFeature f;
   const double totalPoints = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
   long currentPoint = 0;

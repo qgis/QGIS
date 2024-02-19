@@ -24,7 +24,7 @@ A widget for selecting a projection.
 %End
   public:
 
-    enum CrsOption
+    enum CrsOption /BaseType=IntEnum/
     {
       Invalid,
       LayerCrs,

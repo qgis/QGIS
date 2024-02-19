@@ -43,7 +43,7 @@ class QgsSplitGeometryAtAntimeridianAlgorithm : public QgsProcessingFeatureBased
     QString shortDescription() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsSplitGeometryAtAntimeridianAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

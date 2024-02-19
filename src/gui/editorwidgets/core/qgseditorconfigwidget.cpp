@@ -43,7 +43,7 @@ QgsExpressionContext QgsEditorConfigWidget::createExpressionContext() const
 void QgsEditorConfigWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key )
 {
   button->blockSignals( true );
-  button->init( key, mPropertyCollection, QgsWidgetWrapper::propertyDefinitions(), mLayer );
+  button->init( static_cast< int >( key ), mPropertyCollection, QgsWidgetWrapper::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsEditorConfigWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );

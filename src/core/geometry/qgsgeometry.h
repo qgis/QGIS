@@ -1829,9 +1829,25 @@ class CORE_EXPORT QgsGeometry
      * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
+     *
+     * \see constrainedDelaunayTriangulation()
      * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
+     * Returns a constrained Delaunay triangulation for the vertices of the geometry.
+     *
+     * An empty geometry will be returned if the triangulation could not be calculated.
+     *
+     * This method requires a QGIS build based on GEOS 3.11 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see delaunayTriangulation()
+     *
+     * \since QGIS 3.36
+     */
+    QgsGeometry constrainedDelaunayTriangulation() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge
@@ -3128,7 +3144,7 @@ class CORE_EXPORT QgsGeometry
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
-     * Creates and returns a new geometry engine representing the specified \a geometry.
+     * Creates and returns a new geometry engine representing the specified \a geometry using \a precision on a grid. The \a precision argument was added in 3.36.
      *
      * A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
      * geometry libraries such as GEOS.
@@ -3164,7 +3180,7 @@ class CORE_EXPORT QgsGeometry
      *
      * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) SIP_FACTORY;
 
     /**
      * Upgrades a point list from QgsPointXY to QgsPoint

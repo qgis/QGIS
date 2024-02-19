@@ -31,7 +31,7 @@ class QgsRelationReferenceWidget : QWidget
 %End
   public:
 
-    enum CanvasExtent
+    enum CanvasExtent /BaseType=IntEnum/
     {
       Fixed,
       Pan,

@@ -44,7 +44,7 @@ takes ownership of settings, settings may be ``None``
         ~Rule();
 
 
-        enum RegisterResult
+        enum RegisterResult /BaseType=IntEnum/
         {
           Filtered,
           Inactive,
@@ -315,7 +315,7 @@ Set pal settings for a specific provider (takes ownership).
 %End
     virtual bool requiresAdvancedEffects() const;
 
-    virtual void toSld( QDomNode &parent, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 
     virtual void multiplyOpacity( double opacityFactor );
 

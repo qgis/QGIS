@@ -192,15 +192,12 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface *interface )
   mRoleMap.remove( role );
 
   // Decrease all indexes greater than the removed one
-  const auto roleMapValues {mRoleMap.values()};
-  if ( roleIdx < *std::max_element( roleMapValues.begin(), roleMapValues.end() ) )
+  const QMap<Qgis::RasterPipeInterfaceRole, int> currentRoles = mRoleMap;
+  for ( auto it = currentRoles.cbegin(); it != currentRoles.cend(); ++it )
   {
-    for ( auto it = mRoleMap.cbegin(); it != mRoleMap.cend(); ++it )
+    if ( it.value() > roleIdx )
     {
-      if ( it.value() > roleIdx )
-      {
-        mRoleMap[it.key()] = it.value() - 1;
-      }
+      mRoleMap[it.key()] = it.value() - 1;
     }
   }
 }
@@ -426,14 +423,14 @@ void QgsRasterPipe::evaluateDataDefinedProperties( QgsExpressionContext &context
   if ( !mDataDefinedProperties.hasActiveProperties() )
     return;
 
-  if ( mDataDefinedProperties.isActive( RendererOpacity ) )
+  if ( mDataDefinedProperties.isActive( Property::RendererOpacity ) )
   {
     if ( QgsRasterRenderer *r = renderer() )
     {
       const double prevOpacity = r->opacity();
       context.setOriginalValueVariable( prevOpacity * 100 );
       bool ok = false;
-      const double opacity = mDataDefinedProperties.valueAsDouble( RendererOpacity, context, prevOpacity, &ok ) / 100;
+      const double opacity = mDataDefinedProperties.valueAsDouble( Property::RendererOpacity, context, prevOpacity, &ok ) / 100;
       if ( ok )
       {
         r->setOpacity( opacity );
@@ -450,7 +447,7 @@ void QgsRasterPipe::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsRasterPipe::RendererOpacity, QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { static_cast< int >( QgsRasterPipe::Property::RendererOpacity ), QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
   };
 }
 

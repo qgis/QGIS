@@ -76,4 +76,82 @@ Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalen
 # --
 Qgis.GdalResampleAlgorithm.baseClass = Qgis
 
+QgsZonalStatistics.Statistic = Qgis.ZonalStatistic
+# monkey patching scoped based enum
+QgsZonalStatistics.Count = Qgis.ZonalStatistic.Count
+QgsZonalStatistics.Count.is_monkey_patched = True
+QgsZonalStatistics.Count.__doc__ = "Pixel count"
+QgsZonalStatistics.Sum = Qgis.ZonalStatistic.Sum
+QgsZonalStatistics.Sum.is_monkey_patched = True
+QgsZonalStatistics.Sum.__doc__ = "Sum of pixel values"
+QgsZonalStatistics.Mean = Qgis.ZonalStatistic.Mean
+QgsZonalStatistics.Mean.is_monkey_patched = True
+QgsZonalStatistics.Mean.__doc__ = "Mean of pixel values"
+QgsZonalStatistics.Median = Qgis.ZonalStatistic.Median
+QgsZonalStatistics.Median.is_monkey_patched = True
+QgsZonalStatistics.Median.__doc__ = "Median of pixel values"
+QgsZonalStatistics.StDev = Qgis.ZonalStatistic.StDev
+QgsZonalStatistics.StDev.is_monkey_patched = True
+QgsZonalStatistics.StDev.__doc__ = "Standard deviation of pixel values"
+QgsZonalStatistics.Min = Qgis.ZonalStatistic.Min
+QgsZonalStatistics.Min.is_monkey_patched = True
+QgsZonalStatistics.Min.__doc__ = "Min of pixel values"
+QgsZonalStatistics.Max = Qgis.ZonalStatistic.Max
+QgsZonalStatistics.Max.is_monkey_patched = True
+QgsZonalStatistics.Max.__doc__ = "Max of pixel values"
+QgsZonalStatistics.Range = Qgis.ZonalStatistic.Range
+QgsZonalStatistics.Range.is_monkey_patched = True
+QgsZonalStatistics.Range.__doc__ = "Range of pixel values (max - min)"
+QgsZonalStatistics.Minority = Qgis.ZonalStatistic.Minority
+QgsZonalStatistics.Minority.is_monkey_patched = True
+QgsZonalStatistics.Minority.__doc__ = "Minority of pixel values"
+QgsZonalStatistics.Majority = Qgis.ZonalStatistic.Majority
+QgsZonalStatistics.Majority.is_monkey_patched = True
+QgsZonalStatistics.Majority.__doc__ = "Majority of pixel values"
+QgsZonalStatistics.Variety = Qgis.ZonalStatistic.Variety
+QgsZonalStatistics.Variety.is_monkey_patched = True
+QgsZonalStatistics.Variety.__doc__ = "Variety (count of distinct) pixel values"
+QgsZonalStatistics.Variance = Qgis.ZonalStatistic.Variance
+QgsZonalStatistics.Variance.is_monkey_patched = True
+QgsZonalStatistics.Variance.__doc__ = "Variance of pixel values"
+QgsZonalStatistics.All = Qgis.ZonalStatistic.All
+QgsZonalStatistics.All.is_monkey_patched = True
+QgsZonalStatistics.All.__doc__ = "All statistics"
+QgsZonalStatistics.Default = Qgis.ZonalStatistic.Default
+QgsZonalStatistics.Default.is_monkey_patched = True
+QgsZonalStatistics.Default.__doc__ = "Default statistics"
+Qgis.ZonalStatistic.__doc__ = "Statistics to be calculated during a zonal statistics operation.\n\n.. versionadded:: 3.36.\n\n" + '* ``Count``: ' + Qgis.ZonalStatistic.Count.__doc__ + '\n' + '* ``Sum``: ' + Qgis.ZonalStatistic.Sum.__doc__ + '\n' + '* ``Mean``: ' + Qgis.ZonalStatistic.Mean.__doc__ + '\n' + '* ``Median``: ' + Qgis.ZonalStatistic.Median.__doc__ + '\n' + '* ``StDev``: ' + Qgis.ZonalStatistic.StDev.__doc__ + '\n' + '* ``Min``: ' + Qgis.ZonalStatistic.Min.__doc__ + '\n' + '* ``Max``: ' + Qgis.ZonalStatistic.Max.__doc__ + '\n' + '* ``Range``: ' + Qgis.ZonalStatistic.Range.__doc__ + '\n' + '* ``Minority``: ' + Qgis.ZonalStatistic.Minority.__doc__ + '\n' + '* ``Majority``: ' + Qgis.ZonalStatistic.Majority.__doc__ + '\n' + '* ``Variety``: ' + Qgis.ZonalStatistic.Variety.__doc__ + '\n' + '* ``Variance``: ' + Qgis.ZonalStatistic.Variance.__doc__ + '\n' + '* ``All``: ' + Qgis.ZonalStatistic.All.__doc__ + '\n' + '* ``Default``: ' + Qgis.ZonalStatistic.Default.__doc__
+# --
+Qgis.ZonalStatistic.baseClass = Qgis
+QgsZonalStatistics.Statistics = Qgis.ZonalStatistics
+Qgis.ZonalStatistics.baseClass = Qgis
+ZonalStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsZonalStatistics.Result = Qgis.ZonalStatisticResult
+# monkey patching scoped based enum
+QgsZonalStatistics.Success = Qgis.ZonalStatisticResult.Success
+QgsZonalStatistics.Success.is_monkey_patched = True
+QgsZonalStatistics.Success.__doc__ = "Success"
+QgsZonalStatistics.LayerTypeWrong = Qgis.ZonalStatisticResult.LayerTypeWrong
+QgsZonalStatistics.LayerTypeWrong.is_monkey_patched = True
+QgsZonalStatistics.LayerTypeWrong.__doc__ = "Layer is not a polygon layer"
+QgsZonalStatistics.LayerInvalid = Qgis.ZonalStatisticResult.LayerInvalid
+QgsZonalStatistics.LayerInvalid.is_monkey_patched = True
+QgsZonalStatistics.LayerInvalid.__doc__ = "Layer is invalid"
+QgsZonalStatistics.RasterInvalid = Qgis.ZonalStatisticResult.RasterInvalid
+QgsZonalStatistics.RasterInvalid.is_monkey_patched = True
+QgsZonalStatistics.RasterInvalid.__doc__ = "Raster layer is invalid"
+QgsZonalStatistics.RasterBandInvalid = Qgis.ZonalStatisticResult.RasterBandInvalid
+QgsZonalStatistics.RasterBandInvalid.is_monkey_patched = True
+QgsZonalStatistics.RasterBandInvalid.__doc__ = "The raster band does not exist on the raster layer"
+QgsZonalStatistics.FailedToCreateField = Qgis.ZonalStatisticResult.FailedToCreateField
+QgsZonalStatistics.FailedToCreateField.is_monkey_patched = True
+QgsZonalStatistics.FailedToCreateField.__doc__ = "Output fields could not be created"
+QgsZonalStatistics.Canceled = Qgis.ZonalStatisticResult.Canceled
+QgsZonalStatistics.Canceled.is_monkey_patched = True
+QgsZonalStatistics.Canceled.__doc__ = "Algorithm was canceled"
+Qgis.ZonalStatisticResult.__doc__ = "Zonal statistics result codes.\n\n.. versionadded:: 3.36.\n\n" + '* ``Success``: ' + Qgis.ZonalStatisticResult.Success.__doc__ + '\n' + '* ``LayerTypeWrong``: ' + Qgis.ZonalStatisticResult.LayerTypeWrong.__doc__ + '\n' + '* ``LayerInvalid``: ' + Qgis.ZonalStatisticResult.LayerInvalid.__doc__ + '\n' + '* ``RasterInvalid``: ' + Qgis.ZonalStatisticResult.RasterInvalid.__doc__ + '\n' + '* ``RasterBandInvalid``: ' + Qgis.ZonalStatisticResult.RasterBandInvalid.__doc__ + '\n' + '* ``FailedToCreateField``: ' + Qgis.ZonalStatisticResult.FailedToCreateField.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ZonalStatisticResult.Canceled.__doc__
+# --
+Qgis.ZonalStatisticResult.baseClass = Qgis
+
+
 @MONKEYPATCH_INJECTIONS@

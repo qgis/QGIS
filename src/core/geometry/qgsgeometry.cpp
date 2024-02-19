@@ -2641,6 +2641,20 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   return result;
 }
 
+QgsGeometry QgsGeometry::constrainedDelaunayTriangulation() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.constrainedDelaunayTriangulation() );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::unionCoverage() const
 {
   if ( !d->geometry )
@@ -2990,7 +3004,10 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::fu
   if ( type() != Qgis::GeometryType::Polygon )
     return QVector< QgsPointXY >();
 
-  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, acceptPoint, seed, feedback, maxTriesPerPoint );
+  QgsInternalGeometryEngine engine( *this );
+  const QVector<QgsPointXY> res = engine.randomPointsInPolygon( count, acceptPoint, seed, feedback, maxTriesPerPoint );
+  mLastError = engine.lastError();
+  return res;
 }
 
 QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback ) const
@@ -2998,7 +3015,10 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
   if ( type() != Qgis::GeometryType::Polygon )
     return QVector< QgsPointXY >();
 
-  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
+  QgsInternalGeometryEngine engine( *this );
+  const QVector<QgsPointXY> res = engine.randomPointsInPolygon( count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
+  mLastError = engine.lastError();
+  return res;
 }
 ///@endcond
 
@@ -4291,9 +4311,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
   }
 }
 
-QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry )
+QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry, double precision )
 {
-  return new QgsGeos( geometry );
+  return new QgsGeos( geometry, precision );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )

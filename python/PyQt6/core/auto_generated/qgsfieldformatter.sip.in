@@ -71,7 +71,7 @@ Default constructor
 
     virtual ~QgsFieldFormatter();
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       CanProvideAvailableValues
     };
@@ -86,7 +86,7 @@ This id will later be used to identify this field formatter in the registry with
 This id matches the id of a :py:class:`QgsEditorWidgetFactory`.
 %End
 
-    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 %Docstring
 Create a pretty String representation of the value.
 
@@ -95,7 +95,7 @@ Create a pretty String representation of the value.
 .. versionadded:: 3.0
 %End
 
-    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 %Docstring
 If the default sort order should be overwritten for this widget, you can transform the value in here.
 
@@ -104,7 +104,7 @@ If the default sort order should be overwritten for this widget, you can transfo
 .. versionadded:: 3.0
 %End
 
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config ) const;
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 %Docstring
 Returns the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
 values are represented.
@@ -112,7 +112,7 @@ values are represented.
 .. versionadded:: 3.0
 %End
 
-    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config ) const;
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 %Docstring
 Create a cache for a given field.
 
@@ -121,14 +121,14 @@ to other methods on :py:class:`QgsFieldKit` and :py:class:`QgsEditorWidgetWrappe
 
 For example, the attribute table will create a cache once for each field and then use this
 cache for representation. The :py:class:`QgsValueRelationFieldFormatter` and :py:class:`QgsValueRelationEditorWidget`
-implement this functionality to create a lookuptable once (a QMap<QString, QVariant> / dict) and are
+implement this functionality to create a lookuptable once (a QVariantMap / dict) and are
 make use of a cache if present.
 
 .. versionadded:: 3.0
 %End
 
 
-    virtual QVariantList availableValues( const QMap<QString, QVariant> &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 %Docstring
 Returns a list of the values that would be possible to select with this widget type
 On a RelationReference that would be the parents ids or on ValueMap all the configured keys

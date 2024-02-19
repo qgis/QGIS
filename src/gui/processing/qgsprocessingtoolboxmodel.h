@@ -47,13 +47,13 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     {
       sipType = sipType_QgsProcessingToolboxModelNode;
       QgsProcessingToolboxModelNode *node = qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp );
-      if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeProvider )
+      if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Provider )
         sipType = sipType_QgsProcessingToolboxModelProviderNode;
-      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeGroup )
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Group )
         sipType = sipType_QgsProcessingToolboxModelGroupNode;
-      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm )
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm )
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
-      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeRecent )
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent )
         sipType = sipType_QgsProcessingToolboxModelRecentNode;
     }
     else
@@ -63,14 +63,18 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 
   public:
 
+    // *INDENT-OFF*
+
     //! Enumeration of possible model node types
-    enum NodeType
+    enum class NodeType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingToolboxModelNode, NodeType ) : int
     {
-      NodeProvider = 0, //!< Provider node
-      NodeGroup, //!< Group node
-      NodeAlgorithm, //!< Algorithm node
-      NodeRecent, //!< Recent algorithms node
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( NodeProvider ) = 0, //!< Provider node
+      Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ), //!< Group node
+      Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ), //!< Algorithm node
+      Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ), //!< Recent algorithms node
     };
+    Q_ENUM( NodeType )
+    // *INDENT-ON*
 
     ~QgsProcessingToolboxModelNode() override;
 
@@ -121,7 +125,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 
   private:
 
-    NodeType mNodeType = NodeProvider;
+    NodeType mNodeType = NodeType::Provider;
     QgsProcessingToolboxModelNode *mParent = nullptr;
     QList<QgsProcessingToolboxModelNode *> mChildren;
 
@@ -144,7 +148,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
      */
     QgsProcessingToolboxModelRecentNode() = default;
 
-    NodeType nodeType() const override { return NodeRecent; }
+    NodeType nodeType() const override { return NodeType::Recent; }
 
 };
 
@@ -166,7 +170,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
      */
     QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 
-    NodeType nodeType() const override { return NodeProvider; }
+    NodeType nodeType() const override { return NodeType::Provider; }
 
     /**
      * Returns the provider associated with this node.
@@ -211,7 +215,7 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
      */
     QgsProcessingToolboxModelGroupNode( const QString &id, const QString &name );
 
-    NodeType nodeType() const override { return NodeGroup; }
+    NodeType nodeType() const override { return NodeType::Group; }
 
     /**
      * Returns the group's ID, which is unique and untranslated.
@@ -247,7 +251,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
      */
     QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 
-    NodeType nodeType() const override { return NodeAlgorithm; }
+    NodeType nodeType() const override { return NodeType::Algorithm; }
 
     /**
      * Returns the algorithm associated with this node.
@@ -277,17 +281,26 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
   public:
 
-    //! Custom roles used by the model
-    enum Roles
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingToolboxModel::Roles
+     * \since QGIS 3.36
+     */
+      enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingToolboxModel, Roles ) : int
     {
-      RoleNodeType = Qt::UserRole, //!< Corresponds to the node's type
-      RoleAlgorithmFlags, //!< Returns the node's algorithm flags, for algorithm nodes
-      RoleAlgorithmId, //!< Algorithm ID, for algorithm nodes
-      RoleAlgorithmName, //!< Untranslated algorithm name, for algorithm nodes
-      RoleAlgorithmShortDescription, //!< Short algorithm description, for algorithm nodes
-      RoleAlgorithmTags, //!< List of algorithm tags, for algorithm nodes
-      RoleProviderFlags, //!< Returns the node's provider flags
+      NodeType SIP_MONKEYPATCH_COMPAT_NAME(RoleNodeType) = Qt::UserRole, //!< Corresponds to the node's type
+      AlgorithmFlags SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmFlags), //!< Returns the node's algorithm flags, for algorithm nodes
+      AlgorithmId SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmId), //!< Algorithm ID, for algorithm nodes
+      AlgorithmName SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmName), //!< Untranslated algorithm name, for algorithm nodes
+      AlgorithmShortDescription SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmShortDescription), //!< Short algorithm description, for algorithm nodes
+      AlgorithmTags SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmTags), //!< List of algorithm tags, for algorithm nodes
+      ProviderFlags SIP_MONKEYPATCH_COMPAT_NAME(RoleProviderFlags), //!< Returns the node's provider flags
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsProcessingToolboxModel, with the given \a parent object.
@@ -420,16 +433,20 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
 
   public:
 
+    // *INDENT-OFF*
+
     //! Available filter flags for filtering the model
-    enum Filter
+    enum class Filter SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingToolboxProxyModel, Filter ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
-      FilterModeler = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler
-      FilterInPlace = 1 << 3, //!< Only show algorithms which support in-place edits
-      FilterShowKnownIssues = 1 << 4, //!< Show algorithms with known issues (hidden by default)
+      Toolbox SIP_MONKEYPATCH_COMPAT_NAME( FilterToolbox ) = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
+      Modeler SIP_MONKEYPATCH_COMPAT_NAME( FilterModeler ) = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler
+      InPlace SIP_MONKEYPATCH_COMPAT_NAME( FilterInPlace ) = 1 << 3, //!< Only show algorithms which support in-place edits
+      ShowKnownIssues SIP_MONKEYPATCH_COMPAT_NAME( FilterShowKnownIssues ) = 1 << 4, //!< Show algorithms with known issues (hidden by default)
     };
+    Q_ENUM( Filter )
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsProcessingToolboxProxyModel, with the given \a parent object.
@@ -503,6 +520,6 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     QString mFilterString;
     QPointer<QgsVectorLayer> mInPlaceLayer;
 };
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingToolboxProxyModel::Filters )
 
 #endif // QGSPROCESSINGTOOLBOXMODEL_H

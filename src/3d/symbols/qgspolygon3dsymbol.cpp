@@ -132,21 +132,21 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
   mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
-  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ExtrusionHeight ) )
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) )
   {
-    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ExtrusionHeight ) );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) );
   }
   else
   {
-    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, QgsProperty() );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, QgsProperty() );
   }
-  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ZOffset ) )
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::Property::ZOffset ) )
   {
-    mDataDefinedProperties.setProperty( PropertyHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ZOffset ) );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::Height, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::ZOffset ) );
   }
   else
   {
-    mDataDefinedProperties.setProperty( PropertyHeight, QgsProperty() );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::Height, QgsProperty() );
   }
   mOffset = static_cast< float >( props->zOffset() );
 }

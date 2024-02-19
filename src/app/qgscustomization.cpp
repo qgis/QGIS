@@ -739,8 +739,8 @@ void QgsCustomization::createTreeItemBrowser()
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
-    int capabilities = pr->capabilities();
-    if ( capabilities != QgsDataProvider::NoDataCapabilities )
+    const Qgis::DataItemProviderCapabilities capabilities = pr->capabilities();
+    if ( capabilities != Qgis::DataItemProviderCapabilities( Qgis::DataItemProviderCapability::NoCapabilities ) )
     {
       QStringList item;
       item << pr->name() << QObject::tr( "Data Item Provider: %1" ).arg( pr->name() );

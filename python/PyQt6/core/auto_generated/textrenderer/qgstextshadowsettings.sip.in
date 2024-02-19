@@ -27,7 +27,7 @@ Container for settings relating to a text shadow.
 %End
   public:
 
-    enum ShadowPlacement
+    enum ShadowPlacement /BaseType=IntEnum/
     {
       ShadowLowest,
       ShadowText,

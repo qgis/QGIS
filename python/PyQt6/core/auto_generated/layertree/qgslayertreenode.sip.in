@@ -82,7 +82,7 @@ Custom properties that have already been used within QGIS:
 %End
   public:
 
-    enum NodeType
+    enum NodeType /BaseType=IntEnum/
     {
       NodeGroup,
       NodeLayer

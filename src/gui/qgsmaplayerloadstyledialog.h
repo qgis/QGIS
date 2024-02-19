@@ -91,6 +91,9 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
     void onOthersTableSelectionChanged();
     void deleteStyleFromDB();
     void showHelp();
+    void selectAll();
+    void deselectAll();
+    void invertSelection();
 
   private:
     void selectionChanged( QTableWidget *styleTable );

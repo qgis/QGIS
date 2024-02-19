@@ -32,7 +32,7 @@ for their corresponding values and emit valuesChanged signal.
 %End
   public:
 
-    enum ConstraintResult
+    enum ConstraintResult /BaseType=IntEnum/
     {
       ConstraintResultPass,
       ConstraintResultFailHard,
@@ -162,6 +162,16 @@ Update constraint on a feature coming from a specific layer.
                          based constraints.
 
 .. versionadded:: 3.0
+%End
+
+    void updateConstraint( QgsEditorWidgetWrapper::ConstraintResult constraintResult, const QString &constraintFailureReason );
+%Docstring
+Update constraint manually by providing the constraint result value and failure reason(s).
+
+:param constraintResult: the constraint result value
+:param constraintFailureReason: the constraint failure reason(s) (blank is the result passes)
+
+.. versionadded:: 3.36
 %End
 
     bool isValidConstraint() const;

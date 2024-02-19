@@ -24,9 +24,9 @@ QString QgsCalculateExpressionAlgorithm::name() const
   return QStringLiteral( "calculateexpression" );
 }
 
-QgsProcessingAlgorithm::Flags QgsCalculateExpressionAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsCalculateExpressionAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsCalculateExpressionAlgorithm::displayName() const

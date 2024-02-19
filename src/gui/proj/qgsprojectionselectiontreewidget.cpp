@@ -268,7 +268,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
     return QgsCoordinateReferenceSystem();
 
   const QModelIndex currentIndex = lstCoordinateSystems->selectionModel()->selectedRows( 0 ).value( 0 );
-  const QString authid = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleAuthId ).toString();
+  const QString authid = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
   if ( !authid.isEmpty() )
   {
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
@@ -276,8 +276,8 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
   else
   {
     // custom CRS
-    const QString wkt = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleWkt ).toString();
-    const QString proj = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleProj ).toString();
+    const QString wkt = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Wkt ) ).toString();
+    const QString proj = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Proj ) ).toString();
 
     if ( !wkt.isEmpty() )
       return QgsCoordinateReferenceSystem::fromWkt( wkt );
@@ -328,9 +328,9 @@ bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
   else
   {
     const QModelIndex currentIndex = lstCoordinateSystems->selectionModel()->selectedRows( 0 ).value( 0 );
-    const QString authid = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleAuthId ).toString();
-    const QString wkt = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleWkt ).toString();
-    const QString proj = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleProj ).toString();
+    const QString authid = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
+    const QString wkt = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Wkt ) ).toString();
+    const QString proj = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Proj ) ).toString();
     return !authid.isEmpty() || !wkt.isEmpty() || !proj.isEmpty();
   }
 }
@@ -376,11 +376,11 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged( con
 
     updateBoundsPreview();
 
-    const QString crsAuthId = mCrsModel->coordinateReferenceSystemModel()->data( sourceIndex, QgsCoordinateReferenceSystemModel::RoleAuthId ).toString();
+    const QString crsAuthId = mCrsModel->coordinateReferenceSystemModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
     if ( !crsAuthId.isEmpty() )
     {
       const QModelIndexList recentMatches = mRecentCrsModel->match( mRecentCrsModel->index( 0, 0 ),
-                                            QgsRecentCoordinateReferenceSystemsModel::RoleAuthId,
+                                            static_cast< int >( QgsRecentCoordinateReferenceSystemsModel::CustomRole::AuthId ),
                                             crsAuthId );
       if ( !recentMatches.isEmpty() )
       {
@@ -561,7 +561,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   QString selectedName;
   if ( currentIndex.isValid() )
   {
-    selectedName = currentIndex.data( QgsCoordinateReferenceSystemModel::RoleName ).toString();
+    selectedName = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
   }
   teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName ) + propertiesString + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
 }

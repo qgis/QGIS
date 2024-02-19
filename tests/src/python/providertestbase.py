@@ -479,8 +479,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         else:
             if self.treat_datetime_tz_as_utc():
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 {QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.TimeSpec.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.TimeSpec.UTC),
-                                  QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.TimeSpec.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.TimeSpec.UTC), NULL})
+                                 {QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14, 0), Qt.TimeSpec.UTC), QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14, 0), Qt.TimeSpec.UTC),
+                                  QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14, 0), Qt.TimeSpec.UTC), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14, 0), Qt.TimeSpec.UTC), NULL})
             else:
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
                                  {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),

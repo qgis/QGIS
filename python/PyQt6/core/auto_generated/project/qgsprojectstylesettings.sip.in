@@ -250,10 +250,11 @@ List model representing the style databases associated with a :py:class:`QgsProj
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      StyleRole,
-      PathRole,
+      Style,
+      Path
     };
 
     explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent /TransferThis/ = 0 );
@@ -310,7 +311,7 @@ A proxy model for filtering QgsProjectStyleDatabaseModel.
 %End
   public:
 
-    enum class Filter
+    enum class Filter /BaseType=IntFlag/
     {
       FilterHideReadOnly,
     };

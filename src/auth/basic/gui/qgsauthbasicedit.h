@@ -46,8 +46,6 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
   private slots:
     void leUsername_textChanged( const QString &txt );
 
-    void chkPasswordShow_stateChanged( int state );
-
   private:
     QgsStringMap mConfigMap;
     bool mValid = false;

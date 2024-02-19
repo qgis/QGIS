@@ -2,9 +2,11 @@ set (QGIS_PYQT_DIR ${Python_SITEARCH}/qgis/PyQt)
 
 set(PYQT_COMPAT_FILES
   __init__.py
+  common.py
   QtWidgets.py
   QtCore.py
   QtGui.py
+  QtSerialPort.py
   QtPrintSupport.py
   QtWebKit.py
   QtWebKitWidgets.py

@@ -256,7 +256,7 @@ Reloads the html source from the url and redraws the item.
 Recalculates the frame sizes for the current viewport dimensions
 %End
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
 
   protected:

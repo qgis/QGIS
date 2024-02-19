@@ -22,7 +22,7 @@ This element will load a relation editor onto the form.
 
   public:
 
-    enum Button
+    enum Button /BaseType=IntEnum/
     {
       Link,
       Unlink,
@@ -147,14 +147,14 @@ Sets the relation widget type
 .. versionadded:: 3.18
 %End
 
-    QMap<QString, QVariant> relationEditorConfiguration() const;
+    QVariantMap relationEditorConfiguration() const;
 %Docstring
 Returns the relation editor widget configuration
 
 .. versionadded:: 3.18
 %End
 
-    void setRelationEditorConfiguration( const QMap<QString, QVariant> &config );
+    void setRelationEditorConfiguration( const QVariantMap &config );
 %Docstring
 Sets the relation editor configuration
 

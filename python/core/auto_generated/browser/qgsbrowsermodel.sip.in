@@ -50,14 +50,16 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
     ~QgsBrowserModel();
 
-    enum ItemDataRole
-    {
-      PathRole,
-      CommentRole,
-      SortRole,
-      ProviderKeyRole,
-      LayerMetadataRole,
+
+    enum class CustomRole
+      {
+      Path,
+      Comment,
+      Sort,
+      ProviderKey,
+      LayerMetadata,
     };
+
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 

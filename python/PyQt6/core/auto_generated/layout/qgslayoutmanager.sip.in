@@ -171,9 +171,10 @@ layout manager.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      LayoutRole,
+      Layout,
     };
 
     explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent /TransferThis/ = 0 );
@@ -235,7 +236,7 @@ QSortFilterProxyModel subclass for QgsLayoutManagerModel
 %End
   public:
 
-    enum Filter
+    enum Filter /BaseType=IntEnum/
     {
       FilterPrintLayouts,
       FilterReports,

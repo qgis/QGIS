@@ -22,20 +22,11 @@ raster band.
 #include "qgsrasterbandstats.h"
 %End
   public:
-    enum Stats
-    {
-      None,
-      Min,
-      Max,
-      Range,
-      Sum,
-      Mean,
-      StdDev,
-      SumOfSquares,
-      All
-    };
 
     QgsRasterBandStats();
+%Docstring
+Constructor for QgsRasterBandStats.
+%End
 
     bool contains( const QgsRasterBandStats &s ) const;
 %Docstring
@@ -57,7 +48,7 @@ Compares region, size etc. not collected statistics
 
     double stdDev;
 
-    int statsGathered;
+    Qgis::RasterBandStatistics statsGathered;
 
     double sum;
 
@@ -69,6 +60,7 @@ Compares region, size etc. not collected statistics
 
     QgsRectangle extent;
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

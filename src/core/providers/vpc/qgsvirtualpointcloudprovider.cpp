@@ -220,7 +220,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !mCrs.isValid() )
     {
       if ( f["properties"].contains( "proj:epsg" ) )
-        mCrs.createFromSrsId( f["properties"]["proj:epsg"].get<long>() );
+        mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:%1" ).arg( f["properties"]["proj:epsg"].get<long>() ) );
       else if ( f["properties"].contains( "proj:wkt2" ) )
         mCrs.createFromString( QString::fromStdString( f["properties"]["proj:wkt2"] ) );
     }

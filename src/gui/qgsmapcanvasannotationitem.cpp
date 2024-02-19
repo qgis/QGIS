@@ -172,7 +172,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
 
   searchRect = mMapCanvas->mapSettings().mapToLayerCoordinates( vectorLayer, searchRect );
 
-  QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::ExactIntersect ).setLimit( 1 ) );
+  QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setLimit( 1 ) );
 
   QgsFeature currentFeature;
   ( void )fit.nextFeature( currentFeature );

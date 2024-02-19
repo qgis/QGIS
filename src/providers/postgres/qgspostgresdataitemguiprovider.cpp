@@ -307,7 +307,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
     return;
   }
 
-  const QString sql = QStringLiteral( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( schemaItem->name() );
+  const QString sql = QStringLiteral( "SELECT table_name FROM information_schema.tables WHERE table_schema=%1" ).arg( QgsPostgresConn::quotedValue( schemaItem->name() ) );
   QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {

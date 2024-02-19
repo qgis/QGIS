@@ -386,6 +386,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "conditions -3" ) << "case" << false;
       QTest::newRow( "conditions -4" ) << "case when n p end" << false;
       QTest::newRow( "conditions -5" ) << "case p end" << false;
+
+      QTest::newRow( "multiline comment after bool 1" ) << R"(True/*"b"*/)" << true;
+      QTest::newRow( "multiline comment after bool 2" ) << "True/*\"\nb\"*/" << true;
     }
 
     void parsing()

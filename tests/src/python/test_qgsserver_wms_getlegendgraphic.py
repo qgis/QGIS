@@ -37,12 +37,17 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsRuleBasedRenderer,
     QgsVectorLayer,
+    QgsRasterLayer,
 )
 
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
+)
+
+from utilities import (
+    unitTestDataPath,
 )
 
 # Strip path and content length because path may vary
@@ -141,7 +146,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerTitleSpace")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerTitleSpace",
+                             max_size_diff=QSize(1, 5))
 
     def test_wms_GetLegendGraphic_ShowFeatureCount(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -489,7 +495,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize",
+                             max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_LayerFont(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1473,6 +1480,31 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         j = json.loads(bytes(response.body()))
         node = j
         self.assertEqual(node['icon'], icon)
+
+    def test_wms_GetLegendGraphic_JSON_raster_color_ramp(self):
+        """Test raster color ramp legend in JSON format"""
+
+        project = QgsProject()
+
+        path = os.path.join(unitTestDataPath('raster'),
+                            'byte.tif')
+
+        layer = QgsRasterLayer(path, "layer1")
+        self.assertTrue(layer.isValid())
+        project.addMapLayers([layer])
+
+        server = QgsServer()
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
+                                         "&LAYERS=layer1" +
+                                         "&FORMAT=application/json")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()))
+        node = j
+        self.assertEqual(node['nodes'][0]['symbols'][0]['title'], 'Band 1 (Gray)')
+        self.assertEqual(node['nodes'][0]['symbols'][1]['max'], 255)
+        self.assertEqual(node['nodes'][0]['symbols'][1]['min'], 74)
+        self.assertNotEqual(node['nodes'][0]['symbols'][1]['icon'], '')
 
 
 if __name__ == '__main__':

@@ -595,7 +595,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       QgsFeatureRequest request;
       request.setFilterRect( layerRect );
-      request.setFlags( QgsFeatureRequest::ExactIntersect );
+      request.setFlags( Qgis::FeatureRequestFlag::ExactIntersect );
       if ( r )
         request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
       else

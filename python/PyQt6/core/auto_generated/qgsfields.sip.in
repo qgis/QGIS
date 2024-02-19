@@ -30,7 +30,7 @@ In addition to storing a list of :py:class:`QgsField` instances, it also:
 %End
   public:
 
-    enum FieldOrigin
+    enum FieldOrigin /BaseType=IntEnum/
     {
       OriginUnknown,
       OriginProvider,

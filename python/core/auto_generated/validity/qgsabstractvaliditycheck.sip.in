@@ -70,10 +70,10 @@ Checks must be registered in the application's :py:class:`QgsValidityCheckRegist
 %End
   public:
 
-    enum Type
-    {
-      TypeLayoutCheck,
-      TypeUserCheck,
+    enum class Type
+      {
+      LayoutCheck,
+      UserCheck,
     };
 
     virtual ~QgsAbstractValidityCheck();

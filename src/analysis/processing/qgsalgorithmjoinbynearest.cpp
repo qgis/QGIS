@@ -57,7 +57,7 @@ void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS_TO_COPY" ),
                 QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ),
-                QVariant(), QStringLiteral( "INPUT_2" ), QgsProcessingParameterField::Any,
+                QVariant(), QStringLiteral( "INPUT_2" ), Qgis::ProcessingFieldParameterDataType::Any,
                 true, true ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
@@ -68,17 +68,17 @@ void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
 
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ),
-                QObject::tr( "Maximum nearest neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+                QObject::tr( "Maximum nearest neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
 
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MAX_DISTANCE" ),
                 QObject::tr( "Maximum distance" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > nonMatchingSink = std::make_unique< QgsProcessingParameterFeatureSink >(
-        QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false );
+        QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false );
   // TODO GUI doesn't support advanced outputs yet
-  //nonMatchingSink->setFlags(nonMatchingSink->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  //nonMatchingSink->setFlags(nonMatchingSink->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( nonMatchingSink.release() );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );

@@ -22,7 +22,7 @@ A layout item subclass that displays SVG files or raster format images (jpg, png
 %End
   public:
 
-    enum ResizeMode
+    enum ResizeMode /BaseType=IntEnum/
     {
       Zoom,
       Stretch,
@@ -31,14 +31,14 @@ A layout item subclass that displays SVG files or raster format images (jpg, png
       FrameToImageSize
     };
 
-    enum Format
+    enum Format /BaseType=IntEnum/
     {
       FormatSVG,
       FormatRaster,
       FormatUnknown,
     };
 
-    enum NorthMode
+    enum NorthMode /BaseType=IntEnum/
     {
       GridNorth,
       TrueNorth,
@@ -342,7 +342,7 @@ and reloads and redraws the picture.
 Forces a recalculation of the picture's frame size
 %End
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
 
   signals:

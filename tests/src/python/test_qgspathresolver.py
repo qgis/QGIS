@@ -171,9 +171,9 @@ class TestQgsPathResolver(QgisTestCase):
         readerId = QgsPathResolver.setPathPreprocessor(self.__test_path_reader)
         writerId = QgsPathResolver.setPathWriter(self.__test__path_writer)
 
-        lines_shp_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        uri = os.path.join(TEST_DATA_DIR, 'points_gpkg.gpkg') + "|layername=points_gpkg|subset=1=1 /* foo */"
 
-        lines_layer = QgsVectorLayer(lines_shp_path, 'Lines', 'ogr')
+        lines_layer = QgsVectorLayer(uri, 'Points', 'ogr')
         self.assertTrue(lines_layer.isValid())
         p = QgsProject()
         p.addMapLayer(lines_layer)
@@ -187,9 +187,9 @@ class TestQgsPathResolver(QgisTestCase):
 
         p2 = QgsProject()
         self.assertTrue(p2.read(temp_project_path))
-        l = p2.mapLayersByName('Lines')[0]
+        l = p2.mapLayersByName('Points')[0]
         self.assertEqual(l.isValid(), True)
-        self.assertEqual(l.source(), lines_shp_path)
+        self.assertEqual(l.source(), uri)
 
         QgsPathResolver.removePathPreprocessor(readerId)
         QgsPathResolver.removePathWriter(writerId)

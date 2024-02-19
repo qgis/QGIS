@@ -51,14 +51,25 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     Q_OBJECT
 
   public:
-    enum Role
+
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsAttributeTableModel::Role
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableModel, Role ) : int
     {
-      FeatureIdRole = Qt::UserRole, //!< Get the feature id of the feature in this row
-      FieldIndexRole,               //!< Get the field index of this column
-      UserRole,                     //!< Start further roles starting from this role
+      FeatureId SIP_MONKEYPATCH_COMPAT_NAME(FeatureIdRole)= Qt::UserRole, //!< Get the feature id of the feature in this row
+      FieldIndex SIP_MONKEYPATCH_COMPAT_NAME(FieldIndexRole),               //!< Get the field index of this column
+      User SIP_MONKEYPATCH_COMPAT_NAME(UserRole),                     //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
-      SortRole,                     //!< Role used for sorting start here
+      Sort SIP_MONKEYPATCH_COMPAT_NAME(SortRole),                     //!< Role used for sorting start here
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
   public:
 

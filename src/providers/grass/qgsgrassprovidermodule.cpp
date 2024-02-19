@@ -17,7 +17,6 @@
 #include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
 #include "qgsproviderregistry.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
@@ -32,7 +31,6 @@
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
-#include "qgsgrassoptions.h"
 #endif
 
 #include <QAction>
@@ -603,10 +601,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
     }
   }
 
-  QStringList rasterNames = QgsGrass::rasters( mDirPath );
-
-  const auto constRasterNames = rasterNames;
-  for ( const QString &name : constRasterNames )
+  const QStringList rasterNames = QgsGrass::rasters( mDirPath );
+  for ( const QString &name : rasterNames )
   {
     if ( mRefreshLater )
     {
@@ -1263,7 +1259,7 @@ class QgsGrassDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "GRASS" ); }
 
-    int capabilities() const override { return QgsDataProvider::Dir; }
+    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Directories; }
 
     QgsDataItem *createDataItem( const QString &dirPath, QgsDataItem *parentItem ) override
     {

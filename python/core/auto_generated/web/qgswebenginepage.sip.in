@@ -1,0 +1,149 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/web/qgswebenginepage.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsWebEnginePage : QObject
+{
+%Docstring(signature="appended")
+A wrapper around the QWebEnginePage class, adding extra functionality.
+
+.. warning::
+
+   This class is only available on QGIS builds with WebEngine support enabled.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgswebenginepage.h"
+%End
+  public:
+
+    QgsWebEnginePage( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsWebEnginePage, with the specified ``parent`` widget.
+%End
+    ~QgsWebEnginePage();
+
+
+    bool setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl(), bool blocking = false );
+%Docstring
+Sets the content of the web page to ``data``. If the ``mimeType`` argument is empty, it is assumed that the content is text/plain,charset=US-ASCII
+
+The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
+
+If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+
+.. warning::
+
+   Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+:return: ``True`` if loading was successful
+%End
+
+    bool setHtml( const QString &html, const QUrl &baseUrl = QUrl(), bool blocking = false );
+%Docstring
+Sets the content of this page to ``html``.
+
+The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
+
+If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+
+.. note::
+
+   This function works only for HTML, for other mime types (such as XHTML and SVG) :py:func:`~QgsWebEnginePage.setContent` should be used instead.
+
+.. warning::
+
+   Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+
+:return: ``True`` if loading was successful
+%End
+
+    bool setUrl( const QUrl &url, bool blocking = false );
+%Docstring
+Sets the ``url`` of the web page to be displayed.
+
+Setting this property clears the page and loads the URL.
+
+If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+
+.. warning::
+
+   Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+:return: ``True`` if loading was successful
+%End
+
+    QSize documentSize() const;
+%Docstring
+Returns the size of the page document, in pixels.
+
+.. warning::
+
+   If the page content was NOT loaded using a blocking method, then this method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+%End
+
+    bool render( QPainter *painter, const QRectF &painterRect ) throw( QgsNotSupportedException );
+%Docstring
+Renders the web page contents to a ``painter``. Content will be rendered as vector objects.
+
+The ``painterRect`` argument specifies the target rectangle for the page in ``painter`` coordinates.
+
+.. warning::
+
+   This method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+.. warning::
+
+   This method requires a QGIS build with PDF4Qt library support.
+
+:return: ``True`` if rendering was successful
+
+
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+%End
+
+  signals:
+
+    void loadStarted();
+%Docstring
+This signal is emitted when the page starts loading content.
+%End
+
+    void loadProgress( int progress );
+%Docstring
+This signal is emitted when the global ``progress`` status changes.
+
+The current value is provided by ``progress`` and scales from 0 to 100.
+It accumulates changes from all the child frames.
+%End
+
+    void loadFinished( bool ok );
+%Docstring
+This signal is emitted when the page finishes loading content.
+
+This signal is independent of script execution or page rendering.
+
+``ok`` will indicate whether the load was successful or any error occurred.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/web/qgswebenginepage.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

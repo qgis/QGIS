@@ -69,7 +69,7 @@ class CORE_EXPORT QgsTask : public QObject
     Q_ENUM( TaskStatus )
 
     //! Task flags
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       CanCancel = 1 << 1, //!< Task can be canceled
       CancelWithoutPrompt = 1 << 2, //!< Task can be canceled without any users prompts, e.g. when closing a project or QGIS.

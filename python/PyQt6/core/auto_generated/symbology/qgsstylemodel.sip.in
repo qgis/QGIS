@@ -31,24 +31,25 @@ instead.
 %End
   public:
 
-    enum Column
+    enum Column /BaseType=IntEnum/
     {
       Name,
       Tags,
     };
 
-    enum Role
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      TypeRole,
-      TagRole,
+      Type,
+      Tag,
       EntityName,
-      SymbolTypeRole,
-      IsFavoriteRole,
-      LayerTypeRole,
-      CompatibleGeometryTypesRole,
+      SymbolType,
+      IsFavorite,
+      LayerType,
+      CompatibleGeometryTypes,
       StyleName,
       StyleFileName,
-      IsTitleRole,
+      IsTitle,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );

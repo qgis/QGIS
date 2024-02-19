@@ -202,7 +202,7 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
   public:
 
     QString name() override;
-    int capabilities() const override;
+    Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override SIP_FACTORY;
     bool handlesDirectoryPath( const QString &path ) override;
 };

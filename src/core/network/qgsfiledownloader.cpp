@@ -32,7 +32,8 @@ QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFile
   , mHttpMethod( httpMethod )
   , mData( data )
 {
-  mFile.setFileName( outputFileName );
+  if ( !outputFileName.isEmpty() )
+    mFile.setFileName( outputFileName );
   mAuthCfg = authcfg;
   if ( !delayStart )
     startDownload();
@@ -53,6 +54,7 @@ void QgsFileDownloader::startDownload()
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsFileDownloader" ) );
   if ( !mAuthCfg.isEmpty() )
   {
@@ -181,30 +183,10 @@ void QgsFileDownloader::onFinished()
       mFile.close();
     }
 
-    // get redirection url
-    const QVariant redirectionTarget = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
     if ( mReply->error() )
     {
       mFile.remove();
       error( tr( "Download failed: %1" ).arg( mReply->errorString() ) );
-    }
-    else if ( !QgsVariantUtils::isNull( redirectionTarget ) )
-    {
-      const QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
-      mUrl = newUrl;
-      mReply->deleteLater();
-      if ( !mFile.open( QIODevice::WriteOnly ) )
-      {
-        mFile.remove();
-        error( tr( "Cannot open output file: %1" ).arg( mFile.fileName() ) );
-      }
-      else
-      {
-        mFile.resize( 0 );
-        mFile.close();
-        startDownload();
-      }
-      return;
     }
     else
     {

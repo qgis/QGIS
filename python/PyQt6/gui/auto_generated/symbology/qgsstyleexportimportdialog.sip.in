@@ -19,7 +19,7 @@ class QgsStyleExportImportDialog : QDialog
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       Export,
       Import,

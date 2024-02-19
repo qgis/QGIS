@@ -12,3 +12,13 @@ QgsVectorSimplifyMethod.SnapToGrid = QgsVectorSimplifyMethod.SimplifyAlgorithm.S
 QgsVectorSimplifyMethod.Visvalingam = QgsVectorSimplifyMethod.SimplifyAlgorithm.Visvalingam
 QgsVectorSimplifyMethod.SnappedToGridGlobal = QgsVectorSimplifyMethod.SimplifyAlgorithm.SnappedToGridGlobal
 QgsVectorSimplifyMethod.SimplifyAlgorithm.baseClass = QgsVectorSimplifyMethod
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+
+QgsVectorSimplifyMethod.SimplifyHint.__bool__ = lambda flag: bool(_force_int(flag))
+QgsVectorSimplifyMethod.SimplifyHint.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsVectorSimplifyMethod.SimplifyHint.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsVectorSimplifyMethod.SimplifyHint.__or__ = lambda flag1, flag2: QgsVectorSimplifyMethod.SimplifyHint(_force_int(flag1) | _force_int(flag2))

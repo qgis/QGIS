@@ -99,8 +99,8 @@ void TestQgsBrowserModel::testModel()
   rootItem1->setState( Qgis::BrowserItemState::Populated );
   QVERIFY( !model.hasChildren( root1Index ) );
   QCOMPARE( model.data( root1Index ).toString(), QStringLiteral( "Test" ) );
-  QCOMPARE( model.data( root1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root1" ) );
-  QCOMPARE( model.data( root1Index, QgsBrowserModel::ProviderKeyRole ).toString(), QStringLiteral( "providerKeyRoot1" ) );
+  QCOMPARE( model.data( root1Index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "root1" ) );
+  QCOMPARE( model.data( root1Index, static_cast< int >( QgsBrowserModel::CustomRole::ProviderKey ) ).toString(), QStringLiteral( "providerKeyRoot1" ) );
   QCOMPARE( model.dataItem( root1Index ), rootItem1 );
   QCOMPARE( model.findItem( rootItem1 ), root1Index );
 
@@ -116,8 +116,8 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.rowCount( root2Index ), 0 );
   QCOMPARE( model.columnCount( root2Index ), 1 );
   QCOMPARE( model.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
-  QCOMPARE( model.data( root2Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root2" ) );
-  QVERIFY( model.data( root2Index, QgsBrowserModel::ProviderKeyRole ).toString().isEmpty() );
+  QCOMPARE( model.data( root2Index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "root2" ) );
+  QVERIFY( model.data( root2Index, static_cast< int >( QgsBrowserModel::CustomRole::ProviderKey ) ).toString().isEmpty() );
   QCOMPARE( model.dataItem( root2Index ), rootItem2 );
   QCOMPARE( model.findItem( rootItem2 ), root2Index );
 
@@ -133,8 +133,8 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( model.hasChildren( root1Index ) );
   QModelIndex child1Index = model.index( 0, 0, root1Index );
   QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
-  QCOMPARE( model.data( child1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "child1" ) );
-  QCOMPARE( model.data( child1Index, QgsBrowserModel::ProviderKeyRole ).toString(), QStringLiteral( "providerKeyChild1" ) );
+  QCOMPARE( model.data( child1Index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "child1" ) );
+  QCOMPARE( model.data( child1Index, static_cast< int >( QgsBrowserModel::CustomRole::ProviderKey ) ).toString(), QStringLiteral( "providerKeyChild1" ) );
   QCOMPARE( model.dataItem( child1Index ), childItem1 );
   QCOMPARE( model.findItem( childItem1 ), child1Index );
   QCOMPARE( model.findItem( childItem1, rootItem1 ), child1Index );
@@ -189,7 +189,7 @@ class TestDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "test" ); }
-    int capabilities() const override { return QgsDataProvider::Net; }
+    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       if ( path.isEmpty() )

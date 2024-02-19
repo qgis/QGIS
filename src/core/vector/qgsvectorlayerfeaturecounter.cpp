@@ -63,7 +63,7 @@ bool QgsVectorLayerFeatureCounter::run()
 
     QgsFeatureRequest request;
     if ( !mRenderer->filterNeedsGeometry() )
-      request.setFlags( QgsFeatureRequest::NoGeometry );
+      request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mSource->fields() );
 
     request.setFeedback( mFeedback.get() );

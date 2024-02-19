@@ -49,7 +49,7 @@ QString QgsExtractSpecificVerticesAlgorithm::groupId() const
 
 QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a line or polygon layer and generates a point layer with points "
+  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points "
                       "representing specific vertices in the input lines or polygons. For instance, this algorithm "
                       "can be used to extract the first or last vertices in the geometry. The attributes associated "
                       "to each point are the same ones associated to the line or polygon that the point belongs to." ) +
@@ -74,9 +74,9 @@ QgsExtractSpecificVerticesAlgorithm *QgsExtractSpecificVerticesAlgorithm::create
   return new QgsExtractSpecificVerticesAlgorithm();
 }
 
-QgsProcessing::SourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPoint;
+  return Qgis::ProcessingSourceType::VectorPoint;
 }
 
 QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -111,9 +111,9 @@ Qgis::WkbType QgsExtractSpecificVerticesAlgorithm::outputWkbType( Qgis::WkbType 
   return outputWkbType;
 }
 
-QgsProcessingFeatureSource::Flag QgsExtractSpecificVerticesAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsExtractSpecificVerticesAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsExtractSpecificVerticesAlgorithm::sinkFlags() const

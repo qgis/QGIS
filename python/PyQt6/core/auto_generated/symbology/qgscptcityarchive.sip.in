@@ -60,7 +60,7 @@ Base class for all items in the model
 #include "qgscptcityarchive.h"
 %End
   public:
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       ColorRamp,
       Collection,
@@ -266,7 +266,7 @@ class QgsCptCityBrowserModel : QAbstractItemModel
 %End
   public:
 
-    enum ViewType
+    enum ViewType /BaseType=IntEnum/
     {
       Authors,
       Selections,

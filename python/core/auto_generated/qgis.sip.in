@@ -88,7 +88,7 @@ The development version
     };
 
     enum class LayerFilter
-      {
+    {
       RasterLayer,
       NoGeometry,
       PointLayer,
@@ -231,6 +231,20 @@ The development version
       UnknownCount,
     };
 
+    enum class SpatialIndexPresence
+      {
+      Unknown,
+      NotPresent,
+      Present,
+    };
+
+    enum class FeatureAvailability
+      {
+      NoFeaturesAvailable,
+      FeaturesAvailable,
+      FeaturesMaybeAvailable
+    };
+
     enum class VectorDataProviderAttributeEditCapability
     {
       EditAlias,
@@ -325,7 +339,7 @@ The development version
     };
 
     enum class SnappingType
-      {
+    {
       NoSnap,
       Vertex,
       Segment,
@@ -338,7 +352,7 @@ The development version
 
 
     enum class SymbolRenderHint
-      {
+    {
       DynamicRotation,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
@@ -358,7 +372,7 @@ The development version
 
 
     enum class SymbolPreviewFlag
-      {
+    {
       FlagIncludeCrosshairsForMarkerSymbols,
     };
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
@@ -400,7 +414,7 @@ The development version
     };
 
     enum class BrowserItemCapability
-      {
+    {
       NoCapabilities,
       SetCrs,
       Fertile,
@@ -412,6 +426,18 @@ The development version
       RefreshChildrenWhenItemIsRefreshed,
     };
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
+
+
+    enum class DataItemProviderCapability
+    {
+      NoCapabilities,
+      Files,
+      Directories,
+      Databases,
+      NetworkSources,
+    };
+
+    typedef QFlags<Qgis::DataItemProviderCapability> DataItemProviderCapabilities;
 
 
     enum class BrowserLayerType
@@ -573,7 +599,7 @@ The development version
     };
 
     enum class LabelLinePlacementFlag
-      {
+    {
       OnLine,
       AboveLine,
       BelowLine,
@@ -584,7 +610,7 @@ The development version
 
 
     enum class LabelPolygonPlacementFlag
-      {
+    {
       AllowPlacementOutsideOfPolygon,
       AllowPlacementInsideOfPolygon,
     };
@@ -936,7 +962,7 @@ The development version
     };
 
     enum class GeometryValidityFlag
-      {
+    {
       AllowSelfTouchingHoles,
     };
     typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
@@ -979,6 +1005,34 @@ The development version
     {
       Linework,
       Structure,
+    };
+
+    enum class FeatureRequestFlag
+    {
+      NoFlags,
+      NoGeometry,
+      SubsetOfAttributes,
+      ExactIntersect,
+      IgnoreStaticNodesDuringExpressionCompilation,
+      EmbeddedSymbols,
+    };
+
+    typedef QFlags<Qgis::FeatureRequestFlag> FeatureRequestFlags;
+
+
+    enum class FeatureRequestFilterType
+      {
+      NoFilter,
+      Fid,
+      Expression,
+      Fids
+    };
+
+    enum class InvalidGeometryCheck
+      {
+      NoCheck,
+      SkipInvalid,
+      AbortOnInvalid,
     };
 
     enum class SpatialFilterType
@@ -1228,7 +1282,7 @@ The development version
 
 
     enum class MapSettingsFlag
-      {
+    {
       Antialiasing,
       DrawEditingInfo,
       ForceVectorOutput,
@@ -1252,7 +1306,7 @@ The development version
 
 
     enum class RenderContextFlag
-      {
+    {
       DrawEditingInfo,
       ForceVectorOutput,
       UseAdvancedEffects,
@@ -1294,7 +1348,7 @@ The development version
     };
 
     enum class LabelingFlag
-      {
+    {
       UseAllLabels,
       UsePartialCandidates,
       // TODO QGIS 4.0: remove
@@ -1417,7 +1471,7 @@ The development version
     };
 
     enum class MarkerLinePlacement
-      {
+    {
       Interval,
       Vertex,
       LastVertex,
@@ -1587,6 +1641,133 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
+    enum class ProcessingSourceType
+      {
+      MapLayer,
+      VectorAnyGeometry,
+      VectorPoint,
+      VectorLine,
+      VectorPolygon,
+      Raster,
+      File,
+      Vector,
+      Mesh,
+      Plugin,
+      PointCloud,
+      Annotation,
+      VectorTile
+    };
+
+
+    enum class ProcessingProviderFlag
+    {
+      DeemphasiseSearchResults,
+      CompatibleWithVirtualRaster,
+    };
+
+    typedef QFlags<Qgis::ProcessingProviderFlag> ProcessingProviderFlags;
+
+
+    enum class ProcessingAlgorithmFlag
+    {
+      HideFromToolbox,
+      HideFromModeler,
+      SupportsBatch,
+      CanCancel,
+      RequiresMatchingCrs,
+      NoThreading,
+      DisplayNameIsLiteral,
+      SupportsInPlaceEdits,
+      KnownIssues,
+      CustomException,
+      PruneModelBranchesBasedOnAlgorithmResults,
+      SkipGenericModelLogging,
+      NotAvailableInStandaloneTool,
+      RequiresProject,
+      Deprecated,
+    };
+
+    typedef QFlags<Qgis::ProcessingAlgorithmFlag> ProcessingAlgorithmFlags;
+
+
+    enum class ProcessingPropertyAvailability
+      {
+      NotAvailable,
+      Available,
+    };
+
+    enum class ProcessingLogLevel
+      {
+      DefaultLevel,
+      Verbose,
+      ModelDebug,
+    };
+
+    enum class ProcessingFeatureSourceDefinitionFlag
+    {
+      OverrideDefaultGeometryCheck,
+      CreateIndividualOutputPerInputFeature,
+    };
+
+    typedef QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> ProcessingFeatureSourceDefinitionFlags;
+
+
+    enum class ProcessingFeatureSourceFlag
+    {
+      SkipGeometryValidityChecks,
+    };
+
+    typedef QFlags<Qgis::ProcessingFeatureSourceFlag> ProcessingFeatureSourceFlags;
+
+
+    enum class ProcessingParameterTypeFlag
+    {
+      ExposeToModeler
+    };
+
+    typedef QFlags<Qgis::ProcessingParameterTypeFlag> ProcessingParameterTypeFlags;
+
+
+    enum class ProcessingParameterFlag
+    {
+      Advanced,
+      Hidden,
+      Optional,
+      IsModelOutput,
+    };
+
+    typedef QFlags<Qgis::ProcessingParameterFlag> ProcessingParameterFlags;
+
+
+    enum class ProcessingFileParameterBehavior
+      {
+      File,
+      Folder,
+    };
+
+    enum class ProcessingNumberParameterType
+      {
+      Integer,
+      Double,
+    };
+
+    enum class ProcessingFieldParameterDataType
+      {
+      Any,
+      Numeric,
+      String,
+      DateTime,
+      Binary,
+      Boolean,
+    };
+
+    enum class ProcessingDateTimeParameterDataType
+      {
+      DateTime,
+      Date,
+      Time,
+    };
+
     enum class ProcessingModelChildParameterSource
     {
       ModelParameter,
@@ -1595,6 +1776,13 @@ The development version
       Expression,
       ExpressionText,
       ModelOutput,
+    };
+
+    enum class ProcessingTinInputLayerType
+      {
+      Vertices,
+      StructureLines,
+      BreakLines
     };
 
     enum class CrsDefinitionFormat
@@ -1778,7 +1966,7 @@ The development version
     };
 
     enum class ProjectReadFlag
-      {
+    {
       DontResolveLayers,
       DontLoadLayouts,
       TrustLayerMetadata,
@@ -2019,7 +2207,7 @@ The development version
     };
 
     enum class RasterIdentifyFormat
-      {
+    {
       Undefined,
       Value,
       Text,
@@ -2386,6 +2574,152 @@ The development version
       RA_Q3,
     };
 
+
+    enum class ZonalStatistic
+    {
+      Count,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      Variance,
+      All,
+      Default,
+    };
+
+    typedef QFlags<Qgis::ZonalStatistic> ZonalStatistics;
+
+
+    enum class ZonalStatisticResult
+    {
+      Success,
+      LayerTypeWrong,
+      LayerInvalid,
+      RasterInvalid,
+      RasterBandInvalid,
+      FailedToCreateField,
+      Canceled
+    };
+
+    enum class Aggregate
+      {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Range,
+      Minority,
+      Majority,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      StringMinimumLength,
+      StringMaximumLength,
+      StringConcatenate,
+      GeometryCollect,
+      ArrayAggregate,
+      StringConcatenateUnique
+    };
+
+    enum class Statistic
+    {
+      Count,
+      CountMissing,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      First,
+      Last,
+      All
+    };
+
+    typedef QFlags<Qgis::Statistic> Statistics;
+
+
+    enum class DateTimeStatistic
+    {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Range,
+      All,
+    };
+
+    typedef QFlags<Qgis::DateTimeStatistic> DateTimeStatistics;
+
+
+    enum class StringStatistic
+    {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      MinimumLength,
+      MaximumLength,
+      MeanLength,
+      Minority,
+      Majority,
+      All,
+    };
+
+    typedef QFlags<Qgis::StringStatistic> StringStatistics;
+
+
+    enum class RasterBandStatistic
+    {
+      NoStatistic,
+      Min,
+      Max,
+      Range,
+      Sum,
+      Mean,
+      StdDev,
+      SumOfSquares,
+      All
+    };
+
+    typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
+
+
+    enum class SensorThingsEntity
+    {
+      Invalid,
+      Thing,
+      Location,
+      HistoricalLocation,
+      Datastream,
+      Sensor,
+      ObservedProperty,
+      Observation,
+      FeatureOfInterest,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2559,6 +2893,32 @@ QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+
+QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
+
+QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> operator|(Qgis::ProcessingFeatureSourceDefinitionFlag f1, QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> f2);
+
+QFlags<Qgis::ZonalStatistic> operator|(Qgis::ZonalStatistic f1, QFlags<Qgis::ZonalStatistic> f2);
+
+QFlags<Qgis::Statistic> operator|(Qgis::Statistic f1, QFlags<Qgis::Statistic> f2);
+
+QFlags<Qgis::DateTimeStatistic> operator|(Qgis::DateTimeStatistic f1, QFlags<Qgis::DateTimeStatistic> f2);
+
+QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::StringStatistic> f2);
+
+QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
+
+QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
+
+QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
+
+QFlags<Qgis::ProcessingFeatureSourceFlag> operator|(Qgis::ProcessingFeatureSourceFlag f1, QFlags<Qgis::ProcessingFeatureSourceFlag> f2);
+
+QFlags<Qgis::ProcessingParameterTypeFlag> operator|(Qgis::ProcessingParameterTypeFlag f1, QFlags<Qgis::ProcessingParameterTypeFlag> f2);
+
+QFlags<Qgis::ProcessingParameterFlag> operator|(Qgis::ProcessingParameterFlag f1, QFlags<Qgis::ProcessingParameterFlag> f2);
+
+QFlags<Qgis::DataItemProviderCapability> operator|(Qgis::DataItemProviderCapability f1, QFlags<Qgis::DataItemProviderCapability> f2);
 
 
 

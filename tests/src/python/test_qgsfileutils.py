@@ -212,7 +212,7 @@ class TestQgsFileUtils(unittest.TestCase):
                          {f'{unitTestDataPath()}/lines.shx', f'{unitTestDataPath()}/lines.dbf',
                           f'{unitTestDataPath()}/lines.prj'})
         # gpkg
-        self.assertFalse(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/mixed_layers.gpkg'))
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/points_gpkg.gpkg'))
 
         # MapInfo TAB file
         self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/ogr_types.tab'),

@@ -18,7 +18,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 %End
   public:
 
-    enum FilterMode
+    enum FilterMode /BaseType=IntEnum/
     {
       ShowAll,
       ShowSelected,
@@ -28,17 +28,17 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ShowInvalid,
     };
 
-    enum ColumnType
+    enum ColumnType /BaseType=IntEnum/
     {
       ColumnTypeField,
       ColumnTypeActionButton
     };
 
-    enum Role
-    {
-      TypeRole
-    };
 
+    enum class CustomRole /BaseType=IntEnum/
+    {
+      Type
+    };
 
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 %Docstring

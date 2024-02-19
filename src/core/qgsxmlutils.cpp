@@ -316,12 +316,13 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   }
   else if ( type == QLatin1String( "QString" ) )
   {
-    return element.attribute( QStringLiteral( "value" ) );
+    const QString res = element.attribute( QStringLiteral( "value" ) );
+    return res.isEmpty() ? QVariant() : res;
   }
   else if ( type == QLatin1String( "QChar" ) )
   {
     const QString res = element.attribute( QStringLiteral( "value" ) );
-    return res.isEmpty() ? QChar() : res.at( 0 );
+    return res.isEmpty() ? QVariant() : res.at( 0 );
   }
   else if ( type == QLatin1String( "bool" ) )
   {
@@ -329,19 +330,19 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   }
   else if ( type == QLatin1String( "color" ) )
   {
-    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QColor() : QgsColorUtils::colorFromString( element.attribute( QStringLiteral( "value" ) ) );
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QVariant() : QgsColorUtils::colorFromString( element.attribute( QStringLiteral( "value" ) ) );
   }
   else if ( type == QLatin1String( "datetime" ) )
   {
-    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDateTime() : QDateTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QVariant() : QDateTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
   }
   else if ( type == QLatin1String( "date" ) )
   {
-    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDate() : QDate::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QVariant() : QDate::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
   }
   else if ( type == QLatin1String( "time" ) )
   {
-    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QTime() : QTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QVariant() : QTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
   }
   else if ( type == QLatin1String( "Map" ) )
   {
@@ -394,11 +395,12 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   {
     QgsCoordinateReferenceSystem crs;
     crs.readXml( element );
-    return crs;
+    return crs.isValid() ? crs : QVariant();
   }
   else if ( type == QLatin1String( "QgsGeometry" ) )
   {
-    return QgsGeometry::fromWkt( element.attribute( "value" ) );
+    const QgsGeometry g = QgsGeometry::fromWkt( element.attribute( "value" ) );
+    return !g.isNull() ? g : QVariant();
   }
   else if ( type == QLatin1String( "QgsProcessingOutputLayerDefinition" ) )
   {

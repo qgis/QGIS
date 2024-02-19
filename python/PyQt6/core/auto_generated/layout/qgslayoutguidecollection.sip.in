@@ -137,13 +137,15 @@ Stores and manages the snap guides used by a layout.
 %End
   public:
 
-    enum Roles
+
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      OrientationRole,
-      PositionRole,
-      UnitsRole,
-      PageRole,
-      LayoutPositionRole,
+      Orientation,
+      Position,
+      Units,
+      Page,
+      LayoutPosition,
     };
 
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );

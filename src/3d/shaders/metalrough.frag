@@ -1,8 +1,47 @@
 // Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
-#version 330
+#version 140
 
+// defines are added here as a pre-processing step
+
+uniform vec3 eyePosition;
+in vec3 worldPosition;
+
+#ifndef FLAT_SHADING
+in vec3 worldNormal;
+#endif
+
+#ifdef BASE_COLOR_MAP
+uniform sampler2D baseColorMap;
+#else
+uniform vec4 baseColor;
+#endif
+
+#ifdef METALNESS_MAP
+uniform sampler2D metalnessMap;
+#else
+uniform float metalness;
+#endif
+
+#ifdef ROUGHNESS_MAP
+uniform sampler2D roughnessMap;
+#else
+uniform float roughness;
+#endif
+
+#ifdef AMBIENT_OCCLUSION_MAP
+uniform sampler2D ambientOcclusionMap;
+#endif
+
+#ifdef NORMAL_MAP
+uniform sampler2D normalMap;
+in vec4 worldTangent;
+#endif
+
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)
+in vec2 texCoord;
+#endif
 
 // Exposure correction
 uniform float exposure = 0.0;
@@ -10,6 +49,30 @@ uniform float exposure = 0.0;
 uniform float gamma = 2.2;
 
 #pragma include light.inc.frag
+
+
+#ifdef NORMAL_MAP
+mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
+{
+    // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
+    // This allows building the tangentMatrix below by simply transposing the
+    // tangent -> eyespace matrix (which would now be orthogonal)
+    vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, wNormal) * wNormal);
+
+    // Calculate binormal vector. No "real" need to renormalize it,
+    // as built by crossing two normal vectors.
+    // To orient the binormal correctly, use the fourth coordinate of the tangent,
+    // which is +1 for a right hand system, and -1 for a left hand system.
+    vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
+
+    // Construct matrix to transform from world space to tangent space
+    // This is the transpose of the tangentToWorld transformation matrix
+    mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
+    mat3 worldToTangentMatrix = transpose(tangentToWorldMatrix);
+    return worldToTangentMatrix;
+}
+#endif
+
 
 float remapRoughness(const in float roughness)
 {
@@ -290,4 +353,52 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     vec3 cGamma = gammaCorrect(cToneMapped);
 
     return vec4(cGamma, 1.0);
+}
+
+
+out vec4 fragColor;
+
+void main()
+{
+#ifdef BASE_COLOR_MAP
+    vec4 c = texture(baseColorMap, texCoord);
+#else
+    vec4 c = baseColor;
+#endif
+
+#ifdef METALNESS_MAP
+    float m = texture(metalnessMap, texCoord).r;
+#else
+    float m = metalness;
+#endif
+
+#ifdef ROUGHNESS_MAP
+    float r = texture(roughnessMap, texCoord).r;
+#else
+    float r = roughness;
+#endif
+
+#ifdef AMBIENT_OCCLUSION_MAP
+    float ao = texture(ambientOcclusionMap, texCoord).r;
+#else
+    float ao = 1.0;
+#endif
+
+#ifdef NORMAL_MAP
+    vec3 n = normalize(((transpose(((calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent)))) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
+#else
+
+#ifdef FLAT_SHADING
+ vec3 fdx = dFdx(worldPosition);
+ vec3 fdy = dFdy(worldPosition);
+ vec3 n = normalize(cross(fdx, fdy));
+#else
+    vec3 n = normalize(worldNormal);
+#endif
+#endif
+
+    fragColor = metalRoughFunction(c, m, r, ao,
+                                   worldPosition,
+                                   normalize(eyePosition - worldPosition),
+                                   n);
 }

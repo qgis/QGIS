@@ -22,7 +22,7 @@ Stores global configuration for labeling engine
   public:
 
 
-    enum Search
+    enum Search /BaseType=IntEnum/
     {
       Chain,
       Popmusic_Tabu,

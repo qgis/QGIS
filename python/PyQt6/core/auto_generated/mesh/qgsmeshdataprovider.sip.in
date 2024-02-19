@@ -22,7 +22,7 @@ typedef QPair<int, int> QgsMeshEdge;
 struct QgsMesh
 {
 
-  enum ElementType
+  enum ElementType /BaseType=IntEnum/
   {
     Vertex,
     Edge,

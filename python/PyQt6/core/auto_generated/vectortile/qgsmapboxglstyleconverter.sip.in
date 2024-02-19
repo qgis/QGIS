@@ -96,7 +96,7 @@ Returns the sprite image to use during conversion, or an invalid image if this i
 .. seealso:: :py:func:`setSprites`
 %End
 
-    QMap<QString, QVariant> spriteDefinitions() const;
+    QVariantMap spriteDefinitions() const;
 %Docstring
 Returns the sprite definitions to use during conversion.
 
@@ -105,7 +105,7 @@ Returns the sprite definitions to use during conversion.
 .. seealso:: :py:func:`setSprites`
 %End
 
-    void setSprites( const QImage &image, const QMap<QString, QVariant> &definitions );
+    void setSprites( const QImage &image, const QVariantMap &definitions );
 %Docstring
 Sets the sprite ``image`` and ``definitions`` JSON to use during conversion.
 
@@ -184,7 +184,7 @@ Constructor for QgsMapBoxGlStyleAbstractSource.
 Returns the source type.
 %End
 
-    virtual bool setFromJson( const QMap<QString, QVariant> &json, QgsMapBoxGlStyleConversionContext *context ) = 0;
+    virtual bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) = 0;
 %Docstring
 Sets the source's state from a ``json`` map.
 %End
@@ -221,7 +221,7 @@ Constructor for QgsMapBoxGlStyleRasterSource.
 
     virtual Qgis::MapBoxGlStyleSourceType type() const;
 
-    virtual bool setFromJson( const QMap<QString, QVariant> &json, QgsMapBoxGlStyleConversionContext *context );
+    virtual bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context );
 
 
     QString attribution() const;
@@ -334,7 +334,7 @@ Constructor for QgsMapBoxGlStyleConverter.
 
     ~QgsMapBoxGlStyleConverter();
 
-    enum Result
+    enum Result /BaseType=IntEnum/
     {
       Success,
       NoLayerList,
@@ -348,7 +348,7 @@ Constructor for QgsMapBoxGlStyleConverter.
       Point,
     };
 
-    Result convert( const QMap<QString, QVariant> &style, QgsMapBoxGlStyleConversionContext *context = 0 );
+    Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Converts a JSON ``style`` map, and returns the resultant status of the conversion.
 
@@ -427,7 +427,7 @@ The caller takes ownership of the returned layers.
 
   protected:
 
-    void parseSources( const QMap<QString, QVariant> &sources, QgsMapBoxGlStyleConversionContext *context = 0 );
+    void parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Parse list of ``sources`` from JSON.
 
@@ -438,7 +438,7 @@ Parse list of ``sources`` from JSON.
 .. versionadded:: 3.28
 %End
 
-    void parseRasterSource( const QMap<QString, QVariant> &source, const QString &name, QgsMapBoxGlStyleConversionContext *context = 0 );
+    void parseRasterSource( const QVariantMap &source, const QString &name, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Parse a raster ``source`` from JSON.
 
@@ -458,7 +458,7 @@ Parse list of ``layers`` from JSON.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static bool parseFillLayer( const QMap<QString, QVariant> &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle = false );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle = false );
 %Docstring
 Parses a fill layer.
 
@@ -474,7 +474,7 @@ Parses a fill layer.
          - style: generated QGIS vector tile style
 %End
 
-    static bool parseLineLayer( const QMap<QString, QVariant> &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a line layer.
 
@@ -489,7 +489,7 @@ Parses a line layer.
          - style: generated QGIS vector tile style
 %End
 
-    static bool parseCircleLayer( const QMap<QString, QVariant> &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseCircleLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a circle layer.
 
@@ -504,7 +504,7 @@ Parses a circle layer.
          - style: generated QGIS vector tile style
 %End
 
-    static void parseSymbolLayer( const QMap<QString, QVariant> &jsonLayer,
+    static void parseSymbolLayer( const QVariantMap &jsonLayer,
                                   QgsVectorTileBasicRendererStyle &rendererStyle /Out/,
                                   bool &hasRenderer /Out/,
                                   QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
@@ -523,7 +523,7 @@ Parses a symbol layer as renderer or labeling.
 :param context: conversion context
 %End
 
-    static bool parseSymbolLayerAsRenderer( const QMap<QString, QVariant> &jsonLayer,
+    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
                                             QgsVectorTileBasicRendererStyle &rendererStyle /Out/, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a symbol layer as a renderer
@@ -540,7 +540,7 @@ Parses a symbol layer as a renderer
          - rendererStyle: generated QGIS vector tile style
 %End
 
-    static QgsProperty parseInterpolateColorByZoom( const QMap<QString, QVariant> &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor /Out/ = 0 );
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor /Out/ = 0 );
 %Docstring
 Parses a color value which is interpolated by zoom range.
 
@@ -551,7 +551,7 @@ Parses a color value which is interpolated by zoom range.
          - defaultColor: storage for a reasonable "default" color representing the overall property.
 %End
 
-    static QgsProperty parseInterpolateByZoom( const QMap<QString, QVariant> &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
 %Docstring
 Parses a numeric value which is interpolated by zoom range.
 
@@ -563,7 +563,7 @@ Parses a numeric value which is interpolated by zoom range.
          - defaultNumber: storage for a reasonable "default" number representing the overall property.
 %End
 
-    static QgsProperty parseInterpolateOpacityByZoom( const QMap<QString, QVariant> &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 %Docstring
 Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
 For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
@@ -584,7 +584,7 @@ to interpolate alpha component of color.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseInterpolatePointByZoom( const QMap<QString, QVariant> &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint /Out/ = 0 );
+    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint /Out/ = 0 );
 %Docstring
 Interpolates a point/offset with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
 For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parsePointStops` function.
@@ -594,8 +594,8 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseInterpolateStringByZoom( const QMap<QString, QVariant> &json, QgsMapBoxGlStyleConversionContext &context,
-        const QMap<QString, QVariant> &conversionMap,
+    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
+        const QVariantMap &conversionMap,
         QString *defaultString /Out/ = 0 );
 %Docstring
 Interpolates a string by zoom.
@@ -636,7 +636,7 @@ Parses a list of interpolation stops
 %End
 
     static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context,
-                                     const QMap<QString, QVariant> &conversionMap,
+                                     const QVariantMap &conversionMap,
                                      QString *defaultString /Out/ = 0 );
 %Docstring
 Parses a list of interpolation stops containing string values.

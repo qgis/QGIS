@@ -900,6 +900,21 @@ tests:
             normalize: True
 
   - algorithm: native:dissolve
+    name: Dissolve separate disjoint with geopackage input and output
+    params:
+      INPUT:
+        name: custom/pol.gpkg|layername=pol1
+        type: vector
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/dissolve_pol.gpkg
+        type: vector
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:dissolve
     name: Dissolve separate disjoint with classes
     params:
       FIELD:
@@ -2558,8 +2573,12 @@ tests:
         name: expected/multipoint_delaunay.gml
         type: vector
         compare:
+          geometry:
+            precision: 3
+            normalize: true
+          unordered: true
           fields:
-            fid: skip
+            gml_id: skip
 
   - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 0

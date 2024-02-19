@@ -148,7 +148,7 @@ Sets whether the range should be rendered.
 Dumps a string representation of the range.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QMap<QString, QVariant> props, bool firstRange = false ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
 %Docstring
 Creates a DOM element representing the range in SLD format.
 

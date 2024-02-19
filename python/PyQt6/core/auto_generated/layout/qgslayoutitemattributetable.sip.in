@@ -23,7 +23,7 @@ A layout table subclass that displays attributes from a vector layer.
 %End
   public:
 
-    enum ContentSource
+    enum ContentSource /BaseType=IntEnum/
     {
       LayerAttributes,
       AtlasFeature,
@@ -310,7 +310,7 @@ Queries the attribute table's vector layer for attributes to show in the table.
     virtual void finalizeRestoreFromXml();
 
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
 
     bool useConditionalStyling() const;

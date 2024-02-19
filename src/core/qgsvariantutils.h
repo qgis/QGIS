@@ -49,6 +49,27 @@ class CORE_EXPORT QgsVariantUtils
      */
     static bool isNull( const QVariant &variant );
 
+    /**
+     * Converts a QVariant::Type to a QMetaType::Type.
+     * \see metaTypeToVariantType()
+     * \since QGIS 3.36
+     */
+    static QMetaType::Type variantTypeToMetaType( QVariant::Type variantType ) SIP_SKIP;
+
+    /**
+     * Converts a QMetaType::Type to a QVariant::Type.
+     *
+     * \warning Not all QMetaType::Type values can be represented as a QVariant::Type.
+     * If no conversion is possible, QVariant::UserType will be returned. Some conversions
+     * are lossy, in that the QVariant::Type cannot represent the full range of values
+     * possible in QMetaType::Type. In these cases the returned type will be an "expanded"
+     * type capable of storing the full range of values possible in the original type.
+     *
+     * \see variantTypeToMetaType()
+     * \since QGIS 3.36
+     */
+    static QVariant::Type metaTypeToVariantType( QMetaType::Type metaType ) SIP_SKIP;
+
 };
 
 #endif // QGSVARIANTUTILS_H

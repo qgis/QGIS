@@ -525,10 +525,12 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
 
 QgsColorRampTransformer::QgsColorRampTransformer( double minValue, double maxValue,
     QgsColorRamp *ramp,
-    const QColor &nullColor )
+    const QColor &nullColor,
+    const QString &rampName )
   : QgsPropertyTransformer( minValue, maxValue )
   , mGradientRamp( ramp )
   , mNullColor( nullColor )
+  , mRampName( rampName )
 {
 
 }

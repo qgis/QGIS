@@ -152,7 +152,7 @@ extract validated parameters from the request.
 :raises QgsServerApiBadRequestError: if the method encounters any error
 %End
 
-    virtual QMap<QString, QVariant> values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
+    virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Analyzes the incoming request ``context`` and returns the validated
 parameter map, throws :py:class:`QgsServerApiBadRequestError` in case of errors.
@@ -183,7 +183,7 @@ returns an empty string if there are not matches.
 
 
 
-    void write( QVariant &data, const QgsServerApiContext &context, const QMap<QString, QVariant> &htmlMetadata = QMap<QString, QVariant>() ) const throw( QgsServerApiBadRequestException );
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
 optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to

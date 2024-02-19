@@ -284,6 +284,10 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_03.gml
         type: vector
+        compare:
+          geometry:
+            precision: 5
+            normalize: True
 
   - algorithm: native:concavehull
     name: Concave Hull - Points (0.9) (GEOS > 3.11)
@@ -301,6 +305,10 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_09.gml
         type: vector
+        compare:
+          geometry:
+            precision: 5
+            normalize: True
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Points (k=7)
@@ -1165,6 +1173,22 @@ tests:
       OUTPUT:
         name: expected/filter_by_z.shp
         type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z (points)
+    params:
+      INPUT:
+        name: multipointsz.gml
+        type: vector
+      MAX: 1.0
+      MIN: 1.0
+    results:
+      OUTPUT:
+        name: expected/filter_points_by_z.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:arraytranslatedfeatures
     name: Array of point features

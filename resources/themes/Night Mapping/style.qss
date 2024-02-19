@@ -62,13 +62,12 @@ QMenuBar::item:pressed
 /* ==================================================================================== */
 
 QAbstractSpinBox {
-    padding: 0em;
+    padding: 0.12em;
     border: 1px solid @itemdarkbackground;
     background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @textlight;
     color: @textlight;
-    contents-margin: 0.12em;
 }
 
 QAbstractSpinBox:no-frame {
@@ -790,13 +789,20 @@ QCheckBox::indicator {
     height:0.8em;
 }
 
+QCheckBox::indicator:intermediary {
+    background-color: @toggleoff;
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+
 QCheckBox::indicator:unchecked {
     background-color: @toggleoff;
+    image: none;
 }
 
 QCheckBox::indicator:unchecked:disabled {
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
+    image: none;
 }
 
 QCheckBox::indicator:checked {

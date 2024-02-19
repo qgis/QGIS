@@ -185,6 +185,50 @@ QByteArray QgsPolygon::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
   return wkbArray;
 }
 
+QString QgsPolygon::asWkt( int precision ) const
+{
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QLatin1String( " EMPTY" );
+  else
+  {
+    wkt += QLatin1String( " (" );
+    if ( mExteriorRing )
+    {
+      QString childWkt = mExteriorRing->asWkt( precision );
+      if ( qgsgeometry_cast<QgsLineString *>( mExteriorRing.get() ) )
+      {
+        // Type names of linear geometries are omitted
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
+    }
+    for ( const QgsCurve *curve : mInteriorRings )
+    {
+      QString childWkt;
+      if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
+      {
+        std::unique_ptr<QgsLineString> line( curve->curveToLine() );
+        childWkt = line->asWkt( precision );
+      }
+      else
+      {
+        childWkt = curve->asWkt( precision );
+      }
+      // Type names of linear geometries are omitted
+      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      wkt += childWkt + ',';
+    }
+    if ( wkt.endsWith( ',' ) )
+    {
+      wkt.chop( 1 ); // Remove last ','
+    }
+    wkt += ')';
+  }
+  return wkt;
+}
+
 void QgsPolygon::addInteriorRing( QgsCurve *ring )
 {
   if ( !ring )

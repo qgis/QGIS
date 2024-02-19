@@ -34,6 +34,9 @@ class QgsAfsSharedData
   public:
     QgsAfsSharedData( const QgsDataSourceUri &uri );
 
+    //! Creates a deep copy of this shared data
+    std::shared_ptr< QgsAfsSharedData > clone() const;
+
     long long objectIdCount() const;
     long long featureCount() const;
     bool isDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }

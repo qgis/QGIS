@@ -486,6 +486,7 @@
 %Include auto_generated/mesh/qgsmeshadvancedediting.sip
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
 %Include auto_generated/mesh/qgsmeshlayerlabeling.sip
+%Include auto_generated/pdf/qgspdfrenderer.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
 %Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip
@@ -600,6 +601,7 @@
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
+%Include auto_generated/providers/sensorthings/qgssensorthingsutils.sip
 %Include auto_generated/raster/qgsrasterattributetable.sip
 %Include auto_generated/raster/qgsbilinearrasterresampler.sip
 %Include auto_generated/raster/qgsbrightnesscontrastfilter.sip
@@ -775,4 +777,7 @@
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
+%If ( HAVE_WEBENGINE_SIP )
+%Include auto_generated/web/qgswebenginepage.sip
+%End
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip

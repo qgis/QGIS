@@ -398,6 +398,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
 
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -447,6 +448,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     bool mShowPrivateLayers = false;
 
+    QTimer *mBlockDoubleClickTimer = nullptr;
     // For model  debugging
     // void checkModel( );
 

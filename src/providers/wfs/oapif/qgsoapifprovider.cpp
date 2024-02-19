@@ -479,7 +479,7 @@ bool QgsOapifProvider::empty() const
   QgsFeature f;
   QgsFeatureRequest request;
   request.setNoAttributes();
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   // Whoops, the provider returns an empty iterator when we are using
   // a setLimit call in combination with a subsetString.

@@ -959,20 +959,20 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
 
   bool forceUpdate = false;
   //updates data defined properties and redraws item to match
-  if ( property == QgsLayoutObject::LegendTitle || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::LegendTitle || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     bool ok = false;
-    const QString t = mDataDefinedProperties.valueAsString( QgsLayoutObject::LegendTitle, context, mTitle, &ok );
+    const QString t = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::LegendTitle, context, mTitle, &ok );
     if ( ok )
     {
       mSettings.setTitle( t );
       forceUpdate = true;
     }
   }
-  if ( property == QgsLayoutObject::LegendColumnCount || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::LegendColumnCount || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     bool ok = false;
-    const int cols = mDataDefinedProperties.valueAsInt( QgsLayoutObject::LegendColumnCount, context, mColumnCount, &ok );
+    const int cols = mDataDefinedProperties.valueAsInt( QgsLayoutObject::DataDefinedProperty::LegendColumnCount, context, mColumnCount, &ok );
     if ( ok && cols >= 0 )
     {
       mSettings.setColumnCount( cols );

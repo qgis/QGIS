@@ -22,6 +22,8 @@
 
 #include "qgis_gui.h"
 #include "qgsdistancearea.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 
 class QAction;
 class QgsVectorLayer;

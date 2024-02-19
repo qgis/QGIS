@@ -1344,7 +1344,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           featureRequest.setNoAttributes();
         }
 
-        featureRequest.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+        featureRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
         featureRequest.setLimit( -1 );
         features = mapLayer->getFeatures( featureRequest );
 

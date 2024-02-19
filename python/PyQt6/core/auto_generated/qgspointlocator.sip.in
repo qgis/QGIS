@@ -87,7 +87,7 @@ Configure render context  - if not ``None``, it will use to index only visible f
 .. versionadded:: 3.2
 %End
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Invalid,
       Vertex,

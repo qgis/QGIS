@@ -50,9 +50,9 @@ QStringList QgsRasterizeAlgorithm::tags() const
   return QObject::tr( "layer,raster,convert,file,map themes,tiles,render" ).split( ',' );
 }
 
-QgsProcessingAlgorithm::Flags QgsRasterizeAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsRasterizeAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QString QgsRasterizeAlgorithm::group() const
@@ -73,21 +73,21 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber(
                   QStringLiteral( "EXTENT_BUFFER" ),
                   QObject::tr( "Buffer around tiles in map units" ),
-                  QgsProcessingParameterNumber::Type::Double,
+                  Qgis::ProcessingNumberParameterType::Double,
                   0,
                   true,
                   0 ) );
   addParameter( new QgsProcessingParameterNumber(
                   QStringLiteral( "TILE_SIZE" ),
                   QObject::tr( "Tile size" ),
-                  QgsProcessingParameterNumber::Type::Integer,
+                  Qgis::ProcessingNumberParameterType::Integer,
                   1024,
                   false,
                   64 ) );
   addParameter( new QgsProcessingParameterNumber(
                   QStringLiteral( "MAP_UNITS_PER_PIXEL" ),
                   QObject::tr( "Map units per pixel" ),
-                  QgsProcessingParameterNumber::Type::Double,
+                  Qgis::ProcessingNumberParameterType::Double,
                   100,
                   true,
                   0 ) );
@@ -104,7 +104,7 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMultipleLayers(
                   QStringLiteral( "LAYERS" ),
                   QObject::tr( "Layers to render" ),
-                  QgsProcessing::TypeMapLayer,
+                  Qgis::ProcessingSourceType::MapLayer,
                   QVariant(),
                   true
                 ) );

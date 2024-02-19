@@ -64,7 +64,7 @@ QgsSplitVectorLayerAlgorithm *QgsSplitVectorLayerAlgorithm::createInstance() con
 
 void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID field" ),
                 QVariant(), QStringLiteral( "INPUT" ) ) );
   std::unique_ptr< QgsProcessingParameterBoolean > prefixFieldParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "PREFIX_FIELD" ),
@@ -73,7 +73,7 @@ void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
   const QStringList options = QgsVectorFileWriter::supportedFormatExtensions();
   auto fileTypeParam = std::make_unique < QgsProcessingParameterEnum >( QStringLiteral( "FILE_TYPE" ), QObject::tr( "Output file type" ), options, false, 0, true );
-  fileTypeParam->setFlags( fileTypeParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  fileTypeParam->setFlags( fileTypeParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( fileTypeParam.release() );
 
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ) ) );
@@ -146,7 +146,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
     sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );
     const QString expr = QgsExpression::createFieldEqualityExpression( fieldName, *it );
-    QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+    QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
     count = 0;
     while ( features.nextFeature( feat ) )
     {

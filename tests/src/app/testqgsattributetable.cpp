@@ -216,23 +216,23 @@ void TestQgsAttributeTable::testNoGeom()
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry );
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
   // try changing existing dialog to no geometry mode
   dlg->mFeatureFilterWidget->filterShowAll();
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry );
 
   // and back to a geometry mode
   dlg->mFeatureFilterWidget->filterVisible();
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
 }
 
@@ -292,22 +292,22 @@ void TestQgsAttributeTable::testSelected()
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no selection!
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 
   // make a selection
   tempLayer->selectByIds( QgsFeatureIds() << 1 << 3 );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with selection when dialog created
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
   // remove selection
   tempLayer->removeSelection();
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
 
@@ -326,27 +326,27 @@ void TestQgsAttributeTable::testEdited()
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no edited features!
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 
   // make some edits
   tempLayer->startEditing();
   QVERIFY( tempLayer->changeAttributeValue( 1, 1, 5.5 ) );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 );
   QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 1 1)" ) );
   QVERIFY( tempLayer->changeGeometry( 3, geom ) );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with edited features when dialog created
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
   // remove edits
   tempLayer->rollBack();
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
 
@@ -369,34 +369,34 @@ void TestQgsAttributeTable::testSelectedOnTop()
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
 
   dlg->mMainView->setSortExpression( "pk" );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   tempLayer->selectByIds( QgsFeatureIds() << 2 );
   dlg->mMainView->setSelectedOnTop( true );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   dlg->mMainView->setSelectedOnTop( false );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   tempLayer->selectByIds( QgsFeatureIds() << 3 );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   dlg->mMainView->setSelectedOnTop( true );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
 
 }
 
@@ -470,9 +470,9 @@ void TestQgsAttributeTable::testSortNumbers()
   QCOMPARE( model->data( model->index( 1, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "10,00010" ) );
   QCOMPARE( model->data( model->index( 0, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "1.001,00000" ) );
 
-  QCOMPARE( model->data( model->index( 2, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 2.001 );
-  QCOMPARE( model->data( model->index( 1, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 10.0001 );
-  QCOMPARE( model->data( model->index( 0, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 1001.0 );
+  QCOMPARE( model->data( model->index( 2, 2 ), static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ).toDouble(), 2.001 );
+  QCOMPARE( model->data( model->index( 1, 2 ), static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ).toDouble(), 10.0001 );
+  QCOMPARE( model->data( model->index( 0, 2 ), static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ).toDouble(), 1001.0 );
 
   QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorSection(), 1 );
   QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorOrder(), Qt::SortOrder::DescendingOrder );

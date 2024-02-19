@@ -60,13 +60,8 @@
     <widget class="QComboBox" name="mEncoding"/>
    </item>
    <item row="7" column="0" colspan="2">
-    <widget class="QgsLayerTreeView" name="mTreeView">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>0</number>
-     </attribute>
+    <widget class="QWidget" name="mTreeViewContainer">
+     <layout class="QHBoxLayout" name="mTreeViewLayout"/>
     </widget>
    </item>
    <item row="2" column="1">
@@ -253,7 +248,6 @@
   <tabstop>mEncoding</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mVisibilityPresets</tabstop>
-  <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mDeselectAllButton</tabstop>
   <tabstop>mLayerTitleAsName</tabstop>

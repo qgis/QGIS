@@ -15,6 +15,8 @@
 
 #include "qgsoffscreen3dengine.h"
 
+#include "qgsframegraph.h"
+
 #include <QCoreApplication>
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
@@ -99,7 +101,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   mOffscreenSurface->setFormat( format );
   mOffscreenSurface->create();
 
-  mFrameGraph = new QgsShadowRenderingFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
+  mFrameGraph = new QgsFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
   mFrameGraph->setRenderCaptureEnabled( true );
   mFrameGraph->setShadowRenderingEnabled( false );
   // Set this frame graph to be in use.

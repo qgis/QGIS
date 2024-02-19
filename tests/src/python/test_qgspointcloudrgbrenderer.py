@@ -21,7 +21,6 @@ from qgis.core import (
     QgsMapClippingRegion,
     QgsMapSettings,
     QgsMapUnitScale,
-    QgsMultiRenderChecker,
     QgsPointCloudLayer,
     QgsPointCloudRenderContext,
     QgsPointCloudRenderer,

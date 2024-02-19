@@ -182,7 +182,7 @@ both flavors.
 
   public:
 
-    enum CrsType
+    enum CrsType /BaseType=IntEnum/
     {
       InternalCrsId,
       PostgisCrsId,

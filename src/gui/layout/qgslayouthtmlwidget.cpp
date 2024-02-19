@@ -82,7 +82,7 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
 
   //connections for data defined buttons
   connect( mUrlDDBtn, &QgsPropertyOverrideButton::activated, mUrlLineEdit, &QLineEdit::setDisabled );
-  registerDataDefinedButton( mUrlDDBtn, QgsLayoutObject::SourceUrl );
+  registerDataDefinedButton( mUrlDDBtn, QgsLayoutObject::DataDefinedProperty::SourceUrl );
 }
 
 void QgsLayoutHtmlWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )

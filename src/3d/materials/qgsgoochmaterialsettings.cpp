@@ -148,10 +148,10 @@ void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect * ) co
 QByteArray QgsGoochMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
 
-  const QColor diffuse = dataDefinedProperties().valueAsColor( Diffuse, expressionContext, mDiffuse );
-  const QColor warm = dataDefinedProperties().valueAsColor( Warm, expressionContext, mWarm );
-  const QColor cool = dataDefinedProperties().valueAsColor( Cool, expressionContext, mCool );
-  const QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
+  const QColor diffuse = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Diffuse, expressionContext, mDiffuse );
+  const QColor warm = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Warm, expressionContext, mWarm );
+  const QColor cool = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Cool, expressionContext, mCool );
+  const QColor specular = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Specular, expressionContext, mSpecular );
 
 
   QByteArray array;

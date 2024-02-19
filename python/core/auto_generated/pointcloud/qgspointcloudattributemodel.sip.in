@@ -25,14 +25,15 @@ A model for display of available attributes from a point cloud.
 %End
   public:
 
-    enum FieldRoles
+
+    enum class CustomRole
     {
-      AttributeNameRole,
-      AttributeIndexRole,
-      AttributeSizeRole,
-      AttributeTypeRole,
-      IsEmptyRole,
-      IsNumericRole,
+      AttributeName,
+      AttributeIndex,
+      AttributeSize,
+      AttributeType,
+      IsEmpty,
+      IsNumeric,
     };
 
     explicit QgsPointCloudAttributeModel( QObject *parent /TransferThis/ = 0 );

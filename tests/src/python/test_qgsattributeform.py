@@ -204,13 +204,198 @@ class TestQgsAttributeForm(QgisTestCase):
         QGISAPP.processEvents()
 
         self.assertEqual(form.currentFormFeature()['age'], 15)
-        self.assertEqual(form.currentFormFeature()['number'], 15)
+        # not yet update it on init
+        self.assertEqual(form.currentFormFeature()['number'], None)
         # return
         form.changeAttribute('number', 12)
         form.changeAttribute('age', 1)
         self.assertEqual(form.currentFormFeature()['number'], 12)
         form.changeAttribute('age', 7)
         self.assertEqual(form.currentFormFeature()['number'], 12)
+
+    def test_default_value_always_updated_live_edit(self):
+        """
+        Live update on edit, when:
+        - dependency changed (depending field and any field on expression with ALL_ATTRIBUTES-dependency)
+        Update on save (after editing an existing feature), when:
+        - it's any other function (with volatile elements like now, rand, randf, uuid)
+        Update on save (after adding a feature):
+        - Keeping the values, no update.
+
+        We have the fields:
+        - age (no expression)
+        - year (no expression)
+        - birthday (depending on year and age): updates live when one of those changes
+        - pos (depending on age and having a volatile function): updates live when age changes and always after save
+        - random (depending on nothing): updates always after save
+        - evaluation - todo : eval('true')
+
+        This means on edit:
+        - changing age -> update live: number, birthday, pos / not update random and year
+        - changing year -> update birthday, pos / not update random, number, age
+        - changing birthday -> update nothing
+
+        On save when edit mode:
+        - update pos and random because of volatile functions
+        """
+
+        layer = QgsVectorLayer("Point?field=age:int&field=year:int&field=birthday:int&field=pos:int&field=random:int", "vl", "memory")
+
+        # add another field numbers
+        field = QgsField('numbers', QVariant.List, subType=QVariant.Int)
+        field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
+        layer.dataProvider().addAttributes([field])
+        layer.updateFields()
+
+        apply_on_update = True
+
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for birthday (2), it will depend on the field age and year
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('year - age', apply_on_update))
+        layer.setEditorWidgetSetup(2, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for pos (3), it will depend on the field age and it contains a volatile function and should update after save (on singleeditmode)
+        layer.setDefaultValueDefinition(3, QgsDefaultValue('pos + age + day_of_week( now() ) - day_of_week( now() )', apply_on_update))
+        layer.setEditorWidgetSetup(3, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for random (4), it contains a volatile function and should update after save (on singleeditmode)
+        layer.setDefaultValueDefinition(4, QgsDefaultValue('random + random + rand(0,0)', apply_on_update))
+        layer.setEditorWidgetSetup(4, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for numbers (5), it will depend on the field age
+        layer.setDefaultValueDefinition(5, QgsDefaultValue('array(1, age)', apply_on_update))
+        layer.setEditorWidgetSetup(5, QgsEditorWidgetSetup('List', {}))
+
+        layer.startEditing()
+        form = QgsAttributeForm(layer)
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute('age', 15)
+        feature.setAttribute('year', 2023)
+        feature.setAttribute('random', 100)
+        feature.setAttribute('birthday', 1900)
+        feature.setAttribute('pos', 100)
+        feature.setAttribute('numbers', [12])
+        form.setFeature(feature)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+
+        QGISAPP.processEvents()
+
+        # editing age
+        form.changeAttribute('age', 10)
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+
+        # don't update year
+        self.assertEqual(form.currentFormFeature()['year'], 2023)
+        # update birthday because of age
+        self.assertEqual(form.currentFormFeature()['birthday'], 2013)
+        # update pos because of age
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        # don't update random (yet)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
+        # update number because of age
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        # editing year
+        form.changeAttribute('year', 2024)
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+
+        # don't update age
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # update birthday because of year
+        self.assertEqual(form.currentFormFeature()['birthday'], 2014)
+        # don't update pos (yet)
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        # don't update random (yet)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
+        # don't update numbers
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        # save form - this leads not to any updates (because it's a newly created features)
+        form.save()
+
+        # read the feature and check, that nothing updated after save
+        feature = next(layer.getFeatures())
+
+        # don't updated age
+        self.assertEqual(feature.attribute('age'), 10)
+        # don't updated year
+        self.assertEqual(feature.attribute('year'), 2024)
+        # don't updated birthday
+        self.assertEqual(feature.attribute('birthday'), 2014)
+        # don't updated pos (because newly created feature)
+        self.assertEqual(feature.attribute('pos'), 110)
+        # don't updated random (because newly created feature)
+        self.assertEqual(feature.attribute('random'), 100)
+        # don't updated numbers
+        self.assertEqual(feature.attribute('numbers'), [1, 10])
+
+        # changing mode of form
+        form.setMode(QgsAttributeEditorContext.Mode.SingleEditMode)
+        # and set the feature
+        form.setFeature(feature)
+
+        # check if nothing updated because of loading it:
+        # don't update year
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # don't update age
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # don't update birthday
+        self.assertEqual(form.currentFormFeature()['birthday'], 2014)
+        # don't update pos (because newly created feature)
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        # don't update random (because newly created feature)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
+        # don't update numbers
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        # editing birthday
+        form.changeAttribute('birthday', 2200)
+        self.assertEqual(form.currentFormFeature()['birthday'], 2200)
+
+        # don't update age
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # don't update year
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # don't update pos
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        # don't update random
+        self.assertEqual(form.currentFormFeature()['random'], 100)
+
+        # editing age
+        form.changeAttribute('age', 41)
+        self.assertEqual(form.currentFormFeature()['age'], 41)
+
+        # don't update year
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # update birthday because of age
+        self.assertEqual(form.currentFormFeature()['birthday'], 1983)
+        # update pos because of age
+        self.assertEqual(form.currentFormFeature()['pos'], 151)
+        # don't update random (yet)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
+        # update number because of age
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 41])
+
+        # save form - this leads to updates, because existing feature
+        form.save()
+
+        # read the feature and check, that other function expressions updated (pos and rand)
+        feature = next(layer.getFeatures())
+
+        # don't updated age
+        self.assertEqual(feature.attribute('age'), 41)
+        # don't updated year
+        self.assertEqual(feature.attribute('year'), 2024)
+        # don't updated birthday
+        self.assertEqual(feature.attribute('birthday'), 1983)
+        # again updated pos
+        self.assertEqual(feature.attribute('pos'), 192)
+        # updated random
+        self.assertEqual(feature.attribute('random'), 200)
+        # don't updated numbers
+        self.assertEqual(feature.attribute('numbers'), [1, 41])
 
 
 if __name__ == '__main__':

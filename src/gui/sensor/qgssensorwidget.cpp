@@ -147,6 +147,16 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
     mSerialPortComboBox->addItem( QStringLiteral( "%1: %2" ).arg( info.portName(), info.description() ), info.portName() );
   }
 
+  mBaudRateComboBox->addItem( QStringLiteral( "1200 baud" ), static_cast<int>( QSerialPort::Baud1200 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "2400 baud" ), static_cast<int>( QSerialPort::Baud2400 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "4800 baud" ), static_cast<int>( QSerialPort::Baud4800 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "9600 baud" ), static_cast<int>( QSerialPort::Baud9600 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "19200 baud" ), static_cast<int>( QSerialPort::Baud19200 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "38400 baud" ), static_cast<int>( QSerialPort::Baud38400 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "57600 baud" ), static_cast<int>( QSerialPort::Baud57600 ) );
+  mBaudRateComboBox->addItem( QStringLiteral( "115200 baud" ), static_cast<int>( QSerialPort::Baud115200 ) );
+  mBaudRateComboBox->setCurrentIndex( 3 );
+
   updateSerialPortDetails();
 
   connect( mSerialPortComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
@@ -154,12 +164,20 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
     updateSerialPortDetails();
     emit changed();
   } );
+
+  connect( mBaudRateComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
+  {
+    updateSerialPortDetails();
+    emit changed();
+  } );
+
 }
 
 QgsAbstractSensor *QgsSerialPortSensorWidget::createSensor()
 {
   QgsSerialPortSensor *s = new QgsSerialPortSensor();
   s->setPortName( mSerialPortComboBox->currentData().toString() );
+  s->setBaudRate( static_cast< QSerialPort::BaudRate >( mBaudRateComboBox->currentData().toInt() ) );
   return s;
 }
 
@@ -170,7 +188,7 @@ bool QgsSerialPortSensorWidget::updateSensor( QgsAbstractSensor *sensor )
     return false;
 
   s->setPortName( mSerialPortComboBox->currentData().toString() );
-
+  s->setBaudRate( static_cast< QSerialPort::BaudRate >( mBaudRateComboBox->currentData().toInt() ) );
   return true;
 }
 
@@ -190,6 +208,17 @@ bool QgsSerialPortSensorWidget::setSensor( QgsAbstractSensor *sensor )
     mSerialPortComboBox->addItem( s->portName(), s->portName() );
     mSerialPortComboBox->setCurrentIndex( mSerialPortComboBox->count() - 1 );
   }
+
+  const int baudRateIndex = mBaudRateComboBox->findData( s->baudRate() );
+  if ( index >= 0 )
+  {
+    mBaudRateComboBox->setCurrentIndex( baudRateIndex );
+  }
+  else
+  {
+    mBaudRateComboBox->setCurrentIndex( mBaudRateComboBox->count() - 1 );
+  }
+
 
   return true;
 }

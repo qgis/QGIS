@@ -28,11 +28,11 @@ void QgsPointsInPolygonAlgorithm::initParameters( const QVariantMap &configurati
   mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "POINTS" ),
-                QObject::tr( "Points" ), QList< int > () << QgsProcessing::TypeVectorPoint ) );
+                QObject::tr( "Points" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ),
-                QObject::tr( "Weight field" ), QVariant(), QStringLiteral( "POINTS" ), QgsProcessingParameterField::Any, false, true ) );
+                QObject::tr( "Weight field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "CLASSFIELD" ),
-                QObject::tr( "Class field" ), QVariant(), QStringLiteral( "POINTS" ), QgsProcessingParameterField::Any, false, true ) );
+                QObject::tr( "Class field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   if ( mIsInPlace )
   {
     addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
@@ -108,12 +108,12 @@ QgsPointsInPolygonAlgorithm *QgsPointsInPolygonAlgorithm::createInstance() const
 
 QList<int> QgsPointsInPolygonAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << QgsProcessing::TypeVectorPolygon;
+  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
-QgsProcessing::SourceType QgsPointsInPolygonAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsPointsInPolygonAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 QgsCoordinateReferenceSystem QgsPointsInPolygonAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
@@ -162,7 +162,7 @@ bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     mPointAttributes.append( mClassFieldIndex );
   }
 
-  if ( mPointSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( mPointSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for points layer, performance will be severely degraded" ) );
 
   return true;

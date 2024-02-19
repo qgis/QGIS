@@ -21,7 +21,7 @@ __copyright__ = '(C) 2018, Nyall Dawson'
 
 import os
 
-from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -32,11 +32,9 @@ from qgis.core import (
     QgsLineSymbolLayer,
     QgsMapSettings,
     QgsMapUnitScale,
-    QgsMultiRenderChecker,
     QgsProperty,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSimpleLineSymbolLayer,
     QgsSingleSymbolRenderer,
@@ -57,13 +55,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsSimpleLineSymbolLayer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return 'symbol_simpleline'
 
     def testDashPatternWithDataDefinedWidth(self):
         # rendering test
@@ -77,7 +71,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_dashpattern_datadefined_width', 'simpleline_dashpattern_datadefined_width', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_dashpattern_datadefined_width',
+                'simpleline_dashpattern_datadefined_width',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testTrimDistance(self):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
@@ -126,7 +128,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_trim_distance_units', 'simpleline_trim_distance_units', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_trim_distance_units',
+                'simpleline_trim_distance_units',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testTrimDistanceRenderPercentage(self):
         """
@@ -141,7 +151,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_trim_distance_percentage', 'simpleline_trim_distance_percentage', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_trim_distance_percentage',
+                'simpleline_trim_distance_percentage',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testTrimDistanceRenderDataDefined(self):
         """
@@ -159,10 +177,17 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_trim_distance_percentage', 'simpleline_trim_distance_percentage', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_trim_distance_percentage',
+                'simpleline_trim_distance_percentage',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testDashPatternOffset(self):
-
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
 
         s.symbolLayer(0).setDashPatternOffset(1.2)
@@ -195,7 +220,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_dashpattern_offset', 'simpleline_dashpattern_offset', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_dashpattern_offset',
+                'simpleline_dashpattern_offset',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testDashPatternOffsetRenderNegative(self):
         # rendering test
@@ -207,7 +240,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_dashpattern_offset_negative', 'simpleline_dashpattern_offset_negative', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_dashpattern_offset_negative',
+                'simpleline_dashpattern_offset_negative',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testDashPatternOffsetRenderCustomPattern(self):
         # rendering test
@@ -220,7 +261,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_dashpattern_offset_custom', 'simpleline_dashpattern_offset_custom', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_dashpattern_offset_custom',
+                'simpleline_dashpattern_offset_custom',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testDashTweaks(self):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
@@ -252,7 +301,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_aligndashpattern', 'simpleline_aligndashpattern', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_aligndashpattern',
+                'simpleline_aligndashpattern',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testDashCornerTweakDashRender(self):
         # rendering test
@@ -265,7 +322,26 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 2 1, 3 1, 10 0, 10 10, 5 5)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_dashcornertweak', 'simpleline_dashcornertweak', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_dashcornertweak',
+                'simpleline_dashcornertweak',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
+
+    def testAlignDashRenderSmallWidth(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.1'})
+
+        s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
+        s.symbolLayer(0).setAlignDashPattern(True)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check('simpleline_aligndashpattern_small_width', 'simpleline_aligndashpattern_small_width', rendered_image))
 
     def testRingNumberVariable(self):
         # test test geometry_ring_num variable
@@ -278,7 +354,15 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('simpleline_ring_num', 'simpleline_ring_num', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_ring_num',
+                'simpleline_ring_num',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testRingFilter(self):
         # test filtering rings during rendering
@@ -310,12 +394,28 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('simpleline_exterioronly', 'simpleline_exterioronly', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_exterioronly',
+                'simpleline_exterioronly',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
         s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly)
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('simpleline_interioronly', 'simpleline_interioronly', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'simpleline_interioronly',
+                'simpleline_interioronly',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testOpacityWithDataDefinedColor(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -337,13 +437,12 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         ms.setLayers([line_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_simpleline')
-        renderchecker.setControlName('expected_simpleline_opacityddcolor')
-        res = renderchecker.runTest('expected_simpleline_opacityddcolor')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'simpleline_opacityddcolor',
+                'simpleline_opacityddcolor',
+                ms)
+        )
 
     def testDataDefinedOpacity(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -365,13 +464,12 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         ms.setLayers([line_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_simpleline')
-        renderchecker.setControlName('expected_simpleline_ddopacity')
-        res = renderchecker.runTest('expected_simpleline_ddopacity')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'simpleline_ddopacity',
+                'simpleline_ddopacity',
+                ms)
+        )
 
     def renderGeometry(self, symbol, geom):
         f = QgsFeature()
@@ -404,21 +502,6 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_simpleline")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

@@ -24,8 +24,7 @@ from qgis.core import (
     QgsLayoutItemPicture,
     QgsProject,
     QgsReadWriteContext,
-    QgsRectangle,
-    QgsLayoutChecker
+    QgsRectangle
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -38,6 +37,10 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return "composer_picture"
 
     @classmethod
     def setUpClass(cls):
@@ -72,14 +75,6 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         self.picture.attemptSetSceneRect(QRectF(70, 70, 100, 100))
         self.picture.setFrameEnabled(True)
         self.layout.addLayoutItem(self.picture)
-
-    def setUp(self):
-        self.report = "<h1>Python QgsLayoutItemPicture Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def testMode(self):
         pic = QgsLayoutItemPicture(self.layout)
@@ -138,25 +133,25 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         """Test picture resize zoom mode."""
         self.picture.setResizeMode(QgsLayoutItemPicture.ResizeMode.Zoom)
 
-        checker = QgsLayoutChecker('composerpicture_resize_zoom', self.layout)
-        checker.setControlPathPrefix("composer_picture")
-        testResult, message = checker.testLayout()
-        self.report += checker.report()
-
-        assert testResult, message
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpicture_resize_zoom',
+                self.layout
+            )
+        )
 
     def testRemoteImage(self):
         """Test fetching remote picture."""
         self.picture.setPicturePath(
             'http://localhost:' + str(TestQgsLayoutPicture.port) + '/qgis_local_server/logo.png')
 
-        checker = QgsLayoutChecker('composerpicture_remote', self.layout)
-        checker.setControlPathPrefix("composer_picture")
-        testResult, message = checker.testLayout()
-        self.report += checker.report()
+        res = self.render_layout_check(
+            'composerpicture_remote',
+            self.layout
+        )
 
         self.picture.setPicturePath(self.pngImage)
-        assert testResult, message
+        self.assertTrue(res)
 
     def testNorthArrowWithMapItemRotation(self):
         """Test picture rotation when map item is also rotated"""

@@ -54,11 +54,11 @@ void QgsZonalHistogramAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ),
-                QObject::tr( "Vector layer containing zones" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
+                QObject::tr( "Vector layer containing zones" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "HISTO_" ), false, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output zones" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output zones" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsZonalHistogramAlgorithm::shortHelpString() const

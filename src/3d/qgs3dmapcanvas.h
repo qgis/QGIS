@@ -118,11 +118,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
 
     /**
-     * Returns the node of the default framegraph
-     */
-    Qt3DExtras::QForwardRenderer *defaultFrameGraph() const;
-
-    /**
      * Returns the default camera of the 3D Window.
      */
     Qt3DRender::QCamera *camera() const;
@@ -227,7 +222,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     // Renderer configuration
     Qt3DRender::QRenderSettings *m_renderSettings;
-    Qt3DExtras::QForwardRenderer *m_forwardRenderer;
     Qt3DRender::QCamera *m_defaultCamera;
 
     // Input configuration

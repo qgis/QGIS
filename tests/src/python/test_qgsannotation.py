@@ -11,7 +11,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QDir, QPointF, QRectF, QSize, QSizeF
+from qgis.PyQt.QtCore import QPointF, QRectF, QSize, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -22,7 +22,6 @@ from qgis.core import (
     QgsLayoutItemMap,
     QgsMapSettings,
     QgsMargins,
-    QgsMultiRenderChecker,
     QgsPointXY,
     QgsProject,
     QgsRectangle,

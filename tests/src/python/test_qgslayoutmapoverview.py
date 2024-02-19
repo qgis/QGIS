@@ -31,8 +31,7 @@ from qgis.core import (
     QgsRectangle,
     QgsSingleSymbolRenderer,
     QgsSymbolLayer,
-    QgsVectorLayer,
-    QgsLayoutChecker
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase

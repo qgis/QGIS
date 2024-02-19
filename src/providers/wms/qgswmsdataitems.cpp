@@ -17,7 +17,6 @@
 
 #include "qgslogger.h"
 
-#include "qgsdataitemproviderregistry.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
@@ -754,9 +753,9 @@ QString QgsXyzTileDataItemProvider::dataProviderKey() const
   return QStringLiteral( "wms" );
 }
 
-int QgsXyzTileDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsXyzTileDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsXyzTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

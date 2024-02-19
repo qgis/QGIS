@@ -37,19 +37,11 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
 {
   public:
 
-    //! Defines the type of input layer
-    enum Type
-    {
-      Vertices, //!< Input that adds only vertices
-      StructureLines, //!< Input that adds add structure lines
-      BreakLines //!< Input that adds vertices and break lines
-    };
-
     //! Used to store input layer Id and other associated parameters
     struct InputLayer
     {
       QString source; //!The source of the input layer
-      Type type; //!The type of the input layer (see Type)
+      Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
       int attributeIndex; //! The attribute index used for Z value of vertices
     };
 
@@ -62,7 +54,7 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
     QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "tininputlayers" ); }

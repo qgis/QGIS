@@ -525,6 +525,9 @@ std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBloc
   }
   else if ( pc->accessType() == QgsPointCloudIndex::AccessType::Remote )
   {
+    if ( pc->nodePointCount( n ) < 1 )
+      return block;
+
     bool loopAborted = false;
     QEventLoop loop;
     QgsPointCloudBlockRequest *req = pc->asyncNodeData( n, request );

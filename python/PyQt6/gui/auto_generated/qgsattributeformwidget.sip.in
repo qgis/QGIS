@@ -24,7 +24,7 @@ Consists of the widget which is visible in edit mode as well as the widget visib
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       DefaultMode,
       MultiEditMode,

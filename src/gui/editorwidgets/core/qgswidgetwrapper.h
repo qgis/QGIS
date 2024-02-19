@@ -70,15 +70,18 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     Q_OBJECT
   public:
 
+    // *INDENT-OFF*
+
     /**
      * Data defined properties for different editor widgets.
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsWidgetWrapper, Property ) : int
     {
       RootPath = 0, //!< Root path for external resource
       DocumentViewerContent, //!< Document type for external resource
       StorageUrl //!< Storage URL for external resource
     };
+    // *INDENT-ON*
 
     /**
      * Returns the editor widget property definitions.

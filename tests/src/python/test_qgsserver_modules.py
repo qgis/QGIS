@@ -103,6 +103,13 @@ class TestModules(unittest.TestCase):
                 pass
         self.server = QgsServer()
 
+    def test_dummy(self):
+        """
+        A dummy test to avoid empty test suite
+        reporting failures on some unittest versions
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

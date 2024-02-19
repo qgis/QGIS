@@ -272,7 +272,7 @@ class DistanceInputPanel(NumberInputPanel):
                   QgsUnitTypes.DistanceUnit.DistanceYards):
             self.units_combo.addItem(QgsUnitTypes.toString(u), u)
 
-        label_margin = self.fontMetrics().width('X')
+        label_margin = self.fontMetrics().horizontalAdvance('X')
         self.layout().insertSpacing(1, int(label_margin / 2))
         self.layout().insertWidget(2, self.label)
         self.layout().insertWidget(3, self.units_combo)

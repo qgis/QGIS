@@ -46,9 +46,9 @@ QString QgsSpatialIndexAlgorithm::groupId() const
   return QStringLiteral( "vectorgeneral" );
 }
 
-QgsProcessingAlgorithm::Flags QgsSpatialIndexAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsSpatialIndexAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
 
 

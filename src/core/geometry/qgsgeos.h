@@ -547,9 +547,24 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
+     * \see constrainedDelaunayTriangulation()
      * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns a constrained Delaunay triangulation for the vertices of the geometry.
+     *
+     * An empty geometry will be returned if the triangulation could not be calculated.
+     *
+     * This method requires a QGIS build based on GEOS 3.11 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see delaunayTriangulation()
+     *
+     * \since QGIS 3.36
+     */
+    std::unique_ptr< QgsAbstractGeometry > constrainedDelaunayTriangulation( QString *errorMsg = nullptr ) const;
 
     /**
      * Returns a possibly concave geometry that encloses the input geometry.
@@ -572,7 +587,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see convexHull()
      * \since QGIS 3.28
      */
-    QgsAbstractGeometry  *concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg = nullptr ) const;
+    QgsAbstractGeometry *concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg = nullptr ) const;
 
     /**
      * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge

@@ -23,14 +23,6 @@ Makes metadata of processing parameters available.
 %End
   public:
 
-    enum ParameterFlag
-    {
-      ExposeToModeler
-    };
-    typedef QFlags<QgsProcessingParameterType::ParameterFlag> ParameterFlags;
-
-
-
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 /Factory/;
 %Docstring
 Creates a new parameter of this type.
@@ -77,13 +69,13 @@ Returns the corresponding class name for the parameter type.
 A static id for this type which will be used for storing this parameter type.
 %End
 
-    virtual ParameterFlags flags() const;
+    virtual Qgis::ProcessingParameterTypeFlags flags() const;
 %Docstring
 Determines if this parameter is available in the modeler.
 The default implementation returns ``True``.
 %End
 
-    virtual QMap<QString, QVariant> metadata() const;
+    virtual QVariantMap metadata() const;
 %Docstring
 Metadata for this parameter type. Can be used for example to define custom widgets.
 The default implementation returns an empty map.
@@ -115,9 +107,6 @@ Extra explanatory help can be used (which must be translated), eg "a comma delim
 .. versionadded:: 3.8
 %End
 };
-
-QFlags<QgsProcessingParameterType::ParameterFlag> operator|(QgsProcessingParameterType::ParameterFlag f1, QFlags<QgsProcessingParameterType::ParameterFlag> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

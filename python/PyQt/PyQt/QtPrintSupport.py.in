@@ -22,3 +22,8 @@ __date__ = 'November 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
 from PyQt@QT_VERSION_MAJOR@.QtPrintSupport import *
+
+
+if @QT_VERSION_MAJOR@ == 6:
+    # patch back in Qt flags removed in PyQt
+    QAbstractPrintDialog.PrintDialogOptions = lambda flags=0: QAbstractPrintDialog.PrintDialogOption(flags)

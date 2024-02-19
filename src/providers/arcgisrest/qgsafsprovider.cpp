@@ -396,7 +396,7 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
   }
 
   // REST API requires a full definition of features, so we have to read their initial values first
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) );
   QgsFeature feature;
 
   QgsFeatureList updatedFeatures;
@@ -653,6 +653,11 @@ bool QgsAfsProvider::setSubsetString( const QString &subset, bool )
   const QString trimmedSubset = subset.trimmed();
   if ( trimmedSubset == mSharedData->subsetString() )
     return true;
+
+  // We must not change the subset string of the shared data used in another iterator/data provider,
+  // or other layers attached to the same shared data (i.e. layers with a data provider cloned from
+  // this one) will also unwantedly inherit the new subset string.
+  mSharedData = mSharedData->clone();
 
   mSharedData->setSubsetString( trimmedSubset );
 

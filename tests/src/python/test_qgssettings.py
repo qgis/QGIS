@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 from qgis.PyQt.QtCore import QSettings, QVariant
-from qgis.core import Qgis, QgsMapLayerProxyModel, QgsSettings, QgsTolerance
+from qgis.core import Qgis, QgsMapLayerProxyModel, QgsSettings, QgsTolerance, NULL
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -444,14 +444,14 @@ class TestQgsSettings(QgisTestCase):
     def test_overwriteDefaultValues(self):
         """Test that unchanged values are not stored"""
         self.globalsettings.setValue('a_value_with_default', 'a value')
-        self.globalsettings.setValue('an_invalid_value', QVariant())
+        self.globalsettings.setValue('an_invalid_value', NULL)
 
         self.assertEqual(self.settings.value('a_value_with_default'), 'a value')
-        self.assertEqual(self.settings.value('an_invalid_value'), QVariant())
+        self.assertEqual(self.settings.value('an_invalid_value'), NULL)
 
         # Now, set them with the same current value
         self.settings.setValue('a_value_with_default', 'a value')
-        self.settings.setValue('an_invalid_value', QVariant())
+        self.settings.setValue('an_invalid_value', NULL)
 
         # Check
         pure_settings = QSettings(self.settings.fileName(), QSettings.Format.IniFormat)
@@ -471,10 +471,10 @@ class TestQgsSettings(QgisTestCase):
 
         # Re-set to original values
         self.settings.setValue('a_value_with_default', 'a value')
-        self.settings.setValue('an_invalid_value', QVariant())
+        self.settings.setValue('an_invalid_value', NULL)
 
         self.assertEqual(self.settings.value('a_value_with_default'), 'a value')
-        self.assertEqual(self.settings.value('an_invalid_value'), QVariant())
+        self.assertEqual(self.settings.value('an_invalid_value'), NULL)
 
         # Check if they are gone
         pure_settings = QSettings(self.settings.fileName(), QSettings.Format.IniFormat)

@@ -50,13 +50,13 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   if ( mLayer->geometryType() == Qgis::GeometryType::Null )
   {
-    mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
+    mFeatureRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   }
 
   mFeat.setId( std::numeric_limits<int>::min() );
 
   if ( !mLayer->isSpatial() )
-    mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
+    mFeatureRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   loadAttributes();
 
@@ -135,7 +135,7 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
   const auto constFids = fids;
   for ( const QgsFeatureId fid : constFids )
   {
-    QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1, size: %3" ).arg( fid ).arg( qgsEnumValueToKey( mFeatureRequest.filterType() ) ).arg( mIdRowMap.size() ), 4 );
 
     const int row = idToRow( fid );
     if ( row != -1 )
@@ -254,7 +254,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
-  QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1" ).arg( fid ).arg( qgsEnumValueToKey( mFeatureRequest.filterType() ) ), 4 );
   bool featOk = true;
 
   if ( mFeat.id() != fid )
@@ -349,7 +349,7 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
     mAttributeValueChanges.insert( QPair<QgsFeatureId, int>( fid, idx ), value );
     return;
   }
-  QgsDebugMsgLevel( QStringLiteral( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( qgsEnumValueToKey( mFeatureRequest.filterType() ) ), 2 );
 
   for ( SortCache &cache : mSortCaches )
   {
@@ -372,7 +372,7 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
     }
   }
   // No filter request: skip all possibly heavy checks
-  if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
+  if ( mFeatureRequest.filterType() == Qgis::FeatureRequestFilterType::NoFilter )
   {
     if ( loadFeatureAtId( fid ) )
     {
@@ -677,20 +677,20 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != Qt::DisplayRole
          && role != Qt::ToolTipRole
          && role != Qt::EditRole
-         && role != FeatureIdRole
-         && role != FieldIndexRole
+         && role != static_cast< int >( CustomRole::FeatureId )
+         && role != static_cast< int >( CustomRole::FieldIndex )
          && role != Qt::BackgroundRole
          && role != Qt::ForegroundRole
          && role != Qt::DecorationRole
          && role != Qt::FontRole
-         && role < SortRole
+         && role < static_cast< int >( CustomRole::Sort )
        )
      )
     return QVariant();
 
   const QgsFeatureId rowId = rowToId( index.row() );
 
-  if ( role == FeatureIdRole )
+  if ( role == static_cast< int >( CustomRole::FeatureId ) )
     return rowId;
 
   if ( index.column() >= mFieldCount )
@@ -698,12 +698,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   const int fieldId = mAttributes.at( index.column() );
 
-  if ( role == FieldIndexRole )
+  if ( role == static_cast< int >( CustomRole::FieldIndex ) )
     return fieldId;
 
-  if ( role >= SortRole )
+  if ( role >= static_cast< int >( CustomRole::Sort ) )
   {
-    const unsigned long cacheIndex = role - SortRole;
+    const unsigned long cacheIndex = role - static_cast< int >( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
       return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
     else
@@ -1046,7 +1046,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
   }
 
   const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
-                                    .setFlags( QgsFeatureRequest::NoGeometry )
+                                    .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
                                     .setSubsetOfAttributes( cache.sortCacheAttributes );
   QgsFeatureIterator it = mLayerCache->getFeatures( request );
 
@@ -1088,7 +1088,7 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest &request )
 {
   mFeatureRequest = request;
   if ( mLayer && !mLayer->isSpatial() )
-    mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
+    mFeatureRequest.setFlags( mFeatureRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
 }
 
 const QgsFeatureRequest &QgsAttributeTableModel::request() const

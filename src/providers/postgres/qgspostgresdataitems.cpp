@@ -647,9 +647,9 @@ QString QgsPostgresDataItemProvider::dataProviderKey() const
   return QStringLiteral( "postgres" );
 }
 
-int QgsPostgresDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsPostgresDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Database;
+  return Qgis::DataItemProviderCapability::Databases;
 }
 
 QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )

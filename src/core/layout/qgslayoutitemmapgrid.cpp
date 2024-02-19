@@ -1934,20 +1934,20 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 
   // if we are changing the grid interval or offset, then we also have to mark the transform as dirty
   mTransformDirty = mTransformDirty
-                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridIntervalX )
-                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridIntervalY )
-                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridOffsetX )
-                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridOffsetY );
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridIntervalX )
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridIntervalY )
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridOffsetX )
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridOffsetY );
 
-  mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::MapGridEnabled, context, enabled() );
+  mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::DataDefinedProperty::MapGridEnabled, context, enabled() );
   switch ( mGridUnit )
   {
     case MapUnit:
     case MM:
     case CM:
     {
-      mEvaluatedIntervalX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridIntervalX, context, mGridIntervalX );
-      mEvaluatedIntervalY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridIntervalY, context, mGridIntervalY );
+      mEvaluatedIntervalX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridIntervalX, context, mGridIntervalX );
+      mEvaluatedIntervalY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridIntervalY, context, mGridIntervalY );
       break;
     }
 
@@ -1971,21 +1971,21 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
       break;
     }
   }
-  mEvaluatedOffsetX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridOffsetX, context, mGridOffsetX );
-  mEvaluatedOffsetY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridOffsetY, context, mGridOffsetY );
-  mEvaluatedGridFrameWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameSize, context, mGridFrameWidth );
-  mEvaluatedGridFrameMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameMargin, context, mGridFrameMargin );
-  mEvaluatedAnnotationFrameDistance = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridLabelDistance, context, mAnnotationFrameDistance );
-  mEvaluatedCrossLength = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridCrossSize, context, mCrossLength );
-  mEvaluatedGridFrameLineThickness = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameLineThickness, context, mGridFramePenThickness );
-  mEvaluatedLeftGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayLeft, context ), mLeftGridAnnotationDisplay );
-  mEvaluatedRightGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayRight, context ), mRightGridAnnotationDisplay );
-  mEvaluatedTopGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayTop, context ), mTopGridAnnotationDisplay );
-  mEvaluatedBottomGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayBottom, context ), mBottomGridAnnotationDisplay );
-  mEvaluatedLeftFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsLeft, context ), mLeftFrameDivisions );
-  mEvaluatedRightFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsRight, context ), mRightFrameDivisions );
-  mEvaluatedTopFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsTop, context ), mTopFrameDivisions );
-  mEvaluatedBottomFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsBottom, context ), mBottomFrameDivisions );
+  mEvaluatedOffsetX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridOffsetX, context, mGridOffsetX );
+  mEvaluatedOffsetY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridOffsetY, context, mGridOffsetY );
+  mEvaluatedGridFrameWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridFrameSize, context, mGridFrameWidth );
+  mEvaluatedGridFrameMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridFrameMargin, context, mGridFrameMargin );
+  mEvaluatedAnnotationFrameDistance = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridLabelDistance, context, mAnnotationFrameDistance );
+  mEvaluatedCrossLength = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridCrossSize, context, mCrossLength );
+  mEvaluatedGridFrameLineThickness = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapGridFrameLineThickness, context, mGridFramePenThickness );
+  mEvaluatedLeftGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayLeft, context ), mLeftGridAnnotationDisplay );
+  mEvaluatedRightGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayRight, context ), mRightGridAnnotationDisplay );
+  mEvaluatedTopGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayTop, context ), mTopGridAnnotationDisplay );
+  mEvaluatedBottomGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayBottom, context ), mBottomGridAnnotationDisplay );
+  mEvaluatedLeftFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsLeft, context ), mLeftFrameDivisions );
+  mEvaluatedRightFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight, context ), mRightFrameDivisions );
+  mEvaluatedTopFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop, context ), mTopFrameDivisions );
+  mEvaluatedBottomFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom, context ), mBottomFrameDivisions );
 
 }
 

@@ -256,10 +256,23 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QString portName() const;
 
     /**
-     * Sets the serial port the sensor connects to.
-     * \param portName the port name (e.g. COM4)
-     */
+    * Sets the serial port the sensor connects to.
+    * \param portName the port name (e.g. COM4)
+    */
     void setPortName( const QString &portName );
+
+    /**
+     * Returns the baudrate of the serial port the sensor connects to.
+     * \since QGIS 3.36
+     */
+    QSerialPort::BaudRate baudRate() const;
+
+    /**
+     * Sets the baudrate of the serial port the sensor connects to.
+     * \param baudRate the baudrate (e.g. 9600)
+     * \since QGIS 3.36
+     */
+    void setBaudRate( const QSerialPort::BaudRate &baudRate );
 
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document ) override;
@@ -278,6 +291,8 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QSerialPort *mSerialPort = nullptr;
 
     QString mPortName;
+
+    QSerialPort::BaudRate mBaudRate;
 
 };
 SIP_END

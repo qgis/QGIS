@@ -51,9 +51,9 @@ QStringList QgsExtractLabelsAlgorithm::tags() const
   return QObject::tr( "map themes,font,position" ).split( ',' );
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractLabelsAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsExtractLabelsAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QString QgsExtractLabelsAlgorithm::group() const
@@ -91,15 +91,15 @@ void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
   std::unique_ptr<QgsProcessingParameterNumber> dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
         QStringLiteral( "DPI" ),
         QObject::tr( "Map resolution (in DPI)" ),
-        QgsProcessingParameterNumber::Double,
+        Qgis::ProcessingNumberParameterType::Double,
         QVariant( 96.0 ), true );
-  dpiParameter->setFlags( dpiParameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  dpiParameter->setFlags( dpiParameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParameter.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink(
                   QStringLiteral( "OUTPUT" ),
                   QObject::tr( "Extracted labels" ),
-                  QgsProcessing::TypeVectorPoint ) );
+                  Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsExtractLabelsAlgorithm::shortDescription() const
@@ -176,13 +176,13 @@ class ExtractLabelSink : public QgsLabelSink
       QgsPalLayerSettings labelSettings( settings );
       const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues = labelFeature->dataDefinedValues();
 
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineWrapChar ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
       {
-        labelSettings.wrapChar = dataDefinedValues.value( QgsPalLayerSettings::MultiLineWrapChar ).toString();
+        labelSettings.wrapChar = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
       }
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::AutoWrapLength ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
       {
-        labelSettings.autoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::AutoWrapLength ).toInt();
+        labelSettings.autoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength ).toInt();
       }
       const QString labelText = QgsPalLabeling::splitToLines( labelFeature->text( -1 ),
                                 labelSettings.wrapChar,
@@ -190,9 +190,9 @@ class ExtractLabelSink : public QgsLabelSink
                                 labelSettings.useMaxLineLengthForAutoWrap ).join( '\n' );
 
       QString labelAlignment;
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineAlignment ) )
       {
-        labelSettings.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( dataDefinedValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
+        labelSettings.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineAlignment ).toInt() );
       }
       switch ( labelSettings.multilineAlign )
       {
@@ -251,21 +251,21 @@ class ExtractLabelSink : public QgsLabelSink
       const double fontWordSpacing = font.wordSpacing();
 
       QgsTextFormat format = labelSettings.format();
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::Size ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::Size ) )
       {
-        format.setSize( dataDefinedValues.value( QgsPalLayerSettings::Size ).toDouble() );
+        format.setSize( dataDefinedValues.value( QgsPalLayerSettings::Property::Size ).toDouble() );
       }
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::Color ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::Color ) )
       {
-        format.setColor( dataDefinedValues.value( QgsPalLayerSettings::Color ).value<QColor>() );
+        format.setColor( dataDefinedValues.value( QgsPalLayerSettings::Property::Color ).value<QColor>() );
       }
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::FontOpacity ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::FontOpacity ) )
       {
-        format.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::FontOpacity ).toDouble() / 100.0 );
+        format.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::Property::FontOpacity ).toDouble() / 100.0 );
       }
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineHeight ) )
       {
-        format.setLineHeight( dataDefinedValues.value( QgsPalLayerSettings::MultiLineHeight ).toDouble() );
+        format.setLineHeight( dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineHeight ).toDouble() );
       }
 
       const QString formatColor = format.color().name();
@@ -273,9 +273,9 @@ class ExtractLabelSink : public QgsLabelSink
       const double formatLineHeight = format.lineHeight();
 
       QgsTextBufferSettings buffer = format.buffer();
-      if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferDraw ) )
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::BufferDraw ) )
       {
-        buffer.setEnabled( dataDefinedValues.value( QgsPalLayerSettings::BufferDraw ).toBool() );
+        buffer.setEnabled( dataDefinedValues.value( QgsPalLayerSettings::Property::BufferDraw ).toBool() );
       }
       const bool bufferDraw = buffer.enabled();
       double bufferSize = 0.0;
@@ -283,17 +283,17 @@ class ExtractLabelSink : public QgsLabelSink
       double bufferOpacity = 0.0;
       if ( bufferDraw )
       {
-        if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferSize ) )
+        if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::BufferSize ) )
         {
-          buffer.setSize( dataDefinedValues.value( QgsPalLayerSettings::BufferSize ).toDouble() );
+          buffer.setSize( dataDefinedValues.value( QgsPalLayerSettings::Property::BufferSize ).toDouble() );
         }
-        if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferColor ) )
+        if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::BufferColor ) )
         {
-          buffer.setColor( dataDefinedValues.value( QgsPalLayerSettings::BufferColor ).value<QColor>() );
+          buffer.setColor( dataDefinedValues.value( QgsPalLayerSettings::Property::BufferColor ).value<QColor>() );
         }
-        if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferOpacity ) )
+        if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::BufferOpacity ) )
         {
-          buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::BufferOpacity ).toDouble() / 100.0 );
+          buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::Property::BufferOpacity ).toDouble() / 100.0 );
         }
 
         bufferSize =  buffer.sizeUnit() == Qgis::RenderUnit::Percentage
@@ -532,23 +532,23 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
       textFormat.setBuffer( buffer );
       settings.setFormat( textFormat );
 
-      settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::FontOpacity, QgsProperty::fromField( QStringLiteral( "FontOpacity" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromField( QStringLiteral( "Family" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromField( QStringLiteral( "Italic" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromField( QStringLiteral( "Bold" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Underline, QgsProperty::fromField( QStringLiteral( "Underline" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "Size" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, QgsProperty::fromField( QStringLiteral( "FontLetterSpacing" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::FontWordSpacing, QgsProperty::fromField( QStringLiteral( "FontWordSpacing" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::BufferDraw, QgsProperty::fromField( QStringLiteral( "BufferDraw" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::BufferSize, QgsProperty::fromField( QStringLiteral( "BufferSize" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::BufferColor, QgsProperty::fromField( QStringLiteral( "BufferColor" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::BufferOpacity, QgsProperty::fromField( QStringLiteral( "BufferOpacity" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromField( QStringLiteral( "FontOpacity" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Family, QgsProperty::fromField( QStringLiteral( "Family" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Italic, QgsProperty::fromField( QStringLiteral( "Italic" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Bold, QgsProperty::fromField( QStringLiteral( "Bold" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Underline, QgsProperty::fromField( QStringLiteral( "Underline" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( QStringLiteral( "Size" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontLetterSpacing, QgsProperty::fromField( QStringLiteral( "FontLetterSpacing" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontWordSpacing, QgsProperty::fromField( QStringLiteral( "FontWordSpacing" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferDraw, QgsProperty::fromField( QStringLiteral( "BufferDraw" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromField( QStringLiteral( "BufferSize" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferColor, QgsProperty::fromField( QStringLiteral( "BufferColor" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromField( QStringLiteral( "BufferOpacity" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
       settings.setDataDefinedProperties( settingsProperties );
 
       QgsAbstractVectorLayerLabeling *labeling = new QgsVectorLayerSimpleLabeling( settings );

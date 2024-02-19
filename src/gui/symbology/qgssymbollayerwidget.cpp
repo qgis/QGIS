@@ -136,7 +136,7 @@ QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
 
 void QgsSymbolLayerWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
 {
-  button->init( key, symbolLayer()->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer, true );
+  button->init( static_cast< int >( key ), symbolLayer()->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsSymbolLayerWidget::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsSymbolLayerWidget::createAuxiliaryField );
 
@@ -157,8 +157,8 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
-  QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
+  QgsSymbolLayer::Property key = static_cast< QgsSymbolLayer::Property >( button->propertyKey() );
+  QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
@@ -186,7 +186,7 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast< QgsSymbolLayer::Property >( button->propertyKey() );
   symbolLayer()->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -326,7 +326,7 @@ void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddWidth = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
+  const QgsProperty ddWidth = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth );
   if ( ddWidth )
     mAssistantPreviewSymbol->setDataDefinedWidth( ddWidth );
 }
@@ -410,16 +410,16 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   updatePatternIcon();
 
-  registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mDashPatternDDBtn, QgsSymbolLayer::PropertyCustomDash );
-  registerDataDefinedButton( mPenStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
-  registerDataDefinedButton( mPatternOffsetDDBtn, QgsSymbolLayer::PropertyDashPatternOffset );
-  registerDataDefinedButton( mTrimDistanceStartDDBtn, QgsSymbolLayer::PropertyTrimStart );
-  registerDataDefinedButton( mTrimDistanceEndDDBtn, QgsSymbolLayer::PropertyTrimEnd );
+  registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mDashPatternDDBtn, QgsSymbolLayer::Property::CustomDash );
+  registerDataDefinedButton( mPenStyleDDBtn, QgsSymbolLayer::Property::StrokeStyle );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::Property::CapStyle );
+  registerDataDefinedButton( mPatternOffsetDDBtn,  QgsSymbolLayer::Property::DashPatternOffset );
+  registerDataDefinedButton( mTrimDistanceStartDDBtn, QgsSymbolLayer::Property::TrimStart );
+  registerDataDefinedButton( mTrimDistanceEndDDBtn, QgsSymbolLayer::Property::TrimEnd );
 
   updateAssistantSymbol();
 }
@@ -788,18 +788,18 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mHorizontalAnchorComboBox->blockSignals( false );
   mVerticalAnchorComboBox->blockSignals( false );
 
-  registerDataDefinedButton( mNameDDBtn, QgsSymbolLayer::PropertyName );
-  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
-  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
-  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+  registerDataDefinedButton( mNameDDBtn, QgsSymbolLayer::Property::Name );
+  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mStrokeColorDDBtn,  QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::Property::StrokeStyle );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn,  QgsSymbolLayer::Property::CapStyle );
+  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::Property::Size );
+  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
 
   updateAssistantSymbol();
 }
@@ -933,7 +933,7 @@ void QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -1024,13 +1024,13 @@ void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
 
-  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mFillStyleDDBtn, QgsSymbolLayer::PropertyFillStyle );
-  registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mFillStyleDDBtn, QgsSymbolLayer::Property::FillStyle );
+  registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::Property::StrokeStyle );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
 }
 
 QgsSymbolLayer *QgsSimpleFillSymbolLayerWidget::symbolLayer()
@@ -1190,12 +1190,12 @@ void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
-  registerDataDefinedButton( mNameDDBtn, QgsSymbolLayer::PropertyName );
-  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
-  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+  registerDataDefinedButton( mNameDDBtn, QgsSymbolLayer::Property::Name );
+  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::Property::Size );
+  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
 
   updateAssistantSymbol();
 }
@@ -1274,7 +1274,7 @@ void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -1455,19 +1455,19 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
 
-  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::PropertySecondaryColor );
-  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mGradientTypeDDBtn, QgsSymbolLayer::PropertyGradientType );
-  registerDataDefinedButton( mCoordinateModeDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
-  registerDataDefinedButton( mSpreadDDBtn, QgsSymbolLayer::PropertyGradientSpread );
-  registerDataDefinedButton( mRefPoint1XDDBtn, QgsSymbolLayer::PropertyGradientReference1X );
-  registerDataDefinedButton( mRefPoint1YDDBtn, QgsSymbolLayer::PropertyGradientReference1Y );
-  registerDataDefinedButton( mRefPoint1CentroidDDBtn, QgsSymbolLayer::PropertyGradientReference1IsCentroid );
-  registerDataDefinedButton( mRefPoint2XDDBtn, QgsSymbolLayer::PropertyGradientReference2X );
-  registerDataDefinedButton( mRefPoint2YDDBtn, QgsSymbolLayer::PropertyGradientReference2Y );
-  registerDataDefinedButton( mRefPoint2CentroidDDBtn, QgsSymbolLayer::PropertyGradientReference2IsCentroid );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::Property::SecondaryColor );
+  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mGradientTypeDDBtn, QgsSymbolLayer::Property::GradientType );
+  registerDataDefinedButton( mCoordinateModeDDBtn, QgsSymbolLayer::Property::CoordinateMode );
+  registerDataDefinedButton( mSpreadDDBtn, QgsSymbolLayer::Property::GradientSpread );
+  registerDataDefinedButton( mRefPoint1XDDBtn, QgsSymbolLayer::Property::GradientReference1X );
+  registerDataDefinedButton( mRefPoint1YDDBtn, QgsSymbolLayer::Property::GradientReference1Y );
+  registerDataDefinedButton( mRefPoint1CentroidDDBtn, QgsSymbolLayer::Property::GradientReference1IsCentroid );
+  registerDataDefinedButton( mRefPoint2XDDBtn, QgsSymbolLayer::Property::GradientReference2X );
+  registerDataDefinedButton( mRefPoint2YDDBtn, QgsSymbolLayer::Property::GradientReference2Y );
+  registerDataDefinedButton( mRefPoint2CentroidDDBtn, QgsSymbolLayer::Property::GradientReference2IsCentroid );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
 }
 
 QgsSymbolLayer *QgsGradientFillSymbolLayerWidget::symbolLayer()
@@ -1756,13 +1756,13 @@ void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
 
-  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::PropertySecondaryColor );
-  registerDataDefinedButton( mBlurRadiusDDBtn, QgsSymbolLayer::PropertyBlurRadius );
-  registerDataDefinedButton( mShadeWholeShapeDDBtn, QgsSymbolLayer::PropertyShapeburstUseWholeShape );
-  registerDataDefinedButton( mShadeDistanceDDBtn, QgsSymbolLayer::PropertyShapeburstMaxDistance );
-  registerDataDefinedButton( mIgnoreRingsDDBtn, QgsSymbolLayer::PropertyShapeburstIgnoreRings );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::Property::SecondaryColor );
+  registerDataDefinedButton( mBlurRadiusDDBtn, QgsSymbolLayer::Property::BlurRadius );
+  registerDataDefinedButton( mShadeWholeShapeDDBtn, QgsSymbolLayer::Property::ShapeburstUseWholeShape );
+  registerDataDefinedButton( mShadeDistanceDDBtn, QgsSymbolLayer::Property::ShapeburstMaxDistance );
+  registerDataDefinedButton( mIgnoreRingsDDBtn, QgsSymbolLayer::Property::ShapeburstIgnoreRings );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
 }
 
 QgsSymbolLayer *QgsShapeburstFillSymbolLayerWidget::symbolLayer()
@@ -1996,11 +1996,11 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   setPlacement(); // update gui
 
-  registerDataDefinedButton( mIntervalDDBtn, QgsSymbolLayer::PropertyInterval );
-  registerDataDefinedButton( mLineOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::PropertyPlacement );
-  registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::PropertyOffsetAlongLine );
-  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::PropertyAverageAngleLength );
+  registerDataDefinedButton( mIntervalDDBtn, QgsSymbolLayer::Property::Interval );
+  registerDataDefinedButton( mLineOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::Property::Placement );
+  registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::Property::OffsetAlongLine );
+  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::Property::AverageAngleLength );
 }
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayerWidget::symbolLayer()
@@ -2260,13 +2260,13 @@ void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   setPlacement(); // update gui
 
-  registerDataDefinedButton( mIntervalDDBtn, QgsSymbolLayer::PropertyInterval );
-  registerDataDefinedButton( mLineOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::PropertyPlacement );
-  registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::PropertyOffsetAlongLine );
-  registerDataDefinedButton( mHashLengthDDBtn, QgsSymbolLayer::PropertyLineDistance );
-  registerDataDefinedButton( mHashRotationDDBtn, QgsSymbolLayer::PropertyLineAngle );
-  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::PropertyAverageAngleLength );
+  registerDataDefinedButton( mIntervalDDBtn, QgsSymbolLayer::Property::Interval );
+  registerDataDefinedButton( mLineOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::Property::Placement );
+  registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::Property::OffsetAlongLine );
+  registerDataDefinedButton( mHashLengthDDBtn, QgsSymbolLayer::Property::LineDistance );
+  registerDataDefinedButton( mHashRotationDDBtn, QgsSymbolLayer::Property::LineAngle );
+  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::Property::AverageAngleLength );
 }
 
 QgsSymbolLayer *QgsHashedLineSymbolLayerWidget::symbolLayer()
@@ -2570,7 +2570,7 @@ void QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -2631,17 +2631,17 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   setGuiForSvg( mLayer, true );
 
-  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
-  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
-  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::Property::Width );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::Property::Height );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
 
-  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->propertyOverrideToolButton(), QgsSymbolLayer::PropertyName );
+  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->propertyOverrideToolButton(), QgsSymbolLayer::Property::Name );
 
   updateAssistantSymbol();
 }
@@ -2919,13 +2919,13 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   }
   updateParamGui( false );
 
-  registerDataDefinedButton( mTextureWidthDDBtn, QgsSymbolLayer::PropertyWidth );
-  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mFilColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+  registerDataDefinedButton( mTextureWidthDDBtn, QgsSymbolLayer::Property::Width );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mFilColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
 
-  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->propertyOverrideToolButton(), QgsSymbolLayer::PropertyFile );
+  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->propertyOverrideToolButton(), QgsSymbolLayer::Property::File );
 }
 
 QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
@@ -3157,10 +3157,10 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer 
     whileBlocking( mClipModeComboBox )->setCurrentIndex( mClipModeComboBox->findData( static_cast< int >( mLayer->clipMode() ) ) );
   }
 
-  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyLineAngle );
-  registerDataDefinedButton( mDistanceDDBtn, QgsSymbolLayer::PropertyLineDistance );
-  registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
-  registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::PropertyLineClipping );
+  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::Property::LineAngle );
+  registerDataDefinedButton( mDistanceDDBtn, QgsSymbolLayer::Property::LineDistance );
+  registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::Property::CoordinateMode );
+  registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::Property::LineClipping );
 }
 
 QgsSymbolLayer *QgsLinePatternFillSymbolLayerWidget::symbolLayer()
@@ -3386,18 +3386,18 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mRandomYOffsetUnitWidget )->setMapUnitScale( mLayer->randomDeviationYMapUnitScale() );
   whileBlocking( mSeedSpinBox )->setValue( mLayer->seed() );
 
-  registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceX );
-  registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceY );
-  registerDataDefinedButton( mHorizontalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementX );
-  registerDataDefinedButton( mVerticalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementY );
-  registerDataDefinedButton( mHorizontalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetX );
-  registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetY );
-  registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::PropertyMarkerClipping );
-  registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
-  registerDataDefinedButton( mRandomXDDBtn, QgsSymbolLayer::PropertyRandomOffsetX );
-  registerDataDefinedButton( mRandomYDDBtn, QgsSymbolLayer::PropertyRandomOffsetY );
-  registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::PropertyRandomSeed );
-  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
+  registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::Property::DistanceX );
+  registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::Property::DistanceY );
+  registerDataDefinedButton( mHorizontalDisplacementDDBtn, QgsSymbolLayer::Property::DisplacementX );
+  registerDataDefinedButton( mVerticalDisplacementDDBtn, QgsSymbolLayer::Property::DisplacementY );
+  registerDataDefinedButton( mHorizontalOffsetDDBtn, QgsSymbolLayer::Property::OffsetX );
+  registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::Property::OffsetY );
+  registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::Property::MarkerClipping );
+  registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::Property::CoordinateMode );
+  registerDataDefinedButton( mRandomXDDBtn, QgsSymbolLayer::Property::RandomOffsetX );
+  registerDataDefinedButton( mRandomYDDBtn, QgsSymbolLayer::Property::RandomOffsetY );
+  registerDataDefinedButton( mSeedDdbtn,  QgsSymbolLayer::Property::RandomSeed );
+  registerDataDefinedButton( mAngleDDBtn,  QgsSymbolLayer::Property::Angle );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()
@@ -3640,18 +3640,18 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
-  registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::PropertyFontFamily );
-  registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::PropertyFontStyle );
-  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
-  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::PropertyFillColor );
-  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
-  registerDataDefinedButton( mCharDDBtn, QgsSymbolLayer::PropertyCharacter );
+  registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::Property::FontFamily );
+  registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::Property::FontStyle );
+  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::Property::Size );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::Property::FillColor );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
+  registerDataDefinedButton( mCharDDBtn, QgsSymbolLayer::Property::Character );
 
   updateAssistantSymbol();
 }
@@ -3869,7 +3869,7 @@ void QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -4019,14 +4019,14 @@ void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
-  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
-  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
-  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyName );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::Property::Width );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::Property::Height );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::Property::Opacity );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::Property::Name );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
 
   updatePreviewImage();
 }
@@ -4314,14 +4314,14 @@ void QgsAnimatedMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
-  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
-  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
-  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyName );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::Property::Width );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::Property::Height );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::Property::Opacity );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::Property::Name );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
 
   updatePreviewImage();
 }
@@ -4603,12 +4603,12 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   updatePreviewImage();
 
-  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
-  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
-  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::Property::File );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::Property::Opacity );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::Property::Angle );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::Property::Width );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::Property::Height );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
 }
 
 QgsSymbolLayer *QgsRasterFillSymbolLayerWidget::symbolLayer()
@@ -4835,12 +4835,12 @@ void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   updatePreviewImage();
 
-  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
-  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::Property::File );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::Property::Opacity );
+  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::Property::CapStyle );
 }
 
 QgsSymbolLayer *QgsRasterLineSymbolLayerWidget::symbolLayer()
@@ -5066,10 +5066,10 @@ void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   mDensityAreaUnitWidget->setMapUnitScale( mLayer->densityAreaUnitScale() );
   mDensityAreaUnitWidget->blockSignals( false );
 
-  registerDataDefinedButton( mPointCountDdbtn, QgsSymbolLayer::PropertyPointCount );
-  registerDataDefinedButton( mDensityAreaDdbtn, QgsSymbolLayer::PropertyDensityArea );
-  registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::PropertyRandomSeed );
-  registerDataDefinedButton( mClipPointsDdbtn, QgsSymbolLayer::PropertyClipPoints );
+  registerDataDefinedButton( mPointCountDdbtn, QgsSymbolLayer::Property::PointCount );
+  registerDataDefinedButton( mDensityAreaDdbtn, QgsSymbolLayer::Property::DensityArea );
+  registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::Property::RandomSeed );
+  registerDataDefinedButton( mClipPointsDdbtn, QgsSymbolLayer::Property::ClipPoints );
 }
 
 QgsSymbolLayer *QgsRandomMarkerFillSymbolLayerWidget::symbolLayer()
@@ -5332,12 +5332,12 @@ void QgsLineburstSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
   whileBlocking( cboCapStyle )->setPenCapStyle( mLayer->penCapStyle() );
 
-  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
-  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::PropertySecondaryColor );
-  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::Property::StrokeColor );
+  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::Property::SecondaryColor );
+  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::Property::CapStyle );
 }
 
 QgsSymbolLayer *QgsLineburstSymbolLayerWidget::symbolLayer()
@@ -5448,10 +5448,10 @@ void QgsFilledLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
   whileBlocking( cboCapStyle )->setPenCapStyle( mLayer->penCapStyle() );
 
-  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::Property::StrokeWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::Property::JoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::Property::CapStyle );
 }
 
 QgsSymbolLayer *QgsFilledLineSymbolLayerWidget::symbolLayer()

@@ -39,13 +39,13 @@ Constructor for QgsDataDefinedSizeLegend.
 Copy constructor
 %End
 
-    enum LegendType
+    enum LegendType /BaseType=IntEnum/
     {
       LegendSeparated,
       LegendCollapsed,
     };
 
-    enum VerticalAlignment
+    enum VerticalAlignment /BaseType=IntEnum/
     {
       AlignCenter,
       AlignBottom,

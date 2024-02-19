@@ -38,7 +38,7 @@ class QgsLayoutAtlasToPdfAlgorithmBase : public QgsProcessingAlgorithm
 
     QgsLayoutAtlasToPdfAlgorithmBase() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;

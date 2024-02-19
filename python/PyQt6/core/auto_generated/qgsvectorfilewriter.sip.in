@@ -25,7 +25,7 @@ There are two possibilities how to use this class:
 #include "qgsvectorfilewriter.h"
 %End
   public:
-    enum OptionType
+    enum OptionType /BaseType=IntEnum/
     {
       Set,
       String,
@@ -124,7 +124,7 @@ Constructor for MetaData
       QString compulsoryEncoding;
     };
 
-    enum WriterError
+    enum WriterError /BaseType=IntEnum/
     {
       NoError,
       ErrDriverNotFound,
@@ -139,13 +139,13 @@ Constructor for MetaData
       Canceled,
     };
 
-    enum FieldNameSource
+    enum FieldNameSource /BaseType=IntEnum/
     {
       Original,
       PreferAlias,
     };
 
-    enum VectorFormatOption
+    enum VectorFormatOption /BaseType=IntEnum/
     {
       SortRecommended,
       SkipNonSpatialFormats,
@@ -198,7 +198,7 @@ Creates a clone of the FieldValueConverter.
 %End
     };
 
-    enum EditionCapability
+    enum EditionCapability /BaseType=IntEnum/
     {
       //! Flag to indicate that a new layer can be added to the dataset
       CanAddNewLayer,
@@ -216,7 +216,7 @@ Creates a clone of the FieldValueConverter.
     typedef QFlags<QgsVectorFileWriter::EditionCapability> EditionCapabilities;
 
 
-    enum ActionOnExistingFile
+    enum ActionOnExistingFile /BaseType=IntEnum/
     {
       //! Create or overwrite file
       CreateOrOverwriteFile,

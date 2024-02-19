@@ -249,14 +249,14 @@ Clones the format, returning a new object.
 The caller takes ownership of the returned object.
 %End
 
-    virtual QgsNumericFormat *create( const QMap<QString, QVariant> &configuration, const QgsReadWriteContext &context ) const = 0 /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const = 0 /Factory/;
 %Docstring
 Creates a new copy of the format, using the supplied ``configuration``.
 
 The caller takes ownership of the returned object.
 %End
 
-    virtual QMap<QString, QVariant> configuration( const QgsReadWriteContext &context ) const = 0;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Returns the current configuration of the formatter. This value can be used in a call to :py:func:`~QgsNumericFormat.create`
 in order to recreate this formatter in its current state.

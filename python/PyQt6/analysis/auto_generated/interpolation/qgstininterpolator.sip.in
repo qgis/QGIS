@@ -23,7 +23,7 @@ Interpolation in a triangular irregular network
 %End
   public:
 
-    enum TinInterpolation
+    enum TinInterpolation /BaseType=IntEnum/
     {
       Linear,
       CloughTocher,

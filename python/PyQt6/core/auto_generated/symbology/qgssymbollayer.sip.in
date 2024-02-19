@@ -94,78 +94,79 @@ class QgsSymbolLayer
 %End
   public:
 
-    enum Property
+
+    enum class Property /BaseType=IntEnum/
     {
-      PropertySize,
-      PropertyAngle,
-      PropertyName,
-      PropertyFillColor,
-      PropertyStrokeColor,
-      PropertyStrokeWidth,
-      PropertyStrokeStyle,
-      PropertyOffset,
-      PropertyCharacter,
-      PropertyWidth,
-      PropertyHeight,
-      PropertyPreserveAspectRatio,
-      PropertyFillStyle,
-      PropertyJoinStyle,
-      PropertySecondaryColor,
-      PropertyLineAngle,
-      PropertyLineDistance,
-      PropertyGradientType,
-      PropertyCoordinateMode,
-      PropertyGradientSpread,
-      PropertyGradientReference1X,
-      PropertyGradientReference1Y,
-      PropertyGradientReference2X,
-      PropertyGradientReference2Y,
-      PropertyGradientReference1IsCentroid,
-      PropertyGradientReference2IsCentroid,
-      PropertyBlurRadius,
-      PropertyShapeburstUseWholeShape,
-      PropertyShapeburstMaxDistance,
-      PropertyShapeburstIgnoreRings,
-      PropertyFile,
-      PropertyDistanceX,
-      PropertyDistanceY,
-      PropertyDisplacementX,
-      PropertyDisplacementY,
-      PropertyOpacity,
-      PropertyCustomDash,
-      PropertyCapStyle,
-      PropertyPlacement,
-      PropertyInterval,
-      PropertyOffsetAlongLine,
-      PropertyAverageAngleLength,
-      PropertyHorizontalAnchor,
-      PropertyVerticalAnchor,
-      PropertyLayerEnabled,
-      PropertyArrowWidth,
-      PropertyArrowStartWidth,
-      PropertyArrowHeadLength,
-      PropertyArrowHeadThickness,
-      PropertyArrowHeadType,
-      PropertyArrowType,
-      PropertyOffsetX,
-      PropertyOffsetY,
-      PropertyPointCount,
-      PropertyRandomSeed,
-      PropertyClipPoints,
-      PropertyDensityArea,
-      PropertyFontFamily,
-      PropertyFontStyle,
-      PropertyDashPatternOffset,
-      PropertyTrimStart,
-      PropertyTrimEnd,
-      PropertyLineStartWidthValue,
-      PropertyLineEndWidthValue,
-      PropertyLineStartColorValue,
-      PropertyLineEndColorValue,
-      PropertyMarkerClipping,
-      PropertyRandomOffsetX,
-      PropertyRandomOffsetY,
-      PropertyLineClipping,
+      Size,
+      Angle,
+      Name,
+      FillColor,
+      StrokeColor,
+      StrokeWidth,
+      StrokeStyle,
+      Offset,
+      Character,
+      Width,
+      Height,
+      PreserveAspectRatio,
+      FillStyle,
+      JoinStyle,
+      SecondaryColor,
+      LineAngle,
+      LineDistance,
+      GradientType,
+      CoordinateMode,
+      GradientSpread,
+      GradientReference1X,
+      GradientReference1Y,
+      GradientReference2X,
+      GradientReference2Y,
+      GradientReference1IsCentroid,
+      GradientReference2IsCentroid,
+      BlurRadius,
+      ShapeburstUseWholeShape,
+      ShapeburstMaxDistance,
+      ShapeburstIgnoreRings,
+      File,
+      DistanceX,
+      DistanceY,
+      DisplacementX,
+      DisplacementY,
+      Opacity,
+      CustomDash,
+      CapStyle,
+      Placement,
+      Interval,
+      OffsetAlongLine,
+      AverageAngleLength,
+      HorizontalAnchor,
+      VerticalAnchor,
+      LayerEnabled,
+      ArrowWidth,
+      ArrowStartWidth,
+      ArrowHeadLength,
+      ArrowHeadThickness,
+      ArrowHeadType,
+      ArrowType,
+      OffsetX,
+      OffsetY,
+      PointCount,
+      RandomSeed,
+      ClipPoints,
+      DensityArea,
+      FontFamily,
+      FontStyle,
+      DashPatternOffset,
+      TrimStart,
+      TrimEnd,
+      LineStartWidthValue,
+      LineEndWidthValue,
+      LineStartColorValue,
+      LineEndColorValue,
+      MarkerClipping,
+      RandomOffsetX,
+      RandomOffsetY,
+      LineClipping,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -407,14 +408,14 @@ The default implementation does nothing.
 Shall be reimplemented by subclasses to create a deep copy of the instance.
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 %Docstring
 Saves the symbol layer as SLD
 %End
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
-    virtual QMap<QString, QVariant> properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 %Docstring
 Should be reimplemented by subclasses to return a string map that
 contains the configuration information for the symbol layer. This
@@ -708,7 +709,7 @@ Constructor for QgsSymbolLayer.
 
 
 
-    void restoreOldDataDefinedProperties( const QMap<QString, QVariant> &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
 
@@ -779,14 +780,14 @@ Abstract base class for marker symbol layers.
 %End
   public:
 
-    enum HorizontalAnchorPoint
+    enum HorizontalAnchorPoint /BaseType=IntEnum/
     {
       Left,
       HCenter,
       Right,
     };
 
-    enum VerticalAnchorPoint
+    enum VerticalAnchorPoint /BaseType=IntEnum/
     {
       Top,
       VCenter,
@@ -1055,10 +1056,10 @@ the vertical anchor point is aligned with the marker's desired location.
 .. seealso:: :py:func:`horizontalAnchorPoint`
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 %Docstring
 Writes the symbol layer definition as a SLD XML element.
 
@@ -1157,7 +1158,7 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 %End
   public:
 
-    enum RenderRingFilter
+    enum RenderRingFilter /BaseType=IntEnum/
     {
       AllRings,
       ExteriorRingOnly,

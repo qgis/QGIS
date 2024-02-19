@@ -35,14 +35,8 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QgsScrollArea" name="scrollArea">
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAsNeeded</enum>
-       </property>
-       <property name="widgetResizable">
+      <widget class="QgsScrollArea" name="scrollArea" native="true">
+       <property name="widgetResizable" stdset="0">
         <bool>true</bool>
        </property>
        <widget class="QWidget" name="scrollAreaWidgetContents">
@@ -50,7 +44,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>650</width>
+          <width>806</width>
           <height>808</height>
          </rect>
         </property>
@@ -256,6 +250,9 @@
               </item>
               <item row="0" column="0" colspan="4">
                <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Note: the result raster will not be usable with any processing algorithm that expects a materialized raster.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
@@ -664,6 +661,11 @@
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QWidget</extends>
+   <header>qgsscrollarea.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -36,7 +36,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     virtual QgsGraduatedSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
@@ -145,7 +145,7 @@ This will take ownership of the method
 .. versionadded:: 3.10
 %End
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       EqualInterval,
       Quantile,

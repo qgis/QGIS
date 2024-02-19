@@ -33,7 +33,7 @@ class TestQgsClipper: public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsClipper() : QgsTest( QStringLiteral( "Clipper Rendering Tests" ) ) {}
+    TestQgsClipper() : QgsTest( QStringLiteral( "Clipper Rendering Tests" ), QStringLiteral( "3d" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -48,7 +48,6 @@ class TestQgsClipper: public QgsTest
 
     bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
     bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3D &clipRect );
-    bool render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent );
 };
 
 void TestQgsClipper::initTestCase()
@@ -200,7 +199,13 @@ void TestQgsClipper::epsg4978LineRendering()
   fillSymbol->setColor( QColor( 255, 0, 0 ) );
   layerLines->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
-  QVERIFY( render2dCheck( "4978_2D_line_rendering", layerLines.get(), QgsRectangle( -2.5e7, -2.5e7, 2.5e7, 2.5e7 ) ) );
+  QgsMapSettings mapSettings;
+  mapSettings.setLayers( QList<QgsMapLayer *>() << layerLines.get() );
+  mapSettings.setExtent( QgsRectangle( -2.5e7, -2.5e7, 2.5e7, 2.5e7 ) );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "4978_2D_line_rendering", "4978_2D_line_rendering", mapSettings, 0, 50 );
 }
 
 void TestQgsClipper::clipGeometryWithNaNZValues()
@@ -245,30 +250,6 @@ void TestQgsClipper::clipGeometryWithNaNZValues()
   QGSCOMPARENEAR( pointsX.at( 0 ), 704430.30, 0.01 );
   QGSCOMPARENEAR( pointsY.at( 0 ), 7060017.389, 0.01 );
   QGSCOMPARENEAR( pointsZ.at( 0 ), 19.568, 0.01 );
-}
-
-bool TestQgsClipper::render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent )
-{
-  const QString myTmpDir = QDir::tempPath() + '/';
-  const QString myFileName = myTmpDir + testName + ".png";
-
-  QgsMapSettings mMapSettings;
-  mMapSettings.setLayers( QList<QgsMapLayer *>() << layer );
-  mMapSettings.setExtent( extent );
-  mMapSettings.setOutputDpi( 96 );
-  QgsCoordinateReferenceSystem newCrs;
-  newCrs.createFromString( "EPSG:3857" );
-  mMapSettings.setDestinationCrs( newCrs );
-
-  QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
-  myChecker.setControlName( "expected_" + testName );
-  myChecker.setMapSettings( mMapSettings );
-  myChecker.setRenderedImage( myFileName );
-  myChecker.setColorTolerance( 50 );
-  const bool myResultFlag = myChecker.runTest( testName, 0 );
-  mReport += myChecker.report();
-  return myResultFlag;
 }
 
 QGSTEST_MAIN( TestQgsClipper )

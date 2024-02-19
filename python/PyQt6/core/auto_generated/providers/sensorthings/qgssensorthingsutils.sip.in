@@ -1,0 +1,82 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/sensorthings/qgssensorthingsutils.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSensorThingsUtils
+{
+%Docstring(signature="appended")
+Utility functions for working with OGC SensorThings API services.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgssensorthingsutils.h"
+%End
+  public:
+
+    static Qgis::SensorThingsEntity stringToEntity( const QString &type );
+%Docstring
+Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
+
+Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity type.
+%End
+
+    static QString displayString( Qgis::SensorThingsEntity type, bool plural = false );
+%Docstring
+Converts a :py:class:`Qgis`.SensorThingsEntity ``type`` to a user-friendly translated string.
+
+If ``plural`` is ``True`` then a plural string is returned (ie "Things" instead of "Thing").
+%End
+
+    static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
+%Docstring
+Converts a string value corresponding to a SensorThings entity set to a :py:class:`Qgis`.SensorThingsEntity type.
+
+Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity set type.
+%End
+
+    static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
+%Docstring
+Returns the fields which correspond to a specified entity ``type``.
+%End
+
+    static QString geometryFieldForEntityType( Qgis::SensorThingsEntity type );
+%Docstring
+Returns the geometry field for a specified entity ``type``.
+%End
+
+    static bool entityTypeHasGeometry( Qgis::SensorThingsEntity type );
+%Docstring
+Returns ``True`` if the specified entity ``type`` can have geometry attached.
+%End
+
+    static QString filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType );
+%Docstring
+Returns a filter string which restricts results to those matching the specified
+``entityType`` and ``wkbType``.
+%End
+
+    static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = 0, const QString &authCfg = QString() );
+%Docstring
+Returns a list of available geometry types for the server at the specified ``uri``
+and entity ``type``.
+
+This method will block while network requests are made to the server.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/sensorthings/qgssensorthingsutils.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

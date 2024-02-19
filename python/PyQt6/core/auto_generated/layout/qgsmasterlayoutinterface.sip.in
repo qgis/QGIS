@@ -41,7 +41,7 @@ Interface for master layout type objects, such as print layouts and reports.
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       PrintLayout,
       Report,

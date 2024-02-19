@@ -143,7 +143,7 @@ Returns the buttons which are shown
 %End
 
 
-    void setWidgetConfig( const QMap<QString, QVariant> &config );
+    void setWidgetConfig( const QVariantMap &config );
 %Docstring
 Will set the config of this widget wrapper to the specified config.
 
@@ -152,7 +152,7 @@ Will set the config of this widget wrapper to the specified config.
 .. versionadded:: 3.18
 %End
 
-    QMap<QString, QVariant> widgetConfig() const;
+    QVariantMap widgetConfig() const;
 %Docstring
 Returns the whole widget config
 

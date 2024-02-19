@@ -33,12 +33,12 @@ Creates a new QgsProcessingAlgorithmConfigurationWidget
 %End
     ~QgsProcessingAlgorithmConfigurationWidget();
 
-    virtual QMap<QString, QVariant> configuration() const = 0;
+    virtual QVariantMap configuration() const = 0;
 %Docstring
 Read the current configuration from this widget.
 %End
 
-    virtual void setConfiguration( const QMap<QString, QVariant> &configuration ) = 0;
+    virtual void setConfiguration( const QVariantMap &configuration ) = 0;
 %Docstring
 Set the configuration which this widget should represent.
 %End

@@ -313,7 +313,7 @@ Returns the service URL from the setting.
 
     int projectCacheCheckInterval() const;
 %Docstring
-Returns the config cache check interval for the 'periodic' strategy.
+Returns the config cache check interval (in ms) for the 'periodic' strategy.
 
 .. versionadded:: 3.26
 %End

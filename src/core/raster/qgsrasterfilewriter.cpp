@@ -267,7 +267,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
       {
         // Destination extent is (at least partially) outside of source extent, we need destination no data values
         // Get src sample statistics (estimation from sample)
-        const QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, outputExtentInSrcCrs, 250000 );
+        const QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, outputExtentInSrcCrs, 250000 );
 
         // Test if we have free (not used) values
         const double typeMinValue = QgsContrastEnhancement::minimumValuePossible( srcDataType );
@@ -1206,7 +1206,7 @@ QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supported
 QStringList QgsRasterFileWriter::supportedFormatExtensions( const RasterFormatOptions options )
 {
   const auto formats = supportedFiltersAndFormats( options );
-  QStringList extensions;
+  QSet< QString > extensions;
 
   const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
 
@@ -1218,7 +1218,31 @@ QStringList QgsRasterFileWriter::supportedFormatExtensions( const RasterFormatOp
       continue;
 
     const QString matched = match.captured( 1 );
-    extensions << matched;
+    extensions.insert( matched );
   }
-  return extensions;
+
+  QStringList extensionList( extensions.constBegin(), extensions.constEnd() );
+
+  std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
+  {
+    if ( options & SortRecommended )
+    {
+      if ( a == QLatin1String( "tif" ) )
+        return true;
+      else if ( b == QLatin1String( "tif" ) )
+        return false;
+      if ( a == QLatin1String( "tiff" ) )
+        return true;
+      else if ( b == QLatin1String( "tiff" ) )
+        return false;
+      if ( a == QLatin1String( "gpkg" ) )
+        return true;
+      else if ( b == QLatin1String( "gpkg" ) )
+        return false;
+    }
+
+    return a.toLower().localeAwareCompare( b.toLower() ) < 0;
+  } );
+
+  return extensionList;
 }

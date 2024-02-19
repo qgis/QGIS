@@ -49,7 +49,7 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
 
     QString outputName() const override;
-    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
+    Qgis::ProcessingSourceType outputLayerType() const override { return Qgis::ProcessingSourceType::VectorPoint; }
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override { Q_UNUSED( inputWkbType ) return Qgis::WkbType::Point; }
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 

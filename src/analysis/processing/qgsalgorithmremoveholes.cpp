@@ -51,12 +51,12 @@ QString QgsRemoveHolesAlgorithm::outputName() const
 
 QList<int> QgsRemoveHolesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
-QgsProcessing::SourceType QgsRemoveHolesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsRemoveHolesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 QString QgsRemoveHolesAlgorithm::shortHelpString() const
@@ -73,16 +73,16 @@ QgsRemoveHolesAlgorithm *QgsRemoveHolesAlgorithm::createInstance() const
   return new QgsRemoveHolesAlgorithm();
 }
 
-QgsProcessingFeatureSource::Flag QgsRemoveHolesAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsRemoveHolesAlgorithm::sourceFlags() const
 {
   // skip geometry checks - this algorithm can be used to repair geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 void QgsRemoveHolesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > minArea = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN_AREA" ),
-      QObject::tr( "Remove holes with area less than" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Remove holes with area less than" ), Qgis::ProcessingNumberParameterType::Double,
       0.0, false, 0 );
   minArea->setIsDynamic( true );
   minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove holes with area less than" ), QgsPropertyDefinition::DoublePositive ) );

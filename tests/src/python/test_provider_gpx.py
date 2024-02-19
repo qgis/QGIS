@@ -11,7 +11,7 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QDateTime, QVariant
+from qgis.PyQt.QtCore import Qt, QDateTime, QVariant, QTime, QDate
 
 from qgis.core import (
     QgsFeature,
@@ -227,7 +227,7 @@ class TestPyQgsGpxProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.fields().field("time").type(), QVariant.DateTime)
         values = [f["time"] for f in vl.getFeatures()]
-        self.assertEqual(values[0], QDateTime(2023, 4, 25, 9, 52, 14, 0, Qt.TimeSpec(1)))
+        self.assertEqual(values[0], QDateTime(QDate(2023, 4, 25), QTime(9, 52, 14, 0), Qt.TimeSpec(1)))
 
 
 if __name__ == '__main__':

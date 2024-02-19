@@ -270,7 +270,7 @@ void QgsVectorLayerUndoCommandChangeAttribute::undo()
       QgsFeature tmp;
       QgsFeatureRequest request;
       request.setFilterFid( mFid );
-      request.setFlags( QgsFeatureRequest::NoGeometry );
+      request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
       request.setSubsetOfAttributes( QgsAttributeList() << mFieldIndex );
       QgsFeatureIterator fi = layer()->getFeatures( request );
       if ( fi.nextFeature( tmp ) )

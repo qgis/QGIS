@@ -4024,6 +4024,21 @@ class PyQgsTextRenderer(QgisTestCase):
         painter.end()
         self.assertTrue(self.image_check('text_on_curved_line_offset_line_positive', 'text_on_curved_line_offset_line_positive', image, 'text_on_curved_line_offset_line_positive'))
 
+    def testDrawTextDataDefinedProperties(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+
+        format.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.Size,
+            QgsProperty.fromExpression('90*1.5')
+        )
+
+        assert self.checkRender(format, 'datadefined_render', None,
+                                text=['1234', '5678'], rect=QRectF(40, 20, 350, 350),
+                                alignment=QgsTextRenderer.HAlignment.AlignRight)
+
 
 if __name__ == '__main__':
     unittest.main()

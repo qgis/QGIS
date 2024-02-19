@@ -60,13 +60,14 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
 %End
   public:
 
-    enum Property
-    {
+
+    enum class Property /BaseType=IntEnum/
+      {
       ZOffset,
       ExtrusionHeight,
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagDontInvalidateCachedRendersWhenRangeChanges
     };

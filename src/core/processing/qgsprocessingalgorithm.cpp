@@ -87,9 +87,9 @@ QString QgsProcessingAlgorithm::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
-QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsProcessingAlgorithm::flags() const
 {
-  return FlagSupportsBatch | FlagCanCancel;
+  return Qgis::ProcessingAlgorithmFlag::SupportsBatch | Qgis::ProcessingAlgorithmFlag::CanCancel;
 }
 
 bool QgsProcessingAlgorithm::canExecute( QString * ) const
@@ -183,7 +183,7 @@ QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVar
 
 bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, QgsProcessingContext &context ) const
 {
-  if ( !( flags() & FlagRequiresMatchingCrs ) )
+  if ( !( flags() & Qgis::ProcessingAlgorithmFlag::RequiresMatchingCrs ) )
   {
     // I'm a well behaved algorithm - I take work AWAY from users!
     return true;
@@ -296,7 +296,7 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
   QStringList parts;
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+    if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
       continue;
 
     if ( !parameters.contains( def->name() ) )
@@ -319,7 +319,7 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
 
   QgsProcessingContext::ProcessArgumentFlags argumentFlags;
   // we only include the project path argument if a project is actually required by the algorithm
-  if ( flags() & FlagRequiresProject )
+  if ( flags() & Qgis::ProcessingAlgorithmFlag::RequiresProject )
     argumentFlags |= QgsProcessingContext::ProcessArgumentFlag::IncludeProjectPath;
 
   parts.append( context.asQgisProcessArguments( argumentFlags ) );
@@ -342,7 +342,7 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
 
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+    if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
       continue;
 
     if ( !parameters.contains( def->name() ) )
@@ -366,13 +366,13 @@ QVariantMap QgsProcessingAlgorithm::asMap( const QVariantMap &parameters, QgsPro
   QVariantMap properties = context.exportToMap();
 
   // we only include the project path argument if a project is actually required by the algorithm
-  if ( !( flags() & FlagRequiresProject ) )
+  if ( !( flags() & Qgis::ProcessingAlgorithmFlag::RequiresProject ) )
     properties.remove( QStringLiteral( "project_path" ) );
 
   QVariantMap paramValues;
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+    if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
       continue;
 
     if ( !parameters.contains( def->name() ) )
@@ -483,7 +483,7 @@ int QgsProcessingAlgorithm::countVisibleParameters() const
   int count = 0;
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( !( def->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
+    if ( !( def->flags() & Qgis::ProcessingParameterFlag::Hidden ) )
       count++;
   }
   return count;
@@ -1039,10 +1039,10 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
 // QgsProcessingFeatureBasedAlgorithm
 //
 
-QgsProcessingAlgorithm::Flags QgsProcessingFeatureBasedAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsProcessingFeatureBasedAlgorithm::flags() const
 {
-  Flags f = QgsProcessingAlgorithm::flags();
-  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits;
   return f;
 }
 
@@ -1068,14 +1068,14 @@ QList<int> QgsProcessingFeatureBasedAlgorithm::inputLayerTypes() const
   return QList<int>();
 }
 
-QgsProcessing::SourceType QgsProcessingFeatureBasedAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsProcessingFeatureBasedAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorAnyGeometry;
+  return Qgis::ProcessingSourceType::VectorAnyGeometry;
 }
 
-QgsProcessingFeatureSource::Flag QgsProcessingFeatureBasedAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsProcessingFeatureBasedAlgorithm::sourceFlags() const
 {
-  return static_cast<QgsProcessingFeatureSource::Flag>( 0 );
+  return Qgis::ProcessingFeatureSourceFlags();
 }
 
 QgsFeatureSink::SinkFlags QgsProcessingFeatureBasedAlgorithm::sinkFlags() const
@@ -1175,11 +1175,11 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *
 
   Qgis::GeometryType inPlaceGeometryType = layer->geometryType();
   if ( !inputLayerTypes().empty() &&
-       !inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
-       !inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
-       ( ( inPlaceGeometryType == Qgis::GeometryType::Polygon && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
-         ( inPlaceGeometryType == Qgis::GeometryType::Line && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
-         ( inPlaceGeometryType == Qgis::GeometryType::Point && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+       !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) &&
+       !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) &&
+       ( ( inPlaceGeometryType == Qgis::GeometryType::Polygon && !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) ) ||
+         ( inPlaceGeometryType == Qgis::GeometryType::Line && !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) ) ||
+         ( inPlaceGeometryType == Qgis::GeometryType::Point && !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) ) ) )
     return false;
 
   Qgis::WkbType type = Qgis::WkbType::Unknown;
@@ -1212,13 +1212,13 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sin
   QgsProcessingAlgorithm::VectorProperties result;
   if ( sink == QLatin1String( "OUTPUT" ) )
   {
-    if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == QgsProcessingAlgorithm::Available )
+    if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == Qgis::ProcessingPropertyAvailability::Available )
     {
       const VectorProperties inputProps = sourceProperties.value( QStringLiteral( "INPUT" ) );
       result.fields = outputFields( inputProps.fields );
       result.crs = outputCrs( inputProps.crs );
       result.wkbType = outputWkbType( inputProps.wkbType );
-      result.availability = Available;
+      result.availability = Qgis::ProcessingPropertyAvailability::Available;
       return result;
     }
     else
@@ -1229,7 +1229,7 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sin
         result.fields = outputFields( source->fields() );
         result.crs = outputCrs( source->sourceCrs() );
         result.wkbType = outputWkbType( source->wkbType() );
-        result.availability = Available;
+        result.availability = Qgis::ProcessingPropertyAvailability::Available;
         return result;
       }
     }

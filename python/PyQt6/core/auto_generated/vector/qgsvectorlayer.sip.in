@@ -984,7 +984,7 @@ Returns the current auxiliary layer.
      virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
 
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 Writes the symbology of the layer into the document provided in SLD 1.1 format
 
@@ -1017,7 +1017,7 @@ calculated by :py:func:`~QgsVectorLayer.countSymbolFeatures`
 .. versionadded:: 3.10
 %End
 
-    virtual FeatureAvailability hasFeatures() const ${SIP_FINAL};
+    virtual Qgis::FeatureAvailability hasFeatures() const ${SIP_FINAL};
 
 %Docstring
 Determines if this vector layer has features.
@@ -1031,7 +1031,6 @@ Determines if this vector layer has features.
 
 .. versionadded:: 3.4
 %End
-
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
@@ -2470,7 +2469,7 @@ and maximum values are required.
 .. versionadded:: 3.20
 %End
 
-    QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
+    QVariant aggregate( Qgis::Aggregate aggregate,
                         const QString &fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = 0,
@@ -2712,7 +2711,7 @@ Sets the coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
-    virtual QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const;
+    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;

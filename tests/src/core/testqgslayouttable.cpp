@@ -1111,7 +1111,7 @@ void TestQgsLayoutTable::testDataDefinedTextFormatForCell()
   QgsTextFormat textFormat = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   table->setHeaderTextFormat( textFormat );
 
-  textFormat.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "if(@column_number = 1,35,15)" ) ) );
+  textFormat.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromExpression( QStringLiteral( "if(@column_number = 1,35,15)" ) ) );
   table->setContentTextFormat( textFormat );
 
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_datadefinedtextformat" ), &l );
@@ -1699,19 +1699,19 @@ void TestQgsLayoutTable::dataDefinedSource()
   QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
 
   // data defined table name, by layer id
-  table->dataDefinedProperties().setProperty( QgsLayoutObject::AttributeTableSourceLayer, layer1->id() );
+  table->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer, layer1->id() );
   table->refresh();
   QCOMPARE( table->contents().length(), 1 );
   QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
 
   // by layer name
-  table->dataDefinedProperties().setProperty( QgsLayoutObject::AttributeTableSourceLayer, QStringLiteral( "l2" ) );
+  table->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer, QStringLiteral( "l2" ) );
   table->refresh();
   QCOMPARE( table->contents().length(), 1 );
   QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 11 << 12 << 13 );
 
   // by layer name (case insensitive)
-  table->dataDefinedProperties().setProperty( QgsLayoutObject::AttributeTableSourceLayer, QStringLiteral( "L3" ) );
+  table->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer, QStringLiteral( "L3" ) );
   table->refresh();
   QCOMPARE( table->contents().length(), 1 );
   QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 21 << QVariant() << 23 );

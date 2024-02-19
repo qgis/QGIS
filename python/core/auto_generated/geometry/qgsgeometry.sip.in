@@ -1807,7 +1807,24 @@ If ``edgesOnly`` is ``True`` than line string boundary geometries will be return
 instead of polygons.
 An empty geometry will be returned if the diagram could not be calculated.
 
+.. seealso:: :py:func:`constrainedDelaunayTriangulation`
+
 .. versionadded:: 3.0
+%End
+
+    QgsGeometry constrainedDelaunayTriangulation() const throw( QgsNotSupportedException );
+%Docstring
+Returns a constrained Delaunay triangulation for the vertices of the geometry.
+
+An empty geometry will be returned if the triangulation could not be calculated.
+
+This method requires a QGIS build based on GEOS 3.11 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or earlier.
+
+.. seealso:: :py:func:`delaunayTriangulation`
+
+.. versionadded:: 3.36
 %End
 
     Qgis::CoverageValidityResult validateCoverage( double gapWidth, QgsGeometry *invalidEdges /Out/ = 0 ) const throw( QgsNotSupportedException );
@@ -3012,9 +3029,9 @@ geometry will retain the same dimensionality as the input geometry.
 .. versionadded:: 2.9
 %End
 
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) /Factory/;
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) /Factory/;
 %Docstring
-Creates and returns a new geometry engine representing the specified ``geometry``.
+Creates and returns a new geometry engine representing the specified ``geometry`` using ``precision`` on a grid. The ``precision`` argument was added in 3.36.
 
 A geometry engine is a low-level representation of a :py:class:`QgsAbstractGeometry` object, optimised for use with external
 geometry libraries such as GEOS.

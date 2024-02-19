@@ -27,16 +27,17 @@ It can be associated with a :py:class:`QgsMapLayerModel` to dynamically display 
 %End
   public:
 
-    enum FieldRoles
+
+    enum class CustomRole
     {
-      FieldNameRole,
-      FieldIndexRole,
-      ExpressionRole,
-      IsExpressionRole,
-      ExpressionValidityRole,
-      FieldTypeRole,
-      FieldOriginRole,
-      IsEmptyRole,
+      FieldName,
+      FieldIndex,
+      Expression,
+      IsExpression,
+      ExpressionValidity,
+      FieldType,
+      FieldOrigin,
+      IsEmpty,
       EditorWidgetType,
       JoinedFieldIsEditable,
       FieldIsWidgetEditable,

@@ -19,13 +19,12 @@
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsprocessingutils.h"
-#include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, Flags flags )
   : QgsTask(
       tr( "Executing “%1”" ).arg( algorithm->displayName() ),
-      flags & ( !( algorithm->flags() & QgsProcessingAlgorithm::FlagCanCancel ) ? ( ~QgsTask::CanCancel ) : ( ~QgsTask::Flags() ) )
+      flags & ( !( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::CanCancel ) ? ( ~QgsTask::CanCancel ) : ( ~QgsTask::Flags() ) )
     )
   , mParameters( parameters )
   , mContext( context )

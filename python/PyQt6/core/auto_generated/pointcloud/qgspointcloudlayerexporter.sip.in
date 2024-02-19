@@ -25,7 +25,7 @@ Handles exporting point cloud layers to memory layers, OGR supported files and P
 %End
   public:
 
-    enum class ExportFormat /BaseType=IntFlag/
+    enum class ExportFormat /BaseType=IntEnum/
     {
       Memory,
       Las,

@@ -24,7 +24,7 @@ class QgsServerRequest
     typedef QMap<QString, QString> Parameters;
     typedef QMap<QString, QString> Headers;
 
-    enum Method
+    enum Method /BaseType=IntEnum/
     {
       HeadMethod,
       PutMethod,
@@ -34,7 +34,7 @@ class QgsServerRequest
       PatchMethod
     };
 
-    enum RequestHeader
+    enum RequestHeader /BaseType=IntEnum/
     {
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
       HOST,

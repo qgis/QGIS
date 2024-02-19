@@ -158,7 +158,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
 %End
   public:
 
-    enum ReferencePoint
+    enum ReferencePoint /BaseType=IntEnum/
     {
       UpperLeft,
       UpperMiddle,
@@ -171,7 +171,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       LowerRight,
     };
 
-    enum UndoCommand
+    enum UndoCommand /BaseType=IntEnum/
     {
       UndoNone,
       UndoIncrementalMove,
@@ -276,7 +276,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoCustomCommand,
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagOverridesPaint,
       FlagProvidesClipPath,
@@ -426,7 +426,7 @@ Sets the item's parent ``group``.
 .. seealso:: :py:func:`parentGroup`
 %End
 
-    enum ExportLayerBehavior
+    enum ExportLayerBehavior /BaseType=IntEnum/
     {
       CanGroupWithAnyOtherItem,
       CanGroupWithItemsOfSameType,
@@ -1103,7 +1103,7 @@ Forces a deferred update of any cached image the item uses.
 Triggers a redraw (update) of the item.
 %End
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 %Docstring
 Refreshes a data defined ``property`` for the item by reevaluating the property's value
 and redrawing the item with this new value. If ``property`` is set to

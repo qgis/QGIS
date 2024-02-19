@@ -188,9 +188,9 @@ QgsDatabaseSchemaComboBoxSortModel::QgsDatabaseSchemaComboBoxSortModel( QObject 
 bool QgsDatabaseSchemaComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty row is always first
-  if ( sourceModel()->data( left, QgsDatabaseSchemaModel::RoleEmpty ).toBool() )
+  if ( sourceModel()->data( left, static_cast< int >( QgsDatabaseSchemaModel::CustomRole::Empty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, QgsDatabaseSchemaModel::RoleEmpty ).toBool() )
+  else if ( sourceModel()->data( right, static_cast< int >( QgsDatabaseSchemaModel::CustomRole::Empty ) ).toBool() )
     return false;
 
   // default mode is alphabetical order

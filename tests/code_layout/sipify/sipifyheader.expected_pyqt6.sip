@@ -97,7 +97,7 @@ typedef QtClass<QVariant> QtClassQVariantBase;
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
 
-    enum OneLiner { Success, NoSuccess };
+    enum OneLiner /BaseType=IntEnum/ { Success, NoSuccess };
 
   private:
     void makePrivate( int a );

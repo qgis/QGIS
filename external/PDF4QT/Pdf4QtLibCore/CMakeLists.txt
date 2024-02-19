@@ -155,20 +155,25 @@ GENERATE_EXPORT_HEADER(Pdf4QtLibCore
                        PDF4QTLIBCORESHARED_EXPORT
                        EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${INSTALL_INCLUDEDIR}/pdf4qtlibcore_export.h")
 
-target_link_libraries(Pdf4QtLibCore PRIVATE Qt6::Core Qt6::Gui Qt6::Xml Qt6::Svg)
-target_link_libraries(Pdf4QtLibCore PRIVATE lcms2::lcms2)
+target_link_libraries(Pdf4QtLibCore PRIVATE ${QT_VERSION_BASE}::Core ${QT_VERSION_BASE}::Gui ${QT_VERSION_BASE}::Xml ${QT_VERSION_BASE}::Svg)
+target_link_libraries(Pdf4QtLibCore PRIVATE ${LCMS2_LIBRARIES})
 target_link_libraries(Pdf4QtLibCore PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 target_link_libraries(Pdf4QtLibCore PRIVATE ZLIB::ZLIB)
-target_link_libraries(Pdf4QtLibCore PRIVATE Freetype::Freetype)
+target_link_libraries(Pdf4QtLibCore PRIVATE ${FREETYPE_LIBRARIES})
+target_link_libraries(Pdf4QtLibCore PRIVATE ${Fontconfig_LIBRARIES})
 target_link_libraries(Pdf4QtLibCore PRIVATE openjp2)
 target_link_libraries(Pdf4QtLibCore PRIVATE JPEG::JPEG)
+
+target_include_directories(Pdf4QtLibCore PRIVATE SYSTEM
+                           ${FREETYPE_INCLUDE_DIRS}
+                           ${Fontconfig_INCLUDE_DIRS})
 
 if(PDF4QT_ENABLE_OPENGL)
     target_link_libraries(Pdf4QtLibCore PRIVATE Qt6::OpenGL)
 endif()
 
 if(LINUX_GCC)
-    target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
+    #target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
 endif()
 
 if(MINGW)

@@ -30,13 +30,13 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
     {
       sipType = sipType_QgsProcessingToolboxModelNode;
       QgsProcessingToolboxModelNode *node = qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp );
-      if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeProvider )
+      if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Provider )
         sipType = sipType_QgsProcessingToolboxModelProviderNode;
-      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeGroup )
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Group )
         sipType = sipType_QgsProcessingToolboxModelGroupNode;
-      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm )
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm )
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
-      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeRecent )
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent )
         sipType = sipType_QgsProcessingToolboxModelRecentNode;
     }
     else
@@ -44,12 +44,13 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
 %End
   public:
 
-    enum NodeType
+
+    enum class NodeType
     {
-      NodeProvider,
-      NodeGroup,
-      NodeAlgorithm,
-      NodeRecent,
+      Provider,
+      Group,
+      Algorithm,
+      Recent,
     };
 
     ~QgsProcessingToolboxModelNode();
@@ -248,15 +249,16 @@ of this model.
 %End
   public:
 
-    enum Roles
+
+      enum class CustomRole
     {
-      RoleNodeType,
-      RoleAlgorithmFlags,
-      RoleAlgorithmId,
-      RoleAlgorithmName,
-      RoleAlgorithmShortDescription,
-      RoleAlgorithmTags,
-      RoleProviderFlags,
+      NodeType,
+      AlgorithmFlags,
+      AlgorithmId,
+      AlgorithmName,
+      AlgorithmShortDescription,
+      AlgorithmTags,
+      ProviderFlags,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
@@ -376,12 +378,13 @@ the results.
 %End
   public:
 
-    enum Filter
+
+    enum class Filter
     {
-      FilterToolbox,
-      FilterModeler,
-      FilterInPlace,
-      FilterShowKnownIssues,
+      Toolbox,
+      Modeler,
+      InPlace,
+      ShowKnownIssues,
     };
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
@@ -452,6 +455,7 @@ Returns the current filter string, if set.
 
 
 };
+QFlags<QgsProcessingToolboxProxyModel::Filter> operator|(QgsProcessingToolboxProxyModel::Filter f1, QFlags<QgsProcessingToolboxProxyModel::Filter> f2);
 
 
 /************************************************************************

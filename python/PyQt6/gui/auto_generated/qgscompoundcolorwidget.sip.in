@@ -24,7 +24,7 @@ hue wheel, color swatches, and a color sampler.
 %End
   public:
 
-    enum Layout
+    enum Layout /BaseType=IntEnum/
     {
       LayoutDefault,
       LayoutVertical,

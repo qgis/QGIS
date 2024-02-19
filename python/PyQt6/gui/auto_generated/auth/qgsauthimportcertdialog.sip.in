@@ -20,13 +20,13 @@ Widget for importing a certificate into the authentication database
 #include "qgsauthimportcertdialog.h"
 %End
   public:
-    enum CertFilter
+    enum CertFilter /BaseType=IntEnum/
     {
       NoFilter,
       CaFilter,
     };
 
-    enum CertInput
+    enum CertInput /BaseType=IntEnum/
     {
       AllInputs,
       FileInput,

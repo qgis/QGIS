@@ -25,6 +25,7 @@
 #include "qgsnumericformat.h"
 
 #include <QPalette>
+#include <QBuffer>
 
 QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
@@ -173,7 +174,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
     }
     return mPixmap;
   }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::ColorRampLegend;
   }
@@ -475,4 +476,29 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
   }
 
   return QSizeF( textWidth, textHeight );
+}
+
+QJsonObject QgsColorRampLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const
+{
+  Q_UNUSED( settings );
+  Q_UNUSED( context );
+
+  QJsonObject json;
+
+  const QPixmap icon = data( Qt::DecorationRole ).value<QPixmap>();
+
+  if ( ! icon.isNull() )
+  {
+    const QImage image( icon.toImage() );
+    QByteArray byteArray;
+    QBuffer buffer( &byteArray );
+    image.save( &buffer, "PNG" );
+    const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+    json[ QStringLiteral( "icon" ) ] = base64;
+  }
+
+  json [ QStringLiteral( "min" ) ] = mMinimumValue;
+  json [ QStringLiteral( "max" ) ] = mMaximumValue;
+
+  return json;
 }

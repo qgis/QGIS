@@ -90,24 +90,24 @@ void QgsOffsetLinesAlgorithm::initParameters( const QVariantMap & )
   offset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( offset.release() );
 
-  auto segmentParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 8, false, 1 );
+  auto segmentParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );
   addParameter( segmentParam.release() );
 
   auto joinStyleParam = std::make_unique< QgsProcessingParameterEnum>( QStringLiteral( "JOIN_STYLE" ), QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
   addParameter( joinStyleParam.release() );
 
-  auto miterLimitParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MITER_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 );
+  auto miterLimitParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MITER_LIMIT" ), QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
   addParameter( miterLimitParam.release() );
 }
 
 QList<int> QgsOffsetLinesAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << QgsProcessing::TypeVectorLine;
+  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
-QgsProcessing::SourceType QgsOffsetLinesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsOffsetLinesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 bool QgsOffsetLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

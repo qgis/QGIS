@@ -207,10 +207,18 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QComboBox" name="cboTranslation"/>
+                     <widget class="QComboBox" name="cboTranslation">
+                      <property name="sizeAdjustPolicy">
+                       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                      </property>
+                     </widget>
                     </item>
                     <item row="2" column="1">
-                     <widget class="QComboBox" name="cboGlobalLocale"/>
+                     <widget class="QComboBox" name="cboGlobalLocale">
+                      <property name="sizeAdjustPolicy">
+                       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                      </property>
+                     </widget>
                     </item>
                     <item row="3" column="1">
                      <widget class="QCheckBox" name="cbShowGroupSeparator">
@@ -408,7 +416,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFontComboBox" name="mFontFamilyComboBox"/>
+                     <widget class="QFontComboBox" name="mFontFamilyComboBox">
+                      <property name="sizeAdjustPolicy">
+                       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_20">
@@ -850,23 +862,16 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="2">
-                     <spacer name="horizontalSpacer_12">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
                     <item row="0" column="1">
                      <widget class="QRadioButton" name="mFileFormatQgzButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="text">
-                       <string>QGZ Bundled project format, compressed into a single zip file, embeds auxiliary data</string>
+                       <string>QGZ Bundled project format</string>
                       </property>
                       <attribute name="buttonGroup">
                        <string notr="true">mDefaultProjectFileFormatButtonGroup</string>
@@ -874,16 +879,42 @@
                      </widget>
                     </item>
                     <item row="1" column="1">
+                     <widget class="QLabel" name="mFileFormatQgzDescription">
+                      <property name="text">
+                       <string>Compressed into a single zip file, embeds auxiliary data</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
                      <widget class="QRadioButton" name="mFileFormatQgsButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="toolTip">
                        <string>The auxiliary data will be kept in a separate .qgd data file which must be distributed along with the .qgs project file.</string>
                       </property>
                       <property name="text">
-                       <string>QGS XML project format, saved in a clear text, does not embed auxiliary data</string>
+                       <string>QGS XML project format</string>
                       </property>
                       <attribute name="buttonGroup">
                        <string notr="true">mDefaultProjectFileFormatButtonGroup</string>
                       </attribute>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QLabel" name="mFileFormatQgsDescription">
+                      <property name="text">
+                       <string>Saved in a clear text, does not embed auxiliary data</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -2557,6 +2588,9 @@
                       <string>Open layer styling dock</string>
                      </property>
                     </item>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                    </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -2567,7 +2601,11 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="mLayerTreeInsertionMethod"/>
+                   <widget class="QComboBox" name="mLayerTreeInsertionMethod">
+                    <property name="sizeAdjustPolicy">
+                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                    </property>                     
+                   </widget>
                   </item>
                   <item row="2" column="0" colspan="2">
                    <widget class="QCheckBox" name="mShowFeatureCountByDefaultCheckBox">
@@ -5159,6 +5197,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <widget class="QLabel" name="label_64">
                 <property name="text">
                  <string>The following OpenCL devices were found on this system (changing the default device requires QGIS to be restarted).</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

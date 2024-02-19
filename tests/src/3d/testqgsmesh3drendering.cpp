@@ -28,7 +28,9 @@
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgspointlightsettings.h"
 #include "qgsproject.h"
+
 
 class TestQgsMesh3DRendering : public QgsTest
 {

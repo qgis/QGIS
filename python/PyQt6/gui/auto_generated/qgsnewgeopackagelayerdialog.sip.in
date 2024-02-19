@@ -20,7 +20,7 @@ Dialog to set up parameters to create a new GeoPackage layer, and on :py:func:`~
 %End
   public:
 
-    enum OverwriteBehavior
+    enum OverwriteBehavior /BaseType=IntEnum/
     {
       Prompt,
       Overwrite,

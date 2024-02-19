@@ -18,8 +18,7 @@ from qgis.core import (
     QgsLayoutItemRegistry,
     QgsLineSymbol,
     QgsProject,
-    QgsReadWriteContext,
-    QgsLayoutChecker
+    QgsReadWriteContext
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -32,6 +31,10 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return "composer_polyline"
 
     @classmethod
     def setUpClass(cls):
@@ -100,28 +103,31 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         """Test polygon rendering with default style."""
 
         self.polyline.setDisplayNodes(False)
-        checker = QgsLayoutChecker(
-            'composerpolyline_defaultstyle', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_defaultstyle',
+                self.layout
+            )
+        )
 
     def testDisplayNodes(self):
         """Test displayNodes method"""
 
         self.polyline.setDisplayNodes(True)
-        checker = QgsLayoutChecker(
-            'composerpolyline_displaynodes', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_displaynodes',
+                self.layout
+            )
+        )
 
         self.polyline.setDisplayNodes(False)
-        checker = QgsLayoutChecker(
-            'composerpolyline_defaultstyle', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_defaultstyle',
+                self.layout
+            )
+        )
 
     def testSelectedNode(self):
         """Test selectedNode and deselectNode methods"""
@@ -129,29 +135,32 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         self.polyline.setDisplayNodes(True)
 
         self.polyline.setSelectedNode(3)
-        checker = QgsLayoutChecker(
-            'composerpolyline_selectednode', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_selectednode',
+                self.layout
+            )
+        )
 
         self.polyline.deselectNode()
         self.polyline.setDisplayNodes(False)
-        checker = QgsLayoutChecker(
-            'composerpolyline_defaultstyle', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_defaultstyle',
+                self.layout
+            )
+        )
 
     def testEndArrow(self):
         self.polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
         self.polyline.setArrowHeadWidth(30.0)
 
-        checker = QgsLayoutChecker('composerpolyline_endArrow', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
-
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_endArrow',
+                self.layout
+            )
+        )
         self.polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.NoMarker)
 
     def testRemoveNode(self):
@@ -160,22 +169,24 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         rc = self.polyline.removeNode(100)
         self.assertEqual(rc, False)
 
-        checker = QgsLayoutChecker(
-            'composerpolyline_defaultstyle', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_defaultstyle',
+                self.layout
+            )
+        )
 
         self.assertEqual(self.polyline.nodesSize(), 4)
         rc = self.polyline.removeNode(3)
         self.assertEqual(rc, True)
         self.assertEqual(self.polyline.nodesSize(), 3)
 
-        checker = QgsLayoutChecker(
-            'composerpolyline_removednode', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_removednode',
+                self.layout
+            )
+        )
 
     def testAddNode(self):
         """Test addNode method"""
@@ -220,11 +231,12 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         self.assertEqual(rc, True)
         self.assertEqual(self.polyline.nodesSize(), 5)
 
-        checker = QgsLayoutChecker(
-            'composerpolyline_addnode', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_addnode',
+                self.layout
+            )
+        )
 
     def testMoveNode(self):
         """Test moveNode method"""
@@ -235,11 +247,12 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         rc = self.polyline.moveNode(3, QPointF(100.0, 150.0))
         self.assertEqual(rc, True)
 
-        checker = QgsLayoutChecker(
-            'composerpolyline_movenode', self.layout)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_movenode',
+                self.layout
+            )
+        )
 
     def testNodeAtPosition(self):
         """Test nodeAtPosition method"""
@@ -338,11 +351,12 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         style = QgsLineSymbol.createSimple(props)
         shape.setSymbol(style)
 
-        checker = QgsLayoutChecker(
-            'composerpolyline_hozline', l)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_hozline',
+                l
+            )
+        )
 
     def testVerticalLine(self):
         pr = QgsProject()
@@ -363,11 +377,12 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         style = QgsLineSymbol.createSimple(props)
         shape.setSymbol(style)
 
-        checker = QgsLayoutChecker(
-            'composerpolyline_vertline', l)
-        checker.setControlPathPrefix("composer_polyline")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+        self.assertTrue(
+            self.render_layout_check(
+                'composerpolyline_vertline',
+                l
+            )
+        )
 
 
 if __name__ == '__main__':

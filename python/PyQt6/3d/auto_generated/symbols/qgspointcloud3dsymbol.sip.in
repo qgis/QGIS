@@ -28,7 +28,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 %End
   public:
 
-    enum RenderingStyle
+    enum RenderingStyle /BaseType=IntEnum/
     {
       // Do not render anything
       NoRendering,

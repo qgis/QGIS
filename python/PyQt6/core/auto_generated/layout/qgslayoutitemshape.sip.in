@@ -21,7 +21,7 @@ Layout item for basic filled shapes (e.g. rectangles, ellipses).
 %End
   public:
 
-    enum Shape
+    enum Shape /BaseType=IntEnum/
     {
       Ellipse,
       Rectangle,

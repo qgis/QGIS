@@ -225,7 +225,7 @@ class TestPyQgsDatumTransform(QgisTestCase):
         self.assertTrue(ops[op3_index].grids[0].directDownload)
         self.assertTrue(ops[op3_index].grids[0].openLicense)
 
-    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 7, 'Not a proj >= 7 build')
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() > 9 or (QgsProjUtils.projVersionMajor() == 9 and QgsProjUtils.projVersionMinor() >= 2), 'NADCON5 support added in Proj 9.2')
     def testNoLasLos(self):
         """
         Test that operations which rely on an NADCON5 grid shift file (which are unsupported by Proj... at time of writing !) are not returned

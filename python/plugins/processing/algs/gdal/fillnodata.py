@@ -68,9 +68,16 @@ class fillnodata(GdalAlgorithm):
                                                        type=QgsProcessingParameterNumber.Type.Integer,
                                                        minValue=0,
                                                        defaultValue=0))
-        self.addParameter(QgsProcessingParameterBoolean(self.NO_MASK,
-                                                        self.tr('Do not use the default validity mask for the input band'),
-                                                        defaultValue=False))
+
+        # The -nomask option is no longer supported since GDAL 3.4 and
+        # it doesn't work as expected even using GDAL < 3.4 https://github.com/OSGeo/gdal/pull/4201
+        nomask_param = QgsProcessingParameterBoolean(self.NO_MASK,
+                                                     self.tr('Do not use the default validity mask for the input band'),
+                                                     defaultValue=False,
+                                                     optional=True)
+        nomask_param.setFlags(nomask_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(nomask_param)
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
                                                             self.tr('Validity mask'),
                                                             optional=True))
@@ -134,9 +141,6 @@ class fillnodata(GdalAlgorithm):
 
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
-
-        if self.parameterAsBoolean(parameters, self.NO_MASK, context):
-            arguments.append('-nomask')
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:

@@ -283,7 +283,7 @@ void QgsFieldCalculator::accept()
     if ( newField )
       emptyAttribute = QVariant( field.type() );
 
-    QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+    QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry );
     QSet< QString > referencedColumns = exp.referencedColumns();
     referencedColumns.insert( field.name() ); // need existing column value to store old attribute when changing field values
     req.setSubsetOfAttributes( referencedColumns, mVectorLayer->fields() );

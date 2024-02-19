@@ -21,7 +21,7 @@ A QSortFilterProxyModel subclass for filtering and sorting browser model items.
 %End
   public:
 
-    enum FilterSyntax
+    enum FilterSyntax /BaseType=IntEnum/
     {
       Normal,
       Wildcards,

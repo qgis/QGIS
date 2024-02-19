@@ -120,7 +120,7 @@ QString QgsExportToSpreadsheetAlgorithm::groupId() const
 
 void QgsExportToSpreadsheetAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_ALIAS" ), QObject::tr( "Use field aliases as column headings" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORMATTED_VALUES" ), QObject::tr( "Export formatted values instead of raw values" ), false ) );
   QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination spreadsheet" ), QObject::tr( "Microsoft Excel (*.xlsx);;Open Document Spreadsheet (*.ods)" ) );

@@ -71,7 +71,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     {
       continue;
     }
-    if ( provider->capabilities() & QgsDataProvider::DataCapability::Database )
+    if ( provider->capabilities() & Qgis::DataItemProviderCapability::Databases )
     {
       if ( providersFilter.isEmpty() || providersFilter.contains( provider->dataProviderKey() ) )
       {
@@ -141,7 +141,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
               emit schemaNameChanged( mSchemaName );
               // Store last viewed item
               QgsSettings().setValue( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ),
-                                      mBrowserProxyModel.data( index, QgsBrowserGuiModel::PathRole ).toString(), QgsSettings::Section::Gui );
+                                      mBrowserProxyModel.data( index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), QgsSettings::Section::Gui );
               validationRequired = true;
             }
           }
@@ -375,7 +375,7 @@ void QgsNewDatabaseTableNameWidget::showEvent( QShowEvent *e )
   {
     const QModelIndexList items = mBrowserProxyModel.match(
                                     mBrowserProxyModel.index( 0, 0 ),
-                                    QgsBrowserGuiModel::PathRole,
+                                    static_cast< int >( QgsBrowserModel::CustomRole::Path ),
                                     QVariant::fromValue( lastSelectedPath ),
                                     1,
                                     Qt::MatchRecursive );

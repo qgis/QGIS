@@ -20,9 +20,10 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %End
   public:
 
-    enum CustomRoles
+
+    enum class CustomRole
     {
-      ValueRole
+      Value
     };
 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;

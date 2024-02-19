@@ -31,7 +31,7 @@ class QgsCalculateExpressionAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsCalculateExpressionAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

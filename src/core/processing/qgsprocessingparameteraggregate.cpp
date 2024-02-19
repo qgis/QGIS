@@ -15,8 +15,6 @@
 
 #include "qgsprocessingparameteraggregate.h"
 
-#include "qgsvectorlayer.h"
-
 
 QgsProcessingParameterAggregate::QgsProcessingParameterAggregate( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
@@ -37,7 +35,7 @@ QString QgsProcessingParameterAggregate::type() const
 bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+    return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( input.type() != QVariant::List )
     return false;
@@ -72,14 +70,14 @@ QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOu
 {
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterAggregate('%1', %2" )
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mParentLayerParameterName.isEmpty() )
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
-      if ( mFlags & FlagOptional )
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
         code += QLatin1String( ", optional=True" );
       code += ')';
       return code;

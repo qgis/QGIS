@@ -49,21 +49,21 @@ can be an attribute or the z-coordinates in case of 3D types.
 %End
   public:
 
-    enum SourceType
+    enum SourceType /BaseType=IntEnum/
     {
       SourcePoints,
       SourceStructureLines,
       SourceBreakLines,
     };
 
-    enum ValueSource
+    enum ValueSource /BaseType=IntEnum/
     {
       ValueAttribute,
       ValueZ,
       ValueM,
     };
 
-    enum Result
+    enum Result /BaseType=IntEnum/
     {
       Success,
       Canceled,

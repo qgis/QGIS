@@ -34,7 +34,7 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   mScalarMaxSpinBox->setSpecialValueText( QString( ) );
 
   // add items to data interpolation combo box
-  mScalarInterpolationTypeComboBox->addItem( tr( "None" ), QgsMeshRendererScalarSettings::None );
+  mScalarInterpolationTypeComboBox->addItem( tr( "No Resampling" ), QgsMeshRendererScalarSettings::NoResampling );
   mScalarInterpolationTypeComboBox->addItem( tr( "Neighbour Average" ), QgsMeshRendererScalarSettings::NeighbourAverage );
   mScalarInterpolationTypeComboBox->setCurrentIndex( 0 );
 

@@ -40,12 +40,18 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
 
   public:
 
-    //! Custom roles used by the model
-    enum Roles
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRecentCoordinateReferenceSystemsModel, Roles ) : int
     {
-      RoleCrs = Qt::UserRole, //!< Coordinate reference system
-      RoleAuthId, //!< CRS authority ID
+      Crs SIP_MONKEYPATCH_COMPAT_NAME(RoleCrs) = Qt::UserRole, //!< Coordinate reference system
+      AuthId SIP_MONKEYPATCH_COMPAT_NAME(RoleAuthId), //!< CRS authority ID
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsRecentCoordinateReferenceSystemsModel, with the specified \a parent object.

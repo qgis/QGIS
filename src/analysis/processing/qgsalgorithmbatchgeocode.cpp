@@ -47,19 +47,19 @@ void QgsBatchGeocodeAlgorithm::initParameters( const QVariantMap &configuration 
 {
   mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
 
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Address field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::String ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Address field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::String ) );
 
   if ( mIsInPlace )
   {
     const QgsFields newFields = mGeocoder->appendedFields();
     for ( const QgsField &newField : newFields )
-      addParameter( new QgsProcessingParameterField( newField.name(), QObject::tr( "%1 field" ).arg( newField.name() ), newField.name(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true ) );
+      addParameter( new QgsProcessingParameterField( newField.name(), QObject::tr( "%1 field" ).arg( newField.name() ), newField.name(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   }
 }
 
 QList<int> QgsBatchGeocodeAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVector;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
 }
 
 bool QgsBatchGeocodeAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const

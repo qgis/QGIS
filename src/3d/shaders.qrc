@@ -37,7 +37,5 @@
         <file>shaders/phongConstant.vert</file>
         <file>shaders/metalrough.frag</file>
         <file>shaders/default.vert</file>
-        <file>shaders/metalrough.frag.json</file>
-        <file>shaders/metalrough.qt6.frag.json</file>
     </qresource>
 </RCC>

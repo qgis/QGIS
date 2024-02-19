@@ -36,7 +36,7 @@ class QgsDifferenceAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
-    QgsProcessingAlgorithm::Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;

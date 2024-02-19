@@ -64,7 +64,7 @@ void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
 
   std::unique_ptr< QgsProcessingParameterCoordinateOperation > crsOpParam = std::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
       QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "CRS" ), QVariant(), QVariant(), true );
-  crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );

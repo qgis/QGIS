@@ -52,7 +52,7 @@ void QgsShortestPathPointToPointAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPoint( QStringLiteral( "START_POINT" ), QObject::tr( "Start point" ) ) );
   addParameter( new QgsProcessingParameterPoint( QStringLiteral( "END_POINT" ), QObject::tr( "End point" ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest path" ), QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost" ) ) );
 }
 

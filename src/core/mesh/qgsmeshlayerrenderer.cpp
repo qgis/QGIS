@@ -187,7 +187,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                     mNativeMesh.faces.count() );
 
     // for data on faces, there could be request to interpolate the data to vertices
-    if ( method != QgsMeshRendererScalarSettings::None )
+    if ( method != QgsMeshRendererScalarSettings::NoResampling )
     {
       if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces )
       {

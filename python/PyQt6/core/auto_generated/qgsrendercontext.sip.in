@@ -899,7 +899,7 @@ in a mask painter, which is not meant to be visible, by definition.
 .. versionadded:: 3.12
 %End
 
-    QMap<QString, QVariant> customRenderingFlags() const;
+    QVariantMap customRenderingFlags() const;
 %Docstring
 Gets custom rendering flags. Layers might honour these to alter their rendering.
 

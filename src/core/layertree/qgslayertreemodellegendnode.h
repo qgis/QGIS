@@ -80,13 +80,22 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
   public:
 
-    //! Legend node data roles
-    enum LegendNodeRoles
+    // *INDENT-OFF*
+
+    /**
+     * Legend node data roles
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsLayerTreeModelLegendNode::LegendNodeRoles
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayerTreeModelLegendNode, LegendNodeRoles ) : int
     {
-      RuleKeyRole = Qt::UserRole, //!< Rule key of the node (QString)
-      ParentRuleKeyRole, //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
-      NodeTypeRole, //!< Type of node. Added in 3.16
+      RuleKey SIP_MONKEYPATCH_COMPAT_NAME( RuleKeyRole ) = Qt::UserRole, //!< Rule key of the node (QString)
+      ParentRuleKey SIP_MONKEYPATCH_COMPAT_NAME( ParentRuleKeyRole ), //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      NodeType SIP_MONKEYPATCH_COMPAT_NAME( NodeTypeRole ), //!< Type of node. Added in 3.16
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     //! Types of legend nodes
     enum NodeTypes
@@ -545,7 +554,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsSymbolLegendNode: %1 \"%2\"" ).arg(
-                    sipCpp->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString(),
+                    sipCpp->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(),
                     sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

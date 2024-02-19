@@ -20,7 +20,6 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessing.h"
 
 class QgsProcessingContext;
 
@@ -220,7 +219,7 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     /**
      * Constructor for QgsProcessingOutputVectorLayer.
      */
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry );
 
     /**
      * Returns the type name for the output class.
@@ -232,17 +231,17 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      * Returns the layer type for the output layer.
      * \see setDataType()
      */
-    QgsProcessing::SourceType dataType() const;
+    Qgis::ProcessingSourceType dataType() const;
 
     /**
      * Sets the layer \a type for the output layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::SourceType type );
+    void setDataType( Qgis::ProcessingSourceType type );
 
   private:
 
-    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
+    Qgis::ProcessingSourceType mDataType = Qgis::ProcessingSourceType::VectorAnyGeometry;
 };
 
 /**

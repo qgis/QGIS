@@ -18,14 +18,13 @@
 #include <QComboBox>
 
 #include "qgsfeature.h"
-#include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureFilterModel;
 class QgsAnimatedIcon;
 class QgsFilterLineEdit;
-
+class QgsFeatureRequest;
 
 /**
  * \ingroup gui

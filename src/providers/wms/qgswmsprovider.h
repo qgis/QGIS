@@ -117,7 +117,7 @@ class QgsWmsInterpretationConverter
 
     //! Returns statistics related to converted values
     virtual QgsRasterBandStats statistics( int bandNo,
-                                           int stats = QgsRasterBandStats::All,
+                                           int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                                            const QgsRectangle &extent = QgsRectangle(),
                                            int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
 
@@ -143,7 +143,7 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
     void convert( const QRgb &color, float *converted ) const override;
 
     QgsRasterBandStats statistics( int bandNo,
-                                   int stats = QgsRasterBandStats::All,
+                                   int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                                    const QgsRectangle &extent = QgsRectangle(),
                                    int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
@@ -169,7 +169,7 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
     void convert( const QRgb &color, float *converted ) const override;
 
     QgsRasterBandStats statistics( int bandNo,
-                                   int stats = QgsRasterBandStats::All,
+                                   int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                                    const QgsRectangle &extent = QgsRectangle(),
                                    int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
@@ -315,7 +315,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     // Statistics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
     QgsRasterBandStats bandStatistics( int bandNo,
-                                       int stats = QgsRasterBandStats::All,
+                                       Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
                                        const QgsRectangle &extent = QgsRectangle(),
                                        int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
@@ -384,7 +384,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
   private:
 
     //! In case of XYZ tile layer, setup capabilities from its URI
-    void setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent = QgsRectangle(), int sourceMinZoom = -1, int sourceMaxZoom = -1, double sourceTilePixelRatio = 0. );
+    bool setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent = QgsRectangle(), int sourceMinZoom = -1, int sourceMaxZoom = -1, double sourceTilePixelRatio = 0. );
     //! In case of MBTiles layer, setup capabilities from its metadata
     bool setupMBTilesCapabilities( const QString &uri );
 

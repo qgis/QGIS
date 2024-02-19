@@ -24,7 +24,7 @@ within their parent widget.
 %End
   public:
 
-    enum AnchorPoint
+    enum AnchorPoint /BaseType=IntEnum/
     {
       TopLeft,
       TopMiddle,

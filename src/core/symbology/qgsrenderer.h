@@ -268,7 +268,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Used to specify details about a renderer.
      * Is returned from the capabilities() method.
      */
-    enum Capability
+    enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
       SymbolLevels          = 1,      //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       MoreSymbolsPerFeature = 1 << 2, //!< May use more than one symbol to render a feature: symbolsForFeature() will return them

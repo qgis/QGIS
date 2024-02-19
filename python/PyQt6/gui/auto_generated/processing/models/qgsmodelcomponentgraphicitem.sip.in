@@ -27,14 +27,14 @@ Base class for graphic items representing model components in the model designer
 %End
   public:
 
-    enum State
+    enum State /BaseType=IntEnum/
     {
       Normal,
       Selected,
       Hover,
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused,
@@ -396,12 +396,12 @@ Ownership of ``child`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-    void setResults( const QMap<QString, QVariant> &results );
+    void setResults( const QVariantMap &results );
 %Docstring
 Sets the results obtained for this child algorithm for the last model execution through the dialog.
 %End
 
-    void setInputs( const QMap<QString, QVariant> &inputs );
+    void setInputs( const QVariantMap &inputs );
 %Docstring
 Sets the inputs used for this child algorithm for the last model execution through the dialog.
 %End

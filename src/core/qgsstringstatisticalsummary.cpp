@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstringstatisticalsummary.h"
+#include "qgsvariantutils.h"
 #include <QString>
 #include <QStringList>
 #include <QObject>
@@ -27,7 +28,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsStringStatisticalSummary::QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats )
+QgsStringStatisticalSummary::QgsStringStatisticalSummary( Qgis::StringStatistics stats )
   : mStatistics( stats )
 {
   reset();
@@ -67,7 +68,7 @@ void QgsStringStatisticalSummary::addString( const QString &string )
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( value.type() == QVariant::String )
+  if ( QgsVariantUtils::isNull( value ) || value.type() == QVariant::String )
   {
     testString( value.toString() );
   }
@@ -78,15 +79,15 @@ void QgsStringStatisticalSummary::finalize()
 {
   mMeanLength = mSumLengths / static_cast< double >( mCount );
 
-  if ( mStatistics & Minority || mStatistics & Majority )
+  if ( mStatistics & Qgis::StringStatistic::Minority || mStatistics & Qgis::StringStatistic::Majority )
   {
     QList<int> valueCounts = mValues.values();
 
-    if ( mStatistics & Minority )
+    if ( mStatistics & Qgis::StringStatistic::Minority )
     {
       mMinority = mValues.key( *std::min_element( valueCounts.begin(), valueCounts.end() ) );
     }
-    if ( mStatistics & Majority )
+    if ( mStatistics & Qgis::StringStatistic::Majority )
     {
       mMajority = mValues.key( *std::max_element( valueCounts.begin(), valueCounts.end() ) );
     }
@@ -100,7 +101,7 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
   const auto constValues = values;
   for ( const QVariant &variant : constValues )
   {
-    if ( variant.type() == QVariant::String )
+    if ( QgsVariantUtils::isNull( variant ) || variant.type() == QVariant::String )
     {
       testString( variant.toString() );
     }
@@ -116,11 +117,11 @@ void QgsStringStatisticalSummary::testString( const QString &string )
   if ( string.isEmpty() )
     mCountMissing++;
 
-  if ( mStatistics & CountDistinct || mStatistics & Majority || mStatistics & Minority )
+  if ( mStatistics & Qgis::StringStatistic::CountDistinct || mStatistics & Qgis::StringStatistic::Majority || mStatistics & Qgis::StringStatistic::Minority )
   {
     mValues[string]++;
   }
-  if ( mStatistics & Min )
+  if ( mStatistics & Qgis::StringStatistic::Min )
   {
     if ( !mMin.isEmpty() && !string.isEmpty() )
     {
@@ -131,7 +132,7 @@ void QgsStringStatisticalSummary::testString( const QString &string )
       mMin = string;
     }
   }
-  if ( mStatistics & Max )
+  if ( mStatistics & Qgis::StringStatistic::Max )
   {
     if ( !mMax.isEmpty() && !string.isEmpty() )
     {
@@ -142,37 +143,37 @@ void QgsStringStatisticalSummary::testString( const QString &string )
       mMax = string;
     }
   }
-  if ( mStatistics & MeanLength )
+  if ( mStatistics & Qgis::StringStatistic::MeanLength )
     mSumLengths += string.length();
   mMinLength = std::min( mMinLength, static_cast<int>( string.length() ) );
   mMaxLength = std::max( mMaxLength, static_cast<int>( string.length() ) );
 }
 
-QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::Statistic stat ) const
+QVariant QgsStringStatisticalSummary::statistic( Qgis::StringStatistic stat ) const
 {
   switch ( stat )
   {
-    case Count:
+    case Qgis::StringStatistic::Count:
       return mCount;
-    case CountDistinct:
+    case Qgis::StringStatistic::CountDistinct:
       return mValues.count();
-    case CountMissing:
+    case Qgis::StringStatistic::CountMissing:
       return mCountMissing;
-    case Min:
+    case Qgis::StringStatistic::Min:
       return mMin;
-    case Max:
+    case Qgis::StringStatistic::Max:
       return mMax;
-    case MinimumLength:
+    case Qgis::StringStatistic::MinimumLength:
       return mMinLength;
-    case MaximumLength:
+    case Qgis::StringStatistic::MaximumLength:
       return mMaxLength;
-    case MeanLength:
+    case Qgis::StringStatistic::MeanLength:
       return mMeanLength;
-    case Minority:
+    case Qgis::StringStatistic::Minority:
       return mMinority;
-    case Majority:
+    case Qgis::StringStatistic::Majority:
       return mMajority;
-    case All:
+    case Qgis::StringStatistic::All:
       return 0;
   }
   return 0;
@@ -189,31 +190,31 @@ QSet<QString> QgsStringStatisticalSummary::distinctValues() const
   return res;
 }
 
-QString QgsStringStatisticalSummary::displayName( QgsStringStatisticalSummary::Statistic statistic )
+QString QgsStringStatisticalSummary::displayName( Qgis::StringStatistic statistic )
 {
   switch ( statistic )
   {
-    case Count:
+    case Qgis::StringStatistic::Count:
       return QObject::tr( "Count" );
-    case CountDistinct:
+    case Qgis::StringStatistic::CountDistinct:
       return QObject::tr( "Count (distinct)" );
-    case CountMissing:
+    case Qgis::StringStatistic::CountMissing:
       return QObject::tr( "Count (missing)" );
-    case Min:
+    case Qgis::StringStatistic::Min:
       return QObject::tr( "Minimum" );
-    case Max:
+    case Qgis::StringStatistic::Max:
       return QObject::tr( "Maximum" );
-    case MinimumLength:
+    case Qgis::StringStatistic::MinimumLength:
       return QObject::tr( "Minimum length" );
-    case MaximumLength:
+    case Qgis::StringStatistic::MaximumLength:
       return QObject::tr( "Maximum length" );
-    case MeanLength:
+    case Qgis::StringStatistic::MeanLength:
       return QObject::tr( "Mean length" );
-    case Minority:
+    case Qgis::StringStatistic::Minority:
       return QObject::tr( "Minority" );
-    case Majority:
+    case Qgis::StringStatistic::Majority:
       return QObject::tr( "Majority" );
-    case All:
+    case Qgis::StringStatistic::All:
       return QString();
   }
   return QString();

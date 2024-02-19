@@ -38,7 +38,7 @@ Constructs a Context from ``layer`` and ``transformContext``
       QgsCoordinateTransformContext transformContext;
     };
 
-    enum GMLVersion
+    enum GMLVersion /BaseType=IntEnum/
     {
       GML_2_1_2,
       GML_3_1_0,
@@ -156,7 +156,7 @@ according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
          otherwise null QDomElement
 %End
 
-    enum FilterVersion
+    enum FilterVersion /BaseType=IntEnum/
     {
       FILTER_OGC_1_0,
       FILTER_OGC_1_1,

@@ -348,8 +348,8 @@ void TestQgsGradients::opacityWithDataDefinedColor()
   gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
   gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
 
-  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::Property::SecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
   fillSymbol->setOpacity( 0.5 );
 
   const bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
@@ -371,10 +371,10 @@ void TestQgsGradients::dataDefinedOpacity()
   gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
   gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
   gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
-  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::Property::SecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
   fillSymbol->setOpacity( 1.0 );
-  fillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+  fillSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
 
   const bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
   QVERIFY( result );

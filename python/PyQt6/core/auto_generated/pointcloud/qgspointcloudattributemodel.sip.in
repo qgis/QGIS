@@ -25,14 +25,15 @@ A model for display of available attributes from a point cloud.
 %End
   public:
 
-    enum FieldRoles
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      AttributeNameRole,
-      AttributeIndexRole,
-      AttributeSizeRole,
-      AttributeTypeRole,
-      IsEmptyRole,
-      IsNumericRole,
+      AttributeName,
+      AttributeIndex,
+      AttributeSize,
+      AttributeType,
+      IsEmpty,
+      IsNumeric,
     };
 
     explicit QgsPointCloudAttributeModel( QObject *parent /TransferThis/ = 0 );
@@ -128,7 +129,7 @@ A proxy model for filtering available attributes from a point cloud attribute mo
 %End
   public:
 
-    enum Filter
+    enum Filter /BaseType=IntEnum/
     {
       Char,
       Short,

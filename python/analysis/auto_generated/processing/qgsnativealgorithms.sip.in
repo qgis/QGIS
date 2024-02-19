@@ -39,6 +39,8 @@ Constructor for QgsNativeAlgorithms.
 
     virtual bool supportsNonFileBasedOutput() const;
 
+    virtual Qgis::ProcessingProviderFlags flags() const;
+
 
   protected:
 

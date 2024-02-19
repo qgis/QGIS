@@ -761,10 +761,12 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Rand p in p, 10 pts, min distance 0.0, 10 tries, seed 1, attributes (qt >= 5.13)
+    name: Rand p in p, 10 pts, min distance 0.0, 10 tries, seed 1, attributes (qt >= 5.13, geos < 3.11)
     condition:
       qt:
         at_least: 331008
+      geos:
+        less_than: 31100
     params:
       INCLUDE_POLYGON_ATTRIBUTES: true
       INPUT:
@@ -778,6 +780,28 @@ tests:
     results:
       OUTPUT:
         name: expected/qt515/randompointsinpolygons.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Rand p in p, 10 pts, min distance 0.0, 10 tries, seed 1, attributes (qt >= 5.13, geos >= 3.11)
+    condition:
+      qt:
+        at_least: 331008
+      geos:
+        at_least: 31100
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      MIN_DISTANCE_GLOBAL: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygonsgeos311.gml
         type: vector
 
   - algorithm: native:randompointsinpolygons
@@ -801,10 +825,12 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Rand p in p, 10 pts, global min dis 2.0, 10 tries, seed 1, attrs (qt >= 5.15)
+    name: Rand p in p, 10 pts, global min dis 2.0, 10 tries, seed 1, attrs (qt >= 5.15, geos < 3.11)
     condition:
       qt:
         at_least: 331008
+      geos:
+        less_than: 31100
     params:
       INCLUDE_POLYGON_ATTRIBUTES: true
       INPUT:
@@ -818,6 +844,28 @@ tests:
     results:
       OUTPUT:
         name: expected/qt515/randompointsinpolygons_gmin2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Rand p in p, 10 pts, global min dis 2.0, 10 tries, seed 1, attrs (qt >= 5.15, geos >= 3.11)
+    condition:
+      qt:
+        at_least: 331008
+      geos:
+        at_least: 31100
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      MIN_DISTANCE_GLOBAL: 2.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons_gmin2geos311.gml
         type: vector
 
   - algorithm: native:randompointsinpolygons
@@ -841,10 +889,12 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes (qt >= 5.13)
+    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes (qt >= 5.13, geos < 3.11)
     condition:
       qt:
         at_least: 331008
+      geos:
+        less_than: 31100
     params:
       INCLUDE_POLYGON_ATTRIBUTES: false
       INPUT:
@@ -858,6 +908,28 @@ tests:
     results:
       OUTPUT:
         name: expected/qt515/randompointsinpolygons_min2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes (qt >= 5.13, geos >= 3.11)
+    condition:
+      qt:
+        at_least: 331008
+      geos:
+        at_least: 31100
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 2.0
+      MIN_DISTANCE_GLOBAL: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons_min2geos311.gml
         type: vector
 
   - algorithm: native:randompointsinpolygons
@@ -881,10 +953,12 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes (QT >= 5.13)
+    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes (QT >= 5.13, geos < 3.11)
     condition:
       qt:
         at_least: 331008
+      geos:
+        less_than: 31100
     params:
       INCLUDE_POLYGON_ATTRIBUTES: true
       INPUT:
@@ -898,6 +972,28 @@ tests:
     results:
       OUTPUT:
         name: expected/qt515/randompointsinpolygons_min2_gmin2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes (QT >= 5.13, geos >= 3.11)
+    condition:
+      qt:
+        at_least: 331008
+      geos:
+        at_least: 31100
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 2.0
+      MIN_DISTANCE_GLOBAL: 2.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons_min2_gmin2geos311.gml
         type: vector
 
   - algorithm: native:randompointsonlines

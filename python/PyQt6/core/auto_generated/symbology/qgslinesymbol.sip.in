@@ -20,7 +20,7 @@ A line symbol type, for rendering LineString and MultiLineString geometries.
 %End
   public:
 
-    static QgsLineSymbol *createSimple( const QMap<QString, QVariant> &properties ) /Factory/;
+    static QgsLineSymbol *createSimple( const QVariantMap &properties ) /Factory/;
 %Docstring
 Create a line symbol with one symbol layer: SimpleLine with specified properties.
 This is a convenience method for easier creation of line symbols.

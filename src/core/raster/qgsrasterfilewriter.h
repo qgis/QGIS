@@ -45,7 +45,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * Options for sorting and filtering raster formats.
      * \since QGIS 3.0
      */
-    enum RasterFormatOption
+    enum RasterFormatOption SIP_ENUM_BASETYPE( IntFlag )
     {
       SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
     };

@@ -107,7 +107,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
       /**
        * Does not use resampling
        */
-      None = 0,
+      NoResampling = 0,
 
       /**
        * Does a simple average of values defined for all surrounding faces/vertices
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
   private:
     QgsColorRampShader mColorRampShader;
-    DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::None;
+    DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::NoResampling;
     double mClassificationMinimum = 0;
     double mClassificationMaximum = 0;
     double mOpacity = 1;

@@ -251,18 +251,18 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   syncToLayer();
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
-  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
-  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
-  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
-  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
-  registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );
-  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
-  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
-  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
-  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
-  registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::IsObstacle );
-  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
+  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::Property::BackgroundColor );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::Property::StrokeColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::Property::StrokeWidth );
+  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::Property::PositionX );
+  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::Property::PositionY );
+  registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Property::Distance );
+  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Property::Priority );
+  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::Property::ZIndex );
+  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Property::Show );
+  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::Property::AlwaysShow );
+  registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::Property::IsObstacle );
+  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::Property::StartAngle );
 
   connect( mButtonSizeLegendSettings, &QPushButton::clicked, this, &QgsDiagramProperties::showSizeLegendDialog );
 }
@@ -533,7 +533,7 @@ QgsDiagramProperties::~QgsDiagramProperties()
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer, true );
+  button->init( static_cast< int >( key ), mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsDiagramProperties::createAuxiliaryField );
   button->registerExpressionContextGenerator( this );
@@ -1103,7 +1103,7 @@ void QgsDiagramProperties::createAuxiliaryField()
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsDiagramLayerSettings::Property key = static_cast< QgsDiagramLayerSettings::Property >( button->propertyKey() );
-  const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[key];
+  const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
   if ( !mLayer->auxiliaryLayer()->exists( def ) )

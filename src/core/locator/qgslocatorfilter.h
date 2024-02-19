@@ -181,7 +181,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     Q_ENUM( Priority )
 
     //! Flags for locator behavior.
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagFast = 1 << 1, //!< Filter finds results quickly and can be safely run in the main thread
     };

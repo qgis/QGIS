@@ -40,7 +40,6 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
 
   connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboRenderedFacade, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
@@ -52,6 +51,8 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( groupEdges, &QGroupBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
   connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::updateGuiState );
 
   widgetMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined );
 }
@@ -79,8 +80,8 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
 
   widgetMaterial->setSettings( polygonSymbol->materialSettings(), layer );
 
-  btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  btnExtrusionDD->init( QgsAbstract3DSymbol::PropertyExtrusionHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  btnHeightDD->init( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  btnExtrusionDD->init( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
 
   groupEdges->setChecked( polygonSymbol->edgesEnabled() );
   spinEdgeWidth->setValue( polygonSymbol->edgeWidth() );
@@ -101,8 +102,8 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setMaterialSettings( widgetMaterial->settings() );
 
   QgsPropertyCollection ddp;
-  ddp.setProperty( QgsAbstract3DSymbol::PropertyHeight, btnHeightDD->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::PropertyExtrusionHeight, btnExtrusionDD->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::Height, btnHeightDD->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, btnExtrusionDD->toProperty() );
   sym->setDataDefinedProperties( ddp );
 
   sym->setEdgesEnabled( groupEdges->isChecked() );
@@ -115,4 +116,12 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 QString QgsPolygon3DSymbolWidget::symbolType() const
 {
   return QStringLiteral( "polygon" );
+}
+
+void QgsPolygon3DSymbolWidget::updateGuiState()
+{
+  // Altitude binding is not taken into account if altitude clamping is absolute.
+  // See: Qgs3DUtils::clampAltitudes()
+  const bool absoluteClamping = cboAltClamping->currentIndex() == static_cast< int >( Qgis::AltitudeClamping::Absolute );
+  cboAltBinding->setEnabled( !absoluteClamping );
 }

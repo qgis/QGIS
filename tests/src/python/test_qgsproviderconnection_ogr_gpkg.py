@@ -22,6 +22,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFields,
     QgsGlobFieldDomain,
+    QgsMetadataSearchContext,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRangeFieldDomain,
@@ -360,6 +361,14 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         conn.renameField('', 'cdb_lines', 'name2', 'name3')
         fields = conn.fields('', 'cdb_lines')
         self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name3', 'ortsrat', 'id_long', 'geom'])
+
+    def test_searchLayerMetadata_buggy_extent(self):
+        """ Test fix for https://github.com/qgis/QGIS/issues/56203 """
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(f'{TEST_DATA_DIR}/provider/bug_56203.gpkg', {})
+        res = conn.searchLayerMetadata(QgsMetadataSearchContext())
+        self.assertTrue(res[0].geographicExtent().isEmpty())
 
 
 if __name__ == '__main__':

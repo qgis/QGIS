@@ -19,14 +19,14 @@ A text based diagram.
 #include "qgstextdiagram.h"
 %End
   public:
-    enum Shape
+    enum Shape /BaseType=IntEnum/
     {
       Circle,
       Rectangle,
       Triangle
     };
 
-    enum Orientation
+    enum Orientation /BaseType=IntEnum/
     {
       Horizontal,
       Vertical

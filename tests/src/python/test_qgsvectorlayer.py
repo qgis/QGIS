@@ -161,16 +161,16 @@ def createJoinLayer():
         "joinlayer", "memory")
     pr = joinLayer.dataProvider()
     f1 = QgsFeature()
-    f1.setAttributes(["foo", 123, 321, QDateTime(QDate(2010, 1, 1))])
+    f1.setAttributes(["foo", 123, 321, QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0))])
     f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
     f2 = QgsFeature()
-    f2.setAttributes(["bar", 456, 654, QDateTime(QDate(2020, 1, 1))])
+    f2.setAttributes(["bar", 456, 654, QDateTime(QDate(2020, 1, 1), QTime(0, 0, 0))])
     f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     f3 = QgsFeature()
     f3.setAttributes(["qar", 457, 111, None])
     f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     f4 = QgsFeature()
-    f4.setAttributes(["a", 458, 19, QDateTime(QDate(2012, 1, 1))])
+    f4.setAttributes(["a", 458, 19, QDateTime(QDate(2012, 1, 1), QTime(0, 0, 0))])
     f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     assert pr.addFeatures([f1, f2, f3, f4])
     assert joinLayer.featureCount() == 4
@@ -2043,9 +2043,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.minimumAndMaximumValue(3), (111, 321))
 
         # dates (maximumValue also tests we properly handle null values by skipping those)
-        self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1)))
-        self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1)))
-        self.assertEqual(layer.minimumAndMaximumValue(4), (QDateTime(QDate(2010, 1, 1)), QDateTime(QDate(2010, 1, 1))))
+        self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)))
+        self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)))
+        self.assertEqual(layer.minimumAndMaximumValue(4), (QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0))))
 
         self.assertEqual(set(layer.uniqueValues(3)), {111, 321})
 

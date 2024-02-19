@@ -64,10 +64,10 @@ Returns the list of the vector layer geometry types which are compatible with th
 .. versionadded:: 3.16
 %End
 
-    enum Property
-    {
-      PropertyHeight,
-      PropertyExtrusionHeight,
+    enum class Property /BaseType=IntEnum/
+      {
+      Height,
+      ExtrusionHeight,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

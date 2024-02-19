@@ -27,14 +27,14 @@ This is a container for configuration of the snapping of the project
 
   public:
 
-    enum SnappingType
+    enum SnappingType /BaseType=IntEnum/
     {
       Vertex,
       VertexAndSegment,
       Segment,
     };
 
-    enum ScaleDependencyMode
+    enum ScaleDependencyMode /BaseType=IntEnum/
     {
       Disabled,
       Global,

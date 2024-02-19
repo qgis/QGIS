@@ -90,9 +90,10 @@ Example - replace stored database credentials with new ones:
 %End
 %MethodCode
     PyObject *s = 0;
-    Py_BEGIN_ALLOW_THREADS
+    QString id;
     Py_XINCREF( a0 );
-    QString id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
     {
       QString res;
       SIP_BLOCK_THREADS
@@ -109,8 +110,8 @@ Example - replace stored database credentials with new ones:
       return res;
     } );
 
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 
@@ -164,9 +165,10 @@ Example - replace path with a variable:
 %End
 %MethodCode
     PyObject *s = 0;
-    Py_BEGIN_ALLOW_THREADS
+    QString id;
     Py_XINCREF( a0 );
-    QString id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
     {
       QString res;
       SIP_BLOCK_THREADS
@@ -183,8 +185,8 @@ Example - replace path with a variable:
       return res;
     } );
 
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 

@@ -57,13 +57,13 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
     {
       { Qt::DisplayRole, style->name() },
       { Qt::ToolTipRole, style->name() },
-      { QgsStyleModel::IsTitleRole, true },
-      { QgsStyleModel::StyleFileName, style->fileName() },
-      { QgsStyleModel::StyleName, style->name() },
+      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), style->fileName() },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), style->name() },
     }, {
-      { QgsStyleModel::IsTitleRole, true },
-      { QgsStyleModel::StyleFileName, style->fileName() },
-      { QgsStyleModel::StyleName, style->name() }
+      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), style->fileName() },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), style->name() }
     }
   } );
   addSourceModel( titleModel );
@@ -117,13 +117,13 @@ void QgsCombinedStyleModel::addDefaultStyle()
     {
       { Qt::DisplayRole, defaultStyle->name() },
       { Qt::ToolTipRole, defaultStyle->name() },
-      { QgsStyleModel::IsTitleRole, true },
-      { QgsStyleModel::StyleFileName, defaultStyle->fileName() },
-      { QgsStyleModel::StyleName, defaultStyle->name() },
+      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), defaultStyle->fileName() },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), defaultStyle->name() },
     }, {
-      { QgsStyleModel::IsTitleRole, true },
-      { QgsStyleModel::StyleFileName, defaultStyle->fileName() },
-      { QgsStyleModel::StyleName, defaultStyle->name() }
+      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), defaultStyle->fileName() },
+      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), defaultStyle->name() }
     }
   } );
 

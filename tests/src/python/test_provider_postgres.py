@@ -2636,7 +2636,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         f.setAttribute('test_string', 'QGIS Rocks')
 
         dp = vl.dataProvider()
-        self.assertNotEqual(dp.defaultValue(0), QVariant())
+        self.assertNotEqual(dp.defaultValue(0), NULL)
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):
@@ -3265,6 +3265,91 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         f.setAttribute('geog', 'POLYGON((28.030080546000004 -26.2055410477482,28.030103891999996 -26.20540054874821,28.030532775999998 -26.205458576748192,28.030553322999996 -26.2056050407482,28.030080546000004 -26.2055410477482))')
         self.assertTrue(dp.addFeature(f))
         self.assertEqual(vl.featureCount(), 1)
+
+    def testExtent(self):
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.test_extent')
+        conn.executeSql('CREATE TABLE qgis_test.test_extent (id SERIAL PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("SELECT AddGeometryColumn('qgis_test', 'test_extent', 'geom', 4326, 'POINT', 2 )")
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\'srid=4326 type=POINT table="qgis_test"."test_extent" (geom) sql=')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+    def testExtent3D(self):
+        def test_table(dbconn, table_name, wkt):
+            vl = QgsVectorLayer(f'{dbconn} srid=4326 table="qgis_test".{table_name} (geom) sql=', "testgeom",
+                                "postgres")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(str(vl.extent3D()), '<QgsBox3D(' + str(wkt)[1:-1] + ')>')
+
+        test_table(self.dbconn, 'p2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'p3d', [0, 0, 0, 1, 1, 0])
+        test_table(self.dbconn, 'triangle2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'triangle3d', [0, 0, 0, 1, 1, 0])
+        test_table(self.dbconn, 'tin2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'tin3d', [0, 0, 0, 1, 1, 0])
+        test_table(self.dbconn, 'ps2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'ps3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'mp3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'pt2d', [0, 0, float('nan'), 0, 0, float('nan')])
+        test_table(self.dbconn, 'pt3d', [0, 0, 0, 0, 0, 0])
+        test_table(self.dbconn, 'ls2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'ls3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'mpt2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'mpt3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'mls2d', [0, 0, float('nan'), 3, 3, float('nan')])
+        test_table(self.dbconn, 'mls3d', [0, 0, 0, 3, 3, 3])
+        test_table(self.dbconn, 'pt4d', [1, 2, 3, 1, 2, 3])
+
+    # See: https://github.com/qgis/QGIS/issues/55856
+    def testPktLowerCase(self):
+        # check that primary key creation correctly works
+        # when exporting a vector layer to postgresql with
+        # lowercaseFieldNames option set to True
+
+        # create an empty vector layer
+        pk_key = "DEP"
+        input_uri = f"NoGeometry?crs=&field={pk_key}:string(255,0)&field=REG:string(255,0)&field=Number:integer(10,0)"
+        layer = QgsVectorLayer(input_uri, "lowercase", "memory")
+        self.assertTrue(layer.isValid())
+
+        # export the vector layer to postgresql with lowercase field names
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.pk_lowercase')
+        output_uri = f'{self.dbconn} table="qgis_test"."pk_lowercase" key=\'{pk_key.lower()}\''
+        err = QgsVectorLayerExporter.exportLayer(layer, output_uri, "postgres", layer.crs(), False, {'lowercaseFieldNames': True})
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
+                         f'unexpected import error {err}')
+
+        # retrieve the columns and type and check them
+        cur = self.con.cursor()
+        sql_cols = (
+            "SELECT column_name, data_type FROM information_schema.columns "
+            "WHERE table_name = 'pk_lowercase' AND table_schema = 'qgis_test';"
+        )
+        cur.execute(sql_cols)
+        expected_cols = [
+            ('dep', 'character varying'),
+            ('reg', 'character varying'),
+            ('number', 'integer')]
+        self.assertEqual(cur.fetchall(), expected_cols)
+
+        # Retrieve the primary key and check its name and type
+        sql_pk = (
+            "SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type "
+            "FROM   pg_index i "
+            "JOIN   pg_attribute a ON a.attrelid = i.indrelid "
+            "AND a.attnum = ANY(i.indkey) "
+            "WHERE  i.indrelid = 'qgis_test.pk_lowercase'::regclass "
+            "AND    i.indisprimary;"
+        )
+        cur.execute(sql_pk)
+        self.assertEqual(cur.fetchall(), [('dep', 'character varying')])
 
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):

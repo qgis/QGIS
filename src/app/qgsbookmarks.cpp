@@ -169,7 +169,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   menu.addAction( actionDelete );
 
   // Get the bookmark
-  const QString id = lstBookmarks->model()->data( index, QgsBookmarkManagerModel::RoleId ).toString();
+  const QString id = lstBookmarks->model()->data( index, static_cast< int >( QgsBookmarkManagerModel::CustomRole::Id ) ).toString();
   QgsBookmark bookmark = QgsApplication::bookmarkManager()->bookmarkById( id );
   bool inProject = false;
   if ( bookmark.id().isEmpty() )
@@ -200,12 +200,12 @@ void QgsBookmarks::zoomToBookmark()
 
 void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 {
-  const QgsReferencedRectangle rect = index.data( QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
+  const QgsReferencedRectangle rect = index.data( static_cast< int >( QgsBookmarkManagerModel::CustomRole::Extent ) ).value< QgsReferencedRectangle >();
   try
   {
     if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
     {
-      QgisApp::instance()->mapCanvas()->setRotation( index.data( QgsBookmarkManagerModel::RoleRotation ).toDouble() );
+      QgisApp::instance()->mapCanvas()->setRotation( index.data( static_cast< int >( QgsBookmarkManagerModel::CustomRole::Rotation ) ).toDouble() );
       QgisApp::instance()->mapCanvas()->refresh();
     }
     else

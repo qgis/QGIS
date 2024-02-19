@@ -122,7 +122,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
     QgsProcessingFeedback *feedback,
     const QgsFeatureIds &skipTargetFeatureIds )
 {
-  if ( intersectSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( intersectSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
 
   QgsFeatureIds foundSet;
@@ -229,7 +229,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
     QgsProcessingFeedback *feedback,
     const QgsFeatureIds &skipTargetFeatureIds )
 {
-  if ( targetSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( targetSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
   // build a list of 'reversed' predicates, because in this function
@@ -352,7 +352,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
     disjointSet = disjointSet.subtract( foundSet );
     QgsFeatureRequest disjointReq = QgsFeatureRequest().setFilterFids( disjointSet );
     if ( onlyRequireTargetIds )
-      disjointReq.setNoAttributes().setFlags( QgsFeatureRequest::NoGeometry );
+      disjointReq.setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeatureIterator disjointIt = targetSource->getFeatures( disjointReq );
     QgsFeature f;
     while ( disjointIt.nextFeature( f ) )
@@ -375,11 +375,11 @@ void QgsSelectByLocationAlgorithm::initAlgorithm( const QVariantMap & )
                         << QObject::tr( "removing from current selection" );
 
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
-                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addPredicateParameter();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
                 QObject::tr( "By comparing to the features from" ),
-                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
                 QObject::tr( "Modify current selection by" ),
@@ -391,9 +391,9 @@ QString QgsSelectByLocationAlgorithm::name() const
   return QStringLiteral( "selectbylocation" );
 }
 
-QgsProcessingAlgorithm::Flags QgsSelectByLocationAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsSelectByLocationAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool;
 }
 
 QString QgsSelectByLocationAlgorithm::displayName() const
@@ -486,11 +486,11 @@ void QgsExtractByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Extract features from" ),
-                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addPredicateParameter();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
                 QObject::tr( "By comparing to the features from" ),
-                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (location)" ) ) );
 }

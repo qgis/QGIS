@@ -41,7 +41,7 @@ class QgsExplodeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsExplodeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

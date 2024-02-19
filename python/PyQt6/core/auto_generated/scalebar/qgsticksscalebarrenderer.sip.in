@@ -21,7 +21,7 @@ A scale bar that draws segments using short ticks.
 %End
   public:
 
-    enum TickPosition
+    enum TickPosition /BaseType=IntEnum/
     {
       TicksUp,
       TicksDown,

@@ -2402,6 +2402,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_DEPRECATED" \
                          "SIP_DOC_TEMPLATE" \
                          "SIP_END" \
+                         "SIP_ENUM_BASETYPE" \
                          "SIP_EXTERNAL" \
                          "SIP_FACTORY" \
                          "SIP_FEATURE" \

@@ -23,7 +23,7 @@ The :py:class:`QgsMediaWidget` class creates a widget for playing back audio and
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       Audio,
       Video,

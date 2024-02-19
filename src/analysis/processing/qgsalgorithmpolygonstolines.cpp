@@ -53,9 +53,9 @@ QString QgsPolygonsToLinesAlgorithm::outputName() const
   return QObject::tr( "Lines" );
 }
 
-QgsProcessing::SourceType QgsPolygonsToLinesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsPolygonsToLinesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 Qgis::WkbType QgsPolygonsToLinesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
@@ -92,7 +92,7 @@ QgsPolygonsToLinesAlgorithm *QgsPolygonsToLinesAlgorithm::createInstance() const
 
 QList<int> QgsPolygonsToLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsFeatureList QgsPolygonsToLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )

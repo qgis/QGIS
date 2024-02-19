@@ -40,8 +40,15 @@ class CORE_EXPORT QgsRuntimeProfilerNode
 {
   public:
 
-    //! Custom node data roles
-    enum Roles
+    // *INDENT-OFF*
+
+    /**
+     * Custom node data roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsRuntimeProfilerNode::Roles
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRuntimeProfilerNode, Roles ) : int
     {
       Name = Qt::UserRole + 1, //!< Profile item name
       Group, //!< Node group
@@ -49,6 +56,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
       ParentElapsed, //!< Total elapsed time for node's parent
       Id, //!< Internal node ID (since QGIS 3.34)
     };
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsRuntimeProfilerNode, with the specified \a group and \a name.

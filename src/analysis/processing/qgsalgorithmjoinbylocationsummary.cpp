@@ -23,6 +23,8 @@
 #include "qgsfeature.h"
 #include "qgsfeaturesource.h"
 #include "qgsalgorithmjoinbylocation.h"
+#include "qgsdatetimestatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
 
 ///@cond PRIVATE
 
@@ -30,7 +32,7 @@
 void QgsJoinByLocationSummaryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Join to features in" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "Join to features in" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Where the features" ),
       QgsJoinByLocationAlgorithm::translatedPredicates(), true, 0 );
@@ -43,11 +45,11 @@ void QgsJoinByLocationSummaryAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( predicateParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "JOIN" ),
-                QObject::tr( "By comparing to" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "By comparing to" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   addParameter( new QgsProcessingParameterField( QStringLiteral( "JOIN_FIELDS" ),
                 QObject::tr( "Fields to summarise (leave empty to use all fields)" ),
-                QVariant(), QStringLiteral( "JOIN" ), QgsProcessingParameterField::Any, true, true ) );
+                QVariant(), QStringLiteral( "JOIN" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   mAllSummaries << QObject::tr( "count" )
                 << QObject::tr( "unique" )
@@ -142,7 +144,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
   if ( !joinSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
 
-  if ( joinSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( joinSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->reportError( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
 
   QStringList joinedFieldNames = parameterAsStrings( parameters, QStringLiteral( "JOIN_FIELDS" ), context );

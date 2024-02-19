@@ -85,7 +85,7 @@ Creates a color ramp shader
 
     virtual QList<int> usesBands() const;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

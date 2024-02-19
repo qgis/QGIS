@@ -48,16 +48,26 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
     static const int NoGroup = 9999;
 
     //! Custom model roles
-    enum Role
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsLocatorModel::Role
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLocatorModel, Role ) : int
     {
-      ResultDataRole = Qt::UserRole + 1, //!< QgsLocatorResult data
-      ResultTypeRole, //!< Result type
-      ResultFilterPriorityRole, //!< Result priority, used by QgsLocatorProxyModel for sorting roles.
-      ResultScoreRole, //!< Result match score, used by QgsLocatorProxyModel for sorting roles.
-      ResultFilterNameRole, //!< Associated filter name which created the result
-      ResultFilterGroupSortingRole, //!< Group results within the same filter results
-      ResultActionsRole, //!< The actions to be shown for the given result in a context menu
+      ResultData SIP_MONKEYPATCH_COMPAT_NAME(ResultDataRole) = Qt::UserRole + 1, //!< QgsLocatorResult data
+      ResultType SIP_MONKEYPATCH_COMPAT_NAME(ResultTypeRole), //!< Result type
+      ResultFilterPriority SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterPriorityRole), //!< Result priority, used by QgsLocatorProxyModel for sorting roles.
+      ResultScore SIP_MONKEYPATCH_COMPAT_NAME(ResultScoreRole), //!< Result match score, used by QgsLocatorProxyModel for sorting roles.
+      ResultFilterName SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterNameRole), //!< Associated filter name which created the result
+      ResultFilterGroupSorting SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterGroupSortingRole), //!< Group results within the same filter results
+      ResultActions SIP_MONKEYPATCH_COMPAT_NAME(ResultActionsRole), //!< The actions to be shown for the given result in a context menu
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsLocatorModel.

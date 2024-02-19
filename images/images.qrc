@@ -996,6 +996,8 @@
         <file>themes/default/mIconSelectUnlocked.svg</file>
         <file>themes/default/mIconSelectLocked.svg</file>
         <file>themes/default/mTemporalNavigationMovie.svg</file>
+        <file>themes/default/mActionAddSensorThingsLayer.svg</file>
+        <file>themes/default/mIconSensorThings.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

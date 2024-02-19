@@ -79,36 +79,36 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
   if ( !mStyle )
     return;
 
-  if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarLineColor ) || dataDefinedProperties().isActive( QgsLayoutObject::ScalebarLineWidth ) )
+  if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ) || dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ) )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     const QgsExpressionContext expContext = createExpressionContext();
     std::unique_ptr< QgsLineSymbol > sym( mSettings.lineSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
-    if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarLineWidth ) )
-      sym->setWidth( mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarLineWidth, expContext, mSettings.lineWidth() ) );
-    if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarLineColor ) )
-      sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarLineColor, expContext, mSettings.lineColor() ) );
+    if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ) )
+      sym->setWidth( mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth, expContext, mSettings.lineWidth() ) );
+    if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ) )
+      sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor, expContext, mSettings.lineColor() ) );
     Q_NOWARN_DEPRECATED_POP
     mSettings.setLineSymbol( sym.release() );
   }
-  if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarFillColor ) )
+  if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor ) )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     const QgsExpressionContext expContext = createExpressionContext();
     std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
-    sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor, expContext, mSettings.fillColor() ) );
+    sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor, expContext, mSettings.fillColor() ) );
     Q_NOWARN_DEPRECATED_POP
     mSettings.setFillSymbol( sym.release() );
   }
-  if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarFillColor2 ) )
+  if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2 ) )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     const QgsExpressionContext expContext = createExpressionContext();
     std::unique_ptr< QgsFillSymbol > sym( mSettings.alternateFillSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
-    sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor2, expContext, mSettings.fillColor2() ) );
+    sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2, expContext, mSettings.fillColor2() ) );
     Q_NOWARN_DEPRECATED_POP
     mSettings.setAlternateFillSymbol( sym.release() );
   }
@@ -292,11 +292,11 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
 
 void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSegmentWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth ) )
   {
     double unitsPerSegment = mSettings.unitsPerSegment();
     bool ok = false;
-    unitsPerSegment = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSegmentWidth, *context, unitsPerSegment, &ok );
+    unitsPerSegment = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth, *context, unitsPerSegment, &ok );
 
     if ( !ok )
     {
@@ -311,12 +311,12 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
 
 void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMinimumWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth ) )
   {
     double minimumBarWidth = mSettings.minimumBarWidth();
 
     bool ok = false;
-    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinimumWidth, *context, minimumBarWidth, &ok );
+    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth, *context, minimumBarWidth, &ok );
 
     if ( !ok )
     {
@@ -331,12 +331,12 @@ void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *
 
 void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMaximumWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarMaximumWidth ) )
   {
     double maximumBarWidth = mSettings.maximumBarWidth();
 
     bool ok = false;
-    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaximumWidth, *context, maximumBarWidth, &ok );
+    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarMaximumWidth, *context, maximumBarWidth, &ok );
 
     if ( !ok )
     {
@@ -351,12 +351,12 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
 
 void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarLeftSegments ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments ) )
   {
     int leftSegments = mSettings.numberOfSegmentsLeft();
 
     bool ok = false;
-    leftSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarLeftSegments, *context, leftSegments, &ok );
+    leftSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments, *context, leftSegments, &ok );
 
     if ( !ok )
     {
@@ -371,12 +371,12 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionCont
 
 void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarRightSegments ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments ) )
   {
     int rightSegments = mSettings.numberOfSegments();
 
     bool ok = false;
-    rightSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegments, *context, rightSegments, &ok );
+    rightSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments, *context, rightSegments, &ok );
 
     if ( !ok )
     {
@@ -395,13 +395,13 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
 
   bool forceUpdate = false;
 
-  if ( ( property == QgsLayoutObject::ScalebarHeight || property == QgsLayoutObject::AllProperties )
-       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarHeight ) ) )
+  if ( ( property == QgsLayoutObject::DataDefinedProperty::ScalebarHeight || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarHeight ) ) )
   {
     double height = mSettings.height();
 
     bool ok = false;
-    height = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarHeight, context, height, &ok );
+    height = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarHeight, context, height, &ok );
 
     if ( !ok )
     {
@@ -415,13 +415,13 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-  if ( ( property == QgsLayoutObject::ScalebarSubdivisionHeight || property == QgsLayoutObject::AllProperties )
-       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSubdivisionHeight ) ) )
+  if ( ( property == QgsLayoutObject::DataDefinedProperty::ScalebarSubdivisionHeight || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarSubdivisionHeight ) ) )
   {
     double height = mSettings.subdivisionsHeight();
 
     bool ok = false;
-    height = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSubdivisionHeight, context, height, &ok );
+    height = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarSubdivisionHeight, context, height, &ok );
 
     if ( !ok )
     {
@@ -435,25 +435,25 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-  if ( property == QgsLayoutObject::ScalebarLeftSegments || property == QgsLayoutObject::AllProperties )
+  if ( property ==  QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshNumberOfSegmentsLeft( &context );
     forceUpdate = true;
   }
 
-  if ( property == QgsLayoutObject::ScalebarRightSegments || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshNumberOfSegmentsRight( &context );
     forceUpdate = true;
   }
 
-  if ( ( property == QgsLayoutObject::ScalebarRightSegmentSubdivisions || property == QgsLayoutObject::AllProperties )
-       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarRightSegmentSubdivisions ) ) )
+  if ( ( property == QgsLayoutObject::DataDefinedProperty::ScalebarRightSegmentSubdivisions || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegmentSubdivisions ) ) )
   {
     int segments = mSettings.numberOfSubdivisions();
 
     bool ok = false;
-    segments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegmentSubdivisions, context, segments, &ok );
+    segments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegmentSubdivisions, context, segments, &ok );
 
     if ( !ok )
     {
@@ -468,19 +468,19 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
   }
 
 
-  if ( property == QgsLayoutObject::ScalebarSegmentWidth || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshUnitsPerSegment( &context );
     forceUpdate = true;
   }
 
-  if ( property == QgsLayoutObject::ScalebarMinimumWidth || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshMinimumBarWidth( &context );
     forceUpdate = true;
   }
 
-  if ( property == QgsLayoutObject::ScalebarMaximumWidth || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarMaximumWidth || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshMaximumBarWidth( &context );
     forceUpdate = true;
@@ -488,19 +488,19 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
 
   // updates data defined properties and redraws item to match
   // -- Deprecated --
-  if ( property == QgsLayoutObject::ScalebarFillColor || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarFillColor || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     forceUpdate = true;
   }
-  if ( property == QgsLayoutObject::ScalebarFillColor2 || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2 || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     forceUpdate = true;
   }
-  if ( property == QgsLayoutObject::ScalebarLineColor || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarLineColor || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     forceUpdate = true;
   }
-  if ( property == QgsLayoutObject::ScalebarLineWidth || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     forceUpdate = true;
   }
@@ -1159,10 +1159,10 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     // need to translate the deprecated ScalebarLineWidth and ScalebarLineColor properties to symbol properties,
     // and then remove them from the scalebar so they don't interfere and apply to other compatibility workarounds
-    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, dataDefinedProperties().property( QgsLayoutObject::ScalebarLineWidth ) );
-    dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineWidth, QgsProperty() );
-    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarLineColor ) );
-    dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineColor, QgsProperty() );
+    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ) );
+    dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth, QgsProperty() );
+    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ) );
+    dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor, QgsProperty() );
 
     lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
     mSettings.setLineSymbol( lineSymbol->clone() );
@@ -1249,8 +1249,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     // need to translate the deprecated ScalebarFillColor property to symbol properties,
     // and then remove them from the scalebar so they don't interfere and apply to other compatibility workarounds
-    fillSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarFillColor ) );
-    dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor, QgsProperty() );
+    fillSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor ) );
+    dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor, QgsProperty() );
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
     mSettings.setFillSymbol( fillSymbol.release() );
@@ -1301,8 +1301,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     // need to translate the deprecated ScalebarFillColor2 property to symbol properties,
     // and then remove them from the scalebar so they don't interfere and apply to other compatibility workarounds
-    fillSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarFillColor2 ) );
-    dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor2, QgsProperty() );
+    fillSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2 ) );
+    dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2, QgsProperty() );
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
     mSettings.setAlternateFillSymbol( fillSymbol.release() );

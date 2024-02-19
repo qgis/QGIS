@@ -141,7 +141,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
 
   const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry() ||
-                             !( request.flags() & QgsFeatureRequest::NoGeometry )
+                             !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
                              || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
                              || emptyForm.needsGeometry();
 
@@ -333,16 +333,19 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   }
 
   QgsFeatureRequest request = mMasterModel->request();
-  const bool needsGeometry = filterMode == QgsAttributeTableFilterModel::ShowVisible;
 
-  const bool requiresTableReload = ( request.filterType() != QgsFeatureRequest::FilterNone || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter ) // previous request was subset
-                                   || ( needsGeometry && request.flags() & QgsFeatureRequest::NoGeometry ) // no geometry for last request
+  // create an empty form to find out if it needs geometry or not
+  const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
+  const bool needsGeometry = ( filterMode == QgsAttributeTableFilterModel::ShowVisible ) || emptyForm.needsGeometry();
+
+  const bool requiresTableReload = ( request.filterType() != Qgis::Qgis::FeatureRequestFilterType::NoFilter || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter ) // previous request was subset
+                                   || ( needsGeometry && request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) // no geometry for last request
                                    || ( mMasterModel->rowCount() == 0 ); // no features
 
   if ( !needsGeometry )
-    request.setFlags( request.flags() | QgsFeatureRequest::NoGeometry );
+    request.setFlags( request.flags() | Qgis::FeatureRequestFlag::NoGeometry );
   else
-    request.setFlags( request.flags() & ~( QgsFeatureRequest::NoGeometry ) );
+    request.setFlags( request.flags() & ~( static_cast< int >( Qgis::FeatureRequestFlag::NoGeometry ) ) );
   request.setFilterFids( QgsFeatureIds() );
   request.setFilterRect( QgsRectangle() );
   request.disableFilter();
@@ -1250,7 +1253,7 @@ void QgsDualView::onSortColumnChanged()
 void QgsDualView::updateSelectedFeatures()
 {
   QgsFeatureRequest r = mMasterModel->request();
-  if ( r.filterType() == QgsFeatureRequest::FilterNone && r.spatialFilterType() == Qgis::SpatialFilterType::NoFilter )
+  if ( r.filterType() == Qgis::FeatureRequestFilterType::NoFilter && r.spatialFilterType() == Qgis::SpatialFilterType::NoFilter )
     return; // already requested all features
 
   r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
@@ -1262,7 +1265,7 @@ void QgsDualView::updateSelectedFeatures()
 void QgsDualView::updateEditedAddedFeatures()
 {
   QgsFeatureRequest r = mMasterModel->request();
-  if ( r.filterType() == QgsFeatureRequest::FilterNone && r.spatialFilterType() == Qgis::SpatialFilterType::NoFilter )
+  if ( r.filterType() == Qgis::FeatureRequestFilterType::NoFilter && r.spatialFilterType() == Qgis::SpatialFilterType::NoFilter )
     return; // already requested all features
 
   r.setFilterFids( masterModel()->layer()->editBuffer() ? masterModel()->layer()->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
@@ -1274,7 +1277,7 @@ void QgsDualView::updateEditedAddedFeatures()
 void QgsDualView::extentChanged()
 {
   QgsFeatureRequest r = mMasterModel->request();
-  if ( mFilterModel->mapCanvas() && ( r.filterType() != QgsFeatureRequest::FilterNone || !r.filterRect().isNull() ) )
+  if ( mFilterModel->mapCanvas() && ( r.filterType() != Qgis::FeatureRequestFilterType::NoFilter || !r.filterRect().isNull() ) )
   {
     const QgsRectangle rect = mFilterModel->mapCanvas()->mapSettings().mapToLayerCoordinates( mLayer, mFilterModel->mapCanvas()->extent() );
     r.setFilterRect( rect );

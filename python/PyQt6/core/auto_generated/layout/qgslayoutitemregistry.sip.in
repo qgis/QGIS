@@ -64,7 +64,7 @@ Returns a translated, user visible name for plurals of the layout item class (e.
 Creates a layout item of this class for a specified ``layout``.
 %End
 
-    virtual void resolvePaths( QMap<QString, QVariant> &properties, const QgsPathResolver &pathResolver, bool saving );
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Resolve paths in the item's ``properties`` (if there are any paths).
 When ``saving`` is ``True``, paths are converted from absolute to relative,
@@ -127,7 +127,7 @@ Returns a translated, user visible name for the layout multiframe class.
 Creates a layout multiframe of this class for a specified ``layout``.
 %End
 
-    virtual void resolvePaths( QMap<QString, QVariant> &properties, const QgsPathResolver &pathResolver, bool saving );
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Resolve paths in the item's ``properties`` (if there are any paths).
 When ``saving`` is ``True``, paths are converted from absolute to relative,
@@ -161,7 +161,7 @@ of layout items.
 %End
   public:
 
-    enum ItemType
+    enum ItemType /BaseType=IntEnum/
     {
       LayoutItem,
       LayoutGroup,
@@ -269,7 +269,7 @@ Creates a new instance of a layout multiframe given the multiframe ``type``, and
 .. seealso:: :py:func:`createItem`
 %End
 
-    void resolvePaths( int type, QMap<QString, QVariant> &properties, const QgsPathResolver &pathResolver, bool saving ) const;
+    void resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 %Docstring
 Resolve paths in properties of a particular symbol layer.
 This normally means converting relative paths to absolute paths when loading

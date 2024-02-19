@@ -42,7 +42,7 @@ class QgsPointsAlongGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorith
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsPointsAlongGeometryAlgorithm *createInstance() const override SIP_FACTORY;
@@ -52,7 +52,7 @@ class QgsPointsAlongGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorith
 
   protected:
     QString outputName() const override;
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;

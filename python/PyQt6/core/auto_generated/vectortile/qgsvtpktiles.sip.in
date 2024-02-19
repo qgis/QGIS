@@ -40,19 +40,19 @@ Tries to open the file, returns true on success
 Returns whether the VTPK file is currently opened
 %End
 
-    QMap<QString, QVariant> metadata() const;
+    QVariantMap metadata() const;
 %Docstring
 Returns the VTPK metadata.
 
 This method returns the contents of the "root.json" file.
 %End
 
-    QMap<QString, QVariant> styleDefinition() const;
+    QVariantMap styleDefinition() const;
 %Docstring
 Returns the VTPK style definition.
 %End
 
-    QMap<QString, QVariant> spriteDefinition() const;
+    QVariantMap spriteDefinition() const;
 %Docstring
 Returns the VTPK sprites definitions.
 %End
@@ -67,7 +67,7 @@ Returns the VTPK sprite image, if it exists.
 Reads layer metadata from the VTPK file.
 %End
 
-    QMap<QString, QVariant> rootTileMap() const;
+    QVariantMap rootTileMap() const;
 %Docstring
 Returns the root tilemap content, if it exists.
 

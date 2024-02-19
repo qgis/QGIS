@@ -110,7 +110,7 @@ class TestQgsCallout: public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsCallout() : QgsTest( QStringLiteral( "Callout Tests" ) ) {}
+    TestQgsCallout() : QgsTest( QStringLiteral( "Callout Tests" ), QStringLiteral( "callouts" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -179,7 +179,6 @@ class TestQgsCallout: public QgsTest
     void calloutsBlend();
 
   private:
-    bool imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount = 0 );
 
     QString mTestDataDir;
     QgsVectorLayer *vl = nullptr;
@@ -321,7 +320,7 @@ void TestQgsCallout::calloutsInLabeling()
 
   p.end();
 
-  QVERIFY( imageCheck( "simple_callout_labels", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "simple_callout_labels", "simple_callout_labels", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // now let's test the variant when integrated into rendering loop
   //note the reference images are slightly different due to use of renderer for this test
@@ -332,7 +331,7 @@ void TestQgsCallout::calloutsInLabeling()
 
   vl->setLabeling( nullptr );
 
-  QVERIFY( imageCheck( "simple_callout_labels", img2, 20 ) );
+  QGSVERIFYIMAGECHECK( "simple_callout_labels", "simple_callout_labels", img2, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutsBlend()
@@ -386,7 +385,7 @@ void TestQgsCallout::calloutsBlend()
 
   p.end();
 
-  QVERIFY( imageCheck( "simple_callout_labels_blend", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "simple_callout_labels_blend", "simple_callout_labels_blend", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutsWithRotation()
@@ -437,7 +436,7 @@ void TestQgsCallout::calloutsWithRotation()
 
   p.end();
 
-  QVERIFY( imageCheck( "simple_callout_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "simple_callout_rotated", "simple_callout_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutsInLayout()
@@ -484,8 +483,7 @@ void TestQgsCallout::calloutsInLayout()
   exporter.renderPage( &p, 0 );
   p.end();
 
-  const bool result = imageCheck( QStringLiteral( "callouts_layout" ), outputImage );
-  QVERIFY( result );
+  QGSVERIFYIMAGECHECK( "callouts_layout", "callouts_layout", outputImage, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutsDisabled()
@@ -536,7 +534,7 @@ void TestQgsCallout::calloutsDisabled()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_disabled", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_disabled", "callout_disabled", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutsDataDefinedDisabled()
@@ -575,7 +573,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::CalloutDraw, QgsProperty::fromExpression( QStringLiteral( "Class = 'Jet'" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::CalloutDraw, QgsProperty::fromExpression( QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
@@ -588,7 +586,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_enabled", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_enabled", "callout_data_defined_enabled", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedSymbol()
@@ -626,7 +624,7 @@ void TestQgsCallout::calloutDataDefinedSymbol()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 'green' else 'blue' end" ) ) );
+  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 'green' else 'blue' end" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -640,7 +638,7 @@ void TestQgsCallout::calloutDataDefinedSymbol()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_symbol", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_symbol", "callout_data_defined_symbol", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedSymbolColor()
@@ -678,7 +676,7 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "@symbol_color" ) ) );
+  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "@symbol_color" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -692,7 +690,7 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_symbol_color", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_symbol_color", "callout_data_defined_symbol_color", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutMinimumDistance()
@@ -718,7 +716,7 @@ void TestQgsCallout::calloutMinimumDistance()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelDistance, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 20 else 5 end" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelDistance, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 20 else 5 end" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -744,7 +742,7 @@ void TestQgsCallout::calloutMinimumDistance()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_minimum_length", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_minimum_length", "callout_minimum_length", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedMinimumDistance()
@@ -782,7 +780,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::MinimumCalloutLength, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 30 else 10 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::MinimumCalloutLength, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 30 else 10 end" ) ) );
 
   settings.setCallout( callout );
 
@@ -797,7 +795,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_minimum_length", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_minimum_length", "callout_data_defined_minimum_length", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutOffsetFromAnchor()
@@ -849,7 +847,7 @@ void TestQgsCallout::calloutOffsetFromAnchor()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_offset_from_anchor", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_offset_from_anchor", "callout_offset_from_anchor", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
@@ -887,7 +885,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -901,7 +899,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_offset_from_anchor", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_offset_from_anchor", "callout_data_defined_offset_from_anchor", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutOffsetFromLabel()
@@ -954,7 +952,7 @@ void TestQgsCallout::calloutOffsetFromLabel()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_offset_from_label", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_offset_from_label", "callout_offset_from_label", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
@@ -992,8 +990,8 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -1007,7 +1005,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_offset_from_label", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_offset_from_label", "callout_data_defined_offset_from_label", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorTopRight()
@@ -1059,14 +1057,14 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_top_right", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_top_right", "callout_label_anchor_top_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1075,8 +1073,7 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_top_right_rotated", img, 20 ) );
-
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_top_right_rotated", "callout_label_anchor_top_right_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorTopLeft()
@@ -1128,14 +1125,14 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_top_left", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_top_left", "callout_label_anchor_top_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1144,7 +1141,7 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_top_left_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_top_left_rotated", "callout_label_anchor_top_left_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorTop()
@@ -1196,14 +1193,14 @@ void TestQgsCallout::calloutLabelAnchorTop()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_top_middle", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_top_middle", "callout_label_anchor_top_middle", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1212,7 +1209,7 @@ void TestQgsCallout::calloutLabelAnchorTop()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_top_middle_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_top_middle_rotated", "callout_label_anchor_top_middle_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorBottomLeft()
@@ -1264,14 +1261,14 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_bottom_left", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_bottom_left", "callout_label_anchor_bottom_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1280,7 +1277,7 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_bottom_left_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_bottom_left_rotated", "callout_label_anchor_bottom_left_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorBottom()
@@ -1332,14 +1329,14 @@ void TestQgsCallout::calloutLabelAnchorBottom()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_bottom_middle", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_bottom_middle", "callout_label_anchor_bottom_middle", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1348,7 +1345,7 @@ void TestQgsCallout::calloutLabelAnchorBottom()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_bottom_middle_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_bottom_middle_rotated", "callout_label_anchor_bottom_middle_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorBottomRight()
@@ -1400,14 +1397,14 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_bottom_right", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_bottom_right", "callout_label_anchor_bottom_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1416,7 +1413,7 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_bottom_right_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_bottom_right_rotated", "callout_label_anchor_bottom_right_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorLeft()
@@ -1468,14 +1465,14 @@ void TestQgsCallout::calloutLabelAnchorLeft()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_left", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_left", "callout_label_anchor_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1484,7 +1481,7 @@ void TestQgsCallout::calloutLabelAnchorLeft()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_left_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_left_rotated", "callout_label_anchor_left_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorRight()
@@ -1536,14 +1533,14 @@ void TestQgsCallout::calloutLabelAnchorRight()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_right", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_right", "callout_label_anchor_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1552,7 +1549,7 @@ void TestQgsCallout::calloutLabelAnchorRight()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_right_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_right_rotated", "callout_label_anchor_right_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelAnchorCentroid()
@@ -1604,14 +1601,14 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_anchor_centroid", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_centroid", "callout_label_anchor_centroid", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   img = job.renderedImage();
   p.begin( &img );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1620,7 +1617,7 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine2.run( context );
   p.end();
-  QVERIFY( imageCheck( "callout_label_anchor_centroid_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_anchor_centroid_rotated", "callout_label_anchor_centroid_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutLabelDataDefinedAnchor()
@@ -1659,7 +1656,7 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
   callout->setLabelAnchorPoint( QgsCallout::LabelCentroid );
-  callout->dataDefinedProperties().setProperty( QgsCallout::LabelAnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'TL'" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::LabelAnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'TL'" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -1673,7 +1670,7 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_label_datadefined_anchor", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_label_datadefined_anchor", "callout_label_datadefined_anchor", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutBehindLabel()
@@ -1700,9 +1697,9 @@ void TestQgsCallout::calloutBehindLabel()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1729,7 +1726,7 @@ void TestQgsCallout::calloutBehindLabel()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_behind_labels", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_behind_labels", "callout_behind_labels", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutBehindIndividualLabels()
@@ -1756,9 +1753,9 @@ void TestQgsCallout::calloutBehindIndividualLabels()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1785,7 +1782,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_behind_individual_labels", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_behind_individual_labels", "callout_behind_individual_labels", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutNoDrawToAllParts()
@@ -1827,8 +1824,8 @@ void TestQgsCallout::calloutNoDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1853,7 +1850,7 @@ void TestQgsCallout::calloutNoDrawToAllParts()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_no_draw_to_all_parts_simple", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_no_draw_to_all_parts_simple", "callout_no_draw_to_all_parts_simple", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDrawToAllParts()
@@ -1895,8 +1892,8 @@ void TestQgsCallout::calloutDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1922,7 +1919,7 @@ void TestQgsCallout::calloutDrawToAllParts()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_draw_to_all_parts_simple", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_draw_to_all_parts_simple", "callout_draw_to_all_parts_simple", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedDrawToAllParts()
@@ -1964,8 +1961,8 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1977,7 +1974,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -1991,7 +1988,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_draw_to_all_parts_simple", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_draw_to_all_parts_simple", "callout_data_defined_draw_to_all_parts_simple", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutPointOnExterior()
@@ -2027,8 +2024,8 @@ void TestQgsCallout::calloutPointOnExterior()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2054,7 +2051,7 @@ void TestQgsCallout::calloutPointOnExterior()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_point_on_exterior", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_point_on_exterior", "callout_point_on_exterior", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedAnchorPoint()
@@ -2090,8 +2087,8 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2103,7 +2100,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::AnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::AnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2117,7 +2114,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_anchor_point", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_anchor_point", "callout_data_defined_anchor_point", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedDestination()
@@ -2154,8 +2151,8 @@ void TestQgsCallout::calloutDataDefinedDestination()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2167,8 +2164,8 @@ void TestQgsCallout::calloutDataDefinedDestination()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2182,7 +2179,7 @@ void TestQgsCallout::calloutDataDefinedDestination()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_destination", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_destination", "callout_data_defined_destination", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::calloutDataDefinedOrigin()
@@ -2219,8 +2216,8 @@ void TestQgsCallout::calloutDataDefinedOrigin()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2232,8 +2229,8 @@ void TestQgsCallout::calloutDataDefinedOrigin()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2247,7 +2244,7 @@ void TestQgsCallout::calloutDataDefinedOrigin()
 
   p.end();
 
-  QVERIFY( imageCheck( "callout_data_defined_origin", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "callout_data_defined_origin", "callout_data_defined_origin", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattan()
@@ -2299,7 +2296,7 @@ void TestQgsCallout::manhattan()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_callout", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_callout", "manhattan_callout", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattanRotated()
@@ -2352,7 +2349,7 @@ void TestQgsCallout::manhattanRotated()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_callout_rotated", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_callout_rotated", "manhattan_callout_rotated", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattanNoDrawToAllParts()
@@ -2394,8 +2391,8 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2420,7 +2417,7 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_no_draw_to_all_parts_simple", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_no_draw_to_all_parts_simple", "manhattan_no_draw_to_all_parts_simple", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattanDrawToAllParts()
@@ -2462,8 +2459,8 @@ void TestQgsCallout::manhattanDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2489,7 +2486,7 @@ void TestQgsCallout::manhattanDrawToAllParts()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_draw_to_all_parts_simple", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_draw_to_all_parts_simple", "manhattan_draw_to_all_parts_simple", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
@@ -2531,8 +2528,8 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2544,7 +2541,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2558,7 +2555,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_data_defined_draw_to_all_parts_simple", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_data_defined_draw_to_all_parts_simple", "manhattan_data_defined_draw_to_all_parts_simple", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattanDataDefinedDestination()
@@ -2595,8 +2592,8 @@ void TestQgsCallout::manhattanDataDefinedDestination()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2608,8 +2605,8 @@ void TestQgsCallout::manhattanDataDefinedDestination()
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2623,7 +2620,7 @@ void TestQgsCallout::manhattanDataDefinedDestination()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_data_defined_destination", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_data_defined_destination", "manhattan_data_defined_destination", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::manhattanDataDefinedOrigin()
@@ -2660,8 +2657,8 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2673,8 +2670,8 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2688,7 +2685,7 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
 
   p.end();
 
-  QVERIFY( imageCheck( "manhattan_data_defined_origin", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "manhattan_data_defined_origin", "manhattan_data_defined_origin", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
@@ -2761,8 +2758,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2788,7 +2785,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_bottom_left", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_bottom_left", "curved_auto_leaving_labels_at_bottom_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
@@ -2861,8 +2858,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2888,7 +2885,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_bottom_right", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_bottom_right", "curved_auto_leaving_labels_at_bottom_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
@@ -2961,8 +2958,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2988,7 +2985,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_top_left", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_top_left", "curved_auto_leaving_labels_at_top_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
@@ -3061,8 +3058,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3088,7 +3085,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_top_right", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_top_right", "curved_auto_leaving_labels_at_top_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
@@ -3161,8 +3158,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3188,7 +3185,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_top", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_top", "curved_auto_leaving_labels_at_top", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
@@ -3261,8 +3258,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3288,7 +3285,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_bottom", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_bottom", "curved_auto_leaving_labels_at_bottom", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
@@ -3361,8 +3358,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3388,7 +3385,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_left", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_left", "curved_auto_leaving_labels_at_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
@@ -3461,8 +3458,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3488,7 +3485,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_leaving_labels_at_right", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_leaving_labels_at_right", "curved_auto_leaving_labels_at_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoHorizontalLines()
@@ -3531,8 +3528,8 @@ void TestQgsCallout::curvedAutoHorizontalLines()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3557,7 +3554,7 @@ void TestQgsCallout::curvedAutoHorizontalLines()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_horizontal_lines", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_horizontal_lines", "curved_auto_horizontal_lines", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedAutoVerticalLines()
@@ -3600,8 +3597,8 @@ void TestQgsCallout::curvedAutoVerticalLines()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3626,7 +3623,7 @@ void TestQgsCallout::curvedAutoVerticalLines()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_auto_vertical_lines", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_auto_vertical_lines", "curved_auto_vertical_lines", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedClockwise()
@@ -3699,8 +3696,8 @@ void TestQgsCallout::curvedClockwise()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3726,7 +3723,7 @@ void TestQgsCallout::curvedClockwise()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_clockwise", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_clockwise", "curved_clockwise", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedCounterClockwise()
@@ -3799,8 +3796,8 @@ void TestQgsCallout::curvedCounterClockwise()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3826,7 +3823,7 @@ void TestQgsCallout::curvedCounterClockwise()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_counterclockwise", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_counterclockwise", "curved_counterclockwise", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::curvedCurvature()
@@ -3899,8 +3896,8 @@ void TestQgsCallout::curvedCurvature()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3927,7 +3924,7 @@ void TestQgsCallout::curvedCurvature()
 
   p.end();
 
-  QVERIFY( imageCheck( "curved_curvature", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_curvature", "curved_curvature", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::balloonCallout()
@@ -3981,7 +3978,7 @@ void TestQgsCallout::balloonCallout()
 
   p.end();
 
-  QVERIFY( imageCheck( "balloon_callout_render", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "balloon_callout_render", "balloon_callout_render", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::balloonCalloutMargin()
@@ -4036,7 +4033,7 @@ void TestQgsCallout::balloonCalloutMargin()
 
   p.end();
 
-  QVERIFY( imageCheck( "balloon_callout_margin", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "balloon_callout_margin", "balloon_callout_margin", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::balloonCalloutWedgeWidth()
@@ -4091,7 +4088,7 @@ void TestQgsCallout::balloonCalloutWedgeWidth()
 
   p.end();
 
-  QVERIFY( imageCheck( "balloon_callout_wedge_width", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "balloon_callout_wedge_width", "balloon_callout_wedge_width", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::balloonCalloutCornerRadius()
@@ -4146,7 +4143,7 @@ void TestQgsCallout::balloonCalloutCornerRadius()
 
   p.end();
 
-  QVERIFY( imageCheck( "balloon_callout_corner_radius", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "balloon_callout_corner_radius", "balloon_callout_corner_radius", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsCallout::blendMode()
@@ -4161,34 +4158,8 @@ void TestQgsCallout::blendMode()
   callout->setBlendMode( QPainter::CompositionMode_SourceOver );
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
-  callout->dataDefinedProperties().setProperty( QgsCallout::BlendMode, QStringLiteral( "multiply" ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::BlendMode, QStringLiteral( "multiply" ) );
   QCOMPARE( callout->containsAdvancedEffects(), true );
-}
-
-//
-// Private helper functions not called directly by CTest
-//
-
-bool TestQgsCallout::imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount )
-{
-  //draw background
-  QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
-  QgsRenderChecker::drawBackground( &imageWithBackground );
-  QPainter painter( &imageWithBackground );
-  painter.drawImage( 0, 0, image );
-  painter.end();
-
-  const QString tempDir = QDir::tempPath() + '/';
-  const QString fileName = tempDir + testName + ".png";
-  imageWithBackground.save( fileName, "PNG" );
-  QgsMultiRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "callouts" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( fileName );
-  checker.setColorTolerance( 2 );
-  const bool resultFlag = checker.runTest( testName, mismatchCount );
-  mReport += checker.report();
-  return resultFlag;
 }
 
 
