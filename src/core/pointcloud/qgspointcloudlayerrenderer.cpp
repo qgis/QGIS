@@ -388,6 +388,9 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
 
 int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return 0;
+
   QPainter *finalPainter = context.renderContext().painter();
   if ( mRenderer->renderAsTriangles() && context.renderContext().previewRenderPainter() )
   {
@@ -397,9 +400,6 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   }
 
   int nodesDrawn = 0;
-
-  if ( context.feedback() && context.feedback()->isCanceled() )
-    return 0;
 
   // Async loading of nodes
   QVector<QgsPointCloudBlockRequest *> blockRequests;
