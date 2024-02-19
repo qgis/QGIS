@@ -777,11 +777,6 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             widget = self.tblParameters.cellWidget(row + 1, col)
             text = widget.getValue()
             if not warnOnInvalid or out.checkValueIsAcceptable(text):
-                ok, error = out.isSupportedOutputValue(text, createContext())
-                if not ok:
-                    self.parent.messageBar().pushMessage("", error, level=Qgis.MessageLevel.Warning, duration=5)
-                    return {}, False
-
                 if isinstance(out, (QgsProcessingParameterRasterDestination,
                                     QgsProcessingParameterVectorDestination,
                                     QgsProcessingParameterFeatureSink)):
