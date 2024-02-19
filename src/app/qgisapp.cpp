@@ -5701,7 +5701,8 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
 QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return QgsAppLayerHandling::addMeshLayer( url, baseName, providerKey );
+  const QList<QgsMeshLayer *> layers { QgsAppLayerHandling::addMeshLayer( url, baseName, providerKey ) };
+  return layers.isEmpty() ? nullptr : layers.first();
 }
 
 template<typename L>
@@ -13127,7 +13128,8 @@ void QgisApp::show3DMapViewsManager()
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
-  return QgsAppLayerHandling::addVectorLayer( vectorLayerPath, name, providerKey );
+  const QList<QgsVectorLayer *> layers { QgsAppLayerHandling::addVectorLayer( vectorLayerPath, name, providerKey ) };
+  return layers.isEmpty() ? nullptr : layers.first();
 }
 
 void QgisApp::embedLayers()
@@ -15913,7 +15915,8 @@ void QgisApp::renameView()
 
 QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey )
 {
-  return QgsAppLayerHandling::addRasterLayer( uri, baseName, providerKey );
+  const QList<QgsRasterLayer *> layers { QgsAppLayerHandling::addRasterLayer( uri, baseName, providerKey ) };
+  return layers.isEmpty() ? nullptr : layers.first();
 }
 
 #ifdef ANDROID
