@@ -109,6 +109,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     QgsRectangle mExtent;
     int mDpi;
     QSize mSize;
+    double mDevicePixelRatio;
 
     QString mInfoDetails;
 
