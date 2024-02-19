@@ -146,25 +146,24 @@ int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) co
 
 Qt::ItemFlags QgsVectorLayerAndAttributeModel::flags( const QModelIndex &index ) const
 {
+  QgsVectorLayer *vl = vectorLayer( index );
   if ( index.column() == 0 )
   {
     return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
   }
+  else if ( index.column() == 1 )
+  {
+    return vl ? Qt::ItemIsEnabled | Qt::ItemIsEditable : Qt::ItemIsEnabled;
+  }
   else if ( index.column() == 2 )
   {
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    return ( vl && vl->geometryType() == Qgis::GeometryType::Point ) ? Qt::ItemIsEnabled | Qt::ItemIsUserCheckable : Qt::ItemIsEnabled ;
   }
   else if ( index.column() == 3 )
   {
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return vl && vl->geometryType() == Qgis::GeometryType::Point ? Qt::ItemIsEnabled | Qt::ItemIsEditable : Qt::ItemIsEnabled;
   }
-
-
-  QgsVectorLayer *vl = vectorLayer( index );
-  if ( !vl )
-    return Qt::ItemIsEnabled;
-  else
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  return Qt::ItemIsEnabled;
 }
 
 QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex &idx ) const
@@ -265,6 +264,11 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
   }
   else if ( idx.column() == 2 )
   {
+    if ( !vl || vl->geometryType() != Qgis::GeometryType::Point )
+    {
+      return QVariant();
+    }
+
     bool checked = mCreateDDBlockInfo.contains( vl ) ? mCreateDDBlockInfo[vl] : false;
     if ( role == Qt::CheckStateRole )
     {
@@ -277,6 +281,11 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
   }
   else if ( idx.column() == 3 )
   {
+    if ( !vl || vl->geometryType() != Qgis::GeometryType::Point )
+    {
+      return QVariant();
+    }
+
     if ( role == Qt::DisplayRole )
     {
       if ( !mDDBlocksMaxNumberOfClasses.contains( vl ) )
