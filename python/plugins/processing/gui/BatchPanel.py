@@ -776,21 +776,29 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             count_visible_outputs += 1
             widget = self.tblParameters.cellWidget(row + 1, col)
             text = widget.getValue()
-            if not warnOnInvalid or out.checkValueIsAcceptable(text):
-                ok, error = out.isSupportedOutputValue(text, createContext())
-                if not ok:
-                    self.parent.messageBar().pushMessage("", error, level=Qgis.MessageLevel.Warning, duration=5)
+            if warnOnInvalid:
+                if not out.checkValueIsAcceptable(text):
+                    msg = self.tr(
+                        'Wrong or missing output value: {0} (row {1})').format(
+                        out.description(), row + 2)
+                    self.parent.messageBar().pushMessage("", msg,
+                                                         level=Qgis.MessageLevel.Warning,
+                                                         duration=5)
                     return {}, False
 
-                if isinstance(out, (QgsProcessingParameterRasterDestination,
-                                    QgsProcessingParameterVectorDestination,
-                                    QgsProcessingParameterFeatureSink)):
-                    # load rasters and sinks on completion
-                    parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, destinationProject)
-                else:
-                    parameters[out.name()] = text
+                ok, error = out.isSupportedOutputValue(text, createContext())
+                if not ok:
+                    self.parent.messageBar().pushMessage("", error,
+                                                         level=Qgis.MessageLevel.Warning,
+                                                         duration=5)
+                    return {}, False
+
+            if isinstance(out, (QgsProcessingParameterRasterDestination,
+                                QgsProcessingParameterVectorDestination,
+                                QgsProcessingParameterFeatureSink)):
+                # load rasters and sinks on completion
+                parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, destinationProject)
             else:
-                msg = self.tr('Wrong or missing output value: {0} (row {1})').format(out.description(), row + 2)
-                self.parent.messageBar().pushMessage("", msg, level=Qgis.MessageLevel.Warning, duration=5)
-                return {}, False
+                parameters[out.name()] = text
+
         return parameters, True
