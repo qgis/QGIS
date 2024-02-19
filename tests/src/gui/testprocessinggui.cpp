@@ -524,6 +524,21 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
 
+  // creating wrapper using metadata
+  TestParamType customParam( QStringLiteral( "custom" ), QStringLiteral( "custom" ) );
+  wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
+  QVERIFY( !wrapper );
+  customParam.setMetadata( {{
+      QStringLiteral( "widget_wrapper" ), QVariantMap(
+      {{QStringLiteral( "widget_type" ), QStringLiteral( "str" ) }}
+      )
+    }
+  } );
+  wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
+  QVERIFY( wrapper );
+  QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "custom" ) );
+  delete wrapper;
+
   // removing
   registry.removeParameterWidgetFactory( nullptr );
   TestWidgetFactory *factory4 = new TestWidgetFactory( QStringLiteral( "xxxx" ) );

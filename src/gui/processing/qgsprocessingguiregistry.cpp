@@ -154,7 +154,9 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createPar
   if ( !parameter )
     return nullptr;
 
-  const QString parameterType = parameter->type();
+  const QVariantMap metadata = parameter->metadata();
+  const QString widgetType = metadata.value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "widget_type" ) ).toString();
+  const QString parameterType = !widgetType.isEmpty() ? widgetType : parameter->type();
   if ( !mParameterWidgetFactories.contains( parameterType ) )
     return nullptr;
 
