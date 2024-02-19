@@ -1464,6 +1464,8 @@ QList<T *>QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QStr
   }
   else
   {
+    // Handle single layers (no sublayers available for this provider): result will
+    // contain at most one single layer
     QgsMapLayerFactory::LayerOptions options( QgsProject::instance()->transformContext() );
     options.loadDefaultStyle = false;
     result.push_back( qobject_cast< T * >( QgsMapLayerFactory::createLayer( uri, name, type, options, providerKey ) ) );
