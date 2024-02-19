@@ -51,7 +51,7 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
     txtName->setText( connectionName );
     txtUrl->setText( QgsArcGisConnectionSettings::settingsUrl->value( connectionName ) );
     mHttpHeaders->setHeaders( QgsHttpHeaders( QgsArcGisConnectionSettings::settingsHeaders->value( connectionName ) ) );
-
+    mUrlPrefix->setText( QgsArcGisConnectionSettings::settingsUrlPrefix->value( connectionName ) );
 
     // portal
     mContentEndPointLineEdit->setText( QgsArcGisConnectionSettings::settingsContentEndpoint->value( connectionName ) );
@@ -179,6 +179,7 @@ void QgsNewArcGisRestConnectionDialog::accept()
   QgsArcGisConnectionSettings::settingsAuthcfg->setValue( mAuthSettings->configId(), newName );
 
   QgsArcGisConnectionSettings::settingsHeaders->setValue( mHttpHeaders->httpHeaders().headers(), newName );
+  QgsArcGisConnectionSettings::settingsUrlPrefix->setValue( mUrlPrefix->text(), newName );
 
   QgsArcGisConnectionSettings::sTreeConnectionArcgis->setSelectedItem( newName );
 
