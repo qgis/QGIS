@@ -77,7 +77,7 @@ class DatabaseInfo:
 
     def toHtml(self):
         if self.db is None:
-            return HtmlSection(QApplication.translate("DBManagerPlugin", 'Not connected')).toHtml()
+            return HtmlSection(QApplication.translate("DBManagerPlugin", '<warning> Not connected')).toHtml()
 
         ret = []
 

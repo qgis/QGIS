@@ -24,6 +24,7 @@ from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError, DbError, DBPlugin, Schema, Table
 from .dlg_db_error import DlgDbError
+from .gui_utils import GuiUtils
 
 
 class InfoViewer(QTextBrowser):
@@ -135,8 +136,9 @@ class InfoViewer(QTextBrowser):
         return True
 
     def setHtml(self, html):
-        # convert special tags :)
-        html = str(html).replace('<warning>', '<img src=":/db_manager/warning">&nbsp;&nbsp; ')
+        # convert special tags
+        warning_icon_path = GuiUtils.get_pixmap_path('warning-20px')
+        html = str(html).replace('<warning>', f'<img src="{warning_icon_path}">&nbsp;&nbsp; ')
 
         # add default style
         html = """
