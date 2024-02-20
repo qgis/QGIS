@@ -51,30 +51,6 @@ std::unique_ptr<QgsPointCloudIndex> QgsRemoteCopcPointCloudIndex::clone() const
   return std::unique_ptr<QgsPointCloudIndex>( clone );
 }
 
-QList<IndexedPointCloudNode> QgsRemoteCopcPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
-{
-  fetchNodeHierarchy( n );
-
-  mHierarchyMutex.lock();
-  Q_ASSERT( mHierarchy.contains( n ) );
-  QList<IndexedPointCloudNode> lst;
-  lst.reserve( 8 );
-  const int d = n.d() + 1;
-  const int x = n.x() * 2;
-  const int y = n.y() * 2;
-  const int z = n.z() * 2;
-  mHierarchyMutex.unlock();
-
-  for ( int i = 0; i < 8; ++i )
-  {
-    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
-    if ( fetchNodeHierarchy( n2 ) && mHierarchy[n] >= 0 )
-      lst.append( n2 );
-  }
-  return lst;
-}
-
 void QgsRemoteCopcPointCloudIndex::load( const QString &url )
 {
   mUrl = QUrl( url );
@@ -134,40 +110,6 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
          blockOffset, blockSize, pointCount, *mLazInfo.get() );
 }
 
-bool QgsRemoteCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
-{
-  return fetchNodeHierarchy( n );
-}
-
-bool QgsRemoteCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n ) const
-{
-  QMutexLocker locker( &mHierarchyMutex );
-
-  QVector<IndexedPointCloudNode> ancestors;
-  IndexedPointCloudNode foundRoot = n;
-  while ( !mHierarchy.contains( foundRoot ) )
-  {
-    ancestors.push_front( foundRoot );
-    foundRoot = foundRoot.parentNode();
-  }
-  ancestors.push_front( foundRoot );
-  for ( IndexedPointCloudNode n : ancestors )
-  {
-    auto hierarchyIt = mHierarchy.constFind( n );
-    if ( hierarchyIt == mHierarchy.constEnd() )
-      return false;
-
-    int nodesCount = *hierarchyIt;
-    if ( nodesCount < 0 )
-    {
-      auto hierarchyNodePos = mHierarchyNodePos.constFind( n );
-      locker.unlock();
-      fetchHierarchyPage( hierarchyNodePos->first, hierarchyNodePos->second );
-    }
-  }
-  return mHierarchy.contains( n );
-}
-
 bool QgsRemoteCopcPointCloudIndex::isValid() const
 {
   return mIsValid;
@@ -198,31 +140,7 @@ void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t
 
   QByteArray data = reply->data();
 
-  struct CopcVoxelKey
-  {
-    int32_t level;
-    int32_t x;
-    int32_t y;
-    int32_t z;
-  };
-
-  struct CopcEntry
-  {
-    CopcVoxelKey key;
-    uint64_t offset;
-    int32_t byteSize;
-    int32_t pointCount;
-  };
-
-  QMutexLocker locker( &mHierarchyMutex );
-
-  for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
-  {
-    CopcEntry *entry = reinterpret_cast<CopcEntry *>( data.data() + i );
-    const IndexedPointCloudNode nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
-    mHierarchy[nodeId] = entry->pointCount;
-    mHierarchyNodePos.insert( nodeId, QPair<uint64_t, int32_t>( entry->offset, entry->byteSize ) );
-  }
+  populateHierarchy( data.constData(), byteSize );
 }
 
 void QgsRemoteCopcPointCloudIndex::copyCommonProperties( QgsRemoteCopcPointCloudIndex *destination ) const
