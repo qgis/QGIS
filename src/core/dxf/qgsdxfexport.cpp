@@ -2603,12 +2603,11 @@ void QgsDxfExport::createDDBlockInfo()
       {
 
         const QgsSymbolLayer *sl =  symbol->symbolLayer( i );
-        QgsPropertyCollection properties = sl->dataDefinedProperties();
-
         if ( !sl )
         {
           continue;
         }
+        QgsPropertyCollection properties = sl->dataDefinedProperties();
 
         if ( !hasBlockBreakingDataDefinedProperties( sl, symbol ) || !createDDBlocks )
         {
@@ -2625,7 +2624,7 @@ void QgsDxfExport::createDDBlockInfo()
         request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
         QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
-        QHash <uint, QPair<int, DataDefinedBlockInfo> > blockSymbolMap; //symbolHash/occurences/block Text
+        QHash <uint, QPair<int, DataDefinedBlockInfo> > blockSymbolMap; //symbolHash/occurrences/block Text
 
         QgsFeature fet;
         while ( featureIt.nextFeature( fet ) )
