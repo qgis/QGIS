@@ -31,6 +31,8 @@ class TestQgsWeakRelation: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
+    void testSetters();
+
     void testResolved(); // Test if relation can be resolved
     void testResolvedManyToMany();
     void testReadWrite(); // Test if relation can be read and write
@@ -63,6 +65,28 @@ void TestQgsWeakRelation::init()
 void TestQgsWeakRelation::cleanup()
 {
   QLocale::setDefault( QLocale::English );
+}
+
+void TestQgsWeakRelation::testSetters()
+{
+  QgsWeakRelation weakRel;
+  QCOMPARE( weakRel.referencedLayerSource(), QString() );
+  QCOMPARE( weakRel.referencedLayerProvider(), QString() );
+  weakRel.setReferencedLayer( QStringLiteral( "referenced_source" ), QStringLiteral( "referenced_provider" ) );
+  QCOMPARE( weakRel.referencedLayerSource(), QStringLiteral( "referenced_source" ) );
+  QCOMPARE( weakRel.referencedLayerProvider(), QStringLiteral( "referenced_provider" ) );
+
+  QCOMPARE( weakRel.referencingLayerSource(), QString() );
+  QCOMPARE( weakRel.referencingLayerProvider(), QString() );
+  weakRel.setReferencingLayer( QStringLiteral( "referencing_source" ), QStringLiteral( "referencing_provider" ) );
+  QCOMPARE( weakRel.referencingLayerSource(), QStringLiteral( "referencing_source" ) );
+  QCOMPARE( weakRel.referencingLayerProvider(), QStringLiteral( "referencing_provider" ) );
+
+  QCOMPARE( weakRel.mappingTableSource(), QString() );
+  QCOMPARE( weakRel.mappingTableProvider(), QString() );
+  weakRel.setMappingTable( QStringLiteral( "mapping_source" ), QStringLiteral( "mapping_provider" ) );
+  QCOMPARE( weakRel.mappingTableSource(), QStringLiteral( "mapping_source" ) );
+  QCOMPARE( weakRel.mappingTableProvider(), QStringLiteral( "mapping_provider" ) );
 }
 
 void TestQgsWeakRelation::testResolved()

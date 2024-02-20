@@ -92,12 +92,20 @@ Returns the relationship's name.
 %Docstring
 Returns the source URI for the referencing (or "child" / "right") layer.
 
+.. seealso:: :py:func:`referencingLayerProvider`
+
+.. seealso:: :py:func:`setReferencingLayer`
+
 .. versionadded:: 3.28
 %End
 
     QString referencingLayerProvider() const;
 %Docstring
 Returns the provider ID for the referencing (or "child" / "right") layer.
+
+.. seealso:: :py:func:`referencingLayerSource`
+
+.. seealso:: :py:func:`setReferencingLayer`
 
 .. versionadded:: 3.28
 %End
@@ -114,10 +122,25 @@ Returns the layer name of the referencing (or "child" / "right") layer.
 .. versionadded:: 3.28
 %End
 
+    void setReferencingLayer( const QString &sourceUri, const QString &provider );
+%Docstring
+Sets the source for the referencing (or "child" / "right") layer, by ``sourceUri`` and ``provider`` ID.
+
+.. seealso:: :py:func:`referencingLayerSource`
+
+.. seealso:: :py:func:`referencingLayerProvider`
+
+.. versionadded:: 3.36
+%End
+
 
     QString referencedLayerSource() const;
 %Docstring
 Returns the source URI for the referenced (or "parent" / "left") layer.
+
+.. seealso:: :py:func:`referencedLayerProvider`
+
+.. seealso:: :py:func:`setReferencedLayer`
 
 .. versionadded:: 3.28
 %End
@@ -125,6 +148,10 @@ Returns the source URI for the referenced (or "parent" / "left") layer.
     QString referencedLayerProvider() const;
 %Docstring
 Returns the provider ID for the referenced (or "parent" / "left") layer.
+
+.. seealso:: :py:func:`referencedLayerSource`
+
+.. seealso:: :py:func:`setReferencedLayer`
 
 .. versionadded:: 3.28
 %End
@@ -141,11 +168,26 @@ Returns the layer name of the referenced (or "parent" / "left") layer.
 .. versionadded:: 3.28
 %End
 
+    void setReferencedLayer( const QString &sourceUri, const QString &provider );
+%Docstring
+Sets the source for the referenced (or "parent" / "left") layer, by ``sourceUri`` and ``provider`` ID.
+
+.. seealso:: :py:func:`referencedLayerSource`
+
+.. seealso:: :py:func:`referencedLayerProvider`
+
+.. versionadded:: 3.36
+%End
+
 
 
     QString mappingTableSource() const;
 %Docstring
 Returns the source URI for the mapping table, which forms the middle table in many-to-many relationships.
+
+.. seealso:: :py:func:`mappingTableProvider`
+
+.. seealso:: :py:func:`setMappingTable`
 
 .. versionadded:: 3.28
 %End
@@ -153,6 +195,10 @@ Returns the source URI for the mapping table, which forms the middle table in ma
     QString mappingTableProvider() const;
 %Docstring
 Returns the provider ID for the mapping table, which forms the middle table in many-to-many relationships.
+
+.. seealso:: :py:func:`mappingTableSource`
+
+.. seealso:: :py:func:`setMappingTable`
 
 .. versionadded:: 3.28
 %End
@@ -167,6 +213,17 @@ Returns the layer name of the mapping table, which forms the middle table in man
    :py:class:`QgsVectorLayer`.
 
 .. versionadded:: 3.28
+%End
+
+    void setMappingTable( const QString &sourceUri, const QString &provider );
+%Docstring
+Sets the source for the mapping table, which forms the middle table in many-to-many relationships, by ``sourceUri`` and ``provider`` ID.
+
+.. seealso:: :py:func:`mappingTableSource`
+
+.. seealso:: :py:func:`mappingTableProvider`
+
+.. versionadded:: 3.36
 %End
 
     QStringList referencingLayerFields() const;
