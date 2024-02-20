@@ -758,7 +758,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                          row: int,
                          context: QgsProcessingContext,
                          destinationProject: Optional[QgsProject] = None,
-                         warnOnInvalid=True):
+                         warnOnInvalid: bool = True):
         """
         Returns the parameters dictionary corresponding to a row in the batch table
         """
