@@ -996,7 +996,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     QgsOwsConnection::settingsVersion->setValue( child.attribute( QStringLiteral( "version" ) ), {QStringLiteral( "wfs" ), connectionName} );
     QgsOwsConnection::settingsMaxNumFeatures->setValue( child.attribute( QStringLiteral( "maxnumfeatures" ) ), {QStringLiteral( "wfs" ), connectionName} );
     QgsOwsConnection::settingsPagesize->setValue( child.attribute( QStringLiteral( "pagesize" ) ), {QStringLiteral( "wfs" ), connectionName} );
-    QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( QStringLiteral( "pagingenabled" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( QStringLiteral( "pagingenabled" ) ), {QStringLiteral( "wfs" ), connectionName} );
     QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
 

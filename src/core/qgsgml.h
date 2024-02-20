@@ -32,6 +32,10 @@
 
 #include <string>
 
+#ifndef SIP_RUN
+#include "json.hpp"
+#endif
+
 class QgsCoordinateReferenceSystem;
 class QTextCodec;
 
@@ -90,7 +94,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Constructor for a join layer, or dealing with renamed fields
     QgsGmlStreamingParser( const QList<LayerProperties> &layerProperties,
                            const QgsFields &fields,
-                           const QMap< QString, QPair<QString, QString> > &mapFieldNameToSrcLayerNameFieldName,
+                           const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
@@ -99,6 +103,15 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsGmlStreamingParser( const QgsGmlStreamingParser &other ) = delete;
     //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
+
+    /**
+     * Define the XPath of the attributes and whether they are made of nested
+     * content. Also provides a map from namespace prefix to namespace URI,
+     * to help decoding the XPath.
+     */
+    void setFieldsXPath(
+      const QMap<QString, QPair<QString, bool>> &fieldNameToSrcLayerNameFieldNameMap,
+      const QMap<QString, QString> &namespacePrefixToURIMap );
 
     /**
      * Process a new chunk of data. atEnd must be set to TRUE when this is
@@ -188,6 +201,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     {
       static_cast<QgsGmlStreamingParser *>( data )->characters( chars, len );
     }
+
+    // Add mStringCash to the current json object
+    void addStringContentToJson();
 
     // Set current feature attribute
     void setAttribute( const QString &name, const QString &value );
@@ -284,6 +300,8 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     QgsFields mFields;
     QMap<QString, QPair<int, QgsField> > mThematicAttributes;
+    QMap<QString, QPair<QString, bool>> mMapXPathToFieldNameAndIsNestedContent;
+    QMap<QString, QString> mMapNamespaceURIToNamespacePrefix;
 
     bool mIsException;
     QString mExceptionText;
@@ -294,6 +312,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mCurrentTypename; //!< Used to track the current (unprefixed) typename for wfs:Member in join layer
     //! Keep track about the most important nested elements
     QStack<ParseMode> mParseModeStack;
+    QString mCurrentXPathWithinFeature;
     //! This contains the character data if an important element has been encountered
     QString mStringCash;
     QgsFeature *mCurrentFeature = nullptr;
@@ -313,6 +332,12 @@ class CORE_EXPORT QgsGmlStreamingParser
     */
     QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
     QString mAttributeName;
+    int mAttributeDepth = -1;
+    bool mAttributeValIsNested = false;
+    //! Map from field name to JSON content.
+    QMap< QString, QString > mMapFieldNameToJSONContent;
+    nlohmann::json mAttributeJson;
+    QStack<nlohmann::json *> mAttributeJsonCurrentStack;
     char mEndian;
     //! Coordinate separator for coordinate strings. Usually ","
     QString mCoordinateSeparator;

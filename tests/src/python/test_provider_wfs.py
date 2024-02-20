@@ -51,10 +51,17 @@ from qgis.PyQt.QtCore import (
     QObject,
     Qt,
     QTime,
+    QVariant,
 )
+
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from utilities import compareWkt, unitTestDataPath
+
+from osgeo import gdal
+
+# Default value is 2 second, which is too short when run under Valgrind
+gdal.SetConfigOption('OGR_GMLAS_XERCES_MAX_TIME', '20')
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -6426,6 +6433,53 @@ Can't recognize service requested.
         self.assertEqual(sublayers[2].featureCount(), -1)
         self.assertEqual(sublayers[3].featureCount(), -1)
         self.assertEqual(sublayers[4].featureCount(), -1)
+
+    @unittest.skipIf(gdal.GetDriverByName("GMLAS") is None, "OGR GMLAS driver required")
+    def testWFSComplexFeatures(self):
+        """Test reading complex features"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_complex_features'
+
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'getcapabilities.xml'), sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities&VERSION=2.0.0'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'describefeaturetype.xml'), sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=ps:ProtectedSite&TYPENAME=ps:ProtectedSite'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'getfeature_hits.xml'), sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ps:ProtectedSite&RESULTTYPE=hits'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'getfeature.xml'), sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ps:ProtectedSite&SRSNAME=urn:ogc:def:crs:EPSG::25833'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='ps:ProtectedSite' version='2.0.0' skipInitialGetFeature='true'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1228)
+        self.assertEqual(len(vl.fields()), 26)
+        self.assertEqual([field.name() for field in vl.fields()], ['id', 'metadataproperty', 'description_href', 'description_title', 'description_nilreason', 'description', 'descriptionreference_href', 'descriptionreference_title', 'descriptionreference_nilreason', 'identifier_codespace', 'identifier', 'name', 'location_location', 'inspireid_identifier_localid', 'inspireid_identifier_namespace', 'inspireid_identifier_versionid_nilreason', 'inspireid_identifier_versionid_nil', 'inspireid_identifier_versionid', 'legalfoundationdate_nilreason', 'legalfoundationdate', 'legalfoundationdocument_nilreason', 'legalfoundationdocument_owns', 'legalfoundationdocument_ci_citation', 'sitedesignation', 'sitename', 'siteprotectionclassification'])
+        self.assertEqual(vl.fields()["sitedesignation"].type(), QVariant.String)
+
+        got_f = [f for f in vl.getFeatures()]
+        self.assertEqual(len(got_f), 1)
+        geom = got_f[0].geometry()
+        self.assertFalse(geom.isNull())
+        self.assertEqual(got_f[0]["id"], 'ProtectedSite_FFH_553_DE4546-303')
+        self.assertEqual(got_f[0]["sitedesignation"], '{"ps:DesignationType":{"ps:designation":{"@xlink:href":"http://inspire.ec.europa.eu/codelist/Natura2000DesignationValue/specialAreaOfConservation"},"ps:designationScheme":{"@xlink:href":"http://inspire.ec.europa.eu/codelist/DesignationSchemeValue/natura2000"}}}')
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='ps:ProtectedSite' version='2.0.0' skipInitialGetFeature='true'", 'test', 'WFS')
+        vl.setSubsetString("inspireid_identifier_localid = 'ProtectedSite_FFH_553_DE4546'")
+
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            attrs = 'xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0"'
+        else:
+            attrs = 'xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3"'
+        with open(sanitize(endpoint,
+                           f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ps:ProtectedSite&SRSNAME=urn:ogc:def:crs:EPSG::25833&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:PropertyIsEqualTo>
+  <fes:ValueReference {attrs}>ps:inspireID/base:Identifier/base:localId</fes:ValueReference>
+  <fes:Literal>ProtectedSite_FFH_553_DE4546</fes:Literal>
+ </fes:PropertyIsEqualTo>
+</fes:Filter>
+"""),
+                  'wb') as f:
+            with open(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'getfeature.xml'), "rb") as f_source:
+                f.write(f_source.read())
+
+        got_f = [f for f in vl.getFeatures()]
+        self.assertEqual(len(got_f), 1)
 
 
 if __name__ == '__main__':

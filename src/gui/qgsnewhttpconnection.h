@@ -95,7 +95,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void urlChanged( const QString & );
     void updateOkButtonState();
     void wfsVersionCurrentIndexChanged( int index );
-    void wfsFeaturePagingStateChanged( int state );
+    void wfsFeaturePagingCurrentIndexChanged( int index );
 
   protected:
 
@@ -108,6 +108,16 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
       WFS_VERSION_2_0 = 3,
       WFS_VERSION_API_FEATURES_1_0 = 4,
     };
+
+#ifndef SIP_RUN
+    //! Index of wfsFeaturePaging
+    enum class WfsFeaturePagingIndex
+    {
+      DEFAULT = 0,
+      ENABLED = 1,
+      DISABLED = 2,
+    };
+#endif
 
     /**
      * Returns TRUE if dialog settings are valid, or FALSE if current
@@ -139,10 +149,10 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QComboBox *wfsVersionComboBox() SIP_SKIP;
 
     /**
-     * Returns the "WFS paging enabled" checkbox
-     * \since QGIS 3.2
+     * Returns the "WFS paging" combobox
+     * \since QGIS 3.36
      */
-    QCheckBox *wfsPagingEnabledCheckBox() SIP_SKIP;
+    QComboBox *wfsPagingComboBox() SIP_SKIP;
 
     /**
      * Returns the "Use GML2 encoding for transactions" checkbox

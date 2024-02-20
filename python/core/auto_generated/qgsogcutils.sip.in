@@ -197,7 +197,9 @@ Creates an ElseFilter from ``doc``
         bool honourAxisOrientation,
         bool invertAxisOrientation,
         QString *errorMessage = 0,
-        bool requiresFilterElement = false );
+        bool requiresFilterElement = false,
+        const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+        const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() );
 %Docstring
 Creates an OGC expression XML element from the ``exp`` expression.
 

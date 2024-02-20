@@ -268,12 +268,32 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
   }
   else if ( jsonDocument.isArray() )
   {
-    for ( int index = 0; index < jsonDocument.array().size(); index++ )
+    const QJsonArray array = jsonDocument.array();
+    const auto arraySize = array.size();
+    // Limit the number of rows we display, otherwise for pathological cases
+    // like https://github.com/qgis/QGIS/pull/55847#issuecomment-1902077683
+    // a unbounded number of elements will just stall the GUI forever.
+    constexpr decltype( arraySize ) MAX_ELTS = 200;
+    // If there are too many elements, disable URL highighting as it
+    // performs very poorly.
+    if ( arraySize > MAX_ELTS )
+      mEnableUrlHighlighting = false;
+    for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
     {
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << QString::number( index ) );
-      refreshTreeViewItem( treeWidgetItem, jsonDocument.array().at( index ) );
-      mTreeWidget->addTopLevelItem( treeWidgetItem );
-      mTreeWidget->expandItem( treeWidgetItem );
+      if ( arraySize <= MAX_ELTS || ( index < MAX_ELTS / 2 || index + MAX_ELTS / 2 > arraySize ) )
+      {
+        refreshTreeViewItem( treeWidgetItem, array.at( index ) );
+        mTreeWidget->addTopLevelItem( treeWidgetItem );
+        mTreeWidget->expandItem( treeWidgetItem );
+      }
+      else if ( index == MAX_ELTS / 2 )
+      {
+        index = arraySize - MAX_ELTS / 2;
+        refreshTreeViewItem( treeWidgetItem, tr( "... truncated ..." ) );
+        mTreeWidget->addTopLevelItem( treeWidgetItem );
+        mTreeWidget->expandItem( treeWidgetItem );
+      }
     }
   }
 
@@ -304,7 +324,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
     case QJsonValue::String:
     {
       const QString jsonValueString = jsonValue.toString();
-      if ( QUrl( jsonValueString ).scheme().isEmpty() )
+      if ( !mEnableUrlHighlighting || QUrl( jsonValueString ).scheme().isEmpty() )
       {
         refreshTreeViewItemValue( treeWidgetItem,
                                   jsonValueString,
@@ -327,12 +347,31 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
     case QJsonValue::Array:
     {
       const QJsonArray jsonArray = jsonValue.toArray();
-      for ( int index = 0; index < jsonArray.size(); index++ )
+      const auto arraySize = jsonArray.size();
+      // Limit the number of rows we display, otherwise for pathological cases
+      // like https://github.com/qgis/QGIS/pull/55847#issuecomment-1902077683
+      // a unbounded number of elements will just stall the GUI forever.
+      constexpr decltype( arraySize ) MAX_ELTS = 200;
+      // If there are too many elements, disable URL highighting as it
+      // performs very poorly.
+      if ( arraySize > MAX_ELTS )
+        mEnableUrlHighlighting = false;
+      for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << QString::number( index ) );
-        refreshTreeViewItem( treeWidgetItemChild, jsonArray.at( index ) );
-        treeWidgetItem->addChild( treeWidgetItemChild );
-        treeWidgetItem->setExpanded( true );
+        if ( arraySize <= MAX_ELTS || ( index < MAX_ELTS / 2 || index + MAX_ELTS / 2 > arraySize ) )
+        {
+          refreshTreeViewItem( treeWidgetItemChild, jsonArray.at( index ) );
+          treeWidgetItem->addChild( treeWidgetItemChild );
+          treeWidgetItem->setExpanded( true );
+        }
+        else if ( index == MAX_ELTS / 2 )
+        {
+          index = arraySize - MAX_ELTS / 2;
+          refreshTreeViewItem( treeWidgetItemChild, tr( "... truncated ..." ) );
+          treeWidgetItem->addChild( treeWidgetItemChild );
+          treeWidgetItem->setExpanded( true );
+        }
       }
     }
     break;

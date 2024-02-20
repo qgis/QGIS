@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgsogcutils.h"
 #include "qgsoapifprovider.h"
 #include "qgswfsdataitems.h"
@@ -236,6 +237,8 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   QgsWFSProvider provider(
     uri + " " + QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE + "='true'",
     QgsDataProvider::ProviderOptions(), caps );
+  if ( provider.metadataRetrievalCanceled() )
+    return res;
   QgsProviderSublayerDetails details;
   details.setType( Qgis::LayerType::Vector );
   details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
@@ -253,10 +256,12 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     return res;
   }
 
-  if ( provider.wkbType() == Qgis::WkbType::Unknown &&
+  if ( ( provider.wkbType() == Qgis::WkbType::Unknown ||
+         ( provider.wkbType() != Qgis::WkbType::NoGeometry &&
+           provider.geometryMaybeMissing() ) ) &&
        provider.sharedData()->layerProperties().size() == 1 )
   {
-    std::vector<std::unique_ptr<QgsWFSGetFeature>> requests;
+    std::map<int, std::unique_ptr<QgsWFSGetFeature>> requests;
     std::set<QgsWFSGetFeature *> finishedRequests;
     constexpr int INDEX_ALL = 0;
     constexpr int INDEX_NULL = 1;
@@ -271,13 +276,42 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
                                       QStringLiteral( "IsSurface" )
                                     };
 
+    constexpr int INDEX_GEOMETRYCOLLECTION = 5;
+    std::vector<int64_t> featureCounts( INDEX_GEOMETRYCOLLECTION + 1, -1 );
+
     const auto downloaderLambda = [ &, feedback]()
     {
       QEventLoop loop;
       QTimer timerForHits;
-      for ( QString function : filterNames )
+      for ( int i = 0; i <= INDEX_SURFACE; ++ i )
       {
+        if ( provider.wkbType() == Qgis::WkbType::MultiPoint )
+        {
+          if ( i != INDEX_ALL && i != INDEX_NULL && i != INDEX_POINT )
+          {
+            featureCounts[i] = 0;
+            continue;
+          }
+        }
+        else if ( provider.wkbType() == Qgis::WkbType::MultiCurve )
+        {
+          if ( i != INDEX_ALL && i != INDEX_NULL && i != INDEX_CURVE )
+          {
+            featureCounts[i] = 0;
+            continue;
+          }
+        }
+        else if ( provider.wkbType() == Qgis::WkbType::MultiSurface )
+        {
+          if ( i != INDEX_ALL && i != INDEX_NULL && i != INDEX_SURFACE )
+          {
+            featureCounts[i] = 0;
+            continue;
+          }
+        }
+
         QString filter;
+        const QString &function = filterNames[i];
         if ( function == QLatin1String( "IsNull" ) )
         {
           filter = QgsWFSProvider::buildIsNullGeometryFilter( caps, provider.geometryAttribute() );
@@ -294,16 +328,16 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
           filter = provider.sharedData()->combineWFSFilters( {filter, provider.sharedData()->WFSFilter()} );
         }
 
-        requests.emplace_back( std::make_unique<QgsWFSGetFeature>( wfsUri ) );
+        requests[i] = std::make_unique<QgsWFSGetFeature>( wfsUri );
+        QgsWFSGetFeature *thisRequest = requests[i].get();
 
-        requests.back()->request( /* synchronous = */ false,
+        thisRequest->request( /* synchronous = */ false,
             caps.version,
             wfsUri.typeName(),
             filter,
             /* hitsOnly = */ true,
             caps );
 
-        QgsWFSGetFeature *thisRequest = requests.back().get();
         const auto downloadFinishedLambda = [ &, thisRequest]()
         {
           finishedRequests.insert( thisRequest );
@@ -329,9 +363,9 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       loop.exec( QEventLoop::ExcludeUserInputEvents );
       // Make sure to terminate requests in this thread, to avoid potential
       // crash in main thread when "requests" goes out of scope.
-      for ( auto &request : requests )
+      for ( auto &pair : requests )
       {
-        request->abort();
+        pair.second->abort();
       }
     };
 
@@ -340,15 +374,14 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     downloaderThread->start();
     downloaderThread->wait();
 
-    constexpr int INDEX_GEOMETRYCOLLECTION = 5;
-    std::vector<int64_t> featureCounts( INDEX_GEOMETRYCOLLECTION + 1, -1 );
     bool countsAllValid = false;
     if ( finishedRequests.size() == requests.size() )
     {
       countsAllValid = true;
-      for ( size_t i = 0; i < requests.size(); ++i )
+      for ( const auto &pair : requests )
       {
-        QByteArray data = requests[i]->response();
+        const int i = pair.first;
+        QByteArray data = pair.second->response();
         QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
         QString errorMsg;
         if ( gmlParser.processData( data, true, errorMsg ) )
@@ -362,6 +395,23 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
 
     if ( countsAllValid )
     {
+      // Some servers are buggy and actually ignore the geometry type filter
+      // So if the Point, Curve and Surface filters return the same number of
+      // features than the No filter request, consider that the geometry type
+      // is unknown and try sampling one feature to guess the type
+      // e.g with https://geodienste.komm.one/ows/services/org.273.561ba9e8-9b66-45a2-98db-17920e10c53d_wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=xplan:BP_Plan&FILTER=%3Cfes:Filter%20xmlns:fes%3D%22http://www.opengis.net/fes/2.0%22%3E%0A%20%3Cfes:PropertyIsEqualTo%3E%0A%20%20%3Cfes:Function%20name%3D%22IsCurve%22%3E%0A%20%20%20%3Cfes:ValueReference%3EraeumlicherGeltungsbereich%3C/fes:ValueReference%3E%0A%20%20%3C/fes:Function%3E%0A%20%20%3Cfes:Literal%3Etrue%3C/fes:Literal%3E%0A%20%3C/fes:PropertyIsEqualTo%3E%0A%3C/fes:Filter%3E%0A&RESULTTYPE=hits
+      if ( featureCounts[INDEX_ALL] > 0 &&
+           featureCounts[INDEX_POINT] == featureCounts[INDEX_ALL] &&
+           featureCounts[INDEX_CURVE] == featureCounts[INDEX_ALL] &&
+           featureCounts[INDEX_SURFACE] == featureCounts[INDEX_ALL] )
+      {
+        QgsDebugMsgLevel( QString( "%1 declares geometry filters, but they are not working. Guessing the geometry type from one sample" ).arg( uri ), 2 );
+        provider.issueInitialGetFeature();
+        details.setWkbType( provider.wkbType() );
+        details.setFeatureCount( featureCounts[INDEX_ALL] );
+        return res;
+      }
+
       // Deduce numbers of geometry collections from other types
       featureCounts[INDEX_GEOMETRYCOLLECTION] = featureCounts[INDEX_ALL] -
           ( featureCounts[INDEX_NULL] + featureCounts[INDEX_POINT] + featureCounts[INDEX_CURVE] + featureCounts[INDEX_SURFACE] );
@@ -384,6 +434,13 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     res.clear();
     for ( const auto &tuple : types )
     {
+      if ( provider.wkbType() == Qgis::WkbType::MultiPoint && tuple.index != INDEX_NULL && tuple.index != INDEX_POINT )
+        continue;
+      if ( provider.wkbType() == Qgis::WkbType::MultiCurve && tuple.index != INDEX_NULL && tuple.index != INDEX_CURVE )
+        continue;
+      if ( provider.wkbType() == Qgis::WkbType::MultiSurface && tuple.index != INDEX_NULL && tuple.index != INDEX_SURFACE )
+        continue;
+
       if ( !countsAllValid || featureCounts[tuple.index] > 0 ||
            ( tuple.wkbType == Qgis::WkbType::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
       {

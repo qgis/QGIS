@@ -69,8 +69,16 @@ class QgsWFSDataSourceURI
     //! Returns user defined limit page size. 0=server udefault
     long long pageSize() const;
 
+    //! Whether paging is enabled
+    enum class PagingStatus
+    {
+      DEFAULT, //! For WFS <= 1.1, no paging. For WFS 2.0, trust GetCapabilities "ImplementsResultPaging"
+      ENABLED, //! Enabled
+      DISABLED // Disabled
+    };
+
     //! Returns whether paging is enabled.
-    bool pagingEnabled() const;
+    PagingStatus pagingStatus() const;
 
     //! Gets typename (with prefix)
     QString typeName() const;

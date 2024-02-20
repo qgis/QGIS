@@ -83,6 +83,7 @@ Returns the current connection url.
       WFS_VERSION_API_FEATURES_1_0,
     };
 
+
     virtual bool validate();
 %Docstring
 Returns ``True`` if dialog settings are valid, or ``False`` if current
