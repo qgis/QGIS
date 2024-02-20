@@ -5236,6 +5236,8 @@ QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
       if ( url.isLocalFile() )
       {
         decoded[ QStringLiteral( "path" ) ] = url.toLocalFile();
+        // Also add the url to insure WMS source widget works properly with XYZ file:// URLs
+        decoded[ item.first ] = item.second;
       }
       else if ( QFileInfo( item.second ).isFile() )
       {
@@ -5277,6 +5279,13 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
     if ( it.key() == QLatin1String( "path" ) )
     {
       items.push_back( { QStringLiteral( "url" ), QUrl::fromLocalFile( it.value().toString() ).toString() } );
+    }
+    else if ( it.key() == QLatin1String( "url" ) )
+    {
+      if ( !parts.contains( QLatin1String( "path" ) ) )
+      {
+        items.push_back( { it.key(), it.value().toString() } );
+      }
     }
     else
     {
@@ -5376,6 +5385,20 @@ QList<QgsProviderSublayerDetails> QgsWmsProviderMetadata::querySublayers( const 
       }
     }
   }
+  else
+  {
+    const thread_local QRegularExpression re( QStringLiteral( "{-?[xyzq]}" ) );
+    if ( fileName.contains( re ) )
+    {
+      // local XYZ directory
+      QgsProviderSublayerDetails details;
+      details.setUri( uri );
+      details.setProviderKey( key() );
+      details.setType( Qgis::LayerType::Raster );
+      return {details};
+    }
+  }
+
   return {};
 }
 
