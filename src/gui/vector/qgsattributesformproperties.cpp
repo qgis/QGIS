@@ -84,7 +84,11 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
 
-  connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsAttributesFormProperties::updatedFields );
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this]
+  {
+    if ( !mBlockUpdates )
+      updatedFields();
+  } );
 }
 
 void QgsAttributesFormProperties::init()
@@ -948,6 +952,7 @@ void QgsAttributesFormProperties::store()
 
 void QgsAttributesFormProperties::apply()
 {
+  mBlockUpdates++;
   storeAttributeWidgetEdit();
   storeAttributeContainerEdit();
   storeAttributeTypeDialog();
@@ -1058,6 +1063,7 @@ void QgsAttributesFormProperties::apply()
   }
 
   mLayer->setEditFormConfig( editFormConfig );
+  mBlockUpdates--;
 }
 
 
