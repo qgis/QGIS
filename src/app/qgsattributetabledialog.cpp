@@ -53,6 +53,7 @@
 #include "qgstransactiongroup.h"
 #include "qgsdockablewidgethelper.h"
 #include "qgsactionmenu.h"
+#include "qgsdockwidget.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -279,6 +280,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [ = ] { QgisApp::instance()->saveEdits(); } );
 
   const bool isDocked = initiallyDocked ? *initiallyDocked : settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
+  toggleShortcuts( !isDocked );
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, windowTitle(), this, QgisApp::instance(),
       Qt::BottomDockWidgetArea,  QStringList(), !initiallyDocked, QStringLiteral( "Windows/BetterAttributeTable/geometry" ) );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
@@ -289,24 +291,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   {
     if ( docked )
     {
-      // To prevent "QAction::event: Ambiguous shortcut overload"
-      QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
-      mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
-      mActionRemoveSelection->setShortcut( QKeySequence() );
-      // duplicated on Main Window, with different semantics
-      mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
-      mActionSearchForm->setShortcut( QKeySequence() );
+      toggleShortcuts( mDockableWidgetHelper->dockWidget()->isFloating() );
     }
     else
     {
-      // restore attribute table shortcuts in window mode
-      QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
-      // duplicated on Main Window
-      mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
-      mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
-      // duplicated on Main Window, with different semantics
-      mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
-      mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
+      toggleShortcuts( true );
     }
   } );
 
@@ -485,7 +474,11 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent *event )
 
   if ( ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) && mActionDeleteSelected->isEnabled() )
   {
-    QgisApp::instance()->deleteSelected( mLayer, this );
+    // When docked, let the main window handle the key events
+    if ( !mDockableWidgetHelper->dockWidget() || mDockableWidgetHelper->dockWidget()->isFloating() )
+    {
+      QgisApp::instance()->deleteSelected( mLayer, this );
+    }
   }
 }
 
@@ -1106,4 +1099,31 @@ void QgsAttributeTableDialog::updateLayerModifiedActions()
     }
   }
   mActionSaveEdits->setEnabled( saveEnabled );
+}
+
+void QgsAttributeTableDialog::toggleShortcuts( bool enable )
+{
+  if ( !enable )
+  {
+    // To prevent "QAction::event: Ambiguous shortcut overload"
+    QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
+    mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionRemoveSelection->setShortcut( QKeySequence() );
+    mActionDeleteSelected->setShortcut( QKeySequence() );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionSearchForm->setShortcut( QKeySequence() );
+  }
+  else
+  {
+    // restore attribute table shortcuts in window mode
+    QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
+    // duplicated on Main Window
+    mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
+    mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
+    mActionDeleteSelected->setShortcut( QStringLiteral( "Del" ) );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
+    mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
+  }
 }
