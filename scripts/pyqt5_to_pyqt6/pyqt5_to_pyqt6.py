@@ -327,6 +327,11 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         for name in node.names:
             if name.name in import_warnings:
                 print(f'{filename}: {import_warnings[name.name]}')
+            if name.name == 'resources_rc':
+                sys.stderr.write(
+                    f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: support for compiled resources '
+                    'is removed in Qt6. Directly load icon resources by file path and load UI fields using '
+                    'uic.loadUiType by file path instead.\n')
         if _node.module == 'qgis.PyQt.Qt':
             extra_imports['qgis.PyQt.QtCore'].update({'Qt'})
             removed_imports['qgis.PyQt.Qt'].update({'Qt'})
