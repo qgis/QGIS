@@ -1736,7 +1736,7 @@ void TestQgs3DRendering::test3DSceneExporter()
   const QgsRectangle fullExtent = layerPoly->extent();
 
   // =========== create polygon 3D renderer
-  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  std::unique_ptr< QgsPolygon3DSymbol > symbol3d = std::make_unique< QgsPolygon3DSymbol >();
   symbol3d->setExtrusionHeight( 10.f );
 
   QgsPhongMaterialSettings materialSettings;
@@ -1770,15 +1770,15 @@ void TestQgs3DRendering::test3DSceneExporter()
   engine.setRootEntity( scene );
 
   // =========== check with 1 big tile ==> 1 exported object
-  do3DSceneExport( 1, 1, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 1, 1, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 4 tiles ==> 3 exported objects
-  do3DSceneExport( 2, 1, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 2, 1, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 9 tiles ==> 3 exported objects
-  do3DSceneExport( 3, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 3, 3, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 16 tiles ==> 3 exported objects
-  do3DSceneExport( 4, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 4, 3, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 25 tiles ==> 3 exported objects
-  do3DSceneExport( 5, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 5, 3, 165, scene, symbol3d.get(), layerPoly, &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
