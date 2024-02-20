@@ -54,14 +54,10 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
 
     std::unique_ptr<QgsPointCloudIndex> clone() const override;
 
-    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
-
     void load( const QString &uri ) override;
 
     std::unique_ptr<QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-
-    bool hasNode( const IndexedPointCloudNode &n ) const override;
 
     bool isValid() const override;
 
@@ -74,7 +70,6 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
     void copyCommonProperties( QgsRemoteCopcPointCloudIndex *destination ) const;
 
   protected:
-    virtual bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const override;
     virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const override;
 
     QUrl mUrl;
