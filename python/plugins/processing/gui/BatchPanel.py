@@ -82,7 +82,8 @@ from qgis.core import (
     QgsExpression,
     QgsRasterLayer,
     QgsProcessingUtils,
-    QgsFileFilterGenerator
+    QgsFileFilterGenerator,
+    QgsProcessingContext
 )
 from qgis.gui import (
     QgsProcessingParameterWidgetContext,
@@ -369,7 +370,9 @@ class BatchPanelFillWidget(QToolButton):
         expression_context = context.expressionContext()
 
         # use the first row parameter values as a preview during expression creation
-        params, ok = self.panel.parametersForRow(0, warnOnInvalid=False)
+        params, ok = self.panel.parametersForRow(row=0,
+                                                 context=context,
+                                                 warnOnInvalid=False)
         alg_scope = QgsExpressionContextUtils.processingAlgorithmScope(self.panel.alg, params, context)
 
         # create explicit variables corresponding to every parameter
@@ -409,7 +412,9 @@ class BatchPanelFillWidget(QToolButton):
         else:
             self.panel.tblParameters.setUpdatesEnabled(False)
             for row in range(self.panel.batchRowCount()):
-                params, ok = self.panel.parametersForRow(row, warnOnInvalid=False)
+                params, ok = self.panel.parametersForRow(row=row,
+                                                         context=context,
+                                                         warnOnInvalid=False)
 
                 # remove previous algorithm scope -- we need to rebuild this completely, using the
                 # other parameter values from the current row
@@ -751,6 +756,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
     def parametersForRow(self,
                          row: int,
+                         context: QgsProcessingContext,
                          destinationProject: Optional[QgsProject] = None,
                          warnOnInvalid=True):
         """
@@ -790,7 +796,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                                                          duration=5)
                     return {}, False
 
-                ok, error = out.isSupportedOutputValue(text, createContext())
+                ok, error = out.isSupportedOutputValue(text, context)
                 if not ok:
                     self.parent.messageBar().pushMessage("", error,
                                                          level=Qgis.Warning,
