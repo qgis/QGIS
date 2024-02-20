@@ -25,6 +25,7 @@ QgsProviderMetadata.ProviderMetadataCapabilities = lambda flags=0: QgsProviderMe
 QgsProviderMetadata.FileBasedUris = QgsProviderMetadata.ProviderCapability.FileBasedUris
 QgsProviderMetadata.SaveLayerMetadata = QgsProviderMetadata.ProviderCapability.SaveLayerMetadata
 QgsProviderMetadata.ParallelCreateProvider = QgsProviderMetadata.ProviderCapability.ParallelCreateProvider
+QgsProviderMetadata.LoadLayerMetadata = QgsProviderMetadata.ProviderCapability.LoadLayerMetadata
 QgsProviderMetadata.ProviderCapabilities = lambda flags=0: QgsProviderMetadata.ProviderCapability(flags)
 QgsProviderMetadata.ProviderMetadataCapability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsProviderMetadata.ProviderMetadataCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)

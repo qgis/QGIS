@@ -32,6 +32,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgdalutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <gdal.h>
 #include <QFileInfo>
@@ -654,6 +655,117 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
   throw QgsNotSupportedException( QObject::tr( "Storing metadata for the specified uri is not supported" ) );
 }
 
+QgsLayerMetadata QgsOgrProviderMetadata::loadLayerMetadata( const QString &layerUri, bool &found )
+{
+  QgsLayerMetadata metadata;
+  found = false;
+  const QVariantMap parts = decodeUri( layerUri );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  QString errorMessage;
+
+  if ( !path.isEmpty() && QFileInfo::exists( path ) )
+  {
+    const QFileInfo fi( path );
+    // if it is a gpkg, try reading metadata
+    if ( fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      QgsOgrLayerUniquePtr userLayer;
+      userLayer = QgsOgrProviderUtils::getLayer( path, true, QStringList(), layerName, errorMessage, true );
+      if ( userLayer )
+      {
+        // try to read metadata from gpkg_metadata table
+        QString sql = QStringLiteral( "SELECT metadata FROM gpkg_metadata LEFT JOIN gpkg_metadata_reference ON "
+                                      "(gpkg_metadata_reference.table_name = %1 AND gpkg_metadata.id = gpkg_metadata_reference.md_file_id) "
+                                      "WHERE md_standard_uri = %2 and reference_scope = %3" ).arg(
+                        QgsSqliteUtils::quotedString( layerName ),
+                        QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
+                        QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );
+        if ( QgsOgrLayerUniquePtr l = userLayer->ExecuteSQL( sql.toUtf8().constData() ) )
+        {
+          // retrieve row id
+          gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+          if ( f )
+          {
+            bool ok = false;
+            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+            if ( ok )
+            {
+              QDomDocument document;
+              QString metadataXml = res.toString();
+              if ( document.setContent( metadataXml ) )
+              {
+                if ( !metadata.readMetadataXml( document.documentElement() ) )
+                {
+                  found = false;
+                  return metadata;
+                }
+                found = true;
+                return metadata;
+              }
+            }
+          }
+        }
+      }
+
+      // Read from gpkg_contents but do not override whatever was set in the previous step
+      // (this is to support old geopackages which do not have metadata in gpkg_metadata)
+
+      if ( metadata.title().isEmpty() || metadata.abstract().isEmpty() )
+      {
+        QRecursiveMutex *mutex = nullptr;
+        // Returns native OGRLayerH object with the mutex to lock when using it
+        OGRLayerH hLayer = userLayer->getHandleAndMutex( mutex );
+        QMutexLocker locker( mutex );
+
+        // These are special keys which get stored into the gpkg_contents table
+        if ( metadata.abstract().isEmpty() )
+        {
+          const char *description = GDALGetMetadataItem( hLayer, "DESCRIPTION", nullptr );
+          if ( description )
+          {
+            metadata.setAbstract( QString( description ) );
+            found = true;
+          }
+        }
+        if ( metadata.title().isEmpty() )
+        {
+          const char *identifier = GDALGetMetadataItem( hLayer, "IDENTIFIER", nullptr );
+          if ( identifier )
+          {
+            found = true;
+            metadata.setIdentifier( QString( identifier ) );
+          }
+        }
+      }
+
+      return metadata;
+    }
+  }
+
+  // try to read metadata from .qmd sidecar file
+  const QFileInfo fi( path );
+  const QString qmdFileName = fi.dir().filePath( fi.completeBaseName() + QStringLiteral( ".qmd" ) );
+  QFile qmdFile( qmdFileName );
+  if ( qmdFile.open( QFile::ReadOnly ) )
+  {
+    QDomDocument document;
+    if ( document.setContent( &qmdFile ) )
+    {
+      if ( !metadata.readMetadataXml( document.documentElement() ) )
+      {
+        found = false;
+        return metadata;
+      }
+      found = true;
+      return metadata;
+    }
+  }
+
+  throw QgsNotSupportedException( QObject::tr( "Loading metadata for the specified uri is not supported" ) );
+
+}
+
 
 QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connString )
 {
@@ -1201,7 +1313,7 @@ void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection
 
 QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabilities() const
 {
-  return FileBasedUris | SaveLayerMetadata;
+  return FileBasedUris | SaveLayerMetadata | LoadLayerMetadata;
 }
 
 ///@endcond

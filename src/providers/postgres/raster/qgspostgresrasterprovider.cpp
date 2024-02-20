@@ -117,38 +117,25 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
                                QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
   }
 
-  // Try to load metadata
-  const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
-  QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresRasterProvider", schemaQuery ) );
-  if ( res.PQntuples( ) > 0 )
-  {
-    const QString schemaName = res.PQgetvalue( 0, 0 );
-    // TODO: also filter CRS?
-    const QString selectQuery = QStringLiteral( R"SQL(
-            SELECT
-              qmd
-           FROM %4.qgis_layer_metadata
-             WHERE
-                f_table_schema=%1
-                AND f_table_name=%2
-                AND f_geometry_column %3
-                AND layer_type='raster'
-           )SQL" )
-                                .arg( QgsPostgresConn::quotedValue( mUri.schema() ) )
-                                .arg( QgsPostgresConn::quotedValue( mUri.table() ) )
-                                .arg( mUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( mUri.geometryColumn() ) ) )
-                                .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+  // Try to load metadata from DB
+  bool metadataLoadedFromDb = false;
+  QgsLayerMetadata metadataFromDb { QgsPostgresProviderMetadataUtils::loadLayerMetadata( Qgis::LayerType::Raster, uri, metadataLoadedFromDb ) };
 
-    QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresRasterProvider", selectQuery ) );
-    if ( res.PQntuples() > 0 )
-    {
-      QgsLayerMetadata metadata;
-      QDomDocument doc;
-      doc.setContent( res.PQgetvalue( 0, 0 ) );
-      mLayerMetadata.readMetadataXml( doc.documentElement() );
-      QgsMessageLog::logMessage( tr( "PostgreSQL raster layer metadata loaded from the database." ), tr( "PostGIS" ) );
-    }
+  if ( metadataLoadedFromDb )
+  {
+    mLayerMetadata = metadataFromDb;
+    QgsMessageLog::logMessage( tr( "PostgreSQL layer metadata loaded from DB." ), tr( "PostGIS" ) );
   }
+
+  // set the primary key
+  if ( !determinePrimaryKey() )
+  {
+    QgsMessageLog::logMessage( tr( "PostgreSQL layer has no primary key." ), tr( "PostGIS" ) );
+    mValid = false;
+    disconnectDb();
+    return;
+  }
+
 
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setCrs( crs() );
@@ -778,9 +765,14 @@ bool QgsPostgresRasterProviderMetadata::saveLayerMetadata( const QString &uri, c
   return QgsPostgresProviderMetadataUtils::saveLayerMetadata( Qgis::LayerType::Raster, uri, metadata, errorMessage );
 }
 
+QgsLayerMetadata QgsPostgresRasterProviderMetadata::loadLayerMetadata( const QString &layerUri, bool &found )
+{
+  return QgsPostgresProviderMetadataUtils::loadLayerMetadata( Qgis::LayerType::Raster, layerUri, found );
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsPostgresRasterProviderMetadata::providerCapabilities() const
 {
-  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata;
+  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata | QgsProviderMetadata::ProviderCapability::LoadLayerMetadata;
 }
 
 QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

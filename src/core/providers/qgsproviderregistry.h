@@ -335,6 +335,23 @@ class CORE_EXPORT QgsProviderRegistry
     bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Loads metadata for the layer corresponding to the specified \a uri.
+     *
+     * \param providerKey identifier of the provider
+     * \param uri uri of layer to load metadata for
+     * \param found will be set to TRUE if metadata was found, or FALSE if no metadata was found
+     *
+     * \returns The layer metadata or empty metadata if not found.
+     *
+     * \throws QgsNotSupportedException if the provider does not support loading layer metadata for the
+     * specified \a uri.
+     *
+     * \since QGIS 3.36
+     */
+    QgsLayerMetadata loadLayerMetadata( const QString &providerKey, const QString &uri, bool &found SIP_OUT ) SIP_THROW( QgsNotSupportedException );
+
+
+    /**
      * Creates database by the provider on the path
      * \since QGIS 3.10
      */

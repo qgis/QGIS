@@ -158,6 +158,7 @@ library object.
       FileBasedUris,
       SaveLayerMetadata,
       ParallelCreateProvider,
+      LoadLayerMetadata,
     };
     typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
 
@@ -680,6 +681,21 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 
 
 .. versionadded:: 3.20
+%End
+
+    virtual QgsLayerMetadata loadLayerMetadata( const QString &layerUri, bool &found /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Loads layer metadata for the specified ``layerUri``.
+
+:param layerUri: uri of layer to load metadata for
+
+:return: - layer metadata
+         - found: set to ``True`` if metadata was found, ``False`` otherwise
+
+:raises QgsNotSupportedException: if the provider does not support loading layer metadata for the
+   specified ``layerUri``.
+
+.. versionadded:: 3.36
 %End
 
     virtual bool createDb( const QString &dbPath, QString &errCause );

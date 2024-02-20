@@ -203,6 +203,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
       SaveLayerMetadata = 1 << 1, //!< Indicates that the provider supports saving native layer metadata (since QGIS 3.20)
       ParallelCreateProvider = 1 << 2, //!< Indicates that the provider supports parallel creation, that is, can be created on another thread than the main thread (since QGIS 3.32)
+      LoadLayerMetadata = 1 << 3, //!< Indicates that the provider supports loading native layer metadata (since QGIS 3.36)
     };
     Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 
@@ -699,6 +700,17 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.20
      */
     virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Loads layer metadata for the specified \a layerUri.
+     * \param layerUri uri of layer to load metadata for
+     * \param found set to TRUE if metadata was found, FALSE otherwise
+     * \returns layer metadata
+     * \throws QgsNotSupportedException if the provider does not support loading layer metadata for the
+     * specified \a layerUri.
+     * \since QGIS 3.36
+     */
+    virtual QgsLayerMetadata loadLayerMetadata( const QString &layerUri, bool &found SIP_OUT ) SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates database by the provider on the path

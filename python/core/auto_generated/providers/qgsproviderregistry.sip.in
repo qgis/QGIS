@@ -322,6 +322,25 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 .. versionadded:: 3.20
 %End
 
+    QgsLayerMetadata loadLayerMetadata( const QString &providerKey, const QString &uri, bool &found /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Loads metadata for the layer corresponding to the specified ``uri``.
+
+:param providerKey: identifier of the provider
+:param uri: uri of layer to load metadata for
+
+:return: - The layer metadata or empty metadata if not found.
+         - found: will be set to ``True`` if metadata was found, or ``False`` if no metadata was found
+
+
+:raises QgsNotSupportedException: if the provider does not support loading layer metadata for the
+   specified ``uri``.
+
+
+.. versionadded:: 3.36
+%End
+
+
     bool createDb( const QString &providerKey, const QString &dbPath, QString &errCause );
 %Docstring
 Creates database by the provider on the path
