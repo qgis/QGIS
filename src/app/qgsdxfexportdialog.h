@@ -20,6 +20,7 @@
 
 #include "ui_qgsdxfexportdialogbase.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
 #include "qgsdxfexport.h"
 
 #include <QList>
@@ -68,6 +69,8 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 
     void selectAll();
     void deSelectAll();
+    void selectDataDefinedBlocks();
+    void deselectDataDefinedBlocks();
 
   private:
     QHash<const QgsVectorLayer *, int> mAttributeIdx;
@@ -113,6 +116,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     //! Change the selection of layers in the list
     void selectAll();
     void deSelectAll();
+    void selectDataDefinedBlocks();
+    void deselectDataDefinedBlocks();
 
   private slots:
     void setOkEnabled();

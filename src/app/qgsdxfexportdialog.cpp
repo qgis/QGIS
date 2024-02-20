@@ -136,6 +136,19 @@ int FieldSelectorDelegate::attributeIndex( const QAbstractItemModel *model, cons
 QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
+  //init mCreateDDBlockInfo, mDDBlocksMaxNumberOfClasses
+  bool ddBlockDefaultEnabled = QgsSettings().value( QStringLiteral( "/qgis/dxfEnableDDBlocks" ), false ).toBool();
+  QSet<QString> layerIds;
+  retrieveAllLayers( rootNode, layerIds );
+  for ( const auto &id : std::as_const( layerIds ) )
+  {
+    const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
+    if ( vLayer )
+    {
+      mCreateDDBlockInfo[vLayer] = ddBlockDefaultEnabled;
+      mDDBlocksMaxNumberOfClasses[vLayer] = -1;
+    }
+  }
 }
 
 int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) const
@@ -597,6 +610,24 @@ void QgsVectorLayerAndAttributeModel::deSelectAll()
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
+void QgsVectorLayerAndAttributeModel::selectDataDefinedBlocks()
+{
+  for ( const auto &key : mCreateDDBlockInfo.keys() )
+  {
+    mCreateDDBlockInfo[key] = true;
+  }
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
+}
+
+void QgsVectorLayerAndAttributeModel::deselectDataDefinedBlocks()
+{
+  for ( const auto &key : mCreateDDBlockInfo.keys() )
+  {
+    mCreateDDBlockInfo[key] = false;
+  }
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
+}
+
 QgsDxfExportLayerTreeView::QgsDxfExportLayerTreeView( QWidget *parent )
   : QgsLayerTreeView( parent )
 {
@@ -645,6 +676,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
   connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deSelectAll );
+  connect( mSelectDataDefinedBlocks, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectDataDefinedBlocks );
+  connect( mDeselectDataDefinedBlocks, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deselectDataDefinedBlocks );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDxfExportDialog::showHelp );
 
   connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
@@ -746,6 +779,16 @@ void QgsDxfExportDialog::selectAll()
 void QgsDxfExportDialog::deSelectAll()
 {
   mModel->deSelectAll();
+}
+
+void QgsDxfExportDialog::selectDataDefinedBlocks()
+{
+  mModel->selectDataDefinedBlocks();
+}
+
+void QgsDxfExportDialog::deselectDataDefinedBlocks()
+{
+  mModel->deselectDataDefinedBlocks();
 }
 
 
