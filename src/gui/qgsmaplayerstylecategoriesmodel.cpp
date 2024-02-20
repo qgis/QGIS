@@ -227,7 +227,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "Custom Properties" );
         case Qt::ToolTipRole:
-          return tr( "Custom properties (often used by plugins and custom python code)" );
+          return tr( "Variables, custom properties (often used by plugins and custom python code)" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) );
       }
