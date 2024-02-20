@@ -242,6 +242,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QPointer< QgsVectorLayer > mLayer = nullptr;
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
+    void toggleShortcuts( bool enable );
 
     QList< QPointer< QgsVectorLayer> > mReferencingLayers;
 
