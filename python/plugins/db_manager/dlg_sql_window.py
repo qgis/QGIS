@@ -23,6 +23,7 @@ from hashlib import md5
 
 import os
 
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir, QCoreApplication
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QWidget,
@@ -56,6 +57,7 @@ from .db_plugins.plugin import BaseError
 from .db_plugins.postgis.plugin import PGDatabase
 from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
+from .gui_utils import GuiUtils
 
 try:
     from qgis.gui import QgsCodeEditorSQL  # NOQA
@@ -65,7 +67,8 @@ except:
 
     gui.QgsCodeEditorSQL = SqlEdit
 
-from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgSqlWindow.ui'))
+
 
 import re
 
@@ -205,7 +208,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.btnCreateView.clicked.connect(self.createView)
 
         self.queryBuilderFirst = True
-        self.queryBuilderBtn.setIcon(QIcon(":/db_manager/icons/sql.gif"))
+        self.queryBuilderBtn.setIcon(GuiUtils.get_icon("sql"))
         self.queryBuilderBtn.clicked.connect(self.displayQueryBuilder)
 
         self.presetName.textChanged.connect(self.nameChanged)

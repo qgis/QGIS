@@ -29,8 +29,6 @@ from qgis.core import (
     QgsApplication
 )
 
-from . import resources_rc  # NOQA
-
 
 class DBManagerPlugin:
 
