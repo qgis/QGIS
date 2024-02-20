@@ -6462,21 +6462,25 @@ Can't recognize service requested.
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='ps:ProtectedSite' version='2.0.0' skipInitialGetFeature='true'", 'test', 'WFS')
         vl.setSubsetString("inspireid_identifier_localid = 'ProtectedSite_FFH_553_DE4546'")
 
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
-            attrs = 'xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0"'
-        else:
-            attrs = 'xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3"'
-        with open(sanitize(endpoint,
-                           f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ps:ProtectedSite&SRSNAME=urn:ogc:def:crs:EPSG::25833&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        # There's something messy with the ProtectedSite schema referencing http://inspire.ec.europa.eu/schemas/base/3.3
+        # and also the GeographicalNames schema which references http://inspire.ec.europa.eu/schemas/base/4.0
+        # There's likely some confusion in the GMLAS driver or QGIS to decide which one to fetch...
+        for base_version in ('3.3', '4.0'):
+            if int(QT_VERSION_STR.split('.')[0]) >= 6:
+                attrs = f'xmlns:base="http://inspire.ec.europa.eu/schemas/base/{base_version}" xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0"'
+            else:
+                attrs = f'xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/{base_version}"'
+            with open(sanitize(endpoint,
+                               f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ps:ProtectedSite&SRSNAME=urn:ogc:def:crs:EPSG::25833&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference {attrs}>ps:inspireID/base:Identifier/base:localId</fes:ValueReference>
   <fes:Literal>ProtectedSite_FFH_553_DE4546</fes:Literal>
  </fes:PropertyIsEqualTo>
 </fes:Filter>
 """),
-                  'wb') as f:
-            with open(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'getfeature.xml'), "rb") as f_source:
-                f.write(f_source.read())
+                      'wb') as f:
+                with open(os.path.join(TEST_DATA_DIR, 'provider', 'wfs', 'inspire_complexfeatures', 'getfeature.xml'), "rb") as f_source:
+                    f.write(f_source.read())
 
         got_f = [f for f in vl.getFeatures()]
         self.assertEqual(len(got_f), 1)
