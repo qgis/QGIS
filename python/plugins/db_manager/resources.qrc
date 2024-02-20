@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/db_manager">
-    <file alias="warning">icons/warning-20px.png</file>
-  </qresource>
-</RCC>
