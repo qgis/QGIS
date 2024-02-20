@@ -378,6 +378,10 @@ void TestQgsGeometrySnapper::snapPointToLine()
   pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.5 0.5)" ) );
   result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.asWkt(), QStringLiteral( "Point (0 0)" ) );
+
+  pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(3 3)" ) );
+  result = snapper.snapGeometry( pointGeom, 4 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "Point (3 0)" ) );
 }
 
 void TestQgsGeometrySnapper::snapPointToLinePreferNearest()
