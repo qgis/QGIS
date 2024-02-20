@@ -280,10 +280,12 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
     if ( nodesCount < 0 )
     {
       auto hierarchyNodePos = mHierarchyNodePos.constFind( n );
+      mHierarchyMutex.unlock();
       fetchHierarchyPage( hierarchyNodePos->first, hierarchyNodePos->second );
+      mHierarchyMutex.lock();
     }
   }
-  return true;
+  return mHierarchy.contains( n );
 }
 
 void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
@@ -292,6 +294,11 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
   std::unique_ptr<char []> data( new char[ byteSize ] );
   mCopcFile.read( data.get(), byteSize );
 
+  populateHierarchy( data.get(), byteSize );
+}
+
+void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, uint64_t byteSize ) const
+{
   struct CopcVoxelKey
   {
     int32_t level;
@@ -312,7 +319,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
 
   for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
   {
-    CopcEntry *entry = reinterpret_cast<CopcEntry *>( data.get() + i );
+    const CopcEntry *entry = reinterpret_cast<const CopcEntry *>( hierarchyPageData + i );
     const IndexedPointCloudNode nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
     mHierarchy[nodeId] = entry->pointCount;
     mHierarchyNodePos.insert( nodeId, QPair<uint64_t, int32_t>( entry->offset, entry->byteSize ) );
@@ -321,13 +328,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
 
 bool QgsCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
 {
-  fetchNodeHierarchy( n );
-  mHierarchyMutex.lock();
-
-  auto it = mHierarchy.constFind( n );
-  const bool found = it != mHierarchy.constEnd() && ( *it ) >= 0;
-  mHierarchyMutex.unlock();
-  return found;
+  return fetchNodeHierarchy( n );
 }
 
 QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
