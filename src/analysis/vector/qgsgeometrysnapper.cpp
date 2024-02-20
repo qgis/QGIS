@@ -99,7 +99,7 @@ bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &
   return true;
 }
 
-bool QgsSnapIndex::SegmentSnapItem::withinDistance( const QgsPoint &p, const double tolerance )
+bool QgsSnapIndex::SegmentSnapItem::withinSqrDistance( const QgsPoint &p, const double tolerance )
 {
   double minDistX, minDistY;
   const double distance = QgsGeometryUtils::sqrDistToLine( p.x(), p.y(), idxFrom->point().x(), idxFrom->point().y(), idxTo->point().x(), idxTo->point().y(), minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() );
@@ -250,6 +250,7 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, const do
   QgsSnapIndex::SegmentSnapItem *snapSegment = nullptr;
   QgsSnapIndex::PointSnapItem *snapPoint = nullptr;
 
+  const double sqrTolerance = tolerance * tolerance;
   const auto constItems = items;
   for ( QgsSnapIndex::SnapItem *item : constItems )
   {
@@ -264,7 +265,7 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, const do
     }
     else if ( item->type == SnapSegment && !endPointOnly )
     {
-      if ( !static_cast<SegmentSnapItem *>( item )->withinDistance( pos, tolerance ) )
+      if ( !static_cast<SegmentSnapItem *>( item )->withinSqrDistance( pos, sqrTolerance ) )
         continue;
 
       QgsPoint pProj;
@@ -279,8 +280,8 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, const do
       }
     }
   }
-  snapPoint = minDistPoint < tolerance * tolerance ? snapPoint : nullptr;
-  snapSegment = minDistSegment < tolerance * tolerance ? snapSegment : nullptr;
+  snapPoint = minDistPoint < sqrTolerance ? snapPoint : nullptr;
+  snapSegment = minDistSegment < sqrTolerance ? snapSegment : nullptr;
   if ( pSnapPoint ) *pSnapPoint = snapPoint;
   if ( pSnapSegment ) *pSnapSegment = snapSegment;
   return minDistPoint < minDistSegment ? static_cast<QgsSnapIndex::SnapItem *>( snapPoint ) : static_cast<QgsSnapIndex::SnapItem *>( snapSegment );
