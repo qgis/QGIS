@@ -211,7 +211,7 @@ class QgsSnapIndex
         QgsPoint getSnapPoint( const QgsPoint &p ) const override;
         bool getIntersection( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &inter ) const;
         bool getProjection( const QgsPoint &p, QgsPoint &pProj ) const;
-        bool withinDistance( const QgsPoint &p, const double distance );
+        bool withinSqrDistance( const QgsPoint &p, const double distance );
         const CoordIdx *idxFrom = nullptr;
         const CoordIdx *idxTo = nullptr;
     };
