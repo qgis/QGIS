@@ -72,11 +72,9 @@ class GuiUtils:
         return path
 
     @staticmethod
-    def get_icon_as_pixmap(icon: str) -> Optional[QPixmap]:
+    def get_pixmap_path(icon: str) -> Optional[str]:
         """
-        Returns a plugin icon's PNG file path
-        :param icon: icon name (png file name)
-        :return: icon png path
+        Returns the path to a pixmap icon
         """
         for suffix in ('.png', '.gif', '.xpm'):
             path = os.path.join(
@@ -84,8 +82,21 @@ class GuiUtils:
                 'icons',
                 icon + suffix)
             if os.path.exists(path):
-                im = QImage(path)
-                return QPixmap.fromImage(im)
+                return path
+
+        return None
+
+    @staticmethod
+    def get_icon_as_pixmap(icon: str) -> Optional[QPixmap]:
+        """
+        Returns a plugin icon's PNG file path
+        :param icon: icon name (png file name)
+        :return: icon png path
+        """
+        path = GuiUtils.get_pixmap_path(icon)
+        if path is not None:
+            im = QImage(path)
+            return QPixmap.fromImage(im)
 
         return None
 
