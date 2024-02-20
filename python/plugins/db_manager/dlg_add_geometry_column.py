@@ -20,14 +20,16 @@ The content of this file is based on
  ***************************************************************************/
 """
 
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
+from .gui_utils import GuiUtils
 
-from .ui.ui_DlgAddGeometryColumn import Ui_DbManagerDlgAddGeometryColumn as Ui_Dialog
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgAddGeometryColumn.ui'))
 
 
 class DlgAddGeometryColumn(QDialog, Ui_Dialog):
