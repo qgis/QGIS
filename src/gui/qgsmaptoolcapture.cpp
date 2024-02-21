@@ -485,7 +485,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   const QgsPointXY point = e->mapPoint();
 
-  if ( canvas()->currentLayer() && canvas()->currentLayer()->isSpatial())
+  if ( canvas()->currentLayer() && canvas()->currentLayer()->isSpatial() )
     mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
