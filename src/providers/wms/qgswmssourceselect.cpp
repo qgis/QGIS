@@ -1371,6 +1371,10 @@ void QgsWmsInterpretationComboBox::setInterpretation( const QString &interpretat
     else
       setCurrentIndex( index );
   }
+  else
+  {
+    setCurrentIndex( 0 );
+  }
 }
 
 QString QgsWmsInterpretationComboBox::interpretation() const
