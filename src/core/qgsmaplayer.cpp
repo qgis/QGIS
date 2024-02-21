@@ -624,7 +624,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !extent().isNull() )
+  if ( !mExtent.isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
     layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
