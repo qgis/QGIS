@@ -992,7 +992,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   if ( fieldOrigin == QgsFields::OriginProvider || fieldOrigin == QgsFields::OriginEdit )
     fieldCalculatorEnabled = true;
 
-  if ( fieldOrigin == 2 )
+  if ( fieldOrigin == QgsFields::OriginJoin )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
