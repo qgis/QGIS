@@ -108,6 +108,13 @@ Returns the global processing recent algorithm log, used for tracking recently u
 .. versionadded:: 3.4
 %End
 
+    static QgsProcessingFavoriteAlgorithmLog *processingFavoriteAlgorithmLog();
+%Docstring
+Returns the global Processing favorite algorithm log, used for tracking favorite Processing algorithms.
+
+.. versionadded:: 3.38
+%End
+
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /KeepReference/;
 %Docstring
 Returns the global data item GUI provider registry, used for tracking providers which affect the browser
