@@ -370,9 +370,9 @@ class QgsPluginInstaller(QObject):
                         settings = QgsSettings()
                         settings.setValue("/PythonPlugins/" + plugin["id"], True)
                 else:
-                    settings = QgsSettings()
-                    if settings.value("/PythonPlugins/" + key, False, type=bool):  # plugin will be reloaded on the fly only if currently loaded
-                        reloadPlugin(key)  # unloadPlugin + loadPlugin + startPlugin
+                    if pluginWasLoaded:
+                        loadPlugin(plugin["id"])
+                        startPlugin(plugin["id"])
                         infoString = (self.tr("Plugin reinstalled successfully"), "")
                     else:
                         unloadPlugin(key)  # Just for a case. Will exit quietly if really not loaded
