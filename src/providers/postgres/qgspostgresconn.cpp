@@ -676,7 +676,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QStringLiteral( " AND %1=%2" ).arg( schemaName, quotedString( schema ) );
 
     if ( !name.isEmpty() )
-      sql += QStringLiteral( " AND %1='%2'" ).arg( tableName, name );
+      sql += QStringLiteral( " AND %1=%2" ).arg( tableName, quotedString( name ) );
 
     sql += QString( " GROUP BY 1,2,3,4,5,6,7,c.oid,11" );
 
