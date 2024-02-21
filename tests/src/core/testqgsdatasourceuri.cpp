@@ -36,6 +36,7 @@ class TestQgsDataSourceUri: public QObject
     void checkAuthParams();
     void checkParameterKeys();
     void checkRemovePassword();
+    void checkUnicodeUri();
 };
 
 void TestQgsDataSourceUri::checkparser_data()
@@ -605,6 +606,14 @@ void TestQgsDataSourceUri::checkRemovePassword()
   const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
   QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
 }
+
+void TestQgsDataSourceUri::checkUnicodeUri()
+{
+  QgsDataSourceUri uri;
+  uri.setEncodedUri( QStringLiteral( "url=file:///directory/テスト.mbtiles&type=mbtiles" ) );
+  QCOMPARE( uri.param( QStringLiteral( "url" ) ), QStringLiteral( "file:///directory/テスト.mbtiles" ) );
+}
+
 
 QGSTEST_MAIN( TestQgsDataSourceUri )
 #include "testqgsdatasourceuri.moc"
