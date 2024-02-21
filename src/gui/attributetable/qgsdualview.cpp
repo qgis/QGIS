@@ -989,7 +989,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mHorizontalHeaderMenu->addSeparator();
   bool fieldCalculatorEnabled = false;
 
-  if ( fieldOrigin == 1 || fieldOrigin == 3 )
+  if ( fieldOrigin == QgsFields::OriginProvider || fieldOrigin == QgsFields::OriginEdit )
     fieldCalculatorEnabled = true;
 
   if ( fieldOrigin == 2 )
