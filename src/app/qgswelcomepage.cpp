@@ -154,7 +154,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
   mVersionInformation->setReadOnly( true );
   mVersionInformation->setOpenExternalLinks( true );
-  mVersionInformation->setStyleSheet( QStringLiteral( "QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+  mVersionInformation->setStyleSheet( QStringLiteral( "QTextEdit { background-color: #dff0d8; color:#000000; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
                                       "QScrollBar { background-color: rgba(0,0,0,0); } "
                                       "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
                                       "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " ) );
