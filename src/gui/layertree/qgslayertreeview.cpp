@@ -111,6 +111,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 #endif
 
   mProxyModel->setShowPrivateLayers( mShowPrivateLayers );
+  mProxyModel->setHideValidLayers( mHideValidLayers );
   QTreeView::setModel( mProxyModel );
 
   connect( treeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
@@ -601,9 +602,20 @@ void QgsLayerTreeView::setShowPrivateLayers( bool showPrivate )
   mProxyModel->setShowPrivateLayers( showPrivate );
 }
 
-bool QgsLayerTreeView::showPrivateLayers()
+void QgsLayerTreeView::setHideValidLayers( bool hideValid )
+{
+  mHideValidLayers = hideValid;
+  mProxyModel->setHideValidLayers( mHideValidLayers );
+}
+
+bool QgsLayerTreeView::showPrivateLayers() const
 {
   return mShowPrivateLayers;
+}
+
+bool QgsLayerTreeView::hideValidLayers() const
+{
+  return mHideValidLayers;
 }
 
 void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -852,6 +864,9 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
     {
       return false;
     }
+    if ( mHideValidLayers && layer->isValid() )
+      return false;
+
     return true;
   }
 }
@@ -863,6 +878,23 @@ bool QgsLayerTreeProxyModel::showPrivateLayers() const
 
 void QgsLayerTreeProxyModel::setShowPrivateLayers( bool showPrivate )
 {
+  if ( showPrivate == mShowPrivateLayers )
+    return;
+
   mShowPrivateLayers = showPrivate;
+  invalidateFilter();
+}
+
+bool QgsLayerTreeProxyModel::hideValidLayers() const
+{
+  return mHideValidLayers;
+}
+
+void QgsLayerTreeProxyModel::setHideValidLayers( bool hideValid )
+{
+  if ( hideValid == mHideValidLayers )
+    return;
+
+  mHideValidLayers = hideValid;
   invalidateFilter();
 }

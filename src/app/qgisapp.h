@@ -2643,6 +2643,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolButton *mFilterLegendToolButton = nullptr;
     QAction *mFilterLegendByMapContentAction = nullptr;
     QAction *mFilterLegendToggleShowPrivateLayersAction = nullptr;
+    QAction *mFilterLegendToggleHideValidLayersAction = nullptr;
     QAction *mActionStyleDock = nullptr;
 
     QgsLegendFilterButton *mLegendExpressionFilterButton = nullptr;

@@ -46,6 +46,24 @@ Returns if private layers are shown.
 Determines if private layers are shown.
 %End
 
+    bool hideValidLayers() const;
+%Docstring
+Returns if valid layers should be hidden (i.e. only invalid layers are shown).
+
+.. seealso:: :py:func:`setHideValidLayers`
+
+.. versionadded:: 3.38
+%End
+
+    void setHideValidLayers( bool hideValid );
+%Docstring
+Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
+
+.. seealso:: :py:func:`setHideValidLayers`
+
+.. versionadded:: 3.38
+%End
+
   protected:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
@@ -324,6 +342,22 @@ Returns width of contextual menu mark, at right of layer node items.
 
 
 
+    bool showPrivateLayers() const;
+%Docstring
+Returns the show private layers status
+
+.. versionadded:: 3.18
+%End
+
+    bool hideValidLayers() const;
+%Docstring
+Returns if valid layers should be hidden (i.e. only invalid layers are shown).
+
+.. seealso:: :py:func:`setHideValidLayers`
+
+.. versionadded:: 3.38
+%End
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
@@ -363,11 +397,13 @@ Set the show private layers to ``showPrivate``
 .. versionadded:: 3.18
 %End
 
-    bool showPrivateLayers( );
+    void setHideValidLayers( bool hideValid );
 %Docstring
-Returns the show private layers status
+Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
 
-.. versionadded:: 3.18
+.. seealso:: :py:func:`setHideValidLayers`
+
+.. versionadded:: 3.38
 %End
 
   signals:
