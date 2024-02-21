@@ -2395,17 +2395,11 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
     // end with a layer URI without layername
     if ( !oldSubsetString.isEmpty() )
     {
-      const QStringList tableNames {QgsOgrProviderUtils::tableNamesFromSelectSQL( oldSubsetString ) };
+      const QStringList tableNames { QgsOgrProviderUtils::tableNamesFromSelectSQL( oldSubsetString ) };
       if ( tableNames.size() > 0 )
       {
         mLayerName = tableNames.at( 0 );
       }
-    }
-
-    // Fallback to whatever the driver guessed
-    if ( mLayerName.isEmpty() )
-    {
-      mLayerName = mOgrLayer->name();
     }
 
   }
