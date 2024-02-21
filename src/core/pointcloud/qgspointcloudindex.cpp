@@ -119,7 +119,7 @@ uint qHash( const QgsPointCloudCacheKey &key )
 
 QgsPointCloudDataBounds::QgsPointCloudDataBounds() = default;
 
-QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax )
+QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint64 xmin, qint64 ymin, qint64 zmin, qint64 xmax, qint64 ymax, qint64 zmax )
   : mXMin( xmin )
   , mYMin( ymin )
   , mZMin( zmin )
@@ -130,32 +130,32 @@ QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint
 
 }
 
-qint32 QgsPointCloudDataBounds::xMin() const
+qint64 QgsPointCloudDataBounds::xMin() const
 {
   return mXMin;
 }
 
-qint32 QgsPointCloudDataBounds::yMin() const
+qint64 QgsPointCloudDataBounds::yMin() const
 {
   return mYMin;
 }
 
-qint32 QgsPointCloudDataBounds::xMax() const
+qint64 QgsPointCloudDataBounds::xMax() const
 {
   return mXMax;
 }
 
-qint32 QgsPointCloudDataBounds::yMax() const
+qint64 QgsPointCloudDataBounds::yMax() const
 {
   return mYMax;
 }
 
-qint32 QgsPointCloudDataBounds::zMin() const
+qint64 QgsPointCloudDataBounds::zMin() const
 {
   return mZMin;
 }
 
-qint32 QgsPointCloudDataBounds::zMax() const
+qint64 QgsPointCloudDataBounds::zMax() const
 {
   return mZMax;
 }
@@ -225,10 +225,9 @@ QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
 
 QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudNode &n ) const
 {
-  qint32 xMin = -999999999, yMin = -999999999, zMin = -999999999;
-  qint32 xMax = 999999999, yMax = 999999999, zMax = 999999999;
+  qint64 xMin, yMin, zMin, xMax, yMax, zMax;
 
-  const int d = mRootBounds.xMax() - mRootBounds.xMin();
+  const qint64 d = mRootBounds.xMax() - mRootBounds.xMin();
   const double dLevel = ( double )d / pow( 2, n.d() );
 
   xMin = round( mRootBounds.xMin() + dLevel * n.x() );
