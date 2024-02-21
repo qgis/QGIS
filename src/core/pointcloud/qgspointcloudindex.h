@@ -121,25 +121,25 @@ class CORE_EXPORT QgsPointCloudDataBounds
     //! Constructs invalid bounds
     QgsPointCloudDataBounds();
     //! Constructs bounds
-    QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax );
+    QgsPointCloudDataBounds( qint64 xmin, qint64 ymin, qint64 zmin, qint64 xmax, qint64 ymax, qint64 zmax );
 
     //! Returns x min
-    qint32 xMin() const;
+    qint64 xMin() const;
 
     //! Returns y min
-    qint32 yMin() const;
+    qint64 yMin() const;
 
     //! Returns z min
-    qint32 zMin() const;
+    qint64 zMin() const;
 
     //! Returns x max
-    qint32 xMax() const;
+    qint64 xMax() const;
 
     //! Returns y max
-    qint32 yMax() const;
+    qint64 yMax() const;
 
     //! Returns z max
-    qint32 zMax() const;
+    qint64 zMax() const;
 
     //! Returns 2D rectangle in map coordinates
     QgsRectangle mapExtent( const QgsVector3D &offset, const QgsVector3D &scale ) const;
@@ -148,12 +148,12 @@ class CORE_EXPORT QgsPointCloudDataBounds
     QgsDoubleRange zRange( const QgsVector3D &offset, const QgsVector3D &scale ) const;
 
   private:
-    qint32 mXMin = 0;
-    qint32 mYMin = 0;
-    qint32 mZMin = 0;
-    qint32 mXMax = 0;
-    qint32 mYMax = 0;
-    qint32 mZMax = 0;
+    qint64 mXMin = 0;
+    qint64 mYMin = 0;
+    qint64 mZMin = 0;
+    qint64 mXMax = 0;
+    qint64 mYMax = 0;
+    qint64 mZMax = 0;
 };
 
 /**
