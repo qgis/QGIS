@@ -80,6 +80,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 
     void applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node );
     void retrieveAllLayers( QgsLayerTreeNode *node, QSet<QString> &layers );
+    void enableDataDefinedBlocks( bool enabled );
 };
 
 class QgsDxfExportLayerTreeView : public QgsLayerTreeView

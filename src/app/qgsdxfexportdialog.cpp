@@ -612,18 +612,20 @@ void QgsVectorLayerAndAttributeModel::deSelectAll()
 
 void QgsVectorLayerAndAttributeModel::selectDataDefinedBlocks()
 {
-  for ( const auto &key : mCreateDDBlockInfo.keys() )
-  {
-    mCreateDDBlockInfo[key] = true;
-  }
-  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
+  enableDataDefinedBlocks( true );
 }
 
 void QgsVectorLayerAndAttributeModel::deselectDataDefinedBlocks()
 {
-  for ( const auto &key : mCreateDDBlockInfo.keys() )
+  enableDataDefinedBlocks( false );
+}
+
+void QgsVectorLayerAndAttributeModel::enableDataDefinedBlocks( bool enabled )
+{
+  QHash<const QgsVectorLayer *, bool>::const_iterator it = mCreateDDBlockInfo.constBegin();
+  for ( ; it != mCreateDDBlockInfo.constEnd(); ++it )
   {
-    mCreateDDBlockInfo[key] = false;
+    mCreateDDBlockInfo[it.key()] = enabled;
   }
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
