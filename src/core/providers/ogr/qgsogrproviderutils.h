@@ -123,6 +123,7 @@ class CORE_EXPORT QgsOgrProviderUtils
     static QStringList fileExtensions();
     static QStringList directoryExtensions();
     static QStringList wildcards();
+    static QStringList tableNamesFromSelectSQL( const QString &sql );
 
     //! Whether the file is a local file.
     static bool IsLocalFile( const QString &path );
@@ -300,6 +301,7 @@ class CORE_EXPORT QgsOgrProviderUtils
         ~DeferDatasetClosing() { QgsOgrProviderUtils::decrementDeferDatasetClosingCounter(); }
     };
 };
+
 
 /**
  * \class QgsOgrDataset

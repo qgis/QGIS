@@ -2342,6 +2342,8 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) )
     return true;
 
+  const QString oldSubsetString { mSubsetString };
+
   const bool subsetStringHasChanged { theSQL != mSubsetString };
 
   const QString cleanSql = QgsOgrProviderUtils::cleanSubsetString( theSQL );
@@ -2365,6 +2367,12 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
       mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, cleanSql );
       Q_ASSERT( mOgrSqlLayer.get() );
       mOgrLayer = mOgrSqlLayer.get();
+
+      const QStringList tableNames {QgsOgrProviderUtils::tableNamesFromSelectSQL( cleanSql ) };
+      if ( ! tableNames.isEmpty() )
+      {
+        mLayerName.clear();
+      }
     }
     else
     {
@@ -2382,6 +2390,24 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
       QMutexLocker locker( mutex );
       OGR_L_SetAttributeFilter( layer, nullptr );
     }
+
+    // Try to guess the table name from the old subset string or we might
+    // end with a layer URI without layername
+    if ( !oldSubsetString.isEmpty() )
+    {
+      const QStringList tableNames {QgsOgrProviderUtils::tableNamesFromSelectSQL( oldSubsetString ) };
+      if ( tableNames.size() > 0 )
+      {
+        mLayerName = tableNames.at( 0 );
+      }
+    }
+
+    // Fallback to whatever the driver guessed
+    if ( mLayerName.isEmpty() )
+    {
+      mLayerName = mOgrLayer->name();
+    }
+
   }
   mSubsetString = theSQL;
 
