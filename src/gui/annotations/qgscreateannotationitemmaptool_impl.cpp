@@ -165,6 +165,9 @@ QgsCreateLineItemMapTool::QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdv
 
 void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
 {
+  if ( line->isEmpty() )
+    return;
+
   // do it!
   std::unique_ptr< QgsAbstractGeometry > geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
@@ -195,6 +198,9 @@ QgsCreatePolygonItemMapTool::QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, 
 
 void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygon )
 {
+  if ( polygon->isEmpty() )
+    return;
+
   std::unique_ptr< QgsAbstractGeometry > geometry( polygon->exteriorRing()->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
   {
@@ -226,6 +232,9 @@ QgsCreateLineTextItemMapTool::QgsCreateLineTextItemMapTool( QgsMapCanvas *canvas
 
 void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
 {
+  if ( line->isEmpty() )
+    return;
+
   // do it!
   std::unique_ptr< QgsAbstractGeometry > geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
