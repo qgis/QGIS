@@ -2938,6 +2938,64 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertAlmostEqual(vl.extent3D().zMaximum(), 75.0, places=3)
         del vl
 
+    def testQueryLayers(self):
+        """Test issue GH #56345"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        filename = os.path.join(temp_path, "test.gpkg")
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(filename)
+        lyr = ds.CreateLayer("points", geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 2)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(3 4)'))
+        lyr.CreateFeature(f)
+        f = None
+
+        vl = QgsVectorLayer(filename + '|layername=points')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+
+        vl = QgsVectorLayer(filename)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+
+        # Add lines layer
+        lyr = ds.CreateLayer("lines", geom_type=ogr.wkbLineString)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LINESTRING(1 2, 3 4)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(filename + '|layername=lines')
+        self.assertEqual(vl.geometryType(), Qgis.GeometryType.Line)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+
+        vl = QgsVectorLayer(filename)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), Qgis.GeometryType.Point)
+        self.assertEqual(vl.featureCount(), 2)
+        self.assertIn("layername=points", vl.dataProvider().dataSourceUri())
+
+        # Set subset string to SELECT * FROM lines
+        vl.setSubsetString('SELECT * FROM lines WHERE fid > 0')
+        self.assertTrue(vl.isValid())
+        self.assertIn('|subset=SELECT * FROM lines WHERE fid > 0', vl.dataProvider().dataSourceUri())
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().type(), Qgis.GeometryType.Line)
+        self.assertEqual(vl.featureCount(), 1)
+        self.assertEqual(vl.geometryType(), Qgis.GeometryType.Line)
+
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertIn("layername=lines", vl.dataProvider().dataSourceUri())
+        self.assertEqual(vl.geometryType(), Qgis.GeometryType.Line)
+        self.assertEqual(vl.featureCount(), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
