@@ -143,9 +143,9 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   if ( layer->dataProvider() && layer->dataProvider()->elevationProperties() )
   {
     if ( layer->dataProvider()->elevationProperties()->containsElevationData() )
-      layer->setExtent3D( extent3D() );
+      layer->mExtent3D = mExtent3D;
     else
-      layer->setExtent( extent() );
+      layer->mExtent2D = mExtent2D;
   }
 
   layer->setMaximumScale( maximumScale() );
