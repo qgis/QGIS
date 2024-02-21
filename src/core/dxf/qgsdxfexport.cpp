@@ -2657,11 +2657,11 @@ void QgsDxfExport::createDDBlockInfo()
         }
 
         QHash <uint, DataDefinedBlockInfo > applyBlockSymbolMap;
-        QMapIterator<int, uint> occIt( occurrences ); occIt.toBack();
         int nInsertedClasses = 0;
-        while ( occIt.hasPrevious() )
+        QMultiMap<int, uint>::const_iterator occIt = occurrences.constEnd();
+        while ( occurrences.size() > 0 && occIt != occurrences.constBegin() )
         {
-          occIt.previous();
+          --occIt;
           applyBlockSymbolMap.insert( occIt.value(), blockSymbolMap[occIt.value()].second );
           ++nInsertedClasses;
           if ( ddMaxNumberOfClasses != -1 && nInsertedClasses >= ddMaxNumberOfClasses )
