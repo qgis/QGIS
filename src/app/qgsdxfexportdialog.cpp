@@ -34,6 +34,11 @@
 #include <QFileDialog>
 #include <QPushButton>
 
+const int LAYER_COL = 0;
+const int OUTPUT_LAYER_ATTRIBUTE_COL = 1;
+const int ALLOW_DD_SYMBOL_BLOCKS_COL = 2;
+const int MAXIMUM_DD_SYMBOL_BLOCKS_COL = 3;
+
 FieldSelectorDelegate::FieldSelectorDelegate( QObject *parent )
   : QItemDelegate( parent )
 {
@@ -43,11 +48,11 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 {
   Q_UNUSED( option )
 
-  if ( index.column() == 2 )
+  if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL )
   {
     return nullptr;
   }
-  else if ( index.column() == 3 )
+  else if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( le ) );
@@ -66,7 +71,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  if ( index.column() == 3 )
+  if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     QLineEdit *le = qobject_cast<QLineEdit *>( editor );
     if ( le )
@@ -91,7 +96,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( index.column() == 3 )
+  if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     QLineEdit *le = qobject_cast<QLineEdit *>( editor );
     if ( le )
@@ -160,19 +165,19 @@ int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) co
 Qt::ItemFlags QgsVectorLayerAndAttributeModel::flags( const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = vectorLayer( index );
-  if ( index.column() == 0 )
+  if ( index.column() == LAYER_COL )
   {
     return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
   }
-  else if ( index.column() == 1 )
+  else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
   {
     return vl ? Qt::ItemIsEnabled | Qt::ItemIsEditable : Qt::ItemIsEnabled;
   }
-  else if ( index.column() == 2 )
+  else if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL )
   {
     return ( vl && vl->geometryType() == Qgis::GeometryType::Point ) ? Qt::ItemIsEnabled | Qt::ItemIsUserCheckable : Qt::ItemIsEnabled ;
   }
-  else if ( index.column() == 3 )
+  else if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     return vl && vl->geometryType() == Qgis::GeometryType::Point ? Qt::ItemIsEnabled | Qt::ItemIsEditable : Qt::ItemIsEnabled;
   }
@@ -199,22 +204,22 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
   {
     if ( role == Qt::DisplayRole )
     {
-      if ( section == 0 )
+      if ( section == LAYER_COL )
         return tr( "Layer" );
-      else if ( section == 1 )
+      else if ( section == OUTPUT_LAYER_ATTRIBUTE_COL )
         return tr( "Output Layer Attribute" );
-      else if ( section == 2 )
+      else if ( section == ALLOW_DD_SYMBOL_BLOCKS_COL )
       {
         return tr( "Allow data defined symbol blocks" );
       }
-      else if ( section == 3 )
+      else if ( section == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
       {
         return tr( "Maximum number of symbol blocks" );
       }
     }
     else if ( role == Qt::ToolTipRole )
     {
-      if ( section == 1 )
+      if ( section == OUTPUT_LAYER_ATTRIBUTE_COL )
         return tr( "Attribute containing the name of the destination layer in the DXF output." );
     }
   }
@@ -224,7 +229,7 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role ) const
 {
   QgsVectorLayer *vl = vectorLayer( idx );
-  if ( idx.column() == 0 )
+  if ( idx.column() == LAYER_COL )
   {
     if ( role == Qt::CheckStateRole )
     {
@@ -275,7 +280,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
     else
       return QgsLayerTreeModel::data( idx, role );
   }
-  else if ( idx.column() == 2 )
+  else if ( idx.column() == ALLOW_DD_SYMBOL_BLOCKS_COL )
   {
     if ( !vl || vl->geometryType() != Qgis::GeometryType::Point )
     {
@@ -292,7 +297,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       return QgsLayerTreeModel::data( idx, role );
     }
   }
-  else if ( idx.column() == 3 )
+  else if ( idx.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     if ( !vl || vl->geometryType() != Qgis::GeometryType::Point )
     {
@@ -313,7 +318,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
   }
 
 
-  if ( idx.column() == 1 && vl )
+  if ( idx.column() == OUTPUT_LAYER_ATTRIBUTE_COL && vl )
   {
     int idx = mAttributeIdx.value( vl, -1 );
     if ( role == Qt::EditRole )
@@ -338,7 +343,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
 
 bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( index.column() == 0 && role == Qt::CheckStateRole )
+  if ( index.column() == LAYER_COL && role == Qt::CheckStateRole )
   {
     int i = 0;
     for ( i = 0; ; i++ )
@@ -366,7 +371,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
   }
 
   QgsVectorLayer *vl = vectorLayer( index );
-  if ( index.column() == 1 )
+  if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
   {
     if ( role != Qt::EditRole )
       return false;
@@ -379,7 +384,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
     }
   }
 
-  if ( index.column() == 2 && role == Qt::CheckStateRole )
+  if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL && role == Qt::CheckStateRole )
   {
     if ( vl )
     {
@@ -387,7 +392,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
       return true;
     }
   }
-  else if ( index.column() == 3 && role == Qt::EditRole )
+  else if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL && role == Qt::EditRole )
   {
     if ( vl )
     {
