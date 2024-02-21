@@ -34,6 +34,7 @@ class QgsLayoutItemGuiRegistry;
 class QgsAnnotationItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
+class QgsProcessingFavoriteAlgorithmLog;
 class QgsProcessingRecentAlgorithmLog;
 class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
@@ -156,6 +157,12 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.4
      */
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
+
+    /**
+     * Returns the global Processing favorite algorithm log, used for tracking favorite Processing algorithms.
+     * \since QGIS 3.38
+     */
+    static QgsProcessingFavoriteAlgorithmLog *processingFavoriteAlgorithmLog();
 
     /**
      * Returns the global data item GUI provider registry, used for tracking providers which affect the browser
@@ -323,6 +330,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsAnnotationItemGuiRegistry *mAnnotationItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
+    QgsProcessingFavoriteAlgorithmLog *mProcessingFavoriteAlgorithmLog = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
     QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
