@@ -648,10 +648,10 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
-    layerElement.appendChild( QgsXmlUtils::writeBox3D( extent3D(), document ) );
-  else
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( extent(), document ) );
+  if ( !mExtent3D.isNull() && dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
+    layerElement.appendChild( QgsXmlUtils::writeBox3D( mExtent3D, document ) );
+  else if ( !mExtent2D.isNull() )
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent2D, document ) );
 
   layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
 
