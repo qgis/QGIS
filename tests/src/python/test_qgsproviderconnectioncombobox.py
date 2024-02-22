@@ -176,11 +176,13 @@ class TestQgsProviderConnectionComboBox(unittest.TestCase):
         self.assertEqual(m.currentConnectionUri(), self.gpkg_path)
         self.assertEqual(len(spy), 3)
 
+        # deleting the selected connection when we are allowing empty
+        # connections should fallback to the empty item
         md.deleteConnection('qgis_test1')
-        self.assertEqual(m.currentConnection(), 'aaa_qgis_test2')
-        self.assertEqual(m.currentConnectionUri(), self.gpkg_path2)
+        self.assertFalse(m.currentConnection())
+        self.assertFalse(m.currentConnectionUri())
         self.assertEqual(len(spy), 4)
-        self.assertEqual(spy[-1][0], 'aaa_qgis_test2')
+        self.assertFalse(spy[-1][0])
 
 
 if __name__ == '__main__':

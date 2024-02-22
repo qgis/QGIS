@@ -33,7 +33,8 @@ void QgsProviderConnectionComboBox::setProvider( const QString &provider )
   {
     disconnect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsProviderConnectionComboBox::indexChanged );
     disconnect( mSortModel, &QAbstractItemModel::rowsInserted, this, &QgsProviderConnectionComboBox::rowsChanged );
-    disconnect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsProviderConnectionComboBox::rowsChanged );
+    disconnect( mSortModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, &QgsProviderConnectionComboBox::rowsAboutToBeRemoved );
+    disconnect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsProviderConnectionComboBox::rowsRemoved );
     delete mSortModel;
     delete mModel;
   }
@@ -52,7 +53,8 @@ void QgsProviderConnectionComboBox::setProvider( const QString &provider )
 
   connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsProviderConnectionComboBox::indexChanged );
   connect( mSortModel, &QAbstractItemModel::rowsInserted, this, &QgsProviderConnectionComboBox::rowsChanged );
-  connect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsProviderConnectionComboBox::rowsChanged );
+  connect( mSortModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, &QgsProviderConnectionComboBox::rowsAboutToBeRemoved );
+  connect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsProviderConnectionComboBox::rowsRemoved );
 }
 
 void QgsProviderConnectionComboBox::setAllowEmptyConnection( bool allowEmpty )
@@ -133,6 +135,25 @@ void QgsProviderConnectionComboBox::rowsChanged()
   else if ( count() == 0 )
   {
     emit connectionChanged( QString() );
+  }
+}
+
+void QgsProviderConnectionComboBox::rowsAboutToBeRemoved()
+{
+  mPreviousConnection = currentConnection();
+}
+
+void QgsProviderConnectionComboBox::rowsRemoved()
+{
+  if ( currentIndex() == -1 )
+  {
+    setCurrentIndex( 0 );
+  }
+
+  const QString newConnection = currentConnection();
+  if ( mPreviousConnection != newConnection )
+  {
+    emit connectionChanged( newConnection );
   }
 }
 
