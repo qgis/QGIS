@@ -1296,7 +1296,6 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
 
   if ( res )
   {
-    mWkbType = mDataProvider->wkbType();
     emit subsetStringChanged();
     triggerRepaint();
   }
