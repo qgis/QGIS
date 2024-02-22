@@ -73,7 +73,6 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
                     QStringList &descriptions, QString &errCause ) override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) final;
-    QgsLayerMetadata loadLayerMetadata( const QString &layerUri, bool &found ) override;
 
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;
@@ -86,9 +85,9 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
 
   protected:
+
     QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
 
-  public:
 
 };
 

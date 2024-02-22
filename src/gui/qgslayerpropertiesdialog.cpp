@@ -139,7 +139,7 @@ void QgsLayerPropertiesDialog::loadDefaultMetadata()
     return;
 
   bool defaultLoadedFlag = false;
-  const QString message = mLayer->loadDefaultMetadata( defaultLoadedFlag );
+  const QString message = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {

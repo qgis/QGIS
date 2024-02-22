@@ -32,11 +32,6 @@ class QgsPostgresProviderMetadataUtils
 
     static QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback );
     static bool saveLayerMetadata( const Qgis::LayerType &layerType, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage );
-
-    // Load metadata for a layer
-    static QgsLayerMetadata loadLayerMetadata( const Qgis::LayerType &layerType, const QString &layerUri, bool &found );
-
 };
-
 
 #endif // QGSPOSTGRESPROVIDERMETADATAUTILS_H

@@ -267,7 +267,6 @@ class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
-    QgsLayerMetadata loadLayerMetadata( const QString &layerUri, bool &found ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 };
 

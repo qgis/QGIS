@@ -297,11 +297,6 @@ bool QgsProviderMetadata::saveLayerMetadata( const QString &, const QgsLayerMeta
   throw QgsNotSupportedException( QObject::tr( "Provider %1 does not support writing layer metadata" ).arg( key() ) );
 }
 
-QgsLayerMetadata QgsProviderMetadata::loadLayerMetadata( const QString &, bool & )
-{
-  throw QgsNotSupportedException( QObject::tr( "Provider %1 does not support reading layer metadata" ).arg( key() ) );
-}
-
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createDb" ) );
