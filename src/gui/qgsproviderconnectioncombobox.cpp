@@ -145,15 +145,20 @@ void QgsProviderConnectionComboBox::rowsAboutToBeRemoved()
 
 void QgsProviderConnectionComboBox::rowsRemoved()
 {
-  if ( currentIndex() == -1 )
-  {
-    setCurrentIndex( 0 );
-  }
-
   const QString newConnection = currentConnection();
   if ( mPreviousConnection != newConnection )
   {
-    emit connectionChanged( newConnection );
+    if ( mModel->allowEmptyConnection() )
+    {
+      // if current connection was removed, reset to empty connection item
+      setCurrentIndex( 0 );
+    }
+    if ( currentIndex() == -1 )
+    {
+      // make sure we have a valid selection
+      setCurrentIndex( 0 );
+    }
+    emit connectionChanged( currentConnection() );
   }
 }
 
