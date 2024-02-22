@@ -534,6 +534,10 @@ def unloadPlugin(packageName: str) -> bool:
 def _unloadPluginModules(packageName: str):
     """ unload plugin package with all its modules (files) """
     global _plugin_modules
+
+    if packageName not in _plugin_modules:
+        return
+
     mods = _plugin_modules[packageName]
 
     for mod in mods:
