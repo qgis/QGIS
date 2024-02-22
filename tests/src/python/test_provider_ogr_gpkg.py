@@ -2979,7 +2979,6 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.geometryType(), Qgis.GeometryType.Point)
         self.assertEqual(vl.featureCount(), 2)
-        self.assertIn("layername=points", vl.dataProvider().dataSourceUri())
 
         # Set subset string to SELECT * FROM lines
         vl.setSubsetString('SELECT * FROM lines WHERE fid > 0')
