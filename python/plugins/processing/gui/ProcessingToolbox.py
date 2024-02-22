@@ -73,7 +73,8 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
-                                       QgsGui.instance().processingRecentAlgorithmLog())
+                                       QgsGui.instance().processingRecentAlgorithmLog(),
+                                       QgsGui.instance().processingFavoriteAlgorithmLog())
         filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.Filter.FilterToolbox)
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
             filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
@@ -196,6 +197,15 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             editRenderingStylesAction.triggered.connect(
                 self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
+
+            popupmenu.addSeparator()
+            actionText = QCoreApplication.translate('ProcessingToolbox', 'Add to Favorites')
+            if QgsGui.instance().processingFavoriteAlgorithmLog().isFavorite(alg.id()):
+                actionText = QCoreApplication.translate('ProcessingToolbox', 'Remove from Favorites')
+            favoriteAction = QAction(actionText, popupmenu)
+            favoriteAction.triggered.connect(self.toggleFavorite)
+            popupmenu.addAction(favoriteAction)
+
             actions = ProviderContextMenuActions.actions
             if len(actions) > 0:
                 popupmenu.addSeparator()
@@ -230,3 +240,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         alg = self.algorithmTree.selectedAlgorithm()
         if alg is not None:
             self.executeWithGui.emit(alg.id(), self, self.in_place_mode, False)
+
+    def toggleFavorite(self):
+        alg = self.algorithmTree.selectedAlgorithm()
+        if alg is not None:
+            if QgsGui.instance().processingFavoriteAlgorithmLog().isFavorite(alg.id()):
+                QgsGui.instance().processingFavoriteAlgorithmLog().remove(alg.id())
+            else:
+                QgsGui.instance().processingFavoriteAlgorithmLog().add(alg.id())
