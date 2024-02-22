@@ -95,6 +95,16 @@ parameters, just before entering the main switch for core services.
 .. versionadded:: 3.24
 %End
 
+    virtual bool onProjectReady();
+%Docstring
+Method called when the :py:class:`QgsProject` instance is ready to be used to perform the request,
+just before entering the main switch for core services.
+
+:return: true if the call must propagate to the subsequent filters, false otherwise
+
+.. versionadded:: 3.36
+%End
+
     virtual bool onResponseComplete();
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` processing has done and

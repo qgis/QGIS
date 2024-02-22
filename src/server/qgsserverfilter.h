@@ -106,6 +106,16 @@ class SERVER_EXPORT QgsServerFilter
     virtual bool onRequestReady();
 
     /**
+     * Method called when the QgsProject instance is ready to be used to perform the request,
+     * just before entering the main switch for core services.
+     *
+     * \return true if the call must propagate to the subsequent filters, false otherwise
+     *
+     * \since QGIS 3.36
+     */
+    virtual bool onProjectReady();
+
+    /**
      * Method called when the QgsRequestHandler processing has done and
      * the response is ready, just after the main switch for core services
      * and before final sending response to FCGI stdout.

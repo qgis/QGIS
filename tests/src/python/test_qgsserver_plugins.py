@@ -304,6 +304,10 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 request = self.serverInterface().requestHandler()
                 return self.propagate
 
+            def onProjectReady(self):
+                request = self.serverInterface().requestHandler()
+                return self.propagate
+
             def onSendResponse(self):
                 request = self.serverInterface().requestHandler()
                 request.clearBody()
@@ -324,10 +328,16 @@ class TestQgsServerPlugins(QgsServerTestBase):
             def __init__(self, iface):
                 super().__init__(iface)
                 self.request_ready = False
+                self.project_ready = False
 
             def onRequestReady(self):
                 request = self.serverInterface().requestHandler()
                 self.request_ready = True
+                return True
+
+            def onProjectReady(self):
+                request = self.serverInterface().requestHandler()
+                self.project_ready = True
                 return True
 
             def onSendResponse(self):
@@ -359,12 +369,14 @@ class TestQgsServerPlugins(QgsServerTestBase):
         filter1.propagate = False
         _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
         self.assertFalse(filter2.request_ready)
+        self.assertFalse(filter2.project_ready)
         self.assertEqual(body, b'ABC')
 
         # Test with propagation
         filter1.propagate = True
         _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
         self.assertTrue(filter2.request_ready)
+        self.assertTrue(filter2.project_ready)
         self.assertEqual(body, b'ABDCE')
 
         serverIface.setFilters({})
