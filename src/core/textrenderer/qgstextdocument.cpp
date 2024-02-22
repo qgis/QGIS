@@ -120,7 +120,6 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
           {
             block.append( QgsTextFragment( fragment ) );
           }
-
         }
         it++;
       }
@@ -132,7 +131,6 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
       if ( !sourceBlock.isValid() )
         break;
     }
-
   }
 
   return document;
