@@ -52,6 +52,7 @@ class QgsSplitLinesByLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
 
   private:
 
