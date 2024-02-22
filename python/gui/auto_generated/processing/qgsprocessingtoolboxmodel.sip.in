@@ -38,6 +38,8 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent )
         sipType = sipType_QgsProcessingToolboxModelRecentNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite )
+        sipType = sipType_QgsProcessingToolboxModelFavoriteNode;
     }
     else
       sipType = 0;
@@ -51,6 +53,7 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
       Group,
       Algorithm,
       Recent,
+      Favorite,
     };
 
     ~QgsProcessingToolboxModelNode();
@@ -117,6 +120,32 @@ Processing toolbox model node corresponding to the recent algorithms group
     QgsProcessingToolboxModelRecentNode();
 %Docstring
 Constructor for QgsProcessingToolboxModelRecentNode.
+%End
+
+    virtual NodeType nodeType() const;
+
+};
+
+class QgsProcessingToolboxModelFavoriteNode : QgsProcessingToolboxModelNode
+{
+%Docstring(signature="appended")
+Processing toolbox model node corresponding to the favorite algorithms group
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtoolboxmodel.h"
+%End
+  public:
+
+    QgsProcessingToolboxModelFavoriteNode();
+%Docstring
+Constructor for :py:class:`QgsProcessingToolboxModelRecentNode`.
 %End
 
     virtual NodeType nodeType() const;
@@ -262,7 +291,8 @@ of this model.
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
-                               QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+                               QgsProcessingRecentAlgorithmLog *recentLog = 0,
+                               QgsProcessingFavoriteAlgorithmLog *favoriteLog = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxModel, with the given ``parent`` object.
 
@@ -273,6 +303,9 @@ by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
+
+If ``favoriteLog`` is specified then it will be used to create a "Favorites" top
+level group containing favorite algorithms. Since QGIS 3.38
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -360,6 +393,11 @@ Returns the index corresponding to the parent of a given node.
 Emitted whenever recent algorithms are added to the model.
 %End
 
+    void favoriteAlgorithmAdded();
+%Docstring
+Emitted whenever favorite algorithms are added to the model.
+%End
+
 };
 
 
@@ -391,7 +429,8 @@ the results.
 
     explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0,
         QgsProcessingRegistry *registry = 0,
-        QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+        QgsProcessingRecentAlgorithmLog *recentLog = 0,
+        QgsProcessingFavoriteAlgorithmLog *favoriteLog = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxProxyModel, with the given ``parent`` object.
 
@@ -402,6 +441,9 @@ by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
+
+If ``favoriteLog`` is specified then it will be used to create a "Favorites" top
+level group containing favorite algorithms. SInce QGIS 3.38
 %End
 
     QgsProcessingToolboxModel *toolboxModel();
