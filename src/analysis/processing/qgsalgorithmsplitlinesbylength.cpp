@@ -149,6 +149,11 @@ Qgis::ProcessingFeatureSourceFlags QgsSplitLinesByLengthAlgorithm::sourceFlags()
   return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
+QgsFeatureSink::SinkFlags QgsSplitLinesByLengthAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 
 ///@endcond
 
