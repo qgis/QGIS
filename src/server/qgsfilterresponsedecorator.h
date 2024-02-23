@@ -47,6 +47,12 @@ class QgsFilterResponseDecorator: public QgsServerResponse
      */
     void start() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
 
+    /**
+     * Call filters projectReady() method
+     * \since QGIS 3.36
+     */
+    void ready() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
+
     // QgsServerResponse overrides
 
     void setHeader( const QString &key, const QString &value ) override {  mResponse.setHeader( key, value ); }
@@ -85,8 +91,3 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 };
 
 #endif
-
-
-
-
-
