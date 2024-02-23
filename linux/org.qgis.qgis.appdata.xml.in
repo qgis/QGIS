@@ -6,7 +6,7 @@
   <screenshots>
     <screenshot type="default"><caption>QGIS</caption><image type="source">https://qgis.org/en/_static/images/about-screenshot.png</image></screenshot>
   </screenshots>
-  <developer id="qgis.org">QGIS Development Team</developer>
+  <developer id="qgis.org"><name>QGIS Development Team</name></developer>
   <description><p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p></description>
 
   <metadata_license>CC-BY-3.0</metadata_license>
