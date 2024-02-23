@@ -249,10 +249,16 @@ class QgsServerTestBase(QgisTestCase):
             # TODO fix this, it's not actually testing anything..!
             return True
 
+        rendered_image = QImage(temp_image)
+        if rendered_image.format() not in (QImage.Format.Format_RGB32,
+                                           QImage.Format.Format_ARGB32,
+                                           QImage.Format.Format_ARGB32_Premultiplied):
+            rendered_image = rendered_image.convertToFormat(QImage.Format.Format_ARGB32)
+
         return self.image_check(
             control_image,
             control_image,
-            QImage(temp_image),
+            rendered_image,
             control_image,
             allowed_mismatch=max_diff,
             control_path_prefix="qgis_server",
