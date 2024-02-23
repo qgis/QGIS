@@ -320,7 +320,7 @@ class TestQgsArcGisRestUtils(QgisTestCase):
 
         # with special characters
 
-        attributes[0] = 'aaa" , . - ; : ä ö ü è é à ? + &'
+        attributes[0] = 'aaa" \' , . - ; : ä ö ü è é à ? + & \\ /'
         test_feature.setAttributes(attributes)
         res = QgsArcGisRestUtils.featureToJson(test_feature, context, flags=QgsArcGisRestUtils.FeatureToJsonFlags(QgsArcGisRestUtils.FeatureToJsonFlag.IncludeNonObjectIdAttributes))
         self.assertEqual(res, {'attributes': {'a_boolean_field': True,
@@ -328,7 +328,7 @@ class TestQgsArcGisRestUtils(QgisTestCase):
                                               'a_date_field': 1646352000000,
                                               'a_double_field': 5.5,
                                               'a_int_field': 5,
-                                              'a_string_field': 'aaa%22%20%2C%20.%20-%20%3B%20%3A%20%C3%A4%20%C3%B6%20%C3%BC%20%C3%A8%20%C3%A9%20%C3%A0%20%3F%20%2B%20%26',
+                                              'a_string_field': """aaa%5C%22%20'%20%2C%20.%20-%20%3B%20%3A%20%C3%A4%20%C3%B6%20%C3%BC%20%C3%A8%20%C3%A9%20%C3%A0%20%3F%20%2B%20%26%20%5C%5C%20%2F""",
                                               'a_null_value': None}})
 
     def test_field_to_json(self):
