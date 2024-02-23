@@ -2995,6 +2995,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertIn("layername=lines", vl.dataProvider().dataSourceUri())
         # This fails because the vector layer doesn't know about the new geometry type
         # self.assertEqual(vl.geometryType(), Qgis.GeometryType.Line)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().type(), Qgis.GeometryType.Line)
         self.assertEqual(vl.featureCount(), 1)
 
 
