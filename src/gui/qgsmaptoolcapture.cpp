@@ -1414,11 +1414,11 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           curveToAdd.reset( captureCurve()->clone() );
         }
-        QgsCurvePolygon *poly = new QgsCurvePolygon();
+        std::unique_ptr<QgsCurvePolygon> poly{new QgsCurvePolygon()};
         poly->setExteriorRing( curveToAdd.release() );
         g = QgsGeometry( poly->clone() );
         geometryCaptured( g );
-        polygonCaptured( poly );
+        polygonCaptured( poly.get() );
       }
 
       stopCapturing();
