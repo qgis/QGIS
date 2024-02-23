@@ -1317,27 +1317,6 @@ QString QgsMapLayer::loadDefaultMetadata( bool &resultFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-
-  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
-  {
-    if ( metadata->providerCapabilities() & QgsProviderMetadata::ProviderCapability::LoadLayerMetadata )
-    {
-      try
-      {
-        const QgsLayerMetadata metadata { QgsProviderRegistry::instance()->loadLayerMetadata( providerType(), mDataSource, resultFlag ) };
-        if ( resultFlag )
-        {
-          mMetadata = metadata;
-          return tr( "Successfully loaded default layer metadata" );
-        }
-      }
-      catch ( QgsNotSupportedException & )
-      {
-        // fallback to loadNamedMetadata
-      }
-    }
-  }
-
   return loadNamedMetadata( metadataUri(), resultFlag );
 }
 
