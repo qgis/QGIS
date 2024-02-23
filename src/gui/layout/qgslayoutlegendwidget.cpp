@@ -1167,13 +1167,16 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   legendContext.appendScope( vl->createExpressionContextScope() );
 
   QStringList highlighted;
-  const QList<QgsLayerTreeModelLegendNode *> legendnodes = mLegend->model()->layerLegendNodes( layerNode, false );
-  if ( !legendnodes.isEmpty() )
+  if ( QgsLegendModel *model = mLegend->model() )
   {
-    if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+    const QList<QgsLayerTreeModelLegendNode *> legendNodes = model->layerLegendNodes( layerNode, false );
+    if ( !legendNodes.isEmpty() )
     {
-      legendContext.appendScope( symnode->createSymbolScope() );
-      highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
+      if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
+      {
+        legendContext.appendScope( symbolNode->createSymbolScope() );
+        highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
+      }
     }
   }
 
@@ -2092,5 +2095,3 @@ bool QgsLayoutLegendMapFilteringModel::filterAcceptsRow( int source_row, const Q
 
 
 ///@endcond
-
-
