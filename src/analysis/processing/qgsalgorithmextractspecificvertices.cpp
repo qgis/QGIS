@@ -50,9 +50,9 @@ QString QgsExtractSpecificVerticesAlgorithm::groupId() const
 QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points "
-                      "representing specific vertices in the input lines or polygons. For instance, this algorithm "
+                      "representing specific vertices in the input geometries. For instance, this algorithm "
                       "can be used to extract the first or last vertices in the geometry. The attributes associated "
-                      "to each point are the same ones associated to the line or polygon that the point belongs to." ) +
+                      "to each point are the same ones associated to the feature that the point belongs to." ) +
          QStringLiteral( "\n\n" )  +
          QObject::tr( "The vertex indices parameter accepts a comma separated string specifying the indices of the "
                       "vertices to extract. The first vertex corresponds to an index of 0, the second vertex has an "
