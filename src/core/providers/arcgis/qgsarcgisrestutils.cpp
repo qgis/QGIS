@@ -1577,7 +1577,10 @@ QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, Q
   switch ( expectedType )
   {
     case QVariant::String:
-      return QString( QUrl::toPercentEncoding( variant.toString() ) );
+    {
+      const QString escaped = variant.toString().replace( '\\', QStringLiteral( "\\\\" ) ).replace( '"', QStringLiteral( "\\\"" ) );
+      return QString( QUrl::toPercentEncoding( escaped, "'" ) );
+    }
 
     case QVariant::DateTime:
     case QVariant::Date:
