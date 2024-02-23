@@ -63,6 +63,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
+  processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
   processing/qgsalgorithmclip.cpp
