@@ -46,6 +46,7 @@
 #include "qgsalgorithmcheckgeometryangle.h"
 #include "qgsalgorithmcheckgeometryarea.h"
 #include "qgsalgorithmfixgeometryarea.h"
+#include "qgsalgorithmcheckgeometryhole.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
 #include "qgsalgorithmconditionalbranch.h"
@@ -327,6 +328,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsGeometryCheckAngleAlgorithm() );
   addAlgorithm( new QgsGeometryCheckAreaAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckHoleAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
