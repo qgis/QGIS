@@ -158,7 +158,7 @@ QImage TestQgs3DRendering::convertDepthImageToGrayscaleImage( const QImage &dept
   }
 
   // transform depth value to gray value
-  const double factor = 255.0 / ( maxV - minV );
+  const double factor = ( maxV > minV ) ? 255.0 / ( maxV - minV ) : 1.0;
   for ( int y = 0; y < height; ++y )
   {
     const QRgb *depthImageScanline = reinterpret_cast< const QRgb * >( depthImage.scanLine( y ) );

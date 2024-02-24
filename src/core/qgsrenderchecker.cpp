@@ -598,7 +598,6 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   }
   if ( expectedImage.format() != QImage::Format_RGB32
        && expectedImage.format() != QImage::Format_ARGB32
-       && expectedImage.format() != QImage::Format_ARGB32_Premultiplied
        && expectedImage.format() != QImage::Format_ARGB32_Premultiplied )
   {
     mReport += QLatin1String( "<tr><td colspan=3>" );
@@ -612,7 +611,6 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   }
   if ( myResultImage.format() != QImage::Format_RGB32
        && myResultImage.format() != QImage::Format_ARGB32
-       && myResultImage.format() != QImage::Format_ARGB32_Premultiplied
        && myResultImage.format() != QImage::Format_ARGB32_Premultiplied )
   {
     mReport += QLatin1String( "<tr><td colspan=3>" );
