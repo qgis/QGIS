@@ -216,6 +216,8 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
   setCookieJar( new QgsNetworkCookieJar( this ) );
+  enableStrictTransportSecurityStore( true );
+  setStrictTransportSecurityEnabled( true );
 }
 
 void QgsNetworkAccessManager::setSslErrorHandler( std::unique_ptr<QgsSslErrorHandler> handler )
