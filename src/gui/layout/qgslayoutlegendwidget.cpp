@@ -820,19 +820,11 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
 
 void QgsLayoutLegendWidget::expandLegendTree()
 {
-  if ( !mLegend )
-  {
-    return;
-  }
   mItemTreeView -> expandAll();
 }
 
 void QgsLayoutLegendWidget::collapseLegendTree()
 {
-  if ( !mLegend )
-  {
-    return;
-  }
   mItemTreeView -> collapseAll();
 }
 
