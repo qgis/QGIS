@@ -119,6 +119,9 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, public Q
 
     void setLegendMapViewData();
 
+    void expandLegendTree();
+    void collapseLegendTree();
+
   private slots:
     //! Sets GUI according to state of mLegend
     void setGuiElements();
