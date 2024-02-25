@@ -20,6 +20,14 @@
 
 ------------------------
 
+## Policies
+
+- "Draft" and "WIP" pull requests are **not** accepted on this repository. Please get your work to a stage where **you** consider it ready for
+merge prior to opening a pull request. The one exception to this rule is opening a short term, not-for-merge PR in order to conduct a full CI test run on the branch. Please make sure you close the pull request ASAP after conducting this test in order to keep the QGIS pull request queue clean and manageable.
+- Stale bot will automatically close open pull requests after a period of inactivity. To avoid this, make sure you address all open comments and discussion points. Do **not** re-open a closed stale PR before addressing all previous review discussion points.
+
+------------------------
+
   Reviewing is a process done by project maintainers, mostly on a volunteer basis. We try to keep the overhead as small as possible and appreciate if you help us to do so by checking the following list.
   Feel free to ask in a comment if you have troubles with any of them.
 
