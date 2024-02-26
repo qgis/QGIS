@@ -970,7 +970,14 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  request.setFilterRect( mProfileBufferedCurve->boundingBox() );
+  if ( mTolerance > 0 )
+  {
+    request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
+  }
+  else
+  {
+    request.setFilterRect( mProfileCurve->boundingBox() );
+  }
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
@@ -1255,7 +1262,14 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  request.setFilterRect( mProfileBufferedCurve->boundingBox() );
+  if ( mTolerance > 0 )
+  {
+    request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
+  }
+  else
+  {
+    request.setFilterRect( mProfileCurve->boundingBox() );
+  }
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
