@@ -112,6 +112,11 @@ class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
     QUrl url() const { return mUrl; }
 
     /**
+     * Sets the request's URL.
+     */
+    void setUrl( const QUrl &url );
+
+    /**
      * Returns TRUE if the request was served directly from local cache.
      */
     bool replyFromCache() const { return mReplyFromCache; }

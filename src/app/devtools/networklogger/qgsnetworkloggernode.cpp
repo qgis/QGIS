@@ -230,6 +230,11 @@ QVariant QgsNetworkLoggerRequestGroup::toVariant() const
   return res;
 }
 
+void QgsNetworkLoggerRequestGroup::setUrl( const QUrl &url )
+{
+  mUrl = url;
+}
+
 void QgsNetworkLoggerRequestGroup::setReply( const QgsNetworkReplyContent &reply )
 {
   switch ( reply.error() )
