@@ -183,6 +183,13 @@ QString QgsSensorThingsProvider::htmlMetadata() const
   return metadata;
 }
 
+Qgis::DataProviderFlags QgsSensorThingsProvider::flags() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -196,6 +203,8 @@ QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() cons
 
 void QgsSensorThingsProvider::setDataSourceUri( const QString &uri )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
   QgsDataProvider::setDataSourceUri( uri );
 }
@@ -210,12 +219,7 @@ QgsCoordinateReferenceSystem QgsSensorThingsProvider::crs() const
 QgsRectangle QgsSensorThingsProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-#if 0
   return mSharedData->extent();
-#endif
-
-  return QgsRectangle();
 }
 
 QString QgsSensorThingsProvider::name() const

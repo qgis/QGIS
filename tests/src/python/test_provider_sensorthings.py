@@ -265,6 +265,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            # pessimistic "worst case" extent should be used
+            self.assertEqual(vl.extent(), QgsRectangle(-180, -90, 180, 90))
             self.assertEqual(vl.featureCount(), 4962)
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
@@ -404,6 +406,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertTrue(vl.extent().isNull())
             self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
@@ -494,8 +497,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
       "location": {
         "type": "Point",
         "coordinates": [
-          11.623373,
-          52.132017
+          11.6,
+          52.1
         ]
       },
       "properties": {
@@ -513,8 +516,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
       "location": {
         "type": "Point",
         "coordinates": [
-          12.623373,
-          53.132017
+          12.6,
+          53.1
         ]
       },
       "properties": {
@@ -550,8 +553,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                   "location": {
                     "type": "Point",
                     "coordinates": [
-                      13.623373,
-                      55.132017
+                      13.6,
+                      55.1
                     ]
                   },
                   "properties": {
@@ -575,6 +578,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            # pessimistic "worst case" extent should initially be used
+            self.assertEqual(vl.extent(), QgsRectangle(-180, -90, 180, 90))
             self.assertEqual(vl.featureCount(), 3)
             self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
@@ -624,6 +629,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [f.geometry().asWkt(1) for f in features],
                 ["Point (11.6 52.1)", "Point (12.6 53.1)", "Point (13.6 55.1)"],
             )
+
+            # all features fetched, accurate extent should be returned
+            self.assertEqual(vl.extent(), QgsRectangle(11.6, 52.1, 13.6, 55.1))
 
     def test_filter_rect(self):
         with tempfile.TemporaryDirectory() as temp_dir:
