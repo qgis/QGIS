@@ -688,11 +688,26 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * only to connect to the main thread's signal in order to receive notifications about requests
      * created in any thread.
      *
+     * \see requestCreated( QgsNetworkRequestParameters )
      * \see finished( QgsNetworkReplyContent )
      * \see requestTimedOut( QgsNetworkRequestParameters )
      * \since QGIS 3.6
      */
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
+
+    /**
+     * Emitted when a network request has been created.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about requests
+     * created in any thread.
+     *
+     * \see requestAboutToBeCreated( QgsNetworkRequestParameters )
+     * \see finished( QgsNetworkReplyContent )
+     * \see requestTimedOut( QgsNetworkRequestParameters )
+     * \since QGIS 3.36
+     */
+    void requestCreated( QgsNetworkRequestParameters request );
 
     /**
      * Emitted whenever a pending network reply is finished.
