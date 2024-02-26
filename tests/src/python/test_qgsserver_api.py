@@ -635,6 +635,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.body(),
                          b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]')  # Bad request
 
+        # Test overflowing int32
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=' + str((1 << 32)))
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)  # Bad request
+        self.assertEqual(response.body(),
+                         b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]')  # Bad request
+
     def test_wfs3_collection_items_limit(self):
         """Test WFS3 API item limits"""
         project = QgsProject()
