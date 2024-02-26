@@ -501,7 +501,7 @@ created in any thread.
 .. versionadded:: 3.6
 %End
 
-    void requestCreated( QgsNetworkRequestParameters request );
+    void requestCreated( const QgsNetworkRequestParameters &request );
 %Docstring
 Emitted when a network request has been created.
 
@@ -515,7 +515,7 @@ created in any thread.
 
 .. seealso:: :py:func:`requestTimedOut`
 
-.. versionadded:: 3.36
+.. versionadded:: 3.38
 %End
 
     void finished( QgsNetworkReplyContent reply );
