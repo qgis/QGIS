@@ -1076,6 +1076,9 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPoint( const Qgs
 
 void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *intersectionLine, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
 {
+  if ( triangle->exteriorRing()->numPoints() < 4 ) // not a polygon
+    return;
+
   int numPoints = intersectionLine->numPoints();
   QVector< double > newX( numPoints );
   QVector< double > newY( numPoints );
@@ -1114,7 +1117,7 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsP
 
     *outX++ = x;
     *outY++ = y;
-    if ( triangle->exteriorRing()->numPoints() <= 4 ) // triangle case
+    if ( triangle->exteriorRing()->numPoints() == 4 ) // triangle case
     {
       interpolatedPoint = interpolatePointOnTriangle( triangle, x, y );
     }
