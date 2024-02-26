@@ -440,8 +440,6 @@ are cloned too. Moreover, each attributes (transparency, extent, selected
 features and so on) are identical.
 
 :return: a new layer instance
-
-.. versionadded:: 3.0
 %End
 
     QString storageType() const;
@@ -565,8 +563,6 @@ Removes a vector layer join
     QgsVectorLayerJoinBuffer *joinBuffer();
 %Docstring
 Returns the join buffer object.
-
-.. versionadded:: 2.14.7
 %End
 
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
@@ -581,8 +577,6 @@ Sets the list of dependencies.
 :param layers: set of :py:class:`QgsMapLayerDependency`. Only user-defined dependencies will be added
 
 :return: ``False`` if a dependency cycle has been detected
-
-.. versionadded:: 3.0
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const ${SIP_FINAL};
@@ -592,8 +586,6 @@ Gets the list of dependencies. This includes data dependencies set by the user (
 as well as dependencies given by the provider
 
 :return: a set of :py:class:`QgsMapLayerDependency`
-
-.. versionadded:: 3.0
 %End
 
     int addExpressionField( const QString &exp, const QgsField &fld );
@@ -604,9 +596,6 @@ Add a new field which is calculated by the expression specified
 :param fld: The field to calculate
 
 :return: The index of the new field
-
-
-.. versionadded:: 2.9
 %End
 
     void removeExpressionField( int index );
@@ -614,8 +603,6 @@ Add a new field which is calculated by the expression specified
 Removes an expression field
 
 :param index: The index of the field
-
-.. versionadded:: 2.6
 %End
 
     QString expressionField( int index ) const;
@@ -625,9 +612,6 @@ Returns the expression used for a given expression field
 :param index: An index of an epxression based (virtual) field
 
 :return: The expression for the field at index
-
-
-.. versionadded:: 2.9
 %End
 
     void updateExpressionField( int index, const QString &exp );
@@ -637,8 +621,6 @@ Changes the expression used to define an expression based (virtual) field
 :param index: The index of the expression to change
 
 :param exp: The new expression to set
-
-.. versionadded:: 2.9
 %End
 
     QgsActionManager *actions();
@@ -684,8 +666,6 @@ Selects matching features using an expression.
 .. seealso:: :py:func:`selectByRect`
 
 .. seealso:: :py:func:`selectByIds`
-
-.. versionadded:: 2.16
 %End
 
     void selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
@@ -700,8 +680,6 @@ Selects matching features using a list of feature IDs. Will emit the
 .. seealso:: :py:func:`selectByRect`
 
 .. seealso:: :py:func:`selectByExpression`
-
-.. versionadded:: 2.16
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
@@ -802,8 +780,6 @@ Returns whether the layer contains labels which are enabled and should be drawn.
 :return: ``True`` if layer contains enabled labels
 
 .. seealso:: :py:func:`setLabelsEnabled`
-
-.. versionadded:: 2.9
 %End
 
     void setLabelsEnabled( bool enabled );
@@ -825,8 +801,6 @@ Sets whether labels should be ``enabled`` for the layer.
 Returns whether the layer contains diagrams which are enabled and should be drawn.
 
 :return: ``True`` if layer contains enabled diagrams
-
-.. versionadded:: 2.9
 %End
 
     void setDiagramRenderer( QgsDiagramRenderer *r /Transfer/ );
@@ -937,8 +911,6 @@ Writes vector layer specific state to project file Dom node.
 
 %Docstring
 Resolves references to other layers (kept as layer IDs after reading XML) into layer objects.
-
-.. versionadded:: 3.0
 %End
 
     bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
@@ -952,9 +924,6 @@ a XML document, then the key read in this document is used by default.
 :param key: The key to use for joining.
 
 :return: ``True`` if the auxiliary layer is well loaded, ``False`` otherwise
-
-
-.. versionadded:: 3.0
 %End
 
     void setAuxiliaryLayer( QgsAuxiliaryLayer *layer /Transfer/ = 0 );
@@ -963,15 +932,11 @@ Sets the current auxiliary layer. The auxiliary layer is automatically
 put in editable mode and fields are updated. Moreover, a join is created
 between the current layer and the auxiliary layer. Ownership is
 transferred.
-
-.. versionadded:: 3.0
 %End
 
     QgsAuxiliaryLayer *auxiliaryLayer();
 %Docstring
 Returns the current auxiliary layer.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -1049,8 +1014,6 @@ notified when the freshly updated feature counts are ready.
    If the count features for symbols has been already done a
    ``None`` is returned. If you need to wait for the results,
    you can call :py:func:`~QgsVectorLayer.waitForFinished` on the feature counter.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool setSubsetString( const QString &subset );
@@ -1221,8 +1184,6 @@ Deletes a vertex from a feature.
    by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
-
-.. versionadded:: 2.14
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0, QgsVectorLayer::DeleteContext *context = 0 );
@@ -1688,15 +1649,11 @@ Access to labeling configuration. May be ``None`` if labeling is not used.
    Labels will only be rendered if :py:func:`~QgsVectorLayer.labelsEnabled` returns ``True``.
 
 .. seealso:: :py:func:`labelsEnabled`
-
-.. versionadded:: 3.0
 %End
 
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling /Transfer/ );
 %Docstring
 Sets labeling configuration. Takes ownership of the object.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool isEditable() const ${SIP_FINAL};
@@ -1721,8 +1678,6 @@ Returns ``True`` if the provider has been modified since the last commit
 %Docstring
 Returns ``True`` if the field comes from the auxiliary layer,
 ``False`` otherwise.
-
-.. versionadded:: 3.0
 %End
 
     virtual void reload() ${SIP_FINAL};
@@ -1735,8 +1690,6 @@ Synchronises with changes in the datasource
 
 %Docstring
 Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
-
-.. versionadded:: 2.4
 %End
 
     virtual QgsRectangle extent() const ${SIP_FINAL};
@@ -1902,9 +1855,6 @@ expressions.
 .. seealso:: :py:func:`updateFeature`
 
 .. seealso:: :py:func:`changeAttributeValue`
-
-
-.. versionadded:: 3.0
 %End
 
     bool addAttribute( const QgsField &field );
@@ -1923,15 +1873,11 @@ returns ``True`` if the field was added
     void setFieldAlias( int index, const QString &aliasString );
 %Docstring
 Sets an alias (a display name) for attributes to display in dialogs
-
-.. versionadded:: 3.0
 %End
 
     void removeFieldAlias( int index );
 %Docstring
 Removes an alias (a display name) for attributes to display in dialogs
-
-.. versionadded:: 3.0
 %End
 
     bool renameAttribute( int index, const QString &newName );
@@ -1947,8 +1893,6 @@ Renames an attribute field  (but does not commit it).
    by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
-
-.. versionadded:: 2.16
 %End
 
     QString attributeAlias( int index ) const;
@@ -2198,8 +2142,6 @@ or taken from the underlying data provider.
 :return: calculated default value
 
 .. seealso:: :py:func:`setDefaultValueDefinition`
-
-.. versionadded:: 3.0
 %End
 
     void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
@@ -2214,8 +2156,6 @@ Sets the definition of the expression to use when calculating the default value 
 .. seealso:: :py:func:`defaultValue`
 
 .. seealso:: :py:func:`defaultValueDefinition`
-
-.. versionadded:: 3.0
 %End
 
     QgsDefaultValue defaultValueDefinition( int index ) const;
@@ -2231,8 +2171,6 @@ Returns the definition of the expression used when calculating the default value
 .. seealso:: :py:func:`defaultValue`
 
 .. seealso:: :py:func:`setDefaultValueDefinition`
-
-.. versionadded:: 3.0
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
@@ -2242,8 +2180,6 @@ field index. These constraints may be inherited from the layer's data provider
 or may be set manually on the vector layer from within QGIS.
 
 .. seealso:: :py:func:`setFieldConstraint`
-
-.. versionadded:: 3.0
 %End
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
@@ -2251,8 +2187,6 @@ or may be set manually on the vector layer from within QGIS.
 Returns a map of constraint with their strength for a specific field of the layer.
 
 :param fieldIndex: field index
-
-.. versionadded:: 3.0
 %End
 
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
@@ -2264,8 +2198,6 @@ constraints to be added on top of the existing provider constraints.
 .. seealso:: :py:func:`fieldConstraints`
 
 .. seealso:: :py:func:`removeFieldConstraint`
-
-.. versionadded:: 3.0
 %End
 
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
@@ -2276,8 +2208,6 @@ data provider will be kept intact and cannot be removed.
 .. seealso:: :py:func:`fieldConstraints`
 
 .. seealso:: :py:func:`setFieldConstraint`
-
-.. versionadded:: 3.0
 %End
 
     QString constraintExpression( int index ) const;
@@ -2289,8 +2219,6 @@ Returns the constraint expression for for a specified field index, if set.
 .. seealso:: :py:func:`constraintDescription`
 
 .. seealso:: :py:func:`setConstraintExpression`
-
-.. versionadded:: 3.0
 %End
 
     QString constraintDescription( int index ) const;
@@ -2302,8 +2230,6 @@ Returns the descriptive name for the constraint expression for a specified field
 .. seealso:: :py:func:`constraintExpression`
 
 .. seealso:: :py:func:`setConstraintExpression`
-
-.. versionadded:: 3.0
 %End
 
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
@@ -2316,8 +2242,6 @@ can also be set. Setting an empty expression will clear any existing expression 
 .. seealso:: :py:func:`constraintDescription`
 
 .. seealso:: :py:func:`fieldConstraints`
-
-.. versionadded:: 3.0
 %End
 
     void setFieldConfigurationFlags( int index, Qgis::FieldConfigurationFlags flags );
@@ -2354,8 +2278,6 @@ Returns the configuration flags of the field at given index
 %Docstring
 The editor widget setup defines which :py:class:`QgsFieldFormatter` and editor widget will be used
 for the field at `index`.
-
-.. versionadded:: 3.0
 %End
 
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const ${SIP_FINAL};
@@ -2490,8 +2412,6 @@ Currently any filtering expression provided will override filters in the Feature
 :param feedback: optional feedback argument for early cancellation (since QGIS 3.22)
 
 :return: calculated aggregate value
-
-.. versionadded:: 2.16
 %End
 
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -2509,15 +2429,11 @@ Returns the current blending mode for features
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
 Sets the simplification settings for fast rendering of features
-
-.. versionadded:: 2.2
 %End
 
     const QgsVectorSimplifyMethod &simplifyMethod() const;
 %Docstring
 Returns the simplification settings for fast rendering of features
-
-.. versionadded:: 2.2
 %End
 
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
@@ -2527,8 +2443,6 @@ Returns whether the VectorLayer can apply the specified simplification hint
 .. note::
 
    Do not use in 3rd party code - may be removed in future version!
-
-.. versionadded:: 2.2
 %End
 
     QgsConditionalLayerStyles *conditionalStyles() const;
@@ -2538,8 +2452,6 @@ used to render conditional formatting in the attribute table.
 
 :return: Return a :py:class:`QgsConditionalLayerStyles` object holding the conditional attribute
          style information. Style information is generic and can be used for anything.
-
-.. versionadded:: 2.12
 %End
 
     QgsAttributeTableConfig attributeTableConfig() const;
@@ -2565,8 +2477,6 @@ This defines the appearance of the attribute table.
 Returns the configuration of the form used to represent this vector layer.
 
 :return: The configuration of this layers' form
-
-.. versionadded:: 2.14
 %End
 
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
@@ -2574,8 +2484,6 @@ Returns the configuration of the form used to represent this vector layer.
 Sets the ``editFormConfig`` (configuration) of the form used to represent this vector layer.
 
 .. seealso:: :py:func:`editFormConfig`
-
-.. versionadded:: 3.0
 %End
 
     void setReadExtentFromXml( bool readExtentFromXml );
@@ -2583,8 +2491,6 @@ Sets the ``editFormConfig`` (configuration) of the form used to represent this v
 Flag allowing to indicate if the extent has to be read from the XML
 document when data source has no metadata or if the data provider has
 to determine it.
-
-.. versionadded:: 3.0
 %End
 
     bool readExtentFromXml() const;
@@ -2592,15 +2498,11 @@ to determine it.
 Returns ``True`` if the extent is read from the XML document when data
 source has no metadata, ``False`` if it's the data provider which determines
 it.
-
-.. versionadded:: 3.0
 %End
 
     bool isEditCommandActive() const;
 %Docstring
 Tests if an edit command is active
-
-.. versionadded:: 3.0
 %End
 
     QgsGeometryOptions *geometryOptions() const;
@@ -2954,8 +2856,6 @@ to this signal and update the element accordingly.
     void displayExpressionChanged();
 %Docstring
 Emitted when the display expression changes
-
-.. versionadded:: 3.0
 %End
 
     void raiseError( const QString &msg );
@@ -2966,8 +2866,6 @@ Signals an error related to this vector layer.
     void editFormConfigChanged();
 %Docstring
 Will be emitted whenever the edit form configuration of this layer changes.
-
-.. versionadded:: 3.0
 %End
 
     void readOnlyChanged();
@@ -2976,8 +2874,6 @@ Emitted when the read only state of this layer is changed.
 Only applies to manually set readonly state, not to the edit mode.
 
 .. seealso:: :py:func:`setReadOnly`
-
-.. versionadded:: 3.0
 %End
 
     void supportsEditingChanged();
@@ -2990,8 +2886,6 @@ Emitted when the read only state or the data provider of this layer is changed.
     void symbolFeatureCountMapChanged();
 %Docstring
 Emitted when the feature count for symbols on this layer has been recalculated.
-
-.. versionadded:: 3.0
 %End
 
   protected:

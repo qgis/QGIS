@@ -41,7 +41,6 @@ class QStatusBar;
  * Instead of adding child widgets and showing messages directly in the window's status bar,
  * these widgets (and messages) should instead be added into the embedded QgsStatusBar.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsStatusBar : public QWidget
 {

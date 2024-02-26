@@ -71,8 +71,6 @@ Returns the layer for which this configuration widget applies
     void changed();
 %Docstring
 Emitted when the configuration of the widget is changed.
-
-.. versionadded:: 3.0
 %End
 
   protected:

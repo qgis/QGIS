@@ -29,7 +29,6 @@ class QgsSnappingUtils;
  * \ingroup core
  * \brief The QgsCadUtils class provides routines for CAD editing.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsCadUtils
 {
@@ -38,7 +37,6 @@ class CORE_EXPORT QgsCadUtils
     /**
      * \brief Structure with details of one constraint
      * \ingroup core
-     * \since QGIS 3.0
      */
     class AlignMapPointConstraint
     {
@@ -64,7 +62,6 @@ class CORE_EXPORT QgsCadUtils
     /**
      * \brief Structure returned from alignMapPoint() method
      * \ingroup core
-     * \since QGIS 3.0
      */
     class AlignMapPointOutput
     {
@@ -98,7 +95,6 @@ class CORE_EXPORT QgsCadUtils
     /**
      * \ingroup core
      * \brief Defines constraints for the QgsCadUtils::alignMapPoint() method.
-     * \since QGIS 3.0
      */
     class AlignMapPointContext
     {

@@ -37,7 +37,6 @@ class QgsRectangle;
  * \ingroup core
  * \class QgsCoordinateUtils
  * \brief Utilities for handling and formatting coordinates
- * \since QGIS 2.14
  */
 class CORE_EXPORT QgsCoordinateUtils
 {

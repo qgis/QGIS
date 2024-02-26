@@ -82,15 +82,11 @@ Emitted when the digitizing process was interrupted by the user.
     bool checkGeometryType() const;
 %Docstring
 Check if CaptureMode matches layer type. Default is ``True``.
-
-.. versionadded:: 3.0
 %End
 
     void setCheckGeometryType( bool checkGeometryType );
 %Docstring
 Check if CaptureMode matches layer type. Default is ``True``.
-
-.. versionadded:: 3.0
 %End
 
   private:

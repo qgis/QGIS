@@ -63,7 +63,6 @@ class CORE_EXPORT QgsMessageOutput
 
     /**
      * Display the blocking message to the user.
-     *  \since QGIS 2.10
      */
     static void showMessage( const QString &title, const QString &message, MessageType msgType );
 

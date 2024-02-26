@@ -50,7 +50,7 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   if ( settingsPagingEnabled->exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsPagingEnabled->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsPagingEnabled->value( detailsParameters ) );
   }
 
   if ( settingsPreferCoordinatesForWfsT11->exists( detailsParameters ) )

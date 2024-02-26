@@ -41,8 +41,6 @@ Sets the conditional ``styles`` that apply to full rows of data in the attribute
 Each row will check be checked against each rule.
 
 .. seealso:: :py:func:`rowStyles`
-
-.. versionadded:: 2.12
 %End
 
     QgsConditionalStyle constraintFailureStyles( QgsFieldConstraints::ConstraintStrength strength );

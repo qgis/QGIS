@@ -158,8 +158,6 @@ Constructor for MetaData
 {
 %Docstring(signature="appended")
 Interface to convert raw field values to their user-friendly value.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -326,8 +324,6 @@ Writes a layer out to a vector file.
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-.. versionadded:: 2.2
-
 .. deprecated::
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
@@ -336,8 +332,6 @@ Writes a layer out to a vector file.
 {
 %Docstring(signature="appended")
 Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -396,6 +390,10 @@ Constructor
         QgsLayerMetadata layerMetadata;
 
         bool includeConstraints;
+
+        bool setFieldDomains;
+
+        const QgsAbstractDatabaseProviderConnection *sourceDatabaseProviderConnection;
     };
 
 
@@ -413,8 +411,6 @@ Writes a layer out to a vector file.
 :param options: options.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
 :param errorMessage: will be set to the error message text, if an error occurs while writing the layer
-
-.. versionadded:: 3.0
 
 .. deprecated::
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
@@ -534,8 +530,6 @@ The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
 .. seealso:: :py:func:`supportedFiltersAndFormats`
-
-.. versionadded:: 3.0
 %End
 
     static bool supportsFeatureStyles( const QString &driverName );
@@ -543,8 +537,6 @@ returned formats.
 Returns ``True`` if the specified ``driverName`` supports feature styles.
 
 The ``driverName`` argument must be a valid GDAL driver name.
-
-.. versionadded:: 3.0
 %End
 
     struct DriverDetails
@@ -572,8 +564,6 @@ returned drivers.
 Returns the OGR driver name for a specified file ``extension``. E.g. the
 driver name for the ".shp" extension is "ESRI Shapefile".
 If no suitable drivers are found then an empty string is returned.
-
-.. versionadded:: 3.0
 %End
 
     static QString fileFilterString( VectorFormatOptions options = SortRecommended );
@@ -639,8 +629,6 @@ Returns the capabilities supported by the writer.
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit = Qgis::DistanceUnit::Meters );
 %Docstring
 Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -675,8 +663,6 @@ Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setSymbologyScale`
-
-.. versionadded:: 3.0
 %End
 
     void setSymbologyScale( double scale );
@@ -685,8 +671,6 @@ Set reference ``scale`` for output.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`symbologyScale`
-
-.. versionadded:: 3.0
 %End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
@@ -698,8 +682,6 @@ Returns a list of the default dataset options for a specified driver.
 :param driverName: name of OGR driver
 
 .. seealso:: :py:func:`defaultLayerOptions`
-
-.. versionadded:: 3.0
 %End
 
     static QStringList defaultLayerOptions( const QString &driverName );
@@ -709,24 +691,18 @@ Returns a list of the default layer options for a specified driver.
 :param driverName: name of OGR driver
 
 .. seealso:: :py:func:`defaultDatasetOptions`
-
-.. versionadded:: 3.0
 %End
 
 
     static QgsVectorFileWriter::EditionCapabilities editionCapabilities( const QString &datasetName );
 %Docstring
 Returns edition capabilities for an existing dataset name.
-
-.. versionadded:: 3.0
 %End
 
     static bool targetLayerExists( const QString &datasetName,
                                    const QString &layerName );
 %Docstring
 Returns whether the target layer already exists.
-
-.. versionadded:: 3.0
 %End
 
     static bool areThereNewFieldsToCreate( const QString &datasetName,
@@ -735,11 +711,10 @@ Returns whether the target layer already exists.
                                            const QgsAttributeList &attributes );
 %Docstring
 Returns whether there are among the attributes specified some that do not exist yet in the layer
-
-.. versionadded:: 3.0
 %End
 
   protected:
+
 
 
 

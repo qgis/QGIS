@@ -44,7 +44,6 @@ class QgsProject;
  *
  * \note Not available in Python bindings
  *
- * \since QGIS 3.0
  */
 class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 {

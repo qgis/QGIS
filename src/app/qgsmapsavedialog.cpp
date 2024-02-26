@@ -64,6 +64,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mExtent = ms.visibleExtent();
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
+  mDevicePixelRatio = ms.devicePixelRatio();
 
   mResolutionSpinBox->setValue( static_cast< int >( std::round( mDpi ) ) );
 
@@ -341,6 +342,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
       mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
       break;
   }
+
   mapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, true );
@@ -349,6 +351,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setExtent( extent() );
   mapSettings.setOutputSize( size() );
   mapSettings.setOutputDpi( dpi() );
+  mapSettings.setDevicePixelRatio( mDevicePixelRatio );
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
@@ -397,13 +400,14 @@ void QgsMapSaveDialog::copyToClipboard()
   QPainter *p = nullptr;
   QImage *img = nullptr;
 
-  img = new QImage( ms.outputSize(), QImage::Format_ARGB32 );
+  img = new QImage( ms.outputSize() * ms.devicePixelRatio(), QImage::Format_ARGB32 );
   if ( img->isNull() )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
     return;
   }
 
+  img->setDevicePixelRatio( ms.devicePixelRatio() );
   img->setDotsPerMeterX( 1000 * ms.outputDpi() / 25.4 );
   img->setDotsPerMeterY( 1000 * ms.outputDpi() / 25.4 );
 

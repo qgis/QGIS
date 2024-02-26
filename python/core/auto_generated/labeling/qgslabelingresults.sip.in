@@ -14,8 +14,6 @@ class QgsLabelingResults
 {
 %Docstring(signature="appended")
 Class that stores computed placement from labeling engine.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

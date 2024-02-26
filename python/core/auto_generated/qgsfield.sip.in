@@ -86,8 +86,6 @@ field alias if set, otherwise the field name.
 .. seealso:: :py:func:`name`
 
 .. seealso:: :py:func:`alias`
-
-.. versionadded:: 3.0
 %End
 
     QString displayNameWithAlias() const;
@@ -142,8 +140,6 @@ Gets variant type of the field as it will be retrieved from data source
 If the field is a collection, gets its element's type.
 When all the elements don't need to have the same type, this returns
 QVariant.Invalid.
-
-.. versionadded:: 3.0
 %End
 
     QString typeName() const;
@@ -220,8 +216,6 @@ Sets a metadata ``property`` to ``value``.
 %Docstring
 Returns if this field is numeric. Any integer or floating point type
 will return ``True`` for this.
-
-.. versionadded:: 2.18
 %End
 
     bool isDateOrTime() const;
@@ -248,8 +242,6 @@ Set variant type.
 If the field is a collection, set its element's type.
 When all the elements don't need to have the same type, set this to
 QVariant.Invalid.
-
-.. versionadded:: 3.0
 %End
 
     void setTypeName( const QString &typeName );
@@ -286,8 +278,6 @@ Returns the expression used when calculating the default value for the field.
          empty string if no default is set
 
 .. seealso:: :py:func:`setDefaultValueDefinition`
-
-.. versionadded:: 3.0
 %End
 
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
@@ -298,8 +288,6 @@ Sets an expression to use when calculating the default value for the field.
                                a default constructed :py:class:`QgsDefaultValue`() to reset.
 
 .. seealso:: :py:func:`defaultValueDefinition`
-
-.. versionadded:: 3.0
 %End
 
     const QgsFieldConstraints &constraints() const;
@@ -307,8 +295,6 @@ Sets an expression to use when calculating the default value for the field.
 Returns constraints which are present for the field.
 
 .. seealso:: :py:func:`setConstraints`
-
-.. versionadded:: 3.0
 %End
 
     void setConstraints( const QgsFieldConstraints &constraints );
@@ -316,8 +302,6 @@ Returns constraints which are present for the field.
 Sets constraints which are present for the field.
 
 .. seealso:: :py:func:`constraints`
-
-.. versionadded:: 3.0
 %End
 
     QString alias() const;
@@ -326,8 +310,6 @@ Returns the alias for the field (the friendly displayed name of the field ),
 or an empty string if there is no alias.
 
 .. seealso:: :py:func:`setAlias`
-
-.. versionadded:: 3.0
 %End
 
     void setAlias( const QString &alias );
@@ -337,8 +319,6 @@ Sets the alias for the field (the friendly displayed name of the field ).
 :param alias: field alias, or empty string to remove an existing alias
 
 .. seealso:: :py:func:`alias`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::FieldConfigurationFlags configurationFlags() const;

@@ -3144,7 +3144,10 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   // maps NULL values)
   // If there are more cases like QByteArray, we should consider using a allowlist
   // instead of a blocklist.
-  if ( QgsVariantUtils::isNull( *varp )
+
+  // Note that we force silence the usual "storing a null ... in a qvariant" warnings here,
+  // as we don't have any control over sip storing empty objects in a valid qvariant.
+  if ( QgsVariantUtils::isNull( *varp, true )
        && varp->type() != QVariant::ByteArray
        && varp->type() != QMetaType::VoidStar
        && varp->type() != QMetaType::Nullptr

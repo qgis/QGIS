@@ -18,8 +18,6 @@ class QgsImageFetcher : QObject
 {
 %Docstring(signature="appended")
 Handles asynchronous download of images
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
@@ -105,8 +103,6 @@ The ``options`` argument specifies generic provider options and since QGIS 3.16 
     virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
 %Docstring
 Returns flags containing the supported capabilities of the data provider.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
@@ -158,15 +154,11 @@ Reload data (data could change)
     virtual double bandScale( int bandNo ) const;
 %Docstring
 Read band scale for raster value
-
-.. versionadded:: 2.3
 %End
 
     virtual double bandOffset( int bandNo ) const;
 %Docstring
 Read band offset for raster value
-
-.. versionadded:: 2.3
 %End
 
 
@@ -232,10 +224,6 @@ Returns a new image downloader for the raster legend.
 :return: a download handler or ``None`` if the provider does not support
          legend at all. Ownership of the returned object is transferred
          to caller.
-
-
-
-.. versionadded:: 2.8
 %End
 
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
@@ -396,8 +384,6 @@ Checks whether the provider is in editing mode, i.e. raster write operations wil
 By default providers are not editable. Use :py:func:`~QgsRasterDataProvider.setEditable` method to enable/disable editing.
 
 .. seealso:: :py:func:`setEditable`
-
-.. versionadded:: 3.0
 %End
 
     virtual bool setEditable( bool enabled );
@@ -414,8 +400,6 @@ to overwrite data of the provider using :py:func:`~QgsRasterDataProvider.writeBl
    value whether the operation was successful.
 
 .. seealso:: :py:func:`isEditable`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -441,8 +425,6 @@ in order to allow write operations.
 .. seealso:: :py:func:`isEditable`
 
 :return: ``True`` on success
-
-.. versionadded:: 3.0
 %End
 
     static QgsRasterDataProvider *create( const QString &providerKey,
@@ -571,8 +553,6 @@ Converts a raster identify ``format`` to a capability.
 Step width for raster iterations.
 
 .. seealso:: :py:func:`stepHeight`
-
-.. versionadded:: 3.0
 %End
 
     virtual int stepHeight() const;
@@ -580,8 +560,6 @@ Step width for raster iterations.
 Step height for raster iterations.
 
 .. seealso:: :py:func:`stepWidth`
-
-.. versionadded:: 3.0
 %End
 
     virtual QList< double > nativeResolutions() const;
@@ -788,8 +766,6 @@ Data providers that have NativeRasterAttributeTable provider capability will try
     void statusChanged( const QString & ) const;
 %Docstring
 Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
-
-.. versionadded:: 2.14
 %End
 
 

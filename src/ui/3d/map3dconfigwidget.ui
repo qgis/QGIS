@@ -124,10 +124,10 @@
          </item>
          <item>
           <property name="text">
-           <string>Shadow</string>
+           <string>Effects</string>
           </property>
           <property name="toolTip">
-           <string>Shadow settings</string>
+           <string>Effects settings</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -559,7 +559,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mPageShadow">
+         <widget class="QWidget" name="mPageEffects">
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="topMargin">
             <number>0</number>
@@ -629,6 +629,61 @@
                   </item>
                  </layout>
                 </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="edlGroupBox">
+                 <property name="title">
+                  <string>Show Eye Dome Lighting</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_2">
+                  <item row="0" column="1">
+                   <widget class="QgsDoubleSpinBox" name="edlStrengthSpinBox">
+                    <property name="maximum">
+                     <double>10000.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>100.000000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>1000.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Lighting strength</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                        <string>Lighting distance</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QgsSpinBox" name="edlDistanceSpinBox">
+                       <property name="minimum">
+                        <number>1</number>
+                       </property>
+                       <property name="maximum">
+                        <number>20</number>
+                       </property>
+                      </widget>
+                     </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QgsAmbientOcclusionSettingsWidget" name="mAmbientOcclusionSettingsWidget" native="true"/>
                </item>
                <item>
                 <spacer name="verticalSpacerShadow">
@@ -908,7 +963,7 @@
                   <string>Advanced Settings</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
-                  <item row="4" column="0">
+                  <item row="2" column="0">
                    <widget class="QGroupBox" name="mDebugDepthMapGroupBox">
                     <property name="title">
                      <string>Debug Depth Map</string>
@@ -1090,7 +1145,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0">
+                  <item row="1" column="0">
                    <widget class="QGroupBox" name="mDebugShadowMapGroupBox">
                     <property name="title">
                      <string>Debug Shadow Map</string>
@@ -1135,59 +1190,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QGroupBox" name="edlGroupBox">
-                    <property name="title">
-                     <string>Show Eye Dome Lighting</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_2">
-                     <item row="0" column="1">
-                      <widget class="QgsDoubleSpinBox" name="edlStrengthSpinBox">
-                       <property name="maximum">
-                        <double>10000.000000000000000</double>
-                       </property>
-                       <property name="singleStep">
-                        <double>100.000000000000000</double>
-                       </property>
-                       <property name="value">
-                        <double>1000.000000000000000</double>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label">
-                       <property name="text">
-                        <string>Lighting strength</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_2">
-                       <property name="text">
-                        <string>Lighting distance</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QgsSpinBox" name="edlDistanceSpinBox">
-                       <property name="minimum">
-                        <number>1</number>
-                       </property>
-                       <property name="maximum">
-                        <number>20</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="5" column="0">
+                  <item row="3" column="0">
                    <spacer name="verticalSpacerAdvanced">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -1199,9 +1202,6 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QgsAmbientOcclusionSettingsWidget" name="mAmbientOcclusionSettingsWidget" native="true"/>
                   </item>
                  </layout>
                 </widget>

@@ -82,9 +82,6 @@ which dictate the behavior of the transformation.
    ensure that the :py:class:`QgsCoordinateTransformContext` object is correctly retrieved
    based on the current code context, or use the constructor variant which
    accepts a :py:class:`QgsProject` argument instead.
-
-
-.. versionadded:: 3.0
 %End
 
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
@@ -118,8 +115,6 @@ which dictate the behavior of the transformation.
    Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
    between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
    however dynamic CRS to dynamic CRS transformations are not currently supported.
-
-.. versionadded:: 3.0
 %End
 
  explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
@@ -133,8 +128,6 @@ datum transforms (see :py:class:`QgsDatumTransform`).
 
 .. deprecated::
    will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
@@ -165,8 +158,6 @@ a transformation between them will never be possible.
 %Docstring
 Returns ``True`` if the coordinate transform is valid, ie both the source and destination
 CRS have been set and are valid.
-
-.. versionadded:: 3.0
 %End
 
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
@@ -197,8 +188,6 @@ Sets the ``context`` in which the coordinate transform should be
 calculated.
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransformContext context() const;
@@ -614,8 +603,6 @@ Calling this method will overwrite any automatically calculated datum transform.
 Clears the internal cache used to initialize QgsCoordinateTransform objects.
 This should be called whenever the srs database has
 been modified in order to ensure that outdated CRS transforms are not created.
-
-.. versionadded:: 3.0
 %End
 
     double scaleFactor( const QgsRectangle &referenceExtent ) const;

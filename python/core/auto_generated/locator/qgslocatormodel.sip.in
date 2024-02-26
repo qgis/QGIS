@@ -17,8 +17,6 @@ An abstract list model for displaying the results of locator searches.
 
 Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
 in order to ensure correct sorting of results by priority and match level.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -96,8 +94,6 @@ connections manually.
 
 Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
 in order to ensure correct sorting of results by priority and match level.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -142,8 +138,6 @@ class QgsLocatorProxyModel : QSortFilterProxyModel
 %Docstring(signature="appended")
 A sort proxy model for :py:class:`QgsLocatorModel`, which automatically sorts
 results by precedence.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

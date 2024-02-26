@@ -13,8 +13,6 @@ class QgsLayoutItemMapItem : QgsLayoutObject
 {
 %Docstring(signature="appended")
 An item which is drawn inside a :py:class:`QgsLayoutItemMap`, e.g., a grid or map overview.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -215,8 +213,6 @@ A collection of map items which are drawn above the map content in a
 order they are drawn in.
 
 .. seealso:: :py:class:`QgsLayoutItemMapItem`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

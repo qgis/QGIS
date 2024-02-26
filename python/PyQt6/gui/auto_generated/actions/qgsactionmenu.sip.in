@@ -86,15 +86,11 @@ Change the mode of the actions
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 %Docstring
 Sets an expression context scope used to resolve underlying actions.
-
-.. versionadded:: 3.0
 %End
 
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
 Returns an expression context scope used to resolve underlying actions.
-
-.. versionadded:: 3.0
 %End
 
     QList<QgsAction> menuActions();

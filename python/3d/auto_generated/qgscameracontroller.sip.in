@@ -21,8 +21,6 @@ Object that controls camera movement based on user input
 .. note::
 
    Not available in Python bindings
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

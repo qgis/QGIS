@@ -28,7 +28,6 @@
  * \brief Offers a toolbutton to choose between different aggregate functions.
  * Functions are filtered based on the type.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAggregateToolButton : public QToolButton
 {

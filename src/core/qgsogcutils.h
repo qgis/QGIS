@@ -106,7 +106,6 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Exports the geometry to GML
       * \returns QDomElement
-      * \since QGIS 2.16
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
                                       QgsOgcUtils::GMLVersion gmlVersion,
@@ -136,7 +135,6 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Exports the rectangle to GML2 Box
      * \returns QDomElement
-     * \since QGIS 2.16
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
                                           const QString &srsName,
@@ -152,7 +150,6 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Exports the rectangle to GML3 Envelope
      * \returns QDomElement
-     * \since QGIS 2.16
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
         const QString &srsName,
@@ -199,7 +196,6 @@ class CORE_EXPORT QgsOgcUtils
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
@@ -211,7 +207,9 @@ class CORE_EXPORT QgsOgcUtils
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString *errorMessage = nullptr ) SIP_SKIP;
+        QString *errorMessage = nullptr,
+        const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+        const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() ) SIP_SKIP;
 
     /**
      * Creates an OGC expression XML element from the \a exp expression
@@ -243,7 +241,9 @@ class CORE_EXPORT QgsOgcUtils
         bool honourAxisOrientation,
         bool invertAxisOrientation,
         QString *errorMessage = nullptr,
-        bool requiresFilterElement = false );
+        bool requiresFilterElement = false,
+        const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+        const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() );
 
 #ifndef SIP_RUN
 
@@ -251,7 +251,6 @@ class CORE_EXPORT QgsOgcUtils
      * \ingroup core
      * \brief Layer properties. Used by SQLStatementToOgcFilter().
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     class LayerProperties
     {
@@ -288,7 +287,6 @@ class CORE_EXPORT QgsOgcUtils
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,
@@ -298,7 +296,9 @@ class CORE_EXPORT QgsOgcUtils
         bool honourAxisOrientation,
         bool invertAxisOrientation,
         const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
-        QString *errorMessage = nullptr ) SIP_SKIP;
+        QString *errorMessage = nullptr,
+        const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+        const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() ) SIP_SKIP;
 
   private:
 
@@ -399,7 +399,10 @@ class QgsOgcUtilsExprToFilter
                              const QString &geometryName,
                              const QString &srsName,
                              bool honourAxisOrientation,
-                             bool invertAxisOrientation );
+                             bool invertAxisOrientation,
+                             const QMap<QString, QString> &fieldNameToXPathMap,
+                             const QMap<QString, QString> &namespacePrefixToUriMap
+                           );
 
     //! Convert an expression to a OGC filter
     QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node, QgsExpression *expression, const QgsExpressionContext *context );
@@ -420,6 +423,8 @@ class QgsOgcUtilsExprToFilter
     const QString &mGeometryName;
     const QString &mSrsName;
     bool mInvertAxisOrientation;
+    const QMap<QString, QString> &mFieldNameToXPathMap;
+    const QMap<QString, QString> &mNamespacePrefixToUriMap;
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
@@ -535,7 +540,9 @@ class QgsOgcUtilsSQLStatementToFilter
                                      const QList<QgsOgcUtils::LayerProperties> &layerProperties,
                                      bool honourAxisOrientation,
                                      bool invertAxisOrientation,
-                                     const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename );
+                                     const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
+                                     const QMap<QString, QString> &fieldNameToXPathMap,
+                                     const QMap<QString, QString> &namespacePrefixToUriMap );
 
     //! Convert a SQL statement to a OGC filter
     QDomElement toOgcFilter( const QgsSQLStatement::Node *node );
@@ -561,6 +568,8 @@ class QgsOgcUtilsSQLStatementToFilter
     QString mCurrentSRSName;
     QMap<QString, QString> mMapTableAliasToNames;
     const QMap< QString, QString> &mMapUnprefixedTypenameToPrefixedTypename;
+    const QMap<QString, QString> &mFieldNameToXPathMap;
+    const QMap<QString, QString> &mNamespacePrefixToUriMap;
 
     QDomElement toOgcFilter( const QgsSQLStatement::NodeUnaryOperator *node );
     QDomElement toOgcFilter( const QgsSQLStatement::NodeBinaryOperator *node );

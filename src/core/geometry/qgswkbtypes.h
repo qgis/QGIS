@@ -36,7 +36,6 @@
  * \ingroup core
  * \class QgsWkbTypes
  * \brief Handles storage of information regarding WKB types and their properties.
- * \since QGIS 2.10
  */
 
 class CORE_EXPORT QgsWkbTypes
@@ -803,7 +802,6 @@ class CORE_EXPORT QgsWkbTypes
 
     /**
      * Returns TRUE if the WKB type is a curved type or can contain curved geometries.
-     * \since QGIS 2.14
      */
     static bool isCurvedType( Qgis::WkbType type ) SIP_HOLDGIL
     {
@@ -847,7 +845,6 @@ class CORE_EXPORT QgsWkbTypes
      * be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
      * Invalid geometry types will return a dimension of 0.
      * \see wkbDimensions()
-     * \since QGIS 2.14
      */
     static int coordDimensions( Qgis::WkbType type ) SIP_HOLDGIL
     {
@@ -964,7 +961,6 @@ class CORE_EXPORT QgsWkbTypes
      * - No Geometry
      * - Invalid Geometry
      *
-     * \since QGIS 3.0
      */
     static QString geometryDisplayString( Qgis::GeometryType type ) SIP_HOLDGIL;
 
@@ -1068,7 +1064,6 @@ class CORE_EXPORT QgsWkbTypes
      * \see addM()
      * \see dropZ()
      * \see hasZ()
-     * \since QGIS 2.12
      */
     static Qgis::WkbType addZ( Qgis::WkbType type ) SIP_HOLDGIL
     {
@@ -1093,7 +1088,6 @@ class CORE_EXPORT QgsWkbTypes
      * \see addZ()
      * \see dropM()
      * \see hasM()
-     * \since QGIS 2.12
      */
     static Qgis::WkbType addM( Qgis::WkbType type ) SIP_HOLDGIL
     {
@@ -1129,7 +1123,6 @@ class CORE_EXPORT QgsWkbTypes
      * \param type original type
      * \see dropM()
      * \see addZ()
-     * \since QGIS 2.14
      */
     static Qgis::WkbType dropZ( Qgis::WkbType type ) SIP_HOLDGIL
     {
@@ -1147,7 +1140,6 @@ class CORE_EXPORT QgsWkbTypes
      * \param type original type
      * \see dropZ()
      * \see addM()
-     * \since QGIS 2.14
      */
     static Qgis::WkbType dropM( Qgis::WkbType type ) SIP_HOLDGIL
     {

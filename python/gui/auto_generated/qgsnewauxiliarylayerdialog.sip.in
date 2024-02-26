@@ -15,8 +15,6 @@ class QgsNewAuxiliaryLayerDialog: QDialog
 %Docstring(signature="appended")
 
 A dialog to create a new auxiliary layer
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

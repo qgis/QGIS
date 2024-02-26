@@ -13,8 +13,6 @@ class QgsVectorLayerSaveAsDialog : QDialog
 {
 %Docstring(signature="appended")
 Class to select destination file, type and CRS for ogr layers
-
-.. versionadded:: 1.0
 %End
 
 %TypeHeaderCode
@@ -101,8 +99,6 @@ Returns a list of attributes which are selected for saving.
     QgsAttributeList attributesAsDisplayedValues() const;
 %Docstring
 Returns selected attributes that must be exported with their displayed values instead of their raw values.
-
-.. versionadded:: 2.16
 %End
 
     QStringList attributesExportNames() const;

@@ -47,7 +47,6 @@ class QDomElement;
  * \ingroup 3d
  * \brief Definition of the world.
  *
- * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObject
 {
@@ -132,7 +131,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see setPathResolver()
-     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -141,7 +139,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see pathResolver()
-     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 

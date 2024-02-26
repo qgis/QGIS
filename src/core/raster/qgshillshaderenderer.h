@@ -31,7 +31,6 @@ class QgsRasterInterface;
 /**
  * \ingroup core
  * \brief A renderer for generating live hillshade models.
- * \since QGIS 2.16
  */
 class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 {

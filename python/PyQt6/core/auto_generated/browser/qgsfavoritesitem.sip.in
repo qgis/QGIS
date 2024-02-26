@@ -13,8 +13,6 @@ class QgsFavoritesItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
 Contains various Favorites directories
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

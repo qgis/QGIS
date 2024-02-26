@@ -100,7 +100,6 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 
     /**
      * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
-     * \since 3.0
      */
     TransformInfo selectedDatumTransform();
 

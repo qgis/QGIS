@@ -240,8 +240,6 @@ Clears the schema stored in the URI.
     void setSchema( const QString &schema );
 %Docstring
 Sets the ``scheme`` for the URI.
-
-.. versionadded:: 2.12
 %End
 
     void setSql( const QString &sql );
@@ -270,15 +268,11 @@ Returns the port stored in the URI.
     QString driver() const;
 %Docstring
 Returns the driver name stored in the URI
-
-.. versionadded:: 2.16
 %End
 
     void setDriver( const QString &driver );
 %Docstring
 Sets the ``driver`` name stored in the URI.
-
-.. versionadded:: 2.16
 %End
 
     QString password() const;

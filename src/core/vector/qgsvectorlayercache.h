@@ -125,7 +125,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Returns TRUE if the cache will fetch and cache feature geometries.
      * \see setCacheGeometry()
-     * \since QGIS 3.0
      */
     bool cacheGeometry() const { return mCacheGeometry; }
 
@@ -174,7 +173,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * a result of a call to setFullCache() or by through a feature request which resulted in
      * all available features being cached.
      * \see setFullCache()
-     * \since QGIS 3.0
      */
     bool hasFullCache() const { return mFullCache; }
 
@@ -245,7 +243,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Returns the set of feature IDs for features which are cached.
      * \see isFidCached()
-     * \since QGIS 3.0
      */
     QgsFeatureIds cachedFeatureIds() const;
 

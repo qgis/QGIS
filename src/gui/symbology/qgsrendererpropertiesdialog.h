@@ -61,7 +61,6 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * \param canvas map canvas
-     * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 

@@ -31,8 +31,6 @@ Abstract base class for all geometries
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
    are required.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -211,8 +209,6 @@ Returns the closure of the combinatorial boundary of the geometry (ie the topolo
 For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
 
 :return: boundary for geometry. May be ``None`` for some geometry types.
-
-.. versionadded:: 3.0
 %End
 
     virtual void normalize() = 0;
@@ -273,8 +269,6 @@ The optional ``flags`` argument specifies flags controlling WKB export behavior 
 .. seealso:: :py:func:`asGml3`
 
 .. seealso:: :py:func:`asJson`
-
-.. versionadded:: 3.0
 %End
 
     virtual QString asWkt( int precision = 17 ) const = 0;
@@ -404,8 +398,6 @@ The vertex numbers start at 0, so a return value of 0 corresponds
 to the first vertex.
 
 Returns -1 if a corresponding vertex could not be found.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
@@ -422,8 +414,6 @@ Returns next vertex id and coordinates
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
 %Docstring
 Returns the vertices adjacent to a specified ``vertex`` within a geometry.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const = 0;
@@ -559,8 +549,6 @@ Returns the length of the segment of the geometry which begins at ``startVertex`
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
    returned by this method are calculated using strictly Cartesian mathematics.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsPoint centroid() const;
@@ -638,8 +626,6 @@ In this case, it can be thought like rounding the x and y of all the points/vert
 :param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
 :param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
 :param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
@@ -660,8 +646,6 @@ a multipoint geometry with overlapping points will not be changed by this method
 
 The function will return ``True`` if nodes were removed, or ``False`` if no duplicate nodes
 were found.
-
-.. versionadded:: 3.0
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const = 0;
@@ -705,8 +689,6 @@ Adds a z-dimension to the geometry, initialized to a preset value.
 .. seealso:: :py:func:`dropZValue`
 
 .. seealso:: :py:func:`addMValue`
-
-.. versionadded:: 2.12
 %End
 
     virtual bool addMValue( double mValue = 0 ) = 0;
@@ -720,8 +702,6 @@ Adds a measure to the geometry, initialized to a preset value.
 .. seealso:: :py:func:`dropMValue`
 
 .. seealso:: :py:func:`addZValue`
-
-.. versionadded:: 2.12
 %End
 
     virtual bool dropZValue() = 0;
@@ -733,8 +713,6 @@ Drops any z-dimensions which exist in the geometry.
 .. seealso:: :py:func:`addZValue`
 
 .. seealso:: :py:func:`dropMValue`
-
-.. versionadded:: 2.14
 %End
 
     virtual bool dropMValue() = 0;
@@ -746,8 +724,6 @@ Drops any measure values which exist in the geometry.
 .. seealso:: :py:func:`addMValue`
 
 .. seealso:: :py:func:`dropZValue`
-
-.. versionadded:: 2.14
 %End
 
     virtual void swapXy() = 0;
@@ -764,8 +740,6 @@ coordinates reversed.
 Converts the geometry to a specified type.
 
 :return: ``True`` if conversion was successful
-
-.. versionadded:: 2.14
 %End
 
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
@@ -882,8 +856,6 @@ Example
 
 
 .. seealso:: :py:func:`parts`
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
@@ -892,8 +864,6 @@ Creates a new geometry with the same class and same WKB type as the original and
 To create it, the geometry is default constructed and then the WKB is changed.
 
 .. seealso:: :py:func:`clone`
-
-.. versionadded:: 3.0
 %End
 
   protected:
@@ -927,8 +897,6 @@ Returns whether the geometry has any child geometries (``False`` for point / cur
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
     virtual int childCount() const;
@@ -938,8 +906,6 @@ Returns number of child geometries (for geometries with child geometries) or chi
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
@@ -949,8 +915,6 @@ Returns pointer to child geometry (for geometries with child geometries - i.e. g
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsPoint childPoint( int index ) const;
@@ -960,8 +924,6 @@ Returns point at index (for geometries without child geometries - i.e. curve / p
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
   protected:
@@ -1000,8 +962,6 @@ class QgsVertexIterator
 {
 %Docstring(signature="appended")
 Java-style iterator for traversal of vertices of a geometry
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

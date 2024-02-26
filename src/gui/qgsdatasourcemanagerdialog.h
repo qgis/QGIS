@@ -43,7 +43,6 @@ class QgsMessageBar;
  * The dialog does not handle layer addition directly but emits signals that
  * need to be forwarded to the QGIS application to be handled.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, private Ui::QgsDataSourceManagerDialog
 {

@@ -98,8 +98,6 @@ Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be
     void clearCurve( );
 %Docstring
 Clear capture curve.
-
-.. versionadded:: 3.0
 %End
 
     const QgsCompoundCurve *captureCurve() const;
@@ -112,8 +110,6 @@ Gets the capture curve
     QList<QgsPointLocator::Match> snappingMatches() const;
 %Docstring
 Returns a list of matches for each point on the captureCurve.
-
-.. versionadded:: 3.0
 %End
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
@@ -159,9 +155,6 @@ value is derived from the snapped point.
 :param e: A mouse event
 
 :return: a point with ZM support if necessary
-
-
-.. versionadded:: 3.0
 %End
 
     QgsPoint mapPoint( const QgsPointXY &point ) const;
@@ -172,9 +165,6 @@ WkbType of the current layer).
 :param point: A point in 2D
 
 :return: a point with ZM support if necessary
-
-
-.. versionadded:: 3.0
 %End
 
 
@@ -241,8 +231,6 @@ current layer CRS.
          0 in case of success
          1 if not applicable (CRS mismatch / invalid layer)
          2 in case of failure
-
-.. versionadded:: 2.14
 %End
 
     int addVertex( const QgsPointXY &point );
@@ -258,8 +246,6 @@ Variant to supply more information in the case of snapping
 
 :param mapPoint: The vertex to add in map coordinates
 :param match: Data about the snapping match. Can be an invalid match, if point not snapped.
-
-.. versionadded:: 2.14
 %End
 
     void undo( bool isAutoRepeat = false );

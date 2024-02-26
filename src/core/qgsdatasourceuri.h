@@ -239,7 +239,6 @@ class CORE_EXPORT QgsDataSourceUri
 
     /**
      * Sets the \a scheme for the URI.
-     * \since QGIS 2.12
      */
     void setSchema( const QString &schema );
 
@@ -262,13 +261,11 @@ class CORE_EXPORT QgsDataSourceUri
 
     /**
      * Returns the driver name stored in the URI
-     * \since QGIS 2.16
      */
     QString driver() const;
 
     /**
      * Sets the \a driver name stored in the URI.
-     * \since QGIS 2.16
      */
     void setDriver( const QString &driver );
 

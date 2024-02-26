@@ -84,15 +84,15 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbxWfsFeaturePaging">
+         <item row="3" column="0">
+          <widget class="QLabel" name="lblFeaturePaging">
            <property name="text">
-            <string>Enable feature paging</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
+            <string>Feature paging</string>
            </property>
           </widget>
+         </item>
+         <item row="3" column="1" colspan="2">
+          <widget class="QComboBox" name="cmbFeaturePaging"/>
          </item>
          <item row="2" column="1" colspan="2">
           <widget class="QLineEdit" name="txtMaxNumFeatures">
@@ -355,16 +355,17 @@
   <tabstop>cmbVersion</tabstop>
   <tabstop>mWfsVersionDetectButton</tabstop>
   <tabstop>txtMaxNumFeatures</tabstop>
-  <tabstop>cbxWfsFeaturePaging</tabstop>
+  <tabstop>cmbFeaturePaging</tabstop>
   <tabstop>txtPageSize</tabstop>
   <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWfsInvertAxisOrientation</tabstop>
   <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>
   <tabstop>cmbDpiMode</tabstop>
+  <tabstop>cmbTilePixelRatio</tabstop>
   <tabstop>cbxIgnoreGetMapURI</tabstop>
   <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
-  <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWmsIgnoreReportedLayerExtents</tabstop>
+  <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWmsInvertAxisOrientation</tabstop>
   <tabstop>cbxSmoothPixmapTransform</tabstop>
   <tabstop>mTestConnectionButton</tabstop>

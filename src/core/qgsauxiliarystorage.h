@@ -56,7 +56,6 @@ class QgsProject;
  * Cascade". Thus, auxiliary fields are editable even if the
  * source layer is not and edition of a joined field is also possible.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 {
@@ -282,7 +281,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
  *
  * \brief Class providing some utility methods to manage auxiliary storage.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAuxiliaryStorage
 {

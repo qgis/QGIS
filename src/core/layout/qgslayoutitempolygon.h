@@ -25,7 +25,6 @@ class QgsFillSymbol;
 /**
  * \ingroup core
  * \brief Layout item for node based polygon shapes.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
 {

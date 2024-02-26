@@ -186,7 +186,6 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * searchText searches for a text in all the pages of the stacked widget and highlight the results
      * \param text the text to search
-     * \since QGIS 3.0
      */
     void searchText( const QString &text );
 
@@ -209,7 +208,6 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * register widgets in the dialog to search for text in it
      * it is automatically called if a line edit has "mSearchLineEdit" as object name.
-     * \since QGIS 3.0
      */
     void registerTextSearchWidgets();
 

@@ -13,3 +13,4 @@ QgsManageConnectionsDialog.ArcgisMapServer = QgsManageConnectionsDialog.Type.Arc
 QgsManageConnectionsDialog.ArcgisFeatureServer = QgsManageConnectionsDialog.Type.ArcgisFeatureServer
 QgsManageConnectionsDialog.VectorTile = QgsManageConnectionsDialog.Type.VectorTile
 QgsManageConnectionsDialog.TiledScene = QgsManageConnectionsDialog.Type.TiledScene
+QgsManageConnectionsDialog.SensorThings = QgsManageConnectionsDialog.Type.SensorThings

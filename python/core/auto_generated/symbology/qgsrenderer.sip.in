@@ -99,8 +99,6 @@ Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`
 :param context: render context
 
 :return: returns pointer to symbol or 0 if symbol was not found
-
-.. versionadded:: 2.12
 %End
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
@@ -108,15 +106,11 @@ Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`
 Returns symbol for feature. The difference compared to :py:func:`~QgsFeatureRenderer.symbolForFeature` is that it returns original
 symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
 of a symbol for use in rendering.
-
-.. versionadded:: 2.12
 %End
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Returns legend keys matching a specified feature.
-
-.. versionadded:: 2.14
 %End
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
@@ -257,8 +251,6 @@ E.g. if you only want to deal with visible features:
 Returns list of symbols used by the renderer.
 
 :param context: render context
-
-.. versionadded:: 2.12
 %End
 
     bool usingSymbolLevels() const;
@@ -280,8 +272,6 @@ implementation in order to store all common base class properties in the returne
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 create the SLD UserStyle element following the SLD v1.1 specs with the given name
-
-.. versionadded:: 2.8
 %End
 
     static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) /Factory/;
@@ -316,8 +306,6 @@ Returns the set of all legend keys used by the renderer.
     virtual bool legendSymbolItemsCheckable() const;
 %Docstring
 Returns ``True`` if symbology items in legend are checkable.
-
-.. versionadded:: 2.5
 %End
 
     virtual bool legendSymbolItemChecked( const QString &key );
@@ -327,8 +315,6 @@ Returns ``True`` if the legend symbology item with the specified ``key`` is chec
 .. seealso:: :py:func:`checkLegendSymbolItem`
 
 .. seealso:: :py:func:`legendKeys`
-
-.. versionadded:: 2.5
 %End
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
@@ -338,8 +324,6 @@ Sets whether the legend symbology item with the specified ``ley`` should be chec
 .. seealso:: :py:func:`legendSymbolItemChecked`
 
 .. seealso:: :py:func:`legendKeys`
-
-.. versionadded:: 2.5
 %End
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
@@ -350,8 +334,6 @@ Sets the symbol to be used for a legend symbol item.
 :param symbol: new symbol for legend item. Ownership is transferred to renderer.
 
 .. seealso:: :py:func:`legendKeys`
-
-.. versionadded:: 2.14
 %End
 
     virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok /Out/ ) const;
@@ -377,15 +359,11 @@ the features displayed using that key.
 Returns a list of symbology items for the legend
 
 .. seealso:: :py:func:`legendKeys`
-
-.. versionadded:: 2.6
 %End
 
     virtual QString legendClassificationAttribute() const;
 %Docstring
 If supported by the renderer, return classification attribute for the use in legend
-
-.. versionadded:: 2.6
 %End
 
     void setVertexMarkerAppearance( Qgis::VertexMarkerType type, double size );
@@ -398,8 +376,6 @@ Sets type and size of editing vertex markers for subsequent rendering
 Returns whether the renderer will render a feature or not.
 Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
 Default implementation uses :py:func:`~QgsFeatureRenderer.symbolForFeature`.
-
-.. versionadded:: 2.12
 %End
 
     virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
@@ -407,16 +383,12 @@ Default implementation uses :py:func:`~QgsFeatureRenderer.symbolForFeature`.
 Returns list of symbols used for rendering the feature.
 For renderers that do not support MoreSymbolsPerFeature it is more efficient
 to use :py:func:`~QgsFeatureRenderer.symbolForFeature`
-
-.. versionadded:: 2.12
 %End
 
     virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Equivalent of :py:func:`~QgsFeatureRenderer.originalSymbolsForFeature` call
 extended to support renderers that may use more symbols per feature - similar to :py:func:`~QgsFeatureRenderer.symbolsForFeature`
-
-.. versionadded:: 2.12
 %End
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
@@ -426,8 +398,6 @@ Allows for a renderer to modify the extent of a feature request prior to renderi
 :param extent: reference to request's filter extent. Modify extent to change the
                extent of feature request
 :param context: render context
-
-.. versionadded:: 2.7
 %End
 
     QgsPaintEffect *paintEffect() const;
@@ -437,8 +407,6 @@ Returns the current paint effect for the renderer.
 :return: paint effect
 
 .. seealso:: :py:func:`setPaintEffect`
-
-.. versionadded:: 2.9
 %End
 
     void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
@@ -448,8 +416,6 @@ Sets the current paint effect for the renderer.
 :param effect: paint effect. Ownership is transferred to the renderer.
 
 .. seealso:: :py:func:`paintEffect`
-
-.. versionadded:: 2.9
 %End
 
     bool forceRasterRender() const;
@@ -457,8 +423,6 @@ Sets the current paint effect for the renderer.
 Returns whether the renderer must render as a raster.
 
 .. seealso:: :py:func:`setForceRasterRender`
-
-.. versionadded:: 2.12
 %End
 
     void setForceRasterRender( bool forceRaster );
@@ -470,8 +434,6 @@ Sets whether the renderer should be rendered to a raster destination.
                     would result in a large, complex vector output.
 
 .. seealso:: :py:func:`forceRasterRender`
-
-.. versionadded:: 2.12
 %End
 
     double referenceScale() const;
@@ -517,8 +479,6 @@ Gets the order in which features shall be processed by this renderer.
    this property has no effect if :py:func:`~QgsFeatureRenderer.orderByEnabled` is ``False``
 
 .. seealso:: :py:func:`orderByEnabled`
-
-.. versionadded:: 2.14
 %End
 
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
@@ -530,8 +490,6 @@ Define the order in which features shall be processed by this renderer.
    this property has no effect if :py:func:`~QgsFeatureRenderer.orderByEnabled` is ``False``
 
 .. seealso:: :py:func:`setOrderByEnabled`
-
-.. versionadded:: 2.14
 %End
 
     bool orderByEnabled() const;
@@ -541,8 +499,6 @@ Returns whether custom ordering will be applied before features are processed by
 .. seealso:: :py:func:`orderBy`
 
 .. seealso:: :py:func:`setOrderByEnabled`
-
-.. versionadded:: 2.14
 %End
 
     void setOrderByEnabled( bool enabled );
@@ -554,8 +510,6 @@ Sets whether custom ordering should be applied before features are processed by 
 .. seealso:: :py:func:`setOrderBy`
 
 .. seealso:: :py:func:`orderByEnabled`
-
-.. versionadded:: 2.14
 %End
 
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
@@ -566,8 +520,6 @@ does nothing with subrenderers, but individual derived classes can use these to 
 :param subRenderer: the embedded renderer. Ownership will be transferred.
 
 .. seealso:: :py:func:`embeddedRenderer`
-
-.. versionadded:: 2.16
 %End
 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
@@ -576,8 +528,6 @@ Returns the current embedded renderer (subrenderer) for this feature renderer. T
 implementation does not use subrenderers and will always return ``None``.
 
 .. seealso:: :py:func:`setEmbeddedRenderer`
-
-.. versionadded:: 2.16
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;

@@ -30,7 +30,6 @@ class QgsLayoutNorthArrowHandler;
 /**
  * \ingroup core
  * \brief A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 {
@@ -239,7 +238,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Returns the original set picture mode (image format).
      * It could differ from mode() if given picture format is unknown
      * \see setMode() mode()
-     * \since 3.22
+     * \since QGIS 3.22
      */
     Format originalMode() const { return mOriginalMode; }
 

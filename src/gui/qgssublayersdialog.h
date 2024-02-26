@@ -72,7 +72,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * A structure that defines layers for the purpose of this dialog
-     * \since QGIS 2.16
      */
     struct LayerDefinition
     {
@@ -98,7 +97,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * List of layer definitions for the purpose of this dialog
-     * \since QGIS 2.16
      */
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
@@ -125,37 +123,31 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * Populate the table with layers
-     * \since QGIS 2.16
      */
     void populateLayerTable( const LayerDefinitionList &list );
 
     /**
      * Returns list of selected layers
-     * \since QGIS 2.16
      */
     LayerDefinitionList selection();
 
     /**
      * Set if we should display the add to group checkbox
-     * \since QGIS 3.0
      */
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox ) { mShowAddToGroupCheckbox = showAddToGroupCheckbox; }
 
     /**
      * If we should display the add to group checkbox
-     * \since QGIS 3.0
      */
     bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
 
     /**
      * If we should add layers in a group
-     * \since QGIS 3.0
      */
     bool addToGroupCheckbox() const { return mCbxAddToGroup->isChecked(); }
 
     /**
      * Returns column with count or -1
-     * \since QGIS 3.0
      */
     int countColumn() const { return mShowCount ? 2 : -1; }
 

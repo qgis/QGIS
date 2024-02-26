@@ -15,8 +15,6 @@ class QgsArrowSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
 Line symbol layer used for representing lines as arrows.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

@@ -106,7 +106,6 @@ typedef std::function<QgsAbstractSensorWidget *( QgsAbstractSensor *sensor )> Qg
  * \ingroup gui
  * \brief Convenience metadata class that uses static functions to handle sensor GUI behavior.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSensorGuiMetadata : public QgsSensorAbstractGuiMetadata
 {

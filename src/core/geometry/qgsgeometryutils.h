@@ -33,7 +33,6 @@ class QgsLineString;
  * \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryUtils
 {
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param geom geometry
      * \param id vertex id to find distance to
      * \returns distance to vertex (following geometry)
-     * \since QGIS 2.16
      */
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
 
@@ -76,7 +74,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param nextVertex will be set to next vertex ID
      * \returns TRUE if vertices were successfully retrieved
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
-     * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
                                     double distance,
@@ -209,7 +206,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param tolerance The tolerance to use
      * \returns The list of self intersections
      * \note not available in Python bindings
-     * \since QGIS 2.12
      */
     static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
@@ -265,7 +261,6 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
-     * \since 3.0
      */
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
                                QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
@@ -293,7 +288,6 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * For line defined by points pt1 and pt3, find out on which side of the line is point pt2.
      * Returns -1 if pt2 on the left side, 1 if pt2 is on the right side or 0 if pt2 lies on the line.
-     * \since 3.0
      */
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
@@ -375,7 +369,6 @@ class CORE_EXPORT QgsGeometryUtils
      *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZM (3 4 1 1)'
      * \endcode
-     * \since QGIS 3.0
      */
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
@@ -390,7 +383,6 @@ class CORE_EXPORT QgsGeometryUtils
      * is extrapolated from the supplied line.
      *
      * \see interpolatePointOnLineByValue()
-     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction ) SIP_HOLDGIL;
 
@@ -408,7 +400,6 @@ class CORE_EXPORT QgsGeometryUtils
      * and present in the returned point.
      *
      * \see interpolatePointOnLineByValue()
-     * \since QGIS 3.0.2
      */
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction ) SIP_HOLDGIL;
 
@@ -422,7 +413,6 @@ class CORE_EXPORT QgsGeometryUtils
      * the target \a value.
      *
      * \see interpolatePointOnLine()
-     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value ) SIP_HOLDGIL;
 
@@ -431,7 +421,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns The gradient of this linear entity, or infinity if vertical
-     * \since QGIS 3.0
      */
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
@@ -442,7 +431,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param a Output parameter, a coefficient of the equation.
      * \param b Output parameter, b coefficient of the equation.
      * \param c Output parameter, c coefficient of the equation.
-     * \since QGIS 3.0
      */
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
                               double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT ) SIP_HOLDGIL;
@@ -469,7 +457,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \warning This method does not copy the z value of the coordinate from the
      * points whose z value is closest to the original x/y point, but only the first one found.
      *
-     * \since QGIS 3.0
      * \deprecated since QGIS 3.20 use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead
      */
     Q_DECL_DEPRECATED static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) SIP_DEPRECATED
@@ -863,7 +850,6 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
-     * \since 3.0
      * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_DEPRECATED SIP_HOLDGIL

@@ -14,8 +14,6 @@ class QgsCurve: QgsAbstractGeometry /Abstract/
 {
 %Docstring(signature="appended")
 Abstract base class for curved geometry type
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -31,8 +29,6 @@ Constructor for QgsCurve.
     virtual bool equals( const QgsCurve &other ) const = 0;
 %Docstring
 Checks whether this curve exactly equals another curve.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool operator==( const QgsAbstractGeometry &other ) const;
@@ -175,8 +171,6 @@ vertex is not found.
     virtual QgsCurve *reversed() const = 0 /Factory/;
 %Docstring
 Returns a reversed copy of the curve, where the direction of the curve has been flipped.
-
-.. versionadded:: 2.14
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

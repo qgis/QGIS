@@ -30,7 +30,6 @@ class QgsLayoutItemMap;
 /**
  * \ingroup core
  * \brief A layout item subclass for scale bars.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 {

@@ -520,8 +520,6 @@ Sets the blur radius, which controls the amount of blurring applied to the fill.
 :param blurRadius: Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
 
 .. seealso:: :py:func:`blurRadius`
-
-.. versionadded:: 2.3
 %End
 
     int blurRadius() const;
@@ -531,8 +529,6 @@ Returns the blur radius, which controls the amount of blurring applied to the fi
 :return: Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
 
 .. seealso:: :py:func:`setBlurRadius`
-
-.. versionadded:: 2.3
 %End
 
     void setUseWholeShape( bool useWholeShape );
@@ -545,8 +541,6 @@ Sets whether the shapeburst fill should be drawn using the entire shape.
 .. seealso:: :py:func:`useWholeShape`
 
 .. seealso:: :py:func:`setMaxDistance`
-
-.. versionadded:: 2.3
 %End
 
     bool useWholeShape() const;
@@ -558,8 +552,6 @@ Returns whether the shapeburst fill is set to cover the entire shape.
 .. seealso:: :py:func:`setUseWholeShape`
 
 .. seealso:: :py:func:`maxDistance`
-
-.. versionadded:: 2.3
 %End
 
     void setMaxDistance( double maxDistance );
@@ -573,8 +565,6 @@ Sets the maximum distance to shape inside of the shape from the polygon's bounda
 .. seealso:: :py:func:`setUseWholeShape`
 
 .. seealso:: :py:func:`setDistanceUnit`
-
-.. versionadded:: 2.3
 %End
 
     double maxDistance() const;
@@ -588,8 +578,6 @@ Returns the maximum distance from the shape's boundary which is shaded. This par
 .. seealso:: :py:func:`setMaxDistance`
 
 .. seealso:: :py:func:`distanceUnit`
-
-.. versionadded:: 2.3
 %End
 
     void setDistanceUnit( Qgis::RenderUnit unit );
@@ -601,8 +589,6 @@ Sets the unit for the maximum distance to shade inside of the shape from the pol
 .. seealso:: :py:func:`setMaxDistance`
 
 .. seealso:: :py:func:`distanceUnit`
-
-.. versionadded:: 2.3
 %End
 
     Qgis::RenderUnit distanceUnit() const;
@@ -614,8 +600,6 @@ Returns the unit for the maximum distance to shade inside of the shape from the 
 .. seealso:: :py:func:`maxDistance`
 
 .. seealso:: :py:func:`setDistanceUnit`
-
-.. versionadded:: 2.3
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
@@ -635,8 +619,6 @@ or by simply specificing a start and end color. setColorType is used to specify 
 .. seealso:: :py:func:`setColor2`
 
 .. seealso:: :py:func:`setColorRamp`
-
-.. versionadded:: 2.3
 %End
 
     Qgis::GradientColorSource colorType() const;
@@ -653,8 +635,6 @@ or by simply specificing a start and end color.
 .. seealso:: :py:func:`color2`
 
 .. seealso:: :py:func:`colorRamp`
-
-.. versionadded:: 2.3
 %End
 
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
@@ -666,8 +646,6 @@ Ownership of ``ramp`` is transferred to the fill.
 .. seealso:: :py:func:`setColorType`
 
 .. seealso:: :py:func:`colorRamp`
-
-.. versionadded:: 2.3
 %End
 
     QgsColorRamp *colorRamp();
@@ -679,8 +657,6 @@ Returns the color ramp used for the shapeburst fill. The color ramp is only used
 .. seealso:: :py:func:`setColorRamp`
 
 .. seealso:: :py:func:`colorType`
-
-.. versionadded:: 2.3
 %End
 
     void setColor2( const QColor &color2 );
@@ -692,8 +668,6 @@ Sets the color for the endpoint of the shapeburst fill. This color is only used 
 .. seealso:: :py:func:`setColorType`
 
 .. seealso:: :py:func:`color2`
-
-.. versionadded:: 2.3
 %End
 
     QColor color2() const;
@@ -705,8 +679,6 @@ Returns the color used for the endpoint of the shapeburst fill. This color is on
 .. seealso:: :py:func:`setColor2`
 
 .. seealso:: :py:func:`colorType`
-
-.. versionadded:: 2.3
 %End
 
     void setIgnoreRings( bool ignoreRings );
@@ -717,8 +689,6 @@ the buffered shading.
 :param ignoreRings: Set to ``True`` if buffers should ignore interior rings for polygons.
 
 .. seealso:: :py:func:`ignoreRings`
-
-.. versionadded:: 2.3
 %End
 
     bool ignoreRings() const;
@@ -728,8 +698,6 @@ Returns whether the shapeburst fill is set to ignore polygon interior rings.
 :return: ``True`` if the shapeburst fill will ignore interior rings when calculating buffered shading.
 
 .. seealso:: :py:func:`setIgnoreRings`
-
-.. versionadded:: 2.3
 %End
 
     void setOffset( QPointF offset );
@@ -741,8 +709,6 @@ Sets the offset for the shapeburst fill.
 .. seealso:: :py:func:`offset`
 
 .. seealso:: :py:func:`setOffsetUnit`
-
-.. versionadded:: 2.3
 %End
 
     QPointF offset() const;
@@ -754,8 +720,6 @@ Returns the offset for the shapeburst fill.
 .. seealso:: :py:func:`setOffset`
 
 .. seealso:: :py:func:`offsetUnit`
-
-.. versionadded:: 2.3
 %End
 
     void setOffsetUnit( Qgis::RenderUnit unit );
@@ -767,8 +731,6 @@ Sets the units used for the offset for the shapeburst fill.
 .. seealso:: :py:func:`setOffset`
 
 .. seealso:: :py:func:`offsetUnit`
-
-.. versionadded:: 2.3
 %End
 
     Qgis::RenderUnit offsetUnit() const;
@@ -780,8 +742,6 @@ Returns the units used for the offset of the shapeburst fill.
 .. seealso:: :py:func:`offset`
 
 .. seealso:: :py:func:`setOffsetUnit`
-
-.. versionadded:: 2.3
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
@@ -854,8 +814,6 @@ Returns the stroke width map unit scale.
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 
 .. seealso:: :py:func:`strokeWidthUnit`
-
-.. versionadded:: 2.16
 %End
 
     void setCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
@@ -920,8 +878,6 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
 A class for filling symbols with a repeated raster image.
-
-.. versionadded:: 2.7
 %End
 
 %TypeHeaderCode
@@ -955,8 +911,6 @@ ownership of the returned object.
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
     virtual QString layerType() const;
@@ -1339,8 +1293,6 @@ ownership of the returned object.
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -2831,8 +2783,6 @@ Caller takes ownership of the returned symbol layer.
 Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
 
 .. seealso:: :py:func:`pointOnAllParts`
-
-.. versionadded:: 2.16
 %End
 
     bool pointOnAllParts() const;
@@ -2840,8 +2790,6 @@ Sets whether a point is drawn for all parts or only on the biggest part of multi
 Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
 
 .. seealso:: :py:func:`setPointOnAllParts`
-
-.. versionadded:: 2.16
 %End
 
     bool clipPoints() const;

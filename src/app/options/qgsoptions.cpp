@@ -2263,6 +2263,20 @@ void QgsOptions::browseCacheDirectory()
 void QgsOptions::clearCache()
 {
   QgsNetworkAccessManager::instance()->cache()->clear();
+
+  // Clear WFS XSD cache used by OGR GMLAS driver
+  QString cacheDirectory = mSettings->value( QStringLiteral( "cache/directory" ) ).toString();
+  if ( cacheDirectory.isEmpty() )
+    cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  if ( !cacheDirectory.endsWith( QDir::separator() ) )
+  {
+    cacheDirectory.push_back( QDir::separator() );
+  }
+  // Must be kept in sync with QgsWFSProvider::readAttributesFromSchemaWithGMLAS()
+  cacheDirectory += QLatin1String( "gmlas_xsd_cache" );
+  QDir dir( cacheDirectory );
+  dir.removeRecursively();
+
   QMessageBox::information( this, tr( "Clear Cache" ), tr( "Content cache has been cleared." ) );
 }
 

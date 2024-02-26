@@ -40,8 +40,6 @@ Constructor
 :param widthPixels: Output width, in pixels
 :param heightPixels: Output height, in pixels
 :param rotation: clockwise rotation in degrees
-
-.. versionadded:: 2.8
 %End
 
     QgsMapToPixel( double mapUnitsPerPixel );
@@ -60,8 +58,6 @@ Returns a new QgsMapToPixel created using a specified ``scale`` and distance uni
 :param mapUnits: map units
 
 :return: matching QgsMapToPixel
-
-.. versionadded:: 3.0
 %End
 
     bool isValid() const;
@@ -158,8 +154,6 @@ Returns the current map width in pixels.
 The information is only known if setRotation was used.
 
 .. seealso:: :py:func:`mapHeight`
-
-.. versionadded:: 2.8
 %End
 
     int mapHeight() const;
@@ -167,8 +161,6 @@ The information is only known if setRotation was used.
 Returns current map height in pixels
 
 .. seealso:: :py:func:`mapWidth`
-
-.. versionadded:: 2.8
 %End
 
     void setMapRotation( double degrees, double cx, double cy );
@@ -182,8 +174,6 @@ Calling this method will automatically set the object as valid.
 :param cy: Y ordinate of map center in geographical units
 
 .. seealso:: :py:func:`mapRotation`
-
-.. versionadded:: 2.8
 %End
 
     double mapRotation() const;
@@ -191,8 +181,6 @@ Calling this method will automatically set the object as valid.
 Returns the current map rotation in degrees (clockwise).
 
 .. seealso:: :py:func:`setMapRotation`
-
-.. versionadded:: 2.8
 %End
 
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
@@ -211,8 +199,6 @@ Calling this method will automatically set the object as valid.
 .. note::
 
    if the specified parameters result in an invalid transform then no changes will be applied to the object
-
-.. versionadded:: 2.8
 %End
 
 
@@ -231,8 +217,6 @@ Returns a QTransform encapsulating the map to pixel conversion.
 Returns the center x-coordinate for the transform.
 
 .. seealso:: :py:func:`yCenter`
-
-.. versionadded:: 3.0
 %End
 
     double yCenter() const;
@@ -240,8 +224,6 @@ Returns the center x-coordinate for the transform.
 Returns the center y-coordinate for the transform.
 
 .. seealso:: :py:func:`xCenter`
-
-.. versionadded:: 3.0
 %End
 
     bool operator==( const QgsMapToPixel &other ) const;

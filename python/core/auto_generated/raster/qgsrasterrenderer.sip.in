@@ -152,8 +152,6 @@ Sets base class members from xml. Usually called from :py:func:`~QgsRasterRender
 %Docstring
 Copies common properties like opacity / transparency data from other renderer.
 Useful when cloning renderers.
-
-.. versionadded:: 2.16
 %End
 
     virtual QList<int> usesBands() const;

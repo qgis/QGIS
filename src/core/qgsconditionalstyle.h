@@ -62,7 +62,6 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
      * Each row will check be checked against each rule.
      *
      * \see rowStyles()
-     * \since QGIS 2.12
      */
     void setRowStyles( const QgsConditionalStyles &styles );
 

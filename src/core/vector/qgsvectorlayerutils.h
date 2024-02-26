@@ -46,7 +46,6 @@ typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
  * \class QgsVectorLayerUtils
  * \brief Contains utility methods for working with QgsVectorLayers.
  *
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsVectorLayerUtils
@@ -58,7 +57,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \class QgsDuplicateFeatureContext
      * \brief Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds do list all the duplicated features
      *
-     * \since QGIS 3.0
      */
     class CORE_EXPORT QgsDuplicateFeatureContext
     {
@@ -69,13 +67,11 @@ class CORE_EXPORT QgsVectorLayerUtils
 
         /**
          * Returns all the layers on which features have been duplicated
-         * \since QGIS 3.0
          */
         QList<QgsVectorLayer *> layers() const;
 
         /**
          * Returns the duplicated features in the given layer
-         * \since QGIS 3.0
          */
         QgsFeatureIds duplicatedFeatures( QgsVectorLayer *layer ) const;
 
@@ -86,7 +82,6 @@ class CORE_EXPORT QgsVectorLayerUtils
 
         /**
          * To set info about duplicated features to the function feedback (layout and ids)
-         * \since QGIS 3.0
          */
         void setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids );
     };
@@ -129,7 +124,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
      * \param selectedOnly set to TRUE to get values from selected features only
      * \returns feature iterator
-     * \since QGIS 3.0
      */
     static QgsFeatureIterator getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly );
 
@@ -142,7 +136,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getDoubleValues
-     * \since QGIS 3.0
      */
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
 
@@ -157,7 +150,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getValues
-     * \since QGIS 3.0
      */
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
 
@@ -233,7 +225,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \a maxDepth the maximum depth to duplicate children in relations, 0 is unlimited depth (in any case, limited to 100)
      * \a depth the current depth, not exposed in Python
      * \a referencedLayersBranch the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
-     * \since QGIS 3.0
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT, const int maxDepth = 0, int depth SIP_PYARGREMOVE = 0, QList<QgsVectorLayer *> referencedLayersBranch SIP_PYARGREMOVE = QList<QgsVectorLayer *>() );
 

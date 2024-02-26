@@ -51,7 +51,6 @@ class QDomElement;
  * \see QgsDatumTransform
  * \see QgsCoordinateTransform
  *
- * \since QGIS 3.0
 */
 
 class CORE_EXPORT QgsCoordinateTransformContext

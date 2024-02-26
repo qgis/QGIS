@@ -78,13 +78,14 @@ class QgsArcGisPortalGroupsItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsArcGisPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers,
-                               const QString &communityEndpoint, const QString &contentEndpoint );
+                               const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
   private:
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
 };
@@ -100,7 +101,7 @@ class QgsArcGisPortalGroupItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsArcGisPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsHttpHeaders &headers,
-                              const QString &communityEndpoint, const QString &contentEndpoint );
+                              const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -108,6 +109,7 @@ class QgsArcGisPortalGroupItem : public QgsDataCollectionItem
     QString mId;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
 };
@@ -124,7 +126,7 @@ class QgsArcGisRestServicesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisRestServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers );
+    QgsArcGisRestServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -132,6 +134,7 @@ class QgsArcGisRestServicesItem : public QgsDataCollectionItem
     QString mUrl;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
 };
@@ -146,7 +149,7 @@ class QgsArcGisRestFolderItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisRestFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers );
+    QgsArcGisRestFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats );
 
     QVector<QgsDataItem *> createChildren() override;
@@ -157,6 +160,7 @@ class QgsArcGisRestFolderItem : public QgsDataCollectionItem
     QString mBaseUrl;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
     QString mSupportedFormats;
 };
 
@@ -171,7 +175,7 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisFeatureServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers );
+    QgsArcGisFeatureServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
@@ -181,6 +185,7 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
     QString mBaseUrl;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
     QString mSupportedFormats;
 };
 
@@ -194,7 +199,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, Qgis::ArcGisRestServiceType serviceType );
+    QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, Qgis::ArcGisRestServiceType serviceType );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -203,6 +208,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     QString mBaseUrl;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
     Qgis::ArcGisRestServiceType mServiceType = Qgis::ArcGisRestServiceType::Unknown;
 };
 
@@ -214,13 +220,14 @@ class QgsArcGisRestParentLayerItem : public QgsDataItem
     Q_OBJECT
   public:
 
-    QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers );
+    QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     bool equal( const QgsDataItem *other ) override;
 
   private:
 
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
 
 };
 
@@ -234,7 +241,7 @@ class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
   public:
 
     QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers,
-                                      Qgis::BrowserLayerType geometryType );
+                                      const QString urlPrefix, Qgis::BrowserLayerType geometryType );
 
 };
 
@@ -247,7 +254,7 @@ class QgsArcGisMapServiceLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers );
+    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 

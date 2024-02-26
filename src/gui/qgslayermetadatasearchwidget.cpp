@@ -205,7 +205,7 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
   {
     for ( const auto &selectedIndex : std::as_const( selectedIndexes ) )
     {
-      const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), QgsLayerMetadataResultsModel::Roles::Metadata ).value<QgsLayerMetadataProviderResult>() };
+      const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), static_cast< int >( QgsLayerMetadataResultsModel::CustomRole::Metadata ) ).value<QgsLayerMetadataProviderResult>() };
       switch ( metadataResult.layerType() )
       {
         case Qgis::LayerType::Raster:

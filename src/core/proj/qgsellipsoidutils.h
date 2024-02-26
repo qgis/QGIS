@@ -28,7 +28,6 @@ class QgsCelestialBody;
  * \ingroup core
  * \brief Contains utility functions for working with ellipsoids and querying the ellipsoid database.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsEllipsoidUtils
 {
@@ -36,7 +35,6 @@ class CORE_EXPORT QgsEllipsoidUtils
 
     /**
      * Contains parameters for an ellipsoid.
-     * \since QGIS 3.0
      */
     struct EllipsoidParameters
     {
@@ -61,7 +59,6 @@ class CORE_EXPORT QgsEllipsoidUtils
 
     /**
      * Contains definition of an ellipsoid.
-     * \since QGIS 3.0
      */
     struct EllipsoidDefinition
     {

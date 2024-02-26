@@ -20,8 +20,6 @@ class QgsBrowserTreeView : QTreeView
 The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tree state functionality.
 
 .. seealso:: :py:class:`QgsBrowserModel`
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode

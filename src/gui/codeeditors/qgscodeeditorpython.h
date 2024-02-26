@@ -46,7 +46,6 @@ class QgsQsciLexerPython : public QsciLexerPython
  * \brief A Python editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \note may not be available in Python bindings, depending on platform support
- * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 {
@@ -72,7 +71,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * \param filenames The list of apis files to load for the Python lexer
      * \param mode code editor mode (since QGIS 3.30)
      * \param flags code editor flags (since QGIS 3.32)
-     * \since QGIS 2.6
      */
     QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(),
                          QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );

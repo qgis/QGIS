@@ -123,14 +123,12 @@ class CORE_EXPORT QgsAction
     /**
      * Returns a unique id for this action.
      *
-     * \since QGIS 3.0
      */
     QUuid id() const { return mId; }
 
     /**
      * Returns TRUE if this action was a default constructed one.
      *
-     * \since QGIS 3.0
      */
     bool isValid() const { return !mId.isNull(); }
 
@@ -145,14 +143,12 @@ class CORE_EXPORT QgsAction
      * How the content is interpreted depends on the type() and
      * the actionScope().
      *
-     * \since QGIS 3.0
      */
     QString command() const { return mCommand; }
 
     /**
      * Returns the notification message that triggers the action
      *
-     * \since QGIS 3.0
      */
     QString notificationMessage() const { return mNotificationMessage; }
 
@@ -180,14 +176,12 @@ class CORE_EXPORT QgsAction
     /**
      * Run this action.
      *
-     * \since QGIS 3.0
      */
     void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
 
     /**
      * Run this action.
      *
-     * \since QGIS 3.0
      */
     void run( const QgsExpressionContext &expressionContext ) const;
 
@@ -197,7 +191,6 @@ class CORE_EXPORT QgsAction
      * coordinate.
      *
      * \see QgsActionScope
-     * \since QGIS 3.0
      */
     QSet<QString> actionScopes() const;
 
@@ -206,7 +199,6 @@ class CORE_EXPORT QgsAction
      * Action scopes may offer additional variables like the clicked
      * coordinate.
      *
-     * \since QGIS 3.0
      */
     void setActionScopes( const QSet<QString> &actionScopes );
 
@@ -214,7 +206,6 @@ class CORE_EXPORT QgsAction
      * Reads an XML definition from actionNode
      * into this object.
      *
-     * \since QGIS 3.0
      */
     void readXml( const QDomNode &actionNode );
 
@@ -222,21 +213,18 @@ class CORE_EXPORT QgsAction
      * Appends an XML definition for this action as a new
      * child node to actionsNode.
      *
-     * \since QGIS 3.0
      */
     void writeXml( QDomNode &actionsNode ) const;
 
     /**
      * Sets an expression context scope to use for running the action.
      *
-     * \since QGIS 3.0
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 
     /**
      * Returns an expression context scope used for running the action.
      *
-     * \since QGIS 3.0
      */
     QgsExpressionContextScope expressionContextScope() const;
 

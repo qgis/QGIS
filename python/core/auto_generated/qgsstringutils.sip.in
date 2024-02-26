@@ -15,8 +15,6 @@ class QgsStringReplacement
 {
 %Docstring(signature="appended")
 A representation of a single string replacement.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -90,8 +88,6 @@ class QgsStringReplacementCollection
 {
 %Docstring(signature="appended")
 A collection of string replacements (specified using QgsStringReplacement objects).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -160,8 +156,6 @@ class QgsStringUtils
 {
 %Docstring(signature="appended")
 Utility functions for working with strings.
-
-.. versionadded:: 2.11
 %End
 
 %TypeHeaderCode
@@ -177,8 +171,6 @@ Converts a string by applying capitalization rules to the string.
 :param capitalization: capitalization type to apply
 
 :return: capitalized string
-
-.. versionadded:: 3.0
 %End
 
     static QString ampersandEncode( const QString &string );
@@ -267,8 +259,6 @@ links.
 :param foundLinks: if specified, will be set to ``True`` if any links were inserted into the string
 
 :return: string with inserted links
-
-.. versionadded:: 3.0
 %End
 
     static bool isUrl( const QString &string );

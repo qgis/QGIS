@@ -161,7 +161,6 @@ class ANALYSIS_EXPORT QgsTriangulation
      * saveTriangulation(). These fields should be used when creating
      * a suitable feature sink for saveTriangulation()
      * \see saveTriangulation()
-     * \since QGIS 3.0
      */
     static QgsFields triangulationFields();
 
@@ -174,7 +173,6 @@ class ANALYSIS_EXPORT QgsTriangulation
      * \returns TRUE in case of success
      *
      * \see triangulationFields()
-     *  \since QGIS 3.0
      */
     virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const = 0;
 

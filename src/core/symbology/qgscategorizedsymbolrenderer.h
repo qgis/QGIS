@@ -119,14 +119,12 @@ class CORE_EXPORT QgsRendererCategory
     /**
      * Returns TRUE if the category is currently enabled and should be rendered.
      * \see setRenderState()
-     * \since QGIS 2.5
      */
     bool renderState() const;
 
     /**
      * Sets whether the category is currently enabled and should be rendered.
      * \see renderState()
-     * \since QGIS 2.5
      */
     void setRenderState( bool render );
 
@@ -219,7 +217,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Returns the index of the category with the specified label (or -1 if the label was not found, or is not unique).
-     * \since QGIS 2.5
      */
     int categoryIndexForLabel( const QString &val );
 
@@ -267,7 +264,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * \see updateCategorySymbol()
      * \see updateCategoryLabel()
      *
-     * \since QGIS 2.5
      */
     bool updateCategoryRenderState( int catIndex, bool render );
 
@@ -391,7 +387,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Update the color ramp used and all symbols colors.
       * \param ramp color ramp. Ownership is transferred to the renderer
-      * \since QGIS 2.5
       */
     void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
@@ -407,7 +402,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * Since QGIS 3.20, the optional \a layer parameter is required for conversions of some renderer types.
      *
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
-     * \since QGIS 2.5
      */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
 
@@ -419,14 +413,12 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
      * Takes ownership of the passed settings objects. NULLPTR is a valid input that disables data-defined
      * size legend.
-     * \since QGIS 3.0
      */
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
      * Returns configuration of appearance of legend when using data-defined size for marker symbols.
      * Will return NULLPTR if the functionality is disabled.
-     * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 

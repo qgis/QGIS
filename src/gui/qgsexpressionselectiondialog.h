@@ -74,13 +74,11 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * Sets the message bar to display feedback from the dialog. This is used when zooming to
      * features to display the count of selected features.
      * \param messageBar target message bar
-     * \since QGIS 3.0
      */
     void setMessageBar( QgsMessageBar *messageBar );
 
     /**
      * Sets a map canvas associated with the dialog.
-     * \since QGIS 3.0
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 

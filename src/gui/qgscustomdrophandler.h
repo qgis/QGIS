@@ -42,7 +42,6 @@ class QgsMapCanvas;
  *   been complete). Accordingly handleMimeData() implementations must return
  *   quickly and defer any intensive or slow processing.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsCustomDropHandler : public QObject
 {

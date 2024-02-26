@@ -36,8 +36,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -45,15 +43,11 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
   protected:
@@ -63,8 +57,6 @@ Returns the vector layer associated with the widget.
 Registers a data defined override button. Handles setting up connections
 for the button and initializing the button to show the correct descriptions
 and help text for the associated property.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -223,8 +215,6 @@ class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
 Widget for configuring :py:class:`QgsFilledMarkerSymbolLayer` symbol layers.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -937,8 +927,6 @@ Creates a new QgsFontMarkerSymbolLayerWidget.
     void setColorStroke( const QColor &color );
 %Docstring
 Set stroke color.
-
-.. versionadded:: 2.16
 %End
     void setSize( double size );
     void setAngle( double angle );

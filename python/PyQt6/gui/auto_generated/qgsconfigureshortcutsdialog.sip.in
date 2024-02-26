@@ -15,8 +15,6 @@ class QgsConfigureShortcutsDialog : QDialog
 {
 %Docstring(signature="appended")
 Reusable dialog for allowing users to configure shortcuts contained in a :py:class:`QgsShortcutsManager`.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

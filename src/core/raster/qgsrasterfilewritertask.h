@@ -34,7 +34,6 @@ class QgsRasterPipe;
  * QGIS interface.
  * \see QgsVectorFileWriterTask
  * \see QgsVectorFileExporterTask
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
 {

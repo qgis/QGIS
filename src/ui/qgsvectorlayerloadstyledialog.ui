@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
-    <height>546</height>
+    <width>500</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,23 +23,27 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mStyleTypeComboBox"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mFileLabel">
-     <property name="text">
-      <string>File</string>
+   <item row="3" column="1" colspan="5">
+    <widget class="QListView" name="mStyleCategoriesListView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mModeLabel">
      <property name="text">
       <string>Load style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="6">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Open</set>
      </property>
     </widget>
    </item>
@@ -50,17 +54,17 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QListView" name="mStyleCategoriesListView">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mFileLabel">
+     <property name="text">
+      <string>File</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="2" column="1" colspan="5">
+    <widget class="QgsFileWidget" name="mFileWidget"/>
+   </item>
+   <item row="1" column="0" colspan="6">
     <widget class="QWidget" name="mFromDbWidget" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
@@ -106,10 +110,27 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Open</set>
+   <item row="0" column="1" colspan="5">
+    <widget class="QComboBox" name="mStyleTypeComboBox"/>
+   </item>
+   <item row="4" column="5">
+    <widget class="QPushButton" name="mInvertSelectionButton">
+     <property name="text">
+      <string>Invert Selection</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4">
+    <widget class="QPushButton" name="mDeselectAllButton">
+     <property name="text">
+      <string>Deselect All</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="mSelectAllButton">
+     <property name="text">
+      <string>Select All</string>
      </property>
     </widget>
    </item>

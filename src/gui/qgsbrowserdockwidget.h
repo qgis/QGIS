@@ -26,7 +26,6 @@ class QgsBrowserWidget;
 /**
  * \ingroup gui
  * \brief A dock widget containing a QgsBrowserWidget for navigating and managing data sources.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
 {

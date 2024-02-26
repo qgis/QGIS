@@ -104,8 +104,6 @@ Returns a new instance equivalent to this one. A new provider is
 created for the same data source and renderer is cloned too.
 
 :return: a new layer instance
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
@@ -390,8 +388,6 @@ Sets the default contrast enhancement
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 %Docstring
 Draws a preview of the rasterlayer into a QImage
-
-.. versionadded:: 2.4
 %End
 
     virtual void setLayerOrder( const QStringList &layers );

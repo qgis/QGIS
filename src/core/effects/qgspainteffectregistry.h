@@ -35,7 +35,6 @@ class QgsPaintEffectWidget SIP_EXTERNAL;
  *  In C++ you can use the QgsPaintEffectMetadata convenience class to
  * simplify creation of the metadata.
  *
- * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectAbstractMetadata
 {
@@ -93,7 +92,6 @@ typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )() SIP_SKIP;
  * \brief Convenience metadata class that uses static functions to create an effect and its widget.
  *
  * \note not available in Python bindings
- * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata SIP_SKIP
 {
@@ -170,7 +168,6 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
  * QgsPaintEffectRegistry is not usually directly created, but rather accessed through
  * QgsApplication::paintEffectRegistry().
  *
- * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectRegistry
 {
@@ -236,7 +233,6 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \param effect paint effect to test
      * \returns TRUE if effect is default stack
      * \see defaultStack()
-     * \since QGIS 2.12
      */
     static bool isDefaultStack( QgsPaintEffect *effect );
 

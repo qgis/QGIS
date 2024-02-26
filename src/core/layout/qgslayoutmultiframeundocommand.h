@@ -37,7 +37,6 @@ SIP_NO_FILE
  * recreating a deleted multiframes when the undo stack rolls back past
  * the item deletion command.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCommand
 {
@@ -88,7 +87,6 @@ class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCo
  * layout multiframe deletion. When applied (e.g. as a result of a 'redo' action),
  * the associated layout multiframe is deleted and removed from the layout.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand: public QgsLayoutMultiFrameUndoCommand
 {
@@ -116,7 +114,6 @@ class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand: public QgsLayoutMultiFra
  * layout multiframe creation. When applied (e.g. as a result of a 'redo' action),
  * the associated layout multiframe is recreated and added to the layout.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutMultiFrameAddItemCommand: public QgsLayoutMultiFrameUndoCommand
 {

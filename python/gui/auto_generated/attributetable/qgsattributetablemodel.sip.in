@@ -280,8 +280,6 @@ Preferably to be called, before using this model as source for any other proxy m
 Handles updating the model when the conditional style for a field changes.
 
 :param fieldName: name of field whose conditional style has changed
-
-.. versionadded:: 2.12
 %End
 
   signals:

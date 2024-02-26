@@ -34,7 +34,6 @@ class QgsMapLayer;
  * that can be used together with a layer tree view.
  *
  * \see QgsLayerTreeView
- * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
@@ -102,7 +101,6 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
     /**
      * Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
-     * \since QGIS 2.12
      */
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
@@ -182,7 +180,6 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
     /**
      * Slot to enable/disable mutually exclusive group flag
-     * \since QGIS 2.12
      */
     void mutuallyExclusiveGroup();
 

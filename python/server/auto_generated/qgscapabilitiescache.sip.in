@@ -44,8 +44,6 @@ Inserts new capabilities document (creates a copy of the document, does not take
 Remove capabilities document
 
 :param path: the project file path
-
-.. versionadded:: 2.16
 %End
 
 };

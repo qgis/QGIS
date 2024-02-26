@@ -25,7 +25,6 @@
  *
  * The values will be returned unmodified.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
 {

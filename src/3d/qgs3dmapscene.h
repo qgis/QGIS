@@ -63,7 +63,6 @@ class QgsDoubleRange;
  * \ingroup 3d
  * \brief Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  * \note Not available in Python bindings
- * \since QGIS 3.0
  */
 #ifndef SIP_RUN
 class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity

@@ -534,7 +534,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Sets the blur radius, which controls the amount of blurring applied to the fill.
      * \param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
      * \see blurRadius
-     * \since QGIS 2.3
      */
     void setBlurRadius( int blurRadius ) { mBlurRadius = blurRadius; }
 
@@ -542,7 +541,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Returns the blur radius, which controls the amount of blurring applied to the fill.
      * \returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
      * \see setBlurRadius
-     * \since QGIS 2.3
      */
     int blurRadius() const { return mBlurRadius; }
 
@@ -552,7 +550,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * be shaded
      * \see useWholeShape
      * \see setMaxDistance
-     * \since QGIS 2.3
      */
     void setUseWholeShape( bool useWholeShape ) { mUseWholeShape = useWholeShape; }
 
@@ -561,7 +558,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \returns TRUE if shapeburst fill will cover the entire shape. If FALSE, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * \see setUseWholeShape
      * \see maxDistance
-     * \since QGIS 2.3
      */
     bool useWholeShape() const { return mUseWholeShape; }
 
@@ -571,7 +567,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see maxDistance
      * \see setUseWholeShape
      * \see setDistanceUnit
-     * \since QGIS 2.3
      */
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
 
@@ -581,7 +576,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see useWholeShape
      * \see setMaxDistance
      * \see distanceUnit
-     * \since QGIS 2.3
      */
     double maxDistance() const { return mMaxDistance; }
 
@@ -590,7 +584,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \param unit distance unit for the maximum distance
      * \see setMaxDistance
      * \see distanceUnit
-     * \since QGIS 2.3
      */
     void setDistanceUnit( Qgis::RenderUnit unit ) { mDistanceUnit = unit; }
 
@@ -599,7 +592,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \returns distance unit for the maximum distance
      * \see maxDistance
      * \see setDistanceUnit
-     * \since QGIS 2.3
      */
     Qgis::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
@@ -614,7 +606,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see setColor
      * \see setColor2
      * \see setColorRamp
-     * \since QGIS 2.3
      */
     void setColorType( Qgis::GradientColorSource colorType ) { mColorType = colorType; }
 
@@ -626,7 +617,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see color
      * \see color2
      * \see colorRamp
-     * \since QGIS 2.3
      */
     Qgis::GradientColorSource colorType() const { return mColorType; }
 
@@ -637,7 +627,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      *
      * \see setColorType
      * \see colorRamp
-     * \since QGIS 2.3
      */
     void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
@@ -646,7 +635,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \returns a QgsColorRamp color ramp
      * \see setColorRamp
      * \see colorType
-     * \since QGIS 2.3
      */
     QgsColorRamp *colorRamp() { return mGradientRamp.get(); }
 
@@ -655,7 +643,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \param color2 QColor to use for endpoint of gradient
      * \see setColorType
      * \see color2
-     * \since QGIS 2.3
      */
     void setColor2( const QColor &color2 ) { mColor2 = color2; }
 
@@ -664,7 +651,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \returns a QColor indicating the color of the endpoint of the gradient
      * \see setColor2
      * \see colorType
-     * \since QGIS 2.3
      */
     QColor color2() const { return mColor2; }
 
@@ -673,7 +659,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * the buffered shading.
      * \param ignoreRings Set to TRUE if buffers should ignore interior rings for polygons.
      * \see ignoreRings
-     * \since QGIS 2.3
      */
     void setIgnoreRings( bool ignoreRings ) { mIgnoreRings = ignoreRings; }
 
@@ -681,7 +666,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Returns whether the shapeburst fill is set to ignore polygon interior rings.
      * \returns TRUE if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * \see setIgnoreRings
-     * \since QGIS 2.3
      */
     bool ignoreRings() const { return mIgnoreRings; }
 
@@ -690,7 +674,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \param offset QPointF indicating the horizontal/vertical offset amount
      * \see offset
      * \see setOffsetUnit
-     * \since QGIS 2.3
      */
     void setOffset( QPointF offset ) { mOffset = offset; }
 
@@ -699,7 +682,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \returns a QPointF indicating the horizontal/vertical offset amount
      * \see setOffset
      * \see offsetUnit
-     * \since QGIS 2.3
      */
     QPointF offset() const { return mOffset; }
 
@@ -708,7 +690,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \param unit units for fill offset
      * \see setOffset
      * \see offsetUnit
-     * \since QGIS 2.3
      */
     void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
@@ -717,7 +698,6 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \returns units used for the fill offset
      * \see offset
      * \see setOffsetUnit
-     * \since QGIS 2.3
      */
     Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
@@ -813,7 +793,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRAC
      * \see setStrokeWidthMapUnitScale()
      * \see strokeWidthUnit()
      *
-     * \since QGIS 2.16
     */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
@@ -875,7 +854,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRAC
  * \ingroup core
  * \class QgsRasterFillSymbolLayer
  * \brief A class for filling symbols with a repeated raster image.
- * \since QGIS 2.7
  */
 class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -905,7 +883,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
-     * \since QGIS 3.0
      */
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
@@ -1225,7 +1202,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
-     * \since QGIS 3.0
      */
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
@@ -2549,14 +2525,12 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * \see pointOnAllParts()
-     * \since QGIS 2.16
     */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
 
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * \see setPointOnAllParts()
-     * \since QGIS 2.16
     */
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
@@ -2564,7 +2538,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Returns TRUE if point markers should be clipped to the polygon boundary.
      *
      * \see setClipPoints()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     bool clipPoints() const { return mClipPoints; }
 
@@ -2572,7 +2546,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether point markers should be \a clipped to the polygon boundary.
      *
      * \see clipPoints()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     void setClipPoints( bool clipPoints ) { mClipPoints = clipPoints; }
 
@@ -2580,7 +2554,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Returns TRUE if point markers should be clipped to the current part boundary only.
      *
      * \see setClipPoints()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     bool clipOnCurrentPartOnly() const { return mClipOnCurrentPartOnly; }
 
@@ -2588,7 +2562,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether point markers should be \a clipped to the current part boundary only.
      *
      * \see clipOnCurrentPartOnly()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly ) { mClipOnCurrentPartOnly = clipOnCurrentPartOnly; }
 

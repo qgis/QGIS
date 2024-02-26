@@ -35,8 +35,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -44,8 +42,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     virtual void setDockMode( bool dockMode );
@@ -77,8 +73,6 @@ widgets and not open dialogs
 Registers a data defined override button. Handles setting up connections
 for the button and initializing the button to show the correct descriptions
 and help text for the associated property.
-
-.. versionadded:: 3.0
 %End
 
   protected: // data

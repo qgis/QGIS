@@ -123,8 +123,6 @@ it does not need to be re-parsed.
     QgsExpression();
 %Docstring
 Create an empty expression.
-
-.. versionadded:: 3.0
 %End
 
     ~QgsExpression();
@@ -135,8 +133,6 @@ Create an empty expression.
 %Docstring
 Checks if this expression is valid.
 A valid expression could be parsed but does not necessarily evaluate properly.
-
-.. versionadded:: 3.0
 %End
 
     bool hasParserError() const;
@@ -151,8 +147,6 @@ Returns parser error
     QList<QgsExpression::ParserError> parserErrors() const;
 %Docstring
 Returns parser error details including location of error.
-
-.. versionadded:: 3.0
 %End
 
     const QgsExpressionNode *rootNode() const;
@@ -167,8 +161,6 @@ The root node is ``None`` if parsing has failed.
 Gets the expression ready for evaluation - find out column indexes.
 
 :param context: context for preparing expression
-
-.. versionadded:: 2.12
 %End
 
     QSet<QString> referencedColumns() const;
@@ -206,8 +198,6 @@ which is determined at runtime.
    In contrast to the :py:func:`~QgsExpression.referencedColumns` function this method
    is not affected by any previous calls to :py:func:`QgsExpression.prepare()`,
    or :py:func:`QgsExpressionNode.prepare()`.
-
-.. versionadded:: 3.0
 %End
 
     QSet<QString> referencedFunctions() const;
@@ -237,8 +227,6 @@ Returns a list of field name indexes obtained from the provided fields.
    pre-calculated nodes, regardless of their actual referenced columns.
    If you are seeking to use these functions to introspect an expression you must
    take care to do this with an unprepared expression.
-
-.. versionadded:: 3.0
 %End
 
     bool needsGeometry() const;
@@ -254,8 +242,6 @@ Evaluate the feature and return the result.
 .. note::
 
    this method does not expect that :py:func:`~QgsExpression.prepare` has been called on this instance
-
-.. versionadded:: 2.12
 %End
 
     QVariant evaluate( const QgsExpressionContext *context );
@@ -267,8 +253,6 @@ Evaluate the expression against the specified context and return the result.
 .. note::
 
    :py:func:`~QgsExpression.prepare` should be called before calling this method.
-
-.. versionadded:: 2.12
 %End
 
     bool hasEvalError() const;
@@ -289,8 +273,6 @@ Sets evaluation error (used internally by evaluation functions)
 Checks whether an expression consists only of a single field reference
 
 .. seealso:: :py:func:`expressionToLayerFieldIndex`
-
-.. versionadded:: 2.9
 %End
 
     static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
@@ -332,15 +314,11 @@ Tests whether a string is a valid expression.
 
 :return: - ``True`` if string is a valid expression
          - errorMessage: will be filled with any error message from the validation
-
-.. versionadded:: 2.12
 %End
 
     void setExpression( const QString &expression );
 %Docstring
 Set the expression string, will reset the whole internal structure.
-
-.. versionadded:: 3.0
 %End
 
     QString expression() const;
@@ -398,8 +376,6 @@ Returns the desired distance units for calculations involving :py:func:`~QgsExpr
 .. seealso:: :py:func:`setDistanceUnits`
 
 .. seealso:: :py:func:`areaUnits`
-
-.. versionadded:: 2.14
 %End
 
     void setDistanceUnits( Qgis::DistanceUnit unit );
@@ -415,8 +391,6 @@ variables from the expression context ("project_distance_units") to determine di
 .. seealso:: :py:func:`distanceUnits`
 
 .. seealso:: :py:func:`setAreaUnits`
-
-.. versionadded:: 2.14
 %End
 
     Qgis::AreaUnit areaUnits() const;
@@ -430,8 +404,6 @@ Returns the desired areal units for calculations involving :py:func:`~QgsExpress
 .. seealso:: :py:func:`setAreaUnits`
 
 .. seealso:: :py:func:`distanceUnits`
-
-.. versionadded:: 2.14
 %End
 
     void setAreaUnits( Qgis::AreaUnit unit );
@@ -447,8 +419,6 @@ variables from the expression context ("project_distance_units") to determine di
 .. seealso:: :py:func:`areaUnits`
 
 .. seealso:: :py:func:`setDistanceUnits`
-
-.. versionadded:: 2.14
 %End
 
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
@@ -463,8 +433,6 @@ Additional substitutions can be passed through the substitutionMap parameter
 :param context: Expression context
 :param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the :py:class:`QgsDistanceArea` is used for distance
                      and area conversion
-
-.. versionadded:: 2.12
 %End
 
     static QSet<QString> referencedVariables( const QString &text );
@@ -490,8 +458,6 @@ value.
 
    this method is inefficient for bulk evaluation of expressions, it is intended
    for one-off evaluations only.
-
-.. versionadded:: 2.7
 %End
 
     enum SpatialOperator
@@ -535,8 +501,6 @@ Unregisters a function from the expression engine. The function will no longer b
     static void cleanRegisteredFunctions();
 %Docstring
 Deletes all registered functions whose ownership have been transferred to the expression engine.
-
-.. versionadded:: 2.12
 %End
 
     static bool isFunctionName( const QString &name );
@@ -584,8 +548,6 @@ quotations where required.
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
-
-.. versionadded:: 2.14
 %End
 
     static QString quotedValue( const QVariant &value, QVariant::Type type );
@@ -599,8 +561,6 @@ quotations where required.
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
-
-.. versionadded:: 2.14
 %End
 
 
@@ -651,8 +611,6 @@ Returns the help text for a specified variable.
 .. seealso:: :py:func:`helpText`
 
 .. seealso:: :py:func:`addVariableHelpText`
-
-.. versionadded:: 2.12
 %End
 
     static QString formatVariableHelp( const QString &description, bool showValue = true, const QVariant &value = QVariant() );
@@ -666,8 +624,6 @@ Returns formatted help text for a variable.
 .. seealso:: :py:func:`helpText`
 
 .. seealso:: :py:func:`variableHelpText`
-
-.. versionadded:: 3.0
 %End
 
     static QString group( const QString &group );
@@ -687,8 +643,6 @@ length, and presents text representations of non numeric/text types (e.g., geome
 :param maximumPreviewLength: define the maximum character length of the preview
 
 :return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is ``True``
-
-.. versionadded:: 2.14
 %End
 
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
@@ -701,8 +655,6 @@ value. The value may be null.
 :param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
 
 :return: the expression to evaluate field equality
-
-.. versionadded:: 3.0
 %End
 
     static bool isFieldEqualityExpression( const QString &expression, QString &field /Out/, QVariant &value /Out/ );

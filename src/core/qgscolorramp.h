@@ -24,7 +24,6 @@
  * \ingroup core
  * \class QgsColorRamp
  * \brief Abstract base class for color ramps
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsColorRamp
 {

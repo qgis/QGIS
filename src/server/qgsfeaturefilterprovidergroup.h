@@ -27,7 +27,6 @@
  * \ingroup server
  * \class QgsFeatureFilterProviderGroup
  * \brief A filter filter provider grouping several filter providers.
- * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvider
 {

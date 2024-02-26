@@ -42,7 +42,6 @@ class QgsFeedback;
  * Operations are written to either modify an image in place or return a new image, depending
  * on which is faster for the particular operation.
  *
- * \since QGIS 2.7
  */
 class CORE_EXPORT QgsImageOperation
 {
@@ -195,7 +194,6 @@ class CORE_EXPORT QgsImageOperation
      * it will be centered in the returned rectangle.
      * \param center return rectangle will be centered on the center of the original image if set to TRUE
      * \see cropTransparent
-     * \since QGIS 2.9
      */
     static QRect nonTransparentImageRect( const QImage &image, QSize minSize = QSize(), bool center = false );
 
@@ -206,7 +204,6 @@ class CORE_EXPORT QgsImageOperation
      * cropped image is smaller than the minimum size, it will be centered
      * in the returned image.
      * \param center cropped image will be centered on the center of the original image if set to TRUE
-     * \since QGIS 2.9
      */
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
 

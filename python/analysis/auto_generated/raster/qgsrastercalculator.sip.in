@@ -14,8 +14,6 @@ class QgsRasterCalculatorEntry
 {
 %Docstring(signature="appended")
 Represents an individual raster layer/band number entry within a raster calculation.
-
-.. versionadded:: 2.18
 %End
 
 %TypeHeaderCode
@@ -141,8 +139,6 @@ QgsRasterCalculator constructor.
 
 .. deprecated:: QGIS 3.8
   use the version with transformContext instead
-
-.. versionadded:: 2.10
 %End
 
     Result processCalculation( QgsFeedback *feedback = 0 );

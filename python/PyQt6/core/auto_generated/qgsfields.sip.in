@@ -128,8 +128,6 @@ Returns number of items
     QStringList names() const;
 %Docstring
 Returns a list with field names
-
-.. versionadded:: 3.0
 %End
 
     bool exists( int i ) const;
@@ -289,8 +287,6 @@ name of the field.
 :return: The field index if found or -1 in case it cannot be found.
 
 .. seealso:: :py:func:`lookupField`
-
-.. versionadded:: 3.0
 %End
 
     int lookupField( const QString &fieldName ) const;
@@ -307,15 +303,11 @@ This method matches in the following order:
 :return: The field index if found or -1 in case it cannot be found.
 
 .. seealso:: :py:func:`indexFromName`
-
-.. versionadded:: 2.4
 %End
 
     QgsAttributeList allAttributesList() const;
 %Docstring
 Utility function to get list of attribute indexes
-
-.. versionadded:: 2.4
 %End
 
     QList<QgsField> toList() const;
@@ -335,8 +327,6 @@ Returns an icon corresponding to a field index, based on the field's type and so
 :param considerOrigin: if ``True`` the icon will the origin of the field
 
 :raises KeyError: if no field exists at the specified index
-
-.. versionadded:: 2.14
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )

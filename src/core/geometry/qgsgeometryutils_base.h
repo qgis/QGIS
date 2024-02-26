@@ -145,7 +145,6 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
     /**
      * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
-     * \since 3.0
      */
     static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_HOLDGIL;
 

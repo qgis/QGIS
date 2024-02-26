@@ -111,8 +111,6 @@ Whether the color ramp contains any items
 Returns the source color ramp.
 
 .. seealso:: :py:func:`setSourceColorRamp`
-
-.. versionadded:: 3.0
 %End
 
     QgsColorRamp *createColorRamp() const /Factory/;
@@ -127,8 +125,6 @@ Creates a gradient color ramp from shader settings.
 Set the source color ramp. Ownership is transferred to the shader.
 
 .. seealso:: :py:func:`sourceColorRamp`
-
-.. versionadded:: 3.0
 %End
 
     void setColorRampType( const QString &type );

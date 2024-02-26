@@ -16,8 +16,6 @@ class QgsTextRenderer
 %Docstring(signature="appended")
 Handles rendering text using rich formatting options, including drop shadows, buffers
 and background shapes.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

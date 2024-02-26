@@ -37,7 +37,6 @@
  *
  * \note Not available in Python bindings
  *
- * \since QGIS 3.0
  */
 class QgsChunkLoader : public QgsChunkQueueJob
 {
@@ -57,7 +56,6 @@ class QgsChunkLoader : public QgsChunkQueueJob
 /**
  * \ingroup 3d
  * \brief Factory for chunk loaders for a particular type of entity
- * \since QGIS 3.0
  */
 class QgsChunkLoaderFactory  : public QObject
 {

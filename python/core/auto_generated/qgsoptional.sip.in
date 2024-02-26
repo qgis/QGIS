@@ -25,8 +25,6 @@ more internal configuration information that should not be lost when disabling a
 .. note::
 
    Not available in Python bindings (although SIP file is present for specific implementations).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -56,30 +54,22 @@ A QgsOptional constructed with enabled status and data
     bool enabled() const;
 %Docstring
 Check if this optional is enabled
-
-.. versionadded:: 3.0
 %End
 
     void setEnabled( bool enabled );
 %Docstring
 Set if this optional is enabled
-
-.. versionadded:: 3.0
 %End
 
 
     T data() const;
 %Docstring
 Access the payload data
-
-.. versionadded:: 3.0
 %End
 
     void setData( const T &data );
 %Docstring
 Set the payload data
-
-.. versionadded:: 3.0
 %End
 
 };

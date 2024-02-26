@@ -64,7 +64,6 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 /**
  * \ingroup gui
  * \brief A dialog which presents the user with a choice of file encodings.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
 {

@@ -44,7 +44,6 @@ class QgsFields;
  *   entire layer to the destination provider.
  * # Create an instance of the class and issue calls to addFeature(...)
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 {
@@ -175,7 +174,6 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
  * QGIS interface.
  * \see QgsVectorFileWriterTask
  * \see QgsRasterFileWriterTask
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
 {

@@ -14,8 +14,6 @@ class QgsLayoutSerializableObject : QgsLayoutUndoObjectInterface
 {
 %Docstring(signature="appended")
 An interface for layout objects which can be stored and read from DOM elements.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -38,10 +38,8 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas *canvas );
 
-    //! \since QGIS 2.4
     void setContent( const QImage &image, const QgsRectangle &rect );
 
-    //! \since QGIS 2.4
     QImage contentImage() const { return mImage; }
 
     void paint( QPainter *painter ) override;

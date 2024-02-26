@@ -26,7 +26,6 @@ class QgsPolygon;
  * \ingroup core
  * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {
@@ -105,7 +104,6 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      * Should be used by qgsgeometry_cast<QgsMultiPolygon *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom )
     {

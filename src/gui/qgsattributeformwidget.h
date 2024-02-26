@@ -33,7 +33,6 @@ class QgsSearchWidgetToolButton;
  * \brief Base class for all widgets shown on a QgsAttributeForm.
  * Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
 {
@@ -68,7 +67,6 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
     /**
      * Creates an expression matching the current search filter value and
      * search properties represented in the widget.
-     * \since QGIS 2.16
      */
     virtual QString currentFilterExpression() const;
 

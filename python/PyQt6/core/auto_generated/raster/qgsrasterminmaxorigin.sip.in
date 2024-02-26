@@ -15,8 +15,6 @@ class QgsRasterMinMaxOrigin
 %Docstring(signature="appended")
 This class describes the origin of min/max values. It does not store by
 itself the min/max values.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

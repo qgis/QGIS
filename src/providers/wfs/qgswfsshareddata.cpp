@@ -54,6 +54,8 @@ QgsWFSSharedData *QgsWFSSharedData::clone() const
   copy->mGeometryAttribute = mGeometryAttribute;
   copy->mLayerPropertiesList = mLayerPropertiesList;
   copy->mMapFieldNameToSrcLayerNameFieldName = mMapFieldNameToSrcLayerNameFieldName;
+  copy->mFieldNameToXPathAndIsNestedContentMap = mFieldNameToXPathAndIsNestedContentMap;
+  copy->mNamespacePrefixToURIMap = mNamespacePrefixToURIMap;
   copy->mPageSize = mPageSize;
   copy->mCaps = mCaps;
   copy->mHasWarnedAboutMissingFeatureId = mHasWarnedAboutMissingFeatureId;
@@ -105,8 +107,23 @@ QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) 
     bool honourAxisOrientation = false;
     getVersionValues( gmlVersion, filterVersion, honourAxisOrientation );
 
+    QMap<QString, QString> fieldNameToXPathMap;
+    if ( !mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
+    {
+      for ( auto iterFieldName = mFieldNameToXPathAndIsNestedContentMap.constBegin(); iterFieldName != mFieldNameToXPathAndIsNestedContentMap.constEnd(); ++iterFieldName )
+      {
+        const QString &fieldName = iterFieldName.key();
+        const auto &value = iterFieldName.value();
+        fieldNameToXPathMap[fieldName] = value.first;
+      }
+    }
+
     QDomDocument expressionDoc;
-    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr, true );
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression(
+                                   expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute,
+                                   srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr,
+                                   true,
+                                   fieldNameToXPathMap, mNamespacePrefixToURIMap );
 
     if ( !expressionElem.isNull() )
     {
@@ -155,12 +172,23 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
       }
     }
 
+    QMap<QString, QString> fieldNameToXPathMap;
+    if ( !mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
+    {
+      for ( auto iterFieldName = mFieldNameToXPathAndIsNestedContentMap.constBegin(); iterFieldName != mFieldNameToXPathAndIsNestedContentMap.constEnd(); ++iterFieldName )
+      {
+        const QString &fieldName = iterFieldName.key();
+        const auto &value = iterFieldName.value();
+        fieldNameToXPathMap[fieldName] = value.first;
+      }
+    }
+
     QDomDocument filterDoc;
     const QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter(
                                      sql, filterDoc, gmlVersion, filterVersion, mLayerPropertiesList,
                                      honourAxisOrientation, mURI.invertAxisOrientation(),
                                      mCaps.mapUnprefixedTypenameToPrefixedTypename,
-                                     &errorMsg );
+                                     &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap );
     if ( !errorMsg.isEmpty() )
     {
       errorMsg = tr( "SQL statement to OGC Filter error: " ) + errorMsg;
@@ -188,13 +216,24 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
         //if not, if must be a QGIS expression
         const QgsExpression filterExpression( filter );
 
+        QMap<QString, QString> fieldNameToXPathMap;
+        if ( !mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
+        {
+          for ( auto iterFieldName = mFieldNameToXPathAndIsNestedContentMap.constBegin(); iterFieldName != mFieldNameToXPathAndIsNestedContentMap.constEnd(); ++iterFieldName )
+          {
+            const QString &fieldName = iterFieldName.key();
+            const auto &value = iterFieldName.value();
+            fieldNameToXPathMap[fieldName] = value.first;
+          }
+        }
+
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
                                          filterExpression, filterDoc, gmlVersion, filterVersion,
                                          mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespacePrefix : QString(),
                                          mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespaceURI : QString(),
                                          mGeometryAttribute,
                                          srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
-                                         &errorMsg );
+                                         &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap );
 
         if ( !errorMsg.isEmpty() )
         {
@@ -261,11 +300,16 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser() const
   }
   else
   {
-    return new QgsGmlStreamingParser( mURI.typeName(),
-                                      mGeometryAttribute,
-                                      mFields,
-                                      axisOrientationLogic,
-                                      mURI.invertAxisOrientation() );
+    auto parser = new QgsGmlStreamingParser( mURI.typeName(),
+        mGeometryAttribute,
+        mFields,
+        axisOrientationLogic,
+        mURI.invertAxisOrientation() );
+    if ( !mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
+    {
+      parser->setFieldsXPath( mFieldNameToXPathAndIsNestedContentMap, mNamespacePrefixToURIMap );
+    }
+    return parser;
   }
 }
 
@@ -329,6 +373,29 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
   }
   envelopeFilterDoc.firstChildElement().appendChild( andElem );
 
+  QSet<QString> setNamespaceURI;
+  for ( auto iterFieldName = mFieldNameToXPathAndIsNestedContentMap.constBegin(); iterFieldName != mFieldNameToXPathAndIsNestedContentMap.constEnd(); ++iterFieldName )
+  {
+    const auto &value = iterFieldName.value();
+    const QStringList parts = value.first.split( '/' );
+    for ( const QString &part : parts )
+    {
+      const QStringList subparts = part.split( ':' );
+      if ( subparts.size() == 2 && subparts[0] != QLatin1String( "gml" ) )
+      {
+        const auto iter = mNamespacePrefixToURIMap.constFind( subparts[0] );
+        if ( iter != mNamespacePrefixToURIMap.constEnd() &&
+             !setNamespaceURI.contains( *iter ) )
+        {
+          setNamespaceURI.insert( *iter );
+          QDomAttr attr = envelopeFilterDoc.createAttribute( QStringLiteral( "xmlns:" ) + subparts[0] );
+          attr.setValue( *iter );
+          envelopeFilterDoc.firstChildElement().setAttributeNode( attr );
+        }
+      }
+    }
+  }
+
   if ( mLayerPropertiesList.size() == 1 &&
        envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mLayerPropertiesList[0].mNamespacePrefix ) )
   {
@@ -337,7 +404,6 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
   else
   {
     // add xmls:PREFIX=URI attributes to top element
-    QSet<QString> setNamespaceURI;
     for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mLayerPropertiesList ) )
     {
       if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&

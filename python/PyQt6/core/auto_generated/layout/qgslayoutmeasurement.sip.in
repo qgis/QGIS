@@ -16,8 +16,6 @@ This class provides a method of storing measurements for use in QGIS layouts
 using a variety of different measurement units.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -38,7 +38,6 @@
  * blurred picture will be drawn on the paint device, but the following drop shadow
  * effect will be drawn using the original picture, not the blurred version.
  *
- * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS

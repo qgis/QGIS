@@ -44,7 +44,6 @@ class QgsSettingsEntryStringList;
  * preparing the layout and paint devices for correct exports, respecting various
  * user settings such as the layout context DPI.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {

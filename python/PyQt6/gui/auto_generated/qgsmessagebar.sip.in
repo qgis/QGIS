@@ -198,8 +198,6 @@ Pushes a success ``message`` with default timeout to the message bar.
 
 :param title: title string for message
 :param message: The message to be displayed
-
-.. versionadded:: 2.8
 %End
 
     void pushInfo( const QString &title, const QString &message );
@@ -208,8 +206,6 @@ Pushes a information ``message`` with default timeout to the message bar.
 
 :param title: title string for message
 :param message: The message to be displayed
-
-.. versionadded:: 2.8
 %End
 
     void pushWarning( const QString &title, const QString &message );
@@ -218,8 +214,6 @@ Pushes a warning ``message`` that must be manually dismissed by the user. Before
 
 :param title: title string for message
 :param message: The message to be displayed
-
-.. versionadded:: 2.8
 %End
 
     void pushCritical( const QString &title, const QString &message );
@@ -228,8 +222,6 @@ Pushes a critical warning ``message`` that must be manually dismissed by the use
 
 :param title: title string for message
 :param message: The message to be displayed
-
-.. versionadded:: 2.8
 %End
 
   protected:

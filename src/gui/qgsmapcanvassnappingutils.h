@@ -28,7 +28,6 @@ class QProgressDialog;
  * \ingroup gui
  * \brief Snapping utils instance that is connected to a canvas and updates the configuration
  *  (map settings + current layer) whenever that is changed in the canvas.
- *  \since QGIS 2.8
  */
 class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {

@@ -23,7 +23,6 @@
  * \ingroup core
  * \brief Holder for the widget type and its configuration for a field.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsEditorWidgetSetup
 {

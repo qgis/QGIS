@@ -30,7 +30,6 @@ class QgsMessageBar;
  * \brief Contains settings which reflect the context in which a symbol (or renderer) widget is shown, e.g., the
  * map canvas and relevant expression contexts.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
 {
@@ -112,7 +111,6 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
     /**
      * Returns list of scopes: global, project, atlas, map, layer.
      * Ownership is transferred to the caller.
-     * \since QGIS 3.0
      */
     QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const SIP_FACTORY;
 

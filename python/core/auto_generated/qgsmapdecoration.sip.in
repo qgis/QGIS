@@ -14,8 +14,6 @@ class QgsMapDecoration
 {
 %Docstring(signature="appended")
 Interface for map decorations.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -297,6 +297,12 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->dataProvider()->handlePostCloneOperations( mDataProvider );
   }
   QgsMapLayer::clone( layer );
+  layer->mXmlExtent2D = mXmlExtent2D;
+  layer->mLazyExtent2D = mLazyExtent2D;
+  layer->mValidExtent2D = mValidExtent2D;
+  layer->mXmlExtent3D = mXmlExtent3D;
+  layer->mLazyExtent3D = mLazyExtent3D;
+  layer->mValidExtent3D = mValidExtent3D;
 
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
   const auto constJoins = joins;

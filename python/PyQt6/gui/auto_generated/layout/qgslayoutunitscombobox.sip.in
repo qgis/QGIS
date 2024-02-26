@@ -12,8 +12,6 @@ class QgsLayoutUnitsComboBox : QComboBox
 {
 %Docstring(signature="appended")
 A custom combo box for selecting units for layout settings.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

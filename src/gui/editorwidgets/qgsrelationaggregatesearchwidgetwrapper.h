@@ -30,7 +30,6 @@ class QgsRelationWidgetWrapper;
  * For each attribute of the child, an additional QgsAggregateToolButton will be shown
  * to determine how the values should be aggregated for searching.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {

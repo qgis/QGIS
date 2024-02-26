@@ -26,8 +26,6 @@ task commences (ie via calling :py:func:`~run` ).
 Long running tasks should periodically check the :py:func:`~isCanceled` flag to detect if the task
 has been canceled via some external event. If this flag is ``True`` then the task should
 clean up and terminate at the earliest possible convenience.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -310,8 +308,6 @@ class QgsTaskManager : QObject
 %Docstring(signature="appended")
 Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
 or accessed via :py:func:`QgsApplication.taskManager()`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

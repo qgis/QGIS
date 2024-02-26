@@ -16,8 +16,6 @@ Field formatter for a value relation field.
 
 A value relation field formatter looks up the values from
 features on another layer.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -77,8 +75,6 @@ if doing multiple lookups in a loop.
 :param parentFormFeature: For embedded forms only, the feature currently being edited in the parent form with current attribute values
 
 :return: A kvp list of values for the widget
-
-.. versionadded:: 3.0
 %End
 
     static bool expressionRequiresFormScope( const QString &expression );

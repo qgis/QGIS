@@ -38,8 +38,6 @@ Constructs a URI corresponding to the specified ``layer``.
       bool isValid() const;
 %Docstring
 Returns whether the object contains valid data
-
-.. versionadded:: 3.0
 %End
 
       QString data() const;
@@ -119,8 +117,6 @@ Encodes a URI list to a new QMimeData object.
     static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
 %Docstring
 Returns encoded URI list from a list of layer tree nodes.
-
-.. versionadded:: 3.0
 %End
 
     static bool hasOriginatedFromCurrentAppInstance( const QgsMimeDataUtils::Uri &uri );

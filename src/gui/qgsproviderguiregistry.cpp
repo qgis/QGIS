@@ -32,7 +32,7 @@
 #include "qgstiledsceneproviderguimetadata.h"
 #include "qgsmbtilesvectortileguiprovider.h"
 #include "qgsvtpkvectortileguiprovider.h"
-
+#include "qgssensorthingsguiprovider.h"
 #ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
 #endif
@@ -119,7 +119,10 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
   }
 
   QgsProviderGuiMetadata *tiledScene = new QgsTiledSceneProviderGuiMetadata();
-  mProviders[ tiledScene ->key() ] = tiledScene ;
+  mProviders[ tiledScene->key() ] = tiledScene;
+
+  QgsProviderGuiMetadata *sensorThings = new QgsSensorThingsProviderGuiMetadata();
+  mProviders[ sensorThings->key() ] = sensorThings;
 
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();

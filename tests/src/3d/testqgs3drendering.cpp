@@ -100,7 +100,7 @@ class TestQgs3DRendering : public QgsTest
     void test3DSceneExporter();
 
   private:
-    QImage convertDepthImageToGray16Image( const QImage &depthImage );
+    QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
 
     void do3DSceneExport( int zoomLevelsCount, int expectedObjectCount, int maxFaceCount, Qgs3DMapScene *scene, QgsPolygon3DSymbol *symbol3d,
                           QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine );
@@ -135,33 +135,39 @@ class QgsCameraController4Test : public QgsCameraController
     QgsCameraPose *cameraPose() { return &mCameraPose; }
 };
 
-QImage TestQgs3DRendering::convertDepthImageToGray16Image( const QImage &depthImage )
+QImage TestQgs3DRendering::convertDepthImageToGrayscaleImage( const QImage &depthImage )
 {
-  QImage grayImage( depthImage.width(), depthImage.height(), QImage::Format_Grayscale16 );
+  const int width = depthImage.width();
+  const int height = depthImage.height();
+  QImage grayImage( width, height, QImage::Format_ARGB32 );
 
   // compute image min/max depth values
   double minV = 9999999.0;
   double maxV = -9999999.0;
-  for ( int x = 0; x < grayImage.width(); x++ )
+  for ( int y = 0; y < height; ++y )
   {
-    for ( int y = 0; y < grayImage.height(); y++ )
+    const QRgb *depthImageScanline = reinterpret_cast< const QRgb * >( depthImage.scanLine( y ) );
+    for ( int x = 0; x < width; ++x )
     {
-      double d = Qgs3DUtils::decodeDepth( depthImage.pixel( x, y ) );
-      if ( d > maxV ) maxV = d;
-      else if ( d < minV ) minV = d;
+      const double d = Qgs3DUtils::decodeDepth( depthImageScanline[x] );
+      if ( d > maxV )
+        maxV = d;
+      if ( d < minV )
+        minV = d;
     }
   }
 
   // transform depth value to gray value
-  double factor = 65635.0 / ( maxV - minV );
-  for ( int x = 0; x < grayImage.width(); x++ )
+  const double factor = ( maxV > minV ) ? 255.0 / ( maxV - minV ) : 1.0;
+  for ( int y = 0; y < height; ++y )
   {
-    for ( int y = 0; y < grayImage.height(); y++ )
+    const QRgb *depthImageScanline = reinterpret_cast< const QRgb * >( depthImage.scanLine( y ) );
+    QRgb *grayImageScanline = reinterpret_cast< QRgb * >( grayImage.scanLine( y ) );
+    for ( int x = 0; x < width; ++x )
     {
-      double d = Qgs3DUtils::decodeDepth( depthImage.pixel( x, y ) );
-      unsigned short v = ( unsigned short )( factor * ( d - minV ) );
-      QRgba64 col = QRgba64::fromRgba64( v, v, v, ( quint16 )65635 );
-      grayImage.setPixelColor( x, y, QColor( col ) );
+      const double d = Qgs3DUtils::decodeDepth( depthImageScanline[x] );
+      unsigned short v = static_cast< unsigned short >( factor * ( d - minV ) );
+      grayImageScanline[x] = qRgb( v, v, v );
     }
   }
 
@@ -1537,8 +1543,8 @@ void TestQgs3DRendering::testDepthBuffer()
 
   // retrieve 3D depth image
   QImage depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
-  QImage grayImage = convertDepthImageToGray16Image( depthImage );
-  QGSVERIFYIMAGECHECK( "depth_retrieve_image", "depth_retrieve_image", grayImage, QString(), 550, QSize( 0, 0 ), 2 );
+  QImage grayImage = convertDepthImageToGrayscaleImage( depthImage );
+  QGSVERIFYIMAGECHECK( "depth_retrieve_image", "depth_retrieve_image", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   // =========== TEST WHEEL ZOOM
   QVector3D startPos = scene->cameraController()->camera()->position();
@@ -1556,8 +1562,8 @@ void TestQgs3DRendering::testDepthBuffer()
   QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
-  grayImage = convertDepthImageToGray16Image( depthImage );
-  QGSVERIFYIMAGECHECK( "depth_wheel_action_1", "depth_wheel_action_1", grayImage, QString(), 550, QSize( 0, 0 ), 2 );
+  grayImage = convertDepthImageToGrayscaleImage( depthImage );
+  QGSVERIFYIMAGECHECK( "depth_wheel_action_1", "depth_wheel_action_1", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
 
@@ -1575,8 +1581,8 @@ void TestQgs3DRendering::testDepthBuffer()
   QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
-  grayImage = convertDepthImageToGray16Image( depthImage );
-  QGSVERIFYIMAGECHECK( "depth_wheel_action_2", "depth_wheel_action_2", grayImage, QString(), 550, QSize( 0, 0 ), 2 );
+  grayImage = convertDepthImageToGrayscaleImage( depthImage );
+  QGSVERIFYIMAGECHECK( "depth_wheel_action_2", "depth_wheel_action_2", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
 
@@ -1594,8 +1600,8 @@ void TestQgs3DRendering::testDepthBuffer()
   QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
-  grayImage = convertDepthImageToGray16Image( depthImage );
-  QGSVERIFYIMAGECHECK( "depth_wheel_action_3", "depth_wheel_action_3", grayImage, QString(), 550, QSize( 0, 0 ), 2 );
+  grayImage = convertDepthImageToGrayscaleImage( depthImage );
+  QGSVERIFYIMAGECHECK( "depth_wheel_action_3", "depth_wheel_action_3", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
 
@@ -1613,8 +1619,8 @@ void TestQgs3DRendering::testDepthBuffer()
   QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
-  grayImage = convertDepthImageToGray16Image( depthImage );
-  QGSVERIFYIMAGECHECK( "depth_wheel_action_4", "depth_wheel_action_4", grayImage, QString(), 550, QSize( 0, 0 ), 2 );
+  grayImage = convertDepthImageToGrayscaleImage( depthImage );
+  QGSVERIFYIMAGECHECK( "depth_wheel_action_4", "depth_wheel_action_4", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
 
@@ -1736,7 +1742,7 @@ void TestQgs3DRendering::test3DSceneExporter()
   const QgsRectangle fullExtent = layerPoly->extent();
 
   // =========== create polygon 3D renderer
-  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  std::unique_ptr< QgsPolygon3DSymbol > symbol3d = std::make_unique< QgsPolygon3DSymbol >();
   symbol3d->setExtrusionHeight( 10.f );
 
   QgsPhongMaterialSettings materialSettings;
@@ -1770,15 +1776,15 @@ void TestQgs3DRendering::test3DSceneExporter()
   engine.setRootEntity( scene );
 
   // =========== check with 1 big tile ==> 1 exported object
-  do3DSceneExport( 1, 1, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 1, 1, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 4 tiles ==> 3 exported objects
-  do3DSceneExport( 2, 1, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 2, 1, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 9 tiles ==> 3 exported objects
-  do3DSceneExport( 3, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 3, 3, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 16 tiles ==> 3 exported objects
-  do3DSceneExport( 4, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 4, 3, 165, scene, symbol3d.get(), layerPoly, &engine );
   // =========== check with 25 tiles ==> 3 exported objects
-  do3DSceneExport( 5, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 5, 3, 165, scene, symbol3d.get(), layerPoly, &engine );
 
   delete scene;
   mapSettings.setLayers( {} );

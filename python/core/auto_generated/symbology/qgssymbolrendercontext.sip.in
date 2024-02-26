@@ -47,8 +47,6 @@ Sets the original value variable value for data defined symbology
 
 :param value: value for original value variable. This usually represents the symbol property value
               before any data defined overrides have been applied.
-
-.. versionadded:: 2.12
 %End
 
  Qgis::RenderUnit outputUnit() const /Deprecated/;
@@ -139,8 +137,6 @@ Returns the current feature being rendered. This may be ``None``.
 Sets the geometry type for the original feature geometry being rendered.
 
 .. seealso:: :py:func:`originalGeometryType`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::GeometryType originalGeometryType() const;
@@ -151,8 +147,6 @@ simple line style will look different if the simple line is rendering a polygon 
 (a closed buffer) vs a line feature (an unclosed offset line).
 
 .. seealso:: :py:func:`originalGeometryType`
-
-.. versionadded:: 3.0
 %End
 
     QgsFields fields() const;
@@ -160,36 +154,26 @@ simple line style will look different if the simple line is rendering a polygon 
 Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
 to allow symbols with data-defined properties prepare the expressions
 (other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty :py:class:`QgsFields` object).
-
-.. versionadded:: 2.4
 %End
 
     int geometryPartCount() const;
 %Docstring
 Part count of current geometry
-
-.. versionadded:: 2.16
 %End
 
     void setGeometryPartCount( int count );
 %Docstring
 Sets the part count of current geometry
-
-.. versionadded:: 2.16
 %End
 
     int geometryPartNum() const;
 %Docstring
 Part number of current geometry
-
-.. versionadded:: 2.16
 %End
 
     void setGeometryPartNum( int num );
 %Docstring
 Sets the part number of current geometry
-
-.. versionadded:: 2.16
 %End
 
  double outputLineWidth( double width ) const /Deprecated/;

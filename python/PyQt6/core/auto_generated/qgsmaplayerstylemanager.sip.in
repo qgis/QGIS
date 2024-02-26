@@ -34,8 +34,6 @@ the current style will be saved with no data because everything is already saved
 
 The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
 style followed by restoration of the original style (for example, when rendering a map with a different than current style).
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
@@ -78,8 +76,6 @@ Returns list of all defined style names
 Gets available styles for the associated map layer.
 
 :return: A map of map layer style by style name
-
-.. versionadded:: 3.0
 %End
 
     QgsMapLayerStyle style( const QString &name ) const;
@@ -141,8 +137,6 @@ Restore the original store after a call to :py:func:`~QgsMapLayerStyleManager.se
     static bool isDefault( const QString &styleName );
 %Docstring
 Returns ``True`` if this is the default style
-
-.. versionadded:: 3.0
 %End
 
     void copyStylesFrom( QgsMapLayerStyleManager *other );

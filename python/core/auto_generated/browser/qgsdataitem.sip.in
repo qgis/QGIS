@@ -113,18 +113,12 @@ Create children. Children are not expected to have parent set.
 %End
 
     Qgis::BrowserItemState state() const;
-%Docstring
-
-.. versionadded:: 2.8
-%End
 
     virtual void setState( Qgis::BrowserItemState state );
 %Docstring
 Set item state. It also take care about starting/stopping loading icon animation.
 
 :param state:
-
-.. versionadded:: 2.8
 %End
 
     virtual void addChildItem( QgsDataItem *child /Transfer/, bool refresh = false );
@@ -188,8 +182,6 @@ created menus is correctly handled by parenting them to the specified parent wid
 :param parent: a parent widget of the menu
 
 :return: list of menus
-
-.. versionadded:: 3.0
 %End
 
  virtual bool acceptDrop() /Deprecated/;
@@ -224,8 +216,6 @@ accept dropped layers.
 Called when a user double clicks on the item. Subclasses should return ``True``
 if they have implemented a double-click handler and do not want the default
 double-click behavior for items.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool hasDragEnabled() const;
@@ -235,8 +225,6 @@ Default implementation returns ``False``.
 A draggable item has to implement :py:func:`~QgsDataItem.mimeUris` that will be used to pass data.
 
 .. seealso:: :py:func:`mimeUris`
-
-.. versionadded:: 3.0
 %End
 
  virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated/;
@@ -248,8 +236,6 @@ Items that return valid URI will be returned in mime data when dragging a select
 
 .. deprecated:: QGIS 3.18
   use :py:func:`~QgsDataItem.mimeUris` instead
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsMimeDataUtils::UriList mimeUris() const;
@@ -381,8 +367,6 @@ Alternatively subclasses can override this method to return a custom
 sort key.
 
 .. seealso:: :py:func:`setSortKey`
-
-.. versionadded:: 3.0
 %End
 
     void setSortKey( const QVariant &key );
@@ -390,8 +374,6 @@ sort key.
 Sets a custom sorting ``key`` for the item.
 
 .. seealso:: :py:func:`sortKey`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -497,8 +479,6 @@ open browsers.
     void updateIcon();
 %Docstring
 Will request a repaint of this icon.
-
-.. versionadded:: 3.0
 %End
 
 };

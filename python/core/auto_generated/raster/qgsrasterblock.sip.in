@@ -117,8 +117,6 @@ Not the difference between this method and :py:func:`~QgsRasterBlock.hasNoDataVa
 Sets cell value that will be considered as "no data".
 
 .. seealso:: :py:func:`noDataValue`
-
-.. versionadded:: 3.0
 %End
 
     void resetNoDataValue() /HoldGIL/;
@@ -127,8 +125,6 @@ Reset no data value: if there was a no data value previously set,
 it will be discarded.
 
 .. seealso:: :py:func:`noDataValue`
-
-.. versionadded:: 3.0
 %End
 
     double noDataValue() const /HoldGIL/;
@@ -318,8 +314,6 @@ method. This method has no effect for raster blocks with an explicit no data val
 
 :param row: row index
 :param column: column index
-
-.. versionadded:: 2.10
 %End
 
     void setIsData( qgssize index ) /HoldGIL/;
@@ -330,8 +324,6 @@ In this case it is possible to reset a pixel to flag it as having valid data usi
 method. This method has no effect for raster blocks with an explicit no data value set.
 
 :param index: data matrix index (long type in Python)
-
-.. versionadded:: 2.10
 %End
 
     QByteArray data() const;
@@ -345,8 +337,6 @@ a deep copy of the data will be made and only the local copy will be modified.
 .. note::
 
    in Python the method returns ordinary bytes object as the
-
-.. versionadded:: 3.0
 %End
 
     void setData( const QByteArray &data, int offset = 0 );
@@ -357,8 +347,6 @@ pixels at the end will stay untouched. If the data array is longer than the inte
 array, only the initial data from the input array will be used.
 Optionally it is possible to set non-zero offset (in bytes) if the input data should
 overwrite data somewhere in the middle of the internal buffer.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -403,8 +391,6 @@ Sets the block data via an ``image``.
     void applyScaleOffset( double scale, double offset );
 %Docstring
 Apply band scale and offset to raster block values
-
-.. versionadded:: 2.3
 %End
 
     QgsError error() const;
@@ -438,8 +424,6 @@ The output rect has x oriented from left to right and y from top to bottom
 Returns the width (number of columns) of the raster block.
 
 .. seealso:: :py:func:`height`
-
-.. versionadded:: 2.10
 %End
 
     int height() const /HoldGIL/;
@@ -447,8 +431,6 @@ Returns the width (number of columns) of the raster block.
 Returns the height (number of rows) of the raster block.
 
 .. seealso:: :py:func:`width`
-
-.. versionadded:: 2.10
 %End
 
 };

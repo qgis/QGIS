@@ -55,7 +55,6 @@ class QgsPoint;
  * - Storage of coordinates for a geometry. Since QgsPointXY is strictly 2-dimensional it should never be used to store coordinates for vector geometries, as this will involve a loss of any z or m values present in the geometry.
  *
  * \see QgsPoint
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPointXY
 {
@@ -85,7 +84,6 @@ class CORE_EXPORT QgsPointXY
     /**
      * Create a point from a QPointF
      * \param point QPointF source
-     * \since QGIS 2.7
      */
     QgsPointXY( QPointF point ) SIP_HOLDGIL
   : mX( point.x() )
@@ -96,7 +94,6 @@ class CORE_EXPORT QgsPointXY
     /**
      * Create a point from a QPoint
      * \param point QPoint source
-     * \since QGIS 2.7
      */
     QgsPointXY( QPoint point ) SIP_HOLDGIL
   : mX( point.x() )
@@ -108,7 +105,6 @@ class CORE_EXPORT QgsPointXY
      * Create a new point.
      * Z and M values will be dropped.
      *
-     * \since QGIS 3.0
      */
     QgsPointXY( const QgsPoint &point ) SIP_HOLDGIL;
 
@@ -166,7 +162,6 @@ class CORE_EXPORT QgsPointXY
     /**
      * Converts a point to a QPointF
      * \returns QPointF with same x and y values
-     * \since QGIS 2.7
      */
     QPointF toQPointF() const
     {
@@ -208,7 +203,6 @@ class CORE_EXPORT QgsPointXY
      * \param x x-coordniate
      * \param y y-coordinate
      * \see sqrDist()
-     * \since QGIS 2.16
     */
     double distance( double x, double y ) const SIP_HOLDGIL
     {
@@ -219,7 +213,6 @@ class CORE_EXPORT QgsPointXY
      * Returns the distance between this point and another point.
      * \param other other point
      * \see sqrDist()
-     * \since QGIS 2.16
     */
     double distance( const QgsPointXY &other ) const SIP_HOLDGIL
     {
@@ -237,7 +230,6 @@ class CORE_EXPORT QgsPointXY
      * in a specified bearing.
      * \param distance distance to project
      * \param bearing angle to project in, clockwise in degrees starting from north
-     * \since QGIS 2.16
      */
     QgsPointXY project( double distance, double bearing ) const SIP_HOLDGIL;
 
@@ -258,7 +250,6 @@ class CORE_EXPORT QgsPointXY
      *
      * \see distanceCompare
      *
-     * \since QGIS 2.9
      */
     bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
     {

@@ -33,7 +33,6 @@
 * The QgsStacktrace class provides an interface to generate a stack trace for
 * displaying additional debug information when things go wrong.
 *
-* \since QGIS 3.0
 */
 class QgsStackTrace
 {
@@ -75,7 +74,6 @@ class QgsStackTrace
     /**
      * Returns a demangled stack backtrace of the caller function.
      *
-     * \since QGIS 3.0
      */
     static QgsStackTrace *trace( DWORD processID, DWORD threadID, struct _EXCEPTION_POINTERS *ExceptionInfo, QString symbolPath );
 #endif
@@ -85,7 +83,6 @@ class QgsStackTrace
     /**
     * Returns a demangled stack backtrace of the caller function.
      *
-     * \since QGIS 3.0
      */
     static QVector<QgsStackTrace::StackLine> trace( unsigned int maxFrames = 63 );
 #endif

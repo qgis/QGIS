@@ -30,8 +30,6 @@ Static function to get vertex tolerance value.
 The value is read from settings and transformed if necessary.
 
 :return: value of vertex tolerance in map units (not layer units)
-
-.. versionadded:: 2.8
 %End
 
     static double vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
@@ -60,8 +58,6 @@ Static function to translate tolerance value into map units
 :param units: type of units to be translated
 
 :return: value of tolerance in map units
-
-.. versionadded:: 2.8
 %End
 
     static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units = Qgis::MapToolUnit::Layer );

@@ -40,6 +40,8 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <algorithm>
+#include <memory>
 
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
@@ -1381,13 +1383,13 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( digitizingFinished )
     {
       QgsGeometry g;
-      QgsCurve *curveToAdd = captureCurve()->clone();
+      std::unique_ptr<QgsCurve> curveToAdd( captureCurve()->clone() );
 
       if ( mode() == CaptureLine )
       {
-        g = QgsGeometry( curveToAdd );
+        g = QgsGeometry( curveToAdd->clone() );
         geometryCaptured( g );
-        lineCaptured( curveToAdd );
+        lineCaptured( curveToAdd.release() );
       }
       else
       {
@@ -1401,22 +1403,22 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
           if ( hasCurvedSegments && providerSupportsCurvedSegments )
           {
-            curveToAdd = captureCurve()->clone();
+            curveToAdd.reset( captureCurve()->clone() );
           }
           else
           {
-            curveToAdd = captureCurve()->curveToLine();
+            curveToAdd.reset( captureCurve()->curveToLine() );
           }
         }
         else
         {
-          curveToAdd = captureCurve()->clone();
+          curveToAdd.reset( captureCurve()->clone() );
         }
-        QgsCurvePolygon *poly = new QgsCurvePolygon();
-        poly->setExteriorRing( curveToAdd );
-        g = QgsGeometry( poly );
+        std::unique_ptr<QgsCurvePolygon> poly{new QgsCurvePolygon()};
+        poly->setExteriorRing( curveToAdd.release() );
+        g = QgsGeometry( poly->clone() );
         geometryCaptured( g );
-        polygonCaptured( poly );
+        polygonCaptured( poly.get() );
       }
 
       stopCapturing();

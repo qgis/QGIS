@@ -130,7 +130,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * Returns TRUE if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \see setRepeatingLock()
-         * \since QGIS 2.16
          */
         bool isRepeatingLock() const { return mRepeatingLock; }
 
@@ -159,7 +158,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * automatically cleared after a new point is added.
          * \param repeating set to TRUE to set the lock to repeat automatically
          * \see isRepeatingLock()
-         * \since QGIS 2.16
          */
         void setRepeatingLock( bool repeating );
 
@@ -270,14 +268,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * align to segment for between line constraint.
      * If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
-     * \since QGIS 3.0
      */
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 
     /**
      * unlock all constraints
      * \param releaseRepeatingLocks set to FALSE to preserve the lock for any constraints set to repeating lock mode
-     * \since QGIS 3.0
      */
     void releaseLocks( bool releaseRepeatingLocks = true );
 
@@ -376,13 +372,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Removes all points from the CAD point list
-     * \since QGIS 3.0
      */
     void clearPoints();
 
     /**
      * Adds point to the CAD point list
-     * \since QGIS 3.0
      */
     void addPoint( const QgsPointXY &point );
 
@@ -403,7 +397,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      *
      * Some map tools may find it useful to override list of CAD points that is otherwise
      * automatically populated when user clicks with left mouse button on map canvas.
-     * \since QGIS 3.0
      */
     void setPoints( const QList<QgsPointXY> &points );
 
@@ -494,7 +487,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Updates canvas item that displays constraints on the ma
-     * \since QGIS 3.0
      */
     void updateCadPaintItem();
 

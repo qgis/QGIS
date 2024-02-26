@@ -12,8 +12,6 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for scale bars.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

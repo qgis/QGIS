@@ -30,7 +30,6 @@
  *
  * An algorithm provider is a set of related algorithms, typically from the same external application or related
  * to a common area of analysis.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingProvider : public QObject
 {

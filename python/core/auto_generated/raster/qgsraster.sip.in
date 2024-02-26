@@ -31,8 +31,6 @@ representable in the output data type. This can be checked with :py:func:`~QgsRa
 
 :param value:
 :param dataType:
-
-.. versionadded:: 2.1
 %End
 };
 

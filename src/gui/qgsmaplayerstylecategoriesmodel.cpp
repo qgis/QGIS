@@ -118,9 +118,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Symbology" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Symbology" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) );
       }
@@ -131,7 +130,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "3D Symbology" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "3D symbology" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) );
       }
@@ -140,9 +139,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Labels" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Labels" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/labels.svg" ) );
       }
@@ -162,9 +160,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Forms" );
+          return tr( "Attribute Form" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Attribute form settings, widget configuration" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) );
       }
@@ -175,7 +173,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "Actions" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Map layer actions" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) );
       }
@@ -186,7 +184,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "Map Tips" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Map tips" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/display.svg" ) );
       }
@@ -195,9 +193,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Diagrams" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Diagrams" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) );
       }
@@ -206,7 +203,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Attribute Table Settings" );
+          return tr( "Attribute Table Configuration" );
         case Qt::ToolTipRole:
           return tr( "Choice and order of columns, conditional styling" );
         case Qt::DecorationRole:
@@ -230,7 +227,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "Custom Properties" );
         case Qt::ToolTipRole:
-          return QVariant();
+          return tr( "Variables, custom properties (often used by plugins and custom python code)" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) );
       }

@@ -161,8 +161,12 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
   return QString();
 }
 
-bool QgsVariantUtils::isNull( const QVariant &variant )
+bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings )
 {
+#ifndef QGISDEBUG
+  ( void )silenceNullWarnings;
+#endif
+
   if ( variant.isNull() || !variant.isValid() )
     return true;
 
@@ -193,175 +197,250 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
     case QVariant::Date:
       if ( variant.toDate().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QDateTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QDateTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Time:
       if ( variant.toTime().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::DateTime:
       if ( variant.toDate().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QDate was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QDate was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Char:
       if ( variant.toChar().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QChar was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QChar was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::String:
       if ( variant.toString().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QString was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QString was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::ByteArray:
       if ( variant.toByteArray().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QByteArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QByteArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::BitArray:
       if ( variant.toBitArray().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QBitArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QBitArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Rect:
       if ( variant.toRect().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QRect was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QRect was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::RectF:
       if ( variant.toRectF().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QRectF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QRectF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Size:
       if ( variant.toSize().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QSize was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QSize was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::SizeF:
       if ( variant.toSizeF().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QSizeF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QSizeF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Line:
       if ( variant.toLine().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QLine was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QLine was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::LineF:
       if ( variant.toLineF().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QLineF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QLineF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Point:
       if ( variant.toPoint().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QPoint was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QPoint was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::PointF:
       if ( variant.toPointF().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QPointF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QPointF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Uuid:
       if ( variant.toUuid().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QUuid was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QUuid was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Pixmap:
       if ( variant.value< QPixmap >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QPixmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QPixmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Image:
       if ( variant.value< QImage >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QImage was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QImage was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Region:
       if ( variant.value< QRegion >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QRegion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QRegion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Bitmap:
       if ( variant.value< QBitmap >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QBitmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QBitmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Icon:
       if ( variant.value< QIcon >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QIcon was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QIcon was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Vector2D:
       if ( variant.value< QVector2D >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QVector2D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QVector2D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Vector3D:
       if ( variant.value< QVector3D >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QVector3D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QVector3D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Vector4D:
       if ( variant.value< QVector4D >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QVector4D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QVector4D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;
     case QVariant::Quaternion:
       if ( variant.value< QQuaternion >().isNull() )
       {
-        QgsDebugError( QStringLiteral( "NULL QQuaternion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        if ( !silenceNullWarnings )
+        {
+          QgsDebugError( QStringLiteral( "NULL QQuaternion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        }
         return true;
       }
       return false;

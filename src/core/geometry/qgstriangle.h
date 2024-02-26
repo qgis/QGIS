@@ -28,7 +28,6 @@
  * \ingroup core
  * \class QgsTriangle
  * \brief Triangle geometry type.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
@@ -452,7 +451,6 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * Should be used by qgsgeometry_cast<QgsTriangle *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsTriangle *cast( const QgsAbstractGeometry *geom )
     {

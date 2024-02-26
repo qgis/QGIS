@@ -20,8 +20,6 @@ the components related to the GUI behavior of a layout item.
 .. note::
 
    In C++ you can use :py:class:`QgsLayoutItemGuiMetadata` convenience class.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -131,8 +129,6 @@ which should be presented to users grouped together.
 
 For instance, the various basic shape creation tools would use :py:class:`QgsLayoutItemGuiGroup`
 to display grouped within designer dialogs.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -164,8 +160,6 @@ Registry of available layout item GUI behavior.
 
 This acts as a companion to :py:class:`QgsLayoutItemRegistry`, handling only
 the components related to the GUI behavior of layout items.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

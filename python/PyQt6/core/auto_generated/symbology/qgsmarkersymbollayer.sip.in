@@ -16,8 +16,6 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 %Docstring(signature="appended")
 Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
 leaves the actual drawing of the symbols to subclasses.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -283,8 +281,6 @@ Returns the marker's stroke style (e.g., solid, dashed, etc)
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`penJoinStyle`
-
-.. versionadded:: 2.4
 %End
 
     void setStrokeStyle( Qt::PenStyle strokeStyle );
@@ -298,8 +294,6 @@ Sets the marker's stroke style (e.g., solid, dashed, etc)
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setPenJoinStyle`
-
-.. versionadded:: 2.4
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
@@ -313,8 +307,6 @@ Returns the marker's stroke join style (e.g., miter, bevel, etc).
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`strokeStyle`
-
-.. versionadded:: 2.16
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -330,8 +322,6 @@ Sets the marker's stroke join style (e.g., miter, bevel, etc).
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setStrokeStyle`
-
-.. versionadded:: 2.16
 %End
 
     Qt::PenCapStyle penCapStyle() const;
@@ -471,8 +461,6 @@ class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 %Docstring(signature="appended")
 Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
 the symbol to support advanced styling of the interior and stroke of the shape.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -569,8 +557,6 @@ Creates the symbol
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -782,8 +768,6 @@ Creates a raster marker symbol layer from a string map of properties.
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -1051,8 +1035,6 @@ Returns the marker's stroke width. Units are retrieved by :py:func:`~QgsFontMark
 .. seealso:: :py:func:`strokeWidthUnit`
 
 .. seealso:: :py:func:`strokeWidthMapUnitScale`
-
-.. versionadded:: 2.16
 %End
 
     void setStrokeWidth( double width );
@@ -1064,8 +1046,6 @@ Set's the marker's stroke ``width``. Units are set by :py:func:`~QgsFontMarkerSy
 .. seealso:: :py:func:`setStrokeWidthUnit`
 
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
-
-.. versionadded:: 2.16
 %End
 
     Qgis::RenderUnit strokeWidthUnit() const;
@@ -1077,8 +1057,6 @@ Returns the stroke width unit.
 .. seealso:: :py:func:`strokeWidth`
 
 .. seealso:: :py:func:`strokeWidthMapUnitScale`
-
-.. versionadded:: 2.16
 %End
 
     void setStrokeWidthUnit( Qgis::RenderUnit unit );
@@ -1090,8 +1068,6 @@ Sets the stroke width ``unit``.
 .. seealso:: :py:func:`setStrokeWidth`
 
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
-
-.. versionadded:: 2.16
 %End
 
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
@@ -1103,8 +1079,6 @@ Returns the stroke width map unit scale.
 .. seealso:: :py:func:`strokeWidth`
 
 .. seealso:: :py:func:`strokeWidthUnit`
-
-.. versionadded:: 2.16
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -1116,8 +1090,6 @@ Sets the stroke width map unit ``scale``.
 .. seealso:: :py:func:`setStrokeWidth`
 
 .. seealso:: :py:func:`setStrokeWidthUnit`
-
-.. versionadded:: 2.16
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
@@ -1125,8 +1097,6 @@ Sets the stroke width map unit ``scale``.
 Returns the stroke join style.
 
 .. seealso:: :py:func:`setPenJoinStyle`
-
-.. versionadded:: 2.16
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -1134,8 +1104,6 @@ Returns the stroke join style.
 Sets the stroke join ``style``.
 
 .. seealso:: :py:func:`penJoinStyle`
-
-.. versionadded:: 2.16
 %End
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );

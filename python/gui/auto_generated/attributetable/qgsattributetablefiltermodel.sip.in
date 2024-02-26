@@ -55,8 +55,6 @@ Make sure, the master model is already loaded, so the selection will get synchro
 Set the attribute table model that backs this model
 
 :param sourceModel: The model
-
-.. versionadded:: 2.0
 %End
 
 

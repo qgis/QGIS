@@ -27,8 +27,6 @@ The class defines interface for querying point location:
 - query areas covering a point
 
 Works with one layer.
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
@@ -55,29 +53,21 @@ If ``extent`` is not ``None``, the locator will index only a subset of the layer
     QgsVectorLayer *layer() const;
 %Docstring
 Gets associated layer
-
-.. versionadded:: 2.14
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 Gets destination CRS - may be an invalid :py:class:`QgsCoordinateReferenceSystem` if not doing OTF reprojection
-
-.. versionadded:: 2.14
 %End
 
     const QgsRectangle *extent() const;
 %Docstring
 Gets extent of the area point locator covers - if ``None`` then it caches the whole layer
-
-.. versionadded:: 2.14
 %End
 
     void setExtent( const QgsRectangle *extent );
 %Docstring
 Configure extent - if not ``None``, it will index only that area
-
-.. versionadded:: 2.14
 %End
 
     void setRenderContext( const QgsRenderContext *context );
@@ -266,8 +256,6 @@ Optional filter may discard unwanted matches.
 This will first perform a pointInPolygon and return first result.
 If no match is found and tolerance is not 0, it will return nearestEdge.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
-
-.. versionadded:: 3.0
 %End
 
     MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
@@ -318,8 +306,6 @@ Find out if the ``point`` is in any polygons
     int cachedGeometryCount() const;
 %Docstring
 Returns how many geometries are cached in the index
-
-.. versionadded:: 2.14
 %End
 
     bool isIndexing() const;

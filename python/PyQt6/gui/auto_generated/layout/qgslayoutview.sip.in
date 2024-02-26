@@ -15,8 +15,6 @@ class QgsLayoutView: QGraphicsView
 A graphical widget to display and interact with :py:class:`QgsLayouts`.
 
 :py:class:`QgsLayoutView` manages the layout interaction tools and mouse/key events.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -593,8 +591,6 @@ Implementations of this interface can be made to allow QgsLayoutView
 instances to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayoutView`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

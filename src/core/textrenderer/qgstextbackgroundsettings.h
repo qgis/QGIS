@@ -41,7 +41,6 @@ class QgsTextBackgroundSettingsPrivate;
   * \ingroup core
   * \brief Container for settings relating to a text background object.
   * \note QgsTextBackgroundSettings objects are implicitly shared.
-  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTextBackgroundSettings
 {

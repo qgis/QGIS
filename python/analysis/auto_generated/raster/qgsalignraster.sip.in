@@ -20,8 +20,6 @@ so they have the same:
 - coordinate reference system
 - cell size and raster size
 - offset of the raster grid
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode

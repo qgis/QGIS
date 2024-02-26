@@ -35,7 +35,6 @@ class QgsMultiPolygon;
  *
  * Optionally provides extrusion by adding triangles that serve as walls when extrusion height is non-zero.
  *
- * \since QGIS 3.4 (since QGIS 3.0 in QGIS_3D library)
  */
 class CORE_EXPORT QgsTessellator
 {

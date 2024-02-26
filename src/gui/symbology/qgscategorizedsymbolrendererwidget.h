@@ -148,7 +148,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      * \returns number of symbols matched
      * \see matchToSymbolsFromLibrary
      * \see matchToSymbolsFromXml
-     * \since QGIS 2.9
      */
     int matchToSymbols( QgsStyle *style );
 
@@ -176,7 +175,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      * matching name.
      * \see matchToSymbolsFromXml
      * \see matchToSymbols
-     * \since QGIS 2.9
      */
     void matchToSymbolsFromLibrary();
 
@@ -185,7 +183,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      * from the XML file with a matching name.
      * \see matchToSymbolsFromLibrary
      * \see matchToSymbols
-     * \since QGIS 2.9
      */
     void matchToSymbolsFromXml();
 

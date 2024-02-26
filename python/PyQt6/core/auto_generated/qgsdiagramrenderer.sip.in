@@ -66,8 +66,6 @@ Stores the settings for rendering of all diagrams for a layer.
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the diagram property definitions.
-
-.. versionadded:: 3.0
 %End
 
     QgsDiagramLayerSettings();
@@ -88,8 +86,6 @@ Copy constructor
 Returns the diagram placement.
 
 .. seealso:: :py:func:`setPlacement`
-
-.. versionadded:: 2.16
 %End
 
     void setPlacement( Placement value );
@@ -99,8 +95,6 @@ Sets the diagram placement.
 :param value: placement value
 
 .. seealso:: :py:func:`placement`
-
-.. versionadded:: 2.16
 %End
 
     LinePlacementFlags linePlacementFlags() const;
@@ -109,8 +103,6 @@ Returns the diagram placement flags. These are only used if the diagram placemen
 is set to a line type.
 
 .. seealso:: :py:func:`setLinePlacementFlags`
-
-.. versionadded:: 2.16
 %End
 
     void setLinePlacementFlags( LinePlacementFlags flags );
@@ -121,8 +113,6 @@ is set to a line type.
 :param flags: placement value
 
 .. seealso:: :py:func:`linePlacementFlags`
-
-.. versionadded:: 2.16
 %End
 
     int priority() const;
@@ -137,8 +127,6 @@ Returns the diagram priority.
    and vice-versa
 
 .. seealso:: :py:func:`setPriority`
-
-.. versionadded:: 2.16
 %End
 
     void setPriority( int value );
@@ -148,8 +136,6 @@ Sets the diagram priority.
 :param value: priority, where 0 = low and 10 = high
 
 .. seealso:: :py:func:`priority`
-
-.. versionadded:: 2.16
 %End
 
     double zIndex() const;
@@ -163,8 +149,6 @@ with a lower z-index.
    with a low z-index and vice-versa
 
 .. seealso:: :py:func:`setZIndex`
-
-.. versionadded:: 2.16
 %End
 
     void setZIndex( double index );
@@ -175,8 +159,6 @@ with a lower z-index.
 :param index: diagram z-index
 
 .. seealso:: :py:func:`zIndex`
-
-.. versionadded:: 2.16
 %End
 
     bool isObstacle() const;
@@ -184,8 +166,6 @@ with a lower z-index.
 Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
 
 .. seealso:: :py:func:`setIsObstacle`
-
-.. versionadded:: 2.16
 %End
 
     void setIsObstacle( bool isObstacle );
@@ -195,8 +175,6 @@ Sets whether the feature associated with a diagram acts as an obstacle for other
 :param isObstacle: set to ``True`` for feature to act as obstacle
 
 .. seealso:: :py:func:`isObstacle`
-
-.. versionadded:: 2.16
 %End
 
     double distance() const;
@@ -204,8 +182,6 @@ Sets whether the feature associated with a diagram acts as an obstacle for other
 Returns the distance between the diagram and the feature (in mm).
 
 .. seealso:: :py:func:`setDistance`
-
-.. versionadded:: 2.16
 %End
 
     void setDistance( double distance );
@@ -215,8 +191,6 @@ Sets the distance between the diagram and the feature.
 :param distance: distance in mm
 
 .. seealso:: :py:func:`distance`
-
-.. versionadded:: 2.16
 %End
 
     QgsDiagramRenderer *renderer();
@@ -224,8 +198,6 @@ Sets the distance between the diagram and the feature.
 Returns the diagram renderer associated with the layer.
 
 .. seealso:: :py:func:`setRenderer`
-
-.. versionadded:: 2.16
 %End
 
 
@@ -236,8 +208,6 @@ Sets the diagram renderer associated with the layer.
 :param diagramRenderer: diagram renderer. Ownership is transferred to the object.
 
 .. seealso:: :py:func:`renderer`
-
-.. versionadded:: 2.16
 %End
 
     QgsCoordinateTransform coordinateTransform() const;
@@ -246,8 +216,6 @@ Returns the coordinate transform associated with the layer, or an
 invalid transform if no transformation is required.
 
 .. seealso:: :py:func:`setCoordinateTransform`
-
-.. versionadded:: 2.16
 %End
 
     void setCoordinateTransform( const QgsCoordinateTransform &transform );
@@ -257,8 +225,6 @@ Sets the coordinate transform associated with the layer.
 :param transform: coordinate transform. Ownership is transferred to the object.
 
 .. seealso:: :py:func:`coordinateTransform`
-
-.. versionadded:: 2.16
 %End
 
     bool showAllDiagrams() const;
@@ -266,8 +232,6 @@ Sets the coordinate transform associated with the layer.
 Returns whether the layer should show all diagrams, including overlapping diagrams
 
 .. seealso:: :py:func:`setShowAllDiagrams`
-
-.. versionadded:: 2.16
 %End
 
     void setShowAllDiagrams( bool showAllDiagrams );
@@ -277,8 +241,6 @@ Sets whether the layer should show all diagrams, including overlapping diagrams
 :param showAllDiagrams: set to ``True`` to show all diagrams
 
 .. seealso:: :py:func:`showAllDiagrams`
-
-.. versionadded:: 2.16
 %End
 
     void readXml( const QDomElement &elem );
@@ -300,8 +262,6 @@ Writes the diagram settings to a DOM element.
 Prepares the diagrams for a specified expression context. Calling prepare before rendering
 multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
 Returns ``True`` if preparation was successful.
-
-.. versionadded:: 3.0
 %End
 
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -309,8 +269,6 @@ Returns ``True`` if preparation was successful.
 Returns the set of any fields referenced by the layer's diagrams.
 
 :param context: expression context the diagrams will be drawn using
-
-.. versionadded:: 2.16
 %End
 
     QgsPropertyCollection &dataDefinedProperties();
@@ -318,8 +276,6 @@ Returns the set of any fields referenced by the layer's diagrams.
 Returns a reference to the diagram's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -332,8 +288,6 @@ Sets the diagram's property collection, used for data defined overrides.
 .. seealso:: :py:func:`dataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
 };
@@ -537,8 +491,6 @@ Returns list of legend nodes for the diagram
 .. note::
 
    caller is responsible for deletion of :py:class:`QgsLayerTreeModelLegendNodes`
-
-.. versionadded:: 2.10
 %End
 
     QgsLineSymbol *axisLineSymbol() const;
@@ -660,8 +612,6 @@ Constructor for QgsDiagramRenderer.
     virtual QgsDiagramRenderer *clone() const = 0 /Factory/;
 %Docstring
 Returns new instance that is equivalent to this one
-
-.. versionadded:: 2.4
 %End
 
     virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const;
@@ -681,8 +631,6 @@ Returns attribute indices needed for diagram rendering
 Returns the set of any fields required for diagram rendering
 
 :param context: expression context the diagrams will be drawn using
-
-.. versionadded:: 2.16
 %End
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
@@ -721,8 +669,6 @@ Returns list of legend nodes for the diagram
 .. note::
 
    caller is responsible for deletion of :py:class:`QgsLayerTreeModelLegendNodes`
-
-.. versionadded:: 2.10
 %End
 
     bool attributeLegend() const;
@@ -730,8 +676,6 @@ Returns list of legend nodes for the diagram
 Returns ``True`` if renderer will show legend items for diagram attributes.
 
 .. seealso:: :py:func:`setAttributeLegend`
-
-.. versionadded:: 2.16
 %End
 
     void setAttributeLegend( bool enabled );
@@ -741,8 +685,6 @@ Sets whether the renderer will show legend items for diagram attributes.
 :param enabled: set to ``True`` to show diagram attribute legend
 
 .. seealso:: :py:func:`attributeLegend`
-
-.. versionadded:: 2.16
 %End
 
   protected:
@@ -886,8 +828,6 @@ Returns list with all diagram settings in the renderer
 Returns the field name used for interpolating the diagram size.
 
 .. seealso:: :py:func:`setClassificationField`
-
-.. versionadded:: 3.0
 %End
 
     void setClassificationField( const QString &field );
@@ -895,8 +835,6 @@ Returns the field name used for interpolating the diagram size.
 Sets the field name used for interpolating the diagram size.
 
 .. seealso:: :py:func:`classificationField`
-
-.. versionadded:: 3.0
 %End
 
     QString classificationAttributeExpression() const;
@@ -916,15 +854,11 @@ Sets the field name used for interpolating the diagram size.
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
 Configures appearance of legend. Takes ownership of the passed settings objects.
-
-.. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
 Returns configuration of appearance of legend. Will return ``None`` if no configuration has been set.
-
-.. versionadded:: 3.0
 %End
 
   protected:

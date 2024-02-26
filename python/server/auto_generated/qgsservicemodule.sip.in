@@ -20,8 +20,6 @@ This class acts as a service registrar for services.
 
 For dynamic modules, a :py:class:`QgsServiceModule` instance is returned from the
 QGS_ServiceModule_Init() entry point.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

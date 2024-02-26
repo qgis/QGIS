@@ -94,14 +94,14 @@ class InfoViewer(QTextBrowser):
     def _showPluginInfo(self):
         from .db_plugins import getDbPluginErrors
 
-        html = '<div style="background-color:#ffffcc;"><h1>&nbsp;' + self.tr("DB Manager") + '</h1></div>'
+        html = '<div style="background-color:rgba(255,255,95,0.3);"><h1>&nbsp;' + self.tr("DB Manager") + '</h1></div>'
         html += '<div style="margin-left:8px;">'
         for msg in getDbPluginErrors():
             html += "<p>%s" % msg
         self.setHtml(html)
 
     def _showDatabaseInfo(self, connection):
-        html = '<div style="background-color:#ccffcc;"><h1>&nbsp;%s</h1></div>' % connection.connectionName()
+        html = '<div style="background-color:rgba(120,255,100,0.3);"><h1>&nbsp;%s</h1></div>' % connection.connectionName()
         html += '<div style="margin-left:8px;">'
         try:
             if connection.database() is None:
@@ -114,7 +114,7 @@ class InfoViewer(QTextBrowser):
         self.setHtml(html)
 
     def _showSchemaInfo(self, schema):
-        html = '<div style="background-color:#ffcccc;"><h1>&nbsp;%s</h1></div>' % schema.name
+        html = '<div style="background-color:rgba(255,100,100,0.3);"><h1>&nbsp;%s</h1></div>' % schema.name
         html += '<div style="margin-left:8px;">'
         try:
             html += schema.info().toHtml()
@@ -124,7 +124,7 @@ class InfoViewer(QTextBrowser):
         self.setHtml(html)
 
     def _showTableInfo(self, table):
-        html = '<div style="background-color:#ccccff"><h1>&nbsp;%s</h1></div>' % table.name
+        html = '<div style="background-color:rgba(100,100,255,0.3)"><h1>&nbsp;%s</h1></div>' % table.name
         html += '<div style="margin-left:8px;">'
         try:
             html += table.info().toHtml()
@@ -145,9 +145,9 @@ class InfoViewer(QTextBrowser):
 <head>
 <style type="text/css">
         .section { margin-top: 25px; }
-        table.header th { background-color: #dddddd; }
-        table.header td { background-color: #f5f5f5; }
-        table.header th, table.header td { padding: 0px 10px; }
+        table th { background-color: palette(midlight); color: palette(shadow); }
+        table td { background-color: palette(light); }
+        table th, table td { padding: 0px 10px; }
         table td { padding-right: 20px; }
         .underline { text-decoration:underline; }
 </style>
@@ -158,5 +158,5 @@ class InfoViewer(QTextBrowser):
 </html>
 """ % html
 
-        # print ">>>>>\n", html, "\n<<<<<<"
+        print(">>>>>\n", html, "\n<<<<<<")
         return QTextBrowser.setHtml(self, html)

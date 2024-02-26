@@ -40,7 +40,6 @@ class QgsBox3D;
  * \ingroup core
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
@@ -57,7 +56,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Construct a linestring from a vector of points.
      * Z and M type will be set based on the type of the first point
      * in the vector.
-     * \since QGIS 3.0
      */
     QgsLineString( const QVector<QgsPoint> &points );
 
@@ -65,7 +63,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Construct a linestring from list of points.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
-     * \since QGIS 3.0
      */
     QgsLineString( const QVector<QgsPointXY> &points );
 #else
@@ -275,7 +272,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * If the sizes of \a x and \a y are non-equal then the resultant linestring
      * will be created using the minimum size of these arrays.
      *
-     * \since QGIS 3.0
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
@@ -934,7 +930,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Extends the line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
-     * \since QGIS 3.0
      */
     void extend( double startDistance, double endDistance );
 
@@ -1071,7 +1066,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsLineString *cast( const QgsAbstractGeometry *geom )
     {

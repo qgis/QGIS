@@ -15,8 +15,6 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 %Docstring(signature="appended")
 Abstract base class for layout items with the ability to distribute the content to
 several frames (:py:class:`QgsLayoutFrame` items).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

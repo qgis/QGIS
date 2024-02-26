@@ -15,8 +15,6 @@ Handles aligning and distributing sets of layout items.
 
 :py:class:`QgsLayoutAligner` contains methods for automatically aligning and distributing
 sets of layout items, e.g. aligning a group of items to top or left sides.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

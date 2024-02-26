@@ -283,7 +283,6 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     /**
      * Returns a pointer to the widget's line edit, which can be used to customize
      * the appearance and behavior of the line edit portion of the widget.
-     * \since QGIS 3.0
      */
     QgsFilterLineEdit *lineEdit();
 

@@ -30,7 +30,6 @@ class QgsPolygon;
  * \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 {
@@ -303,7 +302,6 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
      * \see removeInteriorRing()
-     * \since QGIS 3.0
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 
@@ -312,7 +310,6 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      *
      * For example, this removes unclosed rings and rings with less than 4 vertices.
      *
-     * \since QGIS 3.0
      */
     void removeInvalidRings();
 
@@ -409,7 +406,6 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom )
     {

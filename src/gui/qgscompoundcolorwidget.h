@@ -28,7 +28,6 @@ class QgsScreenHelper;
  * \class QgsCompoundColorWidget
  * \brief A custom QGIS widget for selecting a color, including options for selecting colors via
  * hue wheel, color swatches, and a color sampler.
- * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase
@@ -65,7 +64,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * Sets whether opacity modification (transparency) is permitted
      * for the color dialog. Defaults to TRUE.
      * \param allowOpacity set to FALSE to disable opacity modification
-     * \since QGIS 3.0
      */
     void setAllowOpacity( bool allowOpacity );
 
@@ -73,7 +71,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * Sets whether the widget's color has been "discarded" and the selected color should not
      * be stored in the recent color list.
      * \param discarded set to TRUE to avoid adding color to recent color list on widget destruction.
-     * \since QGIS 3.0
      */
     void setDiscarded( bool discarded ) { mDiscarded = discarded; }
 

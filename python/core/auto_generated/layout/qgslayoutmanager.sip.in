@@ -21,8 +21,6 @@ rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.layout
 
 :py:class:`QgsLayoutManager` retains ownership of all the layouts contained
 in the manager.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -30,7 +30,6 @@ class QgsProcessingContext;
  * \class QgsProcessingAlgRunnerTask
  * \ingroup core
  * \brief QgsTask task which runs a QgsProcessingAlgorithm in a background task.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 {

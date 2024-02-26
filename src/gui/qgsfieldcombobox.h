@@ -33,7 +33,6 @@ class QgsFields;
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.
  * \see QgsMapLayerComboBox
- * \since QGIS 2.3
  */
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
 {
@@ -58,14 +57,12 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     /**
      * Sets whether an optional empty field ("not set") option is shown in the combo box.
      * \see allowEmptyFieldName()
-     * \since QGIS 3.0
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns TRUE if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
-     * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const;
 

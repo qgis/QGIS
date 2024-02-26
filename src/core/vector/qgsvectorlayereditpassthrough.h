@@ -58,7 +58,6 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     /**
      * Changes values of attributes (but does not commit it).
      * \returns TRUE if attributes are well updated, FALSE otherwise
-     * \since QGIS 3.0
      */
     bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues ) override;
 
@@ -77,7 +76,6 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
      *
      * \returns TRUE if the undo/redo command is well added to the stack, FALSE otherwise
      *
-     * \since QGIS 3.0
      */
     bool update( QgsTransaction *transaction, const QString &sql, const QString &name );
 

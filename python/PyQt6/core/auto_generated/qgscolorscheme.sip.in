@@ -20,8 +20,6 @@ Abstract base class for color schemes
 A color scheme for display in :py:class:`QgsColorButton`. Color schemes return lists
 of colors with an optional associated color name. The colors returned
 can be generated using an optional base color.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -126,8 +124,6 @@ class QgsGplColorScheme : QgsColorScheme
 {
 %Docstring(signature="appended")
 A color scheme which stores its colors in a gpl palette file.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -162,8 +158,6 @@ class QgsUserColorScheme : QgsGplColorScheme
 %Docstring(signature="appended")
 A color scheme which stores its colors in a gpl palette file within the "palettes"
 subfolder off the user's QGIS settings folder.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -208,8 +202,6 @@ Erases the associated gpl palette file from the users "palettes" folder
 Sets whether a this scheme should be shown in color button menus.
 
 :param show: set to ``True`` to show in color button menus, or ``False`` to hide from menus
-
-.. versionadded:: 3.0
 %End
 
   protected:
@@ -226,8 +218,6 @@ class QgsRecentColorScheme : QgsColorScheme
 {
 %Docstring(signature="appended")
 A color scheme which contains the most recently used colors.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -257,8 +247,6 @@ Adds a color to the list of recent colors.
 :param color: color to add
 
 .. seealso:: :py:func:`lastUsedColor`
-
-.. versionadded:: 2.14
 %End
 
     static QColor lastUsedColor();
@@ -266,8 +254,6 @@ Adds a color to the list of recent colors.
 Returns the most recently used color.
 
 .. seealso:: :py:func:`addRecentColor`
-
-.. versionadded:: 3.0
 %End
 };
 
@@ -275,8 +261,6 @@ class QgsCustomColorScheme : QgsColorScheme
 {
 %Docstring(signature="appended")
 A color scheme which contains custom colors set through QGIS app options dialog.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -309,8 +293,6 @@ class QgsProjectColorScheme : QgsColorScheme
 {
 %Docstring(signature="appended")
 A color scheme which contains project specific colors set through project properties dialog.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode

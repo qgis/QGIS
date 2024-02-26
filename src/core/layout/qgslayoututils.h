@@ -32,7 +32,6 @@ class QStyleOptionGraphicsItem;
 /**
  * \ingroup core
  * \brief Utilities for layouts.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutUtils
 {

@@ -29,7 +29,6 @@ class QgsDoubleSpinBox;
 /**
   * A widget which lets the user select the current level of magnification to
   * apply to the canvas.
-  * \since QGIS 2.16
   */
 class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
 {
@@ -59,7 +58,7 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
     /**
      * Will be triggered from map canvas API changes
      * \param locked true if the scale is locked
-     * \since 3.18
+     * \since QGIS 3.18
      */
     void updateScaleLock( bool locked );
 

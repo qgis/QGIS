@@ -29,7 +29,6 @@
 /**
  * \brief Represents a final output created by the model.
  * \ingroup core
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
 {

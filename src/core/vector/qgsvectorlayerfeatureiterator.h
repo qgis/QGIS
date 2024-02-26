@@ -74,13 +74,11 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      * Returns the fields that will be available for features that are retrieved from
      * this source.
      *
-     * \since QGIS 3.0
      */
     QgsFields fields() const;
 
     /**
      * Returns the coordinate reference system for features retrieved from this source.
-     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -275,7 +273,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * \param f feature
      * \param attrIndex attribute index
      * \note not available in Python bindings
-     * \since QGIS 2.14
      */
     void addExpressionAttribute( QgsFeature &f, int attrIndex ) SIP_SKIP;
 
@@ -369,7 +366,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
  * \class QgsVectorLayerSelectedFeatureSource
  * \ingroup core
  * \brief QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator
 {

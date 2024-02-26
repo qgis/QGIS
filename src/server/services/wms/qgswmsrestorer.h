@@ -32,7 +32,6 @@ class QgsAbstractVectorLayerLabeling;
  * \ingroup server
  * \brief RAII class to restore layer configuration on destruction (opacity,
  * filters, ...)
- * \since QGIS 3.0
  */
 class QgsLayerRestorer
 {

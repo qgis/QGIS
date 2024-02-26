@@ -91,7 +91,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      *
-     * \since QGIS 2.8
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
@@ -107,7 +106,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * load and iteration is canceled.
      *
      * \note Not available in Python bindings
-     * \since QGIS 2.12
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 #endif
@@ -121,7 +119,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * that of the spatial index construction.
 
      *
-     * \since QGIS 3.0
      */
     explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
@@ -296,7 +293,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * \param id will be set to feature's ID
      * \returns TRUE if feature info was successfully retrieved and the feature can be added to
      * the index
-     * \since QGIS 3.0
      */
     static bool featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id );
 

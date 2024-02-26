@@ -14,8 +14,6 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 {
 %Docstring(signature="appended")
 A layout table subclass that displays attributes from a vector layer.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

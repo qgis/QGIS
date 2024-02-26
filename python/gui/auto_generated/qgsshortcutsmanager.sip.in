@@ -17,8 +17,6 @@ that have been registered and their shortcuts can be changed.
 
 :py:class:`QgsShortcutsManager` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.shortcutsManager()`.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

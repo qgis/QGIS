@@ -41,7 +41,6 @@
  * An optional authentication configuration can be specified.
  *
  * \note This class was part of the GUI library from QGIS 2.18.1 until QGIS 3.0
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFileDownloader : public QObject
 {

@@ -74,8 +74,6 @@ Set a name for this relation
     void setStrength( Qgis::RelationshipStrength strength );
 %Docstring
 Set a strength for this relation
-
-.. versionadded:: 3.0
 %End
 
     void setReferencingLayer( const QString &id );
@@ -139,8 +137,6 @@ which have a foreign key pointing to the provided feature.
 .. seealso:: :py:func:`getRelatedFeatures`
 
 .. seealso:: :py:func:`getRelatedFeaturesRequest`
-
-.. versionadded:: 2.16
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
@@ -187,8 +183,6 @@ Returns a human readable name for this relation. Mostly used as title for the ch
 Returns the relation strength as a string
 
 :return: strength
-
-.. versionadded:: 3.0
 %End
 
     QString id() const;
@@ -201,8 +195,6 @@ A (project-wide) unique id for this relation
     void generateId();
 %Docstring
 Generate a (project-wide) unique id for this relation
-
-.. versionadded:: 3.0
 %End
 
     QString referencingLayerId() const;
@@ -296,22 +288,16 @@ Compares the two QgsRelation, ignoring the name and the ID.
 :param other: The other relation
 
 :return: ``True`` if they are similar
-
-.. versionadded:: 3.0
 %End
 
     QString resolveReferencedField( const QString &referencingField ) const;
 %Docstring
 Gets the referenced field counterpart given a referencing field.
-
-.. versionadded:: 3.0
 %End
 
     QString resolveReferencingField( const QString &referencedField ) const;
 %Docstring
 Gets the referencing field counterpart given a referenced field.
-
-.. versionadded:: 3.0
 %End
 
     void updateRelationStatus();

@@ -115,8 +115,6 @@ Returns the current text that is set in the expression area
 Returns the currently selected field or expression. If a field is currently selected, the returned
 value will be converted to a valid expression referencing this field (ie enclosing the field name with
 appropriate quotations).
-
-.. versionadded:: 2.14
 %End
 
     QString expression() const;
@@ -126,8 +124,6 @@ value will be converted to a valid expression referencing this field (ie enclosi
 appropriate quotations).
 
 Alias for :py:func:`~QgsFieldExpressionWidget.asExpression`
-
-.. versionadded:: 3.0
 %End
 
     QgsVectorLayer *layer() const;
@@ -144,24 +140,18 @@ an expression context for the widget.
 
 :param generator: A :py:class:`QgsExpressionContextGenerator` class that will be used to
                   create an expression context when required.
-
-.. versionadded:: 3.0
 %End
 
     bool allowEvalErrors() const;
 %Docstring
 Allow accepting expressions with evaluation errors. This can be useful when we are not able to
 provide an expression context of which we are sure it's completely populated.
-
-.. versionadded:: 3.0
 %End
 
     void setAllowEvalErrors( bool allowEvalErrors );
 %Docstring
 Allow accepting expressions with evaluation errors. This can be useful when we are not able to
 provide an expression context of which we are sure it's completely populated.
-
-.. versionadded:: 3.0
 %End
 
     bool buttonVisible() const;
@@ -197,8 +187,6 @@ fieldChanged signal with indication of the validity of the expression
 %Docstring
 Allow accepting expressions with evaluation errors. This can be useful when we are not able to
 provide an expression context of which we are sure it's completely populated.
-
-.. versionadded:: 3.0
 %End
 
     void buttonVisibleChanged();
@@ -238,8 +226,6 @@ Sets the fields used in the widget to ``fields``, this allows the widget to work
 %Docstring
 Sets the current expression text and if applicable also the field.
 Alias for setField.
-
-.. versionadded:: 3.0
 %End
 
   protected slots:

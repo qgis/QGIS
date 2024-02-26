@@ -304,6 +304,10 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 request = self.serverInterface().requestHandler()
                 return self.propagate
 
+            def onProjectReady(self):
+                request = self.serverInterface().requestHandler()
+                return self.propagate
+
             def onSendResponse(self):
                 request = self.serverInterface().requestHandler()
                 request.clearBody()
@@ -324,10 +328,16 @@ class TestQgsServerPlugins(QgsServerTestBase):
             def __init__(self, iface):
                 super().__init__(iface)
                 self.request_ready = False
+                self.project_ready = False
 
             def onRequestReady(self):
                 request = self.serverInterface().requestHandler()
                 self.request_ready = True
+                return True
+
+            def onProjectReady(self):
+                request = self.serverInterface().requestHandler()
+                self.project_ready = True
                 return True
 
             def onSendResponse(self):
@@ -338,6 +348,37 @@ class TestQgsServerPlugins(QgsServerTestBase):
             def onResponseComplete(self):
                 request = self.serverInterface().requestHandler()
                 request.appendBody(b'E')
+                return True
+
+        # Methods to manage propagate filter
+        class Filter3(QgsServerFilter):
+            def __init__(self, iface, propagate_filter):
+                super().__init__(iface)
+                self.propagate_filter = propagate_filter
+                self.step_to_stop_propagate = None
+
+            def onRequestReady(self):
+                request = self.serverInterface().requestHandler()
+                if self.step_to_stop_propagate == 'onRequestReady':
+                    self.propagate_filter.propagate = False
+                return True
+
+            def onProjectReady(self):
+                request = self.serverInterface().requestHandler()
+                if self.step_to_stop_propagate == 'onProjectReady':
+                    self.propagate_filter.propagate = False
+                return True
+
+            def onSendResponse(self):
+                request = self.serverInterface().requestHandler()
+                if self.step_to_stop_propagate == 'onSendResponse':
+                    self.propagate_filter.propagate = False
+                return True
+
+            def onResponseComplete(self):
+                request = self.serverInterface().requestHandler()
+                if self.step_to_stop_propagate == 'onResponseComplete':
+                    self.propagate_filter.propagate = False
                 return True
 
         serverIface = self.server.serverInterface()
@@ -359,13 +400,59 @@ class TestQgsServerPlugins(QgsServerTestBase):
         filter1.propagate = False
         _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
         self.assertFalse(filter2.request_ready)
+        self.assertFalse(filter2.project_ready)
         self.assertEqual(body, b'ABC')
 
         # Test with propagation
         filter1.propagate = True
         _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
         self.assertTrue(filter2.request_ready)
+        self.assertTrue(filter2.project_ready)
         self.assertEqual(body, b'ABDCE')
+
+        # Manage propagation
+        filter3 = Filter3(serverIface, filter1)
+        serverIface.registerFilter(filter3, 100)
+
+        # Stop at onResponseComplete
+        filter1.propagate = True
+        filter2.request_ready = False
+        filter2.project_ready = False
+        filter3.step_to_stop_propagate = 'onResponseComplete'
+        _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
+        self.assertTrue(filter2.request_ready)
+        self.assertTrue(filter2.project_ready)
+        self.assertEqual(body, b'ABDC')
+
+        # Stop at onSendResponse
+        filter1.propagate = True
+        filter2.request_ready = False
+        filter2.project_ready = False
+        filter3.step_to_stop_propagate = 'onSendResponse'
+        _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
+        self.assertTrue(filter2.request_ready)
+        self.assertTrue(filter2.project_ready)
+        self.assertEqual(body, b'ABC')
+
+        # Stop at onProjectReady
+        filter1.propagate = True
+        filter2.request_ready = False
+        filter2.project_ready = False
+        filter3.step_to_stop_propagate = 'onProjectReady'
+        _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
+        self.assertTrue(filter2.request_ready)
+        self.assertFalse(filter2.project_ready)
+        self.assertEqual(body, b'ABC')
+
+        # Stop at onRequestReady
+        filter1.propagate = True
+        filter2.request_ready = False
+        filter2.project_ready = False
+        filter3.step_to_stop_propagate = 'onRequestReady'
+        _, body = self._execute_request_project(f'?service={service0.name()}', project=project)
+        self.assertFalse(filter2.request_ready)
+        self.assertFalse(filter2.project_ready)
+        self.assertEqual(body, b'ABC')
 
         serverIface.setFilters({})
         reg.unregisterService(service0.name(), service0.version())

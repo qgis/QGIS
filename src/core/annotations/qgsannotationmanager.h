@@ -39,7 +39,6 @@ class QgsStyleEntityVisitorInterface;
  * QgsAnnotationManager retains ownership of all the annotations contained
  * in the manager.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationManager : public QObject
 {

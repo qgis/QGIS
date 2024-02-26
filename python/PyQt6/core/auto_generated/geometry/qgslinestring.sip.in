@@ -17,8 +17,6 @@ class QgsLineString: QgsCurve
 {
 %Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -238,8 +236,6 @@ LineString will be LineStringZ (or LineStringZM) type.
 
 If the sizes of ``x`` and ``y`` are non-equal then the resultant linestring
 will be created using the minimum size of these arrays.
-
-.. versionadded:: 3.0
 %End
 
     QgsLineString( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
@@ -582,8 +578,6 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsComp
 Extends the line geometry by extrapolating out the start or end of the line
 by a specified distance. Lines are extended using the bearing of the first or last
 segment in the line.
-
-.. versionadded:: 3.0
 %End
 
 

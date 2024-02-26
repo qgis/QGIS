@@ -55,7 +55,6 @@ class QgsInputControllerManager;
  * \ingroup gui
  * \brief QgsGui is a singleton class containing various registry and other global members
  * related to GUI classes.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsGui : public QObject
 {

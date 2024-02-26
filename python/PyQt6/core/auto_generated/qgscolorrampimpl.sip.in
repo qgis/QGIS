@@ -13,8 +13,6 @@ class QgsGradientStop
 {
 %Docstring(signature="appended")
 Represents a color stop within a :py:class:`QgsGradientColorRamp` color ramp.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -99,8 +97,6 @@ class QgsGradientColorRamp : QgsColorRamp
 %Docstring(signature="appended")
 Gradient color ramp, which smoothly interpolates between two colors and also
 supports optional extra color stops.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -261,8 +257,6 @@ Copy color ramp stops to a QGradient
 :param gradient: gradient to copy stops into
 :param opacity: opacity multiplier. Opacity of colors will be multiplied
                 by this factor before adding to the gradient.
-
-.. versionadded:: 2.1
 %End
 
     QColor::Spec colorSpec() const;
@@ -327,8 +321,6 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
 Constrained random color ramp, which returns random colors based on preset parameters.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -388,8 +380,6 @@ Returns the string identifier for QgsLimitedRandomColorRamp.
                                        int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
 %Docstring
 Gets a list of random colors
-
-.. versionadded:: 2.4
 %End
 
     void updateColors();
@@ -495,8 +485,6 @@ class QgsRandomColorRamp: QgsColorRamp
 %Docstring(signature="appended")
 Totally random color ramp. Returns colors generated at random, but constrained
 to some hardcoded saturation and value ranges to prevent ugly color generation.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -525,8 +513,6 @@ this method pregenerates a set of visually distinct colors which are returned
 by subsequent calls to :py:func:`~QgsRandomColorRamp.color`.
 
 :param colorCount: number of unique colors
-
-.. versionadded:: 2.5
 %End
 
     static QString typeString();
@@ -555,8 +541,6 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
 {
 %Docstring(signature="appended")
 A scheme based color ramp consisting of a list of predefined colors.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -640,8 +624,6 @@ class QgsColorBrewerColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
 Color ramp utilising "Color Brewer" preset color schemes.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -28,7 +28,6 @@
  * \ingroup core
  * \brief An interface for objects which accept features via addFeature(s) methods.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFeatureSink
 {

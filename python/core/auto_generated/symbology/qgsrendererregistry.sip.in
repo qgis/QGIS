@@ -77,8 +77,6 @@ Sets an ``icon`` representing the renderer.
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 %Docstring
 Returns flags indicating the types of layer the renderer is compatible with.
-
-.. versionadded:: 2.16
 %End
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
@@ -195,8 +193,6 @@ Returns a list of available renderers.
 Returns a list of available renderers which are compatible with a specified layer.
 
 :param layer: vector layer
-
-.. versionadded:: 2.16
 %End
 
   private:

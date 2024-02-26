@@ -75,7 +75,6 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
  * are required.
  *
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
@@ -269,7 +268,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * \returns boundary for geometry. May be NULLPTR for some geometry types.
-     * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
 
@@ -330,7 +328,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asGml2
      * \see asGml3
      * \see asJson()
-     * \since QGIS 3.0
      */
     virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 
@@ -447,7 +444,6 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * Returns -1 if a corresponding vertex could not be found.
      *
-     * \since QGIS 3.0
      */
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
 
@@ -462,7 +458,6 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Returns the vertices adjacent to a specified \a vertex within a geometry.
-     * \since QGIS 3.0
      */
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const = 0;
 
@@ -577,7 +572,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
      * returned by this method are calculated using strictly Cartesian mathematics.
      *
-     * \since QGIS 3.0
      */
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
 
@@ -650,7 +644,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
      * \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
      * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
-     * \since 3.0
      */
     virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 SIP_FACTORY;
 
@@ -672,7 +665,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * The function will return TRUE if nodes were removed, or FALSE if no duplicate nodes
      * were found.
      *
-     * \since QGIS 3.0
      */
     virtual bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) = 0;
 
@@ -708,7 +700,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE on success
      * \see dropZValue()
      * \see addMValue()
-     * \since QGIS 2.12
      */
     virtual bool addZValue( double zValue = 0 ) = 0;
 
@@ -718,7 +709,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE on success
      * \see dropMValue()
      * \see addZValue()
-     * \since QGIS 2.12
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
 
@@ -727,7 +717,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE if Z values were present and have been removed
      * \see addZValue()
      * \see dropMValue()
-     * \since QGIS 2.14
      */
     virtual bool dropZValue() = 0;
 
@@ -736,7 +725,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE if m-values were present and have been removed
      * \see addMValue()
      * \see dropZValue()
-     * \since QGIS 2.14
      */
     virtual bool dropMValue() = 0;
 
@@ -751,7 +739,6 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Converts the geometry to a specified type.
      * \returns TRUE if conversion was successful
-     * \since QGIS 2.14
      */
     virtual bool convertTo( Qgis::WkbType type );
 
@@ -965,7 +952,6 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * \ingroup core
      * \brief The vertex_iterator class provides STL-style iterator for vertices.
-     * \since QGIS 3.0
      */
     class CORE_EXPORT vertex_iterator
     {
@@ -1021,7 +1007,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see vertices_end()
      * \see vertices()
      *
-     * \since QGIS 3.0
      */
     vertex_iterator vertices_begin() const
     {
@@ -1034,7 +1019,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see vertices_begin()
      * \see vertices()
      *
-     * \since QGIS 3.0
      */
     vertex_iterator vertices_end() const
     {
@@ -1099,7 +1083,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \endcode
      *
      * \see parts()
-     * \since QGIS 3.0
      */
     QgsVertexIterator vertices() const;
 
@@ -1107,7 +1090,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
      * To create it, the geometry is default constructed and then the WKB is changed.
      * \see clone()
-     * \since 3.0
      */
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
@@ -1136,28 +1118,24 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)
      * \note used for vertex_iterator implementation
-     * \since QGIS 3.0
      */
     virtual bool hasChildGeometries() const;
 
     /**
      * Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
      * \note used for vertex_iterator implementation
-     * \since QGIS 3.0
      */
     virtual int childCount() const { return 0; }
 
     /**
      * Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
      * \note used for vertex_iterator implementation
-     * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)
      * \note used for vertex_iterator implementation
-     * \since QGIS 3.0
      */
     virtual QgsPoint childPoint( int index ) const;
 
@@ -1207,7 +1185,6 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 /**
  * \ingroup core
  * \brief Java-style iterator for traversal of vertices of a geometry
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVertexIterator
 {

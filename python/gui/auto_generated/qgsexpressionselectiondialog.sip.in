@@ -65,15 +65,11 @@ Sets the message bar to display feedback from the dialog. This is used when zoom
 features to display the count of selected features.
 
 :param messageBar: target message bar
-
-.. versionadded:: 3.0
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
 Sets a map canvas associated with the dialog.
-
-.. versionadded:: 3.0
 %End
 
   protected:

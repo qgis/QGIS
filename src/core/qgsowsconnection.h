@@ -79,6 +79,7 @@ class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
     static const QgsSettingsEntryVariantMap *settingsHeaders;
     static const QgsSettingsEntryString *settingsContentEndpoint;
     static const QgsSettingsEntryString *settingsCommunityEndpoint;
+    static const QgsSettingsEntryString *settingsUrlPrefix;
 };
 
 
@@ -107,7 +108,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *settingsTilePixelRatio;
     static const QgsSettingsEntryString *settingsMaxNumFeatures;
     static const QgsSettingsEntryString *settingsPagesize;
-    static const QgsSettingsEntryBool *settingsPagingEnabled;
+    static const QgsSettingsEntryString *settingsPagingEnabled;
     static const QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11;
     static const QgsSettingsEntryBool *settingsIgnoreAxisOrientation;
     static const QgsSettingsEntryBool *settingsInvertAxisOrientation;
@@ -126,19 +127,16 @@ class CORE_EXPORT QgsOwsConnection : public QObject
 
     /**
      * Returns the connection name.
-     * \since QGIS 3.0
      */
     QString connectionName() const;
 
     /**
      * Returns connection info string.
-     * \since QGIS 3.0
      */
     QString connectionInfo() const;
 
     /**
      * Returns a string representing the service type, e.g. "WMS".
-     * \since QGIS 3.0
      */
     QString service() const;
 
@@ -150,7 +148,6 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     /**
      * Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri \a uri.
      * Connection settings are taken from the specified QSettings \a settingsKey.
-     * \since QGIS 3.0
      * \deprecated since QGIS 3.26 use addWmsWcsConnectionSettings with service and connection name parameters
      */
     Q_DECL_DEPRECATED static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) SIP_DEPRECATED;
@@ -165,7 +162,6 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     /**
      * Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri \a uri.
      * Connection settings are taken from the specified QSettings \a settingsKey.
-     * \since QGIS 3.0
      * \deprecated since QGIS 3.26 use addWfsConnectionSettings with service and connection name parameters
      */
     Q_DECL_DEPRECATED static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) SIP_DEPRECATED;

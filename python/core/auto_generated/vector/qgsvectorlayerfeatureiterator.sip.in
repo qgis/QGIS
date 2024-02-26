@@ -44,15 +44,11 @@ Constructor for QgsVectorLayerFeatureSource.
 %Docstring
 Returns the fields that will be available for features that are retrieved from
 this source.
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the coordinate reference system for features retrieved from this source.
-
-.. versionadded:: 3.0
 %End
 
     QString id() const;
@@ -172,8 +168,6 @@ class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionConte
 {
 %Docstring(signature="appended")
 :py:class:`QgsFeatureSource` subclass for the selected features from a :py:class:`QgsVectorLayer`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

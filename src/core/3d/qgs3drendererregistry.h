@@ -29,7 +29,6 @@ class QgsReadWriteContext;
 /**
  * \brief Base metadata class for 3D renderers. Instances of derived classes may be registered in Qgs3DRendererRegistry.
  * \ingroup core
- * \since QGIS 3.0
  */
 class CORE_EXPORT Qgs3DRendererAbstractMetadata
 {
@@ -64,7 +63,6 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
 /**
  * \brief Keeps track of available 3D renderers. Should be accessed through QgsApplication::renderer3DRegistry() singleton.
  * \ingroup core
- * \since QGIS 3.0
  */
 class CORE_EXPORT Qgs3DRendererRegistry
 {

@@ -19,8 +19,6 @@ dots per inch (DPI) property for the converter. Converters default to using
 300 DPI.
 
 .. seealso:: :py:class:`QgsLayoutMeasurement`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

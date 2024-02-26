@@ -19,8 +19,6 @@ When created, it automatically adds providers from provider plugins (e.g. PostGI
 
 :py:class:`QgsDataItemProviderRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.dataItemProviderRegistry()`.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode

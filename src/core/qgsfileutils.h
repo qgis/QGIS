@@ -27,7 +27,6 @@
  * \ingroup core
  * \class QgsFileUtils
  * \brief Class for file utilities.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFileUtils
 {

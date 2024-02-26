@@ -29,7 +29,6 @@ class QgsRenderContext;
  * \class QgsMapDecoration
  * \brief Interface for map decorations.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsMapDecoration
 {

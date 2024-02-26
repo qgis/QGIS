@@ -29,8 +29,6 @@ Indexing strategy determines how fast the queries will be and how much memory wi
 
 When working with map canvas, it may be useful to use derived class :py:class:`QgsMapCanvasSnappingUtils`
 which keeps the configuration in sync with map canvas (e.g. current view, active layer).
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
@@ -151,8 +149,6 @@ Query layers used for snapping
     QString dump();
 %Docstring
 Gets extra information about the instance
-
-.. versionadded:: 2.14
 %End
 
     QgsSnappingConfig config() const;
@@ -215,8 +211,6 @@ The snapping configuration controls the behavior of this object
     void toggleEnabled();
 %Docstring
 Toggles the state of snapping
-
-.. versionadded:: 3.0
 %End
 
   signals:

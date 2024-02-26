@@ -30,7 +30,6 @@ class QgsShortcutsManager;
  * \ingroup gui
  * \class QgsConfigureShortcutsDialog
  * \brief Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
- * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShortcutsDialog

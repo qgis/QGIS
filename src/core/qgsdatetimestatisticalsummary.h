@@ -39,7 +39,6 @@
  * are calculated by default. Statistics which require slower computations are only calculated by
  * specifying the statistic in the constructor or via setStatistics().
  *
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsDateTimeStatisticalSummary
@@ -142,7 +141,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /**
      * Returns the range (interval between earliest and latest non-null datetime values).
      */
-    QgsInterval range() const { return mMax - mMin; }
+    QgsInterval range() const;
 
     /**
      * Returns the friendly display name for a statistic

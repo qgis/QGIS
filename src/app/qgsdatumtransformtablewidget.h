@@ -28,7 +28,6 @@
  * The QgsDatumTransformTableModel class is a table model to display and edit
  * datum transformations.
  *
- * \since 3.0
  */
 class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
 {

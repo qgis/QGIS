@@ -82,8 +82,6 @@ Returns the stroke color for the marker.
 .. seealso:: :py:func:`setColor`
 
 .. seealso:: :py:func:`fillColor`
-
-.. versionadded:: 3.0
 %End
 
     void setFillColor( const QColor &color );
@@ -94,8 +92,6 @@ applies to some icon types.
 .. seealso:: :py:func:`fillColor`
 
 .. seealso:: :py:func:`setColor`
-
-.. versionadded:: 3.0
 %End
 
     QColor fillColor() const;
@@ -106,8 +102,6 @@ applies to some icon types.
 .. seealso:: :py:func:`setFillColor`
 
 .. seealso:: :py:func:`color`
-
-.. versionadded:: 3.0
 %End
 
     void setPenWidth( int width );

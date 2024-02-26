@@ -42,8 +42,6 @@ static bool setGlobalSettingsPath( QString path );
 - App
 - Providers
 - Misc
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

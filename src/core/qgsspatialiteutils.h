@@ -29,7 +29,6 @@
  *
  * \brief Closes a spatialite database.
  *
- * \since QGIS 3.0
  */
 struct CORE_EXPORT QgsSpatialiteCloser
 {
@@ -51,7 +50,6 @@ struct CORE_EXPORT QgsSpatialiteCloser
  * \brief Unique pointer for spatialite databases, which automatically closes
  * the database when the pointer goes out of scope or is reset.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlite3, QgsSpatialiteCloser>
 {

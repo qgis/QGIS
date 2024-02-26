@@ -40,7 +40,6 @@ class QgsSymbolSelectorWidget;
  * The button shows a preview icon for the current symbol, and will open a detailed symbol editor dialog (or
  * panel widget) when clicked.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSymbolButton : public QToolButton
 {

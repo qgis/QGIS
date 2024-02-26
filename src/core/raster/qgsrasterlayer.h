@@ -109,7 +109,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     /**
      * Setting options for loading raster layers.
-     * \since QGIS 3.0
      */
     struct LayerOptions
     {
@@ -180,7 +179,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderer is cloned too.
      * \returns a new layer instance
-     * \since QGIS 3.0
      */
     QgsRasterLayer *clone() const override SIP_FACTORY;
 
@@ -443,7 +441,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     /**
      * \brief Draws a preview of the rasterlayer into a QImage
-     * \since QGIS 2.4
     */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );

@@ -95,8 +95,6 @@ Returns the current layer or a None.
 %Docstring
 Loads field names and values from the specified map.
 
-.. versionadded:: 2.12
-
 .. deprecated:: QGIS 3.14
    this will not do anything, use :py:func:`~QgsExpressionBuilderWidget.setLayer` instead
 %End
@@ -144,8 +142,6 @@ Returns the expression context for the widget. The context is used for the expre
 preview result and for populating the list of available functions and variables.
 
 .. seealso:: :py:func:`setExpressionContext`
-
-.. versionadded:: 2.12
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
@@ -156,8 +152,6 @@ preview result and to populate the list of available functions and variables.
 :param context: expression context
 
 .. seealso:: :py:func:`expressionContext`
-
-.. versionadded:: 2.12
 %End
 
     bool isExpressionValid();
@@ -250,8 +244,6 @@ Updates the list of function files found at the given path
 Returns a pointer to the dialog's function item model.
 This method is exposed for testing purposes only - it should not be used to modify the model.
 
-.. versionadded:: 3.0
-
 .. deprecated:: QGIS 3.14
 %End
 
@@ -260,8 +252,6 @@ This method is exposed for testing purposes only - it should not be used to modi
 Returns the project currently associated with the widget.
 
 .. seealso:: :py:func:`setProject`
-
-.. versionadded:: 3.0
 %End
 
     void setProject( QgsProject *project );
@@ -270,24 +260,18 @@ Sets the ``project`` currently associated with the widget. This
 controls which layers and relations and other project-specific items are shown in the widget.
 
 .. seealso:: :py:func:`project`
-
-.. versionadded:: 3.0
 %End
 
     bool evalError() const;
 %Docstring
 Will be set to ``True`` if the current expression text reported an eval error
 with the context.
-
-.. versionadded:: 3.0
 %End
 
     bool parserError() const;
 %Docstring
 Will be set to ``True`` if the current expression text reports a parser error
 with the context.
-
-.. versionadded:: 3.0
 %End
 
     void setExpressionPreviewVisible( bool isVisible );
@@ -393,16 +377,12 @@ continue.
 %Docstring
 Will be set to ``True`` if the current expression text reported an eval error
 with the context.
-
-.. versionadded:: 3.0
 %End
 
     void parserErrorChanged();
 %Docstring
 Will be set to ``True`` if the current expression text reported a parser error
 with the context.
-
-.. versionadded:: 3.0
 %End
 
   protected:

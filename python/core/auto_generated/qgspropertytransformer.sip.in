@@ -27,8 +27,6 @@ If the first or last control point are not located at x = 0 and x = 1 respective
 then values outside this range will be mapped to the y value of either the first
 or last control point. In other words, the curve will have a flat segment
 for values outside of the control point range.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -144,8 +142,6 @@ class QgsPropertyTransformer
 %Docstring(signature="appended")
 Abstract base class for objects which transform the calculated value of a property.
 Possible uses include transformers which map a value into a scaled size or color from a gradient.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -317,8 +313,6 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
 %Docstring(signature="appended")
 QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -452,8 +446,6 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring(signature="appended")
 :py:class:`QgsPropertyTransformer` subclass for scaling a value into a size according to various
 scaling methods.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -619,8 +611,6 @@ class QgsColorRampTransformer : QgsPropertyTransformer
 %Docstring(signature="appended")
 :py:class:`QgsPropertyTransformer` subclass for transforming a numeric value into a color from a
 color ramp.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

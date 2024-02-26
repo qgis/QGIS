@@ -34,7 +34,6 @@ class QgsAnnotation;
  * \class QgsMapCanvasAnnotationItem
  * \ingroup gui
  * \brief An interactive map canvas item which displays a QgsAnnotation.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvasItem
 {

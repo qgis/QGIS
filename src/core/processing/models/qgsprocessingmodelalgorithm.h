@@ -33,7 +33,6 @@
  * \class QgsProcessingModelAlgorithm
  * \ingroup core
  * \brief Model based algorithm with processing.
-  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 {
@@ -462,7 +461,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * \brief Definition of a expression context variable available during model execution.
      * \ingroup core
-     * \since QGIS 3.0
      */
     class CORE_EXPORT VariableDefinition
     {

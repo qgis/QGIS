@@ -48,7 +48,6 @@ class QgsTiledSceneLayer;
  * \class QgsProcessingUtils
  * \ingroup core
  * \brief Utility functions for use with processing classes.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingUtils
 {
@@ -322,7 +321,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Converts a variant to a Python literal.
      *
      * \see stringToPythonLiteral()
-     * \since QGSIS 3.6
+     * \since QGIS 3.6
      */
     static QString variantToPythonLiteral( const QVariant &value );
 
@@ -682,7 +681,6 @@ class CORE_EXPORT QgsProcessingUtils
  * \ingroup core
  * \brief QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
  * results according to the settings in a QgsProcessingContext.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 {
@@ -778,7 +776,6 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
  * \ingroup core
  * \brief QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
  * \note Not available in Python bindings.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
 {

@@ -11,8 +11,6 @@ class QgsRangeFieldFormatter : QgsFieldFormatter
 {
 %Docstring(signature="appended")
 Field formatter for a range (double) field with precision and locale.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

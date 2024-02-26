@@ -14,8 +14,6 @@ Field formatter for a list field.
 
 This represents a list type value.
 Values will be represented as a comma-separated list.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

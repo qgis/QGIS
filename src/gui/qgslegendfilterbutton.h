@@ -27,7 +27,6 @@ class QgsExpressionContextGenerator;
  * \class QgsLegendFilterButton
  * \brief A tool button that allows enabling or disabling legend filter by contents of the map.
  * An additional pop down menu allows defining a boolean expression to refine the filtering.
- * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsLegendFilterButton: public QToolButton

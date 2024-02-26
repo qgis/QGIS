@@ -160,6 +160,12 @@ GEOPROJ4 = geoProj4()
 GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
 GEO_NONE = geoNone()
 
+# TODO QGIS 4.0 - remove, require use of explicit getter/setter
+
+QgsAbstractMetadataBaseValidator.ValidationResult.identifier = property(QgsAbstractMetadataBaseValidator.ValidationResult._identifier)
+QgsAbstractMetadataBaseValidator.ValidationResult.identifier = QgsAbstractMetadataBaseValidator.ValidationResult.identifier.setter(QgsAbstractMetadataBaseValidator.ValidationResult.setIdentifier)
+
+
 # TODO QGIS 4.0 - remove, replaced by Qgis.LinePlacementFlags
 class LinePlacementFlags:
   OnLine = 1

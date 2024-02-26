@@ -26,7 +26,6 @@
  * \ingroup core
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 {
@@ -224,7 +223,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      * Should be used by qgsgeometry_cast<QgsCompoundCurve *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsCompoundCurve *cast( const QgsAbstractGeometry *geom )
     {

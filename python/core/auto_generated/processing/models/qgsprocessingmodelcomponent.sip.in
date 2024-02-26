@@ -15,8 +15,6 @@ class QgsProcessingModelComponent
 {
 %Docstring(signature="appended")
 Represents a component of a model algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -21,8 +21,6 @@ To get access use the :py:class:`QgsApplication`:
 .. code-block:: python
 
      QgsApplication.actionScopeRegistry()
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -36,36 +34,26 @@ Create a new QgsActionScopeRegistry.
 QGIS already creates a central registry. You will normally
 want to use :py:func:`QgsApplication.actionScopeRegistry()` to get access
 to that one instead.
-
-.. versionadded:: 3.0
 %End
 
     QSet<QgsActionScope> actionScopes() const;
 %Docstring
 Gets all registered action scopes.
-
-.. versionadded:: 3.0
 %End
 
     void registerActionScope( const QgsActionScope &actionScope );
 %Docstring
 Register an additional action scope.
-
-.. versionadded:: 3.0
 %End
 
     void unregisterActionScope( const QgsActionScope &actionScope );
 %Docstring
 Unregister an additional action scope.
-
-.. versionadded:: 3.0
 %End
 
     QgsActionScope actionScope( const QString &id );
 %Docstring
 Gets an action scope by its id.
-
-.. versionadded:: 3.0
 %End
 
   signals:
@@ -74,8 +62,6 @@ Gets an action scope by its id.
 %Docstring
 Emitted whenever a new action scope is registered or an action scope
 is unregistered.
-
-.. versionadded:: 3.0
 %End
 
 };

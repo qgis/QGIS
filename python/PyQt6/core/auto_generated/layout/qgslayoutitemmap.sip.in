@@ -289,8 +289,6 @@ class QgsLayoutItemMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
 Layout graphical items for displaying a map.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

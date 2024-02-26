@@ -14,8 +14,6 @@ class QgsMenuHeader : QWidget
 Custom widget for displaying subheaders within a QMenu in a standard style.
 
 .. seealso:: :py:class:`QgsMenuHeaderWidgetAction`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -46,8 +44,6 @@ class QgsMenuHeaderWidgetAction: QWidgetAction
 Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
 
 .. seealso:: :py:class:`QgsMenuHeader`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

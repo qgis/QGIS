@@ -18,8 +18,6 @@ to a QPainter, it is recommended to instead use a :py:class:`QgsLayoutExporter` 
 layouts instead. :py:class:`QgsLayoutExporter` automatically takes care of the intracacies of
 preparing the layout and paint devices for correct exports, respecting various
 user settings such as the layout context DPI.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

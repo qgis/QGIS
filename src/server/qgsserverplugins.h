@@ -29,7 +29,6 @@ class QgsPythonUtils;
 /**
  * \ingroup server
  * \brief Initializes Python server plugins and stores a list of server plugin names
- * \since QGIS 2.8
  */
 class SERVER_EXPORT QgsServerPlugins
 {

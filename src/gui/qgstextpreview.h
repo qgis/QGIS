@@ -35,7 +35,6 @@ class QgsScreenHelper;
  * In order to preview the exact appearance of text which uses sizes in map units,
  * the scale and map units must be set by calling setScale() and setMapUnits().
  *
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextPreview : public QLabel

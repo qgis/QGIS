@@ -20,8 +20,6 @@ and millimeters. This widget is designed to allow users to edit the properties o
 .. seealso:: :py:class:`QgsMapUnitScaleDialog`
 
 .. seealso:: :py:class:`QgsUnitSelectionWidget`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -125,8 +123,6 @@ Sets the map canvas associated with the dialog. This allows the dialog to retrie
 map scale from the canvas.
 
 :param canvas: map canvas
-
-.. versionadded:: 2.12
 %End
 
 };
@@ -168,8 +164,6 @@ Sets the units which the user can choose from in the combobox.
 Sets the units which the user can choose from in the combobox. Clears any existing units.
 
 :param units: list of valid units
-
-.. versionadded:: 2.9
 %End
 
     int getUnit() const;
@@ -182,8 +176,6 @@ Gets the selected unit index
 Returns the current predefined selected unit (if applicable).
 
 :return: selected output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if the widget was populated with custom unit types
-
-.. versionadded:: 2.9
 %End
 
     void setUnit( int unitIndex ) /PyName=setUnitIndex/;
@@ -220,8 +212,6 @@ Sets the map canvas associated with the widget. This allows the widget to retrie
 map scale from the canvas.
 
 :param canvas: map canvas
-
-.. versionadded:: 2.12
 %End
 
     bool showMapScaleButton() const;

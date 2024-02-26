@@ -26,7 +26,6 @@
  * \ingroup core
  * \class QgsLayoutItemShape
  * \brief Layout item for basic filled shapes (e.g. rectangles, ellipses).
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
 {

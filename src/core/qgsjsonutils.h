@@ -39,7 +39,6 @@ class QTextCodec;
  *
  * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
  * if either the source vector layer or source CRS is set.
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsJsonExporter
@@ -298,7 +297,6 @@ class CORE_EXPORT QgsJsonExporter
  * \ingroup core
  * \class QgsJsonUtils
  * \brief Helper utilities for working with JSON and GeoJSON conversions.
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsJsonUtils
@@ -364,7 +362,6 @@ class CORE_EXPORT QgsJsonUtils
      * \param type optional variant type of the elements, if specified (and not Invalid),
      *        the array items will be converted to the type, and discarded if
      *        the conversion is not possible.
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
 

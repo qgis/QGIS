@@ -34,7 +34,6 @@ class QgsMapCanvas;
 /**
  * \ingroup app
  * \brief a dialog for saving a map to an image.
- * \since QGIS 3.0
 */
 class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 {
@@ -109,6 +108,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     QgsRectangle mExtent;
     int mDpi;
     QSize mSize;
+    float mDevicePixelRatio;
 
     QString mInfoDetails;
 

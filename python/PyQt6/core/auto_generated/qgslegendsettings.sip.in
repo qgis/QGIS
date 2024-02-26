@@ -17,8 +17,6 @@ class QgsLegendSettings
 The :py:class:`QgsLegendSettings` class stores the appearance and layout settings
 for legend drawing with :py:class:`QgsLegendRenderer`. The content of the legend is given
 in :py:class:`QgsLegendModel` class.
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -302,8 +300,6 @@ Returns whether a stroke will be drawn around raster symbol items.
 .. seealso:: :py:func:`rasterStrokeColor`
 
 .. seealso:: :py:func:`rasterStrokeWidth`
-
-.. versionadded:: 2.12
 %End
 
     void setDrawRasterStroke( bool enabled );
@@ -317,8 +313,6 @@ Sets whether a stroke will be drawn around raster symbol items.
 .. seealso:: :py:func:`setRasterStrokeColor`
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
-
-.. versionadded:: 2.12
 %End
 
     QColor rasterStrokeColor() const;
@@ -331,8 +325,6 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 .. seealso:: :py:func:`drawRasterStroke`
 
 .. seealso:: :py:func:`rasterStrokeWidth`
-
-.. versionadded:: 2.12
 %End
 
     void setRasterStrokeColor( const QColor &color );
@@ -347,8 +339,6 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 .. seealso:: :py:func:`setDrawRasterStroke`
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
-
-.. versionadded:: 2.12
 %End
 
     double rasterStrokeWidth() const;
@@ -361,8 +351,6 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 .. seealso:: :py:func:`drawRasterStroke`
 
 .. seealso:: :py:func:`rasterStrokeColor`
-
-.. versionadded:: 2.12
 %End
 
     void setRasterStrokeWidth( double width );
@@ -377,8 +365,6 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 .. seealso:: :py:func:`setDrawRasterStroke`
 
 .. seealso:: :py:func:`setRasterStrokeColor`
-
-.. versionadded:: 2.12
 %End
 
     QSizeF wmsLegendSize() const;

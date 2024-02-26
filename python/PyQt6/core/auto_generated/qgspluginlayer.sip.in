@@ -37,8 +37,6 @@ In order to be readable from project files, they should set these attributes in 
 Returns a new instance equivalent to this one.
 
 :return: a new layer instance
-
-.. versionadded:: 3.0
 %End
 
     QString pluginLayerType();
@@ -55,8 +53,6 @@ Sets extent of the layer
     void setSource( const QString &source );
 %Docstring
 Set source string. This is used for example in layer tree to show tooltip.
-
-.. versionadded:: 2.16
 %End
 
     virtual QgsDataProvider *dataProvider();

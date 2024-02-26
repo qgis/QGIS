@@ -20,8 +20,6 @@ Base class for processing algorithm dialogs.
 .. note::
 
    This is not considered stable API and may change in future QGIS versions.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -341,8 +339,6 @@ by the dialog. Ownership of ``task`` is transferred to the dialog.
     static QString formatStringForLog( const QString &string );
 %Docstring
 Formats an input ``string`` for display in the log tab.
-
-.. versionadded:: 3.0.1
 %End
 
     virtual bool isFinalized();

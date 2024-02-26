@@ -26,8 +26,6 @@ hierarchy.  :py:class:`QgsProjectPropertyValues` are always graph leaves.
 
    This class is used internally by :py:class:`QgsProject`. It's generally recommended that the methods in
    :py:class:`QgsProject` are used to modify project properties rather than using these low-level classes.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -110,8 +108,6 @@ class QgsProjectPropertyValue : QgsProjectProperty
 {
 %Docstring(signature="appended")
 Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s value.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -163,8 +159,6 @@ E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
 mProperties that maps to "bar", which is another :py:class:`QgsProjectPropertyKey`.  The "bar"
 :py:class:`QgsProjectPropertyKey` will, in turn, have an element that maps to itself, i.e. "bar",
 that will contain a QgsProjectPropertyValue.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -190,8 +184,6 @@ The name of the property is used as identifier.
 The name of the property is used as identifier.
 
 .. seealso:: :py:func:`name`
-
-.. versionadded:: 3.0
 %End
 
     virtual QVariant value() const;

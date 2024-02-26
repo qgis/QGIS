@@ -471,6 +471,18 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
+
+      else if ( vL.type() == QVariant::Bool || vR.type() == QVariant::Bool )
+      {
+        // if one of value is boolean, then the other must also be boolean,
+        // in order to avoid confusion between different expression evaluations
+        // amongst providers and QVariant, that can consider or not the string
+        // 'false' as boolean or text
+        if ( vL.type() == QVariant::Bool && vR.type() == QVariant::Bool )
+          return vL.toBool() == vR.toBool() ? TVL_True : TVL_False;
+        return TVL_False;
+      }
+
       // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
       else if ( vL.userType() == QMetaType::type( "QgsInterval" ) && vR.userType() == QMetaType::type( "QgsInterval" ) )
       {

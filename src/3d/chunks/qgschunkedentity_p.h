@@ -59,7 +59,6 @@ namespace QgsRayCastingUtils
  * \ingroup 3d
  * \brief Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
  * based on data error and unloading of data when data are not necessary anymore
- * \since QGIS 3.0
  */
 class QgsChunkedEntity : public Qgs3DMapSceneEntity
 {

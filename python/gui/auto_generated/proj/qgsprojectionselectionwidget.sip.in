@@ -15,8 +15,6 @@ class QgsProjectionSelectionWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget for selecting a projection.
-
-.. versionadded:: 2.7
 %End
 
 %TypeHeaderCode
@@ -68,16 +66,12 @@ Sets whether a predefined CRS option should be shown in the widget.
 Returns whether the specified CRS option is visible in the widget.
 
 .. seealso:: :py:func:`setOptionVisible`
-
-.. versionadded:: 3.0
 %End
 
     void setNotSetText( const QString &text );
 %Docstring
 Sets the text to show for the not set option. Note that this option is not shown
 by default and must be set visible by calling :py:func:`~QgsProjectionSelectionWidget.setOptionVisible`.
-
-.. versionadded:: 3.0
 %End
 
     void setMessage( const QString &text );
@@ -85,8 +79,6 @@ by default and must be set visible by calling :py:func:`~QgsProjectionSelectionW
 Sets a ``message`` to show in the dialog. If an empty string is
 passed, the message will be a generic
 'define the CRS for this layer'.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -187,8 +179,6 @@ Emitted when the selected CRS is changed
     void cleared();
 %Docstring
 Emitted when the not set option is selected.
-
-.. versionadded:: 3.0
 %End
 
   public slots:

@@ -19,8 +19,6 @@ Handles exporting :py:class:`QgsFeature` features to GeoJSON features.
 
 Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
 if either the source vector layer or source CRS is set.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -278,8 +276,6 @@ class QgsJsonUtils
 {
 %Docstring(signature="appended")
 Helper utilities for working with JSON and GeoJSON conversions.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -350,8 +346,6 @@ Parse a simple array (depth=1)
 :param type: optional variant type of the elements, if specified (and not Invalid),
              the array items will be converted to the type, and discarded if
              the conversion is not possible.
-
-.. versionadded:: 3.0
 %End
 
 

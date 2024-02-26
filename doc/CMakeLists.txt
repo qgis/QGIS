@@ -88,6 +88,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/providers
       ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
       ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+      ${CMAKE_SOURCE_DIR}/src/core/providers/sensorthings
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/sensor

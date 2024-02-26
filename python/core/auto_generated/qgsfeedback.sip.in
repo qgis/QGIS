@@ -27,8 +27,6 @@ The class is meant to be created and destroyed in the main thread.
 For map rendering, the object may be created in constructor of a :py:class:`QgsMapLayerRenderer`
 subclass and available with :py:func:`QgsMapLayerRenderer.feedback()` method. When a map rendering job
 gets canceled, the :py:func:`~cancel` method is called on the feedback object of all layers.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -53,8 +51,6 @@ argument is in percentage and valid values range from 0-100.
 .. seealso:: :py:func:`progress`
 
 .. seealso:: :py:func:`progressChanged`
-
-.. versionadded:: 3.0
 %End
 
     double progress() const /HoldGIL/;
@@ -66,8 +62,6 @@ is in percentage and ranges from 0-100.
 .. seealso:: :py:func:`setProgress`
 
 .. seealso:: :py:func:`progressChanged`
-
-.. versionadded:: 3.0
 %End
 
     unsigned long long processedCount() const /HoldGIL/;
@@ -117,8 +111,6 @@ argument is in percentage and ranges from 0-100.
 .. seealso:: :py:func:`setProgress`
 
 .. seealso:: :py:func:`progress`
-
-.. versionadded:: 3.0
 %End
 
     void processedCountChanged( unsigned long long processedCount );

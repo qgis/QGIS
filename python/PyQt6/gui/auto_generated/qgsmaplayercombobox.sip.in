@@ -15,8 +15,6 @@ class QgsMapLayerComboBox : QComboBox
 {
 %Docstring(signature="appended")
 The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list of layers
-
-.. versionadded:: 2.3
 %End
 
 %TypeHeaderCode
@@ -69,8 +67,6 @@ returns the list of excepted layers
 Sets a list of data providers which should be excluded from the combobox.
 
 .. seealso:: :py:func:`excludedProviders`
-
-.. versionadded:: 3.0
 %End
 
     QStringList excludedProviders() const;
@@ -78,8 +74,6 @@ Sets a list of data providers which should be excluded from the combobox.
 Returns the list of data providers which are excluded from the combobox.
 
 .. seealso:: :py:func:`setExcludedProviders`
-
-.. versionadded:: 3.0
 %End
 
     void setProject( QgsProject *project );
@@ -99,8 +93,6 @@ Sets whether an optional empty layer ("not set") option is shown in the combo bo
 Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text and icon for the empty layer item to be set.
 
 .. seealso:: :py:func:`allowEmptyLayer`
-
-.. versionadded:: 3.0
 %End
 
     bool allowEmptyLayer() const;
@@ -108,8 +100,6 @@ Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text an
 Returns ``True`` if the combo box allows the empty layer ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyLayer`
-
-.. versionadded:: 3.0
 %End
 
     void setShowCrs( bool showCrs );
@@ -117,8 +107,6 @@ Returns ``True`` if the combo box allows the empty layer ("not set") choice.
 Sets whether the CRS of layers is also included in the combo box text.
 
 .. seealso:: :py:func:`showCrs`
-
-.. versionadded:: 3.0
 %End
 
     bool showCrs() const;
@@ -126,8 +114,6 @@ Sets whether the CRS of layers is also included in the combo box text.
 Returns ``True`` if the combo box shows the layer's CRS.
 
 .. seealso:: :py:func:`setShowCrs`
-
-.. versionadded:: 3.0
 %End
 
     void setAdditionalItems( const QStringList &items );
@@ -137,8 +123,6 @@ These may represent additional layers such as layers which are not included in t
 layer registry, or paths to layers which have not yet been loaded into QGIS.
 
 .. seealso:: :py:func:`additionalItems`
-
-.. versionadded:: 3.0
 %End
 
     QStringList additionalItems() const;
@@ -146,8 +130,6 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 Returns the list of additional (non map layer) items included at the end of the combo box.
 
 .. seealso:: :py:func:`setAdditionalItems`
-
-.. versionadded:: 3.0
 %End
 
     void setAdditionalLayers( const QList<QgsMapLayer *> &layers );
@@ -185,8 +167,6 @@ Returns the layer currently shown at the specified index within the combo box.
 :param layerIndex: position of layer to return
 
 .. seealso:: :py:func:`currentLayer`
-
-.. versionadded:: 2.10
 %End
 
   public slots:

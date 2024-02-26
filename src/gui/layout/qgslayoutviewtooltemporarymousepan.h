@@ -23,7 +23,6 @@
 /**
  * \ingroup gui
  * \brief Layout view tool for temporarily panning a layout while a mouse button is depressed.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolTemporaryMousePan : public QgsLayoutViewTool
 {

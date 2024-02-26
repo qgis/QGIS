@@ -51,7 +51,6 @@ class TerrainMapUpdateJobFactory;
  * \ingroup 3d
  * \brief Controller for terrain - decides on what terrain tiles to show based on camera position
  * and creates them using map's terrain tile generator.
- * \since QGIS 3.0
  */
 class QgsTerrainEntity : public QgsChunkedEntity
 {

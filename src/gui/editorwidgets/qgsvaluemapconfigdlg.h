@@ -70,7 +70,6 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
      *
      * If \a skipNull is TRUE, then NULL entries will not be added.
      *
-     * \since QGIS 3.0
      */
     static void populateComboBox( QComboBox *comboBox, const QVariantMap &configuration, bool skipNull );
 

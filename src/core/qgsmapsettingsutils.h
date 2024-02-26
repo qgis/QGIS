@@ -27,7 +27,6 @@ class QgsMapSettings;
 /**
  * \ingroup core
  * \brief Utilities for map settings.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsMapSettingsUtils
 {

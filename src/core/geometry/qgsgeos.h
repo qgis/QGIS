@@ -31,7 +31,6 @@ class QgsGeometryCollection;
 /**
  * Contains geos related utilities and functions.
  * \note not available in Python bindings.
- * \since QGIS 3.0
  */
 namespace geos
 {
@@ -163,7 +162,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param errorMsg Error message returned by GEOS
      * \param parameters can be used to specify parameters which control the subdivision results (since QGIS 3.28)
      *
-     * \since QGIS 3.0
      */
     std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
@@ -213,7 +211,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
      *
      * \see hausdorffDistanceDensify()
-     * \since QGIS 3.0
      */
     double hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const;
 
@@ -231,7 +228,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * distance returned approach the true Hausdorff distance for the geometries.
      *
      * \see hausdorffDistance()
-     * \since QGIS 3.0
      */
     double hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg = nullptr ) const;
 
@@ -308,7 +304,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param errorMsg error messages emitted, if any
      * \returns buffered geometry, or an NULLPTR if buffer could not be
      * calculated
-     * \since QGIS 3.0
      */
     std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
         Qgis::JoinStyle joinStyle, double miterLimit,
@@ -461,21 +456,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
-     * \since QGIS 3.0
      */
     QgsGeometry mergeLines( QString *errorMsg = nullptr ) const;
 
     /**
      * Returns the closest point on the geometry to the other geometry.
      * \see shortestLine()
-     * \since QGIS 2.14
      */
     QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /**
      * Returns the shortest line joining this geometry to the other geometry.
      * \see closestPoint()
-     * \since QGIS 2.14
      */
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
@@ -519,7 +511,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * unary union these geometries by calling combine() on the set of input geometries and then
      * pass the result to polygonize().
      * An empty geometry will be returned in the case of errors.
-     * \since QGIS 3.0
      */
     static QgsGeometry polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
 
@@ -536,7 +527,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
-     * \since QGIS 3.0
      */
     QgsGeometry voronoiDiagram( const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
@@ -548,7 +538,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \see constrainedDelaunayTriangulation()
-     * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 

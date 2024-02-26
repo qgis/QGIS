@@ -89,8 +89,6 @@ Shorthand method to set fill and stroke color with a single call.
 Sets the fill color for the rubberband
 
 :param color: The color used to render this rubberband
-
-.. versionadded:: 2.6
 %End
 
     QColor fillColor() const;
@@ -103,8 +101,6 @@ Returns the current fill color.
 Sets the stroke color for the rubberband
 
 :param color: The color used to render this rubberband
-
-.. versionadded:: 2.6
 %End
 
     QColor strokeColor() const;
@@ -118,8 +114,6 @@ Sets a secondary stroke color for the rubberband which will be drawn under the m
 Set to an invalid color to avoid drawing the secondary stroke.
 
 :param color: The color used to render a secondary stroke color to this rubberband
-
-.. versionadded:: 3.0
 %End
 
     QColor secondaryStrokeColor() const;
@@ -211,8 +205,6 @@ first vertex.
 :param doUpdate: set to ``True`` to update the map canvas immediately
 :param geometryIndex: The index of the feature part (in case of multipart geometries)
 :param ringIndex: The index of the polygon ring (in case of polygons with holes)
-
-.. versionadded:: 2.16
 %End
 
     void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
@@ -312,8 +304,6 @@ to the canvas CRS.
 
 If additional geometries are to be added then set ``doUpdate`` to ``False`` to defer costly repaint and bounding rectangle calculations for better performance.
 After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
-
-.. versionadded:: 3.0
 %End
 
     void setTranslationOffset( double dx, double dy );

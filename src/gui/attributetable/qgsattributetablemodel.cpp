@@ -734,7 +734,15 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     case Qt::DisplayRole:
     {
       const WidgetData &widgetData = getWidgetData( index.column() );
-      return widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
+      QString s = widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
+      // In table view, too long strings kill performance. Just truncate them
+      constexpr int MAX_STRING_LENGTH = 10 * 1000;
+      if ( static_cast<size_t>( s.size() ) > static_cast<size_t>( MAX_STRING_LENGTH ) )
+      {
+        s.resize( MAX_STRING_LENGTH );
+        s.append( tr( "... truncated ..." ) );
+      }
+      return s;
     }
     case Qt::ToolTipRole:
     {

@@ -291,8 +291,6 @@ Adds a new smartgroup to the database and returns the id.
 Returns a list of all tags in the style database
 
 .. seealso:: :py:func:`addTag`
-
-.. versionadded:: 2.16
 %End
 
     void clear();
@@ -821,8 +819,6 @@ This function creates a new on-disk permanent style database.
 :return: returns the success state of the database creation
 
 .. seealso:: :py:func:`createMemoryDatabase`
-
-.. versionadded:: 3.0
 %End
 
     bool createMemoryDatabase();
@@ -834,8 +830,6 @@ This function is used to create a temporary style database in case a permanent o
 :return: returns the success state of the temporary memory database creation
 
 .. seealso:: :py:func:`createDatabase`
-
-.. versionadded:: 3.0
 %End
 
     void createTables();
@@ -847,8 +841,6 @@ This function is used to create the tables structure in a newly-created database
 .. seealso:: :py:func:`createDatabase`
 
 .. seealso:: :py:func:`createMemoryDatabase`
-
-.. versionadded:: 3.0
 %End
 
     bool load( const QString &filename );

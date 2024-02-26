@@ -283,7 +283,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * returned values can be safely passed to fromSrsId() to create a new, valid
      * QgsCoordinateReferenceSystem object.
      * \see fromSrsId()
-     * \since QGIS 3.0
      */
     static QList< long > validSrsIds();
 
@@ -294,7 +293,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromOgcWmsCrs()
-     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 
@@ -302,7 +300,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a given EPSG ID.
      * \param epsg epsg CRS ID
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
     */
     Q_INVOKABLE static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
 
@@ -328,7 +325,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param wkt WKT for the desired spatial reference system.
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromWkt()
-     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 
@@ -338,7 +334,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \returns matching CRS, or an invalid CRS if ID could not be found
      * \see createFromSrsId()
      * \see validSrsIds()
-     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
@@ -889,7 +884,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * The returned bounds represent the latitude and longitude extent for the
      * projection in the WGS 84 CRS.
      *
-     * \since QGIS 3.0
      */
     QgsRectangle bounds() const;
 
@@ -1082,7 +1076,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
      * argument is for internal use only.
      *
-     * \since QGIS 3.0
      */
     static void invalidateCache( bool disableCache = false );
 #else
@@ -1092,7 +1085,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
      *
-     * \since QGIS 3.0
      */
     static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
 #endif

@@ -11,9 +11,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-
+from qgis.PyQt.QtCore import QT_VERSION_STR
 from qgis.core import (
     Qgis,
+    QgsFontUtils,
     QgsStringUtils,
     QgsTextBlock,
     QgsTextCharacterFormat,
@@ -72,7 +73,10 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[1][0].text(), 'def')
         self.assertEqual(doc[1][0].characterFormat().underline(), QgsTextCharacterFormat.BooleanValue.SetTrue)
         self.assertEqual(doc[1][0].characterFormat().italic(), QgsTextCharacterFormat.BooleanValue.SetTrue)
-        self.assertEqual(doc[1][0].characterFormat().fontWeight(), 75)
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            self.assertEqual(doc[1][0].characterFormat().fontWeight(), 700)
+        else:
+            self.assertEqual(doc[1][0].characterFormat().fontWeight(), 75)
         self.assertEqual(doc[1][0].characterFormat().family(), 'Serif')
         self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#ff0000')
         self.assertEqual(doc[1][0].characterFormat().fontPointSize(), 15)
@@ -91,6 +95,18 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[3][0].text(), 'b c d')
         self.assertEqual(len(doc[4]), 1)
         self.assertEqual(doc[4][0].text(), 'e')
+
+        doc = QgsTextDocument.fromHtml(['<span style="color:red">a<br><span style="color:blue">b<br></span>c</span>d'])
+        self.assertEqual(len(doc), 3)
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[0][0].text(), 'a')
+        self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#0000ff')
+        self.assertEqual(doc[1][0].text(), 'b')
+        self.assertEqual(len(doc[2]), 2)
+        self.assertEqual(doc[2][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[2][0].text(), 'c')
+        self.assertEqual(doc[2][1].characterFormat().textColor().name(), '#000000')
+        self.assertEqual(doc[2][1].text(), 'd')
 
     def testFromHtmlVerticalAlignment(self):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><sub>def<b>extra</b></sub> ghi</div><sup>sup</sup><span style="vertical-align: sub">css</span>'])

@@ -10,14 +10,15 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsunittypes.h"
+%End
 
 
 class QgsInterval
 {
 %Docstring(signature="appended")
 A representation of the interval between two datetime values.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -64,6 +65,18 @@ Constructor for QgsInterval, using the specified ``years``, ``months``,
    Year units assumes a 365.25 day year length.
 
 .. versionadded:: 3.14
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( ! sipCpp->isValid() )
+      str = QStringLiteral( "<QgsInterval: invalid>" );
+    else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
+      str = QStringLiteral( "<QgsInterval: %1 %2>" ).arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
+    else
+      str = QStringLiteral( "<QgsInterval: %1 seconds>" ).arg( sipCpp->seconds() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     double years() const;

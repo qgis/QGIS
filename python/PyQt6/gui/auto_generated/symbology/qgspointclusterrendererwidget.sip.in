@@ -15,8 +15,6 @@ class QgsPointClusterRendererWidget: QgsRendererWidget, QgsExpressionContextGene
 {
 %Docstring(signature="appended")
 A widget which allows configuration of the properties for a :py:class:`QgsPointClusterRenderer`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

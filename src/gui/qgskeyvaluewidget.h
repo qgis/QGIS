@@ -30,7 +30,6 @@
  * \ingroup gui
  * \brief Table model to edit a QVariantMap.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 {
@@ -61,7 +60,6 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 /**
  * \ingroup gui
  * \brief Widget allowing to edit a QVariantMap, using a table.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
 {

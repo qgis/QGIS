@@ -184,8 +184,6 @@ Encodes a QSizeF to a string.
 .. seealso:: :py:func:`decodeSize`
 
 .. seealso:: :py:func:`encodePoint`
-
-.. versionadded:: 3.0
 %End
 
     static QSizeF decodeSize( const QString &string );
@@ -195,8 +193,6 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`encodeSize`
 
 .. seealso:: :py:func:`decodePoint`
-
-.. versionadded:: 3.0
 %End
 
     static QSizeF toSize( const QVariant &value, bool *ok /Out/ = 0 );
@@ -257,8 +253,6 @@ Returns the size scaled in pixels according to the uom attribute.
 :param size: The original size
 
 :return: the size in pixels
-
-.. versionadded:: 3.0
 %End
 
     static QString encodeScaleMethod( Qgis::ScaleMethod scaleMethod );
@@ -300,7 +294,7 @@ Returns a pixmap preview for a color ramp.
 :param symbol: symbol
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
-:param customContext: render context to use when rendering symbol (since QGIS 2.6)
+:param customContext: custom rendering context
 :param selected: set to ``True`` to render the symbol in a selected state (since QGIS 3.10)
 :param expressionContext: optional custom expression context (since QGIS 3.10)
 :param shape: optional legend patch shape to use for rendering the preview icon (since QGIS 3.14)
@@ -322,8 +316,6 @@ Draws a symbol layer preview to a QPicture
 :return: QPicture containing symbol layer preview
 
 .. seealso:: :py:func:`symbolLayerPreviewIcon`
-
-.. versionadded:: 2.9
 %End
 
     static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
@@ -409,8 +401,6 @@ Writes a symbol definition to XML
 %Docstring
 Returns a string representing the symbol. Can be used to test for equality
 between symbols.
-
-.. versionadded:: 2.12
 %End
 
     static bool createSymbolLayerListFromSld( QDomElement &element, Qgis::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
@@ -585,8 +575,6 @@ This also sets the mime color data to match the symbol's color, so that copied s
 can be paste in places where a color is expected.
 
 .. seealso:: :py:func:`symbolFromMimeData`
-
-.. versionadded:: 3.0
 %End
 
     static QgsSymbol *symbolFromMimeData( const QMimeData *data ) /Factory/;
@@ -595,8 +583,6 @@ Attempts to parse ``mime`` data as a symbol. A new symbol instance will be retur
 if the data was successfully converted to a symbol.
 
 .. seealso:: :py:func:`symbolToMimeData`
-
-.. versionadded:: 3.0
 %End
 
     static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
@@ -646,8 +632,6 @@ Returns a friendly display name for a color
 :param color: source color
 
 :return: display name for color
-
-.. versionadded:: 2.5
 %End
 
     static QList< QColor > parseColorList( const QString &colorStr );
@@ -658,8 +642,6 @@ codes, rgb and rgba strings.
 :param colorStr: string representing the color list
 
 :return: list of parsed colors
-
-.. versionadded:: 2.5
 %End
 
     static QMimeData *colorToMimeData( const QColor &color ) /Factory/;
@@ -670,8 +652,6 @@ mime data's text with the color's hex code.
 :param color: color to encode as mime data
 
 .. seealso:: :py:func:`colorFromMimeData`
-
-.. versionadded:: 2.5
 %End
 
     static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha /Out/ );
@@ -682,8 +662,6 @@ Attempts to parse mime data as a color
 
 :return: - valid color if mimedata could be interpreted as a color, otherwise an invalid color
          - hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing an explicit alpha value
-
-.. versionadded:: 2.5
 %End
 
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
@@ -693,8 +671,6 @@ Attempts to parse mime data as a list of named colors
 :param data: mime data to parse
 
 :return: list of parsed colors
-
-.. versionadded:: 2.5
 %End
 
     static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) /Factory/;
@@ -705,8 +681,6 @@ Creates mime data from a list of named colors
 :param allFormats: set to ``True`` to include additional mime formats, include text/plain and application/x-color
 
 :return: mime data containing encoded colors
-
-.. versionadded:: 2.5
 %End
 
     static bool saveColorsToGpl( QFile &file, const QString &paletteName, const QgsNamedColorList &colors );
@@ -744,8 +718,6 @@ codes, rgb and rgba strings.
 :param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
-
-.. versionadded:: 2.3
 %End
 
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
@@ -758,8 +730,6 @@ codes, rgb and rgba, hsl and hsla strings.
 :param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
-
-.. versionadded:: 2.3
 %End
 
     static void multiplyImageOpacity( QImage *image, qreal opacity );
@@ -775,8 +745,6 @@ Blurs an image in place, e.g. creating Qt-independent drop shadows
     static void premultiplyColor( QColor &rgb, int alpha );
 %Docstring
 Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
-
-.. versionadded:: 2.3
 %End
 
     static bool condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline );
@@ -888,8 +856,6 @@ Returns a new valid expression instance for given field or expression string.
 If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
 If the string is empty, returns ``None``.
 This is useful when accepting input which could be either a non-quoted field name or expression.
-
-.. versionadded:: 2.2
 %End
 
     static QString fieldOrExpressionFromExpression( QgsExpression *expression );
@@ -898,8 +864,6 @@ Returns a field name if the whole expression is just a name of the field .
 Returns full expression string if the expression is more complex than just one field.
 Using just expression->:py:func:`~QgsSymbolLayerUtils.expression` method may return quoted field name, but that is not
 wanted for saving (due to backward compatibility) or display in GUI.
-
-.. versionadded:: 2.2
 %End
 
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
@@ -907,46 +871,34 @@ wanted for saving (due to backward compatibility) or display in GUI.
 Computes a sequence of about 'classes' equally spaced round values
 which cover the range of values from 'minimum' to 'maximum'.
 The values are chosen so that they are 1, 2 or 5 times a power of 10.
-
-.. versionadded:: 2.10
 %End
 
     static double rescaleUom( double size, Qgis::RenderUnit unit, const QVariantMap &props );
 %Docstring
 Rescales the given size based on the uomScale found in the props, if any is found, otherwise
 returns the value un-modified
-
-.. versionadded:: 3.0
 %End
 
     static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescalePointUom/;
 %Docstring
 Rescales the given point based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
-
-.. versionadded:: 3.0
 %End
 
     static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescaleArrayUom/;
 %Docstring
 Rescales the given array based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
-
-.. versionadded:: 3.0
 %End
 
     static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props );
 %Docstring
 Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
-
-.. versionadded:: 3.0
 %End
 
     static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props );
 %Docstring
 Merges the local scale limits, if any, with the ones already in the map, if any
-
-.. versionadded:: 3.0
 %End
 
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
@@ -956,15 +908,11 @@ Merges the local scale limits, if any, with the ones already in the map, if any
 Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
 a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
 that cannot do SVG at all
-
-.. versionadded:: 3.0
 %End
 
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 %Docstring
 Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
-
-.. versionadded:: 3.0
 %End
 
  static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );

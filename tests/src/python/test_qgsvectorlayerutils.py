@@ -880,6 +880,19 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         fields.append(QgsField('org', QVariant.String))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'station')
 
+        # Particular case for WFS layers analyzed with the GMLAS driver.
+        # We prioritize a field ending with _name, but which is not gml_name
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.String))
+        fields.append(QgsField('gml_name', QVariant.String))
+        fields.append(QgsField('other_name', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'other_name')
+
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.String))
+        fields.append(QgsField('gml_name', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'id')
+
 
 if __name__ == '__main__':
     unittest.main()

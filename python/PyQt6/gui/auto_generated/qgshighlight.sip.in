@@ -94,8 +94,6 @@ Returns the fill color
 %Docstring
 Fill color for the highlight.
 Will be used for polygons and points.
-
-.. versionadded:: 2.4
 %End
 
     int width( ) const;
@@ -124,15 +122,11 @@ Returns the buffer
     void setBuffer( double buffer );
 %Docstring
 Set line / stroke buffer in millimeters.
-
-.. versionadded:: 2.4
 %End
 
     void setMinWidth( double width );
 %Docstring
 Set minimum line / stroke width in millimeters.
-
-.. versionadded:: 2.4
 %End
 
     QgsMapLayer *layer() const;

@@ -52,8 +52,6 @@ Call to end the iteration. This frees any resources used by the iterator.
     CompileStatus compileStatus() const;
 %Docstring
 Returns the status of expression compilation for filter expression requests.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool isValid() const;
@@ -64,8 +62,6 @@ If an iterator is invalid, either give up or try to send the request again (pref
 after a timeout to give the system some time to stay responsive).
 
 If you want to check if the iterator successfully completed, better use :py:func:`QgsFeatureIterator.isClosed()`.
-
-.. versionadded:: 3.0
 %End
 
     bool compileFailed() const;
@@ -128,8 +124,6 @@ If ``feature`` has no geometry or ``transform`` is invalid then calling this met
 has no effect and will be shortcut.
 Iterators should call this method before returning features to ensure that any
 :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -141,8 +135,6 @@ the requested :py:func:`~QgsAbstractFeatureIterator.filterRect` transformed to t
 Iterators should call this method and use the returned rectangle for filtering
 features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
 Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from the destination CRS.
-
-.. versionadded:: 3.0
 %End
 
     RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const throw( QgsCsException );
@@ -281,8 +273,6 @@ An invalid iterator was probably introduced by a failed attempt to acquire a con
 or is a default constructed iterator.
 
 .. seealso:: :py:func:`isClosed`
-
-.. versionadded:: 3.0
 %End
 
     bool isClosed() const;
@@ -294,8 +284,6 @@ find out whether the iterator is still valid or closed already
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
 %Docstring
 Returns the status of expression compilation for filter expression requests.
-
-.. versionadded:: 2.16
 %End
 
     bool compileFailed() const;

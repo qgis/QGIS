@@ -20,8 +20,6 @@ Statistics are calculated by calling :py:func:`~calculate` and passing a list of
 individual statistics can then be retrieved using the associated methods. Note that not all statistics
 are calculated by default. Statistics which require slower computations are only calculated by
 specifying the statistic in the constructor or via :py:func:`~setStatistics`.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -196,8 +194,6 @@ Returns the maximum length of strings.
     double meanLength() const;
 %Docstring
 Returns the mean length of strings.
-
-.. versionadded:: 3.0
 %End
 
     QString minority() const;

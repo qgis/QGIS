@@ -15,8 +15,6 @@ class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring(signature="appended")
 Wraps a checkbox edit widget for searching.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

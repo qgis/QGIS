@@ -16,8 +16,6 @@ class QgsAbstractPropertyCollection
 {
 %Docstring(signature="appended")
 Abstract base class for :py:class:`QgsPropertyCollection` like objects.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -368,8 +366,6 @@ Examples of such enums are :
 .. seealso:: :py:func:`QgsPalLayerSettings.Property`
 
 .. seealso:: :py:func:`QgsWidgetWrapper.Property`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -464,8 +460,6 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 %Docstring(signature="appended")
 An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
 priority over earlier collections.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

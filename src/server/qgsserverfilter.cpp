@@ -56,6 +56,11 @@ bool QgsServerFilter::onRequestReady()
   return true;
 }
 
+bool QgsServerFilter::onProjectReady()
+{
+  return true;
+}
+
 bool QgsServerFilter::onResponseComplete()
 {
   Q_NOWARN_DEPRECATED_PUSH
@@ -71,5 +76,3 @@ bool QgsServerFilter::onSendResponse()
   Q_NOWARN_DEPRECATED_POP
   return true;
 }
-
-

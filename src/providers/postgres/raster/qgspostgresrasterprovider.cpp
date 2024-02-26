@@ -304,7 +304,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     bool ok;
-    QString val { result.PQgetvalue( 0, 0 ) };
+    QString val { result.PQntuples() > 0 ? result.PQgetvalue( 0, 0 ) : QString() };
 
     if ( val.isNull() && mUseSrcNoDataValue[bandNo - 1] )
     {
@@ -402,6 +402,9 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
   }
   else // Fetch block
   {
+    const Qgis::DataType dataType { mDataTypes[ bandNo - 1 ] };
+    const GDALDataType gdalDataType = QgsGdalUtils::gdalDataTypeFromQgisDataType( dataType );
+    const double noDataValue { mSrcNoDataValue[ bandNo - 1 ] };
 
     const double xRes = viewExtent.width() / width;
     const double yRes = viewExtent.height() / height;
@@ -456,9 +459,46 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     if ( tileResponse.tiles.isEmpty() )
     {
       // rasters can be sparse by omitting some of the blocks/tiles
+      // so we should not log an error here but make sure
+      // the result buffer is filled with nodata
+      gdal::dataset_unique_ptr dstDS { QgsGdalUtils::createSingleBandMemoryDataset(
+                                         gdalDataType, viewExtent, width, height, mCrs ) };
+      if ( ! dstDS )
+      {
+        const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+        QgsMessageLog::logMessage( tr( "Unable to create destination raster for tiles from %1: %2" )
+                                   .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+        return false;
+      }
+
+      GDALSetRasterNoDataValue( GDALGetRasterBand( dstDS.get(), 1 ), noDataValue );
+      // fill with nodata
+      GDALFillRaster( GDALGetRasterBand( dstDS.get(), 1 ), noDataValue, 0 );
+
+      // copy to the result buffer
+      CPLErrorReset();
+      CPLErr err = GDALRasterIO( GDALGetRasterBand( dstDS.get(), 1 ),
+                                 GF_Read,
+                                 0,
+                                 0,
+                                 width,
+                                 height,
+                                 data,
+                                 width,
+                                 height,
+                                 gdalDataType,
+                                 0,
+                                 0 );
+      if ( err != CE_None )
+      {
+        const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+        QgsMessageLog::logMessage( tr( "Unable to write raster to block from %1: %2" )
+                                   .arg( mQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+        return false;
+      }
+
       return true;
     }
-
 
     // Finally merge the tiles
     // We must have at least one tile at this point (we checked for that before)
@@ -468,8 +508,6 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     // Prepare tmp output raster
     const int tmpWidth = static_cast<int>( std::round( tilesExtent.width() / tileResponse.tiles.first().scaleX ) );
     const int tmpHeight = static_cast<int>( std::round( tilesExtent.height() / std::fabs( tileResponse.tiles.first().scaleY ) ) );
-
-    GDALDataType gdalDataType { static_cast<GDALDataType>( sourceDataType( bandNo ) ) };
 
     //qDebug() << "Creating output raster: " << tilesExtent.toString() << tmpWidth << tmpHeight;
 
@@ -484,8 +522,11 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       }
     }
 
+    GDALSetRasterNoDataValue( GDALGetRasterBand( tmpDS.get(), 1 ), noDataValue );
+
     // Write tiles to the temporary raster
     CPLErrorReset();
+
     for ( auto &tile : std::as_const( tileResponse.tiles ) )
     {
       // Offset in px from the base raster
@@ -515,6 +556,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       }
     }
 
+
 #if 0
     // Debug output raster content
     double pdfMin;
@@ -535,6 +577,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
                                  .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
+
+    GDALSetRasterNoDataValue( GDALGetRasterBand( dstDS.get(), 1 ), noDataValue );
 
     // Resample the raster to the final bounds and resolution
     if ( ! QgsGdalUtils::resampleSingleBandRaster( tmpDS.get(), dstDS.get(), GDALResampleAlg::GRA_NearestNeighbour, nullptr ) )

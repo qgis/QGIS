@@ -39,7 +39,6 @@ class QgsStyleEntityVisitorInterface;
  *
  * QgsLayoutManager retains ownership of all the layouts contained
  * in the manager.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutManager : public QObject
 {

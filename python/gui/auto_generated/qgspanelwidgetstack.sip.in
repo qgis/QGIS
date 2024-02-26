@@ -86,8 +86,6 @@ the widget will be deleted.
     QgsPanelWidget *currentPanel();
 %Docstring
 Returns the panel currently shown in the stack.
-
-.. versionadded:: 3.0
 %End
 
     virtual QSize sizeHint() const;
@@ -112,8 +110,6 @@ Accepts all panel widgets open in the stack in turn until only the :py:func:`~Qg
 remains.
 
 .. seealso:: :py:func:`acceptCurrentPanel`
-
-.. versionadded:: 3.0
 %End
 
     void showPanel( QgsPanelWidget *panel );

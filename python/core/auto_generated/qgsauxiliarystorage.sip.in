@@ -34,8 +34,6 @@ it's an editable join to the original vector layer with some
 synchronisation mechanisms activated such as "Upsert On Edit" or "Delete
 Cascade". Thus, auxiliary fields are editable even if the
 source layer is not and edition of a joined field is also possible.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -247,8 +245,6 @@ class QgsAuxiliaryStorage
 
 
 Class providing some utility methods to manage auxiliary storage.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

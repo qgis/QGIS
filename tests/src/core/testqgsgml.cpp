@@ -87,6 +87,7 @@ class TestQgsGML : public QObject
     void testUnknownEncoding_data();
     void testUnknownEncoding();
     void testUnhandledEncoding();
+    void testXPath();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1375,6 +1376,89 @@ void TestQgsGML::testUnhandledEncoding()
   QCOMPARE( gmlParser.getFeatures( data.toUtf8(), &wkbType ), 0 );
   QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 0 );
+}
+
+void TestQgsGML::testXPath()
+{
+  QString data = QStringLiteral(
+                   "<?xml version='1.0' encoding='utf-8'?>"
+                   "<myns:FeatureCollection "
+                   "xmlns:myns='http://myns' "
+                   "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+                   "xmlns:gml='http://www.opengis.net/gml'>"
+                   "<gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>"
+                   "<gml:featureMember>"
+                   "<myns:mytypename fid='mytypename.1' myns:my_attr='my_value'>"
+                   "<myns:strfield>foo</myns:strfield>"
+                   "<myns:nested>"
+                   "<myns:strfield2 attr='attr_val'>bar</myns:strfield2>"
+                   "<myns:strfield3>baz</myns:strfield3>"
+                   "</myns:nested>"
+                   "<myns:complex foo='bar'>"
+                   "<myns:l1>"
+                   "<myns:a>x</myns:a>"
+                   "<myns:b k='v'>"
+                   "y</myns:b>"
+                   "<c><k1>1234567890123</k1><k2>12</k2><k3>01</k3><k4>1.25</k4><k5>12345678901234567890123456789</k5></c>"
+                   "<myns:d>a<i>b</i></myns:d>"
+                   "<myns:d><i>a</i>b</myns:d>"
+                   "<myns:d>a<i>b</i>c</myns:d>"
+                   "<myns:d>x</myns:d>"
+                   "</myns:l1>"
+                   "</myns:complex>"
+                   "<myns:complex2/>"
+                   "<myns:complex_repeated>foo</myns:complex_repeated>"
+                   "<myns:complex_repeated>bar</myns:complex_repeated>"
+                   "<myns:mygeom>"
+                   "<gml:Point srsName='http://www.opengis.net/gml/srs/epsg.xml#27700'>"
+                   "<gml:coordinates decimal='.' cs=',' ts=' '>10,20</gml:coordinates>"
+                   "</gml:Point>"
+                   "</myns:mygeom>"
+                   "</myns:mytypename>"
+                   "</gml:featureMember>"
+                   "</myns:FeatureCollection>" );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "fid" ), QVariant::String, QStringLiteral( "fid" ) ) );
+  fields.append( QgsField( QStringLiteral( "my_attr" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "nested_strfield2" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "nested_strfield2_attr" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "nested_strfield3" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "complex" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "complex2" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "complex_repeated" ), QVariant::String, QStringLiteral( "string" ) ) );
+
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+
+  QMap<QString, QPair<QString, bool>> mapFieldNameToXPathAndIsNestedContent;
+  QMap<QString, QString> mapNamespacePrefixToURI;
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "fid" )] = QPair<QString, bool>( QStringLiteral( "@fid" ), false );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "my_attr" )] = QPair<QString, bool>( QStringLiteral( "@myns:my_attr" ), false );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "strfield" )] = QPair<QString, bool>( QStringLiteral( "myns:strfield" ), false );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "nested_strfield2" )] = QPair<QString, bool>( QStringLiteral( "myns:nested/myns:strfield2" ), false );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "nested_strfield2_attr" )] = QPair<QString, bool>( QStringLiteral( "myns:nested/myns:strfield2/@attr" ), false );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "nested_strfield3" )] = QPair<QString, bool>( QStringLiteral( "myns:nested/myns:strfield3" ), false );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "complex" )] = QPair<QString, bool>( QStringLiteral( "myns:complex" ), true );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "complex2" )] = QPair<QString, bool>( QStringLiteral( "myns:complex2" ), true );
+  mapFieldNameToXPathAndIsNestedContent[QStringLiteral( "complex_repeated" )] = QPair<QString, bool>( QStringLiteral( "myns:complex_repeated" ), true );
+  mapNamespacePrefixToURI[QStringLiteral( "myns" )] = QStringLiteral( "http://myns" );
+  gmlParser.setFieldsXPath( mapFieldNameToXPathAndIsNestedContent, mapNamespacePrefixToURI );
+
+  QCOMPARE( gmlParser.processData( data.toUtf8(), true ), true );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  auto &f = *( features[ 0 ].first );
+  QCOMPARE( f.attributes().size(), 9 );
+  QCOMPARE( f.attribute( QStringLiteral( "fid" ) ).toString(), QStringLiteral( "mytypename.1" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "my_attr" ) ).toString(), QStringLiteral( "my_value" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "strfield" ) ).toString(), QStringLiteral( "foo" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "nested_strfield2" ) ).toString(), QStringLiteral( "bar" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "nested_strfield2_attr" ) ).toString(), QStringLiteral( "attr_val" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "nested_strfield3" ) ).toString(), QStringLiteral( "baz" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "complex" ) ).toString(), QStringLiteral( "{\"@foo\":\"bar\",\"myns:l1\":{\"c\":{\"k1\":1234567890123,\"k2\":12,\"k3\":\"01\",\"k4\":1.25,\"k5\":\"12345678901234567890123456789\"},\"myns:a\":\"x\",\"myns:b\":{\"@k\":\"v\",\"_text\":\"y\"},\"myns:d\":[{\"_text\":\"a\",\"i\":\"b\"},{\"_text\":\"b\",\"i\":\"a\"},{\"_text\":[\"a\",\"c\"],\"i\":\"b\"},\"x\"]}}" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "complex2" ) ).toString(), QStringLiteral( "{}" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "complex_repeated" ) ).toString(), QStringLiteral( "[\"foo\",\"bar\"]" ) );
 }
 
 QGSTEST_MAIN( TestQgsGML )

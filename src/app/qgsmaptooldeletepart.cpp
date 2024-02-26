@@ -96,7 +96,12 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
   }
-
+  else if ( vlayer->selectedFeatureCount() > 0 )
+  {
+    emit messageEmitted(
+      tr( "If there are selected features, the delete parts tool only applies to those. Clear the selection and try again." ),
+      Qgis::MessageLevel::Warning );
+  }
 }
 
 void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -112,12 +117,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   if ( mPressedPartNum == -1 )
-  {
-    emit messageEmitted(
-      tr( "If there are selected features, the delete parts tool only applies to those. Clear the selection and try again." ),
-      Qgis::MessageLevel::Warning );
     return;
-  }
 
   QgsFeature f;
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
@@ -203,6 +203,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       if ( !g.isMultipart() )
       {
         fid = f.id();
+        partNum = 0;
         return geomPart;
       }
       QgsMultiPolygonXY mpolygon = g.asMultiPolygon();

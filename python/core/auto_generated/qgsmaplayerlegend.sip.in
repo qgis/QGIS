@@ -17,8 +17,6 @@ class QgsMapLayerLegend : QObject
 %Docstring(signature="appended")
 The :py:class:`QgsMapLayerLegend` class is abstract interface for implementations
 of legends for one map layer.
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -87,8 +85,6 @@ class QgsMapLayerLegendUtils
 {
 %Docstring(signature="appended")
 Miscellaneous utility functions for handling of map layer legend
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -233,8 +229,6 @@ class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
 %Docstring(signature="appended")
 Default legend implementation for vector layers
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -321,8 +315,6 @@ class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 {
 %Docstring(signature="appended")
 Default legend implementation for raster layers
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode

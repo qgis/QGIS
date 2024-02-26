@@ -24,8 +24,6 @@ for resize grips and other platform specific status bar tweaks.
 
 Instead of adding child widgets and showing messages directly in the window's status bar,
 these widgets (and messages) should instead be added into the embedded :py:class:`QgsStatusBar`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

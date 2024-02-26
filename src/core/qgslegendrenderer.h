@@ -41,7 +41,6 @@ class QgsRenderContext;
  *
  * All spacing and sizes are in millimeters.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendRenderer
 {

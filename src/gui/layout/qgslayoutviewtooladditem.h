@@ -25,7 +25,6 @@
 /**
  * \ingroup gui
  * \brief Layout view tool for adding items to a layout.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 {

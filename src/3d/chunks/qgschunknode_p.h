@@ -117,7 +117,6 @@ struct QgsChunkNodeId
  * in several states (e.g. skeleton or loaded state) and they keep being loaded and unloaded as necessary
  * by the 3D rendering.
  *
- * \since QGIS 3.0
  */
 class QgsChunkNode
 {

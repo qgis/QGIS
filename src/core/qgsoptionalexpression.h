@@ -31,7 +31,6 @@
  * or disabled but when disabled it shouldn't lose it's information for the case
  * it gets re-enabled later on and a user shouldn't be force to redo the configuration.
  *
- * \since QGIS 2.18
  */
 
 
@@ -64,14 +63,12 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      * The caller is responsible to pass an empty QDomElement and to append it to
      * a parent element.
      *
-     * \since QGIS 2.18
      */
     void writeXml( QDomElement &element ) const;
 
     /**
      * Read the optional expression from the provided QDomElement.
      *
-     * \since QGIS 2.18
      */
     void readXml( const QDomElement &element );
 };

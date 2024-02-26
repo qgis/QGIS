@@ -596,7 +596,32 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     myResultImage = myResultImage.convertToFormat( QImage::Format_ARGB32 );
     expectedImage = expectedImage.convertToFormat( QImage::Format_ARGB32 );
   }
+  if ( expectedImage.format() != QImage::Format_RGB32
+       && expectedImage.format() != QImage::Format_ARGB32
+       && expectedImage.format() != QImage::Format_ARGB32_Premultiplied )
+  {
+    mReport += QLatin1String( "<tr><td colspan=3>" );
+    mReport += QStringLiteral( "<font color=red>Expected image for %1 is not a compatible format (%2). Must be 32 bit RGB format.</font>" ).arg( testName, qgsEnumValueToKey( expectedImage.format() ) );
+    mReport += QLatin1String( "</td></tr>" );
+    mReport += myImagesString;
 
+    mMarkdownReport += QStringLiteral( "Failed because expected image has an incompatible format - %1 (32 bit format is expected)\n" ).arg( qgsEnumValueToKey( expectedImage.format() ) );
+    performPostTestActions( flags );
+    return mResult;
+  }
+  if ( myResultImage.format() != QImage::Format_RGB32
+       && myResultImage.format() != QImage::Format_ARGB32
+       && myResultImage.format() != QImage::Format_ARGB32_Premultiplied )
+  {
+    mReport += QLatin1String( "<tr><td colspan=3>" );
+    mReport += QStringLiteral( "<font color=red>Rendered image for %1 is not a compatible format (%2). Must be 32 bit RGB format.</font>" ).arg( testName, qgsEnumValueToKey( myResultImage.format() ) );
+    mReport += QLatin1String( "</td></tr>" );
+    mReport += myImagesString;
+
+    mMarkdownReport += QStringLiteral( "Failed because rendered image has an incompatible format - %1 (32 bit format is expected)\n" ).arg( qgsEnumValueToKey( myResultImage.format() ) );
+    performPostTestActions( flags );
+    return mResult;
+  }
 
   //
   // Now iterate through them counting how many

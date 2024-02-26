@@ -16,8 +16,6 @@ A button for creating and modifying :py:class:`QgsSymbol` settings.
 
 The button shows a preview icon for the current symbol, and will open a detailed symbol editor dialog (or
 panel widget) when clicked.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

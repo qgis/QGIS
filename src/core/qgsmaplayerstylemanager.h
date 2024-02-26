@@ -52,7 +52,6 @@ class QgsMapLayer;
  * The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
  * style followed by restoration of the original style (for example, when rendering a map with a different than current style).
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 {
@@ -82,7 +81,6 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     /**
      * Gets available styles for the associated map layer.
      * \returns A map of map layer style by style name
-     * \since QGIS 3.0
      */
     QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
 
@@ -134,7 +132,6 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     /**
      * Returns TRUE if this is the default style
      *
-     * \since QGIS 3.0
      */
     static bool isDefault( const QString &styleName );
 

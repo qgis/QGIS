@@ -122,7 +122,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Clear capture curve.
      *
-     * \since QGIS 3.0
      */
     void clearCurve( );
 
@@ -136,7 +135,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Returns a list of matches for each point on the captureCurve.
      *
-     * \since QGIS 3.0
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
@@ -176,7 +174,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * \returns a point with ZM support if necessary
      *
-     * \since QGIS 3.0
      */
     QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 
@@ -188,7 +185,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * \returns a point with ZM support if necessary
      *
-     * \since QGIS 3.0
      */
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 
@@ -255,7 +251,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  0 in case of success
      *  1 if not applicable (CRS mismatch / invalid layer)
      *  2 in case of failure
-     * \since QGIS 2.14
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
@@ -269,7 +264,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Variant to supply more information in the case of snapping
      * \param mapPoint The vertex to add in map coordinates
      * \param match Data about the snapping match. Can be an invalid match, if point not snapped.
-     * \since QGIS 2.14
      */
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 

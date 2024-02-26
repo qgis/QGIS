@@ -103,8 +103,6 @@ Returns the selected CRS for the new layer.
 Sets the ``crs`` value for the new layer in the dialog.
 
 .. seealso:: :py:func:`crs`
-
-.. versionadded:: 3.0
 %End
 
   public slots:

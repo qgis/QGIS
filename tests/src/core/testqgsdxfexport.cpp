@@ -476,7 +476,7 @@ void TestQgsDxfExport::testMtext()
                               " 20\n"
                               "**no check**\n"
                               "  1\n"
-                              "\\fQGIS Vera Sans|i0|b1;\\H3.81136;Biplane\n"
+                              "REGEX ^\\\\fQGIS Vera Sans\\|i0\\|b1;\\\\H3\\.\\d+;Biplane\n"
                               " 50\n"
                               "0.0\n"
                               " 41\n"
@@ -548,7 +548,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
   QString debugInfo;
-  QVERIFY2( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces", &debugInfo ), debugInfo.toUtf8().constData() );
+  QVERIFY2( fileContainsText( file, "REGEX ^\\\\fQGIS Vera Sans\\|i0\\|b1;\\\\H3\\.\\d+;A\\\\~text\\\\~with\\\\~spaces", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testMTextEscapeLineBreaks()

@@ -19,8 +19,6 @@ class QgsLayoutViewTool : QObject
 Abstract base class for all layout view tools.
 Layout view tools are user interactive tools for manipulating and adding items
 to :py:class:`QgsLayoutView` widgets.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

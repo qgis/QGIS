@@ -18,8 +18,6 @@ Utility class for calculating aggregates for a field (or expression) over the fe
 from a vector layer. It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
 directly using this class, as the :py:class:`QgsVectorLayer` method can handle delegating aggregate calculation
 to a data provider for remote calculation.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

@@ -27,7 +27,6 @@ class QgsInvertedPolygonRenderer;
  * \ingroup gui
  * \brief A widget used represent options of a QgsInvertedPolygonRenderer
  *
- * \since QGIS 2.4
  */
 class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {

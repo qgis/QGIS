@@ -1239,9 +1239,37 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
       break;
   }
 
-  const QString candidateName = bestCandidateName.isEmpty() ? bestCandidateNameWithAntiCandidate : bestCandidateName;
+  QString candidateName = bestCandidateName.isEmpty() ? bestCandidateNameWithAntiCandidate : bestCandidateName;
   if ( !candidateName.isEmpty() )
   {
+    // Special case for layers got from WFS using the OGR GMLAS field parsing logic.
+    // Such layers contain a "id" field (the gml:id attribute of the object),
+    // as well as a gml_name (a <gml:name>) element. However this gml:name is often
+    // absent, partly because it is a property of the base class in GML schemas, and
+    // that a lot of readers are not able to deduce its potential presence.
+    // So try to look at another field whose name would end with _name
+    // And fallback to using the "id" field that should always be filled.
+    if ( candidateName == QLatin1String( "gml_name" ) &&
+         fields.indexOf( QStringLiteral( "id" ) ) >= 0 )
+    {
+      candidateName.clear();
+      // Try to find a field ending with "_name", which is not "gml_name"
+      for ( const QgsField &field : std::as_const( fields ) )
+      {
+        const QString fldName = field.name();
+        if ( fldName != QLatin1String( "gml_name" ) && fldName.endsWith( QLatin1String( "_name" ) ) )
+        {
+          candidateName = fldName;
+          break;
+        }
+      }
+      if ( candidateName.isEmpty() )
+      {
+        // Fallback to "id"
+        candidateName = QStringLiteral( "id" );
+      }
+    }
+
     if ( foundFriendly )
       *foundFriendly = true;
     return candidateName;

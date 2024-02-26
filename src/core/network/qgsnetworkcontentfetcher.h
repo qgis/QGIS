@@ -34,7 +34,6 @@ class QTextCodec;
  * and converting the content to standard formats. Url redirects are automatically
  * handled.
  * \see QgsNetworkContentFetcherTask
- * \since QGIS 2.5
 */
 class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 {

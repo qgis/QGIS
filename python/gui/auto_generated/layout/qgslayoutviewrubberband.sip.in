@@ -14,8 +14,6 @@ class QgsLayoutViewRubberBand : QObject
 %Docstring(signature="appended")
 :py:class:`QgsLayoutViewRubberBand` is an abstract base class for temporary rubber band items
 in various shapes, for use within :py:class:`QgsLayoutView` widgets.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -137,8 +135,6 @@ class QgsLayoutViewRectangularRubberBand : QgsLayoutViewRubberBand
 {
 %Docstring(signature="appended")
 :py:class:`QgsLayoutViewRectangularRubberBand` is rectangular rubber band for use within :py:class:`QgsLayoutView` widgets.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -168,8 +164,6 @@ class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 {
 %Docstring(signature="appended")
 :py:class:`QgsLayoutViewEllipseRubberBand` is elliptical rubber band for use within :py:class:`QgsLayoutView` widgets.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -199,8 +193,6 @@ class QgsLayoutViewTriangleRubberBand : QgsLayoutViewRubberBand
 {
 %Docstring(signature="appended")
 :py:class:`QgsLayoutViewTriangleRubberBand` is triangular rubber band for use within :py:class:`QgsLayoutView` widgets.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

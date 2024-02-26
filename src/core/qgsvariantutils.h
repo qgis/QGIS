@@ -47,7 +47,7 @@ class CORE_EXPORT QgsVariantUtils
      *
      * \since QGIS 3.28
      */
-    static bool isNull( const QVariant &variant );
+    static bool isNull( const QVariant &variant, bool silenceNullWarnings SIP_PYARGREMOVE = false );
 
     /**
      * Converts a QVariant::Type to a QMetaType::Type.

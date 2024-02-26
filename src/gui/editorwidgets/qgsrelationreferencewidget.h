@@ -172,21 +172,18 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     /**
      * Sets the widget to display in an indeterminate "mixed value" state.
-     * \since QGIS 2.16
      */
     void showIndeterminateState();
 
     /**
      * Determines if a button for adding new features should be shown.
      *
-     * \since QGIS 2.16
      */
     bool allowAddFeatures() const;
 
     /**
      * Determines if a button for adding new features should be shown.
      *
-     * \since QGIS 2.16
      */
     void setAllowAddFeatures( bool allowAddFeatures );
 

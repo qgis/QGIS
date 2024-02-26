@@ -60,8 +60,6 @@ Constructor for TabData
     QgsEditFormConfig( const QgsEditFormConfig &o );
 %Docstring
 Copy constructor
-
-.. versionadded:: 3.0
 %End
     ~QgsEditFormConfig();
 

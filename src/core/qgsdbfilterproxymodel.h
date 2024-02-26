@@ -29,7 +29,6 @@
  * \brief A class that implements a custom filter and can be used
  * as a proxy for QgsDbTableModel
  * \deprecated since QGIS 3.24
- * \since QGIS 3.0 QSortFilterProxyModel with native recursive filtering can be used instead
 */
 class CORE_DEPRECATED_EXPORT QgsDatabaseFilterProxyModel : public QSortFilterProxyModel SIP_DEPRECATED
 {

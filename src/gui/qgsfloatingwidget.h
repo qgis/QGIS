@@ -28,7 +28,6 @@ class QgsFloatingWidgetEventFilter;
  * \brief A QWidget subclass for creating widgets which float outside of the normal Qt layout
  * system. Floating widgets use an "anchor widget" to determine how they are anchored
  * within their parent widget.
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsFloatingWidget: public QWidget

@@ -37,7 +37,6 @@ class QgsReadWriteContext;
  * \ingroup core
  * \class QgsLayoutGuide
  * \brief Contains the configuration for a single snap guide used by a layout.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutGuide : public QObject
 {
@@ -163,7 +162,6 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
  * \ingroup core
  * \class QgsLayoutGuideCollection
  * \brief Stores and manages the snap guides used by a layout.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public QgsLayoutSerializableObject
 {
@@ -319,7 +317,6 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
  * \ingroup core
  * \class QgsLayoutGuideProxyModel
  * \brief Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
 {

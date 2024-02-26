@@ -15,8 +15,6 @@ class QgsGeometryUtils
 {
 %Docstring(signature="appended")
 Contains various geometry utility functions.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -51,8 +49,6 @@ Returns the distance along a geometry from its first vertex to the specified ver
 :param id: vertex id to find distance to
 
 :return: distance to vertex (following geometry)
-
-.. versionadded:: 2.16
 %End
 
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
@@ -73,8 +69,6 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 .. note::
 
    if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
-
-.. versionadded:: 3.0
 %End
 
     static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
@@ -249,8 +243,6 @@ Calculates the direction angle of a circle tangent (clockwise from north in radi
                                bool hasZ = false, bool hasM = false );
 %Docstring
 Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
-
-.. versionadded:: 3.0
 %End
 
     static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
@@ -277,8 +269,6 @@ angular deviation (in radians) allowed when testing for regular point spacing.
 %Docstring
 For line defined by points pt1 and pt3, find out on which side of the line is point pt2.
 Returns -1 if pt2 on the left side, 1 if pt2 is on the right side or 0 if pt2 lies on the line.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -315,8 +305,6 @@ Example
        # pr is a 3D point: 'PointM (3 4 1)'
        pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
        # pr is a 3D point: 'PointZM (3 4 1 1)'
-
-.. versionadded:: 3.0
 %End
 
     static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction ) /HoldGIL/;
@@ -331,8 +319,6 @@ use a ``fraction`` < 0 or > 1, in which case the returned point
 is extrapolated from the supplied line.
 
 .. seealso:: :py:func:`interpolatePointOnLineByValue`
-
-.. versionadded:: 3.0.2
 %End
 
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction ) /HoldGIL/;
@@ -350,8 +336,6 @@ Any Z or M values present in the input points will also be interpolated
 and present in the returned point.
 
 .. seealso:: :py:func:`interpolatePointOnLineByValue`
-
-.. versionadded:: 3.0.2
 %End
 
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value ) /HoldGIL/;
@@ -365,8 +349,6 @@ point will be linearly interpolated to match position corresponding to
 the target ``value``.
 
 .. seealso:: :py:func:`interpolatePointOnLine`
-
-.. versionadded:: 3.0.2
 %End
 
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
@@ -377,8 +359,6 @@ Returns the gradient of a line defined by points ``pt1`` and ``pt2``.
 :param pt2: second point.
 
 :return: The gradient of this linear entity, or infinity if vertical
-
-.. versionadded:: 3.0
 %End
 
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
@@ -388,12 +368,6 @@ Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defi
 
 :param pt1: first point.
 :param pt2: second point.
-
-:return: - a: Output parameter, a coefficient of the equation.
-         - b: Output parameter, b coefficient of the equation.
-         - c: Output parameter, c coefficient of the equation.
-
-.. versionadded:: 3.0
 %End
 
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) /HoldGIL/;
@@ -424,8 +398,6 @@ already contains a Z value.
    This method does not copy the z value of the coordinate from the
    points whose z value is closest to the original x/y point, but only the first one found.
 
-
-.. versionadded:: 3.0
 
 .. deprecated:: QGIS 3.20
    use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead
@@ -686,8 +658,6 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
  static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) /Deprecated,HoldGIL/;
 %Docstring
 Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
-
-.. versionadded:: 3.0
 
 .. deprecated::
    Use :py:class:`QgsGeometryUtilsBase` methods instead.

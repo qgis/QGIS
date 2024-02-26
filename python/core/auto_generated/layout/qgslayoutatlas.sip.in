@@ -19,8 +19,6 @@ directly with :py:class:`QgsLayoutExporter` to automatically output all pages fr
 For :py:class:`QgsPrintLayout` layouts, it is not necessary to manually construct a
 :py:class:`QgsLayoutAtlas` object. Instead, the atlas attached to the print layout
 should be used. This can be retrieved by calling :py:func:`QgsPrintLayout.atlas()`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

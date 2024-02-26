@@ -32,7 +32,6 @@ struct QgsChunkNodeId;
  *
  * The origin (tile [0,0]) is in bottom-left corner.
  * \note Not available in Python bindings
- * \since QGIS 3.0
  */
 class _3D_EXPORT QgsTilingScheme
 {

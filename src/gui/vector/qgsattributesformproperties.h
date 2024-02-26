@@ -422,6 +422,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitFunction;
     QString mInitFilePath;
     QString mInitCode;
+    int mBlockUpdates = 0;
 
 };
 

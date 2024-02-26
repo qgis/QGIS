@@ -85,8 +85,6 @@ Returns the matching data from the most recently snapped point.
 
    This method returns the most recent snap match. It must
    follow a call to :py:func:`~QgsMapMouseEvent.snapPoint` in order to have a recent snap result available.
-
-.. versionadded:: 2.14
 %End
 
     void setMapPoint( const QgsPointXY &point );

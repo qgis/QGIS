@@ -84,7 +84,6 @@ class CORE_EXPORT QgsLabelBlockingRegion
  * To properly render the map on such systems, the map settings device pixel
  * ratio shall be set accordingly.
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 {
@@ -179,14 +178,12 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     /**
      * Returns the rotation of the resulting map image, in degrees clockwise.
      * \see setRotation()
-     * \since QGIS 2.8
      */
     double rotation() const;
 
     /**
      * Sets the \a rotation of the resulting map image, in degrees clockwise.
      * \see rotation()
-     * \since QGIS 2.8
      */
     void setRotation( double rotation );
 
@@ -229,14 +226,12 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \param factor the factor of magnification
      * \param center optional point to re-center the map
      * \see magnificationFactor()
-     * \since QGIS 2.16
      */
     void setMagnificationFactor( double factor, const QgsPointXY *center = nullptr );
 
     /**
      * Returns the magnification factor.
      * \see setMagnificationFactor()
-     * \since QGIS 2.16
      */
     double magnificationFactor() const;
 
@@ -282,7 +277,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns the map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
      *
      * \see setLayerStyleOverrides()
-     * \since QGIS 2.8
      */
     QMap<QString, QString> layerStyleOverrides() const;
 
@@ -290,7 +284,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the map of map layer style \a overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
      *
      * \see layerStyleOverrides()
-     * \since QGIS 2.8
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
@@ -298,7 +291,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns custom rendering flags. Layers might honour these to alter their rendering.
      * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
-     * \since QGIS 2.16
      * \deprecated use \see customRenderingFlags().
      */
     Q_DECL_DEPRECATED QString customRenderFlags() const { return mCustomRenderFlags; }
@@ -307,7 +299,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \see customRenderFlags()
-     * \since QGIS 2.16
      * \deprecated use \see setCustomRenderingFlag() instead.
      */
     Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
@@ -362,7 +353,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
      * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
-     * \since QGIS 3.0
      */
     bool setEllipsoid( const QString &ellipsoid );
 
@@ -370,7 +360,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if a valid ellipsoid has been set.
      * \see setEllipsoid()
-     * \since QGIS 3.0
      */
     QString ellipsoid() const { return mEllipsoid; }
 
@@ -451,7 +440,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     /**
      * Returns the visible area as a polygon (may be rotated)
-     * \since QGIS 2.8
      */
     QPolygonF visiblePolygon() const;
 
@@ -475,7 +463,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
      * \see expressionContext()
-     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
@@ -483,7 +470,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
      * \see setExpressionContext()
-     * \since QGIS 2.12
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
@@ -493,7 +479,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * from a source to destination coordinate reference system.
      *
      * \see setTransformContext()
-     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -503,7 +488,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * from a source to destination coordinate reference system.
      *
      * \see transformContext()
-     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -512,7 +496,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see setPathResolver()
-     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -521,7 +504,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see pathResolver()
-     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
@@ -531,7 +513,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
      * \param layer The layer
      * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
-     * \since QGIS 2.12
      */
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 
@@ -650,7 +631,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * \see labelingEngineSettings()
      *
-     * \since QGIS 3.0
      */
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
     {
@@ -663,7 +643,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * \see setLabelingEngineSettings()
      *
-     * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
 

@@ -36,8 +36,6 @@ Use cases for which :py:class:`QgsPointXY` is NOT a valid choice include:
 - Storage of coordinates for a geometry. Since :py:class:`QgsPointXY` is strictly 2-dimensional it should never be used to store coordinates for vector geometries, as this will involve a loss of any z or m values present in the geometry.
 
 .. seealso:: :py:class:`QgsPoint`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -67,8 +65,6 @@ Create a point from x,y coordinates
 Create a point from a QPointF
 
 :param point: QPointF source
-
-.. versionadded:: 2.7
 %End
 
     QgsPointXY( QPoint point ) /HoldGIL/;
@@ -76,16 +72,12 @@ Create a point from a QPointF
 Create a point from a QPoint
 
 :param point: QPoint source
-
-.. versionadded:: 2.7
 %End
 
     QgsPointXY( const QgsPoint &point ) /HoldGIL/;
 %Docstring
 Create a new point.
 Z and M values will be dropped.
-
-.. versionadded:: 3.0
 %End
 
     ~QgsPointXY();
@@ -128,8 +120,6 @@ Gets the y value of the point
 Converts a point to a QPointF
 
 :return: QPointF with same x and y values
-
-.. versionadded:: 2.7
 %End
 
     QString toString( int precision = -1 ) const;
@@ -166,8 +156,6 @@ Returns the distance between this point and a specified x, y coordinate.
 :param y: y-coordinate
 
 .. seealso:: :py:func:`sqrDist`
-
-.. versionadded:: 2.16
 %End
 
     double distance( const QgsPointXY &other ) const /HoldGIL/;
@@ -177,8 +165,6 @@ Returns the distance between this point and another point.
 :param other: other point
 
 .. seealso:: :py:func:`sqrDist`
-
-.. versionadded:: 2.16
 %End
 
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
@@ -198,8 +184,6 @@ in a specified bearing.
 
 :param distance: distance to project
 :param bearing: angle to project in, clockwise in degrees starting from north
-
-.. versionadded:: 2.16
 %End
 
     bool isEmpty() const /HoldGIL/;
@@ -222,8 +206,6 @@ Compares this point with another point with a fuzzy tolerance
 :return: ``True`` if points are equal within specified tolerance
 
 .. seealso:: :py:func:`distanceCompare`
-
-.. versionadded:: 2.9
 %End
 
     bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;

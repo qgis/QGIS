@@ -31,7 +31,6 @@
  * \brief A paint effect which blurs a source picture, using a number of different blur
  * methods.
  *
- * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS

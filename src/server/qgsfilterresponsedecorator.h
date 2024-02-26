@@ -30,7 +30,6 @@
  * \ingroup server
  * \class QgsFilterResponseDecorator
  * \brief Class defining decorator for calling filter's hooks
- * \since QGIS 3.0
  */
 class QgsFilterResponseDecorator: public QgsServerResponse
 {
@@ -47,6 +46,12 @@ class QgsFilterResponseDecorator: public QgsServerResponse
      * Call filters requestReady() method
      */
     void start() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
+
+    /**
+     * Call filters projectReady() method
+     * \since QGIS 3.36
+     */
+    void ready() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
 
     // QgsServerResponse overrides
 
@@ -86,8 +91,3 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 };
 
 #endif
-
-
-
-
-

@@ -48,9 +48,6 @@ Example
                print('feature intersects the polygon!')
 
 :py:class:`QgsGeometryEngine` operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
-
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -96,8 +93,6 @@ Calculate the intersection of this and ``geom``.
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the intersection results (since QGIS 3.28)
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -107,8 +102,6 @@ Calculate the difference of this and ``geom``.
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the difference results (since QGIS 3.28)
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -118,8 +111,6 @@ Calculate the combination of this and ``geom``.
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the union results (since QGIS 3.28)
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -129,8 +120,6 @@ Calculate the combination of this and ``geometries``.
 :param geomList: list of geometries to perform the operation
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the combination results (since QGIS 3.28)
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -140,8 +129,6 @@ Calculate the combination of this and ``geometries``.
 :param geometries: list of geometries to perform the operation
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the combination results (since QGIS 3.28)
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -151,8 +138,6 @@ Calculate the symmetric difference of this and ``geom``.
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the difference results (since QGIS 3.28)
-
-.. versionadded:: 3.0
 %End
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const = 0 /Factory/;
 
@@ -168,16 +153,12 @@ Buffers a geometry.
 %Docstring
 Calculates the centroid of this.
 May return a ```None```.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsPoint *pointOnSurface( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate a point that is guaranteed to be on the surface of this.
 May return a ```None```.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0 ) const = 0 /Factory/;
@@ -188,8 +169,6 @@ Calculate the convex hull of this.
     virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Calculates the distance between this and ``geom``.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = 0 ) const = 0;
@@ -202,50 +181,36 @@ Checks if ``geom`` is within ``maxdistance`` distance from this geometry
     virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` intersects this.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` touches this.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` crosses this.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` is within this.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` overlaps this.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` contains this.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` is disjoint from this.
-
-.. versionadded:: 3.0
 %End
 
     virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
@@ -257,8 +222,6 @@ relationship between the geometries.
 :param errorMsg: destination storage for any error message
 
 :return: DE-9IM string for relationship, or an empty string if an error occurred
-
-.. versionadded:: 2.12
 %End
 
     virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = 0 ) const = 0;
@@ -271,8 +234,6 @@ pattern.
 :param errorMsg: destination storage for any error message
 
 :return: ``True`` if geometry relationship matches with pattern
-
-.. versionadded:: 2.14
 %End
 
     virtual double area( QString *errorMsg = 0 ) const = 0;
@@ -295,16 +256,12 @@ If ``errorLoc`` is specified, it will be set to the geometry of the error locati
 %Docstring
 Checks if this is equal to ``geom``.
 If both are Null geometries, ```False``` is returned.
-
-.. versionadded:: 3.0
 %End
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
     virtual bool isSimple( QString *errorMsg = 0 ) const = 0;
 %Docstring
 Determines whether the geometry is simple (according to OGC definition).
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,

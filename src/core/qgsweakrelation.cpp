@@ -142,6 +142,12 @@ QString QgsWeakRelation::referencingLayerProvider() const
   return mReferencingLayer.provider;
 }
 
+void QgsWeakRelation::setReferencingLayer( const QString &sourceUri, const QString &provider )
+{
+  mReferencingLayer.source = sourceUri;
+  mReferencingLayer.provider = provider;
+}
+
 QString QgsWeakRelation::referencingLayerName() const
 {
   if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( mReferencingLayer.provider ) )
@@ -175,6 +181,12 @@ QString QgsWeakRelation::referencedLayerName() const
   return QString();
 }
 
+void QgsWeakRelation::setReferencedLayer( const QString &sourceUri, const QString &provider )
+{
+  mReferencedLayer.source = sourceUri;
+  mReferencedLayer.provider = provider;
+}
+
 QgsVectorLayerRef QgsWeakRelation::mappingTable() const
 {
   return mMappingTable;
@@ -202,6 +214,12 @@ QString QgsWeakRelation::mappingTableName() const
     return metadata->decodeUri( mMappingTable.source ).value( QStringLiteral( "layerName" ) ).toString();
   }
   return QString();
+}
+
+void QgsWeakRelation::setMappingTable( const QString &sourceUri, const QString &provider )
+{
+  mMappingTable.source = sourceUri;
+  mMappingTable.provider = provider;
 }
 
 Qgis::RelationshipStrength QgsWeakRelation::strength() const

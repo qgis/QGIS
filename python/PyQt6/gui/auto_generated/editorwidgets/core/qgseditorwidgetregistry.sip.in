@@ -41,8 +41,6 @@ Only call this once on startup of an application.
 .. note::
 
    Not required for plugins, the QGIS application does that already
-
-.. versionadded:: 2.8
 %End
 
     ~QgsEditorWidgetRegistry();

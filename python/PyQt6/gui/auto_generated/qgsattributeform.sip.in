@@ -117,8 +117,6 @@ Returns if the form is currently in editable mode.
 Returns the current mode of the form.
 
 .. seealso:: :py:func:`setMode`
-
-.. versionadded:: 2.16
 %End
 
     void setMode( QgsAttributeEditorContext::Mode mode );
@@ -128,8 +126,6 @@ Sets the current mode of the form.
 :param mode: form mode
 
 .. seealso:: :py:func:`mode`
-
-.. versionadded:: 2.16
 %End
 
     void setEditCommandMessage( const QString &message );
@@ -155,8 +151,6 @@ Intercepts keypress on custom form (escape should not close it)
 Sets all feature IDs which are to be edited if the form is in multiedit mode
 
 :param fids: feature ID list
-
-.. versionadded:: 2.16
 %End
 
     void setMessageBar( QgsMessageBar *messageBar );
@@ -165,8 +159,6 @@ Sets the message bar to display feedback from the form in. This is used in the s
 mode to display the count of selected features.
 
 :param messageBar: target message bar
-
-.. versionadded:: 2.16
 %End
 
     QString aggregateFilter() const;
@@ -174,8 +166,6 @@ mode to display the count of selected features.
 The aggregate filter is only useful if the form is in AggregateFilter mode.
 In this case it will return a combined expression according to the chosen filters
 on all attribute widgets.
-
-.. versionadded:: 3.0
 %End
 
     void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
@@ -214,8 +204,6 @@ Notifies about changes of attributes
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
 :param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
-
-.. versionadded:: 3.0.1
 %End
 
 
@@ -230,8 +218,6 @@ Emitted when a filter expression is set using the form.
 
 :param expression: filter expression
 :param type: filter type
-
-.. versionadded:: 2.16
 %End
 
     void modeChanged( QgsAttributeEditorContext::Mode mode );
@@ -244,22 +230,16 @@ Emitted when the form changes mode.
     void closed();
 %Docstring
 Emitted when the user selects the close option from the form's button bar.
-
-.. versionadded:: 2.16
 %End
 
     void zoomToFeatures( const QString &filter );
 %Docstring
 Emitted when the user chooses to zoom to a filtered set of features.
-
-.. versionadded:: 3.0
 %End
 
     void flashFeatures( const QString &filter );
 %Docstring
 Emitted when the user chooses to flash a filtered set of features.
-
-.. versionadded:: 3.0
 %End
 
     void openFilteredFeaturesAttributeTable( const QString &filter );
@@ -321,8 +301,6 @@ Sets all values to the values of the current feature
     void resetSearch();
 %Docstring
 Resets the search/filter form values.
-
-.. versionadded:: 2.16
 %End
 
     void refreshFeature();

@@ -44,7 +44,6 @@
  * instead of QgsPoint.
  *
  * \see QgsPointXY
- * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 {
@@ -379,7 +378,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the point as a QPointF.
-     * \since QGIS 2.14
      */
     QPointF toQPointF() const SIP_HOLDGIL
     {
@@ -391,7 +389,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * \see distanceSquared()
-     * \since QGIS 3.0
     */
     double distance( double x, double y ) const SIP_HOLDGIL
     {
@@ -403,7 +400,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * \see distanceSquared()
-     * \since QGIS 3.0
     */
     double distance( const QgsPoint &other ) const SIP_HOLDGIL
     {
@@ -415,7 +411,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
-     * \since QGIS 3.0
     */
     double distanceSquared( double x, double y ) const SIP_HOLDGIL
     {
@@ -427,7 +422,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
-     * \since QGIS 3.0
     */
     double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
     {
@@ -439,7 +433,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
      * \see distanceSquared3D()
-     * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const SIP_HOLDGIL
     {
@@ -455,7 +448,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
      * \see distanceSquared3D()
-     * \since QGIS 3.0
     */
     double distance3D( const QgsPoint &other ) const SIP_HOLDGIL
     {
@@ -471,7 +463,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * this is faster than calling distance3D(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance3D() is not required.
      * \see distance3D()
-     * \since QGIS 3.0
     */
     double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL
     {
@@ -487,7 +478,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * this is faster than calling distance3D(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance3D() is not required.
      * \see distance3D()
-     * \since QGIS 3.0
     */
     double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL
     {
@@ -500,14 +490,12 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
-     * \since QGIS 3.0
      */
     double azimuth( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Calculates Cartesian inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
      * Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
-     * \since QGIS 3.0
      */
     double inclination( const QgsPoint &other ) const SIP_HOLDGIL;
 
@@ -539,37 +527,31 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *   pr = p.project (1, 0, 0 )
      *   # pr is a 3D point: 'PointZ (1 2 3)'
      * \endcode
-     * \since QGIS 3.0
      */
     QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const SIP_HOLDGIL;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
-     * \since QGIS 3.0
      */
     QgsVector operator-( const QgsPoint &p ) const SIP_HOLDGIL { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     /**
      * Adds a vector to this point in place.
-     * \since QGIS 3.0
      */
     QgsPoint &operator+=( QgsVector v ) SIP_HOLDGIL { mX += v.x(); mY += v.y(); return *this; }
 
     /**
      * Subtracts a vector from this point in place.
-     * \since QGIS 3.0
      */
     QgsPoint &operator-=( QgsVector v ) SIP_HOLDGIL { mX -= v.x(); mY -= v.y(); return *this; }
 
     /**
      * Adds a vector to this point.
-     * \since QGIS 3.0
      */
     QgsPoint operator+( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
 
     /**
      * Subtracts a vector from this point.
-     * \since QGIS 3.0
      */
     QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
@@ -646,7 +628,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsPoint *cast( const QgsAbstractGeometry *geom )
     {

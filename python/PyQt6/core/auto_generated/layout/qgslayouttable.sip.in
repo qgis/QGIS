@@ -26,8 +26,6 @@ class QgsLayoutTableStyle
 {
 %Docstring(signature="appended")
 Styling option for a layout table cell
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -70,8 +68,6 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring(signature="appended")
 A class to display a table in the print layout, and allow
 the table to span over multiple frames
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

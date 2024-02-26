@@ -143,9 +143,9 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   if ( layer->dataProvider() && layer->dataProvider()->elevationProperties() )
   {
     if ( layer->dataProvider()->elevationProperties()->containsElevationData() )
-      layer->setExtent3D( extent3D() );
+      layer->mExtent3D = mExtent3D;
     else
-      layer->setExtent( extent() );
+      layer->mExtent2D = mExtent2D;
   }
 
   layer->setMaximumScale( maximumScale() );
@@ -648,12 +648,15 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
-    layerElement.appendChild( QgsXmlUtils::writeBox3D( extent3D(), document ) );
-  else
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( extent(), document ) );
+  if ( !mExtent3D.isNull() && dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
+    layerElement.appendChild( QgsXmlUtils::writeBox3D( mExtent3D, document ) );
+  else if ( !mExtent2D.isNull() )
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent2D, document ) );
 
-  layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
+  if ( const QgsRectangle lWgs84Extent = wgs84Extent( true ); !lWgs84Extent.isNull() )
+  {
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( lWgs84Extent, document, QStringLiteral( "wgs84extent" ) ) );
+  }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
   layerElement.setAttribute( QStringLiteral( "autoRefreshMode" ), qgsEnumValueToKey( mAutoRefreshMode ) );

@@ -20,7 +20,9 @@
 #include "qgsfields.h"
 
 #include "qgsgdalutils.h"
+#include "qgsfielddomain.h"
 #include "qgslogger.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
@@ -28,6 +30,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgslocalec.h"
+#include "qgsogrutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
@@ -90,7 +93,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
-        QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext, fieldNameSource );
+        QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext, fieldNameSource, nullptr );
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
@@ -110,16 +113,19 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
     const QgsCoordinateTransformContext &transformContext,
     QgsFeatureSink::SinkFlags sinkFlags,
     FieldNameSource fieldNameSource,
-    bool includeConstraints )
+    bool includeConstraints,
+    bool setFieldDomains,
+    const QgsAbstractDatabaseProviderConnection *sourceDatabaseProviderConnection )
   : mError( NoError )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
   , mSymbologyScale( 1.0 )
   , mIncludeConstraints( includeConstraints )
+  , mSetFieldDomains( setFieldDomains )
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
-        layerName, action, newLayer, sinkFlags, transformContext, fieldNameSource );
+        layerName, action, newLayer, sinkFlags, transformContext, fieldNameSource, sourceDatabaseProviderConnection );
 }
 
 QgsVectorFileWriter *QgsVectorFileWriter::create(
@@ -138,7 +144,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
   return new QgsVectorFileWriter( fileName, options.fileEncoding, fields, geometryType, srs,
                                   options.driverName, options.datasourceOptions, options.layerOptions,
                                   newFilename, options.symbologyExport, options.fieldValueConverter, options.layerName,
-                                  options.actionOnExistingFile, newLayer, transformContext, sinkFlags, options.fieldNameSource, options.includeConstraints );
+                                  options.actionOnExistingFile, newLayer, transformContext, sinkFlags, options.fieldNameSource, options.includeConstraints, options.setFieldDomains, options.sourceDatabaseProviderConnection );
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -176,8 +182,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                 const QString &layerNameIn,
                                 ActionOnExistingFile action,
                                 QString *newLayer, SinkFlags sinkFlags,
-                                const QgsCoordinateTransformContext &transformContext, FieldNameSource fieldNameSource )
+                                const QgsCoordinateTransformContext &transformContext, FieldNameSource fieldNameSource,
+                                const QgsAbstractDatabaseProviderConnection *sourceDatabaseProviderConnection )
 {
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,5,0)
+  ( void )sourceDatabaseProviderConnection;
+#endif
+
   mRenderContext.setRendererScale( mSymbologyScale );
 
   if ( vectorFileName.isEmpty() )
@@ -578,6 +589,18 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     case CreateOrOverwriteLayer:
     case AppendToLayerAddFields:
     {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+      QSet<QString> existingDestDomainNames;
+      if ( sourceDatabaseProviderConnection )
+      {
+        char **domainNames = GDALDatasetGetFieldDomainNames( mDS.get(), nullptr );
+        for ( const char *const *iterDomainNames = domainNames; iterDomainNames && *iterDomainNames; ++iterDomainNames )
+        {
+          existingDestDomainNames.insert( QString::fromUtf8( *iterDomainNames ) );
+        }
+        CSLDestroy( domainNames );
+      }
+#endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
       QSet< QString > usedAlternativeNames;
 #endif
@@ -884,6 +907,55 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             OGR_Fld_SetUnique( fld.get(), true );
           }
         }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+        if ( mSetFieldDomains && sourceDatabaseProviderConnection )
+        {
+          const QString domainName = attrField.constraints().domainName();
+          if ( !domainName.isEmpty() )
+          {
+            bool canSetFieldDomainName = false;
+            if ( existingDestDomainNames.contains( domainName ) )
+            {
+              // If the target dataset already knows this field domain,
+              // we can directly assign its name to the new field.
+              canSetFieldDomainName = true;
+            }
+            else  if ( GDALDatasetTestCapability( mDS.get(), ODsCAddFieldDomain ) )
+            {
+              // Otherwise, if the output dataset can create field domains,
+              // - convert the QGIS field domain to a GDAL one
+              // - register it to the GDAL dataset
+              // - if successful, note that we know that field domain (if it
+              //   is shared by other fields)
+              // - assign its name to the new field.
+              std::unique_ptr<QgsFieldDomain> domain( sourceDatabaseProviderConnection->fieldDomain( domainName ) );
+              if ( domain )
+              {
+                OGRFieldDomainH hFieldDomain = QgsOgrUtils::convertFieldDomain( domain.get() );
+                if ( hFieldDomain )
+                {
+                  char *pszFailureReason = nullptr;
+                  if ( GDALDatasetAddFieldDomain( mDS.get(), hFieldDomain, &pszFailureReason ) )
+                  {
+                    existingDestDomainNames.insert( domainName );
+                    canSetFieldDomainName = true;
+                  }
+                  else
+                  {
+                    QgsDebugMsgLevel( QStringLiteral( "cannot create field domain: %1" ).arg( pszFailureReason ), 2 );
+                  }
+                  CPLFree( pszFailureReason );
+                  OGR_FldDomain_Destroy( hFieldDomain );
+                }
+              }
+            }
+            if ( canSetFieldDomainName )
+            {
+              OGR_Fld_SetDomainName( fld.get(), domainName.toUtf8().toStdString().c_str() );
+            }
+          }
+        }
+#endif
 
         // create the field
         QgsDebugMsgLevel( "creating field " + attrField.name() +
@@ -3467,6 +3539,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   }
   details.sourceFeatureIterator = layer->getFeatures( req );
 
+  if ( !options.sourceDatabaseProviderConnection )
+  {
+    details.sourceDatabaseProviderConnection.reset( QgsMapLayerUtils::databaseConnection( layer ) );
+  }
+
   return NoError;
 }
 
@@ -3537,7 +3614,13 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
   QString tempNewFilename;
   QString tempNewLayer;
 
-  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, options, QgsFeatureSink::SinkFlags(), &tempNewFilename, &tempNewLayer ) );
+  QgsVectorFileWriter::SaveVectorOptions newOptions = options;
+  if ( !newOptions.sourceDatabaseProviderConnection )
+  {
+    newOptions.sourceDatabaseProviderConnection = details.sourceDatabaseProviderConnection.get();
+  }
+
+  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, newOptions, QgsFeatureSink::SinkFlags(), &tempNewFilename, &tempNewLayer ) );
   writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )

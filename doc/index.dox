@@ -33,6 +33,7 @@ the documentation</a> available.
 See \ref api_break for information about incompatible changes to API between releases.
 
 Earlier versions of the documentation are also available on the QGIS website:
+<a href="https://qgis.org/api/3.36">3.36</a>,
 <a href="https://qgis.org/api/3.34">3.34 (LTR)</a>,
 <a href="https://qgis.org/api/3.32">3.32</a>,
 <a href="https://qgis.org/api/3.30">3.30</a>,

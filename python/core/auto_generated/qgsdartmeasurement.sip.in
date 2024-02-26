@@ -38,8 +38,6 @@ Constructor for QgsDartMeasurement
 %Docstring
 Convert a QgsDartMeasurement.Type enum to a string that is understood
 by the system.
-
-.. versionadded:: 2.
 %End
 
 };

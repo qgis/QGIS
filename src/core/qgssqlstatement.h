@@ -30,7 +30,6 @@
 /**
  * \ingroup core
  * \brief Class for parsing SQL statements.
- * \since QGIS 2.16
  */
 class CORE_EXPORT QgsSQLStatement
 {
