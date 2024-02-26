@@ -46,7 +46,7 @@ void QgsNetworkLogger::enableLogging( bool enabled )
   if ( enabled )
   {
     connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated, Qt::UniqueConnection );
-    connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated, Qt::UniqueConnection );
+    connect( mNam, qOverload< const QgsNetworkRequestParameters &>( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated, Qt::UniqueConnection );
     connect( mNam, qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished, Qt::UniqueConnection );
     connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut, Qt::UniqueConnection );
     connect( mNam, &QgsNetworkAccessManager::downloadProgress, this, &QgsNetworkLogger::downloadProgress, Qt::UniqueConnection );
@@ -55,7 +55,7 @@ void QgsNetworkLogger::enableLogging( bool enabled )
   else
   {
     disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated );
-    disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated );
+    disconnect( mNam, qOverload< const QgsNetworkRequestParameters &>( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated );
     disconnect( mNam, qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished );
     disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut );
     disconnect( mNam, &QgsNetworkAccessManager::downloadProgress, this, &QgsNetworkLogger::downloadProgress );
@@ -84,7 +84,7 @@ void QgsNetworkLogger::requestAboutToBeCreated( QgsNetworkRequestParameters para
   endInsertRows();
 }
 
-void QgsNetworkLogger::requestCreated( QgsNetworkRequestParameters parameters )
+void QgsNetworkLogger::requestCreated( const QgsNetworkRequestParameters &parameters )
 {
   QgsNetworkLoggerRequestGroup *requestGroup = mRequestGroups.value( parameters.requestId() );
   if ( !requestGroup )
