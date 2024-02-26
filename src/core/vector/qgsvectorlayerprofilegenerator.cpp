@@ -885,6 +885,9 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
   QVector< double > newZ( numPoints );
   QVector< double > newDistance( numPoints );
 
+  const double *inX = intersectionCurve->xData();
+  const double *inY = intersectionCurve->yData();
+  const double *inZ = intersectionCurve->is3D() ? intersectionCurve->zData() : nullptr;
   double *outX = newX.data();
   double *outY = newY.data();
   double *outZ = newZ.data();
@@ -898,11 +901,9 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
     extZOut = extrudedZ.data();
   }
 
-  for ( auto it = intersectionCurve->vertices_begin();
-        !mFeedback->isCanceled() && it != intersectionCurve->vertices_end();
-        ++it )
+  for ( int i = 0 ; ! mFeedback->isCanceled() && i < numPoints; ++i )
   {
-    const QgsPoint &intersectionPoint = *it;
+    QgsPoint intersectionPoint( *inX, *inY, ( inZ ? *inZ : std::numeric_limits<double>::quiet_NaN() ) );
 
     const double height = featureZToHeight( intersectionPoint.x(), intersectionPoint.y(), intersectionPoint.z(), offset );
     const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( intersectionPoint, &error );
@@ -927,6 +928,10 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
       mResults->minZ = std::min( mResults->minZ, height + extrusion );
       mResults->maxZ = std::max( mResults->maxZ, height + extrusion );
     }
+    inX++;
+    inY++;
+    if ( inZ )
+      inZ++;
   }
 
   mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
