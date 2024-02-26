@@ -988,8 +988,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     // Intersection is empty : GEOS issue for vertical intersection : use feature geometry as intersection
     if ( intersection->isEmpty() )
     {
-      std::string wkt_std = intersection->asWkt().toStdString();
-      intersection.reset( feature.geometry().constGet()->clone() );
+      intersection.reset( featGeomPart->clone() );
     }
 
     QgsGeos featGeomPartGeos( featGeomPart );
