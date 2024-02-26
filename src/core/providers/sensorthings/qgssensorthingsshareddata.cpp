@@ -130,6 +130,14 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
   return modifiedUrl;
 }
 
+QgsRectangle QgsSensorThingsSharedData::extent() const
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  // Since we can't retrieve the actual layer extent via SensorThings API, we use a pessimistic
+  // global extent until we've retrieved all the features from the layer
+  return hasCachedAllFeatures() ? mFetchedFeatureExtent : QgsRectangle( -180, -90, 180, 90 );
+}
+
 long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
@@ -306,6 +314,7 @@ void QgsSensorThingsSharedData::clearCache()
   mCachedFeatures.clear();
   mIotIdToFeatureId.clear();
   mSpatialIndex = QgsSpatialIndex();
+  mFetchedFeatureExtent = QgsRectangle();
 }
 
 bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFeedback *feedback, const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback, const std::function<bool ()> &continueFetchingCallback, const std::function<void ()> &onNoMoreFeaturesCallback )
@@ -614,6 +623,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               mCachedFeatures.insert( feature.id(), feature );
               mIotIdToFeatureId.insert( iotId, feature.id() );
               mSpatialIndex.addFeature( feature );
+              mFetchedFeatureExtent.combineExtentWith( feature.geometry().boundingBox() );
 
               fetchedFeatureCallback( feature );
             }

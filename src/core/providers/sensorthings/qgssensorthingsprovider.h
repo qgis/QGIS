@@ -30,7 +30,7 @@
  *
  * \since QGIS 3.36
  */
-class QgsSensorThingsProvider : public QgsVectorDataProvider
+class QgsSensorThingsProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -41,29 +41,30 @@ class QgsSensorThingsProvider : public QgsVectorDataProvider
 
     QgsSensorThingsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
-    QgsAbstractFeatureSource *featureSource() const override;
-    QString storageType() const override;
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
-    Qgis::WkbType wkbType() const override;
-    long long featureCount() const override;
-    QgsFields fields() const override;
-    QgsLayerMetadata layerMetadata() const override;
-    QString htmlMetadata() const override;
+    QgsAbstractFeatureSource *featureSource() const final;
+    QString storageType() const final;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const final;
+    Qgis::WkbType wkbType() const final;
+    long long featureCount() const final;
+    QgsFields fields() const final;
+    QgsLayerMetadata layerMetadata() const final;
+    QString htmlMetadata() const final;
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::DataProviderFlags flags() const final;
+    QgsVectorDataProvider::Capabilities capabilities() const final;
 
-    QgsCoordinateReferenceSystem crs() const override;
-    void setDataSourceUri( const QString &uri ) override;
-    QgsRectangle extent() const override;
-    bool isValid() const override { return mValid; }
+    QgsCoordinateReferenceSystem crs() const final;
+    void setDataSourceUri( const QString &uri ) final;
+    QgsRectangle extent() const final;
+    bool isValid() const final { return mValid; }
 
-    QString name() const override;
-    QString description() const override;
-    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
+    QString name() const final;
+    QString description() const final;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) final;
 
     static QString providerKey();
 
-    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) final;
 
   private:
     bool mValid = false;
@@ -71,28 +72,28 @@ class QgsSensorThingsProvider : public QgsVectorDataProvider
 
     QgsLayerMetadata mLayerMetadata;
 
-    void reloadProviderData() override;
+    void reloadProviderData() final;
 };
 
-class QgsSensorThingsProviderMetadata: public QgsProviderMetadata
+class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
 {
     Q_OBJECT
 
   public:
     QgsSensorThingsProviderMetadata();
-    QIcon icon() const override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QIcon icon() const final;
+    QList<QgsDataItemProvider *> dataItemProviders() const final;
+    QVariantMap decodeUri( const QString &uri ) const final;
+    QString encodeUri( const QVariantMap &parts ) const final;
+    QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) final;
+    QList< Qgis::LayerType > supportedLayerTypes() const final;
 
     // handling of stored connections
 
-    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
-    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
-    void deleteConnection( const QString &name ) override;
-    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) final;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) final;
+    void deleteConnection( const QString &name ) final;
+    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) final;
 
 };
 
