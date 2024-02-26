@@ -779,7 +779,9 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
                                         10 };
   limit.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
   {
-    return value.toInt() >= 0 && value.toInt() <= maxLimit;   // TODO: make this configurable!
+    bool ok = false;
+    const qlonglong longVal { value.toLongLong( &ok ) };
+    return ok && longVal >= 0 && longVal <= maxLimit;
   } );
   params.push_back( limit );
 
@@ -802,8 +804,9 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
     {
       offset.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
       {
-        const qlonglong longVal { value.toLongLong( ) };
-        return longVal >= 0 && longVal <= mapLayer->featureCount( );
+        bool ok = false;
+        const qlonglong longVal { value.toLongLong( &ok ) };
+        return ok && longVal >= 0 && longVal <= mapLayer->featureCount( );
       } );
       offset.setDescription( QStringLiteral( "Offset for features to retrieve [0-%1]" ).arg( mapLayer->featureCount( ) ) );
       offsetValidatorSet = true;
@@ -898,8 +901,9 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   {
     offset.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
     {
-      const qlonglong longVal { value.toLongLong( ) };
-      return longVal >= 0 ;
+      bool ok = false;
+      const qlonglong longVal { value.toLongLong( &ok ) };
+      return ok && longVal >= 0 ;
     } );
   }
 
