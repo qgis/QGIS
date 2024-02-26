@@ -543,8 +543,11 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 
     /**
-     * Create an expressionContextScope containing symbol related variables
-     * \since QGIS 3.10
+     * Create an expression context scope containing symbol related variables.
+     *
+     * The caller takes ownership of the returned object.
+     *
+     * \since QGIS 3.36
      */
     QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
 
