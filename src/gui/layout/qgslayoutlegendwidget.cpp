@@ -110,6 +110,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
   connect( mRasterStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
   connect( mRasterStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutLegendWidget::mRasterStrokeColorButton_colorChanged );
+  connect( mExpandAllToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::expandLegendTree );
+  connect( mCollapseAllToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::collapseLegendTree );
   connect( mMoveDownToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mMoveDownToolButton_clicked );
   connect( mMoveUpToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mMoveUpToolButton_clicked );
   connect( mRemoveToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mRemoveToolButton_clicked );
@@ -163,6 +165,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
   mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mIconExpression.svg" ) ) );
+  mExpandAllToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionExpandTree.svg" ) ) );
+  mCollapseAllToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionCollapseTree.svg" ) ) );
 
   mMoveDownToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
   mMoveUpToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
@@ -173,6 +177,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mCountToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
   mExpressionFilterButton->setIconSize( QgsGuiUtils::iconSize( true ) );
   mLayerExpressionButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mExpandAllToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mCollapseAllToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mRasterStrokeColorButton->setAllowOpacity( true );
@@ -812,6 +818,16 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   mLegend->endCommand();
 }
 
+void QgsLayoutLegendWidget::expandLegendTree()
+{
+  mItemTreeView -> expandAll();
+}
+
+void QgsLayoutLegendWidget::collapseLegendTree()
+{
+  mItemTreeView -> collapseAll();
+}
+
 void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered )
 {
   if ( userTriggered )
@@ -827,7 +843,7 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
   QList<QWidget *> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
           << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
-          << mExpressionFilterButton;
+          << mExpressionFilterButton << mCollapseAllToolButton << mExpandAllToolButton;
   for ( QWidget *w : std::as_const( widgets ) )
     w->setEnabled( state != Qt::Checked );
 
