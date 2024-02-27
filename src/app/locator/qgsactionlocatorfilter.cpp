@@ -50,7 +50,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
 void QgsActionLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QAction *action = qobject_cast< QAction * >( qvariant_cast<QObject *>( result.getUserData() ) );
+  QAction *action = qobject_cast< QAction * >( qvariant_cast<QObject *>( result.userData() ) );
   if ( action )
     action->trigger();
 }

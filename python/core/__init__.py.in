@@ -413,3 +413,6 @@ def set_display_all(self, enabled):
 
 QgsPalLayerSettings.displayAll = property(get_display_all)
 QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(set_display_all)
+
+QgsLocatorResult.userData = property(QgsLocatorResult._userData)
+QgsLocatorResult.userData = QgsLocatorResult.userData.setter(QgsLocatorResult.setUserData)

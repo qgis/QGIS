@@ -101,12 +101,12 @@ void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel le
 }
 
 
-QVariant QgsLocatorResult::getUserData() const
+QVariant QgsLocatorResult::userData() const
 {
   return mUserData;
 }
 
-void QgsLocatorResult::setUserData( QVariant userData )
+void QgsLocatorResult::setUserData( const QVariant &userData )
 {
   mUserData = userData;
 }

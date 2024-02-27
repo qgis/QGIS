@@ -57,14 +57,14 @@ class CORE_EXPORT QgsLocatorResult
      *
      * \since QGIS 3.18
      */
-    QVariant getUserData() const;
+    QVariant userData() const SIP_PYNAME( _userData );
 
     /**
      * Set \a userData for the locator result
      *
      * \since QGIS 3.34
      */
-    void setUserData( QVariant userData );
+    void setUserData( const QVariant &userData );
 
     /**
      * Filter from which the result was obtained. This is automatically set.
@@ -135,10 +135,6 @@ class CORE_EXPORT QgsLocatorResult
       * \since QGIS 3.6
       */
     QList<QgsLocatorResult::ResultAction> actions;
-
-#ifdef SIP_RUN
-    SIP_PROPERTY( name = userData, get = getUserData, set = setUserData )
-#endif
 
   private:
 

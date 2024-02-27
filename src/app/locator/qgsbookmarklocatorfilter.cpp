@@ -66,6 +66,6 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
 
 void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  const QModelIndex index = qvariant_cast<QModelIndex>( result.getUserData() );
+  const QModelIndex index = qvariant_cast<QModelIndex>( result.userData() );
   QgisApp::instance()->zoomToBookmarkIndex( index );
 }
