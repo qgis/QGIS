@@ -201,6 +201,43 @@ QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() cons
   return c;
 }
 
+bool QgsSensorThingsProvider::supportsSubsetString() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  return true;
+}
+
+QString QgsSensorThingsProvider::subsetString() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  return mSharedData->subsetString();
+}
+
+bool QgsSensorThingsProvider::setSubsetString( const QString &subset, bool )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  const QString trimmedSubset = subset.trimmed();
+  if ( trimmedSubset == mSharedData->subsetString() )
+    return true;
+
+  // store this and restore it after the data source is changed,
+  // to avoid an unwanted network request to retrieve this again
+  const QString baseUri = mSharedData->mEntityBaseUri;
+
+  QgsDataSourceUri uri = dataSourceUri();
+  uri.setSql( trimmedSubset );
+  setDataSourceUri( uri.uri( false ) );
+
+  mSharedData->mEntityBaseUri = baseUri;
+
+  clearMinMaxCache();
+
+  emit dataChanged();
+
+  return true;
+}
+
 void QgsSensorThingsProvider::setDataSourceUri( const QString &uri )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -362,6 +399,9 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
       components.insert( QStringLiteral( "bounds" ), r );
   }
 
+  if ( !dsUri.sql().isEmpty() )
+    components.insert( QStringLiteral( "sql" ), dsUri.sql() );
+
   return components;
 }
 
@@ -428,6 +468,9 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
     const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
     dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
+
+  if ( !parts.value( QStringLiteral( "sql" ) ).toString().isEmpty() )
+    dsUri.setSql( parts.value( QStringLiteral( "sql" ) ).toString() );
 
   return dsUri.uri( false );
 }

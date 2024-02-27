@@ -38,6 +38,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   // use initial value of maximum page size as default
   mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), mMaximumPageSize ).toInt();
   mFilterExtent = uriParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+  mSubsetString = uriParts.value( QStringLiteral( "sql" ) ).toString();
 
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
@@ -154,7 +155,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri );
   const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
   const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
-  QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter } );
+  QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
   if ( !filterString.isEmpty() )
     filterString = QStringLiteral( "&$filter=" ) + filterString;
   if ( !filterString.isEmpty() )
@@ -202,6 +203,11 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   return mFeatureCount;
 }
 
+QString QgsSensorThingsSharedData::subsetString() const
+{
+  return mSubsetString;
+}
+
 bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
@@ -231,7 +237,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
     const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
-    const QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter } );
+    const QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
     if ( !filterString.isEmpty() )
       mNextPage += QStringLiteral( "&$filter=" ) + filterString;
   }
@@ -272,7 +278,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
 
   const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
   const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, requestExtent );
-  QString filterString = QgsSensorThingsUtils::combineFilters( { extentFilter, typeFilter } );
+  QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
   if ( !filterString.isEmpty() )
     filterString = QStringLiteral( "&$filter=" ) + filterString;
   QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$top=%2&$count=false%3" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ).arg( filterString );

@@ -52,7 +52,9 @@ class QgsSensorThingsProvider final : public QgsVectorDataProvider
 
     Qgis::DataProviderFlags flags() const final;
     QgsVectorDataProvider::Capabilities capabilities() const final;
-
+    bool supportsSubsetString() const final;
+    QString subsetString() const final;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) final;
     QgsCoordinateReferenceSystem crs() const final;
     void setDataSourceUri( const QString &uri ) final;
     QgsRectangle extent() const final;
