@@ -52,6 +52,7 @@ class QgsSensorThingsSharedData
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
     QgsRectangle extent() const;
     long long featureCount( QgsFeedback *feedback = nullptr ) const;
+    QString subsetString() const;
 
     bool hasCachedAllFeatures() const;
     bool getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback = nullptr );
@@ -77,6 +78,7 @@ class QgsSensorThingsSharedData
     mutable QString mError;
 
     QString mEntityBaseUri;
+    QString mSubsetString;
 
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
 
