@@ -37,17 +37,18 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     //! Field type filters
     enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
-      String = 1, //!< String fields
-      Int = 2, //!< Integer fields
-      LongLong = 4, //!< Longlong fields
-      Double = 8, //!< Double fields
+      String = 1 << 0, //!< String fields
+      Int = 1 << 1, //!< Integer fields
+      LongLong = 1 << 2, //!< Longlong fields
+      Double = 1 << 3, //!< Double fields
       Numeric = Int | LongLong | Double, //!< All numeric fields
-      Date = 16, //!< Date or datetime fields
-      Time = 32, //!< Time fields
-      HideReadOnly = 64,  //!< Hide read-only fields
-      DateTime = 128, //!< Datetime fields
-      Binary = 256, //!< Binary fields, since QGIS 3.34
-      Boolean = 512, //!< Boolean fields, since QGIS 3.34
+      Date = 1 << 4, //!< Date or datetime fields
+      Time = 1 << 5, //!< Time fields
+      HideReadOnly = 1 << 6,  //!< Hide read-only fields
+      DateTime = 1 << 7, //!< Datetime fields
+      Binary = 1 << 8, //!< Binary fields, since QGIS 3.34
+      Boolean = 1 << 9, //!< Boolean fields, since QGIS 3.34
+      OriginProvider = 1 << 10, //!< Fields with a provider origin, since QGIS 3.38
       AllTypes = Numeric | Date | String | Time | DateTime | Binary | Boolean, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )

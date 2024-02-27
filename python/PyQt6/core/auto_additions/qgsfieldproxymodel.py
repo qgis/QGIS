@@ -10,6 +10,7 @@ QgsFieldProxyModel.HideReadOnly = QgsFieldProxyModel.Filter.HideReadOnly
 QgsFieldProxyModel.DateTime = QgsFieldProxyModel.Filter.DateTime
 QgsFieldProxyModel.Binary = QgsFieldProxyModel.Filter.Binary
 QgsFieldProxyModel.Boolean = QgsFieldProxyModel.Filter.Boolean
+QgsFieldProxyModel.OriginProvider = QgsFieldProxyModel.Filter.OriginProvider
 QgsFieldProxyModel.AllTypes = QgsFieldProxyModel.Filter.AllTypes
 QgsFieldProxyModel.Filters = lambda flags=0: QgsFieldProxyModel.Filter(flags)
 QgsFieldProxyModel.Filters.baseClass = QgsFieldProxyModel
