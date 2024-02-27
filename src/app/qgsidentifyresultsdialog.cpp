@@ -364,6 +364,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 
   mOpenFormAction->setDisabled( true );
 
+  lstResults->setVerticalScrollMode( QListView::ScrollMode::ScrollPerPixel );
+
   QgsSettings mySettings;
   mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
   mDock->setObjectName( QStringLiteral( "IdentifyResultsDock" ) );
