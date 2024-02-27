@@ -464,6 +464,7 @@ set(QGIS_GUI_SRCS
   providers/sensorthings/qgssensorthingsguiprovider.cpp
   providers/sensorthings/qgssensorthingssourceselect.cpp
   providers/sensorthings/qgssensorthingssourcewidget.cpp
+  providers/sensorthings/qgssensorthingssubseteditor.cpp
 
   providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.cpp
   providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.cpp
@@ -1426,6 +1427,7 @@ set(QGIS_GUI_HDRS
   providers/sensorthings/qgssensorthingsguiprovider.h
   providers/sensorthings/qgssensorthingssourceselect.h
   providers/sensorthings/qgssensorthingssourcewidget.h
+  providers/sensorthings/qgssensorthingssubseteditor.h
 
   providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.h
   providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.h
