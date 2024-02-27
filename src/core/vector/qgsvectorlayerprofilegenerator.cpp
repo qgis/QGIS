@@ -1340,9 +1340,46 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       QString error;
       if ( mProfileBufferedCurveEngine->intersects( clampedPolygon.get(), &error ) )
       {
-        std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBufferedCurveEngine->intersection( clampedPolygon.get(), &error ) );
-        processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
+        std::unique_ptr< QgsAbstractGeometry > intersection;
+        intersection.reset( mProfileBufferedCurveEngine->intersection( clampedPolygon.get(), &error ) );
+        if ( error.isEmpty() )
+        {
+          processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
+        }
+        else
+        {
+          // this case may occur with vertical object as geos does not handle very well 3D data.
+          // Geos works in 2D from the 3D coordinates then re-add the Z values, but when 2D-from-3D objects are vertical, they are topologically incorrects!
+          // This piece of code is just a fix to handle this case, a better and real 3D capable library is needed (like SFCGAL).
+          QgsLineString *ring = qgsgeometry_cast< QgsLineString * >( clampedPolygon->exteriorRing() );
+          int numPoints = ring->numPoints();
+          QVector< double > newX( numPoints );
+          QVector< double > newY( numPoints );
+          QVector< double > newZ( numPoints );
+          double *outX = newX.data();
+          double *outY = newY.data();
+          double *outZ = newZ.data();
+
+          const double *inX = ring->xData();
+          const double *inY = ring->yData();
+          const double *inZ = ring->zData();
+          for ( int i = 0 ; ! mFeedback->isCanceled() && i < ring->numPoints() - 1; ++i )
+          {
+            *outX++ = inX[i] + i * 1.0e-9;
+            *outY++ = inY[i] + i * 1.0e-9;
+            *outZ++ = inZ[i];
+          }
+          std::unique_ptr< QgsPolygon > shiftedPoly;
+          shiftedPoly.reset( new QgsPolygon( new QgsLineString( newX, newY, newZ ) ) );
+
+          intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
+          if ( intersection.get() )
+            processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
+          else
+            QgsDebugMsgLevel( QStringLiteral( "processPolygon after shift bad geom! error: %1" ).arg( error ), 0 );
+        }
       }
+
     }
     else // ie. polygon / line intersection ==> need tessellation
     {
