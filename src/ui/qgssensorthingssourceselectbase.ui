@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>678</width>
-    <height>561</height>
+    <height>501</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -35,7 +35,7 @@
         <x>0</x>
         <y>0</y>
         <width>658</width>
-        <height>380</height>
+        <height>320</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -71,6 +71,47 @@
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QWidget" name="mLayerSettingsContainerWidget" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mSubsetGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>3</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Filter</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pbnQueryBuilder">
+            <property name="text">
+             <string>Query Builder</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>21</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QgsCodeEditor" name="txtSubsetSQL" native="true"/>
           </item>
          </layout>
         </widget>
@@ -167,9 +208,21 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditor</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditor.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
