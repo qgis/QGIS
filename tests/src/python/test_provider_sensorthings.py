@@ -80,19 +80,23 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     def test_filter_for_wkb_type(self):
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.Point), "location/type eq 'Point'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.Point),
+            "location/type eq 'Point'"
         )
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.PointZ), "location/type eq 'Point'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.PointZ),
+            "location/type eq 'Point'"
         )
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.FeatureOfInterest, Qgis.WkbType.Polygon), "feature/type eq 'Polygon'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.FeatureOfInterest, Qgis.WkbType.Polygon),
+            "feature/type eq 'Polygon'"
         )
         # TODO -- there is NO documentation on what the type must be for line filtering,
         # and I can't find any public servers with line geometries to test with!
         # Find some way to confirm if this is 'Line' or 'LineString' or ...
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.LineString), "location/type eq 'LineString'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.LineString),
+            "location/type eq 'LineString'"
         )
 
     def test_utils_string_to_entity(self):
@@ -173,15 +177,17 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
     def test_filter_for_extent(self):
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('', QgsRectangle()))
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('test', QgsRectangle()))
-        self.assertFalse(QgsSensorThingsUtils.filterForExtent('', QgsRectangle(1,2 ,3 ,4 )))
-        self.assertEqual(QgsSensorThingsUtils.filterForExtent('test', QgsRectangle(1,2 ,3 ,4 )), "geo.intersects(test, geography'POLYGON((1 2, 3 2, 3 4, 1 4, 1 2))')")
+        self.assertFalse(QgsSensorThingsUtils.filterForExtent('', QgsRectangle(1, 2, 3, 4)))
+        self.assertEqual(QgsSensorThingsUtils.filterForExtent('test', QgsRectangle(1, 2, 3, 4)),
+                         "geo.intersects(test, geography'POLYGON((1 2, 3 2, 3 4, 1 4, 1 2))')")
 
     def test_combine_filters(self):
         self.assertFalse(QgsSensorThingsUtils.combineFilters([]))
         self.assertFalse(QgsSensorThingsUtils.combineFilters(['']))
         self.assertEqual(QgsSensorThingsUtils.combineFilters(['', 'a eq 1']), 'a eq 1')
         self.assertEqual(QgsSensorThingsUtils.combineFilters(['a eq 1', 'b eq 2']), '(a eq 1) and (b eq 2)')
-        self.assertEqual(QgsSensorThingsUtils.combineFilters(['a eq 1', '', 'b eq 2', 'c eq 3']), '(a eq 1) and (b eq 2) and (c eq 3)')
+        self.assertEqual(QgsSensorThingsUtils.combineFilters(['a eq 1', '', 'b eq 2', 'c eq 3']),
+                         '(a eq 1) and (b eq 2) and (c eq 3)')
 
     def test_invalid_layer(self):
         vl = QgsVectorLayer(
@@ -766,7 +772,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
                 with open(
-                    sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=(geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))')) and (location/type eq 'Point')"),
+                    sanitize(endpoint,
+                             "/Locations?$top=2&$count=false&$filter=(geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))')) and (location/type eq 'Point')"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -819,7 +826,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
             with open(
-                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=(geo.intersects(location, geography'POLYGON((10 0, 20 0, 20 80, 10 80, 10 0))')) and (location/type eq 'Point')"),
+                sanitize(endpoint,
+                         "/Locations?$top=2&$count=false&$filter=(geo.intersects(location, geography'POLYGON((10 0, 20 0, 20 80, 10 80, 10 0))')) and (location/type eq 'Point')"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -962,14 +970,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
             with open(
-                sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=(location/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
+                sanitize(endpoint,
+                         "/Locations?$top=0&$count=true&$filter=(location/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
                 f.write("""{"@iot.count":2,"value":[]}""")
 
             with open(
-                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
+                sanitize(endpoint,
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1185,7 +1195,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
             # should have accurate layer extent now
-            self.assertEqual(vl.extent(), QgsRectangle(1.62337299999999995, 52.13201699999999761, 3.62337299999999995, 55.13201699999999761))
+            self.assertEqual(vl.extent(), QgsRectangle(1.62337299999999995, 52.13201699999999761, 3.62337299999999995,
+                                                       55.13201699999999761))
 
     def test_historical_location(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -2290,7 +2301,15 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
             self.assertEqual(
                 [f["properties"] for f in features],
-                [{'localId': 'SAM.09.LAA.822.7.1', 'metadata': 'http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample', 'namespace': 'AT.0008.20.AQ', 'owner': 'http://luft.umweltbundesamt.at'}, {'localId': 'SAM.09.LOB.823.7.1', 'metadata': 'http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample', 'namespace': 'AT.0008.20.AQ', 'owner': 'http://luft.umweltbundesamt.at'}, {'localId': 'SAM.09.LOB.824.1.1', 'metadata': 'http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample', 'namespace': 'AT.0008.20.AQ', 'owner': 'http://luft.umweltbundesamt.at'}],
+                [{'localId': 'SAM.09.LAA.822.7.1',
+                  'metadata': 'http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample',
+                  'namespace': 'AT.0008.20.AQ', 'owner': 'http://luft.umweltbundesamt.at'},
+                 {'localId': 'SAM.09.LOB.823.7.1',
+                  'metadata': 'http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample',
+                  'namespace': 'AT.0008.20.AQ', 'owner': 'http://luft.umweltbundesamt.at'},
+                 {'localId': 'SAM.09.LOB.824.1.1',
+                  'metadata': 'http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample',
+                  'namespace': 'AT.0008.20.AQ', 'owner': 'http://luft.umweltbundesamt.at'}],
             )
 
             self.assertEqual(
@@ -2424,7 +2443,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             "authcfg": "aaaaa",
             "entity": "location",
             "geometryType": "polygon",
-            "bounds": QgsRectangle(1,2 ,3 ,4 )
+            "bounds": QgsRectangle(1, 2, 3, 4)
         }
         uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
         self.assertEqual(
