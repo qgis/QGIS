@@ -1780,6 +1780,11 @@ QString QgsGdalProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
+Qgis::DataProviderFlags QgsGdalProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
   return ProviderCapability::ProviderHintBenefitsFromResampling |

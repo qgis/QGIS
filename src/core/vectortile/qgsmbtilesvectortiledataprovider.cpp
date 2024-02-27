@@ -93,6 +93,11 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QgsMbT
   mMatrixSet = other.mMatrixSet;
 }
 
+Qgis::DataProviderFlags QgsMbTilesVectorTileDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QString QgsMbTilesVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

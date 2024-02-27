@@ -914,6 +914,11 @@ QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesData
   mShared = other.mShared;
 }
 
+Qgis::DataProviderFlags QgsCesiumTilesDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 Qgis::TiledSceneProviderCapabilities QgsCesiumTilesDataProvider::capabilities() const
 {
   return Qgis::TiledSceneProviderCapability::ReadLayerMetadata;

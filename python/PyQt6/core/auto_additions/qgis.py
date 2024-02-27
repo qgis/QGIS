@@ -1830,7 +1830,9 @@ Qgis.AutoRefreshMode.__doc__ = "Map layer automatic refresh modes.\n\n.. version
 Qgis.AutoRefreshMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
-Qgis.DataProviderFlag.__doc__ = "Generic data provider flags.\n\n.. versionadded:: 3.26\n\n" + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__
+Qgis.DataProviderFlag.FastExtent2D.__doc__ = "Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38."
+Qgis.DataProviderFlag.FastExtent3D.__doc__ = "Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38."
+Qgis.DataProviderFlag.__doc__ = "Generic data provider flags.\n\n.. versionadded:: 3.26\n\n" + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__ + '\n' + '* ``FastExtent2D``: ' + Qgis.DataProviderFlag.FastExtent2D.__doc__ + '\n' + '* ``FastExtent3D``: ' + Qgis.DataProviderFlag.FastExtent3D.__doc__
 # --
 Qgis.DataProviderFlags = lambda flags=0: Qgis.DataProviderFlag(flags)
 Qgis.DataProviderFlag.baseClass = Qgis

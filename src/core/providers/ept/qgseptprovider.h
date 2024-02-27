@@ -39,8 +39,8 @@ class QgsEptProvider: public QgsPointCloudDataProvider
 
     ~QgsEptProvider();
 
+    Qgis::DataProviderFlags flags() const override;
     QgsCoordinateReferenceSystem crs() const override;
-
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
     bool isValid() const override;

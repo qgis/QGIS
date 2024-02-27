@@ -332,6 +332,11 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QgsXyzVectorTi
   mMatrixSet = other.mMatrixSet;
 }
 
+Qgis::DataProviderFlags QgsXyzVectorTileDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QString QgsXyzVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

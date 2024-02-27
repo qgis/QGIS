@@ -58,6 +58,11 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   parseFile();
 }
 
+Qgis::DataProviderFlags QgsVirtualPointCloudProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsVirtualPointCloudProvider::~QgsVirtualPointCloudProvider() = default;
 
 QgsPointCloudDataProvider::Capabilities QgsVirtualPointCloudProvider::capabilities() const

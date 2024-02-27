@@ -42,6 +42,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
   public:
 
     // QgsDataProvider interface
+    Qgis::DataProviderFlags flags() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;
     virtual bool isValid() const override;

@@ -198,6 +198,10 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
 {
 }
 
+Qgis::DataProviderFlags QgsPostgresRasterProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 bool QgsPostgresRasterProvider::hasSufficientPermsAndCapabilities()
 {

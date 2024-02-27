@@ -85,6 +85,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 
     ~ QgsSpatiaLiteProvider() override;
 
+    Qgis::DataProviderFlags flags() const override;
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
     QgsCoordinateReferenceSystem crs() const override;

@@ -58,6 +58,11 @@ QgsPdalProvider::QgsPdalProvider(
   loadIndex( );
 }
 
+Qgis::DataProviderFlags QgsPdalProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsPdalProvider::~QgsPdalProvider() = default;
 
 QgsCoordinateReferenceSystem QgsPdalProvider::crs() const
