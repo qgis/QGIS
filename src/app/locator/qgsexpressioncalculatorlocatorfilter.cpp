@@ -62,5 +62,5 @@ void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, 
 
 void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QApplication::clipboard()->setText( result.getUserData().toString() );
+  QApplication::clipboard()->setText( result.userData().toString() );
 }

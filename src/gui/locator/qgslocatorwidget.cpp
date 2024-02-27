@@ -480,7 +480,7 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
 
 void QgsLocatorFilterFilter::triggerResult( const QgsLocatorResult &result )
 {
-  mLocator->search( result.getUserData().toString() );
+  mLocator->search( result.userData().toString() );
 }
 
 QgsLocatorLineEdit::QgsLocatorLineEdit( QgsLocatorWidget *locator, QWidget *parent )

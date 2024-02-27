@@ -316,7 +316,7 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
 
-  QVariantMap data = result.getUserData().toMap();
+  QVariantMap data = result.userData().toMap();
   const QgsPointXY point = data[QStringLiteral( "point" )].value<QgsPointXY>();
   mapCanvas->setCenter( point );
   if ( data.contains( QStringLiteral( "scale" ) ) )

@@ -55,7 +55,7 @@ void QgsLayerMetadataLocatorFilter::fetchResults( const QString &string, const Q
 
 void QgsLayerMetadataLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QgsLayerMetadataProviderResult metadataResult { result.getUserData().value<QgsLayerMetadataProviderResult>() };
+  QgsLayerMetadataProviderResult metadataResult { result.userData().value<QgsLayerMetadataProviderResult>() };
   switch ( metadataResult.layerType() )
   {
     case Qgis::LayerType::Raster:
