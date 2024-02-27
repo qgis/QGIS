@@ -99,12 +99,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BODY: ${{ github.event.comment.body }}
         run: |
-          body=${{ fromJSON(env.BODY) }}
-          echo ${body}
-          echo "body=${{ fromJSON(env.BODY) }}" >> $GITHUB_OUTPUT
           body2=${{ env.BODY }}
           echo ${body2}
           echo "body2=${{ env.BODY }}" >> $GITHUB_OUTPUT
+      #    body=${{ fromJSON(env.BODY) }}
+      #    echo ${body}
+      #    echo "body=${{ fromJSON(env.BODY) }}" >> $GITHUB_OUTPUT
+
 
       # get commits from the PR
       - name: Get PR commits
