@@ -59,6 +59,7 @@ class QgsSensorThingsProvider : public QgsVectorDataProvider
 
     QString name() const override;
     QString description() const override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
     static QString providerKey();
 
