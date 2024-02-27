@@ -1032,7 +1032,7 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( mDataProvider && mDataProvider->isValid() && (mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent2D) )
+  if ( mDataProvider && mDataProvider->isValid() && ( mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent2D ) )
   {
     // Provider has a trivial 2D extent calculation => always get extent from provider.
     // Things are nice and simple this way, e.g. we can always trust that this extent is
@@ -1145,7 +1145,7 @@ QgsBox3D QgsVectorLayer:: extent3D() const
   if ( !isSpatial() )
     return extent;
 
-  if ( mDataProvider && mDataProvider->isValid() && (mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent3D) )
+  if ( mDataProvider && mDataProvider->isValid() && ( mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent3D ) )
   {
     // Provider has a trivial 3D extent calculation => always get extent from provider.
     // Things are nice and simple this way, e.g. we can always trust that this extent is
