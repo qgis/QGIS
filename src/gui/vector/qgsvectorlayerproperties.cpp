@@ -574,7 +574,10 @@ void QgsVectorLayerProperties::syncToLayer()
   }
 
   if ( mSourceWidget )
+  {
+    mSourceWidget->setMapCanvas( mCanvas );
     mSourceWidget->setSourceUri( mLayer->source() );
+  }
 
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
