@@ -176,6 +176,8 @@ class TestPython__repr__(QgisTestCase):
     def testQgsRectangleRepr(self):
         r = QgsRectangle(1, 2, 3, 4)
         self.assertEqual(r.__repr__(), '<QgsRectangle: 1 2, 3 4>')
+        r = QgsRectangle()
+        self.assertEqual(r.__repr__(), '<QgsRectangle()>')
 
     def testQgsReferencedRectangleRepr(self):
         r = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
