@@ -20,6 +20,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
+#include "qgsrectangle.h"
 #include <QUrl>
 #include <QNetworkRequest>
 #include <nlohmann/json.hpp>
@@ -262,6 +263,30 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityT
       break;
   }
   return QString();
+}
+
+QString QgsSensorThingsUtils::filterForExtent( const QString &geometryField, const QgsRectangle &extent )
+{
+  // TODO -- confirm using 'geography' is always correct here
+  return ( extent.isNull() || geometryField.isEmpty() )
+         ? QString()
+         : QStringLiteral( "geo.intersects(%1, geography'%2')" ).arg( geometryField, extent.asWktPolygon() );
+}
+
+QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
+{
+  QStringList nonEmptyFilters;
+  for ( const QString &filter : filters )
+  {
+    if ( !filter.isEmpty() )
+      nonEmptyFilters.append( filter );
+  }
+  if ( nonEmptyFilters.empty() )
+    return QString();
+  if ( nonEmptyFilters.size() == 1 )
+    return nonEmptyFilters.at( 0 );
+
+  return QStringLiteral( "(" ) + nonEmptyFilters.join( QStringLiteral( ") and (" ) ) + QStringLiteral( ")" );
 }
 
 QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback, const QString &authCfg )

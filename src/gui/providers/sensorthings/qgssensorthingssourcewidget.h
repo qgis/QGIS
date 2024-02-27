@@ -23,7 +23,7 @@
 #include <QVariantMap>
 #include <QPointer>
 
-class QgsFileWidget;
+class QgsExtentWidget;
 class QgsSensorThingsConnectionPropertiesTask;
 
 ///@cond PRIVATE
@@ -40,6 +40,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;
     QString groupTitle() const override;
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
 
     /**
      * Updates a connection uri with the layer specific URI settings defined in the widget.
@@ -59,6 +60,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
     void rebuildGeometryTypes( Qgis::SensorThingsEntity type );
     void setCurrentGeometryTypeFromString( const QString &geometryType );
 
+    QgsExtentWidget *mExtentWidget = nullptr;
     QVariantMap mSourceParts;
     bool mIsValid = false;
     QPointer< QgsSensorThingsConnectionPropertiesTask > mPropertiesTask;

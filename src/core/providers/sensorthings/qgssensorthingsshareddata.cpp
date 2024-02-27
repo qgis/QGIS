@@ -37,6 +37,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   mGeometryField = QgsSensorThingsUtils::geometryFieldForEntityType( mEntityType );
   // use initial value of maximum page size as default
   mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), mMaximumPageSize ).toInt();
+  mFilterExtent = uriParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
 
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
@@ -133,9 +134,11 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
 QgsRectangle QgsSensorThingsSharedData::extent() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+
   // Since we can't retrieve the actual layer extent via SensorThings API, we use a pessimistic
   // global extent until we've retrieved all the features from the layer
-  return hasCachedAllFeatures() ? mFetchedFeatureExtent : QgsRectangle( -180, -90, 180, 90 );
+  return hasCachedAllFeatures() ? mFetchedFeatureExtent
+         : ( !mFilterExtent.isNull() ? mFilterExtent : QgsRectangle( -180, -90, 180, 90 ) );
 }
 
 long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
@@ -150,8 +153,12 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   // return no features, just the total count
   QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri );
   const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
-  if ( !typeFilter.isEmpty() )
-    countUri += QStringLiteral( "&$filter=" ) + typeFilter;
+  const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
+  QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter } );
+  if ( !filterString.isEmpty() )
+    filterString = QStringLiteral( "&$filter=" ) + filterString;
+  if ( !filterString.isEmpty() )
+    countUri += filterString;
 
   const QUrl url = parseUrl( QUrl( countUri ) );
 
@@ -223,8 +230,10 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     locker.changeMode( QgsReadWriteLocker::Write );
     mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
-    if ( !typeFilter.isEmpty() )
-      mNextPage += QStringLiteral( "&$filter=" ) + typeFilter;
+    const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
+    const QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter } );
+    if ( !filterString.isEmpty() )
+      mNextPage += QStringLiteral( "&$filter=" ) + filterString;
   }
 
   locker.unlock();
@@ -251,18 +260,22 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
 
 QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage, const QgsFeatureIds &alreadyFetchedIds )
 {
-  const QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
+  const QgsRectangle requestExtent = mFilterExtent.isNull() ? extent : extent.intersect( mFilterExtent );
+  const QgsGeometry extentGeom = QgsGeometry::fromRect( requestExtent );
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
 
   if ( hasCachedAllFeatures() || mCachedExtent.contains( extentGeom ) )
   {
     // all features cached locally, rely on local spatial index
-    return qgis::listToSet( mSpatialIndex.intersects( extent ) );
+    return qgis::listToSet( mSpatialIndex.intersects( requestExtent ) );
   }
 
-  // TODO -- is using 'geography' always correct here?
   const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
-  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$top=%2&$count=false&$filter=geo.intersects(%3, geography'%4')%5" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ).arg( mGeometryField, extent.asWktPolygon(), typeFilter.isEmpty() ? QString() : ( QStringLiteral( " and " ) + typeFilter ) );
+  const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, requestExtent );
+  QString filterString = QgsSensorThingsUtils::combineFilters( { extentFilter, typeFilter } );
+  if ( !filterString.isEmpty() )
+    filterString = QStringLiteral( "&$filter=" ) + filterString;
+  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$top=%2&$count=false%3" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ).arg( filterString );
 
   if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
   {
@@ -270,7 +283,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
     // This is slightly nicer from a rendering point of view, because panning the map won't see features
     // previously visible disappear temporarily while we wait for them to be included in the service's result set...
     nextPage = queryUrl;
-    return qgis::listToSet( mSpatialIndex.intersects( extent ) );
+    return qgis::listToSet( mSpatialIndex.intersects( requestExtent ) );
   }
 
   locker.unlock();

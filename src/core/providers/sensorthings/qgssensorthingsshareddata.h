@@ -84,6 +84,8 @@ class QgsSensorThingsSharedData
     QString mGeometryField;
     QgsFields mFields;
 
+    QgsRectangle mFilterExtent;
+
     //! Extent calculated from features actually fetched so far
     QgsRectangle mFetchedFeatureExtent;
 
