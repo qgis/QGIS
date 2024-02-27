@@ -135,6 +135,11 @@ void QgsSensorThingsSourceWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
   mExtentWidget->setMapCanvas( mapCanvas, false );
 }
 
+Qgis::SensorThingsEntity QgsSensorThingsSourceWidget::currentEntityType() const
+{
+  return mComboEntityType->currentData().value< Qgis::SensorThingsEntity >();
+}
+
 QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connectionUri ) const
 {
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(

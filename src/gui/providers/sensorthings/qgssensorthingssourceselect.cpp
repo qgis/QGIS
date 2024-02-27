@@ -24,6 +24,7 @@
 #include "qgssensorthingsconnectiondialog.h"
 #include "qgssensorthingssourcewidget.h"
 #include "qgssensorthingsprovider.h"
+#include "qgssensorthingssubseteditor.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -50,6 +51,9 @@ QgsSensorThingsSourceSelect::QgsSensorThingsSourceSelect( QWidget *parent, Qt::W
   vlayout->setContentsMargins( 0, 0, 0, 0 );
   vlayout->addWidget( mSourceWidget );
   mLayerSettingsContainerWidget->setLayout( vlayout );
+
+  txtSubsetSQL->setWrapMode( QgsCodeEditor::WrapWord );
+  connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsSensorThingsSourceSelect::buildFilter );
 
   connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, &QgsSensorThingsSourceSelect::validate );
   connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::validChanged, this, &QgsSensorThingsSourceSelect::validate );
@@ -158,13 +162,20 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
   const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
 
   const QString providerUri = mConnectionWidget->sourceUri();
-  const QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
+  QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
 
+  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri(
+                           QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+                           layerUri
+                         );
 
-  const QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri(
-                                 QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-                                 layerUri
-                               );
+  if ( !txtSubsetSQL->text().isEmpty() )
+    uriParts.insert( QStringLiteral( "sql" ), txtSubsetSQL->text() );
+
+  layerUri = QgsProviderRegistry::instance()->encodeUri(
+               QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+               uriParts
+             );
 
   const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( uriParts.value( QStringLiteral( "entity" ) ).toString() );
 
@@ -271,6 +282,17 @@ void QgsSensorThingsSourceSelect::cmbConnections_currentTextChanged( const QStri
       mSourceWidget->setSourceUri( mConnectionWidget->sourceUri() );
     }
     mBlockChanges--;
+  }
+}
+
+void QgsSensorThingsSourceSelect::buildFilter()
+{
+  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mSourceWidget->currentEntityType() );
+  QgsSensorThingsSubsetEditor subsetEditor( nullptr, fields );
+  subsetEditor.setSubsetString( txtSubsetSQL->text( ) );
+  if ( subsetEditor.exec() )
+  {
+    txtSubsetSQL->setText( subsetEditor.subsetString() );
   }
 }
 

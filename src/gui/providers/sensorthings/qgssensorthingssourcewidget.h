@@ -41,6 +41,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
     QString sourceUri() const override;
     QString groupTitle() const override;
     void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+    Qgis::SensorThingsEntity currentEntityType() const;
 
     /**
      * Updates a connection uri with the layer specific URI settings defined in the widget.
