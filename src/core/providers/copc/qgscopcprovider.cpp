@@ -64,6 +64,11 @@ QgsCoordinateReferenceSystem QgsCopcProvider::crs() const
   return mIndex->crs();
 }
 
+Qgis::DataProviderFlags QgsCopcProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsRectangle QgsCopcProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

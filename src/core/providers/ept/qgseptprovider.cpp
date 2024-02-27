@@ -51,6 +51,11 @@ QgsEptProvider::QgsEptProvider(
   loadIndex( );
 }
 
+Qgis::DataProviderFlags QgsEptProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsEptProvider::~QgsEptProvider() = default;
 
 QgsCoordinateReferenceSystem QgsEptProvider::crs() const

@@ -346,6 +346,11 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   mTimestamp = QDateTime::currentDateTime();
 }
 
+Qgis::DataProviderFlags QgsAmsProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const
 {
   return ProviderCapability::ReadLayerMetadata | ProviderCapability::ReloadData;

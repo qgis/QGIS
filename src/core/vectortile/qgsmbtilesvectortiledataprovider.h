@@ -44,6 +44,7 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
      */
     QgsMbTilesVectorTileDataProvider &operator=( const QgsMbTilesVectorTileDataProvider &other ) = delete;
 
+    Qgis::DataProviderFlags flags() const override;
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;

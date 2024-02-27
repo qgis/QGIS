@@ -1827,6 +1827,8 @@ class CORE_EXPORT Qgis
     enum class DataProviderFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IsBasemapSource = 1 << 1, //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
+      FastExtent2D = 1 << 2, //!< Provider's 2D extent retrieval via QgsDataProvider::extent() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38.
+      FastExtent3D = 1 << 3, //!< Provider's 3D extent retrieval via QgsDataProvider::extent3D() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38.
     };
     //! Data provider flags
     Q_DECLARE_FLAGS( DataProviderFlags, DataProviderFlag )

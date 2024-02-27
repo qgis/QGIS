@@ -75,6 +75,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
+    Qgis::DataProviderFlags flags() const override;
     QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }

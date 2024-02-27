@@ -72,6 +72,11 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mLayerMetadata = other.mLayerMetadata;
 }
 
+Qgis::DataProviderFlags QgsArcGisVectorTileServiceDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 Qgis::VectorTileProviderFlags QgsArcGisVectorTileServiceDataProvider::providerFlags() const
 {
   return QgsXyzVectorTileDataProviderBase::providerFlags() | Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
