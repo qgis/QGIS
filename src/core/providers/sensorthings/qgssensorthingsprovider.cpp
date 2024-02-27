@@ -346,6 +346,22 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
       break;
   }
 
+  const QStringList bbox = dsUri.param( QStringLiteral( "bbox" ) ).split( ',' );
+  if ( bbox.size() == 4 )
+  {
+    QgsRectangle r;
+    bool xminOk = false;
+    bool yminOk = false;
+    bool xmaxOk = false;
+    bool ymaxOk = false;
+    r.setXMinimum( bbox[0].toDouble( &xminOk ) );
+    r.setYMinimum( bbox[1].toDouble( &yminOk ) );
+    r.setXMaximum( bbox[2].toDouble( &xmaxOk ) );
+    r.setYMaximum( bbox[3].toDouble( &ymaxOk ) );
+    if ( xminOk && yminOk && xmaxOk && ymaxOk )
+      components.insert( QStringLiteral( "bounds" ), r );
+  }
+
   return components;
 }
 
@@ -405,6 +421,12 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
   {
     dsUri.setWkbType( Qgis::WkbType::MultiPolygonZ );
+  }
+
+  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == QMetaType::type( "QgsRectangle" ) )
+  {
+    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+    dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
 
   return dsUri.uri( false );

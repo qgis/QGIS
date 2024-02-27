@@ -24,6 +24,7 @@
 #include "qgsiconutils.h"
 #include "qgssensorthingsconnectionpropertiestask.h"
 #include "qgsapplication.h"
+#include "qgsextentwidget.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QStandardItemModel>
@@ -32,6 +33,14 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   : QgsProviderSourceWidget( parent )
 {
   setupUi( this );
+
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  mExtentWidget = new QgsExtentWidget( nullptr, QgsExtentWidget::CondensedStyle );
+  mExtentWidget->setNullValueAllowed( true, tr( "Not set" ) );
+  mExtentWidget->setOutputCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  vl->addWidget( mExtentWidget );
+  mExtentLimitFrame->setLayout( vl );
 
   mSpinPageSize->setClearValue( 0, tr( "Default (%1)" ).arg( QgsSensorThingsUtils::DEFAULT_PAGE_SIZE ) );
 
@@ -58,6 +67,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mSpinPageSize, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsSensorThingsSourceWidget::validate );
   connect( mRetrieveTypesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveTypes );
   mRetrieveTypesButton->setEnabled( false );
+  connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, &QgsSensorThingsSourceWidget::validate );
   validate();
 }
 
@@ -92,6 +102,17 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
     mSpinPageSize->setValue( maxPageSizeParam );
   }
 
+  const QgsRectangle bounds = mSourceParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+  if ( !bounds.isNull() )
+  {
+    mExtentWidget->setCurrentExtent( bounds, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+    mExtentWidget->setOutputExtentFromUser( bounds, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  }
+  else
+  {
+    mExtentWidget->clear();
+  }
+
   mIsValid = true;
 }
 
@@ -106,6 +127,12 @@ QString QgsSensorThingsSourceWidget::sourceUri() const
 QString QgsSensorThingsSourceWidget::groupTitle() const
 {
   return QObject::tr( "SensorThings Configuration" );
+}
+
+void QgsSensorThingsSourceWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
+{
+  QgsProviderSourceWidget::setMapCanvas( mapCanvas );
+  mExtentWidget->setMapCanvas( mapCanvas, false );
 }
 
 QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connectionUri ) const
@@ -151,6 +178,11 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
   {
     parts.remove( QStringLiteral( "pageSize" ) );
   }
+
+  if ( mExtentWidget->outputExtent().isNull() )
+    parts.remove( QStringLiteral( "bounds" ) );
+  else
+    parts.insert( QStringLiteral( "bounds" ), QVariant::fromValue( mExtentWidget->outputExtent() ) );
 
   return QgsProviderRegistry::instance()->encodeUri(
            QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,

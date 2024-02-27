@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>91</height>
+    <height>134</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>QgsSensorThingsSourceWidgetBase</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="1,2,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -40,23 +40,20 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mComboGeometryType"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Extent limit</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Page size</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mComboGeometryType"/>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mComboEntityType"/>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QgsSpinBox" name="mSpinPageSize">
-     <property name="maximum">
-      <number>9999999</number>
      </property>
     </widget>
    </item>
@@ -87,6 +84,23 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mComboEntityType"/>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsSpinBox" name="mSpinPageSize">
+     <property name="maximum">
+      <number>9999999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QWidget" name="mExtentLimitFrame" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -96,6 +110,13 @@
    <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mComboEntityType</tabstop>
+  <tabstop>mComboGeometryType</tabstop>
+  <tabstop>mRetrieveTypesButton</tabstop>
+  <tabstop>mSpinPageSize</tabstop>
+  <tabstop>mExtentLimitFrame</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -21,6 +21,7 @@
 
 class QgsFields;
 class QgsFeedback;
+class QgsRectangle;
 
 /**
  * \ingroup core
@@ -77,6 +78,25 @@ class CORE_EXPORT QgsSensorThingsUtils
      * \a entityType and \a wkbType.
      */
     static QString filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType );
+
+    /**
+     * Returns a filter string which restricts results to those within the specified
+     * \a extent.
+     *
+     * The \a extent should always be specified in EPSG:4326.
+     *
+     * \since QGIS 3.38
+     */
+    static QString filterForExtent( const QString &geometryField, const QgsRectangle &extent );
+
+    /**
+     * Combines a set of SensorThings API filter operators.
+     *
+     * See https://docs.ogc.org/is/18-088/18-088.html#requirement-request-data-filter
+     *
+     * \since QGIS 3.38
+     */
+    static QString combineFilters( const QStringList &filters );
 
     /**
      * Returns a list of available geometry types for the server at the specified \a uri
