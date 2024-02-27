@@ -32,14 +32,14 @@ Constructor for QgsLocatorResult.
 Constructor for QgsLocatorResult.
 %End
 
-    QVariant getUserData() const;
+    QVariant userData() const /PyName=_userData/;
 %Docstring
 Returns the ``userData``.
 
 .. versionadded:: 3.18
 %End
 
-    void setUserData( QVariant userData );
+    void setUserData( const QVariant &userData );
 %Docstring
 Set ``userData`` for the locator result
 
@@ -79,8 +79,6 @@ normally.
     };
 
     QList<QgsLocatorResult::ResultAction> actions;
-
-%Property( name = userData, get = getUserData, set = setUserData )
 
 };
 

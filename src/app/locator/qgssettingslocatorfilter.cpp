@@ -60,7 +60,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
     QgsLocatorResult result;
     result.filter = this;
     result.displayString = title;
-    result.getUserData().setValue( settingsPage );
+    result.userData().setValue( settingsPage );
 
     if ( context.usingPrefix && string.isEmpty() )
     {
@@ -86,7 +86,7 @@ QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &ty
 void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
 
-  const QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.getUserData() );
+  const QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData() );
   const QString type = settingsPage.value( QStringLiteral( "type" ) );
   const QString page = settingsPage.value( QStringLiteral( "page" ) );
 
