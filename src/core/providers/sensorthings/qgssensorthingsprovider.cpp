@@ -240,6 +240,12 @@ QString QgsSensorThingsProvider::description() const
   return SENSORTHINGS_PROVIDER_DESCRIPTION;
 }
 
+bool QgsSensorThingsProvider::renderInPreview( const PreviewContext & )
+{
+  // be nice to the endpoint and don't make any requests we don't have to!
+  return false;
+}
+
 void QgsSensorThingsProvider::reloadProviderData()
 {
 #if 0
