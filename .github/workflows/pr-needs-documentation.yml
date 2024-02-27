@@ -97,7 +97,7 @@ jobs:
         id: get_pr_body
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BODY: ${{ github.event.comment.body }}
+          BODY: ${{ github.event.pull_request.comment.body }}
         run: |
           body2=${{ env.BODY }}
           echo ${body2}
