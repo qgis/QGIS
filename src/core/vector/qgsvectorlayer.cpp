@@ -1032,22 +1032,34 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( !mValidExtent2D && mLazyExtent2D && mReadExtentFromXml && !mXmlExtent2D.isNull() )
+  if ( mDataProvider && mDataProvider->isValid() && mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent2D )
   {
-    updateExtent( mXmlExtent2D );
-    mValidExtent2D = true;
-    mLazyExtent2D = false;
-  }
-
-  if ( !mValidExtent2D && mLazyExtent2D && mDataProvider && mDataProvider->isValid() )
-  {
-    // store the extent
+    // Provider has a trivial 2D extent calculation => always get extent from provider.
+    // Things are nice and simple this way, e.g. we can always trust that this extent is
+    // accurate and up to date.
     updateExtent( mDataProvider->extent() );
     mValidExtent2D = true;
     mLazyExtent2D = false;
+  }
+  else
+  {
+    if ( !mValidExtent2D && mLazyExtent2D && mReadExtentFromXml && !mXmlExtent2D.isNull() )
+    {
+      updateExtent( mXmlExtent2D );
+      mValidExtent2D = true;
+      mLazyExtent2D = false;
+    }
 
-    // show the extent
-    QgsDebugMsgLevel( QStringLiteral( "2D Extent of layer: %1" ).arg( mExtent2D.toString() ), 3 );
+    if ( !mValidExtent2D && mLazyExtent2D && mDataProvider && mDataProvider->isValid() )
+    {
+      // store the extent
+      updateExtent( mDataProvider->extent() );
+      mValidExtent2D = true;
+      mLazyExtent2D = false;
+
+      // show the extent
+      QgsDebugMsgLevel( QStringLiteral( "2D Extent of layer: %1" ).arg( mExtent2D.toString() ), 3 );
+    }
   }
 
   if ( mValidExtent2D )
@@ -1133,22 +1145,34 @@ QgsBox3D QgsVectorLayer:: extent3D() const
   if ( !isSpatial() )
     return extent;
 
-  if ( !mValidExtent3D && mLazyExtent3D && mReadExtentFromXml && !mXmlExtent3D.isNull() )
+  if ( mDataProvider && mDataProvider->isValid() && mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent3D )
   {
-    updateExtent( mXmlExtent3D );
-    mValidExtent3D = true;
-    mLazyExtent3D = false;
-  }
-
-  if ( !mValidExtent3D && mLazyExtent3D && mDataProvider && mDataProvider->isValid() )
-  {
-    // store the extent
+    // Provider has a trivial 3D extent calculation => always get extent from provider.
+    // Things are nice and simple this way, e.g. we can always trust that this extent is
+    // accurate and up to date.
     updateExtent( mDataProvider->extent3D() );
     mValidExtent3D = true;
     mLazyExtent3D = false;
+  }
+  else
+  {
+    if ( !mValidExtent3D && mLazyExtent3D && mReadExtentFromXml && !mXmlExtent3D.isNull() )
+    {
+      updateExtent( mXmlExtent3D );
+      mValidExtent3D = true;
+      mLazyExtent3D = false;
+    }
 
-    // show the extent
-    QgsDebugMsgLevel( QStringLiteral( "3D Extent of layer: %1" ).arg( mExtent3D.toString() ), 3 );
+    if ( !mValidExtent3D && mLazyExtent3D && mDataProvider && mDataProvider->isValid() )
+    {
+      // store the extent
+      updateExtent( mDataProvider->extent3D() );
+      mValidExtent3D = true;
+      mLazyExtent3D = false;
+
+      // show the extent
+      QgsDebugMsgLevel( QStringLiteral( "3D Extent of layer: %1" ).arg( mExtent3D.toString() ), 3 );
+    }
   }
 
   if ( mValidExtent3D )
