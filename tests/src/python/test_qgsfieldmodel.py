@@ -348,6 +348,14 @@ class TestQgsFieldModel(QgisTestCase):
         self.assertEqual(proxy_m.rowCount(), 1)
         self.assertEqual(proxy_m.data(proxy_m.index(0, 0)), 'id_a')
 
+        proxy_m.setFilters(QgsFieldProxyModel.Filter.AllTypes | QgsFieldProxyModel.Filter.OriginProvider)
+        proxy_m.sourceFieldModel().setLayer(layer)
+        self.assertEqual(proxy_m.rowCount(), 1)
+        self.assertEqual(proxy_m.data(proxy_m.index(0, 0)), 'id_a')
+        proxy_m.sourceFieldModel().setLayer(layer3)
+        self.assertEqual(proxy_m.rowCount(), 1)
+        self.assertEqual(proxy_m.data(proxy_m.index(0, 0)), 'id_a')
+
     def testFieldIsWidgetEditableRole(self):
         l, m = create_model()
         self.assertTrue(m.data(m.indexFromName('fldtxt'), QgsFieldModel.FieldRoles.FieldIsWidgetEditable))
