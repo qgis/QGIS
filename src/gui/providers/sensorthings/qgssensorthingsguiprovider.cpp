@@ -30,6 +30,9 @@
 #include "qgssensorthingsprovider.h"
 #include "qgssensorthingsdataitemguiprovider.h"
 #include "qgsapplication.h"
+#include "qgssubsetstringeditorprovider.h"
+#include "qgssensorthingssubseteditor.h"
+#include "qgsvectorlayer.h"
 
 //
 // QgsSensorThingsSourceSelectProvider
@@ -110,6 +113,36 @@ QList<QgsProviderSourceWidgetProvider *> QgsSensorThingsProviderGuiMetadata::sou
 QList<QgsDataItemGuiProvider *> QgsSensorThingsProviderGuiMetadata::dataItemGuiProviders()
 {
   return { new QgsSensorThingsDataItemGuiProvider() };
+}
+
+class QgsSensorThingsSubsetStringEditorProvider: public QgsSubsetStringEditorProvider
+{
+  public:
+
+    QString providerKey() const override { return QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY; }
+
+    bool canHandleLayer( QgsVectorLayer *layer ) const override
+    {
+      QgsDataProvider *provider = layer->dataProvider();
+      return static_cast< bool >( qobject_cast<QgsSensorThingsProvider *>( provider ) );
+    }
+
+    QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl ) override
+    {
+      QgsDataProvider *provider = layer->dataProvider();
+      QgsSensorThingsProvider *sensorThingsProvider = qobject_cast<QgsSensorThingsProvider *>( provider );
+      if ( !sensorThingsProvider )
+        return nullptr;
+
+      return new QgsSensorThingsSubsetEditor( layer, QgsFields(), parent, fl );
+    }
+};
+
+
+QList<QgsSubsetStringEditorProvider *> QgsSensorThingsProviderGuiMetadata::subsetStringEditorProviders()
+{
+  return QList<QgsSubsetStringEditorProvider *>()
+         << new QgsSensorThingsSubsetStringEditorProvider;
 }
 
 ///@endcond

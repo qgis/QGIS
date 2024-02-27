@@ -30,7 +30,7 @@
  *
  * \since QGIS 3.36
  */
-class QgsSensorThingsProvider final : public QgsVectorDataProvider
+class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
