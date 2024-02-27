@@ -41,13 +41,11 @@ PyQgsPythonProvider
 PyQgsAnnotation
 PyQgsAuthenticationSystem
 PyQgsBlockingProcess
-PyQgsBookmarkModel
 PyQgsCodeEditor
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsProject
-PyQgsFieldModel
 PyQgsFloatingWidget
 PyQgsJsonUtils
 PyQgsLayoutHtml
