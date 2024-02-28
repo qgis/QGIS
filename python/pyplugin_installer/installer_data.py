@@ -583,7 +583,7 @@ class Plugins(QObject):
 
         qt_version = int(QT_VERSION_STR.split('.')[0])
         supports_qt6 = pluginMetadata("supportsQt6").strip().upper() in ("TRUE", "YES")
-        if qt_version == 6 and not supports_qt6:
+        if qt_version == 6 and not supports_qt6 and "QGIS_DISABLE_SUPPORTS_QT6_CHECK" not in os.environ:
             error = "incompatible"
             errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Plugin does not support Qt6 versions of QGIS")
         elif version:
