@@ -235,9 +235,6 @@ QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicK
 
 bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool removeSettingAtKey ) const
 {
-  if ( exists( dynamicKeyPartList ) )
-    return false;
-
   auto settings = QgsSettings::get();
 
   const QString oldCompleteKey = completeKeyPrivate( key, dynamicKeyPartList );
