@@ -3,6 +3,7 @@ test_core_compositionconverter
 test_core_expression
 test_core_labelingengine
 test_core_layoutpicture
+# test_core_ogcutils runs fine locally on Fedora:rawhide but not on CI
 test_core_ogcutils
 test_core_vectortilelayer
 test_gui_processinggui
@@ -47,7 +48,6 @@ PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsProject
 PyQgsFloatingWidget
-PyQgsJsonUtils
 PyQgsLayoutHtml
 PyQgsLineSymbolLayers
 PyQgsMapBoxGlStyleConverter
@@ -59,7 +59,6 @@ PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
 PyQgsTextRenderer
-PyQgsOGRProvider
 PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
 PyQgsVectorLayerCache
@@ -79,4 +78,5 @@ ProcessingQgisAlgorithmsTestPt3
 ProcessingQgisAlgorithmsTestPt4
 ProcessingGdalAlgorithmsVectorTest
 ProcessingGrassAlgorithmsImageryTest
+# PyQgsProviderRegistry runs fine locally on Fedora:rawhide but not on CI
 PyQgsProviderRegistry
