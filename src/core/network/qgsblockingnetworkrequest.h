@@ -291,6 +291,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     QString errorMessageFailedAuth();
 
     void sendRequestToNetworkAccessManager( const QNetworkRequest &request );
+
+    void abortIfNotPartialContentReturned();
 };
 
 ///@cond PRIVATE

@@ -197,6 +197,9 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::uploadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
 
+      if ( request.hasRawHeader( "Range" ) )
+        connect( mReply, &QNetworkReply::metaDataChanged, this, &QgsBlockingNetworkRequest::abortIfNotPartialContentReturned, Qt::DirectConnection );
+
       auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty ]()
       {
         // when this method is called we have "produced" a single authentication request -- so the buffer is now full
@@ -354,6 +357,10 @@ void QgsBlockingNetworkRequest::replyFinished()
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
+          // if that was a range request, use the same range for the redirected request
+          if ( mReply->request().hasRawHeader( "Range" ) )
+            request.setRawHeader( "Range", mReply->request().rawHeader( "Range" ) );
+
           mReply->deleteLater();
           mReply = nullptr;
 
@@ -380,6 +387,10 @@ void QgsBlockingNetworkRequest::replyFinished()
           connect( mReply, &QNetworkReply::finished, this, &QgsBlockingNetworkRequest::replyFinished, Qt::DirectConnection );
           connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
           connect( mReply, &QNetworkReply::uploadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
+
+          if ( request.hasRawHeader( "Range" ) )
+            connect( mReply, &QNetworkReply::metaDataChanged, this, &QgsBlockingNetworkRequest::abortIfNotPartialContentReturned, Qt::DirectConnection );
+
           return;
         }
       }
@@ -459,4 +470,16 @@ void QgsBlockingNetworkRequest::replyFinished()
 QString QgsBlockingNetworkRequest::errorMessageFailedAuth()
 {
   return tr( "network request update failed for authentication config" );
+}
+
+void QgsBlockingNetworkRequest::abortIfNotPartialContentReturned()
+{
+  if ( mReply && mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt() == 200 )
+  {
+    // We're expecting a 206 - Partial Content but the server returned 200
+    // It seems it does not support range requests and is returning the whole file!
+    mReply->abort();
+    mErrorMessage = tr( "The server does not support range requests" );
+    mErrorCode = ServerExceptionError;
+  }
 }
