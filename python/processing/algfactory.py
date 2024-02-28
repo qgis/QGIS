@@ -345,6 +345,8 @@ class ProcessingAlgFactory():
     LAYOUT = "LAYOUT"
     LAYOUT_ITEM = "LAYOUT_ITEM"
     DATETIME = "DATETIME"
+    DATE = "DATE"
+    TIME = "TIME"
     MAP_THEME = "MAP_THEME"
     PROVIDER_CONNECTION = "PROVIDER_CONNECTION"
     DATABASE_SCHEMA = "DATABASE_SCHEMA"
@@ -487,7 +489,9 @@ class ProcessingAlgFactory():
             alg.LAYOUT: QgsProcessingParameterLayout
             alg.LAYOUT_ITEM: QgsProcessingParameterLayoutItem
             alg.COLOR: QgsProcessingParameterColor
-            alg.DATETIME: QgsProcessingParameterDateTime
+            alg.DATETIME: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.DateTime)
+            alg.DATE: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.Date)
+            alg.TIME: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.Time)
             alg.MAP_THEME: QgsProcessingParameterMapTheme
             alg.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection
             alg.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema
@@ -548,7 +552,9 @@ input_type_mapping = {
     ProcessingAlgFactory.LAYOUT: QgsProcessingParameterLayout,
     ProcessingAlgFactory.LAYOUT_ITEM: QgsProcessingParameterLayoutItem,
     ProcessingAlgFactory.COLOR: QgsProcessingParameterColor,
-    ProcessingAlgFactory.DATETIME: QgsProcessingParameterDateTime,
+    ProcessingAlgFactory.DATETIME: partial(QgsProcessingParameterDateTime, type=QgsProcessingParameterDateTime.Type.DateTime),
+    ProcessingAlgFactory.DATE: partial(QgsProcessingParameterDateTime, type=QgsProcessingParameterDateTime.Type.Date),
+    ProcessingAlgFactory.TIME: partial(QgsProcessingParameterDateTime, type=QgsProcessingParameterDateTime.Type.Time),
     ProcessingAlgFactory.MAP_THEME: QgsProcessingParameterMapTheme,
     ProcessingAlgFactory.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection,
     ProcessingAlgFactory.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema,
