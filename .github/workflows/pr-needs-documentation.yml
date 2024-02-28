@@ -77,7 +77,7 @@ jobs:
 
 
   create-doc-issue:
-    if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
+    if: github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') 
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
