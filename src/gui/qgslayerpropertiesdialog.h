@@ -72,7 +72,7 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     /**
      * Sets the metadata \a widget and \a page associated with the dialog.
      *
-     * This must be called in order for the standard metadata loading/saving functionality to be avialable.
+     * This must be called in order for the standard metadata loading/saving functionality to be available.
      */
     void setMetadataWidget( QgsMetadataWidget *widget, QWidget *page );
 

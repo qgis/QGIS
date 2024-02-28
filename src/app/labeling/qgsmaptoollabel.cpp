@@ -366,11 +366,11 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
   {
     Qgis::LabelQuadrantPosition quadrantOffset = Qgis::LabelQuadrantPosition::AboveRight;
 
-    // quadrant offest defined via buttons
+    // quadrant offset defined via buttons
     if ( mCurrentLabel.settings.placement == Qgis::LabelPlacement::OverPoint )
       quadrantOffset = mCurrentLabel.settings.quadOffset;
 
-    // quadrant offest DD defined
+    // quadrant offset DD defined
     if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::OffsetQuad ) )
     {
       QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::Property::OffsetQuad, mCurrentLabel.settings, f, static_cast< int >( quadrantOffset ) );

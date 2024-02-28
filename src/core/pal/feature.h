@@ -76,7 +76,7 @@ namespace pal
 
       /**
        * Creates a new generic feature.
-        * \param lf a pointer for a feature which contains the spatial entites
+        * \param lf a pointer for a feature which contains the spatial entities
         * \param geom a pointer to a GEOS geometry
         */
       FeaturePart( QgsLabelFeature *lf, const GEOSGeometry *geom );

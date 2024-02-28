@@ -342,7 +342,7 @@ class QgsConnectionPool
     /**
      * Invalidates all connections to the specified resource.
      * The internal state of certain handles (for instance OGR) are altered
-     * when a dataset is modified. Consquently, all open handles need to be
+     * when a dataset is modified. Consequently, all open handles need to be
      * invalidated when such datasets are changed to ensure the handles are
      * refreshed. See the OGR provider for an example where this is needed.
      */

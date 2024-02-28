@@ -14,7 +14,7 @@
 class QgsValidityCheckResultsModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-A QAbstractItemModel subclass for displaying the results from a :py:class:`QgsAbtractValidityCheck`.
+A QAbstractItemModel subclass for displaying the results from a :py:class:`QgsAbstractValidityCheck`.
 
 .. versionadded:: 3.6
 %End

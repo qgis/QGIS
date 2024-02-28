@@ -426,7 +426,7 @@ bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters( c
   mPercentile = parameterAsDouble( parameters, QStringLiteral( "PERCENTILE" ), context );
 
   //default percentile output data type to float32 raster if interpolation method is chosen
-  //otherwise use the most potent data type in the intput raster stack (see prepareAlgorithm() in base class)
+  //otherwise use the most potent data type in the input raster stack (see prepareAlgorithm() in base class)
   if ( mMethod != QgsRasterAnalysisUtils::CellValuePercentileMethods::NearestRankPercentile && static_cast< int >( mDataType ) < 6 )
     mDataType = Qgis::DataType::Float32;
 

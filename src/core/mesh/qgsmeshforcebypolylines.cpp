@@ -360,7 +360,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
   QPair<int, int> currentEdge{-1, -1};
 
   int currentAddedVertex = -1; // Last added point
-  int nextCutFace = -1; //face that has to be cutted from an intersected edge (not snap on existing vertex)
+  int nextCutFace = -1; //face that has to be cut from an intersected edge (not snap on existing vertex)
   int leftFace = -1; //the face that has been just cut in a edge
 
   while ( true )

@@ -1438,7 +1438,7 @@ Returns ``True`` if auto refresh is enabled for the layer.
 
     Qgis::AutoRefreshMode autoRefreshMode() const;
 %Docstring
-Returns the layer's automatical refresh mode.
+Returns the layer's automatic refresh mode.
 
 .. seealso:: :py:func:`autoRefreshInterval`
 
@@ -1602,7 +1602,7 @@ Returns the layer's elevation properties. This may be ``None``, depending on the
 %Docstring
 Returns path to the placeholder image or an empty string if a generated legend is shown
 
-:return: placholder image path
+:return: placeholder image path
 
 .. versionadded:: 3.22
 %End

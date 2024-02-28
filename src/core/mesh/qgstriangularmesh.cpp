@@ -474,7 +474,7 @@ QList<int> QgsTriangularMesh::edgeIndexesForRectangle( const QgsRectangle &recta
 
 QVector<QVector3D> QgsTriangularMesh::vertexNormals( float vertScale ) const
 {
-  QVector<QVector3D> normales( vertices().count(), QVector3D( 0, 0, 0 ) );
+  QVector<QVector3D> normals( vertices().count(), QVector3D( 0, 0, 0 ) );
 
   for ( const auto &face : triangles() )
   {
@@ -494,10 +494,10 @@ QVector<QVector3D> QgsTriangularMesh::vertexNormals( float vertScale ) const
       QVector3D v1( float( otherVert1.x() - vert.x() ), float( otherVert1.y() - vert.y() ), vertScale * float( otherVert1.z() - vert.z() ) );
       QVector3D v2( float( otherVert2.x() - vert.x() ), float( otherVert2.y() - vert.y() ), vertScale * float( otherVert2.z() - vert.z() ) );
 
-      normales[index1] += QVector3D::crossProduct( v1, v2 );
+      normals[index1] += QVector3D::crossProduct( v1, v2 );
     }
   }
-  return normales;
+  return normals;
 }
 
 QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFactor, int minimumTrianglesCount ) const

@@ -307,9 +307,9 @@ void QgsMeshVectorArrowRenderer::drawVectorDataOnFaces( )
 
 void QgsMeshVectorArrowRenderer::drawVectorDataOnEdges()
 {
-  const QList<int> egdesInExtent = mTriangularMesh.edgeIndexesForRectangle( mBufferedExtent );
+  const QList<int> edgesInExtent = mTriangularMesh.edgeIndexesForRectangle( mBufferedExtent );
   const QVector<QgsMeshVertex> &centroids = mTriangularMesh.edgeCentroids();
-  const QSet<int> nativeEdgesInExtent = QgsMeshUtils::nativeEdgesFromEdges( egdesInExtent,
+  const QSet<int> nativeEdgesInExtent = QgsMeshUtils::nativeEdgesFromEdges( edgesInExtent,
                                         mTriangularMesh.edgesToNativeEdges() );
   drawVectorDataOnPoints( nativeEdgesInExtent, centroids );
 }

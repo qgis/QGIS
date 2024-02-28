@@ -232,7 +232,7 @@ std::vector< int > GeomFunction::convexHullId( std::vector< int > &id, const std
         stack[top] = convexHull[i];
       }
     }
-    else if ( result > 0 ) //convexe
+    else if ( result > 0 ) //convex
     {
       second++;
       top++;

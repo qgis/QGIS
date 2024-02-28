@@ -1490,7 +1490,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_DECL_DEPRECATED bool hasAutoRefreshEnabled() const SIP_DEPRECATED;
 
     /**
-     * Returns the layer's automatical refresh mode.
+     * Returns the layer's automatic refresh mode.
      * \see autoRefreshInterval()
      * \see setAutoRefreshMode()
      * \since QGIS 3.34
@@ -1634,7 +1634,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns path to the placeholder image or an empty string if a generated legend is shown
-     * \return placholder image path
+     * \return placeholder image path
      * \since QGIS 3.22
      */
     QString legendPlaceholderImage() const { return mLegendPlaceholderImage;}

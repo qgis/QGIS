@@ -124,7 +124,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
 
     /**
-     * Removes the childrens, disconnect all the forwarded and external signals and sets their parent to NULLPTR
+     * Removes the children, disconnect all the forwarded and external signals and sets their parent to NULLPTR
      * \return the removed children
      * \since QGIS 3.16
      */

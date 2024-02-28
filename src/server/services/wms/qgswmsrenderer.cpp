@@ -155,7 +155,7 @@ namespace QgsWms
     }
     image.reset( createImage( size ) );
 
-    // configure painter and addapt to the context
+    // configure painter and adapt to the context
     QPainter painter( image.get() );
 
     context.setPainter( &painter );

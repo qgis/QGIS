@@ -969,7 +969,7 @@ bool QgsPostgresProvider::loadFields()
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
-    // Collect attribiute oids
+    // Collect attribute oids
     QSet<Oid> attroids;
     for ( int i = 0; i < result.PQnfields(); i++ )
     {

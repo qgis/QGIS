@@ -339,7 +339,7 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
 
 QVariantMap QgsVtpkTiles::rootTileMap() const
 {
-  // make sure metadata has been read alread
+  // make sure metadata has been read already
   ( void )metadata();
 
   if ( mHasReadTileMap || mTileMapPath.isEmpty() )

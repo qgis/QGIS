@@ -923,7 +923,7 @@ QDomElement QgsOgcUtils::filterElement( QDomDocument &doc, GMLVersion gmlVersion
 bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem )
 {
   QString coordSeparator = QStringLiteral( "," );
-  QString tupelSeparator = QStringLiteral( " " );
+  QString tupleSeparator = QStringLiteral( " " );
   //"decimal" has to be "."
 
   coords.clear();
@@ -934,10 +934,10 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &
   }
   if ( elem.hasAttribute( QStringLiteral( "ts" ) ) )
   {
-    tupelSeparator = elem.attribute( QStringLiteral( "ts" ) );
+    tupleSeparator = elem.attribute( QStringLiteral( "ts" ) );
   }
 
-  const QStringList tupels = elem.text().split( tupelSeparator, Qt::SkipEmptyParts );
+  const QStringList tupels = elem.text().split( tupleSeparator, Qt::SkipEmptyParts );
   QStringList tuple_coords;
   double x, y;
   bool conversionSuccess;
@@ -975,22 +975,22 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLBox( const QDomNode &boxNode )
 
   const QDomElement bElem = boxElem.firstChild().toElement();
   QString coordSeparator = QStringLiteral( "," );
-  QString tupelSeparator = QStringLiteral( " " );
+  QString tupleSeparator = QStringLiteral( " " );
   if ( bElem.hasAttribute( QStringLiteral( "cs" ) ) )
   {
     coordSeparator = bElem.attribute( QStringLiteral( "cs" ) );
   }
   if ( bElem.hasAttribute( QStringLiteral( "ts" ) ) )
   {
-    tupelSeparator = bElem.attribute( QStringLiteral( "ts" ) );
+    tupleSeparator = bElem.attribute( QStringLiteral( "ts" ) );
   }
 
   const QString bString = bElem.text();
   bool ok1, ok2, ok3, ok4;
-  const double xmin = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &ok1 );
-  const double ymin = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &ok2 );
-  const double xmax = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &ok3 );
-  const double ymax = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &ok4 );
+  const double xmin = bString.section( tupleSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &ok1 );
+  const double ymin = bString.section( tupleSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &ok2 );
+  const double xmax = bString.section( tupleSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &ok3 );
+  const double ymax = bString.section( tupleSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &ok4 );
 
   if ( ok1 && ok2 && ok3 && ok4 )
   {

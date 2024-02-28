@@ -165,7 +165,7 @@ void QgsMessageBarItem::writeContent()
       connect( mTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMessageBarItem::urlClicked );
 
       mTextBrowser->setFrameShape( QFrame::NoFrame );
-      // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
+      // stylesheet set here so Qt-style substituted scrollbar arrows can show within limited height
       // adjusts to height of font set in app options
       mTextBrowser->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
                                    "QScrollBar { background-color: rgba(0,0,0,0); } "

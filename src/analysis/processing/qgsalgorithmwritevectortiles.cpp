@@ -179,7 +179,7 @@ void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &wr
   writer.setDestinationUri( uri );
 
   const QString metaName = parameterAsString( parameters, QStringLiteral( "META_NAME" ), context );
-  const QString metaDesciption = parameterAsString( parameters, QStringLiteral( "META_DESCRIPTION" ), context );
+  const QString metaDescription = parameterAsString( parameters, QStringLiteral( "META_DESCRIPTION" ), context );
   const QString metaAttribution = parameterAsString( parameters, QStringLiteral( "META_ATTRIBUTION" ), context );
   const QString metaVersion = parameterAsString( parameters, QStringLiteral( "META_VERSION" ), context );
   const QString metaType = parameterAsString( parameters, QStringLiteral( "META_TYPE" ), context );
@@ -188,8 +188,8 @@ void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &wr
   QVariantMap meta;
   if ( !metaName.isEmpty() )
     meta["name"] = metaName;
-  if ( !metaDesciption.isEmpty() )
-    meta["description"] = metaDesciption;
+  if ( !metaDescription.isEmpty() )
+    meta["description"] = metaDescription;
   if ( !metaAttribution.isEmpty() )
     meta["attribution"] = metaAttribution;
   if ( !metaVersion.isEmpty() )

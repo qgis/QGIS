@@ -972,7 +972,7 @@ void QgsGrassMapsetItem::childrenCreated()
 
   if ( mRefreshLater )
   {
-    QgsDebugMsgLevel( QStringLiteral( "directory changed during createChidren() -> refresh() again" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "directory changed during createChildren() -> refresh() again" ), 2 );
     mRefreshLater = false;
     setState( Qgis::BrowserItemState::Populated );
     refresh();

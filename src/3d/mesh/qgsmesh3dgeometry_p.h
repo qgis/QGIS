@@ -173,7 +173,7 @@ class QgsMeshDataset3DGeometryBuilder;
  *  Then the instance launches immediately another thread that constructs 3D vertices, faces  and scalar value on vertices
  *  depending on the dataset chosen for vertical magnitude and the one for scalar magnitude (color rendering).
  *
- *  When this job is finished, the mesh datset 3D geometry node is updated and can be rendered in the 3D scene.
+ *  When this job is finished, the mesh dataset 3D geometry node is updated and can be rendered in the 3D scene.
  */
 class QgsMeshDataset3DGeometry: public QgsMesh3DGeometry
 {

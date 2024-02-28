@@ -147,8 +147,8 @@ namespace pal
        * Optionally, the nearest point is stored in (rx,ry).
        * \param px x coordinate of the point
        * \param py y coordinate of the points
-       * \param rx pointer to x coorinates of the nearest point (can be NULL)
-       * \param ry pointer to y coorinates of the nearest point (can be NULL)
+       * \param rx pointer to x coordinates of the nearest point (can be NULL)
+       * \param ry pointer to y coordinates of the nearest point (can be NULL)
        * \returns minimum distance
        */
       double minDistanceToPoint( double px, double py, double *rx = nullptr, double *ry = nullptr ) const;

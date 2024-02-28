@@ -32,7 +32,7 @@ class QgsScaleRangeWidget;
 class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 {
     Q_OBJECT
-    Q_PROPERTY( bool hasScaleVisibility READ hasScaleVisibility WRITE setScaleVisiblity )
+    Q_PROPERTY( bool hasScaleVisibility READ hasScaleVisibility WRITE setScaleVisibility )
     Q_PROPERTY( double minimumScale READ minimumScale WRITE setMinimumScale )
     Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
@@ -71,8 +71,16 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     /**
      * Set whether scale based visibility is enabled.
      * \see hasScaleVisibility()
+     * \deprecated Use setScaleVisibility()
      */
-    void setScaleVisiblity( bool hasScaleVisibility );
+    Q_DECL_DEPRECATED void setScaleVisiblity( bool hasScaleVisibility ) SIP_DEPRECATED { setScaleVisibility( hasScaleVisibility ); } // spellok
+
+    /**
+     * Set whether scale based visibility is enabled.
+     * \see hasScaleVisibility()
+     * \since QGIS 3.38
+     */
+    void setScaleVisibility( bool hasScaleVisibility );
 
     /**
      * Set the minimum \a scale, or 0 to indicate the minimum is not set.

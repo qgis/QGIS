@@ -88,7 +88,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     void setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
-     * Returns the destionationPoint() transformed to the given target CRS.
+     * Returns the destinationPoint() transformed to the given target CRS.
      */
     QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 

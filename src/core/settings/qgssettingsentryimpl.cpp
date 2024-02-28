@@ -101,7 +101,7 @@ bool QgsSettingsEntryInteger::checkValuePrivate( const int &value ) const
 
   if ( value > mMaxValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." )
                    .arg( QString::number( value ) )
                    .arg( QString::number( mMaxValue ) ) );
     return false;
@@ -142,7 +142,7 @@ bool QgsSettingsEntryInteger64::checkValuePrivate( const qlonglong &value ) cons
 
   if ( value > mMaxValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." )
                    .arg( QString::number( value ) )
                    .arg( QString::number( mMaxValue ) ) );
     return false;
@@ -184,7 +184,7 @@ bool QgsSettingsEntryDouble::checkValuePrivate( const double &value ) const
 
   if ( value > mMaxValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." )
                    .arg( QString::number( value ), QString::number( mMaxValue ) ) );
     return false;
   }

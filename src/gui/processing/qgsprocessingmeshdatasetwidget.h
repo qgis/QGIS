@@ -59,7 +59,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidget : public QWidget
     QPointer<QAction> mActionCurrentActiveDatasetGroups;
     QPointer<QAction> mActionAvailableDatasetGroups;
     QgsMeshLayer *mMeshLayer = nullptr;
-    QMap<int, QString> mDatasetGroupsNames; //used to store the dataet groups name if layer is not referenced
+    QMap<int, QString> mDatasetGroupsNames; //used to store the dataset groups name if layer is not referenced
 
     QStringList datasetGroupsNames();
     void updateSummaryText();
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui
 
     void populateTimeSteps();
     bool hasTemporalDataset() const;
-    //! Populates diretly the time steps combo box with the referenced layer, used if layer comes from project
+    //! Populates directly the time steps combo box with the referenced layer, used if layer comes from project
     void populateTimeStepsFromLayer();
     //! Stores the dataset time steps to use them later depending of chosen dataset groups (setDatasetGroupIndexes()), used if layer does not come from project
     void storeTimeStepsFromLayer( QgsMeshLayer *layer );

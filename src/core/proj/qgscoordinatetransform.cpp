@@ -787,7 +787,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
                       useTime ? t.data() : nullptr, sizeof( double ), useTime ? numPoints : 0 );
-  // Try to - approximatively - emulate the behavior of pj_transform()...
+  // Try to - approximately - emulate the behavior of pj_transform()...
   // In the case of a single point transform, and a transformation error occurs,
   // pj_transform() would return the errno. In cases of multiple point transform,
   // it would continue (for non-transient errors, that is pipeline definition
@@ -832,7 +832,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                           yprev.data(), sizeof( double ), numPoints,
                           zprev.data(), sizeof( double ), numPoints,
                           useTime ? t.data() : nullptr, sizeof( double ), useTime ? numPoints : 0 );
-      // Try to - approximatively - emulate the behavior of pj_transform()...
+      // Try to - approximately - emulate the behavior of pj_transform()...
       // In the case of a single point transform, and a transformation error occurs,
       // pj_transform() would return the errno. In cases of multiple point transform,
       // it would continue (for non-transient errors, that is pipeline definition

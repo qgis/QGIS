@@ -172,8 +172,15 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 
     /**
      * Returns the Content-Type value corresponding to \a extension.
+     * \deprecated Use contentTypeFromExtension()
      */
-    static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension );
+    Q_DECL_DEPRECATED static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension ) SIP_DEPRECATED { return contentTypeFromExtension( extension ); } // spellok
+
+    /**
+     * Returns the Content-Type value corresponding to \a extension.
+     * \since QGIS 3.38
+     */
+    static QgsServerOgcApi::ContentType contentTypeFromExtension( const std::string &extension );
 
     /**
      * Returns the mime-type for the \a contentType or an empty string if not found

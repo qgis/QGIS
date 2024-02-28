@@ -38,7 +38,7 @@ class QgsOAPIFJson
       qint64 length = -1;
     };
 
-    //! Parses the "link" property of jParet
+    //! Parses the "link" property of jParent
     static std::vector<Link> parseLinks( const json &jParent );
 
     //! Find among links the one that matches rel, by using an optional list of preferable types.

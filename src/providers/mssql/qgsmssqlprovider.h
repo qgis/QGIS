@@ -136,7 +136,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     //! Convert a QgsField to work with MSSQL
     static bool convertField( QgsField &field );
 
-    // Parse type name and num coordinates as stored in geometry_columns tabe and returns normalized (M, Z or ZM) type name
+    // Parse type name and num coordinates as stored in geometry_columns table and returns normalized (M, Z or ZM) type name
     static QString typeFromMetadata( const QString &typeName, int numCoords );
 
     //! Convert values to quoted values for database work

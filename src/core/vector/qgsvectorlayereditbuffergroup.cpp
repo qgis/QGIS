@@ -172,7 +172,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
       break;
   }
 
-  // Order layers childrens to parents
+  // Order layers children to parents
   const QList<QgsVectorLayer *> orderedLayers = orderLayersParentsToChildren( constModifiedLayers );
   QList<QgsVectorLayer *>::const_iterator orderedLayersIterator;
 

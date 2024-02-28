@@ -221,7 +221,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   QByteArray statsJson = stats.toStatisticsJson();
   statsEvlrHeader.data_length = statsJson.size();
 
-  // Save the EVLRs to the end of the original file (while erasing the exisitng EVLRs in the file)
+  // Save the EVLRs to the end of the original file (while erasing the existing EVLRs in the file)
   mCopcFile.close();
   std::fstream copcFile;
   copcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios_base::binary | std::iostream::in | std::iostream::out );

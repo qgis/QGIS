@@ -1656,9 +1656,9 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
   d->mWktPreferred.clear();
 
   PROJ_STRING_LIST warnings = nullptr;
-  PROJ_STRING_LIST grammerErrors = nullptr;
+  PROJ_STRING_LIST grammarErrors = nullptr;
   {
-    d->setPj( QgsProjUtils::proj_pj_unique_ptr( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) ) );
+    d->setPj( QgsProjUtils::proj_pj_unique_ptr( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammarErrors ) ) );
   }
 
   res = d->hasPj();
@@ -1669,12 +1669,12 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     QgsDebugMsgLevel( "INPUT: " + wkt, 2 );
     for ( auto iter = warnings; iter && *iter; ++iter )
       QgsDebugMsgLevel( *iter, 2 );
-    for ( auto iter = grammerErrors; iter && *iter; ++iter )
+    for ( auto iter = grammarErrors; iter && *iter; ++iter )
       QgsDebugMsgLevel( *iter, 2 );
     QgsDebugMsgLevel( QStringLiteral( "---------------------------------------------------------------\n" ), 2 );
   }
   proj_string_list_destroy( warnings );
-  proj_string_list_destroy( grammerErrors );
+  proj_string_list_destroy( grammarErrors );
 
   QgsReadWriteLocker locker( *sProj4CacheLock(), QgsReadWriteLocker::Unlocked );
   if ( !res )
@@ -2711,7 +2711,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         proj4 = "";
       }
 
-      // there's a not-null contraint on these columns, so we must use empty strings instead
+      // there's a not-null constraint on these columns, so we must use empty strings instead
       QString operation = "";
       QString ellps = "";
       getOperationAndEllipsoidFromProjString( proj4, operation, ellps );
