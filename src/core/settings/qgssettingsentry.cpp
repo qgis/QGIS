@@ -240,12 +240,15 @@ bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringLi
 
   if ( settings.contains( oldCompleteKey ) )
   {
-    QVariant oldValue = settings.value( oldCompleteKey, mDefaultValue );
-    setVariantValue( oldValue, dynamicKeyPartList );
+    QVariant oldValue = settings->value( oldCompleteKey, mDefaultValue );
+    // do not copy if it is equal to the default value
+    if ( oldValue != defaultValueAsVariant() )
+      setVariantValue( oldValue, dynamicKeyPartList );
     if ( removeSettingAtKey )
       settings.remove( oldCompleteKey );
     return true;
   }
+
   return false;
 }
 
