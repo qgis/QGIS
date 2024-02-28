@@ -91,25 +91,17 @@ jobs:
           LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
           echo ${LABEL}
           echo "label=${LABEL}" >> $GITHUB_OUTPUT
-            # get the PR body
 
       # get the PR body
-      - name: Get PR body as JSON
-        id: get_pr_info
-        uses: octokit/request-action@v2.x
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          route: GET /repos/qgis/QGIS/pulls/:pull_number
-          pull_number: ${{ github.event.pull_request.number }}
-
-      # extract body from json output
       - name: Get PR body as text
         id: get_pr_body
-        uses: gr2m/get-json-paths-action@v1.x
-        with:
-          json: ${{ steps.get_pr_info.outputs.data }}
-          body: "body"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: "${{ github.event.pull_request.body }}"
+        run: |
+          echo 'body<<EOF' >> $GITHUB_OUTPUT
+          echo "$PR_BODY"  >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       # get commits from the PR
       - name: Get PR commits
@@ -133,7 +125,7 @@ jobs:
       # create the documentation issue
       - name: Create Documentation issue
         id: doc_issue
-        uses: maxkomarychev/oction-create-issue@v0.7.1
+        uses: dacbd/create-issue-action@v2.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           owner: qgis
@@ -144,7 +136,7 @@ jobs:
           # the token is in clear, so no rights are given to qgis-bot
           body: |
             ### Request for documentation
-            From pull request QGIS/qgis#${{ github.event.pull_request.number }}
+            From pull request qgis/QGIS#${{ github.event.pull_request.number }}
             Author: @${{ github.event.pull_request.user.login }}
             QGIS version: ${{ steps.milestone2label.outputs.label }}
 
