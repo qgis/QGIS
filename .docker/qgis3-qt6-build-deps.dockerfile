@@ -3,6 +3,8 @@ ARG DISTRO_VERSION=39
 FROM fedora:${DISTRO_VERSION} as binary-for-oracle
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
+# FIXME: add python3-pyside6 for dbmanager (only available in Rawhide currently, not in 39)
+
 RUN dnf -y --refresh install \
     bison \
     ccache \
