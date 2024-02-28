@@ -14,13 +14,14 @@
  ***************************************************************************/
 #include "qgsquerybuilder.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsapplication.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsfieldmodel.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -83,6 +84,11 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   setupGuiViews();
 
+  mModelFields = new QgsFieldProxyModel();
+  mModelFields->setFilters( QgsFieldProxyModel::Filter::AllTypes | QgsFieldProxyModel::Filter::OriginProvider );
+  mModelFields->sourceFieldModel()->setLayer( layer );
+  lstFields->setModel( mModelFields );
+
   mOrigSubsetString = layer->subsetString();
   connect( layer, &QgsVectorLayer::subsetStringChanged, this, &QgsQueryBuilder::layerSubsetStringChanged );
   layerSubsetStringChanged();
@@ -93,8 +99,6 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   mFilterLineEdit->setShowSearchIcon( true );
   mFilterLineEdit->setPlaceholderText( tr( "Search…" ) );
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsQueryBuilder::onTextChanged );
-
-  populateFields();
 }
 
 void QgsQueryBuilder::showEvent( QShowEvent *event )
@@ -103,36 +107,9 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
   QDialog::showEvent( event );
 }
 
-void QgsQueryBuilder::populateFields()
-{
-  const QgsFields &fields = mLayer->fields();
-  mTxtSql->setFields( fields );
-  for ( int idx = 0; idx < fields.count(); ++idx )
-  {
-    if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
-    {
-      // only consider native fields
-      continue;
-    }
-    QStandardItem *myItem = new QStandardItem( fields.at( idx ).displayNameWithAlias() );
-    myItem->setData( idx );
-    myItem->setEditable( false );
-    mModelFields->insertRow( mModelFields->rowCount(), myItem );
-  }
-
-  // All fields get ... setup
-  setupLstFieldsModel();
-}
-
-void QgsQueryBuilder::setupLstFieldsModel()
-{
-  lstFields->setModel( mModelFields );
-}
-
 void QgsQueryBuilder::setupGuiViews()
 {
   //Initialize the models
-  mModelFields = new QStandardItemModel();
   mModelValues = new QStandardItemModel();
   mProxyValues = new QSortFilterProxyModel();
   mProxyValues->setSourceModel( mModelValues );
@@ -150,13 +127,15 @@ void QgsQueryBuilder::setupGuiViews()
   lstValues->setModel( mProxyValues );
 }
 
-void QgsQueryBuilder::fillValues( int idx, int limit )
+void QgsQueryBuilder::fillValues( const QString &field, int limit )
 {
   // clear the model
   mModelValues->clear();
 
+  const int fieldIndex = mLayer->fields().lookupField( field );
+
   // determine the field type
-  QList<QVariant> values = qgis::setToList( mLayer->uniqueValues( idx, limit ) );
+  QList<QVariant> values = qgis::setToList( mLayer->uniqueValues( fieldIndex, limit ) );
   std::sort( values.begin(), values.end() );
 
   const QString nullValue = QgsApplication::nullRepresentation();
@@ -204,7 +183,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   }
 
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), 25 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString(), 25 );
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -227,7 +206,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   }
 
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), -1 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString(), -1 );
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -380,7 +359,7 @@ void QgsQueryBuilder::lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
+  mTxtSql->insertText( '\"' + mModelFields->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString() + '\"' );
   mTxtSql->setFocus();
 }
 
