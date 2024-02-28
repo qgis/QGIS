@@ -264,7 +264,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     virtual QVariantMap originalMetadata() const = 0;
 
     /**
-     * Returns the object containings the statistics metadata extracted from the dataset
+     * Returns the object containing the statistics metadata extracted from the dataset
      * \since QGIS 3.26
      */
     virtual QgsPointCloudStatistics metadataStatistics() const;

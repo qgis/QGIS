@@ -45,7 +45,7 @@ class QgsLayoutTableColumn;
 
 /**
  * \ingroup gui
- * \brief A base model to hold the displaying or sortings columns used in a QgsLayoutAttributeTable
+ * \brief A base model to hold the displaying or sorting columns used in a QgsLayoutAttributeTable
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

@@ -72,7 +72,7 @@ Returns the character before the cursor, or an empty string if cursor is set at 
 
     QString characterAfterCursor() const;
 %Docstring
-Returns the character after the cursor, or an empty string if the cursot is set at end
+Returns the character after the cursor, or an empty string if the cursor is set at end
 
 .. versionadded:: 3.30
 %End

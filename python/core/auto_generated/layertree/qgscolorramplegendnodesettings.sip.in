@@ -208,7 +208,7 @@ Returns ``True`` if a continuous gradient legend will be used.
 
     void setUseContinuousLegend( bool useContinuousLegend );
 %Docstring
-Sets the flag to use a continuos gradient legend to ``useContinuousLegend``.
+Sets the flag to use a continuous gradient legend to ``useContinuousLegend``.
 
 When this flag is set the legend will be rendered using a continuous color ramp with
 min and max values, when it is not set the legend will be rendered using separate

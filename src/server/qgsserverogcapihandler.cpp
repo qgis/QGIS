@@ -369,7 +369,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     // Returns a short name from content types
     env.add_callback( "content_type_name", 1, [ = ]( Arguments & args )
     {
-      const QgsServerOgcApi::ContentType ct { QgsServerOgcApi::contenTypeFromExtension( args.at( 0 )->get<std::string>( ) ) };
+      const QgsServerOgcApi::ContentType ct { QgsServerOgcApi::contentTypeFromExtension( args.at( 0 )->get<std::string>( ) ) };
       return QgsServerOgcApi::contentTypeToStdString( ct );
     } );
 

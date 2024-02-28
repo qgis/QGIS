@@ -168,7 +168,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Reset the master password to a new one, then re-encrypt all previous
-     * configs in a new database file, optionally backup curren database
+     * configs in a new database file, optionally backup current database
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
      * \param keepbackup Whether to keep the generated backup of current database

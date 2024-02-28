@@ -292,7 +292,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     bool showMarkerSymbolInSurfacePlots() const { return mShowMarkerSymbolInSurfacePlots; }
 
     /**
-     * Sets whehter the marker symbol should also be shown in continuous surface plots.
+     * Sets whether the marker symbol should also be shown in continuous surface plots.
      *
      * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
      *

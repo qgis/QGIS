@@ -123,7 +123,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
     menu.exec( lstRecent->viewport()->mapToGlobal( pos ) );
   } );
 
-  // Install event fiter to catch delete key press on the recent crs list
+  // Install event filter to catch delete key press on the recent crs list
   lstRecent->installEventFilter( this );
 
   mCheckBoxNoProjection->setHidden( true );

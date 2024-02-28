@@ -766,7 +766,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRAC
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     /**
-     * Sets the \a units fo the symbol's stroke width.
+     * Sets the \a units for the symbol's stroke width.
      * \see strokeWidthUnit()
      * \see setStrokeWidthMapUnitScale()
     */

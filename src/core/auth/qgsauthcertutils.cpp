@@ -1107,7 +1107,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   bool decipheronly = false;
 
   QCA::PublicKey pubkey( qcacert.subjectPublicKey() );
-  // key size may be 0 for eliptical curve-based keys, in which case isDH() crashes QCA
+  // key size may be 0 for elliptical curve-based keys, in which case isDH() crashes QCA
   if ( pubkey.bitSize() > 0 && pubkey.isDH() )
   {
     keyagree = pubkey.canKeyAgree();

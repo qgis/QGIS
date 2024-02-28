@@ -54,11 +54,23 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
   public slots:
 
-    void setScaleVisiblity( bool hasScaleVisibility );
+ void setScaleVisiblity( bool hasScaleVisibility ) /Deprecated/;
 %Docstring
 Set whether scale based visibility is enabled.
 
 .. seealso:: :py:func:`hasScaleVisibility`
+
+.. deprecated::
+   Use :py:func:`~QgsScaleVisibilityDialog.setScaleVisibility`
+%End
+
+    void setScaleVisibility( bool hasScaleVisibility );
+%Docstring
+Set whether scale based visibility is enabled.
+
+.. seealso:: :py:func:`hasScaleVisibility`
+
+.. versionadded:: 3.38
 %End
 
     void setMinimumScale( double scale );

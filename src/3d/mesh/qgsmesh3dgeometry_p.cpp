@@ -94,7 +94,7 @@ static QByteArray createDatasetVertexData(
   const QVector<double> scalarMagnitude =
     QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.scalarGroupMetadata, data.scalarData, data.activeFaceFlagValues );
 
-  //Calculate normales with Z value equal to verticaleMagnitude
+  //Calculate normals with Z value equal to verticaleMagnitude
   const QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, data.isVerticalMagnitudeRelative );
 
   // Populate a buffer with the interleaved per-vertex data with
@@ -230,7 +230,7 @@ QgsMeshDataset3DGeometry::QgsMeshDataset3DGeometry(
 {
 
   const int stride = ( 3 /*position*/ +
-                       3 /*normale*/ +
+                       3 /*normal*/ +
                        1 /*magnitude*/ ) * sizeof( float );
 
   prepareVerticesPositionAttribute( mVertexBuffer,  stride, 0 );
@@ -327,7 +327,7 @@ QgsMeshTerrain3DGeometry::QgsMeshTerrain3DGeometry( const QgsTriangularMesh &tri
 {
 
   const int stride = ( 3 /*position*/ +
-                       3 /*normale*/ ) * sizeof( float );
+                       3 /*normal*/ ) * sizeof( float );
 
   prepareVerticesPositionAttribute( mVertexBuffer, stride, 0 );
   prepareVerticesNormalAttribute( mVertexBuffer,  stride, 3 );

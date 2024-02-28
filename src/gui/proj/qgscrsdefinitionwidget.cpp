@@ -133,16 +133,16 @@ void QgsCrsDefinitionWidget::validateCurrent()
     case Qgis::CrsDefinitionFormat::Wkt:
     {
       PROJ_STRING_LIST warnings = nullptr;
-      PROJ_STRING_LIST grammerErrors = nullptr;
-      crs.reset( proj_create_from_wkt( context, projDef.toUtf8().constData(), nullptr, &warnings, &grammerErrors ) );
+      PROJ_STRING_LIST grammarErrors = nullptr;
+      crs.reset( proj_create_from_wkt( context, projDef.toUtf8().constData(), nullptr, &warnings, &grammarErrors ) );
       QStringList warningStrings;
-      QStringList grammerStrings;
+      QStringList grammarStrings;
       for ( auto iter = warnings; iter && *iter; ++iter )
         warningStrings << QString( *iter );
-      for ( auto iter = grammerErrors; iter && *iter; ++iter )
-        grammerStrings << QString( *iter );
+      for ( auto iter = grammarErrors; iter && *iter; ++iter )
+        grammarStrings << QString( *iter );
       proj_string_list_destroy( warnings );
-      proj_string_list_destroy( grammerErrors );
+      proj_string_list_destroy( grammarErrors );
 
       if ( crs )
       {
@@ -152,7 +152,7 @@ void QgsCrsDefinitionWidget::validateCurrent()
       else
       {
         QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This WKT projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + warningStrings.join( '\n' ) + grammerStrings.join( '\n' ) );
+                              tr( "This WKT projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + warningStrings.join( '\n' ) + grammarStrings.join( '\n' ) );
       }
       break;
     }

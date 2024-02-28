@@ -34,7 +34,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 
 /**
- * Class that handles undo display fo undo commands
+ * Class that handles undo display for undo commands
  */
 class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 {

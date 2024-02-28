@@ -44,7 +44,7 @@ Constructor for QgsLayerPropertiesDialog.
 %Docstring
 Sets the metadata ``widget`` and ``page`` associated with the dialog.
 
-This must be called in order for the standard metadata loading/saving functionality to be avialable.
+This must be called in order for the standard metadata loading/saving functionality to be available.
 %End
 
     virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );

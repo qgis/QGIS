@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMatrix4x4
      */
     void translate( const QgsVector3D &vector );
 
-    //! Matrix-vector multiplication (vector is converted to homogenous coordinates [X,Y,Z,1] and back)
+    //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
     QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
     {
       return *this * vector;
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsMatrix4x4
 
 //! Matrix-matrix multiplication (useful to concatenate transforms)
 CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
-//! Matrix-vector multiplication (vector is converted to homogenous coordinates [X,Y,Z,1] and back)
+//! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
 CORE_EXPORT QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
 
 

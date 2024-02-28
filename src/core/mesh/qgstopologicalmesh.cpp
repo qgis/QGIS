@@ -403,11 +403,11 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
     mFacesNeighborhood[changes.addedFaceIndexInMesh( i )] = changes.mFacesNeighborhoodToAdd.at( i );
   }
 
-  for ( const std::array<int, 4> neigborChange : std::as_const( changes.mNeighborhoodChanges ) )
+  for ( const std::array<int, 4> neighborChange : std::as_const( changes.mNeighborhoodChanges ) )
   {
-    const int faceIndex = neigborChange.at( 0 );
-    const int positionInFace = neigborChange.at( 1 );
-    const int valueToApply = neigborChange.at( 3 );
+    const int faceIndex = neighborChange.at( 0 );
+    const int positionInFace = neighborChange.at( 1 );
+    const int valueToApply = neighborChange.at( 3 );
     mFacesNeighborhood[faceIndex][positionInFace] = valueToApply;
   }
 
@@ -441,11 +441,11 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
 
 void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &changes )
 {
-  for ( const std::array<int, 4> neigborChange : std::as_const( changes.mNeighborhoodChanges ) )
+  for ( const std::array<int, 4> neighborChange : std::as_const( changes.mNeighborhoodChanges ) )
   {
-    const int faceIndex = neigborChange.at( 0 );
-    const int positionInFace = neigborChange.at( 1 );
-    const int valueToApply = neigborChange.at( 2 );
+    const int faceIndex = neighborChange.at( 0 );
+    const int positionInFace = neighborChange.at( 1 );
+    const int valueToApply = neighborChange.at( 2 );
     mFacesNeighborhood[faceIndex][positionInFace] = valueToApply;
   }
 
@@ -838,7 +838,7 @@ bool QgsTopologicalMesh::renumberVertices( QVector<int> &oldToNewIndex ) const
     circ.goBoundaryCounterClockwise();
     neighbors.append( circ.oppositeVertexCounterClockwise() );
 
-    int firsrFace = circ.currentFaceIndex();
+    int firstFace = circ.currentFaceIndex();
     do
     {
       int neighborIndex = circ.oppositeVertexClockwise();
@@ -856,7 +856,7 @@ bool QgsTopologicalMesh::renumberVertices( QVector<int> &oldToNewIndex ) const
       if ( it == neighbors.end() )
         neighbors.append( neighborIndex );
     }
-    while ( circ.turnClockwise() != firsrFace && circ.currentFaceIndex() != -1 );
+    while ( circ.turnClockwise() != firstFace && circ.currentFaceIndex() != -1 );
   };
 
   int newIndex = 0;

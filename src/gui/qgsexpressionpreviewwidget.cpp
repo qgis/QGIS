@@ -59,7 +59,7 @@ void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
 
 void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
 {
-  // todo: update the combo box if it has been set externaly?
+  // todo: update the combo box if it has been set externally?
   if ( feature != mExpressionContext.feature() )
   {
     mExpressionContext.setFeature( feature );

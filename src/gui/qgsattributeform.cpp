@@ -3168,7 +3168,7 @@ void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapp
   }
   else
   {
-    //otherwise just enter for the field depening on
+    //otherwise just enter for the field depending on
     const QSet<QString> referencedColumns = exp.referencedColumns();
     for ( const QString &referencedColumn : referencedColumns )
     {
@@ -3200,7 +3200,7 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
   }
   else
   {
-    //otherwise just enter for the field depening on
+    //otherwise just enter for the field depending on
     const QSet<QString> referencedColumns = exp.referencedColumns();
     for ( const QString &referencedColumn : referencedColumns )
     {

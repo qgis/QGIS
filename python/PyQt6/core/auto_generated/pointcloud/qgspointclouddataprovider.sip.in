@@ -246,7 +246,7 @@ in the metadata, and even for sources with statistical metadata only some ``stat
 
     QgsPointCloudStatistics metadataStatistics();
 %Docstring
-Returns the object containings the statistics metadata extracted from the dataset
+Returns the object containing the statistics metadata extracted from the dataset
 
 .. versionadded:: 3.26
 %End

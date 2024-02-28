@@ -94,7 +94,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       const double priority = 2 * ( 1 - lp->feature->calculatePriority() );
       const double obstaclePriority = obstacle->obstacleSettings().factor();
 
-      // if feature priority is < obstaclePriorty, there's a hard conflict...
+      // if feature priority is < obstaclePriority, there's a hard conflict...
       if ( n > 0 && ( priority < obstaclePriority && !qgsDoubleNear( priority, obstaclePriority, 0.001 ) ) )
       {
         lp->setHasHardObstacleConflict( true );

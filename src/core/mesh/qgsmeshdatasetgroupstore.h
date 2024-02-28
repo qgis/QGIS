@@ -120,7 +120,7 @@ class QgsMeshDatasetGroupStore: public QObject
 {
     Q_OBJECT
 
-    //! Contains a pointer to the dataset source inerface and the index on this dataset groups container
+    //! Contains a pointer to the dataset source interface and the index on this dataset groups container
     typedef QPair<QgsMeshDatasetSourceInterface *, int> DatasetGroup;
 
   public:
@@ -252,7 +252,7 @@ class QgsMeshDatasetGroupStore: public QObject
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDataProvider *mPersistentProvider = nullptr;
     QgsMeshExtraDatasetStore mExtraDatasets;
-    QMap < int, DatasetGroup> mRegistery;
+    QMap < int, DatasetGroup> mRegistry;
     QList<int> mPersistentExtraDatasetGroupIndexes;
     QMap<QString, int> mGroupNameToGlobalIndex;
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;

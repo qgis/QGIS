@@ -292,7 +292,7 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
 
     addedFeatureIds.insert( linkFeature.id() );
 
-    // In multiedit add to other features to but whitout dialog
+    // In multiedit add to other features to but without dialog
     for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
     {
       // First feature already added

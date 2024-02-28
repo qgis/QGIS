@@ -12100,7 +12100,7 @@ void QgisApp::setLayerScaleVisibility()
   QgsMapLayer *layer = mLayerTreeView->currentLayer();
   if ( layer )
   {
-    dlg->setScaleVisiblity( layer->hasScaleBasedVisibility() );
+    dlg->setScaleVisibility( layer->hasScaleBasedVisibility() );
     dlg->setMinimumScale( layer->minimumScale() );
     dlg->setMaximumScale( layer->maximumScale() );
   }

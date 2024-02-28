@@ -40,7 +40,7 @@ template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
  * \ingroup core
- * \brief Connections settingss for XYZ
+ * \brief Connections settings for XYZ
  * \since QGIS 3.30
  */
 class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 
 /**
  * \ingroup core
- * \brief Connections settingss for Arcgis
+ * \brief Connections settings for Arcgis
  * \since QGIS 3.30
  */
 class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP

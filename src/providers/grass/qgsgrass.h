@@ -179,7 +179,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /**
      * QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
-     *  in that case default GISDBASE, LOCATION and MAPSET may be read by GetDefaul*() functions.
+     *  in that case default GISDBASE, LOCATION and MAPSET may be read by GetDefault*() functions.
      *  Passive mode means, that GISRC is not available.
     */
     static bool activeMode();

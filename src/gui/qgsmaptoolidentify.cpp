@@ -264,7 +264,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
 
   const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
-  if ( isTemporal ) //non active dataset group value are only accesible if temporal is active
+  if ( isTemporal ) //non active dataset group value are only accessible if temporal is active
   {
     const QgsDateTimeRange &time = identifyContext.temporalRange();
     if ( activeScalarGroup >= 0 )

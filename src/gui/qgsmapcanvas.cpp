@@ -2649,13 +2649,13 @@ void QgsMapCanvas::setWheelFactor( double factor )
 
 void QgsMapCanvas::zoomIn()
 {
-  // magnification is alreday handled in zoomByFactor
+  // magnification is already handled in zoomByFactor
   zoomByFactor( zoomInFactor() );
 }
 
 void QgsMapCanvas::zoomOut()
 {
-  // magnification is alreday handled in zoomByFactor
+  // magnification is already handled in zoomByFactor
   zoomByFactor( zoomOutFactor() );
 }
 

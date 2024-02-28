@@ -142,17 +142,17 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   opaqueObjectsFilter->addLayer( mTransparentObjectsPassLayer );
   opaqueObjectsFilter->setFilterMode( Qt3DRender::QLayerFilter::DiscardAnyMatchingLayers );
 
-  Qt3DRender::QRenderStateSet *forwaredRenderStateSet = new Qt3DRender::QRenderStateSet( opaqueObjectsFilter );
+  Qt3DRender::QRenderStateSet *forwardedRenderStateSet = new Qt3DRender::QRenderStateSet( opaqueObjectsFilter );
 
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
   depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
-  forwaredRenderStateSet->addRenderState( depthTest );
+  forwardedRenderStateSet->addRenderState( depthTest );
 
   Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
   cullFace->setMode( Qt3DRender::QCullFace::CullingMode::Back );
-  forwaredRenderStateSet->addRenderState( cullFace );
+  forwardedRenderStateSet->addRenderState( cullFace );
 
-  mFrustumCulling = new Qt3DRender::QFrustumCulling( forwaredRenderStateSet );
+  mFrustumCulling = new Qt3DRender::QFrustumCulling( forwardedRenderStateSet );
 
   mForwardClearBuffers = new Qt3DRender::QClearBuffers( mFrustumCulling );
   mForwardClearBuffers->setClearColor( QColor::fromRgbF( 0.0, 0.0, 1.0, 1.0 ) );

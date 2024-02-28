@@ -79,7 +79,7 @@ Returns the root node of the expression
 
     QList<QgsExpression::ParserError> parserErrors() const;
 %Docstring
-Returns the expression parser erros
+Returns the expression parser errors
 %End
 
   signals:

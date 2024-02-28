@@ -406,8 +406,15 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     /**
      * Returns if the group box to fill parameters is visible
      * \since QGIS 3.18
+     * \deprecated Use allowParameters()
      */
-    bool allowParamerters() const {return mAllowParameters;}
+    Q_DECL_DEPRECATED bool allowParamerters() const SIP_DEPRECATED {return mAllowParameters;} // spellok
+
+    /**
+     * Returns if the group box to fill parameters is visible
+     * \since QGIS 3.38
+     */
+    bool allowParameters() const {return mAllowParameters;}
 
     /**
      * Defines if the SVG browser should be visible

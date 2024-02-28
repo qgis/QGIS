@@ -233,7 +233,7 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
   // this method considers the label's outer bounds
 
   if ( this->probFeat == lp->probFeat ) // bugfix #1
-    return false; // always overlaping itself !
+    return false; // always overlapping itself !
 
   // if either this label doesn't cause collisions, or the other one doesn't, then we don't conflict!
   if ( this->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ||

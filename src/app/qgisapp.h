@@ -1981,7 +1981,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! show Python console
     void showPythonDialog();
 
-    //! add Python cnosole at start up
+    //! add Python console at start up
     void initPythonConsoleOptions();
 
     //! Shows a warning when an older/newer project file is read.
@@ -2509,7 +2509,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapOverviewCanvas *mOverviewCanvas = nullptr;
     //! Table of contents (legend) for the map
     QgsLayerTreeView *mLayerTreeView = nullptr;
-    //! Keep track of whether ongoing dataset(s) is/are being dropped through the table of contens
+    //! Keep track of whether ongoing dataset(s) is/are being dropped through the table of contents
     bool mLayerTreeDrop = false;
 
     //! Helper class that connects layer tree with map canvas

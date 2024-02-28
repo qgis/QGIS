@@ -154,7 +154,7 @@ setStoreUsernameChecked check the "Store" checkbox for the username
 
     void setStorePasswordChecked( bool checked );
 %Docstring
-setStorePasswordCheched check the "Store" checkbox for the password
+setStorePasswordChecked check the "Store" checkbox for the password
 
 :param checked:
 

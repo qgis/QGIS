@@ -1438,7 +1438,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   bool negativeShapeHasNegativeDistance = false;
   if ( hasAboveBelowLinePlacement && !qgsDoubleNear( offsetDistance, 0 ) )
   {
-    // create offseted map shapes to be used for above and below line placements
+    // create offsetted map shapes to be used for above and below line placements
     if ( ( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) || ( flags & Qgis::LabelLinePlacementFlag::AboveLine ) )
       mapShapeOffsetPositive = mapShape->clone();
     if ( ( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) || ( flags & Qgis::LabelLinePlacementFlag::BelowLine ) )

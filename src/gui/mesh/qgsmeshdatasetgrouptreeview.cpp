@@ -333,7 +333,7 @@ bool QgsMeshDatasetGroupProxyModel::filterAcceptsRow( int source_row, const QMod
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-QgsMeshDatasetGroupTreeItemDelagate::QgsMeshDatasetGroupTreeItemDelagate( QObject *parent )
+QgsMeshDatasetGroupTreeItemDelegate::QgsMeshDatasetGroupTreeItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
   , mScalarSelectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontours.svg" ) )
   , mScalarDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontoursoff.svg" ) )
@@ -342,7 +342,7 @@ QgsMeshDatasetGroupTreeItemDelagate::QgsMeshDatasetGroupTreeItemDelagate( QObjec
 {
 }
 
-void QgsMeshDatasetGroupTreeItemDelagate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsMeshDatasetGroupTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   if ( !painter )
     return;
@@ -359,12 +359,12 @@ void QgsMeshDatasetGroupTreeItemDelagate::paint( QPainter *painter, const QStyle
   painter->drawPixmap( iconRect( option.rect, false ), isActive ? mScalarSelectedPixmap : mScalarDeselectedPixmap );
 }
 
-QRect QgsMeshDatasetGroupTreeItemDelagate::iconRect( const QRect &rect, bool isVector ) const
+QRect QgsMeshDatasetGroupTreeItemDelegate::iconRect( const QRect &rect, bool isVector ) const
 {
   return  iconRect( rect, isVector ? 1 : 2 );
 }
 
-QRect QgsMeshDatasetGroupTreeItemDelagate::iconRect( const QRect &rect, int pos ) const
+QRect QgsMeshDatasetGroupTreeItemDelegate::iconRect( const QRect &rect, int pos ) const
 {
   const int iw = mScalarSelectedPixmap.width();
   const int ih = mScalarSelectedPixmap.height();
@@ -372,7 +372,7 @@ QRect QgsMeshDatasetGroupTreeItemDelagate::iconRect( const QRect &rect, int pos 
   return QRect( rect.right() - pos * ( iw + margin ), rect.top() + margin, iw, ih );
 }
 
-QSize QgsMeshDatasetGroupTreeItemDelagate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsMeshDatasetGroupTreeItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QSize hint = QStyledItemDelegate::sizeHint( option, index );
   if ( hint.height() < 16 )

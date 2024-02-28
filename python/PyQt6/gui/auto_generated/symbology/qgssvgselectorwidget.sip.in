@@ -133,11 +133,21 @@ Defines if the group box to fill parameters is visible
 .. versionadded:: 3.18
 %End
 
-    bool allowParamerters() const;
+ bool allowParamerters() const /Deprecated/;
 %Docstring
 Returns if the group box to fill parameters is visible
 
 .. versionadded:: 3.18
+
+.. deprecated::
+   Use :py:func:`~QgsSvgSelectorWidget.allowParameters`
+%End
+
+    bool allowParameters() const;
+%Docstring
+Returns if the group box to fill parameters is visible
+
+.. versionadded:: 3.38
 %End
 
     void setBrowserVisible( bool visible );

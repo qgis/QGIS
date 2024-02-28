@@ -200,7 +200,7 @@ class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
   public:
 
     /**
-     * \brief Defaul Qgs3DWiredMesh constructor
+     * \brief Default Qgs3DWiredMesh constructor
      */
     Qgs3DWiredMesh( Qt3DCore::QNode *parent = nullptr );
     ~Qgs3DWiredMesh() override;

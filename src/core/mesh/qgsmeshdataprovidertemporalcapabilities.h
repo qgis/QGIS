@@ -131,7 +131,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     qint64 datasetTime( const QgsMeshDatasetIndex &index ) const;
 
     /**
-    * Clears alls stored reference times and dataset times
+    * Clears all stored reference times and dataset times
     */
     void clear();
 

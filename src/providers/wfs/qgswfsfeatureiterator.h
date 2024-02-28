@@ -68,7 +68,7 @@ class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeature
 {
     Q_OBJECT
 
-    DEFINE_FEATURE_DOWLOADER_IMPL_SLOTS
+    DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS
 
   signals:
     /* Used internally by the stop() method */
