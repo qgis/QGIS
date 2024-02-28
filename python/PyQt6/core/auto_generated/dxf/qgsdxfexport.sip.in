@@ -51,21 +51,22 @@ unique value.
 .. versionadded:: 3.12
 %End
 
-        bool buildDDBlocks() const;
+        bool buildDataDefinedBlocks() const;
 %Docstring
 Flag if data defined point block symbols should be created. Default is false
 
 :return: True if data defined point block symbols should be created
 
-.. versionadded:: 3.36
+.. versionadded:: 3.38
 %End
 
-        int DDBlocksMaxNumerOfClasses() const;
+        int dataDefinedBlocksMaximumNumberOfClasses() const;
 %Docstring
+Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
 
 :return:
 
-.. versionadded:: 3.36
+.. versionadded:: 3.38
 %End
 
     };

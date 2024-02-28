@@ -101,16 +101,16 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
         /**
          * \brief Flag if data defined point block symbols should be created. Default is false
          * \return True if data defined point block symbols should be created
-         * \since QGIS 3.36
+         * \since QGIS 3.38
          */
-        bool buildDDBlocks() const { return mBuildDDBlocks; }
+        bool buildDataDefinedBlocks() const { return mBuildDDBlocks; }
 
         /**
-         * \brief
+         * \brief Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
          * \return
-         * \since QGIS 3.36
+         * \since QGIS 3.38
          */
-        int DDBlocksMaxNumerOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
+        int dataDefinedBlocksMaximumNumberOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
 
       private:
         QgsVectorLayer *mLayer = nullptr;

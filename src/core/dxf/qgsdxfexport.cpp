@@ -96,9 +96,9 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
     mLayerList << dxfLayer.layer();
     if ( dxfLayer.layerOutputAttributeIndex() >= 0 )
       mLayerNameAttribute.insert( dxfLayer.layer()->id(), dxfLayer.layerOutputAttributeIndex() );
-    if ( dxfLayer.buildDDBlocks() )
+    if ( dxfLayer.buildDataDefinedBlocks() )
     {
-      mLayerDDBlockMaxNumberOfClasses.insert( dxfLayer.layer()->id(), dxfLayer.DDBlocksMaxNumerOfClasses() );
+      mLayerDDBlockMaxNumberOfClasses.insert( dxfLayer.layer()->id(), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() );
     }
   }
 }
