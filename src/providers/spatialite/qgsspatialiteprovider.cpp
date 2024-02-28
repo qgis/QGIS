@@ -1103,8 +1103,8 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
     }
   }
 
-  ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
-  return resultVar;
+  const bool compatible = mAttributeFields.at( fieldId ).convertCompatible( resultVar );
+  return compatible && !QgsVariantUtils::isNull( resultVar ) ? resultVar : QVariant();
 }
 
 QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
