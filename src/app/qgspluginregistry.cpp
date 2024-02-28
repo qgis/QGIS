@@ -564,7 +564,6 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     QgsDebugMsgLevel( QStringLiteral( "Python plugins will be loaded in the following order: " ) + pluginList.join( "," ), 2 );
 
     QStringList corePlugins = QStringList();
-    corePlugins << QStringLiteral( "GdalTools" );
     corePlugins << QStringLiteral( "db_manager" );
     corePlugins << QStringLiteral( "processing" );
     corePlugins << QStringLiteral( "MetaSearch" );
