@@ -77,8 +77,7 @@ jobs:
 
 
   create-doc-issue:
-    if: github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') 
-    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )    runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
 
@@ -92,7 +91,7 @@ jobs:
           echo ${LABEL}
           echo "label=${LABEL}" >> $GITHUB_OUTPUT
 
-      # get the PR body
+      # get the PR body texosst
       - name: Get PR body as text
         id: get_pr_body
         env:
@@ -103,7 +102,7 @@ jobs:
           echo "body: ${BODY_TEXT}"
           echo "body=${BODY_TEXT}" >> $GITHUB_OUTPUT
      #    body=${{ fromJSON(env.BODY) }}
-      #    echo ${body}
+      #    echo ${body} 
       #    echo "body=${{ fromJSON(env.BODY) }}" >> $GITHUB_OUTPUT
 
 
