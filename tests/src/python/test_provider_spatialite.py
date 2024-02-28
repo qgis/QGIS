@@ -39,6 +39,7 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
+    NULL,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
