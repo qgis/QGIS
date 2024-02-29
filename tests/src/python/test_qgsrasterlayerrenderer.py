@@ -19,6 +19,7 @@ from qgis.core import (
     QgsMapSettings,
     QgsRasterLayer,
     QgsRectangle,
+    QgsDoubleRange
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -61,6 +62,57 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
                 'painterclip_region',
                 'painterclip_region',
                 mapsettings)
+        )
+
+    def test_render_dem_with_z_range_filter(self):
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, '3d', 'dtm.tif'))
+        self.assertTrue(raster_layer.isValid())
+        # start with no elevation settings on layer
+        self.assertFalse(raster_layer.elevationProperties().hasElevation())
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+        map_settings.setZRange(QgsDoubleRange(100, 130))
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, not elevation enabled layer',
+                'dem_no_filter',
+                map_settings)
+        )
+
+        # set layer as elevation enabled
+        raster_layer.elevationProperties().setEnabled(True)
+        # no filter on map settings
+        map_settings.setZRange(QgsDoubleRange())
+        self.assertTrue(
+            self.render_map_settings_check(
+                'No Z range filter on map settings, elevation enabled layer',
+                'dem_no_filter',
+                map_settings)
+        )
+
+        # filter on map settings, elevation enabled layer => should be filtered
+        map_settings.setZRange(QgsDoubleRange(100, 130))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, elevation enabled layer',
+                'dem_filter',
+                map_settings)
+        )
+
+        # with offset and scaling
+        raster_layer.elevationProperties().setZOffset(50)
+        raster_layer.elevationProperties().setZScale(0.75)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, elevation enabled layer with offset and scale',
+                'dem_filter_offset_and_scale',
+                map_settings)
         )
 
 
