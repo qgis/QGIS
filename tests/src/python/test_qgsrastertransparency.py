@@ -59,6 +59,20 @@ class TestQgsRasterTransparency(TestCase):
         self.assertEqual(transparency.alphaValue(60), 229)
         self.assertEqual(transparency.alphaValue(61), 255)
 
+        self.assertEqual(transparency.opacityForValue(0), 1.0)
+        self.assertEqual(transparency.opacityForValue(10), 0.3)
+        self.assertEqual(transparency.opacityForValue(15), 0.3)
+        self.assertEqual(transparency.opacityForValue(20), 0.3)
+        self.assertEqual(transparency.opacityForValue(25), 1.0)
+        self.assertEqual(transparency.opacityForValue(30), 0.6)
+        self.assertEqual(transparency.opacityForValue(35), 0.6)
+        self.assertEqual(transparency.opacityForValue(40), 1.0)
+        self.assertEqual(transparency.opacityForValue(45), 1.0)
+        self.assertEqual(transparency.opacityForValue(50), 1.0)
+        self.assertEqual(transparency.opacityForValue(55), 0.9)
+        self.assertEqual(transparency.opacityForValue(60), 0.9)
+        self.assertEqual(transparency.opacityForValue(61), 1.0)
+
     def test_transparency_three_repr(self):
         self.assertEqual(repr(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3)),
                          '<QgsRasterTransparency.TransparentThreeValuePixel: 1, 10, 20, 0.3>')
@@ -94,6 +108,11 @@ class TestQgsRasterTransparency(TestCase):
         self.assertEqual(transparency.alphaValue(10, 20, 0), 255)
         self.assertEqual(transparency.alphaValue(10, 20, 30), 76)
         self.assertEqual(transparency.alphaValue(30, 40, 50), 153)
+        self.assertEqual(transparency.opacityForRgbValues(0, 0, 0), 1)
+        self.assertEqual(transparency.opacityForRgbValues(10, 0, 0), 1)
+        self.assertEqual(transparency.opacityForRgbValues(10, 20, 0), 1)
+        self.assertEqual(transparency.opacityForRgbValues(10, 20, 30), 0.3)
+        self.assertEqual(transparency.opacityForRgbValues(30, 40, 50), 0.6)
 
 
 if __name__ == '__main__':

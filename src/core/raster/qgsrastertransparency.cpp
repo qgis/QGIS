@@ -63,6 +63,11 @@ void QgsRasterTransparency::setTransparentThreeValuePixelList( const QList<QgsRa
 
 int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const
 {
+  return static_cast< int >( opacityForValue( value ) * globalTransparency );
+}
+
+double QgsRasterTransparency::opacityForValue( double value ) const
+{
   //if NaN return 0, transparent
   if ( std::isnan( value ) )
   {
@@ -70,30 +75,27 @@ int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) co
   }
 
   //Search through the transparency list looking for a match
-  bool myTransparentPixelFound = false;
-  TransparentSingleValuePixel myTransparentPixel = {0, 0, 100};
-  for ( int myListRunner = 0; myListRunner < mTransparentSingleValuePixelList.count(); myListRunner++ )
+  auto it = std::find_if( mTransparentSingleValuePixelList.constBegin(), mTransparentSingleValuePixelList.constEnd(), [value]( const TransparentSingleValuePixel & p )
   {
-    myTransparentPixel = mTransparentSingleValuePixelList[myListRunner];
-    if ( ( value > myTransparentPixel.min && value < myTransparentPixel.max )
-         || ( myTransparentPixel.includeMinimum && qgsDoubleNear( value, myTransparentPixel.min ) )
-         || ( myTransparentPixel.includeMaximum && qgsDoubleNear( value, myTransparentPixel.max ) ) )
-    {
-      myTransparentPixelFound = true;
-      break;
-    }
+    return ( value > p.min && value < p.max )
+           || ( p.includeMinimum && qgsDoubleNear( value, p.min ) )
+           || ( p.includeMaximum && qgsDoubleNear( value, p.max ) );
+  } );
+
+  if ( it != mTransparentSingleValuePixelList.constEnd() )
+  {
+    return it->opacity;
   }
 
-  //if a match was found use the stored transparency percentage
-  if ( myTransparentPixelFound )
-  {
-    return static_cast< int >( static_cast< float >( globalTransparency ) * myTransparentPixel.opacity );
-  }
-
-  return globalTransparency;
+  return 1;
 }
 
 int QgsRasterTransparency::alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency ) const
+{
+  return static_cast< int >( opacityForRgbValues( redValue, greenValue, blueValue ) * globalTransparency );
+}
+
+double QgsRasterTransparency::opacityForRgbValues( double redValue, double greenValue, double blueValue ) const
 {
   //if NaN return 0, transparent
   if ( std::isnan( redValue ) || std::isnan( greenValue ) || std::isnan( blueValue ) )
@@ -102,31 +104,19 @@ int QgsRasterTransparency::alphaValue( double redValue, double greenValue, doubl
   }
 
   //Search through the transparency list looking for a match
-  bool myTransparentPixelFound = false;
-  TransparentThreeValuePixel myTransparentPixel = {0, 0, 0, 100};
-  for ( int myListRunner = 0; myListRunner < mTransparentThreeValuePixelList.count(); myListRunner++ )
+  auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel & p )
   {
-    myTransparentPixel = mTransparentThreeValuePixelList[myListRunner];
-    if ( qgsDoubleNear( myTransparentPixel.red, redValue ) )
-    {
-      if ( qgsDoubleNear( myTransparentPixel.green, greenValue ) )
-      {
-        if ( qgsDoubleNear( myTransparentPixel.blue, blueValue ) )
-        {
-          myTransparentPixelFound = true;
-          break;
-        }
-      }
-    }
+    return qgsDoubleNear( p.red, redValue )
+           &&  qgsDoubleNear( p.green, greenValue )
+           && qgsDoubleNear( p.blue, blueValue );
+  } );
+
+  if ( it != mTransparentThreeValuePixelList.constEnd() )
+  {
+    return it->opacity;
   }
 
-  //if a match was found use the stored transparency percentage
-  if ( myTransparentPixelFound )
-  {
-    return static_cast< int >( static_cast< float >( globalTransparency ) * myTransparentPixel.opacity );
-  }
-
-  return globalTransparency;
+  return 1;
 }
 
 bool QgsRasterTransparency::isEmpty() const
