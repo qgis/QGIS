@@ -657,7 +657,7 @@ void TestQgsRasterLayer::transparency()
   qDebug( "contrastEnhancement.minimumValue = %.17g", renderer->contrastEnhancement()->minimumValue() );
   qDebug( "contrastEnhancement.maximumValue = %.17g", renderer->contrastEnhancement()->maximumValue() );
 
-  QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+  QVector<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
   QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();
 
   myTransparentSingleValuePixelList.append(

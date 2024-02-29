@@ -995,7 +995,7 @@ void QgsRasterLayerProperties::apply()
     QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();
     if ( mRasterTransparencyWidget->tableTransparency->columnCount() == 4 )
     {
-      QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
+      QVector<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
       for ( int myListRunner = 0; myListRunner < mRasterTransparencyWidget->tableTransparency->rowCount(); myListRunner++ )
       {
         const double red = transparencyCellValue( myListRunner, 0 );
@@ -1010,7 +1010,7 @@ void QgsRasterLayerProperties::apply()
     }
     else if ( mRasterTransparencyWidget->tableTransparency->columnCount() == 3 )
     {
-      QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+      QVector<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
       for ( int myListRunner = 0; myListRunner < mRasterTransparencyWidget->tableTransparency->rowCount(); myListRunner++ )
       {
         const double min = transparencyCellValue( myListRunner, 0 );
