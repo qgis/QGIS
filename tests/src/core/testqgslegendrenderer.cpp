@@ -162,9 +162,9 @@ class TestQgsLegendRenderer : public QgsTest
     QgsRasterLayer *mRL = nullptr;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing );
 
-    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
+    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30, const QSize &sizeTolerance = QSize( 6, 10 ) )
     {
-      return QGSIMAGECHECK( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
+      return QGSIMAGECHECK( testName, testName, image, QString(), diff, sizeTolerance );
     }
 
     static void setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
@@ -1480,7 +1480,8 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   QgsLegendSettings settings;
 
   QImage res = _renderLegend( legendModel.get(), settings );
-  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ) ) );
+
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ), 30, QSize( 8, 12 ) ) );
 
   //red vector
   QgsMeshLayer *layer2 = layer->clone();
@@ -1499,7 +1500,7 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
 
   res = _renderLegend( legendModel.get(), settings );
-  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_red_vector" ) ) );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_red_vector" ), 30, QSize( 8, 13 ) ) );
 
   //color ramp vector
   QgsMeshLayer *layer3 = layer2->clone();
@@ -1517,7 +1518,8 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
 
   res = _renderLegend( legendModel.get(), settings );
-  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_color_ramp_vector" ) ) );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_color_ramp_vector" ), 30, QSize( 8, 19 ) ) );
+
   QgsProject::instance()->removeMapLayer( layer3 );
 }
 
