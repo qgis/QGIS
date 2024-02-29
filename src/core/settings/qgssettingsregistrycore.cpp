@@ -276,9 +276,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
 
-      QgsOwsConnection::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/username" ), {service, connection}, true );
-      QgsOwsConnection::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/password" ), {service, connection}, true );
-      QgsOwsConnection::settingsAuthCfg->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ), {service, connection}, true );
+      QgsOwsConnection::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/username" ).arg( service, connection ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/password" ).arg( service, connection ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsAuthCfg->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ).arg( service, connection ), {service.toLower(), connection}, true );
     }
     if ( settings.contains( QStringLiteral( "selected" ) ) )
       QgsOwsConnection::sTreeOwsConnections->setSelectedItem( settings.value( QStringLiteral( "selected" ) ).toString(), {service.toLower()} );
@@ -493,9 +493,9 @@ void QgsSettingsRegistryCore::backwardCompatibility()
           Q_NOWARN_DEPRECATED_POP
         }
 
-        QgsOwsConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/username" ), {service, connection} );
-        QgsOwsConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/password" ), {service, connection} );
-        QgsOwsConnection::settingsAuthCfg->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ), {service, connection} );
+        QgsOwsConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/username" ).arg( service, connection ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/password" ).arg( service, connection ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsAuthCfg->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ).arg( service, connection ), {service.toLower(), connection} );
       }
     }
   }
