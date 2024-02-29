@@ -75,9 +75,9 @@ int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) co
   for ( int myListRunner = 0; myListRunner < mTransparentSingleValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentSingleValuePixelList[myListRunner];
-    if ( ( value >= myTransparentPixel.min && value <= myTransparentPixel.max ) ||
-         qgsDoubleNear( value, myTransparentPixel.min ) ||
-         qgsDoubleNear( value, myTransparentPixel.max ) )
+    if ( ( value > myTransparentPixel.min && value < myTransparentPixel.max )
+         || ( myTransparentPixel.includeMinimum && qgsDoubleNear( value, myTransparentPixel.min ) )
+         || ( myTransparentPixel.includeMaximum && qgsDoubleNear( value, myTransparentPixel.max ) ) )
     {
       myTransparentPixelFound = true;
       break;
