@@ -112,9 +112,9 @@
      <property name="title">
       <string>Profile Chart Appearance</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="1,0">
+     <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
       <item row="1" column="0" colspan="2">
-       <widget class="QStackedWidget" name="mSymbologyStackedWidget">
+       <widget class="QgsStackedWidget" name="mSymbologyStackedWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
           <horstretch>0</horstretch>
@@ -122,7 +122,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="mPageLine">
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
@@ -158,19 +158,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="mPageFill">
@@ -187,33 +174,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mElevationLimitSpinBox">
-            <property name="decimals">
-             <number>6</number>
-            </property>
-            <property name="minimum">
-             <double>-99999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>99999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Fill style</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Limit</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QgsSymbolButton" name="mFillStyleButton">
             <property name="sizePolicy">
@@ -227,18 +187,32 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Limit</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Fill style</string>
             </property>
-           </spacer>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mElevationLimitSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>-99999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>99999.000000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -287,6 +261,12 @@
    <class>QgsRasterBandComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
