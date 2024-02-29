@@ -27,17 +27,47 @@ Constructor for QgsRasterTransparency.
 
     struct TransparentThreeValuePixel
     {
+
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0 );
+%Docstring
+Constructor for TransparentThreeValuePixel.
+
+:param red: red pixel value
+:param green: green pixel value
+:param blue: blue pixel value
+:param opacity: opacity for pixel, between 0 and 1.0
+
+.. versionadded:: 3.38
+%End
+
       double red;
+
       double green;
+
       double blue;
-      double percentTransparent;
+
+      double opacity;
     };
 
     struct TransparentSingleValuePixel
     {
+
+      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0 );
+%Docstring
+Constructor for TransparentSingleValuePixel.
+
+:param minimum: minimum pixel value to include in range
+:param maximum: maximum pixel value to include in range
+:param opacity: opacity for pixel, between 0 and 1.0
+
+.. versionadded:: 3.38
+%End
+
       double min;
+
       double max;
-      double percentTransparent;
+
+      double opacity;
     };
 
 
