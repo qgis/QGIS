@@ -188,13 +188,13 @@ class CORE_EXPORT QgsRasterTransparency
      * Returns the transparent single value pixel list.
      * \see setTransparentSingleValuePixelList()
      */
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
+    QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 
     /**
      * Returns the transparent three value pixel list.
      * \see setTransparentThreeValuePixelList()
      */
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
+    QVector<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 
     /**
      * Resets the transparency list to a single \a value.
@@ -210,13 +210,13 @@ class CORE_EXPORT QgsRasterTransparency
      * Sets the transparent single value pixel list, replacing the whole existing list.
      * \see transparentSingleValuePixelList()
      */
-    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
+    void setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 
     /**
      * Sets the transparent three value pixel list, replacing the whole existing list.
      * \see transparentThreeValuePixelList()
      */
-    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
+    void setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 
     /**
      * Returns the transparency value for a single \a value pixel.
@@ -282,10 +282,10 @@ class CORE_EXPORT QgsRasterTransparency
 
   private:
     //! \brief The list to hold transparency values for RGB layers
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;
+    QVector<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;
 
     //! \brief The list to hold transparency values for single value pixel layers
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> mTransparentSingleValuePixelList;
+    QVector<QgsRasterTransparency::TransparentSingleValuePixel> mTransparentSingleValuePixelList;
 
 };
 #endif

@@ -23,12 +23,12 @@ email                : ersts@amnh.org
 #include <QDomDocument>
 #include <QDomElement>
 
-QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const
+QVector<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const
 {
   return mTransparentSingleValuePixelList;
 }
 
-QList<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const
+QVector<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const
 {
   return mTransparentThreeValuePixelList;
 }
@@ -51,12 +51,12 @@ void QgsRasterTransparency::initializeTransparentPixelList( double redValue, dou
   mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( redValue, greenValue, blueValue, 0 ) );
 }
 
-void QgsRasterTransparency::setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList )
+void QgsRasterTransparency::setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList )
 {
   mTransparentSingleValuePixelList = newList;
 }
 
-void QgsRasterTransparency::setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList )
+void QgsRasterTransparency::setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList )
 {
   mTransparentThreeValuePixelList = newList;
 }
@@ -130,7 +130,7 @@ void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem
   if ( !mTransparentSingleValuePixelList.isEmpty() )
   {
     QDomElement singleValuePixelListElement = doc.createElement( QStringLiteral( "singleValuePixelList" ) );
-    QList<QgsRasterTransparency::TransparentSingleValuePixel>::const_iterator it = mTransparentSingleValuePixelList.constBegin();
+    auto it = mTransparentSingleValuePixelList.constBegin();
     for ( ; it != mTransparentSingleValuePixelList.constEnd(); ++it )
     {
       QDomElement pixelListElement = doc.createElement( QStringLiteral( "pixelListEntry" ) );
@@ -145,7 +145,7 @@ void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem
   if ( !mTransparentThreeValuePixelList.isEmpty() )
   {
     QDomElement threeValuePixelListElement = doc.createElement( QStringLiteral( "threeValuePixelList" ) );
-    QList<QgsRasterTransparency::TransparentThreeValuePixel>::const_iterator it = mTransparentThreeValuePixelList.constBegin();
+    auto it = mTransparentThreeValuePixelList.constBegin();
     for ( ; it != mTransparentThreeValuePixelList.constEnd(); ++it )
     {
       QDomElement pixelListElement = doc.createElement( QStringLiteral( "pixelListEntry" ) );
