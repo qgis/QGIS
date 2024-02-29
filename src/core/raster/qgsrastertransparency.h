@@ -39,22 +39,88 @@ class CORE_EXPORT QgsRasterTransparency
      */
     QgsRasterTransparency() = default;
 
-    //
-    // Structs to hold transparent pixel values
-    //
+    /**
+     * \ingroup core
+     * \brief Defines the transparency for a RGB pixel value.
+     */
     struct TransparentThreeValuePixel
     {
+
+      /**
+      * Constructor for TransparentThreeValuePixel.
+      * \param red red pixel value
+      * \param green green pixel value
+      * \param blue blue pixel value
+      * \param opacity opacity for pixel, between 0 and 1.0
+      * \since QGIS 3.38
+      */
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0 )
+        : red( red )
+        , green( green )
+        , blue( blue )
+        , opacity( opacity )
+      {}
+
+      /**
+       * Red pixel value.
+       */
       double red;
+
+      /**
+      * Green pixel value.
+      */
       double green;
+
+      /**
+       * Blue pixel value.
+       */
       double blue;
-      double percentTransparent;
+
+      /**
+      * Opacity for pixel, between 0 and 1.0.
+      *
+      * \since QGIS 3.38
+      */
+      double opacity = 0;
     };
 
+    /**
+     * \ingroup core
+     * \brief Defines the transparency for a range of single-band pixel values.
+     */
     struct TransparentSingleValuePixel
     {
+
+      /**
+       * Constructor for TransparentSingleValuePixel.
+       * \param minimum minimum pixel value to include in range
+       * \param maximum maximum pixel value to include in range
+       * \param opacity opacity for pixel, between 0 and 1.0
+       *
+       * \since QGIS 3.38
+       */
+      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0 )
+        : min( minimum )
+        , max( maximum )
+        , opacity( opacity )
+      {}
+
+      /**
+       * Minimum pixel value to include in range.
+       */
       double min;
+
+      /**
+       * Maximum pixel value to include in range.
+       */
       double max;
-      double percentTransparent;
+
+      /**
+       * Opacity for pixel, between 0 and 1.0.
+       *
+       * \since QGIS 3.38
+       */
+      double opacity = 0;
     };
 
     //
