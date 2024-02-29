@@ -47,18 +47,29 @@ Constructor for TransparentThreeValuePixel.
       double blue;
 
       double opacity;
+
+      bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
+      bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
+
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
     };
 
     struct TransparentSingleValuePixel
     {
 
-      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0 );
+      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true );
 %Docstring
 Constructor for TransparentSingleValuePixel.
 
 :param minimum: minimum pixel value to include in range
 :param maximum: maximum pixel value to include in range
 :param opacity: opacity for pixel, between 0 and 1.0
+:param includeMinimum: whether the minimum value should be included in the range
+:param includeMaximum: whether the maximum value should be included in the range
 
 .. versionadded:: 3.38
 %End
@@ -68,6 +79,19 @@ Constructor for TransparentSingleValuePixel.
       double max;
 
       double opacity;
+
+      bool includeMinimum;
+
+      bool includeMaximum;
+
+      bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
+      bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
+
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>" ).arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
     };
 
 

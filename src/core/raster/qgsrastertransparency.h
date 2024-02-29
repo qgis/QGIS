@@ -20,6 +20,7 @@ email                : ersts@amnh.org
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QList>
 class QDomDocument;
 class QDomElement;
@@ -82,6 +83,26 @@ class CORE_EXPORT QgsRasterTransparency
       * \since QGIS 3.38
       */
       double opacity = 0;
+
+      bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
+      {
+        return qgsDoubleNear( red, other.red )
+               && qgsDoubleNear( green, other.green )
+               && qgsDoubleNear( blue, other.blue )
+               && qgsDoubleNear( opacity, other.opacity );
+      }
+      bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
+      {
+        return !( *this == other );
+      }
+
+#ifdef SIP_RUN
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+#endif
     };
 
     /**
@@ -96,13 +117,17 @@ class CORE_EXPORT QgsRasterTransparency
        * \param minimum minimum pixel value to include in range
        * \param maximum maximum pixel value to include in range
        * \param opacity opacity for pixel, between 0 and 1.0
+       * \param includeMinimum whether the minimum value should be included in the range
+       * \param includeMaximum whether the maximum value should be included in the range
        *
        * \since QGIS 3.38
        */
-      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0 )
+      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true )
         : min( minimum )
         , max( maximum )
         , opacity( opacity )
+        , includeMinimum( includeMinimum )
+        , includeMaximum( includeMaximum )
       {}
 
       /**
@@ -121,6 +146,42 @@ class CORE_EXPORT QgsRasterTransparency
        * \since QGIS 3.38
        */
       double opacity = 0;
+
+      /**
+       * TRUE if pixels matching the min value should be considered transparent,
+       * or FALSE if only pixels greater than the min value should be transparent.
+       *
+       * \since QGIS 3.38
+       */
+      bool includeMinimum = true;
+
+      /**
+       * TRUE if pixels matching the max value should be considered transparent,
+       * or FALSE if only pixels less than the max value should be transparent.
+       *
+       * \since QGIS 3.38
+       */
+      bool includeMaximum = true;
+
+      bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
+      {
+        return qgsDoubleNear( min, other.min )
+               && qgsDoubleNear( max, other.max )
+               && qgsDoubleNear( opacity, other.opacity )
+               && includeMinimum == other.includeMinimum && includeMaximum == other.includeMaximum;
+      }
+      bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
+      {
+        return !( *this == other );
+      }
+
+#ifdef SIP_RUN
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>" ).arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+#endif
     };
 
     //
