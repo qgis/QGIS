@@ -246,7 +246,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
       double currentOpacity = mOpacity;
       if ( mRasterTransparency )
       {
-        currentOpacity = mRasterTransparency->alphaValue( value, mOpacity * 255 ) / 255.0;
+        currentOpacity *= mRasterTransparency->opacityForValue( value );
       }
       if ( mAlphaBand > 0 )
       {

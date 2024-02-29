@@ -184,10 +184,6 @@ class CORE_EXPORT QgsRasterTransparency
 #endif
     };
 
-    //
-    // Initializer, Accessor and mutator for transparency tables.
-    //
-
     /**
      * Returns the transparent single value pixel list.
      * \see setTransparentSingleValuePixelList()
@@ -230,10 +226,20 @@ class CORE_EXPORT QgsRasterTransparency
      *
      * \param value the needle to search for in the transparency hay stack
      * \param globalTransparency the overall transparency level for the layer
+     *
+     * \deprecated use opacityForValue() instead.
     */
-    int alphaValue( double value, int globalTransparency = 255 ) const;
+    Q_DECL_DEPRECATED int alphaValue( double value, int globalTransparency = 255 ) const SIP_DEPRECATED;
 
-    //! \brief
+    /**
+     * Returns the opacity (as a value from 0 to 1) for a single \a value pixel.
+     *
+     * Searches through the transparency list, and if a match is found, returns
+     * the opacity corresponding to the value. Returns 1 if no matches are found.
+     *
+     * \since QGIS 3.38
+    */
+    double opacityForValue( double value ) const;
 
     /**
      * Returns the transparency value for a RGB pixel.
@@ -244,8 +250,22 @@ class CORE_EXPORT QgsRasterTransparency
      * \param greenValue  the green portion of the needle to search for in the transparency hay stack
      * \param blueValue the green portion of the needle to search for in the transparency hay stack
      * \param globalTransparency the overall transparency level for the layer
+     *
+     * \deprecated use opacityForRgbValues() instead.
     */
-    int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const;
+    Q_DECL_DEPRECATED int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const SIP_DEPRECATED;
+
+    /**
+     * Returns the opacity (as a value from 0 to 1) for a set of RGB pixel values.
+     *
+     * Searches through the transparency list, and if a match is found, returns
+     * the opacity corresponding to the values. Returns 1 if no matches are found.
+     *
+     * If any of the red, green or blue values are NaN, 0 will be returned.
+     *
+     * \since QGIS 3.38
+    */
+    double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
 
     //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;

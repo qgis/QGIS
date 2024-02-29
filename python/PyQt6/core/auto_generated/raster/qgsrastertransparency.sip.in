@@ -94,7 +94,6 @@ Constructor for TransparentSingleValuePixel.
 %End
     };
 
-
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 %Docstring
 Returns the transparent single value pixel list.
@@ -133,7 +132,7 @@ Sets the transparent three value pixel list, replacing the whole existing list.
 .. seealso:: :py:func:`transparentThreeValuePixelList`
 %End
 
-    int alphaValue( double value, int globalTransparency = 255 ) const;
+ int alphaValue( double value, int globalTransparency = 255 ) const /Deprecated/;
 %Docstring
 Returns the transparency value for a single ``value`` pixel.
 
@@ -142,10 +141,22 @@ by the stored transparency value.
 
 :param value: the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
+
+.. deprecated::
+   use :py:func:`~QgsRasterTransparency.opacityForValue` instead.
 %End
 
+    double opacityForValue( double value ) const;
+%Docstring
+Returns the opacity (as a value from 0 to 1) for a single ``value`` pixel.
 
-    int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const;
+Searches through the transparency list, and if a match is found, returns
+the opacity corresponding to the value. Returns 1 if no matches are found.
+
+.. versionadded:: 3.38
+%End
+
+ int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const /Deprecated/;
 %Docstring
 Returns the transparency value for a RGB pixel.
 
@@ -156,6 +167,21 @@ by the stored transparency value.
 :param greenValue: the green portion of the needle to search for in the transparency hay stack
 :param blueValue: the green portion of the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
+
+.. deprecated::
+   use :py:func:`~QgsRasterTransparency.opacityForRgbValues` instead.
+%End
+
+    double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
+%Docstring
+Returns the opacity (as a value from 0 to 1) for a set of RGB pixel values.
+
+Searches through the transparency list, and if a match is found, returns
+the opacity corresponding to the values. Returns 1 if no matches are found.
+
+If any of the red, green or blue values are NaN, 0 will be returned.
+
+.. versionadded:: 3.38
 %End
 
     bool isEmpty() const;
