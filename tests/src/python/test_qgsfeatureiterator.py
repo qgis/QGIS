@@ -115,6 +115,29 @@ class TestQgsFeatureIterator(QgisTestCase):
         feat['Staff'] = 2
         vl.addFeature(feat)
 
+    def test_VectorLayerEditing(self):
+        ogr_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'points.shp'), 'Points', 'ogr')
+        self.assertTrue(ogr_layer.isValid())
+
+        request = QgsFeatureRequest()
+        iterator = ogr_layer.getFeatures(request)
+        self.assertTrue(iterator.isValid())
+
+        self.assertTrue(ogr_layer.startEditing())
+        iterator = ogr_layer.getFeatures(request)
+        self.assertTrue(iterator.isValid())
+
+        memory_layer = QgsVectorLayer("Point?field=x:string&field=y:integer&field=z:integer", "layer", "memory")
+        self.assertTrue(memory_layer.isValid())
+
+        request = QgsFeatureRequest()
+        iterator = memory_layer.getFeatures(request)
+        self.assertTrue(iterator.isValid())
+
+        self.assertTrue(memory_layer.startEditing())
+        iterator = memory_layer.getFeatures(request)
+        self.assertTrue(iterator.isValid())
+
     def test_ExpressionFieldNested(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
