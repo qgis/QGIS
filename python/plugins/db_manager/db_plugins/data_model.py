@@ -19,7 +19,7 @@ email                : brush.tyler@gmail.com
 """
 
 from qgis.PyQt.QtCore import (Qt,
-                              QTime,
+                              QElapsedTimer,
                               QRegularExpression,
                               QAbstractTableModel,
                               pyqtSignal,
@@ -185,7 +185,8 @@ class SqlResultModel(BaseTableModel):
     def __init__(self, db, sql, parent=None):
         self.db = db.connector
 
-        t1 = QTime().currentTime()
+        t = QElapsedTimer()
+        t.start()
         c = self.db._execute(None, sql)
 
         self._affectedRows = 0
@@ -208,11 +209,9 @@ class SqlResultModel(BaseTableModel):
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()
         c.close()
-        t2 = QTime().currentTime()
-        self._secs = t1.msecsTo(t2) / 1000.0
+        self._secs = t.elapsed() / 1000.0
         del c
-        del t1
-        del t2
+        del t
 
     def secs(self):
         return self._secs
