@@ -151,8 +151,7 @@ class ORSqlResultModel(SqlResultModel):
     def __init__(self, db, sql, parent=None):
         self.db = db.connector
 
-        t = QTime()
-        t.start()
+        t1 = QTime().currentTime()
         c = self.db._execute(None, str(sql))
 
         self._affectedRows = 0
@@ -170,8 +169,10 @@ class ORSqlResultModel(SqlResultModel):
             data = []
             header = []
 
-        self._secs = t.elapsed() / 1000.0
-        del t
+        t2 = QTime().currentTime()
+        self._secs = t1.msecsTo(t2) / 1000.0
+        del t1
+        del t2
 
         BaseTableModel.__init__(self, header, data, parent)
 

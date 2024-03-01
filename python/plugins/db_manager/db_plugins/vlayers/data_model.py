@@ -119,8 +119,7 @@ class LSqlResultModelAsync(SqlResultModelAsync):
 class LSqlResultModel(BaseTableModel):
 
     def __init__(self, db, sql, parent=None, layer=None, path=None):
-        t = QTime()
-        t.start()
+        t1 = QTime().currentTime()
 
         if not layer:
             tf = QTemporaryFile()
@@ -132,7 +131,8 @@ class LSqlResultModel(BaseTableModel):
             df.setFilePath(path)
             df.setQuery(sql)
             layer = QgsVectorLayer(df.toString(), "vv", "virtual")
-            self._secs = t.elapsed() / 1000.0
+            t2 = QTime().currentTime()
+            self._secs = t1.msecsTo(t2) / 1000.0
 
         data = []
         header = []

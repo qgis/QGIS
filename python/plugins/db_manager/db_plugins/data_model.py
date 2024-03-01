@@ -185,8 +185,7 @@ class SqlResultModel(BaseTableModel):
     def __init__(self, db, sql, parent=None):
         self.db = db.connector
 
-        t = QTime()
-        t.start()
+        t1 = QTime().currentTime()
         c = self.db._execute(None, sql)
 
         self._affectedRows = 0
@@ -209,9 +208,11 @@ class SqlResultModel(BaseTableModel):
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()
         c.close()
-        self._secs = t.elapsed() / 1000.0
+        t2 = QTime().currentTime()
+        self._secs = t1.msecsTo(t2) / 1000.0
         del c
-        del t
+        del t1
+        del t2
 
     def secs(self):
         return self._secs
