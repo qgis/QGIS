@@ -144,11 +144,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.base_ref || github.ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.base_ref || github.ref }}
           restore-keys: |
-            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.base_ref }}-
-            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref }}-
-            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-refs/heads/master-
+            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-refs/heads/master
 
       - name: Compile QGIS
         id: compile
@@ -157,6 +155,7 @@ jobs:
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
+                     --env CCACHE_DIR=/root/.ccache \
                      --env PUSH_TO_CDASH=true \
                      --env WITH_QT5=${{ matrix.with-qt5 }} \
                      --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
@@ -177,7 +176,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.base_ref || github.ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref }}
 
       - name: Push artifact
         id: push_artifact
