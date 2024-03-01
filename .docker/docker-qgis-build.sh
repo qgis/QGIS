@@ -35,14 +35,6 @@ pushd ${CTEST_BUILD_DIR} > /dev/null
 echo "${bold}Running cmake...${endbold}"
 echo "::group::cmake"
 
-if [[ -f "/usr/lib64/ccache/clang" ]]; then
-  export CC=/usr/lib64/ccache/clang
-  export CXX=/usr/lib64/ccache/clang++
-else
-  export CC=/usr/lib/ccache/clang
-  export CXX=/usr/lib/ccache/clang++
-fi
-
 BUILD_TYPE=Release
 
 if [[ "${WITH_CLAZY}" = "ON" ]]; then
@@ -75,7 +67,7 @@ fi
 cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
- -DUSE_CCACHE=OFF \
+ -DUSE_CCACHE=ON \
  -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
  -DWITH_DESKTOP=ON \
  -DWITH_ANALYSIS=ON \
