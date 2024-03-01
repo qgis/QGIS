@@ -10,6 +10,7 @@ on:
       - master
       - release-**
       - queued_ltr_backports
+      - 3nids-patch-3
     paths:
     - 'src/**'
     - 'external/**'
@@ -120,6 +121,7 @@ jobs:
           echo QT_VERSION: ${QT_VERSION}
 
       - name: Login to Docker Hub
+        if: ${{ github.event_name == 'push' }}
         uses: docker/login-action@v3
         with:
           username: ${{ github.actor }}
@@ -352,6 +354,7 @@ jobs:
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
       - name: Login to Docker Hub
+        if: ${{ github.event_name == 'push' }}
         uses: docker/login-action@v3
         with:
           username: ${{ github.actor }}
