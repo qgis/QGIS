@@ -622,7 +622,7 @@ void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsFeedback *interru
 
 bool QgsVectorLayerFeatureIterator::isValid() const
 {
-  return mProviderIterator.isValid();
+  return mChangedFeaturesIterator.isValid() || mProviderIterator.isValid();
 }
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
