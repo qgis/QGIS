@@ -48,30 +48,13 @@ jobs:
           update: true
           release: false
 
-      - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v3.0.11
-        if: github.event_name == 'pull_request'
+      - name: Restore build cache
+        uses: actions/cache/restore@v3
         with:
           path: build
-          key: mingw-w64-msys2-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
-          # The head_ref or source branch of the pull request in a workflow run.
-          # The base_ref or target branch of the pull request in a workflow run.
+          key: build-ccache-mingw64-msys2-${{ github.base_ref || github.ref }}
           restore-keys: |
-            mingw-w64-msys2-ccache-${{ github.actor }}-${{ github.head_ref }}-
-            mingw-w64-msys2-ccache-${{ github.base_ref }}-
-            mingw-w64-msys2-ccache-refs/heads/master-
-
-      - name: Prepare build cache for branch/tag
-        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v3.0.11
-        if: github.event_name != 'pull_request'
-        with:
-          path: build
-          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
-          key: mingw-w64-msys2-ccache-${{ github.ref }}-${{ github.sha }}
-          restore-keys: |
-            mingw-w64-msys2-ccache-${{ github.ref }}-
-            mingw-w64-msys2-ccache-refs/heads/master-
+            build-ccache-mingw64-msys2-refs/heads/master
 
       - name: Configure QGIS
         run: |
@@ -98,3 +81,10 @@ jobs:
         run: |
           cmake --build build
           ccache -s
+
+      - name: Save build cache for push only
+        uses: actions/cache/save@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          path: build
+          key: build-ccache-mingw64-msys2-${{ github.ref }}
