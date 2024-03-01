@@ -49,6 +49,10 @@ QgsEptProvider::QgsEptProvider(
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
+  if ( mIndex && !mIndex->isValid() )
+  {
+    appendError( mIndex->error() );
+  }
 }
 
 QgsEptProvider::~QgsEptProvider() = default;
