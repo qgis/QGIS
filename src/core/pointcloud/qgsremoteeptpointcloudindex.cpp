@@ -97,6 +97,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &uri )
   {
     QgsDebugError( QStringLiteral( "Request failed: " ) + uri );
     mIsValid = false;
+    mError = req.errorMessage();
     return;
   }
 
