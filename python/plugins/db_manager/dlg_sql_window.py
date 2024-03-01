@@ -174,8 +174,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.presetSaveAsFile.clicked.connect(self.saveAsFilePreset)
         self.presetLoadFile.clicked.connect(self.loadFilePreset)
         self.presetDelete.clicked.connect(self.deletePreset)
-        self.presetCombo.activated[str].connect(self.loadPreset)
-        self.presetCombo.activated[str].connect(self.presetName.setText)
+        self.presetCombo.textActivated.connect(self.loadPreset)
+        self.presetCombo.textActivated.connect(self.presetName.setText)
 
         self.updatePresetsCombobox()
 
