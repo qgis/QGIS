@@ -37,6 +37,9 @@ echo "::group::cmake"
 
 BUILD_TYPE=Release
 
+export CC=/usr/bin/clang
+export CXX=/usr/bin/clang++
+
 if [[ "${WITH_CLAZY}" = "ON" ]]; then
   # In release mode, all variables in QgsDebugMsg would be considered unused
   BUILD_TYPE=Debug
