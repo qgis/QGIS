@@ -185,12 +185,10 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
     blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
     transparentObjectsRenderStateSet->addRenderState( blendEquation );
 
-    Qt3DRender::QBlendEquationArguments *blenEquationArgs = new Qt3DRender::QBlendEquationArguments;
-    blenEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::Blending::One );
-    blenEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
-    blenEquationArgs->setSourceAlpha( Qt3DRender::QBlendEquationArguments::Blending::One );
-    blenEquationArgs->setDestinationAlpha( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
-    transparentObjectsRenderStateSet->addRenderState( blenEquationArgs );
+    Qt3DRender::QBlendEquationArguments *blendEquationArgs = new Qt3DRender::QBlendEquationArguments;
+    blendEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::Blending::SourceAlpha );
+    blendEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSourceAlpha );
+    transparentObjectsRenderStateSet->addRenderState( blendEquationArgs );
   }
 
   mDebugOverlay = new Qt3DRender::QDebugOverlay( mForwardClearBuffers );
