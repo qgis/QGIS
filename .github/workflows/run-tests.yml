@@ -10,7 +10,6 @@ on:
       - master
       - release-**
       - queued_ltr_backports
-      - 3nids-patch-3
     paths:
     - 'src/**'
     - 'external/**'
