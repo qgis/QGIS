@@ -15991,7 +15991,7 @@ void QgisApp::renameView()
   if ( renameDlg.exec() || renameDlg.name().isEmpty() )
   {
     QString newName = renameDlg.name();
-    view->setWindowTitle( newName );
+    view->dockableWidgetHelper()->setWindowTitle( newName );
     view->mapCanvas()->setObjectName( newName );
   }
 }
