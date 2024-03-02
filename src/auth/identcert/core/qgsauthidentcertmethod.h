@@ -61,6 +61,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
   private:
 
+#ifndef QT_NO_SSL
     QgsPkiConfigBundle *getPkiConfigBundle( const QString &authcfg );
 
     void putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle );
@@ -68,6 +69,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
     void removePkiConfigBundle( const QString &authcfg );
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
+#endif
 
 };
 
