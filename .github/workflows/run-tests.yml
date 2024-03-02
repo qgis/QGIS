@@ -173,7 +173,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}
 
       - name: Push artifact
         id: push_artifact
