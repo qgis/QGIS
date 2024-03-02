@@ -134,8 +134,8 @@ jobs:
           tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
-          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:${{ github.event.pull_request.base.ref || github.ref_name }}
-          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:${{ github.event.pull_request.base.ref || github.ref_name }},mode=max' || '' }}
+          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:cache
+          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:cache,mode=max' || '' }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
 
@@ -370,8 +370,8 @@ jobs:
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
-          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
-          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }},mode=max' || '' }}
+          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache
+          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache,mode=max' || '' }}
           target: ${{ matrix.docker-target }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
@@ -486,8 +486,8 @@ jobs:
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
-          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
-          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }},mode=max' || '' }}
+          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache
+          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache,mode=max' || '' }}
           target: ${{ matrix.docker-target }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
