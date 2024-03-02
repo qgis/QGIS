@@ -44,7 +44,7 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: build-ccache-mac-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
-            build-ccache-mac-refs/heads/master
+            build-ccache-mac-master
 
       - name: Cache Qt
         id: cache-qt
