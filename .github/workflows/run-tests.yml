@@ -131,6 +131,8 @@ jobs:
           tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
+          cache-from: type=registry
+          cache-to: type=registry
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
 
@@ -362,6 +364,8 @@ jobs:
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
+          cache-from: type=registry
+          cache-to: type=registry
           target: ${{ matrix.docker-target }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
@@ -457,6 +461,13 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Login to Docker Hub
+        if: ${{ github.event_name == 'push' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Docker Container with Testing Environment
         id: docker-build
         uses: docker/build-push-action@v5
@@ -466,6 +477,8 @@ jobs:
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
+          cache-from: type=registry
+          cache-to: type=registry
           target: ${{ matrix.docker-target }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
