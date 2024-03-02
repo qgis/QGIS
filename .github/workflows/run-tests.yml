@@ -490,5 +490,5 @@ jobs:
           -v $(pwd):/root/QGIS \
           -v /home/runner/QGIS/.ccache:/root/.ccache \
           --env-file .docker/docker-variables.env \
-          qgis3-build-deps \
+          qgis3-build-deps-binary-image \
           /root/QGIS/.docker/docker-qgis-clangtidy.sh
