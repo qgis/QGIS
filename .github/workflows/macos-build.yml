@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Restore build cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: build-ccache-mac-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -48,7 +48,7 @@ jobs:
 
       - name: Cache Qt
         id: cache-qt
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
           key: mac-qt-${{ env.QT_VERSION }}
@@ -71,7 +71,7 @@ jobs:
       # QGIS-deps caching
       - name: Cache qgis-deps
         id: cache-deps
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
           key: mac-qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
@@ -131,7 +131,7 @@ jobs:
           make -j $(sysctl -n hw.ncpu)
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: ${{ github.event_name == 'push' }}
         with:
           path: ${{ env.CCACHE_DIR }}

@@ -64,7 +64,7 @@ jobs:
         run: mkdir -p /w/.ccache/QGIS
 
       - name: Restore build cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: /w/.ccache/QGIS
           key: build-ccache-mingw64-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -75,7 +75,7 @@ jobs:
         run: CCACHE_DIR=/w/.ccache/QGIS ./ms-windows/mingw/build.sh x86_64 nodebug 4
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: ${{ github.event_name == 'push' }}
         with:
           path: /w/.ccache/QGIS
