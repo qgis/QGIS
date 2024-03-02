@@ -92,6 +92,7 @@ email                : sherman at mrcc.com
 #include "qgsvectortilelayer.h"
 #include "qgsscreenhelper.h"
 #include "qgs2dmapcontroller.h"
+#include "qgsdigitizingguidelayer.h"
 
 /**
  * \ingroup gui
@@ -156,6 +157,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, &QgsMapCanvas::writeProject );
 
   connect( QgsProject::instance()->mainAnnotationLayer(), &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
+  connect( QgsProject::instance()->digitizingGuideLayer(), &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
@@ -790,6 +792,7 @@ void QgsMapCanvas::refreshMap()
   QgsMapSettings renderSettings = mSettings;
   QList<QgsMapLayer *> allLayers = renderSettings.layers();
   allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  allLayers.insert( 0, QgsProject::instance()->digitizingGuideLayer() );
   renderSettings.setLayers( allLayers );
 
   // create the renderer job

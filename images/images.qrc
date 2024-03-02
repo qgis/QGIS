@@ -318,6 +318,10 @@
         <file>themes/default/mActionFormView.svg</file>
         <file>themes/default/mActionFullCumulativeCutStretch.svg</file>
         <file>themes/default/mActionFullHistogramStretch.svg</file>
+        <file>themes/default/mActionGuideDistanceToPoints.svg</file>
+        <file>themes/default/mActionGuideLineParallel.svg</file>
+        <file>themes/default/mActionGuideLinePerpendicular.svg</file>
+        <file>themes/default/mActionGuideLineProlongation.svg</file>
         <file>themes/default/mActionGroupItems.svg</file>
         <file>themes/default/mActionHelpAbout.svg</file>
         <file>themes/default/mActionHelpContents.svg</file>

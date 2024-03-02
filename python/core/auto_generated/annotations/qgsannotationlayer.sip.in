@@ -86,7 +86,7 @@ Ownership of ``item`` is transferred to the layer.
 Removes (and deletes) the item with matching ``id``.
 %End
 
-    void clear();
+    virtual void clear();
 %Docstring
 Removes all items from the layer.
 %End

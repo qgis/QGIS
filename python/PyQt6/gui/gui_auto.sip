@@ -240,6 +240,7 @@
 %Include auto_generated/actions/qgsmaplayeractioncontext.sip
 %Include auto_generated/actions/qgsmaplayeractioncontextgenerator.sip
 %Include auto_generated/actions/qgsmaplayeractionregistry.sip
+%Include auto_generated/advanceddigitizing/qgsdigitizingguidewidget.sip
 %Include auto_generated/annotations/qgsannotationitemcommonpropertieswidget.sip
 %Include auto_generated/annotations/qgsannotationitemguiregistry.sip
 %Include auto_generated/annotations/qgsannotationitemwidget.sip

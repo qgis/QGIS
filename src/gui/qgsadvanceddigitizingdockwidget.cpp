@@ -16,6 +16,7 @@
 #include <QMenu>
 #include <QEvent>
 #include <QCoreApplication>
+#include <qabstractitemview.h>
 
 #include <cmath>
 
@@ -38,8 +39,12 @@
 #include "qgsunittypes.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsdigitizingguidelayer.h"
+#include "qgsdigitizingguidewidget.h"
+
 
 #include <QActionGroup>
+#include <QMessageBox>
 
 
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( QStringLiteral( "cad-snapping-prioritize-feature" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) ) ;
@@ -194,16 +199,15 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     mCommonAngleActions.insert( it->first, action );
   }
 
-  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
-  mSettingsAction->setMenu( mCommonAngleActionsMenu );
-  mSettingsAction->setCheckable( true );
-  mSettingsAction->setToolTip( "<b>" + tr( "Snap to common angles" ) + "</b><br>(" + tr( "press n to cycle through the options" ) + ")" );
-  mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
-  connect( mCommonAngleActionsMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
+  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mAngleSoftLocksAction ) )->setPopupMode( QToolButton::InstantPopup );
+  mAngleSoftLocksAction->setMenu( mCommonAngleActionsMenu );
+  mAngleSoftLocksAction->setCheckable( true );
+  mAngleSoftLocksAction->setToolTip( "<b>" + tr( "Snap to common angles" ) + "</b><br>(" + tr( "press n to cycle through the options" ) + ")" );
+  mAngleSoftLocksAction->setChecked( mCommonAngleConstraint != 0 );
+  connect( mCommonAngleActionsMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::angleSoftLockButtonTriggered );
 
   // Construction modes
   QMenu *constructionMenu = new QMenu( this );
-
   mLineExtensionAction = new QAction( tr( "Line Extension" ), constructionMenu );
   mLineExtensionAction->setCheckable( true );
   constructionMenu->addAction( mLineExtensionAction );
@@ -222,7 +226,18 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mConstructionAction->setMenu( mCommonAngleActionsMenu );
   mConstructionAction->setCheckable( true );
   mConstructionAction->setToolTip( tr( "Construction Tools" ) );
-//  connect( constructionMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
+
+  // Guides
+  mDigitizingGuideWidget = new QgsDigitizingGuideWidget( mMapCanvas, this );
+  mGuidesGroupBox->layout()->addWidget( mDigitizingGuideWidget );
+
+  mGuidesMapToolAction->setChecked( true );
+  connect( mGuidesMapToolAction, &QAction::toggled, this, [ = ]( bool checked = true )
+  {
+    mGuidesGroupBox->setEnabled( checked );
+    mGuidesGroupBox->setCollapsed( !checked );
+    QgsProject::instance()->digitizingGuideLayer()->setEnabled( checked );
+  } );
 
   // set tooltips
   mConstructionModeAction->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
@@ -483,10 +498,9 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mCadEnabled = enabled;
   mEnableAction->setChecked( enabled );
   mConstructionModeAction->setEnabled( enabled );
-  mSettingsAction->setEnabled( enabled );
+  mAngleSoftLocksAction->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
   mFloaterAction->setEnabled( enabled );
-  mConstructionAction->setEnabled( enabled );
 
   if ( !enabled )
   {
@@ -674,7 +688,7 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
   mConstructionModeAction->setChecked( enabled );
 }
 
-void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
+void QgsAdvancedDigitizingDockWidget::angleSoftLockButtonTriggered( QAction *action )
 {
   // common angles
   for ( auto it = mCommonAngleActions.cbegin(); it != mCommonAngleActions.cend(); ++it )
@@ -684,7 +698,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
       it.value()->setChecked( true );
       mCommonAngleConstraint = it.key();
       QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), it.key() );
-      mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
+      mAngleSoftLocksAction->setChecked( mCommonAngleConstraint != 0 );
       emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
       return;
     }
@@ -2147,3 +2161,5 @@ double QgsAdvancedDigitizingDockWidget::getLineM( ) const
 {
   return mMLineEdit->isEnabled() ? QLocale().toDouble( mMLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
+
+

@@ -118,7 +118,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     /**
      * Removes all items from the layer.
      */
-    void clear();
+    virtual void clear();
 
     /**
      * Returns TRUE if the annotation layer is empty and contains no annotations.

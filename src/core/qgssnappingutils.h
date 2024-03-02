@@ -19,12 +19,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include "qgsmapsettings.h"
 #include "qgstolerance.h"
 #include "qgspointlocator.h"
 #include "qgssnappingconfig.h"
 
 class QgsSnappingConfig;
+class QgsDigitizingGuideLayer;
 
 /**
  * \ingroup core
@@ -228,6 +230,17 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       return mExtraSnapLayers;
     }
 
+    /**
+     * Returns the map guide layer
+     * \since QGIS 3.36
+     */
+    QgsDigitizingGuideLayer *guideLayer() const;
+
+    /**
+     * Sets the map guide layer
+     * \since QGIS 3.36
+     */
+    void setGuideLayer( QgsDigitizingGuideLayer *guideLayer );
 
   public slots:
 
@@ -285,6 +298,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     // environment
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mCurrentLayer = nullptr;
+    QgsDigitizingGuideLayer *mGuideLayer = nullptr;
 
     QgsSnappingConfig mSnappingConfig;
 

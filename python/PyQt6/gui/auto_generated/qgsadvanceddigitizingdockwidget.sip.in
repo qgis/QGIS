@@ -12,6 +12,9 @@
 
 
 
+
+
+
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring(signature="appended")

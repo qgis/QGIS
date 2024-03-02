@@ -1,0 +1,94 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdigitizingguidemodel.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDigitizingGuideModel : QAbstractTableModel
+{
+%Docstring(signature="appended")
+Model to hold digitizing guides data
+
+.. seealso:: :py:class:`QgsDigitizingGuideLayer`
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgsdigitizingguidemodel.h"
+%End
+  public:
+
+    explicit QgsDigitizingGuideModel( QgsDigitizingGuideLayer *guideLayer );
+%Docstring
+Constructor
+%End
+
+    void addPointGuide( const QString &guideItemId,
+                        const QString &title = QString(),
+                        const QString &titleItemId = QString(),
+                        QStringList details = QStringList(),
+                        const QDateTime &creation = QDateTime::currentDateTime() );
+%Docstring
+Adds a point guide to the model
+\arg point the point guide added
+\arg title an optional title for the point
+\arg details detail items displaying how the guide was constructed
+\arg creation the creation date time, now by default
+%End
+
+    void addLineGuide( const QString &guideItemId,
+                       const QString &title = QString(),
+                       const QString &titleItemId = QString(),
+                       QStringList details = QStringList(),
+                       const QDateTime &creation = QDateTime::currentDateTime() );
+%Docstring
+Adds a line guide to the model
+\arg curve the curve/line guide added
+\arg title an optional title for the point
+\arg details detail items displaying how the guide was constructed
+\arg creation the creation date time, now by default
+%End
+
+    void clear();
+%Docstring
+Clears the model
+%End
+
+    bool removeGuides( const QModelIndexList &indexList );
+%Docstring
+Removes guides at the given ids
+%End
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+%Docstring
+Handles selection changes to highlight guides on the map
+%End
+
+      public:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdigitizingguidemodel.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
