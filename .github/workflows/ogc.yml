@@ -51,25 +51,24 @@ jobs:
           restore-keys: |
             build-ccache-ogc-master
 
-      - name: Build Docker Container with Build Environment
+      - name: Build Docker Container
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v8
+        uses: docker/build-push-action@v5
         with:
+          tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
+          push: ${{ github.event_name == 'push' }}
+          pull: true
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          image_name: qgis-deps-ogc
           context: .ci/ogc
-          dockerfile: Dockerfile
-          push_git_tag: true
-          push_image_and_stages: on:push
-          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+          file: Dockerfile
 
       - name: Run build
         run: |
           docker run -v $(pwd):/usr/src/qgis -v /home/runner/QGIS/.ccache:/root/.ccache ${DOCKER_IMAGE} /usr/src/qgis/.ci/ogc/build.sh
         env:
-          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
 
       - name: Save build cache for push only
         uses: actions/cache/save@v3
