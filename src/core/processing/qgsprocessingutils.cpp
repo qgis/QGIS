@@ -1429,7 +1429,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
 
     while ( it.nextFeature( f ) )
     {
-      if ( feedback->isCanceled() )
+      if ( feedback && feedback->isCanceled() )
         return QString();
       writer->addFeature( f, QgsFeatureSink::FastInsert );
     }
