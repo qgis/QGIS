@@ -69,7 +69,7 @@ jobs:
           path: /w/.ccache/QGIS
           key: build-ccache-mingw64-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
-            build-ccache-mingw64-refs/heads/master-
+            build-ccache-mingw64-master
 
       - name: Build QGIS Application
         run: CCACHE_DIR=/w/.ccache/QGIS ./ms-windows/mingw/build.sh x86_64 nodebug 4
