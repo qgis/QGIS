@@ -122,6 +122,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Container with Build Environment
         id: docker-build
         uses: docker/build-push-action@v5
@@ -131,6 +134,9 @@ jobs:
           tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
+          load: true
+          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:${{ github.event.pull_request.base.ref || github.ref_name }}
+          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:${{ github.event.pull_request.base.ref || github.ref_name }},mode=max' || '' }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
 
@@ -353,6 +359,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Container with Testing Environment
         id: docker-build
         uses: docker/build-push-action@v5
@@ -362,6 +371,9 @@ jobs:
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
+          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
+          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }},mode=max' || '' }}
+          load: true
           target: ${{ matrix.docker-target }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
@@ -457,6 +469,16 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Login to Docker Hub
+        if: ${{ github.event_name == 'push' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Container with Testing Environment
         id: docker-build
         uses: docker/build-push-action@v5
@@ -466,6 +488,9 @@ jobs:
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
+          cache-from: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
+          cache-to: ${{ github.event_name == 'push' && 'type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }},mode=max' || '' }}
+          load: true
           target: ${{ matrix.docker-target }}
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
