@@ -51,6 +51,9 @@ jobs:
           restore-keys: |
             build-ccache-ogc-master
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Container
         id: docker-build
         uses: docker/build-push-action@v5
