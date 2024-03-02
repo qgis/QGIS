@@ -61,7 +61,7 @@ jobs:
           path: build
           key: build-ccache-mingw64-msys2-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
-            build-ccache-mingw64-msys2-refs/heads/master
+            build-ccache-mingw64-msys2-master
 
       - name: Configure QGIS
         run: |
