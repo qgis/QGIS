@@ -67,7 +67,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: /w/.ccache/QGIS
-          key: build-ccache-mingw64-${{ github.base_ref || github.ref }}
+          key: build-ccache-mingw64-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
             build-ccache-mingw64-refs/heads/master-
 
@@ -79,7 +79,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /w/.ccache/QGIS
-          key: build-ccache-mingw64-${{ github.ref }}
+          key: build-ccache-mingw64-${{ github.ref_name }}
 
       - name: Create Portable zip
         run: |
