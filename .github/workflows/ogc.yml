@@ -57,12 +57,10 @@ jobs:
         with:
           tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
-          pull: true
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
           context: .ci/ogc
           file: Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run build
         run: |
