@@ -128,7 +128,7 @@ jobs:
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.head.ref || github.ref_name }}
+          tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.bsse.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
           build-args:
@@ -141,7 +141,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
             build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-master
 
@@ -173,7 +173,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}
 
       - name: Push artifact
         id: push_artifact
@@ -359,7 +359,7 @@ jobs:
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.head.ref || github.ref_name }}
+          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
           target: ${{ matrix.docker-target }}
@@ -463,7 +463,7 @@ jobs:
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.head.ref || github.ref_name }}
+          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' }}
           pull: true
           target: ${{ matrix.docker-target }}
