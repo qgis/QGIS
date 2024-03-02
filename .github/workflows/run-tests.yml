@@ -136,7 +136,7 @@ jobs:
           pull: true
           load: true
           cache-from: type=registry
-          cache-to: type=registry,ref=qgis3-qt${{ matrix.qt-version }}-build-deps:cache,mode=max
+          cache-to: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps:cache,mode=max
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
 
@@ -372,7 +372,7 @@ jobs:
           push: ${{ github.event_name == 'push' }}
           pull: true
           cache-from: type=registry
-          cache-to: type=registry,ref=qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache,mode=max
+          cache-to: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache,mode=max
           load: true
           target: ${{ matrix.docker-target }}
           build-args:
@@ -489,7 +489,7 @@ jobs:
           push: ${{ github.event_name == 'push' }}
           pull: true
           cache-from: type=registry
-          cache-to: type=registry,ref=qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache,mode=max
+          cache-to: type=registry,ref=qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:cache,mode=max
           load: true
           target: ${{ matrix.docker-target }}
           build-args:
