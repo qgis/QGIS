@@ -39,7 +39,9 @@ const QString QgsAuthPkcs12Method::AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#1
 const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI PKCS#12 authentication" );
 const QString QgsAuthPkcs12Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "PKI PKCS#12 authentication" );
 
+#ifndef QT_NO_SSL
 QMap<QString, QgsPkiConfigBundle *> QgsAuthPkcs12Method::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+#endif
 
 
 QgsAuthPkcs12Method::QgsAuthPkcs12Method()
@@ -56,8 +58,10 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
 
 QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
 {
+#ifndef QT_NO_SSL
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
+#endif
 }
 
 QString QgsAuthPkcs12Method::key() const
@@ -78,6 +82,7 @@ QString QgsAuthPkcs12Method::displayDescription() const
 bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
     const QString &dataprovider )
 {
+#ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
@@ -121,11 +126,15 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   request.setSslConfiguration( sslConfig );
 
   return true;
+#else
+  return false;
+#endif
 }
 
 bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
+#ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
@@ -137,6 +146,7 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
     QgsDebugError( QStringLiteral( "Update URI items FAILED: PKI bundle invalid" ) );
     return false;
   }
+
   QgsDebugMsgLevel( QStringLiteral( "Update URI items: PKI bundle valid" ), 2 );
 
   const QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
@@ -241,12 +251,17 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   }
 
   return true;
+#else
+  return false;
+#endif
 }
 
 void QgsAuthPkcs12Method::clearCachedConfig( const QString &authcfg )
 {
+#ifndef QT_NO_SSL
   const QMutexLocker locker( &mMutex );
   removePkiConfigBundle( authcfg );
+#endif
 }
 
 void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
@@ -265,6 +280,7 @@ void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
   // TODO: add updates as method version() increases due to config storage changes
 }
 
+#ifndef QT_NO_SSL
 QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &authcfg )
 {
   QMutexLocker locker( &mMutex );
@@ -357,6 +373,7 @@ void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
     QgsDebugMsgLevel( QStringLiteral( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ), 2 );
   }
 }
+#endif
 
 #ifdef HAVE_GUI
 QWidget *QgsAuthPkcs12Method::editWidget( QWidget *parent ) const
