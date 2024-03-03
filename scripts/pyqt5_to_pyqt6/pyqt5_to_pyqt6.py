@@ -319,6 +319,17 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     'has been removed in Qt6. Use QFontMetrics.horizontalAdvance() if plugin can '
                     'safely require Qt >= 5.11, or QFontMetrics.boundingRect().width() otherwise.\n')
 
+    def visit_subscript(_node: ast.Subscript, _parent):
+        if isinstance(_node.value, ast.Attribute):
+            if (_node.value.attr == 'activated' and
+                isinstance(_node.slice, ast.Name) and
+                    _node.slice.id == 'str'):
+                sys.stderr.write(
+                    f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: activated[str] '
+                    'has been removed in Qt6. Consider using QComboBox.activated instead if the string is not required, '
+                    'or QComboBox.textActivated if the plugin can '
+                    'safely require Qt >= 5.14. Otherwise conditional Qt version code will need to be introduced.\n')
+
     def visit_import(_node: ast.ImportFrom, _parent):
         import_offsets[Offset(node.lineno, node.col_offset)] = (
             node.module, set(name.name for name in node.names), node.end_lineno,
@@ -348,9 +359,10 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
             if isinstance(node, ast.Call):
                 visit_call(node, parent)
-
-            if isinstance(node, ast.Attribute):
+            elif isinstance(node, ast.Attribute):
                 visit_attribute(node, parent)
+            elif isinstance(node, ast.Subscript):
+                visit_subscript(node, parent)
 
             if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
                 function_def_renames[
