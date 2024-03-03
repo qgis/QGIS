@@ -263,6 +263,13 @@ void QgsPropertyOverrideButton::mouseReleaseEvent( QMouseEvent *event )
     return;
   }
 
+  // Middle button click to open the Expression Builder dialog
+  if ( event->button() == Qt::MiddleButton )
+  {
+    showExpressionDialog();
+    return;
+  }
+
   // pass to default behavior
   QToolButton::mousePressEvent( event );
 }
