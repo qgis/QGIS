@@ -2437,7 +2437,8 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_WHEN_FEATURE" \
                          "SIP_MONKEYPATCH_COMPAT_NAME" \
                          "SIP_MONKEYPATCH_SCOPEENUM" \
-                         "SIP_MONKEYPATCH_SCOPEENUM_UNNEST"
+                         "SIP_MONKEYPATCH_SCOPEENUM_UNNEST" \
+                         "SIP_MONKEYPATCH_FLAGS_UNNEST"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
 # remove all references to function-like macros that are alone on a line, have
