@@ -1675,6 +1675,14 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
       geomVector[i] = asGeos( c->geometryN( i ), precision ).release();
+      if ( !geomVector[i] )
+      {
+        for ( int j = 0; j < i; ++j )
+        {
+          GEOSGeom_destroy_r( geosinit()->ctxt, geomVector[j] );
+        }
+        return nullptr;
+      }
     }
     return createGeosCollection( geosType, geomVector );
   }
@@ -2134,6 +2142,8 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
 {
   if ( !mGeos )
   {
+    if ( errorMsg )
+      *errorMsg = QObject::tr( "QGIS geometry cannot be converted to a GEOS geometry", "GEOS Error" );
     return false;
   }
 
