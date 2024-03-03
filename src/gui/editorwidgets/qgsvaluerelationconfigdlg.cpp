@@ -27,9 +27,12 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   mLayerName->setFilters( Qgis::LayerFilter::VectorLayer );
   mKeyColumn->setLayer( mLayerName->currentLayer() );
   mValueColumn->setLayer( mLayerName->currentLayer() );
+  mGroupColumn->setLayer( mLayerName->currentLayer() );
+  mGroupColumn->setAllowEmptyFieldName( true );
   mDescriptionExpression->setLayer( mLayerName->currentLayer() );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
+  connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mGroupColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mDescriptionExpression, &QgsFieldExpressionWidget::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsValueRelationConfigDlg::layerChanged );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
@@ -41,6 +44,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsEditorConfigWidget::changed );
   connect( mKeyColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mValueColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mGroupColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mDescriptionExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mAllowMulti, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mAllowNull, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
@@ -78,6 +82,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
               QString() );
   cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
   cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
+  cfg.insert( QStringLiteral( "Group" ), mGroupColumn->currentField() );
   cfg.insert( QStringLiteral( "Description" ), mDescriptionExpression->expression() );
   cfg.insert( QStringLiteral( "AllowMulti" ), mAllowMulti->isChecked() );
   cfg.insert( QStringLiteral( "NofColumns" ), mNofColumns->value() );
@@ -97,6 +102,7 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
+  mGroupColumn->setField( config.value( QStringLiteral( "Group" ) ).toString() );
   mDescriptionExpression->setField( config.value( QStringLiteral( "Description" ) ).toString() );
   mAllowMulti->setChecked( config.value( QStringLiteral( "AllowMulti" ) ).toBool() );
   mNofColumns->setValue( config.value( QStringLiteral( "NofColumns" ), 1 ).toInt() );
