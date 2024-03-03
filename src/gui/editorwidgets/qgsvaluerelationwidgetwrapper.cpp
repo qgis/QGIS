@@ -112,7 +112,7 @@ void QgsFilteredTableWidget::filterStringChanged( const QString &filterString )
     }
     const int groupsCount = mDisplayGroupName ? groups.count() : groups.count() - 1;
 
-    const int rCount = std::max( 1, ( int ) std::ceil( ( float ) mCache.count() + groupsCount / ( float ) mColumnCount ) );
+    const int rCount = std::max( 1, ( int ) std::ceil( ( float )( mCache.count() + groupsCount ) / ( float ) mColumnCount ) );
     mTableWidget->setRowCount( rCount );
 
     int row = 0;
