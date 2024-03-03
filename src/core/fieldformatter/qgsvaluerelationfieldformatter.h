@@ -39,7 +39,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     struct ValueRelationItem
     {
       //! Constructor for ValueRelationItem
-      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString(), const QString group = QString() )
+      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString(), const QVariant group = QVariant() )
         : key( key )
         , value( value )
         , description( description )
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
       QVariant key;
       QString value;
       QString description;
-      QString group;
+      QVariant group;
     };
 
     typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;

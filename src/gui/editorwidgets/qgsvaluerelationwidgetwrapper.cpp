@@ -101,8 +101,8 @@ void QgsFilteredTableWidget::filterStringChanged( const QString &filterString )
   mTableWidget->clearContents();
   if ( !mCache.isEmpty() )
   {
-    QStringList groups;
-    groups << QString();
+    QVariantList groups;
+    groups << QVariant();
     for ( const QPair<QgsValueRelationFieldFormatter::ValueRelationItem, Qt::CheckState> &pair : std::as_const( mCache ) )
     {
       if ( !groups.contains( pair.first.group ) )
@@ -111,19 +111,26 @@ void QgsFilteredTableWidget::filterStringChanged( const QString &filterString )
       }
     }
     const int groupsCount = mDisplayGroupName ? groups.count() : groups.count() - 1;
+
     const int rCount = std::max( 1, ( int ) std::ceil( ( float ) mCache.count() + groupsCount / ( float ) mColumnCount ) );
     mTableWidget->setRowCount( rCount );
+
     int row = 0;
     int column = 0;
-    QString currentGroup;
+    QVariant currentGroup;
     for ( const QPair<QgsValueRelationFieldFormatter::ValueRelationItem, Qt::CheckState> &pair : std::as_const( mCache ) )
     {
+      if ( column == mColumnCount )
+      {
+        row++;
+        column = 0;
+      }
       if ( currentGroup != pair.first.group )
       {
         currentGroup = pair.first.group;
         if ( mDisplayGroupName || !( row == 0 && column == 0 ) )
         {
-          QTableWidgetItem *item = new QTableWidgetItem( mDisplayGroupName ? pair.first.group : QString() );
+          QTableWidgetItem *item = new QTableWidgetItem( mDisplayGroupName ? pair.first.group.toString() : QString() );
           item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           mTableWidget->setItem( row, column, item );
           column++;
@@ -143,11 +150,6 @@ void QgsFilteredTableWidget::filterStringChanged( const QString &filterString )
         item->setFlags( mEnabledTable ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
         mTableWidget->setItem( row, column, item );
         column++;
-        if ( column == mColumnCount )
-        {
-          row++;
-          column = 0;
-        }
       }
     }
     mTableWidget->setRowCount( row + 1 );
@@ -573,7 +575,7 @@ void QgsValueRelationWidgetWrapper::populate()
 
     if ( !mCache.isEmpty() )
     {
-      QString currentGroup;
+      QVariant currentGroup;
       QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboBox->model() );
       const bool displayGroupName = config( QStringLiteral( "DisplayGroupName" ) ).toBool();
       for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
@@ -586,7 +588,7 @@ void QgsValueRelationWidgetWrapper::populate()
           }
           if ( displayGroupName )
           {
-            mComboBox->addItem( element.group );
+            mComboBox->addItem( element.group.toString() );
             QStandardItem *item = model->item( mComboBox->count() - 1 );
             item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           }

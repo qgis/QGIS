@@ -186,7 +186,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
       context.setFeature( f );
       description = descriptionExpression.evaluate( &context ).toString();
     }
-    const QString group = groupIdx > -1 ? f.attribute( groupIdx ).toString() : QString();
+    const QVariant group = groupIdx > -1 ? f.attribute( groupIdx ) : QVariant();
     cache.append( ValueRelationItem( f.attribute( keyIdx ), f.attribute( valueIdx ).toString(), description, group ) );
   }
 
