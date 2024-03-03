@@ -703,12 +703,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
     static geos::unique_ptr nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
-    int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const;
+    int mergeGeometriesMultiTypeSplit( std::vector<geos::unique_ptr> &splitResult ) const;
 
     /**
      * Ownership of geoms is transferred
      */
-    static geos::unique_ptr createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms );
+    static geos::unique_ptr createGeosCollection( int typeId, std::vector<geos::unique_ptr> &geoms );
 
     static geos::unique_ptr createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision );
     static geos::unique_ptr createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision );
@@ -718,8 +718,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
     geos::unique_ptr linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
-    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries, bool skipIntersectionCheck ) const;
-    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries, bool skipIntersectionCheck ) const;
+    EngineOperationResult splitLinearGeometry( const GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries, bool skipIntersectionCheck ) const;
+    EngineOperationResult splitPolygonGeometry( const GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries, bool skipIntersectionCheck ) const;
 
     //utils for reshape
     static geos::unique_ptr reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );
