@@ -95,32 +95,59 @@ void QgsFilteredTableWidget::filterStringChanged( const QString &filterString )
 {
   auto signalBlockedTableWidget = whileBlocking( mTableWidget );
   Q_UNUSED( signalBlockedTableWidget )
-  mTableWidget->clearContents();
-  const int rCount = std::max( 1, ( int ) std::ceil( ( float ) mCache.count() / ( float ) mColumnCount ) );
-  mTableWidget->setRowCount( rCount );
-  int row = 0;
-  int column = 0;
 
-  for ( const QPair<QgsValueRelationFieldFormatter::ValueRelationItem, Qt::CheckState> &pair : std::as_const( mCache ) )
+  mTableWidget->clearContents();
+  if ( !mCache.isEmpty() )
   {
-    if ( column == mColumnCount )
+    QStringList groups;
+    groups << QString();
+    for ( const QPair<QgsValueRelationFieldFormatter::ValueRelationItem, Qt::CheckState> &pair : std::as_const( mCache ) )
     {
-      row++;
-      column = 0;
+      if ( !groups.contains( pair.first.group ) )
+      {
+        groups << pair.first.group;
+      }
     }
-    if ( pair.first.value.contains( filterString, Qt::CaseInsensitive ) )
+    groups.removeAll( QString() );
+
+    const int rCount = std::max( 1, ( int ) std::ceil( ( float ) mCache.count() + groups.count() / ( float ) mColumnCount ) );
+    mTableWidget->setRowCount( rCount );
+    int row = 0;
+    int column = 0;
+    QString currentGroup;
+    for ( const QPair<QgsValueRelationFieldFormatter::ValueRelationItem, Qt::CheckState> &pair : std::as_const( mCache ) )
     {
-      QTableWidgetItem *item = nullptr;
-      item = new QTableWidgetItem( pair.first.value );
-      item->setData( Qt::UserRole, pair.first.key );
-      item->setData( Qt::ToolTipRole, pair.first.description );
-      item->setCheckState( pair.second );
-      item->setFlags( mEnabledTable ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
-      mTableWidget->setItem( row, column, item );
-      column++;
+      if ( currentGroup != pair.first.group )
+      {
+        currentGroup = pair.first.group;
+        QTableWidgetItem *item = new QTableWidgetItem( pair.first.group );
+        item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+        mTableWidget->setItem( row, column, item );
+        column++;
+        if ( column == mColumnCount )
+        {
+          row++;
+          column = 0;
+        }
+      }
+      if ( pair.first.value.contains( filterString, Qt::CaseInsensitive ) )
+      {
+        QTableWidgetItem *item = new QTableWidgetItem( pair.first.value );
+        item->setData( Qt::UserRole, pair.first.key );
+        item->setData( Qt::ToolTipRole, pair.first.description );
+        item->setCheckState( pair.second );
+        item->setFlags( mEnabledTable ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
+        mTableWidget->setItem( row, column, item );
+        column++;
+        if ( column == mColumnCount )
+        {
+          row++;
+          column = 0;
+        }
+      }
     }
+    mTableWidget->setRowCount( row + 1 );
   }
-  mTableWidget->setRowCount( row + 1 );
 }
 
 QStringList QgsFilteredTableWidget::selection() const
@@ -531,19 +558,37 @@ void QgsValueRelationWidgetWrapper::populate()
 
   if ( mComboBox )
   {
-    whileBlocking( mComboBox )->clear();
+    mComboBox->blockSignals( true );
+    mComboBox->clear();
     if ( config( QStringLiteral( "AllowNull" ) ).toBool( ) )
     {
-      whileBlocking( mComboBox )->addItem( tr( "(no selection)" ), QVariant( field().type( ) ) );
+      mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type( ) ) );
+      if ( !mCache.isEmpty() )
+      {
+        mComboBox->insertSeparator( mComboBox->count() );
+      }
     }
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
+    if ( !mCache.isEmpty() )
     {
-      whileBlocking( mComboBox )->addItem( element.value, element.key );
-      if ( !element.description.isEmpty() )
-        mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
-    }
+      QString currentGroup = mCache.at( 0 ).group;
+      for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
+      {
+        if ( currentGroup != element.group )
+        {
+          mComboBox->insertSeparator( mComboBox->count() );
+          currentGroup = element.group;
+        }
 
+        mComboBox->addItem( element.value, element.key );
+
+        if ( !element.description.isEmpty() )
+        {
+          mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
+        }
+      }
+    }
+    mComboBox->blockSignals( false );
   }
   else if ( mTableWidget )
   {
