@@ -62,6 +62,7 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void testRegressionGH42003();
     void testAllowMultiColumns();
     void testAllowMultiAndCompleter();
+    void testGroup();
 };
 
 void TestQgsValueRelationWidgetWrapper::initTestCase()
@@ -1817,5 +1818,88 @@ void TestQgsValueRelationWidgetWrapper::testAllowMultiAndCompleter()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "6" ) );
 }
+
+void TestQgsValueRelationWidgetWrapper::testGroup()
+{
+  // create a vector layer
+  QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &vl1, false, false );
+  QgsProject::instance()->addMapLayer( &vl2, false, false );
+
+  // insert some features
+  QgsFeature f1( vl1.fields() );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "province" ), 123 );
+  f1.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Some Place By The River" ) );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  QVERIFY( f1.isValid() );
+  QgsFeature f2( vl1.fields() );
+  f2.setAttribute( QStringLiteral( "pk" ), 2 );
+  f2.setAttribute( QStringLiteral( "province" ), 245 );
+  f2.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Dreamland By The Clouds" ) );
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 1 0, 1 1, 2 1, 2 0, 1 0 ))" ) ) );
+  QVERIFY( f2.isValid() );
+  QVERIFY( vl1.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  QgsFeature f3( vl2.fields() );
+  f3.setAttribute( QStringLiteral( "fk_province" ), 123 );
+  f3.setAttribute( QStringLiteral( "fk_municipality" ), 1 );
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 0.5 0.5)" ) ) );
+  QVERIFY( f3.isValid() );
+  QVERIFY( f3.geometry().isGeosValid() );
+  QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
+
+  // Test display-less grouping with combobox
+  QgsValueRelationWidgetWrapper w( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "Layer" ), vl1.id() );
+  cfg.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg.insert( QStringLiteral( "Value" ), QStringLiteral( "municipality" ) );
+  cfg.insert( QStringLiteral( "Group" ), QStringLiteral( "province" ) );
+  cfg.insert( QStringLiteral( "DisplayGroupName" ), false );
+  cfg.insert( QStringLiteral( "AllowMulti" ), false );
+  cfg.insert( QStringLiteral( "AllowNull" ), false );
+  cfg.insert( QStringLiteral( "OrderByValue" ), true );
+  w.setConfig( cfg );
+  w.widget();
+  w.setEnabled( true );
+
+  QComboBox *comboBox = qobject_cast<QComboBox *>( w.widget() );
+  QCOMPARE( comboBox->isEnabled(), true );
+  QCOMPARE( comboBox->model()->rowCount(), 3 ); // 2 items + 1 separator
+
+  // Test display grouping with combobox
+  QgsValueRelationWidgetWrapper w2( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
+  cfg.insert( QStringLiteral( "DisplayGroupName" ), true );
+  w2.setConfig( cfg );
+  w2.widget();
+  w2.setEnabled( true );
+
+  comboBox = qobject_cast<QComboBox *>( w2.widget() );
+  QCOMPARE( comboBox->isEnabled(), true );
+  QCOMPARE( comboBox->model()->rowCount(), 5 ); // 2 items + 2 group names + 1 separator
+
+  // Test display-less grouping with multi-selection table
+  QgsValueRelationWidgetWrapper w3( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
+  cfg.insert( QStringLiteral( "DisplayGroupName" ), false );
+  cfg.insert( QStringLiteral( "AllowMulti" ), true );
+  w3.setConfig( cfg );
+  w3.widget();
+  w3.setEnabled( true );
+
+  QCOMPARE( w3.mTableWidget->rowCount(), 3 ); // 2 items + 1 separator
+
+  // Test display grouping with multi-selection table
+  QgsValueRelationWidgetWrapper w4( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
+  cfg.insert( QStringLiteral( "DisplayGroupName" ), true );
+  cfg.insert( QStringLiteral( "AllowMulti" ), true );
+  w4.setConfig( cfg );
+  w4.widget();
+  w4.setEnabled( true );
+
+  QCOMPARE( w4.mTableWidget->rowCount(), 4 ); // 2 items + 2 group names
+}
+
 QGSTEST_MAIN( TestQgsValueRelationWidgetWrapper )
 #include "testqgsvaluerelationwidgetwrapper.moc"
