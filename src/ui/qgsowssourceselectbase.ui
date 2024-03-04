@@ -323,57 +323,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mWMSGroupBox">
-         <property name="title">
-          <string>Options</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mTileWidthLineEdit"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mTileSizeLabel">
-            <property name="text">
-             <string>Tile size</string>
-            </property>
-            <property name="buddy">
-             <cstring>mTileWidthLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="mLayerNameLineEdit"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLineEdit" name="mTileHeightLineEdit"/>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLineEdit" name="mFeatureCountLineEdit"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mLayerNameLabel">
-            <property name="text">
-             <string>Layer name</string>
-            </property>
-            <property name="buddy">
-             <cstring>mLayerNameLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="mFeatureCountLabel">
-            <property name="text">
-             <string>Feature limit for GetFeatureInfo</string>
-            </property>
-            <property name="buddy">
-             <cstring>mFeatureCountLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <widget class="QWidget" name="mCacheWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <property name="leftMargin">
@@ -597,10 +546,6 @@ Always network: always load from network and do not check if the cache has a val
   <tabstop>mTimeComboBox</tabstop>
   <tabstop>mChangeCRSButton</tabstop>
   <tabstop>mFormatComboBox</tabstop>
-  <tabstop>mLayerNameLineEdit</tabstop>
-  <tabstop>mTileWidthLineEdit</tabstop>
-  <tabstop>mTileHeightLineEdit</tabstop>
-  <tabstop>mFeatureCountLineEdit</tabstop>
   <tabstop>mCacheComboBox</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>
