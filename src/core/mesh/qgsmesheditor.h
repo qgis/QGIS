@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Constructor with a specified layer \a meshLayer
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 
-    //! Constructor with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
+    //! Constructor with a specific mesh \a nativeMesh and an associated triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
 

@@ -514,7 +514,7 @@ class QgsOgcUtilsExpressionFromFilter
 
     /**
      * Returns an expression node from a WFS filter embedded in a document with
-     * boudnaries operator.
+     * boundaries operator.
      */
     QgsExpressionNode *nodeIsBetweenFromOgcFilter( const QDomElement &element );
 

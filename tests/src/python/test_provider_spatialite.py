@@ -1561,9 +1561,8 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
         # Test default values
         dp = vl.dataProvider()
-        # FIXME: should it be None?
-        self.assertTrue(dp.defaultValue(0).isNull())
-        self.assertIsNone(dp.defaultValue(1))
+        self.assertEqual(dp.defaultValue(0), NULL)
+        self.assertEqual(dp.defaultValue(1), NULL)
         # FIXME: This fails because there is no backend-side evaluation in this provider
         # self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
         self.assertTrue(dp.defaultValue(

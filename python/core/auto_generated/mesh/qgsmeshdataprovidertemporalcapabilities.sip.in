@@ -100,7 +100,7 @@ Returns the relative time in milliseconds of the dataset
 
     void clear();
 %Docstring
-Clears alls stored reference times and dataset times
+Clears all stored reference times and dataset times
 %End
 
     qint64 firstTimeStepDuration( int group ) const;

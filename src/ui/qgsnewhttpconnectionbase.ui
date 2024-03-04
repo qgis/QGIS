@@ -355,16 +355,17 @@
   <tabstop>cmbVersion</tabstop>
   <tabstop>mWfsVersionDetectButton</tabstop>
   <tabstop>txtMaxNumFeatures</tabstop>
-  <tabstop>cbxWfsFeaturePaging</tabstop>
+  <tabstop>cmbFeaturePaging</tabstop>
   <tabstop>txtPageSize</tabstop>
   <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWfsInvertAxisOrientation</tabstop>
   <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>
   <tabstop>cmbDpiMode</tabstop>
+  <tabstop>cmbTilePixelRatio</tabstop>
   <tabstop>cbxIgnoreGetMapURI</tabstop>
   <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
-  <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWmsIgnoreReportedLayerExtents</tabstop>
+  <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWmsInvertAxisOrientation</tabstop>
   <tabstop>cbxSmoothPixmapTransform</tabstop>
   <tabstop>mTestConnectionButton</tabstop>

@@ -210,7 +210,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
     bool useContinuousLegend() const;
 
     /**
-     * Sets the flag to use a continuos gradient legend to \a useContinuousLegend.
+     * Sets the flag to use a continuous gradient legend to \a useContinuousLegend.
      *
      * When this flag is set the legend will be rendered using a continuous color ramp with
      * min and max values, when it is not set the legend will be rendered using separate

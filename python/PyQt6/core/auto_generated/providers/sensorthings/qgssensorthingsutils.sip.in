@@ -63,6 +63,25 @@ Returns a filter string which restricts results to those matching the specified
 ``entityType`` and ``wkbType``.
 %End
 
+    static QString filterForExtent( const QString &geometryField, const QgsRectangle &extent );
+%Docstring
+Returns a filter string which restricts results to those within the specified
+``extent``.
+
+The ``extent`` should always be specified in EPSG:4326.
+
+.. versionadded:: 3.38
+%End
+
+    static QString combineFilters( const QStringList &filters );
+%Docstring
+Combines a set of SensorThings API filter operators.
+
+See https://docs.ogc.org/is/18-088/18-088.html#requirement-request-data-filter
+
+.. versionadded:: 3.38
+%End
+
     static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = 0, const QString &authCfg = QString() );
 %Docstring
 Returns a list of available geometry types for the server at the specified ``uri``

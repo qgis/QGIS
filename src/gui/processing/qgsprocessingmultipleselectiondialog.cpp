@@ -599,7 +599,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
     case Qgis::ProcessingSourceType::Vector:
     case Qgis::ProcessingSourceType::VectorAnyGeometry:
     {
-      const QList<QgsVectorLayer *> options = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() );
+      const QList<QgsVectorLayer *> options = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() << static_cast<int>( mParameter->layerType() ) );
       for ( const QgsVectorLayer *layer : options )
       {
         addLayer( layer );

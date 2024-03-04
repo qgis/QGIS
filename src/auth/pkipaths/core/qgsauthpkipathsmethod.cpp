@@ -39,7 +39,9 @@ const QString QgsAuthPkiPathsMethod::AUTH_METHOD_KEY = QStringLiteral( "PKI-Path
 const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI paths authentication" );
 const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "PKI paths authentication" );
 
+#ifndef QT_NO_SSL
 QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+#endif
 
 
 QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
@@ -56,9 +58,11 @@ QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
 
 QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
 {
+#ifndef QT_NO_SSL
   const QMutexLocker locker( &mMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
+#endif
 }
 
 QString QgsAuthPkiPathsMethod::key() const
@@ -80,6 +84,7 @@ QString QgsAuthPkiPathsMethod::displayDescription() const
 bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
     const QString &dataprovider )
 {
+#ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
@@ -122,12 +127,16 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
   request.setSslConfiguration( sslConfig );
 
   return true;
+#else
+  return false;
+#endif
 }
 
 
 bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
+#ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
@@ -243,12 +252,17 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   }
 
   return true;
+#else
+  return false;
+#endif
 }
 
 void QgsAuthPkiPathsMethod::clearCachedConfig( const QString &authcfg )
 {
+#ifndef QT_NO_SSL
   const QMutexLocker locker( &mMutex );
   removePkiConfigBundle( authcfg );
+#endif
 }
 
 void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
@@ -268,6 +282,7 @@ void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
   // TODO: add updates as method version() increases due to config storage changes
 }
 
+#ifndef QT_NO_SSL
 QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &authcfg )
 {
   const QMutexLocker locker( &mMutex );
@@ -337,6 +352,7 @@ void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
     QgsDebugMsgLevel( QStringLiteral( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ), 2 );
   }
 }
+#endif
 
 #ifdef HAVE_GUI
 QWidget *QgsAuthPkiPathsMethod::editWidget( QWidget *parent ) const

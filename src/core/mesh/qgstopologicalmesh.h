@@ -137,7 +137,7 @@ class CORE_EXPORT QgsTopologicalMesh
         QVector<FaceNeighbors> mFacesNeighborhoodToAdd;
         QVector<QgsMeshFace> mFacesToRemove;
         QVector<FaceNeighbors> mFacesNeighborhoodToRemove;
-        QList<std::array<int, 4>> mNeighborhoodChanges; // {index of concerned face, neigbor position, previous value, changed value}
+        QList<std::array<int, 4>> mNeighborhoodChanges; // {index of concerned face, neighbor position, previous value, changed value}
 
         QVector<QgsMeshVertex> mVerticesToAdd;
         QVector<int> mVertexToFaceToAdd;
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsTopologicalMesh
     Changes insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertex );
 
     /**
-     * Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
+     * Adds a free \a vertex in the face, that is a vertex that is not included or linked with any faces.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes addFreeVertex( const QgsMeshVertex &vertex );

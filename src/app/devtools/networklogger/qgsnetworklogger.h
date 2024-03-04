@@ -101,6 +101,7 @@ class QgsNetworkLogger : public QAbstractItemModel
 
   private slots:
     void requestAboutToBeCreated( QgsNetworkRequestParameters parameters );
+    void requestCreated( const QgsNetworkRequestParameters &parameters );
     void requestFinished( QgsNetworkReplyContent content );
     void requestTimedOut( QgsNetworkRequestParameters parameters );
     void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );

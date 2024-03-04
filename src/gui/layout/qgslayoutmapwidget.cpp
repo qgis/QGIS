@@ -92,6 +92,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
 
+  mZLowerSpin->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
+  mZUpperSpin->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
+  connect( mElevationRangeCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mElevationRangeCheckBox_toggled );
+  connect( mZLowerSpin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutMapWidget::updateZRange );
+  connect( mZUpperSpin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutMapWidget::updateZRange );
+
   mStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
   mEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
   mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
@@ -191,6 +197,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   registerDataDefinedButton( mCRSDDBtn, QgsLayoutObject::DataDefinedProperty::MapCrs );
   registerDataDefinedButton( mStartDateTimeDDBtn, QgsLayoutObject::DataDefinedProperty::StartDateTime );
   registerDataDefinedButton( mEndDateTimeDDBtn, QgsLayoutObject::DataDefinedProperty::EndDateTime );
+  registerDataDefinedButton( mZLowerDDBtn, QgsLayoutObject::DataDefinedProperty::MapZRangeLower );
+  registerDataDefinedButton( mZUpperDDBtn, QgsLayoutObject::DataDefinedProperty::MapZRangeUpper );
 
   updateGuiElements();
   loadGridEntries();
@@ -553,6 +561,41 @@ void QgsLayoutMapWidget::updateTemporalExtent()
 
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Set Temporal Range" ) );
   mMapItem->setTemporalRange( range );
+  mMapItem->layout()->undoStack()->endCommand();
+
+  updatePreview();
+}
+
+void QgsLayoutMapWidget::mElevationRangeCheckBox_toggled( bool checked )
+{
+  if ( !mMapItem )
+  {
+    return;
+  }
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Toggle Z Range" ) );
+  mMapItem->setZRangeEnabled( checked );
+  mMapItem->layout()->undoStack()->endCommand();
+
+  updatePreview();
+}
+
+void QgsLayoutMapWidget::updateZRange()
+{
+  if ( !mMapItem )
+  {
+    return;
+  }
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Set Z Range" ) );
+  double zLower = mZLowerSpin->value();
+  if ( zLower == mZLowerSpin->clearValue() )
+    zLower = std::numeric_limits< double >::lowest();
+  double zUpper = mZUpperSpin->value();
+  if ( zUpper == mZUpperSpin->clearValue() )
+    zUpper = std::numeric_limits< double >::max();
+
+  mMapItem->setZRange( QgsDoubleRange( zLower, zUpper ) );
   mMapItem->layout()->undoStack()->endCommand();
 
   updatePreview();
@@ -924,6 +967,17 @@ void QgsLayoutMapWidget::updateGuiElements()
     mStartDateTime->setDateTime( mMapItem->temporalRange().begin() );
     mEndDateTime->setDateTime( mMapItem->temporalRange().end() );
   }
+
+  whileBlocking( mElevationRangeCheckBox )->setChecked( mMapItem->zRangeEnabled() );
+  mElevationRangeCheckBox->setCollapsed( !mMapItem->zRangeEnabled() );
+  if ( mMapItem->zRange().lower() != std::numeric_limits< double >::lowest() )
+    whileBlocking( mZLowerSpin )->setValue( mMapItem->zRange().lower() );
+  else
+    whileBlocking( mZLowerSpin )->clear();
+  if ( mMapItem->zRange().upper() != std::numeric_limits< double >::max() )
+    whileBlocking( mZUpperSpin )->setValue( mMapItem->zRange().upper() );
+  else
+    whileBlocking( mZUpperSpin )->clear();
 
   populateDataDefinedButtons();
   loadGridEntries();

@@ -235,21 +235,24 @@ QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicK
 
 bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool removeSettingAtKey ) const
 {
-  if ( exists( dynamicKeyPartList ) )
-    return false;
-
   auto settings = QgsSettings::get();
 
   const QString oldCompleteKey = completeKeyPrivate( key, dynamicKeyPartList );
 
   if ( settings->contains( oldCompleteKey ) )
   {
-    QVariant oldValue = settings->value( oldCompleteKey, mDefaultValue );
-    setVariantValue( oldValue, dynamicKeyPartList );
+    if ( !exists( dynamicKeyPartList ) )
+    {
+      QVariant oldValue = settings->value( oldCompleteKey, mDefaultValue );
+      // do not copy if it is equal to the default value
+      if ( oldValue != defaultValueAsVariant() )
+        setVariantValue( oldValue, dynamicKeyPartList );
+    }
     if ( removeSettingAtKey )
       settings->remove( oldCompleteKey );
     return true;
   }
+
   return false;
 }
 

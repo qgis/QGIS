@@ -521,7 +521,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         double currentAlpha = mOpacity;
         if ( mRasterTransparency )
         {
-          currentAlpha = mRasterTransparency->alphaValue( x22, mOpacity * 255 ) / 255.0;
+          currentAlpha *= mRasterTransparency->opacityForValue( x22 );
         }
         if ( mAlphaBand > 0 )
         {

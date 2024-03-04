@@ -50,6 +50,7 @@ class QgsSensorThingsSharedData
     QString error() const { return mError; }
 
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+    QgsRectangle extent() const;
     long long featureCount( QgsFeedback *feedback = nullptr ) const;
 
     bool hasCachedAllFeatures() const;
@@ -82,6 +83,12 @@ class QgsSensorThingsSharedData
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QString mGeometryField;
     QgsFields mFields;
+
+    QgsRectangle mFilterExtent;
+
+    //! Extent calculated from features actually fetched so far
+    QgsRectangle mFetchedFeatureExtent;
+
     QgsCoordinateReferenceSystem mSourceCRS;
 
     mutable long long mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );

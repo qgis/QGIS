@@ -26,6 +26,7 @@ from qgis.PyQt.QtGui import QIcon
 from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
+from .gui_utils import GuiUtils
 
 from qgis.core import (
     QgsApplication,
@@ -40,8 +41,6 @@ from qgis.core import (
 )
 
 from qgis.utils import OverrideCursor
-
-from . import resources_rc  # NOQA
 
 try:
     from qgis.core import QgsVectorLayerExporter  # NOQA
@@ -156,8 +155,8 @@ class ConnectionItem(TreeItem):
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
-            ConnectionItem.connectedIcon = QIcon(":/db_manager/icons/plugged.png")
-            ConnectionItem.disconnectedIcon = QIcon(":/db_manager/icons/unplugged.png")
+            ConnectionItem.connectedIcon = GuiUtils.get_icon("plugged")
+            ConnectionItem.disconnectedIcon = GuiUtils.get_icon("unplugged")
 
     def data(self, column):
         if column == 0:
@@ -214,7 +213,7 @@ class SchemaItem(TreeItem):
 
         # load (shared) icon with first instance of schema item
         if not hasattr(SchemaItem, 'schemaIcon'):
-            SchemaItem.schemaIcon = QIcon(":/db_manager/icons/namespace.png")
+            SchemaItem.schemaIcon = GuiUtils.get_icon("namespace")
 
     def data(self, column):
         if column == 0:
@@ -246,13 +245,13 @@ class TableItem(TreeItem):
         # load (shared) icon with first instance of table item
         if not hasattr(TableItem, 'tableIcon'):
             TableItem.tableIcon = QgsApplication.getThemeIcon("/mIconTableLayer.svg")
-            TableItem.viewIcon = QIcon(":/db_manager/icons/view.png")
-            TableItem.viewMaterializedIcon = QIcon(":/db_manager/icons/view_materialized.png")
+            TableItem.viewIcon = GuiUtils.get_icon("view")
+            TableItem.viewMaterializedIcon = GuiUtils.get_icon("view_materialized")
             TableItem.layerPointIcon = QgsApplication.getThemeIcon("/mIconPointLayer.svg")
             TableItem.layerLineIcon = QgsApplication.getThemeIcon("/mIconLineLayer.svg")
             TableItem.layerPolygonIcon = QgsApplication.getThemeIcon("/mIconPolygonLayer.svg")
             TableItem.layerRasterIcon = QgsApplication.getThemeIcon("/mIconRasterLayer.svg")
-            TableItem.layerUnknownIcon = QIcon(":/db_manager/icons/layer_unknown.png")
+            TableItem.layerUnknownIcon = GuiUtils.get_icon("layer_unknown")
 
     def data(self, column):
         if column == 0:

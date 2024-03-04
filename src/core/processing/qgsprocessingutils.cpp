@@ -452,6 +452,17 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       {
         pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), pointCloudOptions );
       }
+      else
+      {
+        // pdal provider can read ascii files but it is not exposed by the provider to
+        // prevent automatic loading of tabular ascii files.
+        // Try to open the file with pdal provider.
+        QgsProviderMetadata *pdalProvider = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
+        if ( pdalProvider )
+        {
+          pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, QStringLiteral( "pdal" ), pointCloudOptions );
+        }
+      }
     }
     if ( pointCloudLayer && pointCloudLayer->isValid() )
     {
@@ -1418,7 +1429,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
 
     while ( it.nextFeature( f ) )
     {
-      if ( feedback->isCanceled() )
+      if ( feedback && feedback->isCanceled() )
         return QString();
       writer->addFeature( f, QgsFeatureSink::FastInsert );
     }

@@ -407,3 +407,20 @@ def set_display_all(self, enabled):
 
 QgsPalLayerSettings.displayAll = property(get_display_all)
 QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(set_display_all)
+
+QgsLocatorResult.userData = property(QgsLocatorResult._userData)
+QgsLocatorResult.userData = QgsLocatorResult.userData.setter(QgsLocatorResult.setUserData)
+
+
+def get_pixel_transparency(self):
+    return (1.0 - self.opacity) * 100
+
+
+def set_pixel_transparency(self, transparency):
+    self.opacity = 1.0 - (transparency / 100)
+
+
+QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = property(get_pixel_transparency)
+QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent.setter(set_pixel_transparency)
+QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(get_pixel_transparency)
+QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(set_pixel_transparency)

@@ -252,14 +252,23 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual const QgsDataProviderElevationProperties *elevationProperties() const SIP_SKIP;
 
     /**
-     * Returns the extent of the layer
-     * \returns QgsRectangle containing the extent of the layer
+     * Returns the extent of the layer.
+     *
+     * \warning This may be expensive to calculate for some data providers, as it may involve
+     * additional network requests or in some cases, iterating through all the features in a layer.
+     * If the provider returns the Qgis::DataProviderFlag::FastExtent2D flag from the flags() method
+     * then the call to extent() is guaranteed to ALWAYS be fast and not involve any additional work.
      */
     virtual QgsRectangle extent() const = 0;
 
     /**
-     * Returns the 3D extent of the layer
-     * \returns QgsBox3D containing the 3D extent of the layer
+     * Returns the 3D extent of the layer.
+     *
+     * \warning This may be expensive to calculate for some data providers, as it may involve
+     * additional network requests or in some cases, iterating through all the features in a layer.
+     * If the provider returns the Qgis::DataProviderFlag::FastExtent3D flag from the flags() method
+     * then the call to extent3D() is guaranteed to ALWAYS be fast and not involve any additional work.
+     *
      * \since QGIS 3.36
      */
     virtual QgsBox3D extent3D() const

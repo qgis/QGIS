@@ -21,6 +21,7 @@ The content of this file is based on
 """
 from hashlib import md5
 
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QWidget,
@@ -52,6 +53,7 @@ from .db_plugins.plugin import BaseError
 from .db_plugins.postgis.plugin import PGDatabase
 from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
+from .gui_utils import GuiUtils
 
 try:
     from qgis.gui import QgsCodeEditorSQL  # NOQA
@@ -61,7 +63,7 @@ except:
 
     gui.QgsCodeEditorSQL = SqlEdit
 
-from .ui.ui_DlgSqlLayerWindow import Ui_DbManagerDlgSqlLayerWindow as Ui_Dialog
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgSqlLayerWindow.ui'))
 
 import re
 
@@ -155,7 +157,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.getColumnsBtn.clicked.connect(self.fillColumnCombos)
 
         self.queryBuilderFirst = True
-        self.queryBuilderBtn.setIcon(QIcon(":/db_manager/icons/sql.gif"))
+        self.queryBuilderBtn.setIcon(GuiUtils.get_icon("sql"))
         self.queryBuilderBtn.clicked.connect(self.displayQueryBuilder)
 
         self.presetName.textChanged.connect(self.nameChanged)

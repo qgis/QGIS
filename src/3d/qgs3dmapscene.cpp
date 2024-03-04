@@ -1157,23 +1157,21 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
 {
   mEntityRotationCenter = new Qt3DCore::QEntity;
 
-  Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
-  mEntityRotationCenter->addComponent( trCameraViewCenter );
-  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
-  materialCameraViewCenter->setAmbient( Qt::blue );
-  mEntityRotationCenter->addComponent( materialCameraViewCenter );
-  Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
-  rendererCameraViewCenter->setRadius( 10 );
-  mEntityRotationCenter->addComponent( rendererCameraViewCenter );
-  mEntityRotationCenter->setEnabled( true );
+  Qt3DCore::QTransform *trRotationCenter = new Qt3DCore::QTransform;
+  mEntityRotationCenter->addComponent( trRotationCenter );
+  Qt3DExtras::QPhongMaterial *materialRotationCenter = new Qt3DExtras::QPhongMaterial;
+  materialRotationCenter->setAmbient( Qt::blue );
+  mEntityRotationCenter->addComponent( materialRotationCenter );
+  Qt3DExtras::QSphereMesh *rendererRotationCenter = new Qt3DExtras::QSphereMesh;
+  rendererRotationCenter->setRadius( 10 );
+  mEntityRotationCenter->addComponent( rendererRotationCenter );
+  mEntityRotationCenter->setEnabled( false );
   mEntityRotationCenter->setParent( this );
 
-  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trCameraViewCenter]( QVector3D center )
+  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center )
   {
-    trCameraViewCenter->setTranslation( center );
+    trRotationCenter->setTranslation( center );
   } );
-
-  mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
 
   connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this]
   {

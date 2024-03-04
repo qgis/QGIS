@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 
     /**
      * Creates a new overlap check error for \a check and the \a layerFeature combination.
-     * The \a geometry and \a errorLocation ned to be in map coordinates.
+     * The \a geometry and \a errorLocation need to be in map coordinates.
      * The \a value is the area of the overlapping area in map units.
      * The \a overlappedFeature provides more details about the overlap.
      */

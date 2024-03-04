@@ -782,7 +782,7 @@ Base class for polygon renderers generating texture images
 
     void setStrokeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``units`` fo the symbol's stroke width.
+Sets the ``units`` for the symbol's stroke width.
 
 .. seealso:: :py:func:`strokeWidthUnit`
 

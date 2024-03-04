@@ -142,7 +142,7 @@ class QgsBaseNetworkRequest : public QObject
      */
     virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
-    //! Returns experiation delay in second
+    //! Returns expiration delay in second
     virtual int defaultExpirationInSec() { return 0; }
 
   private:

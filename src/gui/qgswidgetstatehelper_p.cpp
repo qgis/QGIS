@@ -52,7 +52,7 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
     // there is no need to restore its geometry as it might lead to
     // an incorrect state of QFlags<Qt::WindowState>(WindowMinimized|WindowMaximized)
     // thus minimizing window after it just has been restored by WM.
-    // Inability to restore minimzed windows has been observed with
+    // Inability to restore minimized windows has been observed with
     // KWin 5.19 and Qt 5.15 running under X11.
     QWindow *win = widget->windowHandle();
     if ( !win )

@@ -197,6 +197,11 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapGridFrameDivisionsRight, //!< Map frame division display right
       MapGridFrameDivisionsTop, //!< Map frame division display top
       MapGridFrameDivisionsBottom, //!< Map frame division display bottom
+      MapCrs, //!< Map CRS
+      StartDateTime, //!< Temporal range's start DateTime
+      EndDateTime, //!< Temporal range's end DateTime
+      MapZRangeLower, //!< Map frame Z-range lower value (since QGIS 3.38)
+      MapZRangeUpper, //!< Map frame Z-range lower value (since QGIS 3.38)
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
@@ -222,9 +227,6 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ScalebarLineWidth, //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
       //table item
       AttributeTableSourceLayer, //!< Attribute table source layer
-      MapCrs, //!< Map CRS
-      StartDateTime, //!< Temporal range's start DateTime
-      EndDateTime, //!< Temporal range's end DateTime
       ElevationProfileTolerance, //!< Tolerance distance for elevation profiles (since QGIS 3.30)
       ElevationProfileDistanceMajorInterval, //!< Major grid line interval for elevation profile distance axis (since QGIS 3.30)
       ElevationProfileDistanceMinorInterval, //!< Minor grid line interval for elevation profile distance axis (since QGIS 3.30)

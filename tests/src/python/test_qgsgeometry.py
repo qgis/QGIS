@@ -6298,6 +6298,10 @@ class TestQgsGeometry(QgisTestCase):
                 'MultiPolygon (((159865.14786298031685874 6768656.31838363595306873, 159858.97975336571107619 6769211.44824895076453686, 160486.07089751763851382 6769211.44824895076453686, 160481.95882444124436006 6768658.37442017439752817, 160163.27316101978067309 6768658.37442017439752817, 160222.89822062765597366 6769116.87056819349527359, 160132.43261294672265649 6769120.98264127038419247, 160163.27316101978067309 6768658.37442017439752817, 159865.14786298031685874 6768656.31838363595306873)))',
                 False, True, 'Ring self-intersection'],
             ['Polygon((0 3, 3 0, 3 3, 0 0, 0 3))', False, False, 'Self-intersection'],
+            ['LineString(0 0)', False, False, 'LineString has less than 2 points and is not empty.'],
+            ['LineString Empty', True, True, ''],
+            ['MultiLineString((0 0))', False, False, 'QGIS geometry cannot be converted to a GEOS geometry'],
+            ['MultiLineString Empty', True, True, ''],
         ]
         for t in tests:
             # run each check 2 times to allow for testing of cached value
@@ -6305,7 +6309,7 @@ class TestQgsGeometry(QgisTestCase):
             for i in range(2):
                 res = g1.isGeosValid()
                 self.assertEqual(res, t[1],
-                                 f"mismatch for {t[0]}, expected:\n{t[1]}\nGot:\n{res}\n")
+                                 f"mismatch for {t[0]}, iter {i}, expected:\n{t[1]}\nGot:\n{res}\n")
                 if not res:
                     self.assertEqual(g1.lastError(), t[3], t[0])
             for i in range(2):

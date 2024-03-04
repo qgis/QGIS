@@ -110,6 +110,9 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
     void mTemporalCheckBox_toggled( bool checked );
     void updateTemporalExtent();
 
+    void mElevationRangeCheckBox_toggled( bool checked );
+    void updateZRange();
+
   protected:
     bool setNewItem( QgsLayoutItem *item ) override;
 

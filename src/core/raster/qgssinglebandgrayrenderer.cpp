@@ -149,7 +149,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     double currentAlpha = mOpacity;
     if ( mRasterTransparency )
     {
-      currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
+      currentAlpha *= mRasterTransparency->opacityForValue( grayVal );
     }
     if ( mAlphaBand > 0 )
     {

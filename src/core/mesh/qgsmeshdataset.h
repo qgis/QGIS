@@ -688,7 +688,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
     mutable double mMaximum = std::numeric_limits<double>::quiet_NaN();
     mutable bool mIsStatisticObsolete = true;
 
-    void updateStatictic() const;
+    void updateStatistic() const;
 
     QDateTime mReferenceTime;
 };

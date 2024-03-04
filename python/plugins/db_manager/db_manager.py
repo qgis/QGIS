@@ -43,6 +43,7 @@ from .db_tree import DBTree
 
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError
+from .gui_utils import GuiUtils
 
 
 class DBManager(QMainWindow):
@@ -380,7 +381,7 @@ class DBManager(QMainWindow):
 
     def setupUi(self):
         self.setWindowTitle(self.tr("DB Manager"))
-        self.setWindowIcon(QIcon(":/db_manager/icon"))
+        self.setWindowIcon(GuiUtils.get_icon("dbmanager"))
         self.resize(QSize(700, 500).expandedTo(self.minimumSizeHint()))
 
         # create central tab widget and add the first 3 tabs: info, table and preview
@@ -457,7 +458,8 @@ class DBManager(QMainWindow):
         self.actionRefresh.setShortcut(QKeySequence("F5"))
         self.menuDb.addAction(self.actionRefresh)
 
-        self.actionSqlWindow = QAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
+        self.actionSqlWindow = QAction(GuiUtils.get_icon('mActionSQLWindow'),
+                                       self.tr("&SQL Window"),
                                        self.menuDb)
         self.actionSqlWindow.triggered.connect(self.runSqlWindow)
         self.actionSqlWindow.setShortcut(QKeySequence("F2"))
@@ -482,10 +484,10 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_TableMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionImport = self.menuTable.addAction(QIcon(":/db_manager/actions/import"),
+        self.actionImport = self.menuTable.addAction(GuiUtils.get_icon("mActionDBImport"),
                                                      QApplication.translate("DBManager", "&Import Layer/File…"),
                                                      self.importActionSlot)
-        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"),
+        self.actionExport = self.menuTable.addAction(GuiUtils.get_icon("mActionDBExport"),
                                                      QApplication.translate("DBManager", "&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()

@@ -4,7 +4,7 @@ description=Manage your databases within QGIS
 category=Database
 version=0.1.20
 qgisMinimumVersion=3.0
-supportsQt6=no
+supportsQt6=yes
 
 author=Giuseppe Sucameli
 email=brush.tyler@gmail.com

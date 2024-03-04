@@ -1780,6 +1780,11 @@ QString QgsGdalProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
+Qgis::DataProviderFlags QgsGdalProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
   return ProviderCapability::ProviderHintBenefitsFromResampling |
@@ -2395,7 +2400,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
       }
     }
     mPyramidList.append( myRasterPyramid );
-    //sqare the divisor each step
+    //square the divisor each step
     myDivisor = ( myDivisor * 2 );
   }
 
@@ -2424,7 +2429,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &lis
     while ( ( myWidth / myDivisor > 32 ) && ( ( myHeight / myDivisor ) > 32 ) )
     {
       overviewList.append( myDivisor );
-      //sqare the divisor each step
+      //square the divisor each step
       myDivisor = ( myDivisor * 2 );
     }
   }
@@ -2746,7 +2751,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
   // extension defined for them; the others, well, even though
-  // theoreticaly we can open those files because there exists a
+  // theoretically we can open those files because there exists a
   // driver for them, the user will have to use the "All Files" to
   // open datasets with no explicitly defined file name extension.
 

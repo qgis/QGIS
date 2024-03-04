@@ -63,34 +63,23 @@ jobs:
       - name: Create ccache dir
         run: mkdir -p /w/.ccache/QGIS
 
-      - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v3.0.11
-        if: github.event_name == 'pull_request'
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
         with:
           path: /w/.ccache/QGIS
-          key: mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
-          # The head_ref or source branch of the pull request in a workflow run.
-          # The base_ref or target branch of the pull request in a workflow run.
+          key: build-ccache-mingw64-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
-            mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-
-            mingw64-ccache-${{ github.base_ref }}-
-            mingw64-ccache-refs/heads/master-
-
-      - name: Prepare build cache for branch/tag
-        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v3.0.11
-        if: github.event_name != 'pull_request'
-        with:
-          path: /w/.ccache/QGIS
-          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
-          key: mingw64-ccache-${{ github.ref }}-${{ github.sha }}
-          restore-keys: |
-            mingw64-ccache-${{ github.ref }}-
-            mingw64-ccache-refs/heads/master-
+            build-ccache-mingw64-master
 
       - name: Build QGIS Application
-        run: |
-          CCACHE_DIR=/w/.ccache/QGIS ./ms-windows/mingw/build.sh x86_64 nodebug 4
+        run: CCACHE_DIR=/w/.ccache/QGIS ./ms-windows/mingw/build.sh x86_64 nodebug 4
+
+      - name: Save build cache for push only
+        uses: actions/cache/save@v4
+        if: ${{ github.event_name == 'push' }}
+        with:
+          path: /w/.ccache/QGIS
+          key: build-ccache-mingw64-${{ github.ref_name }}
 
       - name: Create Portable zip
         run: |

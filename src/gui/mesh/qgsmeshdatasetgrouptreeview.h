@@ -179,15 +179,15 @@ class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 
 /**
  * \ingroup gui
- * \class QgsMeshDatasetGroupTreeItemDelagate
+ * \class QgsMeshDatasetGroupTreeItemDelegate
  *
  * \brief Delegate to display tree item with a contours and vector selector
  */
-class QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
+class QgsMeshDatasetGroupTreeItemDelegate: public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = nullptr );
+    QgsMeshDatasetGroupTreeItemDelegate( QObject *parent = nullptr );
 
     void paint( QPainter *painter,
                 const QStyleOptionViewItem &option,
@@ -293,7 +293,7 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
     void setActiveGroup();
 
     QgsMeshDatasetGroupProxyModel *mProxyModel;
-    QgsMeshDatasetGroupTreeItemDelagate mDelegate;
+    QgsMeshDatasetGroupTreeItemDelegate mDelegate;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
 };
 

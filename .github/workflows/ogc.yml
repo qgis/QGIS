@@ -43,50 +43,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v3.0.11
-        if: github.event_name == 'pull_request'
+      - name: Restore build cache
+        uses: actions/cache/restore@v3
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-ogc-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
-          # The head_ref or source branch of the pull request in a workflow run.
-          # The base_ref or target branch of the pull request in a workflow run.
+          key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
-            build-ccache-ogc-${{ github.actor }}-${{ github.head_ref }}-
-            build-ccache-ogc-refs/heads/${{ github.base_ref }}-
-            build-ccache-ogc-refs/heads/master-
+            build-ccache-ogc-master
 
-      - name: Prepare build cache for branch/tag
-        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v3.0.11
-        if: github.event_name != 'pull_request'
-        with:
-          path: /home/runner/QGIS/.ccache
-          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
-          key: build-ccache-ogc-${{ github.ref }}-${{ github.sha }}
-          restore-keys: |
-            build-ccache-ogc-${{ github.ref }}-
-            build-ccache-ogc-refs/heads/master-
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker Container with Build Environment
+      - name: Build Docker Container
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v8
+        uses: docker/build-push-action@v5
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
-          image_name: qgis-deps-ogc
+          tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc
-          dockerfile: Dockerfile
-          push_git_tag: true
-          push_image_and_stages: on:push
-          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+          file: .ci/ogc/Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
 
       - name: Run build
         run: |
           docker run -v $(pwd):/usr/src/qgis -v /home/runner/QGIS/.ccache:/root/.ccache ${DOCKER_IMAGE} /usr/src/qgis/.ci/ogc/build.sh
         env:
-          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
+
+      - name: Save build cache for push only
+        uses: actions/cache/save@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          path: /home/runner/QGIS/.ccache
+          key: build-ccache-ogc-${{ github.ref_name }}
 
       - name: Install pyogctest
         run: |
@@ -101,7 +91,7 @@ jobs:
           docker-compose -f .ci/ogc/docker-compose.yml up -d
           source venv/bin/activate && ./pyogctest/pyogctest.py -n ogc_qgis -s wms130 -v -u http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_nginx)/qgisserver_wms130
         env:
-          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
 
       - name: Run OGC API Features 1.0 tests
         run: |
@@ -109,4 +99,4 @@ jobs:
           docker-compose -f .ci/ogc/docker-compose.yml up -d
           source venv/bin/activate && ./pyogctest/pyogctest.py -n ogc_qgis -s ogcapif -v -u http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_nginx)/qgisserver_ogcapif
         env:
-          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}

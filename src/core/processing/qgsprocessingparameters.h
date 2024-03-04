@@ -142,10 +142,9 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 
     /**
      * Geometry check method to apply to this source. This setting is only
-     * utilized if the QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature is
+     * utilized if the Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck is
      * set in QgsProcessingFeatureSourceDefinition::flags.
      *
-     * \see overrideDefaultGeometryCheck
      * \since QGIS 3.14
      */
     Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;

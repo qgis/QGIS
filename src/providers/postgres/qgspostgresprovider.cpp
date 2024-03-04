@@ -222,14 +222,36 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   mLayerExtent.setNull();
 
-  // Try to load metadata from DB
-  bool metadataLoadedFromDb = false;
-  QgsLayerMetadata metadataFromDb { QgsPostgresProviderMetadataUtils::loadLayerMetadata( Qgis::LayerType::Vector, uri, metadataLoadedFromDb ) };
-
-  if ( metadataLoadedFromDb )
+  // Try to load metadata
+  const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
+  QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresProvider", schemaQuery ) );
+  if ( res.PQntuples( ) > 0 )
   {
-    mLayerMetadata = metadataFromDb;
-    QgsMessageLog::logMessage( tr( "PostgreSQL layer metadata loaded from DB." ), tr( "PostGIS" ) );
+    const QString schemaName = res.PQgetvalue( 0, 0 );
+    // TODO: also filter CRS?
+    const QString selectQuery = QStringLiteral( R"SQL(
+            SELECT
+              qmd
+           FROM %4.qgis_layer_metadata
+             WHERE
+                f_table_schema=%1
+                AND f_table_name=%2
+                AND f_geometry_column %3
+                AND layer_type='vector'
+           )SQL" )
+                                .arg( QgsPostgresConn::quotedValue( mUri.schema() ) )
+                                .arg( QgsPostgresConn::quotedValue( mUri.table() ) )
+                                .arg( mUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( mUri.geometryColumn() ) ) )
+                                .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+    QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresProvider", selectQuery ) );
+    if ( res.PQntuples() > 0 )
+    {
+      QgsLayerMetadata metadata;
+      QDomDocument doc;
+      doc.setContent( res.PQgetvalue( 0, 0 ) );
+      mLayerMetadata.readMetadataXml( doc.documentElement() );
+    }
   }
 
   // set the primary key
@@ -948,7 +970,7 @@ bool QgsPostgresProvider::loadFields()
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
-    // Collect attribiute oids
+    // Collect attribute oids
     QSet<Oid> attroids;
     for ( int i = 0; i < result.PQnfields(); i++ )
     {
@@ -6111,13 +6133,8 @@ bool QgsPostgresProviderMetadata::saveLayerMetadata( const QString &uri, const Q
   return QgsPostgresProviderMetadataUtils::saveLayerMetadata( Qgis::LayerType::Vector, uri, metadata, errorMessage );
 }
 
-QgsLayerMetadata QgsPostgresProviderMetadata::loadLayerMetadata( const QString &layerUri, bool &found )
-{
-  return QgsPostgresProviderMetadataUtils::loadLayerMetadata( Qgis::LayerType::Vector, layerUri, found );
-}
-
 
 QgsProviderMetadata::ProviderCapabilities QgsPostgresProviderMetadata::providerCapabilities() const
 {
-  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata | QgsProviderMetadata::ProviderCapability::LoadLayerMetadata | QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
+  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata | QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
 }

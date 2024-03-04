@@ -59,7 +59,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
 void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  const QString layoutName = result.getUserData().toString();
+  const QString layoutName = result.userData().toString();
   QgsMasterLayoutInterface *layout = QgsProject::instance()->layoutManager()->layoutByName( layoutName );
   if ( !layout )
     return;

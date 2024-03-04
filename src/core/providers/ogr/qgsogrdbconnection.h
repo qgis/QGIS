@@ -57,7 +57,7 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     QString path( ) const { return mPath; }
     //! Returns the connection name
     QString name() const { return mConnName; }
-    //! Sets the \a path fo the connection
+    //! Sets the \a path for the connection
     void setPath( const QString &path );
     //! Store the connection data in the settings
     void save();

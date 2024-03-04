@@ -40,7 +40,9 @@ const QString QgsAuthIdentCertMethod::AUTH_METHOD_KEY = QStringLiteral( "Identit
 const QString QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
 const QString QgsAuthIdentCertMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "Identity certificate authentication" );
 
+#ifndef QT_NO_SSL
 QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+#endif
 
 
 QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
@@ -57,9 +59,11 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
 {
+#ifndef QT_NO_SSL
   const QMutexLocker locker( &mMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
+#endif
 }
 
 QString QgsAuthIdentCertMethod::key() const
@@ -80,6 +84,7 @@ QString QgsAuthIdentCertMethod::displayDescription() const
 bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
     const QString &dataprovider )
 {
+#ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
@@ -110,11 +115,15 @@ bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, con
   request.setSslConfiguration( sslConfig );
 
   return true;
+#else
+  return false;
+#endif
 }
 
 bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
+#ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
@@ -210,6 +219,9 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   }
 
   return true;
+#else
+  return false;
+#endif
 }
 
 void QgsAuthIdentCertMethod::clearCachedConfig( const QString &authcfg )
@@ -232,6 +244,7 @@ void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
   // TODO: add updates as method version() increases due to config storage changes
 }
 
+#ifndef QT_NO_SSL
 QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &authcfg )
 {
   const QMutexLocker locker( &mMutex );
@@ -303,6 +316,7 @@ void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
     QgsDebugMsgLevel( QStringLiteral( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ), 2 );
   }
 }
+#endif
 
 #ifdef HAVE_GUI
 QWidget *QgsAuthIdentCertMethod::editWidget( QWidget *parent ) const

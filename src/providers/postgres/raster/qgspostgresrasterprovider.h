@@ -42,6 +42,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
   public:
 
     // QgsDataProvider interface
+    Qgis::DataProviderFlags flags() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;
     virtual bool isValid() const override;
@@ -267,7 +268,6 @@ class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
-    QgsLayerMetadata loadLayerMetadata( const QString &layerUri, bool &found ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 };
 

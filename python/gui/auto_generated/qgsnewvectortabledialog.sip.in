@@ -96,7 +96,7 @@ Sets the fields to ``fields``
 
     bool createSpatialIndex();
 %Docstring
-Returns ``True`` if spatialindex checkbox is cheched
+Returns ``True`` if spatialindex checkbox is checked
 @return
 %End
 

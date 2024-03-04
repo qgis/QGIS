@@ -475,7 +475,7 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
       QgsTopologicalMesh::TopologicalFaces topologicalFaces = QgsTopologicalMesh::createNewTopologicalFaces( faces, false, error );
       QVector<QgsTopologicalMesh::FaceNeighbors> neighborhood = topologicalFaces.facesNeighborhood();
 
-      // reindex internal neighborhod
+      // reindex internal neighborhood
       for ( int i = 0; i < neighborhood.count(); ++i )
       {
         QgsTopologicalMesh::FaceNeighbors &neighbors = neighborhood[i];

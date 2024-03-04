@@ -61,6 +61,21 @@ class CORE_EXPORT QgsTextCharacterFormat
     };
 
     /**
+     * Override all the default/unset properties of the current character format
+     * with the settings from another format.
+     *
+     * This will replace any default/unset existing settings with the
+     * settings from \a other.
+     *
+     * Any settings which are default/unset in \a other will be left unchanged.
+     *
+     * \param other The format to override with.
+     *
+     * \since QGIS 3.36
+     */
+    void overrideWith( const QgsTextCharacterFormat &other );
+
+    /**
      * Returns the character's text color, or an invalid color if no color override
      * is set and the default format color should be used.
      *

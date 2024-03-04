@@ -145,7 +145,7 @@ void QgsLayoutItemsListView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayoutItemsListView::updateSelection()
 {
-  // Do nothing if we are currenlty updating the selection
+  // Do nothing if we are currently updating the selection
   // because user has selected/deselected some items in the
   // graphics view
   if ( !mModel || mUpdatingFromView )

@@ -208,7 +208,7 @@ class QgsFeatureDownloaderImpl
   } while(0)
 
 // Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
-#define DEFINE_FEATURE_DOWLOADER_IMPL_SLOTS \
+#define DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS \
   protected: \
   void emitDoStop() override { emit doStop(); } \
   void setStopFlag() { QgsFeatureDownloaderImpl::setStopFlag(); } \

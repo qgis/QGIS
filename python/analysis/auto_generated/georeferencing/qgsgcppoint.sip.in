@@ -87,7 +87,7 @@ Sets the ``crs`` of the destination point.
 
     QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 %Docstring
-Returns the :py:func:`~QgsGcpPoint.destionationPoint` transformed to the given target CRS.
+Returns the :py:func:`~QgsGcpPoint.destinationPoint` transformed to the given target CRS.
 %End
 
     bool isEnabled() const;

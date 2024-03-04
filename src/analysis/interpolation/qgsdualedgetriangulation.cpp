@@ -254,7 +254,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
         return -100; //something gets wrong
 
       //add the new colinear point linking it to the extremity of closest edge
-      const int extremPoint = mHalfEdge[closestEdge]->getPoint();
+      const int extremePoint = mHalfEdge[closestEdge]->getPoint();
       const int newPoint = mPointVector.count() - 1;
       //edges that do not change
       const int edgeFromExtremeToOpposite = mHalfEdge[closestEdge]->getDual();
@@ -264,12 +264,12 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       const int edgeFromExtremeToVirtualSide2 = mHalfEdge[edgeFromVirtualToExtremeSide2]->getDual();
       //insert new edge
       const int edgeFromExtremeToNewPoint = insertEdge( -10, -10, newPoint, false, false );
-      const int edgeFromNewPointToExtrem = insertEdge( edgeFromExtremeToNewPoint, edgeFromExtremeToVirtualSide2, extremPoint, false, false );
+      const int edgeFromNewPointToExtreme = insertEdge( edgeFromExtremeToNewPoint, edgeFromExtremeToVirtualSide2, extremePoint, false, false );
       const int edgeFromNewPointToVirtualSide1 = insertEdge( -10, edgeFromVirtualToExtremeSide1, -1, false, false );
       const int edgeFromVirtualToNewPointSide1 = insertEdge( edgeFromNewPointToVirtualSide1, -10, newPoint, false, false );
       const int edgeFromNewPointToVirtualSide2 = insertEdge( -10, edgeFromVirtualToNewPointSide1, -1, false, false );
-      const int edgeFromVirtualToNewPointSide2 = insertEdge( edgeFromNewPointToVirtualSide2, edgeFromNewPointToExtrem, newPoint, false, false );
-      mHalfEdge.at( edgeFromExtremeToNewPoint )->setDual( edgeFromNewPointToExtrem );
+      const int edgeFromVirtualToNewPointSide2 = insertEdge( edgeFromNewPointToVirtualSide2, edgeFromNewPointToExtreme, newPoint, false, false );
+      mHalfEdge.at( edgeFromExtremeToNewPoint )->setDual( edgeFromNewPointToExtreme );
       mHalfEdge.at( edgeFromExtremeToNewPoint )->setNext( edgeFromNewPointToVirtualSide1 );
       mHalfEdge.at( edgeFromNewPointToVirtualSide1 )->setDual( edgeFromVirtualToNewPointSide1 );
       mHalfEdge.at( edgeFromNewPointToVirtualSide2 )->setDual( edgeFromVirtualToNewPointSide2 );
@@ -288,7 +288,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
     }
     mDimension = 2;
     const int newPoint = mPointVector.count() - 1;
-    //buil the 2D dimension triangulation
+    //build the 2D dimension triangulation
     //First clock wise
     int cwEdge = mEdgeOutside;
     while ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[cwEdge]->getNext()]->getDual()]->getNext()]->getPoint() != -1 )
@@ -1359,7 +1359,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     return -100;//return an error code
   }
 
-  //go around p1 and find out, if the segment already exists and if not, which is the first cutted edge
+  //go around p1 and find out, if the segment already exists and if not, which is the first cut edge
   int actEdge = mHalfEdge[pointingEdge]->getDual();
   const int firstActEdge = actEdge;
   //number to prevent endless loops

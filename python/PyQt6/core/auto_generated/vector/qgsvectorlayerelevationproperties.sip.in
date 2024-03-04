@@ -308,7 +308,7 @@ Returns ``True`` if the marker symbol should also be shown in continuous surface
 
     void setShowMarkerSymbolInSurfacePlots( bool show );
 %Docstring
-Sets whehter the marker symbol should also be shown in continuous surface plots.
+Sets whether the marker symbol should also be shown in continuous surface plots.
 
 .. note::
 

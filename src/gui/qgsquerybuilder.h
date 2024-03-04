@@ -28,6 +28,7 @@
 
 class QgsVectorLayer;
 class QgsCodeEditor;
+class QgsFieldProxyModel;
 
 /**
  * \ingroup gui
@@ -169,23 +170,17 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
 
   private:
 
-    /**
-     * Populate the field list for the selected table
-     */
-    void populateFields();
-
     void showHelp();
 
     /**
      * Setup models for listviews
      */
     void setupGuiViews();
-    void setupLstFieldsModel();
-    void fillValues( int idx, int limit );
+    void fillValues( const QString &field, int limit );
 
     // private members
     //! Model for fields ListView
-    QStandardItemModel *mModelFields = nullptr;
+    QgsFieldProxyModel *mModelFields = nullptr;
     //! Model for values ListView
     QStandardItemModel *mModelValues = nullptr;
     //! Filter proxy Model for values ListView

@@ -465,7 +465,7 @@ void QgsDirectoryItem::childrenCreated()
 
   if ( mRefreshLater )
   {
-    QgsDebugMsgLevel( QStringLiteral( "directory changed during createChidren() -> refresh() again" ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "directory changed during createChildren() -> refresh() again" ), 3 );
     mRefreshLater = false;
     setState( Qgis::BrowserItemState::Populated );
     refresh();

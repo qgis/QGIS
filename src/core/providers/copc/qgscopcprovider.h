@@ -40,7 +40,7 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     ~QgsCopcProvider();
 
     QgsCoordinateReferenceSystem crs() const override;
-
+    Qgis::DataProviderFlags flags() const override;
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
     bool isValid() const override;

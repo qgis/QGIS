@@ -1272,7 +1272,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       }
       else if ( tagName == QLatin1String( "LatLonBoundingBox" ) )    // legacy from earlier versions of WMS
       {
-        // boundingBox element can conatain comma as decimal separator and layer extent is not
+        // boundingBox element can contain comma as decimal separator and layer extent is not
         // calculated at all. Fixing by replacing comma with point.
         layerProperty.ex_GeographicBoundingBox = QgsRectangle(
               nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
@@ -1318,7 +1318,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
         double wBLong, eBLong, sBLat, nBLat;
         bool wBOk, eBOk, sBOk, nBOk;
-        // boundingBox element can conatain comma as decimal separator and layer extent is not
+        // boundingBox element can contain comma as decimal separator and layer extent is not
         // calculated at all. Fixing by replacing comma with point.
         wBLong = wBoundLongitudeElem.text().replace( ',', '.' ).toDouble( &wBOk );
         eBLong = eBoundLongitudeElem.text().replace( ',', '.' ).toDouble( &eBOk );
@@ -1700,7 +1700,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
         QgsWmsBoundingBoxProperty boundingBoxProperty;
-        // boundingBox element can conatain comma as decimal separator and layer extent is not
+        // boundingBox element can contain comma as decimal separator and layer extent is not
         // calculated at all. Fixing by replacing comma with point.
         boundingBoxProperty.box = QgsRectangle(
                                     nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),

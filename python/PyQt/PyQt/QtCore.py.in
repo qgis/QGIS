@@ -132,6 +132,19 @@ if (QT_VERSION >= 0x060000):
     QVariant.SizePolicy = QMetaType.Type.QSizePolicy
     QVariant.UserType = QMetaType.Type.User
 
+    from enum import Enum
+
+
+    def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+    QMetaType.Type.__int__ = _force_int
+    QMetaType.Type.__eq__ = lambda t1, t2: _force_int(t1) == _force_int(t2)
+
+    # These types aren't IntEnums or IntFlags, so patch that back in
+    # See discussion at https://www.riverbankcomputing.com/pipermail/pyqt/2024-February/045715.html
+    Qt.CheckState.__int__ = _force_int
+    Qt.CheckState.__eq__ = lambda t1, t2: _force_int(t1) == _force_int(t2)
+
     # patch back in Qt flags removed in PyQt
 
     QAbstractItemModel.CheckIndexOptions = lambda flags=0: QAbstractItemModel.CheckIndexOption(flags)

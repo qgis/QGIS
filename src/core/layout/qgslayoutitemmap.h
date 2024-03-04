@@ -863,6 +863,49 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     QgsLayoutItemMapItemClipPathSettings *itemClippingSettings() { return mItemClippingSettings; }
 
+    /**
+     * Sets whether the z range is \a enabled (i.e. whether the map will be filtered
+     * to content within the zRange().)
+     *
+     * \see zRangeEnabled()
+     * \since QGIS 3.38
+     */
+    void setZRangeEnabled( bool enabled );
+
+    /**
+     * Returns whether the z range is enabled (i.e. whether the map will be filtered
+     * to content within the zRange().)
+     *
+     * \see setZRangeEnabled()
+     * \see zRange()
+     * \since QGIS 3.38
+     */
+    bool zRangeEnabled() const;
+
+    /**
+     * Returns the map's z range, which is used to filter the map's content to only
+     * display features within the specified z range.
+     *
+     * \note This is only considered when zRangeEnabled() is TRUE.
+     *
+     * \see setZRange()
+     * \see zRangeEnabled()
+     * \since QGIS 3.38
+     */
+    QgsDoubleRange zRange() const;
+
+    /**
+     * Sets the map's z \a range, which is used to filter the map's content to only
+     * display features within the specified z range.
+     *
+     * \note This is only considered when zRangeEnabled() is TRUE.
+     *
+     * \see zRange()
+     * \see setZRangeEnabled()
+     * \since QGIS 3.38
+     */
+    void setZRange( const QgsDoubleRange &range );
+
     // Reimplement estimatedFrameBleed to take the grid frame into account
     double estimatedFrameBleed() const override;
 
@@ -1031,6 +1074,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * differs from mMapRotation
     */
     double mEvaluatedMapRotation = 0;
+
+    bool mZRangeEnabled = false;
+    QgsDoubleRange mZRange;
 
     //! Flag if layers to be displayed should be read from qgis canvas (TRUE) or from stored list in mLayerSet (FALSE)
     bool mKeepLayerSet = false;

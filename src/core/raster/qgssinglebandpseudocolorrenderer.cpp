@@ -20,7 +20,6 @@
 #include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgscolorramplegendnode.h"
 
@@ -276,7 +275,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
       double currentOpacity = mOpacity;
       if ( mRasterTransparency )
       {
-        currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
+        currentOpacity *= mRasterTransparency->opacityForValue( val );
       }
       if ( mAlphaBand > 0 )
       {

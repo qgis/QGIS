@@ -39,6 +39,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
 
     ~QgsVirtualPointCloudProvider();
 
+    Qgis::DataProviderFlags flags() const override;
     QgsPointCloudDataProvider::Capabilities capabilities() const override;
     QgsCoordinateReferenceSystem crs() const override;
 

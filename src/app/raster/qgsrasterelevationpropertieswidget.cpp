@@ -27,6 +27,8 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   setupUi( this );
   setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
 
+  mSymbologyStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mElevationGroupBox->setChecked( false );

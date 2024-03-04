@@ -845,16 +845,6 @@ bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const Q
   }
 }
 
-QgsLayerMetadata QgsProviderRegistry::loadLayerMetadata( const QString &providerKey, const QString &uri, bool &found )
-{
-  if ( QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey ) )
-    return meta->loadLayerMetadata( uri, found );
-  else
-  {
-    throw QgsNotSupportedException( QObject::tr( "Unable to load %1 provider" ).arg( providerKey ) );
-  }
-}
-
 bool QgsProviderRegistry::createDb( const QString &providerKey, const QString &dbPath, QString &errCause )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );

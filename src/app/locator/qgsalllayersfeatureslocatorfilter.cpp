@@ -179,7 +179,7 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &r
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
-  ResultData data = ResultData::fromVariant( result.getUserData() );
+  ResultData data = ResultData::fromVariant( result.userData() );
   QgsFeatureId fid = data.id();
   QString layerId = data.layerId();
   bool layerIsSpatial = data.layerIsSpatial();

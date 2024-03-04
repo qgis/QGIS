@@ -40,6 +40,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return true; }
 
     // QgsDataProvider interface
+    Qgis::DataProviderFlags flags() const override;
     virtual bool isValid() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;

@@ -122,6 +122,63 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       dialog.accept();
     }
 
+    void testChangeVectorSubset()
+    {
+      // start with a point layer
+      const QString pointFileName = mTestDataDir + "points.shp";
+      const QFileInfo pointFileInfo( pointFileName );
+      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( pointFileInfo.filePath(),
+                                             pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      QVERIFY( vl->isValid() );
+      vl->setSubsetString( QStringLiteral( "\"class\"='Biplane'" ) );
+      QCOMPARE( vl->subsetString(), QStringLiteral( "\"class\"='Biplane'" ) );
+
+      // no change to filter
+      QgsMapCanvas canvas;
+      QgsMessageBar messageBar;
+      {
+        QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
+        dialog.show();
+        dialog.accept();
+      }
+
+      QCOMPARE( vl->subsetString(), QStringLiteral( "\"class\"='Biplane'" ) );
+
+      // change the filter to a line layer:
+      {
+        QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
+        dialog.txtSubsetSQL->setText( QStringLiteral( "\"class\"='B52'" ) );
+        dialog.show();
+        dialog.accept();
+      }
+      QCOMPARE( vl->subsetString(), QStringLiteral( "\"class\"='B52'" ) );
+
+      // try with BOTH a filter change and the source widget present, to check interaction of the two
+      {
+        QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
+        DummySourceWidget *sourceWidget = new DummySourceWidget( &dialog );
+        sourceWidget->newSource = mTestDataDir + "points.shp";
+        dialog.mSourceWidget = sourceWidget;
+        dialog.show();
+        dialog.txtSubsetSQL->setText( QStringLiteral( "\"class\"='Biplane'" ) );
+        dialog.accept();
+      }
+      QCOMPARE( vl->source(), mTestDataDir + "points.shp|subset=\"class\"='Biplane'" );
+      QCOMPARE( vl->subsetString(), QStringLiteral( "\"class\"='Biplane'" ) );
+
+      // try with BOTH a filter change AND a source change
+      {
+        QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
+        DummySourceWidget *sourceWidget = new DummySourceWidget( &dialog );
+        sourceWidget->newSource = mTestDataDir + "lines.shp";
+        dialog.mSourceWidget = sourceWidget;
+        dialog.show();
+        dialog.txtSubsetSQL->setText( QStringLiteral( "\"Name\" = 'Highway'" ) );
+        dialog.accept();
+      }
+      QCOMPARE( vl->source(), mTestDataDir + "lines.shp|subset=\"Name\" = 'Highway'" );
+      QCOMPARE( vl->subsetString(), QStringLiteral( "\"Name\" = 'Highway'" ) );
+    }
 
     void testChangeVectorDataSource()
     {

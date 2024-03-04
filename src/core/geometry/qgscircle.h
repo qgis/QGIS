@@ -111,7 +111,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt2_tg3 Second point of the third tangent.
      * \param epsilon Value used to compare point.
      * \param pos Point to determine which circle use in case of multi return.
-     * If the solution is not unique and pos is an empty point, an empty circle is returned. -- This case happens only when two tangets are parallels. (since QGIS 3.18)
+     * If the solution is not unique and pos is an empty point, an empty circle is returned. -- This case happens only when two tangents are parallels. (since QGIS 3.18)
      *
      * \see from3TangentsMulti()
      *

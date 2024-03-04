@@ -60,7 +60,7 @@ Multiplies this matrix by another that translates coordinates by the components 
 
     QgsVector3D map( const QgsVector3D &vector ) const /HoldGIL/;
 %Docstring
-Matrix-vector multiplication (vector is converted to homogenous coordinates [X,Y,Z,1] and back)
+Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
 %End
 
     bool isIdentity() const /HoldGIL/;

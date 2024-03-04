@@ -143,9 +143,9 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   if ( layer->dataProvider() && layer->dataProvider()->elevationProperties() )
   {
     if ( layer->dataProvider()->elevationProperties()->containsElevationData() )
-      layer->setExtent3D( extent3D() );
+      layer->mExtent3D = mExtent3D;
     else
-      layer->setExtent( extent() );
+      layer->mExtent2D = mExtent2D;
   }
 
   layer->setMaximumScale( maximumScale() );
@@ -1316,27 +1316,6 @@ QString QgsMapLayer::saveDefaultMetadata( bool &resultFlag )
 QString QgsMapLayer::loadDefaultMetadata( bool &resultFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-
-  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
-  {
-    if ( metadata->providerCapabilities() & QgsProviderMetadata::ProviderCapability::LoadLayerMetadata )
-    {
-      try
-      {
-        const QgsLayerMetadata metadata { QgsProviderRegistry::instance()->loadLayerMetadata( providerType(), mDataSource, resultFlag ) };
-        if ( resultFlag )
-        {
-          mMetadata = metadata;
-          return tr( "Successfully loaded default layer metadata" );
-        }
-      }
-      catch ( QgsNotSupportedException & )
-      {
-        // fallback to loadNamedMetadata
-      }
-    }
-  }
 
   return loadNamedMetadata( metadataUri(), resultFlag );
 }

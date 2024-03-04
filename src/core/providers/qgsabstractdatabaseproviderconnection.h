@@ -520,7 +520,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_FLAG( Capabilities )
 
     /**
-     * The GeometryColumnCapability enum represents the geomery column features supported by the connection.
+     * The GeometryColumnCapability enum represents the geometry column features supported by the connection.
      *
      * \since QGIS 3.16
      */

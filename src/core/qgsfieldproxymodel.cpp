@@ -15,7 +15,7 @@
 
 #include "qgsfieldproxymodel.h"
 #include "qgsfieldmodel.h"
-#include "qgsvectorlayer.h"
+#include "qgsvariantutils.h"
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -84,6 +84,22 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
   if ( mFilters.testFlag( HideReadOnly ) && isReadOnly( index ) )
     return false;
+
+  if ( mFilters.testFlag( QgsFieldProxyModel::OriginProvider ) )
+  {
+    const QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldOrigin ) ).toInt() );
+    switch ( origin )
+    {
+      case QgsFields::OriginUnknown:
+      case QgsFields::OriginJoin:
+      case QgsFields::OriginEdit:
+      case QgsFields::OriginExpression:
+        return false;
+
+      case QgsFields::OriginProvider:
+        break;
+    }
+  }
 
   if ( mFilters.testFlag( AllTypes ) )
     return true;

@@ -20,6 +20,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
 
@@ -33,8 +34,10 @@ from .dlg_field_properties import DlgFieldProperties
 from .dlg_add_geometry_column import DlgAddGeometryColumn
 from .dlg_create_constraint import DlgCreateConstraint
 from .dlg_create_index import DlgCreateIndex
+from .gui_utils import GuiUtils
 
-from .ui.ui_DlgTableProperties import Ui_DbManagerDlgTableProperties as Ui_Dialog
+
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgTableProperties.ui'))
 
 
 class DlgTableProperties(QDialog, Ui_Dialog):

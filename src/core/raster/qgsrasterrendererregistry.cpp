@@ -239,13 +239,11 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
   const int bandCount = renderer->usesBands().size();
   if ( bandCount == 1 )
   {
-    const QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleList;
-    tr->setTransparentSingleValuePixelList( transparentSingleList );
+    tr->setTransparentSingleValuePixelList( {} );
   }
   else if ( bandCount == 3 )
   {
-    const QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
-    tr->setTransparentThreeValuePixelList( transparentThreeValueList );
+    tr->setTransparentThreeValuePixelList( {} );
   }
   renderer->setRasterTransparency( tr.release() );
   return renderer.release();

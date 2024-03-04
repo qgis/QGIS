@@ -1092,7 +1092,6 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(vl.fields().at(0).name(), 'bool')
         self.assertEqual(vl.fields().at(0).type(), QVariant.Bool)
         self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
-        self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
 
     def testReloadDataAndFeatureCount(self):
 
@@ -1155,8 +1154,7 @@ class PyQgsOGRProvider(QgisTestCase):
 
         # Test default values
         dp = vl.dataProvider()
-        # FIXME: should it be None?
-        self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertEqual(dp.defaultValue(0), NULL)
         self.assertIsNone(dp.defaultValue(1))
         # FIXME: This fails because there is no backend-side evaluation in this provider
         # self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
@@ -1404,7 +1402,16 @@ class PyQgsOGRProvider(QgisTestCase):
             # Asked when ogr provider try to open. See QgsOgrProvider::QgsOgrProvider#453 open( OpenModeForceReadOnly );
             handler.add('GET', '/collections/foo', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
 
-            if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 9, 0):
+            # 3.8.3 not necessarily the minimum version
+            if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 8, 3):
+                handler.add('GET', '/', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
+                handler.add('GET', '/api', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
+
+                handler.add('GET', '/collections/foo/items?limit=20', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
+                handler.add('GET', '/collections/foo/items?limit=1000', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
+            else:
                 # See QgsOgrProvider::open#4012 mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, options, mLayerName, errCause, true );
                 handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                             '{ "type": "FeatureCollection", "features": [] }')
@@ -1416,17 +1423,6 @@ class PyQgsOGRProvider(QgisTestCase):
                 if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0):
                     handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                                 '{ "type": "FeatureCollection", "features": [] }')
-
-            else:
-                handler.add('GET', '/', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
-                handler.add('GET', '/api', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
-
-                handler.add('GET', '/collections/foo/items?limit=20', 200, {'Content-Type': 'application/geo+json'},
-                            '{ "type": "FeatureCollection", "features": [] }')
-                handler.add('GET', '/collections/foo/items?limit=1000', 200, {'Content-Type': 'application/geo+json'},
-                            '{ "type": "FeatureCollection", "features": [] }')
-                handler.add('GET', '/collections/foo/items?limit=1000', 200, {'Content-Type': 'application/geo+json'},
-                            '{ "type": "FeatureCollection", "features": [] }')
 
             with mockedwebserver.install_http_handler(handler):
                 vl = QgsVectorLayer("OAPIF:http://127.0.0.1:%d/collections/foo" % port, 'test', 'ogr')

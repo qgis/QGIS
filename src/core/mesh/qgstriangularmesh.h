@@ -190,9 +190,9 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QList<int> edgeIndexesForRectangle( const QgsRectangle &rectangle ) const ;
 
     /**
-     * Calculates and returns normale vector on each vertex that is part of any face
+     * Calculates and returns normal vector on each vertex that is part of any face
      *
-     * \returns all normales at vertices
+     * \returns all normals at vertices
      *
      * \since QGIS 3.12
      */

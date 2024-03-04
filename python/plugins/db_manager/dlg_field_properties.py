@@ -19,10 +19,13 @@ __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
 __copyright__ = '(C) 2012, Giuseppe Sucameli'
 
+from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from .db_plugins.plugin import TableField
-from .ui.ui_DlgFieldProperties import Ui_DbManagerDlgFieldProperties as Ui_Dialog
+from .gui_utils import GuiUtils
+
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgFieldProperties.ui'))
 
 
 class DlgFieldProperties(QDialog, Ui_Dialog):

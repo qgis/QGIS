@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLabelFeature
      * used by the labeling engine to generate candidate placements for the label. For
      * a vector layer feature this will generally be the feature's geometry.
      *
-     * The \a size argument dicates the size of the label's content (e.g. text width and height).
+     * The \a size argument dictates the size of the label's content (e.g. text width and height).
      */
     QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
 

@@ -27,28 +27,81 @@ Constructor for QgsRasterTransparency.
 
     struct TransparentThreeValuePixel
     {
+
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0 );
+%Docstring
+Constructor for TransparentThreeValuePixel.
+
+:param red: red pixel value
+:param green: green pixel value
+:param blue: blue pixel value
+:param opacity: opacity for pixel, between 0 and 1.0
+
+.. versionadded:: 3.38
+%End
+
       double red;
+
       double green;
+
       double blue;
-      double percentTransparent;
+
+      double opacity;
+
+      bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
+      bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
+
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
     };
 
     struct TransparentSingleValuePixel
     {
+
+      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true );
+%Docstring
+Constructor for TransparentSingleValuePixel.
+
+:param minimum: minimum pixel value to include in range
+:param maximum: maximum pixel value to include in range
+:param opacity: opacity for pixel, between 0 and 1.0
+:param includeMinimum: whether the minimum value should be included in the range
+:param includeMaximum: whether the maximum value should be included in the range
+
+.. versionadded:: 3.38
+%End
+
       double min;
+
       double max;
-      double percentTransparent;
+
+      double opacity;
+
+      bool includeMinimum;
+
+      bool includeMaximum;
+
+      bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
+      bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
+
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>" ).arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
     };
 
-
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
+    QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 %Docstring
 Returns the transparent single value pixel list.
 
 .. seealso:: :py:func:`setTransparentSingleValuePixelList`
 %End
 
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
+    QVector<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 %Docstring
 Returns the transparent three value pixel list.
 
@@ -65,21 +118,21 @@ Resets the transparency list to a single ``value``.
 Resets the transparency list to single red, green, and blue values.
 %End
 
-    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
+    void setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 %Docstring
 Sets the transparent single value pixel list, replacing the whole existing list.
 
 .. seealso:: :py:func:`transparentSingleValuePixelList`
 %End
 
-    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
+    void setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 %Docstring
 Sets the transparent three value pixel list, replacing the whole existing list.
 
 .. seealso:: :py:func:`transparentThreeValuePixelList`
 %End
 
-    int alphaValue( double value, int globalTransparency = 255 ) const;
+ int alphaValue( double value, int globalTransparency = 255 ) const /Deprecated/;
 %Docstring
 Returns the transparency value for a single ``value`` pixel.
 
@@ -88,10 +141,22 @@ by the stored transparency value.
 
 :param value: the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
+
+.. deprecated::
+   use :py:func:`~QgsRasterTransparency.opacityForValue` instead.
 %End
 
+    double opacityForValue( double value ) const;
+%Docstring
+Returns the opacity (as a value from 0 to 1) for a single ``value`` pixel.
 
-    int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const;
+Searches through the transparency list, and if a match is found, returns
+the opacity corresponding to the value. Returns 1 if no matches are found.
+
+.. versionadded:: 3.38
+%End
+
+ int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const /Deprecated/;
 %Docstring
 Returns the transparency value for a RGB pixel.
 
@@ -102,6 +167,21 @@ by the stored transparency value.
 :param greenValue: the green portion of the needle to search for in the transparency hay stack
 :param blueValue: the green portion of the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
+
+.. deprecated::
+   use :py:func:`~QgsRasterTransparency.opacityForRgbValues` instead.
+%End
+
+    double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
+%Docstring
+Returns the opacity (as a value from 0 to 1) for a set of RGB pixel values.
+
+Searches through the transparency list, and if a match is found, returns
+the opacity corresponding to the values. Returns 1 if no matches are found.
+
+If any of the red, green or blue values are NaN, 0 will be returned.
+
+.. versionadded:: 3.38
 %End
 
     bool isEmpty() const;

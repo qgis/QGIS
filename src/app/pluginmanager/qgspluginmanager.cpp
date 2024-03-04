@@ -1045,9 +1045,12 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     QString dateUpdatedStr;
     if ( ! metadata->value( QStringLiteral( "update_date_stable" ) ).isEmpty() )
     {
-      const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
-      if ( dateUpdated.isValid() )
-        dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
+      const QDateTime dateUpdatedUtc = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
+      if ( dateUpdatedUtc.isValid() )
+      {
+        const QDateTime dateUpdatedLocal = dateUpdatedUtc.toLocalTime();
+        dateUpdatedStr += tr( "updated at %1 %2" ).arg( QLocale().toString( dateUpdatedLocal, dateTimeFormat ), dateUpdatedLocal.timeZoneAbbreviation() );
+      }
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"

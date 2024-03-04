@@ -679,7 +679,7 @@ void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
   const auto constTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
   for ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel : constTransparentSingleValuePixelList )
   {
-    if ( transparencyPixel.percentTransparent == 100 )
+    if ( qgsDoubleNear( transparencyPixel.opacity, 0 ) )
     {
       addNoDataRow( transparencyPixel.min, transparencyPixel.max );
       if ( transparencyPixel.min != transparencyPixel.max )

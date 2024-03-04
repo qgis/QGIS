@@ -161,7 +161,7 @@ Check whether supplied password is the same as the one already set
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath /In,Out/ = 0 );
 %Docstring
 Reset the master password to a new one, then re-encrypt all previous
-configs in a new database file, optionally backup curren database
+configs in a new database file, optionally backup current database
 
 :param newpass: New master password to replace existing
 :param oldpass: Current master password to replace existing

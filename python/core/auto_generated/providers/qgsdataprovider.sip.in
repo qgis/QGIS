@@ -175,16 +175,26 @@ This may be ``None``, depending on the data provider.
 
     virtual QgsRectangle extent() const = 0;
 %Docstring
-Returns the extent of the layer
+Returns the extent of the layer.
 
-:return: :py:class:`QgsRectangle` containing the extent of the layer
+.. warning::
+
+   This may be expensive to calculate for some data providers, as it may involve
+   additional network requests or in some cases, iterating through all the features in a layer.
+   If the provider returns the :py:class:`Qgis`.DataProviderFlag.FastExtent2D flag from the :py:func:`~QgsDataProvider.flags` method
+   then the call to :py:func:`~QgsDataProvider.extent` is guaranteed to ALWAYS be fast and not involve any additional work.
 %End
 
     virtual QgsBox3D extent3D() const;
 %Docstring
-Returns the 3D extent of the layer
+Returns the 3D extent of the layer.
 
-:return: :py:class:`QgsBox3D` containing the 3D extent of the layer
+.. warning::
+
+   This may be expensive to calculate for some data providers, as it may involve
+   additional network requests or in some cases, iterating through all the features in a layer.
+   If the provider returns the :py:class:`Qgis`.DataProviderFlag.FastExtent3D flag from the :py:func:`~QgsDataProvider.flags` method
+   then the call to :py:func:`~QgsDataProvider.extent3D` is guaranteed to ALWAYS be fast and not involve any additional work.
 
 .. versionadded:: 3.36
 %End

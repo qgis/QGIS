@@ -153,13 +153,6 @@ class HtmlTable(HtmlElem):
         HtmlElem.__init__(self, 'table', rows, attrs)
 
 
-class HtmlWarning(HtmlContent):
-
-    def __init__(self, data):
-        data = ['<img src=":/icons/warning-20px.png">&nbsp;&nbsp; ', data]
-        HtmlContent.__init__(self, data)
-
-
 class HtmlSection(HtmlContent):
 
     def __init__(self, title, content=None):

@@ -2384,7 +2384,7 @@ INCLUDE_FILE_PATTERNS  =
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             =
+PREDEFINED             = "Q_DECLARE_FLAGS(Flags, Enum)=typedef QFlags<Enum> Flags;"
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The
@@ -2437,7 +2437,8 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_WHEN_FEATURE" \
                          "SIP_MONKEYPATCH_COMPAT_NAME" \
                          "SIP_MONKEYPATCH_SCOPEENUM" \
-                         "SIP_MONKEYPATCH_SCOPEENUM_UNNEST"
+                         "SIP_MONKEYPATCH_SCOPEENUM_UNNEST" \
+                         "SIP_MONKEYPATCH_FLAGS_UNNEST"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
 # remove all references to function-like macros that are alone on a line, have

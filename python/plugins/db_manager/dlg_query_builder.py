@@ -19,11 +19,14 @@ email                : hugo dot mercier at oslandia dot com
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QObject, QEvent
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit
 
-from .ui.ui_DlgQueryBuilder import Ui_DbManagerQueryBuilderDlg as Ui_Dialog
 from .db_plugins.plugin import VectorTable
+from .gui_utils import GuiUtils
+
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgQueryBuilder.ui'))
 
 
 class FocusEventFilter(QObject):

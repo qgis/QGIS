@@ -87,9 +87,9 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
 
   // no backface culling on terrain, to allow terrain to be viewed from underground
   const QVector<Qt3DRender::QTechnique *> techniques = material->effect()->techniques();
-  for ( Qt3DRender::QTechnique *techique : techniques )
+  for ( Qt3DRender::QTechnique *technique : techniques )
   {
-    const QVector<Qt3DRender::QRenderPass *> passes = techique->renderPasses();
+    const QVector<Qt3DRender::QRenderPass *> passes = technique->renderPasses();
     for ( Qt3DRender::QRenderPass *pass : passes )
     {
       Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;

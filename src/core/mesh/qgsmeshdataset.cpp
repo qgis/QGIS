@@ -489,12 +489,12 @@ QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &ite
     dependOnElement = dependOnElement.nextSiblingElement( QStringLiteral( "dependent-on-item" ) );
   }
 
-  QDomElement dependencieElement = itemElement.firstChildElement( QStringLiteral( "dependency-item" ) );
-  while ( !dependencieElement.isNull() )
+  QDomElement dependencyElement = itemElement.firstChildElement( QStringLiteral( "dependency-item" ) );
+  while ( !dependencyElement.isNull() )
   {
-    if ( dependencieElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
-      mDatasetGroupDependencies.append( dependencieElement.attribute( QStringLiteral( "dataset-index" ) ).toInt() );
-    dependencieElement = dependencieElement.nextSiblingElement( QStringLiteral( "dependency-item" ) );
+    if ( dependencyElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
+      mDatasetGroupDependencies.append( dependencyElement.attribute( QStringLiteral( "dataset-index" ) ).toInt() );
+    dependencyElement = dependencyElement.nextSiblingElement( QStringLiteral( "dependency-item" ) );
   }
 
   QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
@@ -710,9 +710,9 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
 
   for ( const int index : mDatasetGroupDependencies )
   {
-    QDomElement dependencieElement = doc.createElement( QStringLiteral( "dependency-item" ) );
-    dependencieElement.setAttribute( QStringLiteral( "dataset-index" ), index );
-    itemElement.appendChild( dependencieElement );
+    QDomElement dependencyElement = doc.createElement( QStringLiteral( "dependency-item" ) );
+    dependencyElement.setAttribute( QStringLiteral( "dataset-index" ), index );
+    itemElement.appendChild( dependencyElement );
   }
 
   for ( int i = 0; i < mChildren.count(); ++i )
@@ -975,7 +975,7 @@ QDomElement QgsMeshMemoryDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
 
 void QgsMeshDatasetGroup::calculateStatistic() const
 {
-  updateStatictic();
+  updateStatistic();
 }
 
 void QgsMeshDatasetGroup::setStatisticObsolete() const
@@ -998,7 +998,7 @@ void QgsMeshDatasetGroup::setReferenceTime( const QDateTime &referenceTime )
   mReferenceTime = referenceTime;
 }
 
-void QgsMeshDatasetGroup::updateStatictic() const
+void QgsMeshDatasetGroup::updateStatistic() const
 {
   if ( !mIsStatisticObsolete )
     return;
@@ -1036,13 +1036,13 @@ QgsMeshDatasetGroup::QgsMeshDatasetGroup( const QString &name ): mName( name ) {
 
 double QgsMeshDatasetGroup::minimum() const
 {
-  updateStatictic();
+  updateStatistic();
   return mMinimum;
 }
 
 double QgsMeshDatasetGroup::maximum() const
 {
-  updateStatictic();
+  updateStatistic();
   return mMaximum;
 }
 

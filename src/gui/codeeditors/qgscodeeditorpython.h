@@ -104,7 +104,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     QString characterBeforeCursor() const;
 
     /**
-     * Returns the character after the cursor, or an empty string if the cursot is set at end
+     * Returns the character after the cursor, or an empty string if the cursor is set at end
      *
      * \since QGIS 3.30
      */

@@ -167,6 +167,11 @@ A base class for objects which belong to a layout.
       MapGridFrameDivisionsRight,
       MapGridFrameDivisionsTop,
       MapGridFrameDivisionsBottom,
+      MapCrs,
+      StartDateTime,
+      EndDateTime,
+      MapZRangeLower,
+      MapZRangeUpper,
       //composer picture
       PictureSource,
       PictureSvgBackgroundColor,
@@ -192,9 +197,6 @@ A base class for objects which belong to a layout.
       ScalebarLineWidth,
       //table item
       AttributeTableSourceLayer,
-      MapCrs,
-      StartDateTime,
-      EndDateTime,
       ElevationProfileTolerance,
       ElevationProfileDistanceMajorInterval,
       ElevationProfileDistanceMinorInterval,

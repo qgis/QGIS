@@ -212,6 +212,12 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
   emit addLayer( Qgis::LayerType::Vector, layerUri, baseName, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
 }
 
+void QgsSensorThingsSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
+{
+  QgsAbstractDataSourceWidget::setMapCanvas( mapCanvas );
+  mSourceWidget->setMapCanvas( mapCanvas );
+}
+
 void QgsSensorThingsSourceSelect::populateConnectionList()
 {
   cmbConnections->blockSignals( true );

@@ -2306,321 +2306,167 @@
                      <string>WMS capabilities</string>
                     </attribute>
                     <layout class="QGridLayout" name="gridLayout_25">
-                     <item row="14" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_17">
-                       <item>
-                        <widget class="QLabel" name="mWMSMaxAtlasFeaturesLabel">
-                         <property name="text">
-                          <string>Maximum features for Atlas print requests</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
-                         <property name="maximum">
-                          <number>9999999</number>
-                         </property>
-                         <property name="value">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="1" column="0" colspan="2">
-                      <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
+                     <item row="20" column="0" colspan="2">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSLegendMapOptions">
                        <property name="title">
-                        <string>CRS restrictions</string>
+                        <string>Map and Legend Options</string>
                        </property>
-                       <property name="checkable">
-                        <bool>true</bool>
-                       </property>
-                       <property name="checked">
+                       <property name="collapsed" stdset="0">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed">
-                        <bool>false</bool>
-                       </property>
-                       <property name="saveCollapsedState">
+                       <property name="saveCollapsedState" stdset="0">
                         <bool>true</bool>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_5">
-                        <item row="0" column="0" colspan="5">
-                         <widget class="QListWidget" name="mWMSList"/>
+                       <layout class="QGridLayout" name="gridLayout_29">
+                        <item row="2" column="0">
+                         <layout class="QGridLayout" name="gridLayout_9">
+                          <item row="1" column="1">
+                           <widget class="QLabel" name="mMaxWidthLabel_2">
+                            <property name="text">
+                             <string>Width</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0">
+                           <spacer name="horizontalSpacer_6">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                             <enum>QSizePolicy::Fixed</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>6</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item row="1" column="4">
+                           <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
+                          </item>
+                          <item row="1" column="2">
+                           <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
+                          </item>
+                          <item row="1" column="3">
+                           <widget class="QLabel" name="mMaxHeightLabel">
+                            <property name="text">
+                             <string>Height</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="0" colspan="5">
+                           <widget class="QLabel" name="label_21">
+                            <property name="text">
+                             <string>Maximum image size for GetMap and GetLegendGraphic requests</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </item>
-                        <item row="1" column="1">
-                         <widget class="QToolButton" name="pbnWMSRemoveSRS">
-                          <property name="toolTip">
-                           <string>Remove selected CRS</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../../images/images.qrc">
-                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                          </property>
-                         </widget>
+                        <item row="3" column="0">
+                         <layout class="QHBoxLayout" name="horizontalLayout_10">
+                          <item>
+                           <widget class="QLabel" name="mWMSImageQualityLabel">
+                            <property name="text">
+                             <string>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QgsSpinBox" name="mWMSImageQualitySpinBox">
+                            <property name="minimum">
+                             <number>10</number>
+                            </property>
+                            <property name="maximum">
+                             <number>100</number>
+                            </property>
+                            <property name="singleStep">
+                             <number>5</number>
+                            </property>
+                            <property name="value">
+                             <number>90</number>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </item>
-                        <item row="1" column="3">
-                         <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                          <property name="toolTip">
-                           <string>Fetch all CRS's from layers</string>
+                        <item row="5" column="0">
+                         <layout class="QHBoxLayout" name="horizontalLayout_18">
+                          <item>
+                           <widget class="QLabel" name="label_33">
+                            <property name="toolTip">
+                             <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
+                            </property>
+                            <property name="text">
+                             <string>Tile buffer in pixels</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox">
+                            <property name="maximum">
+                             <number>1024</number>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item row="6" column="0">
+                         <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
+                          <property name="sizeConstraint">
+                           <enum>QLayout::SetFixedSize</enum>
                           </property>
+                          <item>
+                           <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
+                            <property name="text">
+                             <string>Default map units per mm in legend</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QCheckBox" name="mAddLayerGroupsLegendGraphicCheckBox">
                           <property name="text">
-                           <string>Used</string>
+                           <string>Add layer groups in GetLegendGraphic</string>
                           </property>
                          </widget>
+                        </item>
+                        <item row="4" column="0">
+                         <layout class="QHBoxLayout" name="horizontalLayout_17">
+                          <item>
+                           <widget class="QLabel" name="mWMSMaxAtlasFeaturesLabel">
+                            <property name="text">
+                             <string>Maximum features for Atlas print requests</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
+                            <property name="maximum">
+                             <number>9999999</number>
+                            </property>
+                            <property name="value">
+                             <number>1</number>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QToolButton" name="pbnWMSAddSRS">
+                         <widget class="QCheckBox" name="mSkipNameForGroupCheckBox">
                           <property name="toolTip">
-                           <string>Add new CRS</string>
+                           <string>GetCapabilities response would skip name attribute for group items while leaving title attribute as is, thus showing the group but making it impossible to include the whole group (rather than it's elements) in subsequent GetMap request LAYERS parameter.</string>
                           </property>
-                          <property name="icon">
-                           <iconset resource="../../images/images.qrc">
-                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          <property name="text">
+                           <string>Skip name attribute for groups</string>
                           </property>
                          </widget>
-                        </item>
-                        <item row="1" column="2">
-                         <spacer name="horizontalSpacer">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
                         </item>
                        </layout>
                       </widget>
-                     </item>
-                     <item row="15" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_18">
-                       <item>
-                        <widget class="QLabel" name="label_33">
-                         <property name="toolTip">
-                          <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
-                         </property>
-                         <property name="text">
-                          <string>Tile buffer in pixels</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox">
-                         <property name="maximum">
-                          <number>1024</number>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="5" column="0" colspan="2">
-                      <widget class="QCheckBox" name="mUseAttributeFormSettingsCheckBox">
-                       <property name="text">
-                        <string>Use attribute form settings for GetFeatureInfo response</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QgsCollapsibleGroupBox" name="mWMSPrintLayoutGroupBox">
-                       <property name="title">
-                        <string>Excl&amp;ude layouts</string>
-                       </property>
-                       <property name="checkable">
-                        <bool>true</bool>
-                       </property>
-                       <property name="checked">
-                        <bool>false</bool>
-                       </property>
-                       <property name="collapsed">
-                        <bool>false</bool>
-                       </property>
-                       <property name="saveCollapsedState">
-                        <bool>true</bool>
-                       </property>
-                       <layout class="QGridLayout" name="gridLayout_10">
-                        <item row="0" column="0" colspan="3">
-                         <widget class="QListWidget" name="mPrintLayoutListWidget"/>
-                        </item>
-                        <item row="1" column="0">
-                         <widget class="QToolButton" name="mAddWMSPrintLayoutButton">
-                          <property name="toolTip">
-                           <string>Add layout to exclude</string>
-                          </property>
-                          <property name="text">
-                           <string/>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../../images/images.qrc">
-                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="1">
-                         <widget class="QToolButton" name="mRemoveWMSPrintLayoutButton">
-                          <property name="toolTip">
-                           <string>Remove selected layout</string>
-                          </property>
-                          <property name="text">
-                           <string/>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../../images/images.qrc">
-                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="2">
-                         <spacer name="horizontalSpacer_2">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>0</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item row="4" column="0" colspan="2">
-                      <widget class="QCheckBox" name="mWmsUseLayerIDs">
-                       <property name="text">
-                        <string>Use layer ids as names</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="12" column="0" colspan="2">
-                      <layout class="QGridLayout" name="gridLayout_9">
-                       <item row="1" column="1">
-                        <widget class="QLabel" name="mMaxWidthLabel_2">
-                         <property name="text">
-                          <string>Width</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <spacer name="horizontalSpacer_6">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>6</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="4">
-                        <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
-                       </item>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
-                       </item>
-                       <item row="1" column="3">
-                        <widget class="QLabel" name="mMaxHeightLabel">
-                         <property name="text">
-                          <string>Height</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0" colspan="5">
-                        <widget class="QLabel" name="label_21">
-                         <property name="text">
-                          <string>Maximum image size for GetMap and GetLegendGraphic requests</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="16" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
-                       <property name="sizeConstraint">
-                        <enum>QLayout::SetFixedSize</enum>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
-                         <property name="text">
-                          <string>Default map units per mm in legend</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="11" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_2">
-                       <item>
-                        <widget class="QLabel" name="mWMSUrlLabel">
-                         <property name="text">
-                          <string>Advertised URL</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="13" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_10">
-                       <item>
-                        <widget class="QLabel" name="mWMSImageQualityLabel">
-                         <property name="text">
-                          <string>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsSpinBox" name="mWMSImageQualitySpinBox">
-                         <property name="minimum">
-                          <number>10</number>
-                         </property>
-                         <property name="maximum">
-                          <number>100</number>
-                         </property>
-                         <property name="singleStep">
-                          <number>5</number>
-                         </property>
-                         <property name="value">
-                          <number>90</number>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="10" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="grpWMSPrecision">
-                       <item>
-                        <widget class="QLabel" name="label_5">
-                         <property name="text">
-                          <string>GetFeatureInfo geometry precision (decimal places)</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsSpinBox" name="mWMSPrecisionSpinBox">
-                         <property name="minimum">
-                          <number>1</number>
-                         </property>
-                         <property name="maximum">
-                          <number>17</number>
-                         </property>
-                         <property name="value">
-                          <number>8</number>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
                      </item>
                      <item row="3" column="0" colspan="2">
                       <widget class="QgsCollapsibleGroupBox" name="mWMSInspire">
@@ -2754,11 +2600,85 @@
                        </layout>
                       </widget>
                      </item>
-                     <item row="6" column="0" colspan="2">
-                      <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-                       <property name="text">
-                        <string>Add geometry to feature response</string>
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSLayerOptions">
+                       <property name="title">
+                        <string>Layer and Feature options</string>
                        </property>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_30">
+                        <item row="1" column="0">
+                         <widget class="QCheckBox" name="mUseAttributeFormSettingsCheckBox">
+                          <property name="text">
+                           <string>Use attribute form settings for GetFeatureInfo response</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QCheckBox" name="mWmsUseLayerIDs">
+                          <property name="text">
+                           <string>Use layer ids as names</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="4" column="0">
+                         <layout class="QHBoxLayout" name="grpWMSPrecision">
+                          <item>
+                           <widget class="QLabel" name="label_5">
+                            <property name="text">
+                             <string>GetFeatureInfo geometry precision (decimal places)</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QgsSpinBox" name="mWMSPrecisionSpinBox">
+                            <property name="minimum">
+                             <number>1</number>
+                            </property>
+                            <property name="maximum">
+                             <number>17</number>
+                            </property>
+                            <property name="value">
+                             <number>8</number>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item row="3" column="0">
+                         <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
+                          <property name="text">
+                           <string>Segmentize feature info geometry</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="0">
+                         <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                          <property name="text">
+                           <string>Add geometry to feature response</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="5" column="0">
+                         <layout class="QHBoxLayout" name="horizontalLayout_2">
+                          <item>
+                           <widget class="QLabel" name="mWMSUrlLabel">
+                            <property name="text">
+                             <string>Advertised URL</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
                      <item row="2" column="1">
@@ -2826,6 +2746,140 @@
                        </layout>
                       </widget>
                      </item>
+                     <item row="2" column="0">
+                      <widget class="QgsCollapsibleGroupBox" name="mWMSPrintLayoutGroupBox">
+                       <property name="title">
+                        <string>Excl&amp;ude layouts</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_10">
+                        <item row="0" column="0" colspan="3">
+                         <widget class="QListWidget" name="mPrintLayoutListWidget"/>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QToolButton" name="mAddWMSPrintLayoutButton">
+                          <property name="toolTip">
+                           <string>Add layout to exclude</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QToolButton" name="mRemoveWMSPrintLayoutButton">
+                          <property name="toolTip">
+                           <string>Remove selected layout</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <spacer name="horizontalSpacer_2">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>0</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" colspan="2">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
+                       <property name="title">
+                        <string>CRS restrictions</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_5">
+                        <item row="0" column="0" colspan="5">
+                         <widget class="QListWidget" name="mWMSList"/>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QToolButton" name="pbnWMSRemoveSRS">
+                          <property name="toolTip">
+                           <string>Remove selected CRS</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="3">
+                         <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                          <property name="toolTip">
+                           <string>Fetch all CRS's from layers</string>
+                          </property>
+                          <property name="text">
+                           <string>Used</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QToolButton" name="pbnWMSAddSRS">
+                          <property name="toolTip">
+                           <string>Add new CRS</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <spacer name="horizontalSpacer">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
                      <item row="0" column="0" colspan="2">
                       <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
                        <property name="title">
@@ -2837,10 +2891,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed">
+                       <property name="collapsed" stdset="0">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState">
+                       <property name="saveCollapsedState" stdset="0">
                         <bool>true</bool>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2848,30 +2902,6 @@
                          <widget class="QgsExtentWidget" name="mAdvertisedExtentServer" native="true"/>
                         </item>
                        </layout>
-                      </widget>
-                     </item>
-                     <item row="7" column="0" colspan="2">
-                      <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
-                       <property name="text">
-                        <string>Segmentize feature info geometry</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="8" column="0">
-                      <widget class="QCheckBox" name="mAddLayerGroupsLegendGraphicCheckBox">
-                       <property name="text">
-                        <string>Add layer groups in GetLegendGraphic</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="9" column="0">
-                      <widget class="QCheckBox" name="mSkipNameForGroupCheckBox">
-                       <property name="toolTip">
-                         <string>GetCapabilities response would skip name attribute for group items while leaving title attribute as is, thus showing the group but making it impossible to include the whole group (rather than it's elements) in subsequent GetMap request LAYERS parameter.</string>
-                       </property>
-                       <property name="text">
-                        <string>Skip name attribute for groups</string>
-                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -3627,14 +3657,14 @@
   <tabstop>mSegmentizeFeatureInfoGeometryCheckBox</tabstop>
   <tabstop>mWMSPrecisionSpinBox</tabstop>
   <tabstop>mWMSUrlLineEdit</tabstop>
+  <tabstop>mAddLayerGroupsLegendGraphicCheckBox</tabstop>
+  <tabstop>mSkipNameForGroupCheckBox</tabstop>
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
   <tabstop>mWMSMaxAtlasFeaturesSpinBox</tabstop>
-  <tabstop>mWMSTileBufferSpinBox</tabstop>
-  <tabstop>twWmtsLayers</tabstop>
-  <tabstop>twWmtsGrids</tabstop>
   <tabstop>mWMTSMinScaleSpinBox</tabstop>
+  <tabstop>mWMSTileBufferSpinBox</tabstop>
   <tabstop>mWMTSUrlLineEdit</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>
@@ -3649,6 +3679,9 @@
   <tabstop>mStartDateTimeEdit</tabstop>
   <tabstop>mEndDateTimeEdit</tabstop>
   <tabstop>mCalculateFromLayerButton</tabstop>
+  <tabstop>mCoordinateCrs</tabstop>
+  <tabstop>twWmtsGrids</tabstop>
+  <tabstop>twWmtsLayers</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

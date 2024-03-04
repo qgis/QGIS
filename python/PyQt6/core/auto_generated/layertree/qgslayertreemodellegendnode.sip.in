@@ -479,6 +479,15 @@ Evaluates  and returns the text label of the current node
 .. versionadded:: 3.10
 %End
 
+    QgsExpressionContextScope *createSymbolScope() const /Factory/;
+%Docstring
+Create an expression context scope containing symbol related variables.
+
+The caller takes ownership of the returned object.
+
+.. versionadded:: 3.36
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsSymbolLegendNode: %1 \"%2\"" ).arg(

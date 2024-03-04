@@ -963,7 +963,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           bool acceptPoint = true;
           if ( ! mNewFaceCandidate.isEmpty() &&
                mNewFaceCandidate.last() == -1 &&
-               !mNewVerticesForNewFaceCandidate.isEmpty() ) //avoid dupplicate new vertex
+               !mNewVerticesForNewFaceCandidate.isEmpty() ) //avoid duplicate new vertex
           {
             acceptPoint = mapPoint.distance( mNewVerticesForNewFaceCandidate.last() ) > tolerance;
           }
@@ -1813,7 +1813,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
       return;
 
     const QList<int> faceList = qgis::setToList( mSelectedFaces );
-    QgsGeometry faceGeometrie;
+    QgsGeometry faceGeometry;
     if ( faceList.count() == 1 )
     {
       const QgsMeshFace &face = mCurrentLayer->nativeMesh()->face( faceList.at( 0 ) );
@@ -1822,11 +1822,11 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
       for ( int j = 0; j < faceSize; ++j )
         faceVertices[j] = mTransformDockWidget->transformedVertex( face.at( j ) );
 
-      faceGeometrie = QgsGeometry::fromPolygonXY( {faceVertices} );
+      faceGeometry = QgsGeometry::fromPolygonXY( {faceVertices} );
     }
     else
     {
-      std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( faceGeometrie.constGet() ) );
+      std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( faceGeometry.constGet() ) );
       geomEngine->prepareGeometry();
       QVector<QgsGeometry> faces( mSelectedFaces.count() );
       for ( int i = 0; i < faceList.count(); ++i )
@@ -1840,7 +1840,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
         faces[i] = QgsGeometry::fromPolygonXY( {faceVertices} );
       }
       QString error;
-      faceGeometrie = QgsGeometry( geomEngine->combine( faces, &error ) );
+      faceGeometry = QgsGeometry( geomEngine->combine( faces, &error ) );
     }
 
     QgsGeometry edgesGeom = QgsGeometry::fromMultiPolylineXY( QgsMultiPolylineXY() );
@@ -1867,7 +1867,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
 
     try
     {
-      faceGeometrie.transform( coordinateTransform );
+      faceGeometry.transform( coordinateTransform );
     }
     catch ( QgsCsException & )
     {}
@@ -1879,7 +1879,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
     catch ( QgsCsException & )
     {}
 
-    mMovingFacesRubberband->setToGeometry( faceGeometrie );
+    mMovingFacesRubberband->setToGeometry( faceGeometry );
     mMovingEdgesRubberband->setToGeometry( edgesGeom );
     const QList<int> vertexIndexes = mSelectedVertices.keys();
     for ( const int vertexIndex : vertexIndexes )
@@ -2174,14 +2174,14 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   const QList<int> facesList = qgis::setToList( mSelectedFaces );
   if ( !facesList.isEmpty() )
   {
-    const QgsGeometry faceGeometrie( new QgsPolygon( new QgsLineString( nativeFaceGeometry( facesList.at( 0 ) ) ) ) );
+    const QgsGeometry faceGeometry( new QgsPolygon( new QgsLineString( nativeFaceGeometry( facesList.at( 0 ) ) ) ) );
     if ( mSelectedFaces.count() == 1 )
     {
-      mSelectedFacesRubberband->setToGeometry( faceGeometrie );
+      mSelectedFacesRubberband->setToGeometry( faceGeometry );
     }
     else
     {
-      std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( faceGeometrie.constGet() ) );
+      std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( faceGeometry.constGet() ) );
       geomEngine->prepareGeometry();
 
       QVector<QgsGeometry> otherFaces( mSelectedFaces.count() );

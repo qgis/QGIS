@@ -46,6 +46,7 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QgsCesiumTilesDataProvider &operator=( const QgsCesiumTilesDataProvider &other ) = delete;
 
     ~QgsCesiumTilesDataProvider() final;
+    Qgis::DataProviderFlags flags() const override;
     Qgis::TiledSceneProviderCapabilities capabilities() const final;
     QgsCesiumTilesDataProvider *clone() const final;
     QgsCoordinateReferenceSystem crs() const final;

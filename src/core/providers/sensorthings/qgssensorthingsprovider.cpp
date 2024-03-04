@@ -184,6 +184,13 @@ QString QgsSensorThingsProvider::htmlMetadata() const
   return metadata;
 }
 
+Qgis::DataProviderFlags QgsSensorThingsProvider::flags() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
+
 QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -197,6 +204,8 @@ QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() cons
 
 void QgsSensorThingsProvider::setDataSourceUri( const QString &uri )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
   QgsDataProvider::setDataSourceUri( uri );
 }
@@ -211,12 +220,7 @@ QgsCoordinateReferenceSystem QgsSensorThingsProvider::crs() const
 QgsRectangle QgsSensorThingsProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-#if 0
   return mSharedData->extent();
-#endif
-
-  return QgsRectangle();
 }
 
 QString QgsSensorThingsProvider::name() const
@@ -239,6 +243,12 @@ void QgsSensorThingsProvider::handlePostCloneOperations( QgsVectorDataProvider *
 QString QgsSensorThingsProvider::description() const
 {
   return SENSORTHINGS_PROVIDER_DESCRIPTION;
+}
+
+bool QgsSensorThingsProvider::renderInPreview( const PreviewContext & )
+{
+  // be nice to the endpoint and don't make any requests we don't have to!
+  return false;
 }
 
 void QgsSensorThingsProvider::reloadProviderData()
@@ -337,6 +347,22 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
       break;
   }
 
+  const QStringList bbox = dsUri.param( QStringLiteral( "bbox" ) ).split( ',' );
+  if ( bbox.size() == 4 )
+  {
+    QgsRectangle r;
+    bool xminOk = false;
+    bool yminOk = false;
+    bool xmaxOk = false;
+    bool ymaxOk = false;
+    r.setXMinimum( bbox[0].toDouble( &xminOk ) );
+    r.setYMinimum( bbox[1].toDouble( &yminOk ) );
+    r.setXMaximum( bbox[2].toDouble( &xmaxOk ) );
+    r.setYMaximum( bbox[3].toDouble( &ymaxOk ) );
+    if ( xminOk && yminOk && xmaxOk && ymaxOk )
+      components.insert( QStringLiteral( "bounds" ), r );
+  }
+
   return components;
 }
 
@@ -396,6 +422,12 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
   {
     dsUri.setWkbType( Qgis::WkbType::MultiPolygonZ );
+  }
+
+  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == QMetaType::type( "QgsRectangle" ) )
+  {
+    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+    dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
 
   return dsUri.uri( false );
