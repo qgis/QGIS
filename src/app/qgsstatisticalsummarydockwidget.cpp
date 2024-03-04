@@ -107,7 +107,8 @@ void QgsStatisticalSummaryDockWidget::fieldChanged()
   if ( mFieldExpressionWidget->expression() != mExpression )
   {
     mExpression = mFieldExpressionWidget->expression();
-    mLastExpression.insert( mLayerComboBox->currentLayer()->id(), mFieldExpressionWidget->currentText() );
+    if ( QgsMapLayer *currentLayer = mLayerComboBox->currentLayer() )
+      mLastExpression.insert( currentLayer->id(), mFieldExpressionWidget->currentText() );
     refreshStatistics();
   }
 }
