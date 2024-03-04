@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsoverlaywidgetlayout.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsOverlayWidgetLayout : QLayout
+{
+%Docstring(signature="appended")
+A custom layout which can be used to overlay child widgets over a parent widget.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsoverlaywidgetlayout.h"
+%End
+  public:
+
+    QgsOverlayWidgetLayout( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsOverlayWidgetLayout, with the specified ``parent`` widget.
+%End
+    ~QgsOverlayWidgetLayout();
+
+    int count() const final;
+    void addItem( QLayoutItem *item ) final;
+    QLayoutItem *itemAt( int index ) const final;
+    QLayoutItem *takeAt( int index ) final;
+    QSize sizeHint() const final;
+    QSize minimumSize() const final;
+    void setGeometry( const QRect &rect ) final;
+
+    void addWidget( QWidget *widget /Transfer/, Qt::Edge edge );
+%Docstring
+Adds a ``widget`` to the layout, which will be bound to the specified ``edge``.
+
+.. note::
+
+   Widgets on the left and right edges will always be positioned first, with
+   top and bottom edge widgets expanding to take the remaining horizontal space.
+%End
+
+    void setHorizontalSpacing( int spacing );
+%Docstring
+Sets the spacing between widgets that are laid out side by side.
+
+.. seealso:: :py:func:`horizontalSpacing`
+%End
+
+    int horizontalSpacing() const;
+%Docstring
+Returns the spacing between widgets that are laid out side by side.
+
+.. seealso:: :py:func:`setHorizontalSpacing`
+%End
+
+    void setVerticalSpacing( int spacing );
+%Docstring
+Sets the spacing between widgets that are laid out on top of each other.
+
+.. seealso:: :py:func:`verticalSpacing`
+%End
+
+    int verticalSpacing() const;
+%Docstring
+Returns the spacing between widgets that are laid out on top of each other.
+
+.. seealso:: :py:func:`setVerticalSpacing`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsoverlaywidgetlayout.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
