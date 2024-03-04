@@ -129,8 +129,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
         self.presetStore.clicked.connect(self.storePreset)
         self.presetDelete.clicked.connect(self.deletePreset)
-        self.presetCombo.activated[str].connect(self.loadPreset)
-        self.presetCombo.activated[str].connect(self.presetName.setText)
+        self.presetCombo.textActivated.connect(self.loadPreset)
+        self.presetCombo.textActivated.connect(self.presetName.setText)
 
         self.editSql.textChanged.connect(self.updatePresetButtonsState)
         self.presetName.textChanged.connect(self.updatePresetButtonsState)
