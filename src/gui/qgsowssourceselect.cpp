@@ -32,8 +32,6 @@
 #include "qgsowsconnection.h"
 #include "qgsdataprovider.h"
 #include "qgsowssourceselect.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 
@@ -79,10 +77,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
 
   clearCrs();
-
-  mTileWidthLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
-  mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
-  mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mCacheComboBox->addItem( tr( "Always Cache" ), QNetworkRequest::AlwaysCache );
   mCacheComboBox->addItem( tr( "Prefer Cache" ), QNetworkRequest::PreferCache );
