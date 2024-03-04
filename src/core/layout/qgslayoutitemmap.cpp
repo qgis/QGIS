@@ -834,6 +834,10 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
     mapElem.setAttribute( QStringLiteral( "temporalRangeEnd" ), temporalRange().end().toString( Qt::ISODate ) );
   }
 
+  mapElem.setAttribute( QStringLiteral( "enableZRange" ), mZRangeEnabled ? 1 : 0 );
+  mapElem.setAttribute( QStringLiteral( "zRangeLower" ), qgsDoubleToString( mZRange.lower() ) );
+  mapElem.setAttribute( QStringLiteral( "zRangeUpper" ), qgsDoubleToString( mZRange.upper() ) );
+
   mAtlasClippingSettings->writeXml( mapElem, doc, context );
   mItemClippingSettings->writeXml( mapElem, doc, context );
 
@@ -1036,6 +1040,20 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
     const QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeEnd" ) ), Qt::ISODate );
     setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
+
+  mZRangeEnabled = itemElem.attribute( QStringLiteral( "enableZRange" ) ).toInt();
+  bool ok = false;
+  double zLower = itemElem.attribute( QStringLiteral( "zRangeLower" ) ).toDouble( &ok );
+  if ( !ok )
+  {
+    zLower = std::numeric_limits< double >::lowest();
+  }
+  double zUpper = itemElem.attribute( QStringLiteral( "zRangeUpper" ) ).toDouble( &ok );
+  if ( !ok )
+  {
+    zUpper = std::numeric_limits< double >::max();
+  }
+  mZRange = QgsDoubleRange( zLower, zUpper );
 
   mUpdatesEnabled = true;
   return true;
@@ -1764,6 +1782,11 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   if ( isTemporal() )
     jobMapSettings.setTemporalRange( temporalRange() );
 
+  if ( mZRangeEnabled )
+  {
+    jobMapSettings.setZRange( mZRange );
+  }
+
   if ( mAtlasClippingSettings->enabled() && mLayout->reportContext().feature().isValid() )
   {
     QgsGeometry clipGeom( mLayout->reportContext().currentGeometry( jobMapSettings.destinationCrs() ) );
@@ -1909,6 +1932,9 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), isTemporal() ? temporalRange().begin() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), isTemporal() ? temporalRange().end() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), isTemporal() ? QgsInterval( temporalRange().end() - temporalRange().begin() ) : QVariant(), true ) );
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_z_range_lower" ), mZRangeEnabled ? mZRange.lower() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_z_range_upper" ), mZRangeEnabled ? mZRange.upper() : QVariant(), true ) );
 
 #if 0 // not relevant here! (but left so as to respect all the dangerous warnings in QgsExpressionContextUtils::mapSettingsScope)
   if ( mapSettings.frameRate() >= 0 )
@@ -2141,6 +2167,19 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
 
+  if ( mZRangeEnabled && ( property == QgsLayoutObject::DataDefinedProperty::MapZRangeLower || property == QgsLayoutObject::DataDefinedProperty::MapZRangeUpper || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
+  {
+    double zLower = mZRange.lower();
+    double zUpper = mZRange.upper();
+
+    if ( property == QgsLayoutObject::DataDefinedProperty::MapZRangeLower || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+      zLower = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapZRangeLower, context, zLower );
+    if ( property == QgsLayoutObject::DataDefinedProperty::MapZRangeUpper || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+      zUpper = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapZRangeUpper, context, zUpper );
+
+    mZRange = QgsDoubleRange( zLower, zUpper );
+  }
+
   //force redraw
   mCacheInvalidated = true;
 
@@ -2290,6 +2329,26 @@ QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
   //create transform from layout coordinates to map coordinates
   QTransform::quadToQuad( thisItemPolyInLayout, thisExtent, mapTransform );
   return mapTransform;
+}
+
+void QgsLayoutItemMap::setZRangeEnabled( bool enabled )
+{
+  mZRangeEnabled = enabled;
+}
+
+bool QgsLayoutItemMap::zRangeEnabled() const
+{
+  return mZRangeEnabled;
+}
+
+QgsDoubleRange QgsLayoutItemMap::zRange() const
+{
+  return mZRange;
+}
+
+void QgsLayoutItemMap::setZRange( const QgsDoubleRange &range )
+{
+  mZRange = range;
 }
 
 QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings & ) const

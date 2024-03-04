@@ -79,6 +79,7 @@ class TestQgsLayoutMap : public QgsTest
     void testLayeredExportLabelsByLayer();
     void testTemporal();
     void testLabelResults();
+    void testZRange();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -2056,6 +2057,37 @@ void TestQgsLayoutMap::testLabelResults()
   QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "8888" ) );
   QVERIFY( labels.at( 5 ).isUnplaced );
 
+}
+
+void TestQgsLayoutMap::testZRange()
+{
+  QgsLayout l( QgsProject::instance( ) );
+  std::unique_ptr< QgsLayoutItemMap > map = std::make_unique< QgsLayoutItemMap >( &l );
+
+  QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  QVERIFY( settings.zRange().isInfinite() );
+  QVERIFY( !settings.expressionContext().variable( QStringLiteral( "map_z_range_lower" ) ).isValid() );
+  QVERIFY( !settings.expressionContext().variable( QStringLiteral( "map_z_range_upper" ) ).isValid() );
+
+  map->setZRangeEnabled( true );
+  map->setZRange( QgsDoubleRange( 30, 150 ) );
+  map->refresh();
+
+  settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  QCOMPARE( settings.zRange().lower(), 30.0 );
+  QCOMPARE( settings.zRange().upper(), 150.0 );
+
+  QCOMPARE( settings.expressionContext().variable( QStringLiteral( "map_z_range_lower" ) ).toDouble(), 30.0 );
+  QCOMPARE( settings.expressionContext().variable( QStringLiteral( "map_z_range_upper" ) ).toDouble(), 150.0 );
+
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapZRangeLower, QgsProperty::fromExpression( QStringLiteral( "15+2" ) ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapZRangeUpper, QgsProperty::fromExpression( QStringLiteral( "15+32" ) ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::MapZRangeLower );
+  map->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::MapZRangeUpper );
+
+  settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  QCOMPARE( settings.zRange().lower(), 17.0 );
+  QCOMPARE( settings.zRange().upper(), 47.0 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

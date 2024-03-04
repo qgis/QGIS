@@ -87,6 +87,11 @@ void QgsLayoutObject::initPropertyDefinitions()
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display right" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display top" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display bottom" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ), QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. 'EPSG:4326'), a proj string prefixes by \"PROJ:\" (e.g. 'PROJ: +proj=...') or a WKT string prefixed by \"WKT:\" (e.g. 'WKT:GEOGCRS[\"WGS 84\"...]')" ) ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ), QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::EndDateTime ), QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapZRangeLower ), QgsPropertyDefinition( "dataDefinedZRangeLower", QObject::tr( "Z range lower limit" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapZRangeUpper ), QgsPropertyDefinition( "dataDefinedZRangeUpper", QObject::tr( "Z range upper limit" ), QgsPropertyDefinition::Double ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSource ), QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::SourceUrl ), QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor ), QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -99,9 +104,6 @@ void QgsLayoutObject::initPropertyDefinitions()
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ), QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ), QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer ), QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ), QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. 'EPSG:4326'), a proj string prefixes by \"PROJ:\" (e.g. 'PROJ: +proj=...') or a WKT string prefixed by \"WKT:\" (e.g. 'WKT:GEOGCRS[\"WGS 84\"...]')" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ), QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::EndDateTime ), QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments ), QgsPropertyDefinition( "dataDefinedScaleBarLeftSegments", QObject::tr( "Segments to the left of 0" ), QgsPropertyDefinition::IntegerPositive )},
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments ), QgsPropertyDefinition( "dataDefinedScaleBarRightSegments", QObject::tr( "Segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth ), QgsPropertyDefinition( "dataDefinedScalebarSegmentWidth", QObject::tr( "Length of a segment in map units" ), QgsPropertyDefinition::DoublePositive ) },
@@ -207,6 +209,8 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::DataDefinedProperty::MapCrs:
     case QgsLayoutObject::DataDefinedProperty::StartDateTime:
     case QgsLayoutObject::DataDefinedProperty::EndDateTime:
+    case QgsLayoutObject::DataDefinedProperty::MapZRangeLower:
+    case QgsLayoutObject::DataDefinedProperty::MapZRangeUpper:
     case QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance:
     case QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval:
     case QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval:
