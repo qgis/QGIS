@@ -100,7 +100,6 @@ class RandomPointsAlongLines(QgisAlgorithm):
         nPoints = 0
         nIterations = 0
         maxIterations = pointCount * 200
-        featureCount = source.featureCount()
         total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
@@ -116,14 +115,22 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
         ids = source.allFeatureIds()
 
-        while nIterations < maxIterations and nPoints < pointCount:
+        while ids and nIterations < maxIterations and nPoints < pointCount:
             if feedback.isCanceled():
                 break
 
             # pick random feature
             fid = random.choice(ids)
-            f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
+            try:
+                f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
+            except:
+                ids.remove(fid)
+                continue
+
             fGeom = f.geometry()
+            if fGeom.isEmpty():
+                ids.remove(fid)
+                continue
 
             if fGeom.isMultipart():
                 lines = fGeom.asMultiPolyline()
@@ -134,13 +141,20 @@ class RandomPointsAlongLines(QgisAlgorithm):
                 vertices = fGeom.asPolyline()
 
             # pick random segment
-            if len(vertices) == 2:
+            nVertices = len(vertices)
+            if nVertices < 2:
+                nIterations += 1
+                continue
+            if nVertices == 2:
                 vid = 0
             else:
-                vid = random.randint(0, len(vertices) - 2)
+                vid = random.randint(0, nVertices - 2)
             startPoint = vertices[vid]
             endPoint = vertices[vid + 1]
             length = da.measureLine(startPoint, endPoint)
+            if length == 0:
+                nIterations += 1
+                continue
             dist = length * random.random()
 
             d = dist / (length - dist)
