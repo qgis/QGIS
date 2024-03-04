@@ -123,7 +123,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
             fid = random.choice(ids)
             try:
                 f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
-            except:
+            except StopIteration:
                 ids.remove(fid)
                 continue
 
