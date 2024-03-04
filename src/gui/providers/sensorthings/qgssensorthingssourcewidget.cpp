@@ -43,6 +43,9 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   mExtentLimitFrame->setLayout( vl );
 
   mSpinPageSize->setClearValue( 0, tr( "Default (%1)" ).arg( QgsSensorThingsUtils::DEFAULT_PAGE_SIZE ) );
+  mSpinFeatureLimit->setClearValue( 0, tr( "No limit" ) );
+  // set a relatively conservative feature limit by default, to make it so they have to opt-in to shoot themselves in the foot!
+  mSpinFeatureLimit->setValue( QgsSensorThingsUtils::DEFAULT_FEATURE_LIMIT );
 
   for ( Qgis::SensorThingsEntity type :
         {
@@ -100,6 +103,23 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   if ( ok )
   {
     mSpinPageSize->setValue( maxPageSizeParam );
+  }
+
+  ok = false;
+  const int featureLimitParam = mSourceParts.value( QStringLiteral( "featureLimit" ) ).toInt( &ok );
+  if ( ok )
+  {
+    mSpinFeatureLimit->setValue( featureLimitParam );
+  }
+  else if ( type != Qgis::SensorThingsEntity::Invalid )
+  {
+    // if not setting an initial uri for a new layer, use "no limit" if it's not present in the uri
+    mSpinFeatureLimit->clear();
+  }
+  else
+  {
+    // when setting an initial uri, use the default, not "no limit"
+    mSpinFeatureLimit->setValue( QgsSensorThingsUtils::DEFAULT_FEATURE_LIMIT );
   }
 
   const QgsRectangle bounds = mSourceParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
@@ -182,6 +202,15 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
   else
   {
     parts.remove( QStringLiteral( "pageSize" ) );
+  }
+
+  if ( mSpinFeatureLimit->value() > 0 )
+  {
+    parts.insert( QStringLiteral( "featureLimit" ), QString::number( mSpinFeatureLimit->value() ) );
+  }
+  else
+  {
+    parts.remove( QStringLiteral( "featureLimit" ) );
   }
 
   if ( mExtentWidget->outputExtent().isNull() )

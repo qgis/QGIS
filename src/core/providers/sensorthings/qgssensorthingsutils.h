@@ -37,6 +37,9 @@ class CORE_EXPORT QgsSensorThingsUtils
     //! Default page size
     static constexpr int DEFAULT_PAGE_SIZE = 200; SIP_SKIP
 
+    //! Default limit on number of features fetched
+    static constexpr int DEFAULT_FEATURE_LIMIT = 10000; SIP_SKIP
+
     /**
      * Converts a string value to a Qgis::SensorThingsEntity type.
      *
