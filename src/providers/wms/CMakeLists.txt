@@ -55,6 +55,9 @@ endif()
 target_link_libraries(provider_wms_a
   qgis_core
 )
+
+# We use private headers from core that need this
+target_compile_definitions(provider_wms_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(provider_wms_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
@@ -90,6 +93,8 @@ else()
   endif()
 
   target_compile_definitions(provider_wms PRIVATE "-DQT_NO_FOREACH")
+  # We use private headers from core that need this
+  target_compile_definitions(provider_wms PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   install (TARGETS provider_wms
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgswkbptr.h"
 #include "qgsogcutils.h"
 #include "qgsogrutils.h"

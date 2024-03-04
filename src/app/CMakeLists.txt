@@ -515,6 +515,7 @@ else()
 
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
+  target_compile_definitions(${QGIS_APP_NAME} PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 endif()
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
@@ -523,6 +524,8 @@ add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
 
 # require c++17
 target_compile_features(qgis_app PRIVATE cxx_std_17)
+
+target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 
 target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea

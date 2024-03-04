@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgscplhttpfetchoverrider.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsfeature.h"
 #include "qgsfeedback.h"
 #include "qgsfields.h"

@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsvectortileutils.h"
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"

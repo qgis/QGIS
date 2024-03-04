@@ -29,6 +29,8 @@ target_link_libraries(provider_wcs_a
 # require c++17
 target_compile_features(provider_wcs_a PRIVATE cxx_std_17)
 
+# We use private headers from core that need this
+target_compile_definitions(provider_wcs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(provider_wcs_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
@@ -68,6 +70,9 @@ else()
   
   # require c++17
   target_compile_features(provider_wcs PRIVATE cxx_std_17)
+
+  # We use private headers from core that need this
+  target_compile_definitions(provider_wcs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   
   target_link_libraries(provider_wcs
     qgis_core

@@ -19,6 +19,7 @@
 #include "qgsoracleexpressioncompiler.h"
 #include "qgsoracletransaction.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"

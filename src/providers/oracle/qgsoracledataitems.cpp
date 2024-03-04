@@ -22,6 +22,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>

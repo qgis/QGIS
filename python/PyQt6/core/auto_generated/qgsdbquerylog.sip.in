@@ -51,7 +51,6 @@ Constructor for QgsDatabaseQueryLogEntry.
 };
 
 
-
 class QgsDatabaseQueryLog: QObject
 {
 %Docstring(signature="appended")

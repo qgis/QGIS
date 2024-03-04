@@ -18,6 +18,7 @@
 #include "qgsarcgisrestquery.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsreadwritelocker.h"
 #include "qgsjsonutils.h"

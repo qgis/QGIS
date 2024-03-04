@@ -21,16 +21,12 @@
 #include <QNetworkRequest>
 #include <QString>
 #include <QPointer>
-#include "qgsnetworkaccessmanager.h" // for QgsSetRequestInitiatorClass
 
+#include "qgis_core.h"
 #include "cpl_http.h"
 #include "gdal.h"
 
 class QgsFeedback;
-
-#ifndef SIP_RUN
-#define QgsSetCPLHTTPFetchOverriderInitiatorClass(overrider, _class) QgsSetRequestInitiatorClass((overrider), _class)
-#endif
 
 /**
  * \ingroup core

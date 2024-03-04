@@ -30,6 +30,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"

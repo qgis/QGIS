@@ -1794,6 +1794,8 @@ if(ENABLE_MODELTEST)
   target_link_libraries(qgis_gui ${QT_VERSION_BASE}::Test)
 endif()
 
+# We use private headers from core that need this
+target_compile_definitions(qgis_gui PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(qgis_gui PRIVATE "-DQT_NO_FOREACH")
 
 if(WIN32)

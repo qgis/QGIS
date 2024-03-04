@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 
 #include <QRegularExpression>
 #include <QTextCodec>

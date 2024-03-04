@@ -30,8 +30,6 @@
 #define QGIS_LIBEXEC_SUBDIR "${QGIS_LIBEXEC_SUBDIR}"
 #define QGIS_LIB_SUBDIR "${QGIS_LIB_SUBDIR}"
 #define QGIS_QML_SUBDIR "${QGIS_QML_SUBDIR}"
-#define CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
-#define CMAKE_SOURCE_DIR "${CMAKE_SOURCE_DIR}"
 
 #define QGIS_SERVER_MODULE_SUBDIR "${QGIS_SERVER_MODULE_SUBDIR}"
 
@@ -43,8 +41,6 @@
 //used by Mac to find system or bundle resources relative to amount of bundling
 #define QGIS_MACAPP_BUNDLE ${QGIS_MACAPP_BUNDLE}
 #endif
-
-#define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
 
 #define PYTHON_VERSION "${Python_VERSION}"
 #define PYTHON_VERSION_MAJOR "${Python_VERSION_MAJOR}"

@@ -21,6 +21,7 @@
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 
 #include <QDir>

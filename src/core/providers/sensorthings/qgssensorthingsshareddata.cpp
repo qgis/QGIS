@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsreadwritelocker.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsjsonutils.h"
 

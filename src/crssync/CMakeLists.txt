@@ -12,6 +12,8 @@ else ()
     qgis_core
   )
 
+  target_compile_definitions(crssync PRIVATE "CMAKE_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
+
   if(MSVC AND NOT USING_NMAKE)
     add_custom_target(synccrsdb
       COMMENT "Running crssync"

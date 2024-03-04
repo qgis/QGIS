@@ -16,6 +16,7 @@
 #include "qgsoracleproviderconnection.h"
 #include "qgsoracleconn.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgssettings.h"
 #include "qgsoracleprovider.h"
 #include "qgsexception.h"

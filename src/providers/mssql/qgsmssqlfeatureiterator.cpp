@@ -21,6 +21,7 @@
 #include "qgsmssqltransaction.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsexception.h"
 #include "qgsmssqldatabase.h"
 #include "qgsgeometryengine.h"

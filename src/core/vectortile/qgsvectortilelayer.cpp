@@ -23,6 +23,7 @@
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsdatasourceuri.h"
 #include "qgslayermetadataformatter.h"
 #include "qgsblockingnetworkrequest.h"

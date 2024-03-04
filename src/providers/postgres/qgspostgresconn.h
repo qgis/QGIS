@@ -29,6 +29,7 @@
 #include "qgswkbtypes.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
+#include "qgsdbquerylog_p.h"
 
 extern "C"
 {

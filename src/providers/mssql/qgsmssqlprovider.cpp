@@ -21,6 +21,7 @@
 #include "qgsmssqlproviderconnection.h"
 #include "qgsfeedback.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsvariantutils.h"
 
 #include <QtGlobal>

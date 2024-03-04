@@ -18,6 +18,7 @@
 
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
