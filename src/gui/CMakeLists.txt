@@ -683,6 +683,7 @@ set(QGIS_GUI_SRCS
   qgsoptionsdialoghighlightwidget.cpp
   qgsoptionsdialoghighlightwidgetsimpl.cpp
   qgsorderbydialog.cpp
+  qgsoverlaywidgetlayout.cpp
   qgsowssourceselect.cpp
   qgsowssourcewidget.cpp
   qgspanelwidget.cpp
@@ -956,6 +957,7 @@ set(QGIS_GUI_HDRS
   qgsoptionsdialoghighlightwidgetsimpl.h
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
+  qgsoverlaywidgetlayout.h
   qgsowssourceselect.h
   qgsowssourcewidget.h
   qgspanelwidget.h
