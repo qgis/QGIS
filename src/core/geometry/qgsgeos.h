@@ -102,8 +102,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * GEOS geometry engine constructor
      * \param geometry The geometry
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     * \param allowInvalidSubGeom Whether invalid sub-geometries should be skipped without error (since QGIS 3.38)
      */
-    QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
+    QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, bool allowInvalidSubGeom = true );
 
     /**
      * Creates a new QgsGeometry object, feeding in a geometry in GEOS format.
@@ -654,8 +655,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      * \param geometry geometry to convert to GEOS representation
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     * \param allowInvalidSubGeom Whether invalid sub-geometries should be skipped without error (since QGIS 3.38)
      */
-    static geos::unique_ptr asGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
+    static geos::unique_ptr asGeos( const QgsAbstractGeometry *geometry, double precision = 0, bool allowInvalidSubGeom = true );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
@@ -686,7 +688,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     };
 
     //geos util functions
-    void cacheGeos() const;
+    void cacheGeos( bool allowInvalidSubGeom ) const;
 
     /**
      * Returns a geometry representing the overlay operation with \a geom.

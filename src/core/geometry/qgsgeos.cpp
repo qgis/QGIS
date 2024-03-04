@@ -139,12 +139,12 @@ void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
 ///@endcond
 
 
-QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision )
+QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision, bool allowInvalidSubGeom )
   : QgsGeometryEngine( geometry )
   , mGeos( nullptr )
   , mPrecision( precision )
 {
-  cacheGeos();
+  cacheGeos( allowInvalidSubGeom );
 }
 
 QgsGeometry QgsGeos::geometryFromGeos( GEOSGeometry *geos )
@@ -246,7 +246,7 @@ void QgsGeos::geometryChanged()
 {
   mGeos.reset();
   mGeosPrepared.reset();
-  cacheGeos();
+  cacheGeos( false );
 }
 
 void QgsGeos::prepareGeometry()
@@ -262,7 +262,7 @@ void QgsGeos::prepareGeometry()
   }
 }
 
-void QgsGeos::cacheGeos() const
+void QgsGeos::cacheGeos( bool allowInvalidSubGeom ) const
 {
   if ( mGeos )
   {
@@ -274,7 +274,7 @@ void QgsGeos::cacheGeos() const
     return;
   }
 
-  mGeos = asGeos( mGeometry, mPrecision );
+  mGeos = asGeos( mGeometry, mPrecision, allowInvalidSubGeom );
 }
 
 QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
@@ -1624,7 +1624,7 @@ QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, 
   return QgsPoint( t, x, y, z, m );
 }
 
-geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision )
+geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision, bool allowInvalidSubGeom )
 {
   if ( !geom )
     return nullptr;
@@ -1675,6 +1675,14 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
       geomVector[i] = asGeos( c->geometryN( i ), precision ).release();
+      if ( !allowInvalidSubGeom && !geomVector[i] )
+      {
+        for ( int j = 0; j < i; ++j )
+        {
+          GEOSGeom_destroy_r( geosinit()->ctxt, geomVector[j] );
+        }
+        return nullptr;
+      }
     }
     return createGeosCollection( geosType, geomVector );
   }
