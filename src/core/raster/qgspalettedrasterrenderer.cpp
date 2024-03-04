@@ -42,17 +42,31 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
   : QgsRasterRenderer( input, QStringLiteral( "paletted" ) )
   , mBand( bandNumber )
 {
-  for ( const Class &klass : std::as_const( classes ) )
+  if ( classes.size() < 50 )
   {
-    MultiValueClassData::iterator it = std::find_if( mMultiValueClassData.begin(), mMultiValueClassData.end(), [&klass]( const MultiValueClass & val ) -> bool
+    for ( const Class &klass : std::as_const( classes ) )
     {
-      return val.label == klass.label && val.color == klass.color ;
-    } );
-    if ( it != mMultiValueClassData.end() )
-    {
-      it->values.push_back( klass.value );
+      MultiValueClassData::iterator it = std::find_if( mMultiValueClassData.begin(), mMultiValueClassData.end(), [&klass]( const MultiValueClass & val ) -> bool
+      {
+        return val.label == klass.label && val.color == klass.color ;
+      } );
+      if ( it != mMultiValueClassData.end() )
+      {
+        it->values.push_back( klass.value );
+      }
+      else
+      {
+        mMultiValueClassData.push_back( MultiValueClass{ { klass.value }, klass.color, klass.label } );
+      }
     }
-    else
+  }
+  else
+  {
+    // don't try to condense classes for a large number of classes, we have a n x n cost in the logic above and it's
+    // too slow!
+    // see https://github.com/qgis/QGIS/issues/56652
+    mMultiValueClassData.reserve( classes.size() );
+    for ( const Class &klass : std::as_const( classes ) )
     {
       mMultiValueClassData.push_back( MultiValueClass{ { klass.value }, klass.color, klass.label } );
     }
