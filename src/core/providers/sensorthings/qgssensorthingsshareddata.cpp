@@ -38,6 +38,8 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   mGeometryField = QgsSensorThingsUtils::geometryFieldForEntityType( mEntityType );
   // use initial value of maximum page size as default
   mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), mMaximumPageSize ).toInt();
+  // will default to 0 if not specified, i.e. no limit
+  mFeatureLimit = uriParts.value( QStringLiteral( "featureLimit" ) ).toInt();
   mFilterExtent = uriParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
   mSubsetString = uriParts.value( QStringLiteral( "sql" ) ).toString();
 
@@ -194,6 +196,8 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
       }
 
       mFeatureCount = rootContent["@iot.count"].get<long long>();
+      if ( mFeatureLimit > 0 && mFeatureCount > mFeatureLimit )
+        mFeatureCount = mFeatureLimit;
     }
     catch ( const json::parse_error &ex )
     {
@@ -212,7 +216,9 @@ QString QgsSensorThingsSharedData::subsetString() const
 bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mHasCachedAllFeatures || ( mFeatureCount > 0 && mCachedFeatures.size() == mFeatureCount );
+  return mHasCachedAllFeatures
+         || ( mFeatureCount > 0 && mCachedFeatures.size() == mFeatureCount )
+         || ( mFeatureLimit > 0 && mCachedFeatures.size() >= mFeatureLimit );
 }
 
 bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
@@ -235,7 +241,12 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   if ( mNextPage.isEmpty() )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
-    mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize );
+
+    int thisPageSize = mMaximumPageSize;
+    if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > mFeatureLimit )
+      thisPageSize = mFeatureLimit - mCachedFeatures.size();
+
+    mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( thisPageSize );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
     const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
     const QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
@@ -282,7 +293,24 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
   if ( !filterString.isEmpty() )
     filterString = QStringLiteral( "&$filter=" ) + filterString;
-  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$top=%2&$count=false%3" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ).arg( filterString );
+  int thisPageSize = mMaximumPageSize;
+  QString queryUrl;
+  if ( !thisPage.isEmpty() )
+  {
+    queryUrl = thisPage;
+    const thread_local QRegularExpression topRe( QStringLiteral( "\\$top=\\d+" ) );
+    const QRegularExpressionMatch match = topRe.match( queryUrl );
+    if ( match.hasMatch() )
+    {
+      if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > mFeatureLimit )
+        thisPageSize = mFeatureLimit - mCachedFeatures.size();
+      queryUrl = queryUrl.left( match.capturedStart( 0 ) ) + QStringLiteral( "$top=%1" ).arg( thisPageSize ) + queryUrl.mid( match.capturedEnd( 0 ) );
+    }
+  }
+  else
+  {
+    queryUrl = QStringLiteral( "%1?$top=%2&$count=false%3" ).arg( mEntityBaseUri ).arg( thisPageSize ).arg( filterString );
+  }
 
   if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
   {
@@ -646,10 +674,13 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               mFetchedFeatureExtent.combineExtentWith( feature.geometry().boundingBox() );
 
               fetchedFeatureCallback( feature );
+
+              if ( mFeatureLimit > 0 && mFeatureLimit <= mCachedFeatures.size() )
+                break;
             }
             locker.unlock();
 
-            if ( rootContent.contains( "@iot.nextLink" ) )
+            if ( rootContent.contains( "@iot.nextLink" ) && ( mFeatureLimit == 0 || mFeatureLimit > mCachedFeatures.size() ) )
             {
               nextPage = QString::fromStdString( rootContent["@iot.nextLink"].get<std::string>() );
             }

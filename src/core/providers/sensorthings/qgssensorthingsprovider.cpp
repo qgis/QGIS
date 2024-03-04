@@ -364,6 +364,13 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
     components.insert( QStringLiteral( "pageSize" ), maxPageSizeParam );
   }
 
+  ok = false;
+  const int featureLimitParam = dsUri.param( QStringLiteral( "featureLimit" ) ).toInt( &ok );
+  if ( ok )
+  {
+    components.insert( QStringLiteral( "featureLimit" ), featureLimitParam );
+  }
+
   switch ( QgsWkbTypes::geometryType( dsUri.wkbType() ) )
   {
     case Qgis::GeometryType::Point:
@@ -444,6 +451,13 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   if ( ok )
   {
     dsUri.setParam( QStringLiteral( "pageSize" ), QString::number( maxPageSizeParam ) );
+  }
+
+  ok = false;
+  const int featureLimitParam = parts.value( QStringLiteral( "featureLimit" ) ).toInt( &ok );
+  if ( ok )
+  {
+    dsUri.setParam( QStringLiteral( "featureLimit" ), QString::number( featureLimitParam ) );
   }
 
   const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();

@@ -82,6 +82,7 @@ class QgsSensorThingsSharedData
 
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
 
+    int mFeatureLimit = 0;
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QString mGeometryField;
     QgsFields mFields;
