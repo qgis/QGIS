@@ -582,6 +582,23 @@ void TestQgsMapSettings::testExpressionContext()
 
   QCOMPARE( r.toString(), QStringLiteral( "EPSG:7030" ) );
 
+  e = QgsExpression( QStringLiteral( "@map_z_range_lower" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_z_range_upper" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
+  ms.setZRange( QgsDoubleRange( 0.5, 100.5 ) );
+  c = QgsExpressionContext();
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+  e = QgsExpression( QStringLiteral( "@map_z_range_lower" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 0.5 );
+  e = QgsExpression( QStringLiteral( "@map_z_range_upper" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 100.5 );
+
   e = QgsExpression( QStringLiteral( "@map_start_time" ) );
   r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
