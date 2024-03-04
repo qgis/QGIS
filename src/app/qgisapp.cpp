@@ -12381,11 +12381,13 @@ void QgisApp::legendGroupSetWmsData()
   dlg->setGroupShortName( currentGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString() );
   dlg->setGroupTitle( currentGroup->customProperty( QStringLiteral( "wmsTitle" ) ).toString() );
   dlg->setGroupAbstract( currentGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString() );
+  dlg->setAlwaysExpose( currentGroup->customProperty( QStringLiteral( "wmsAlwaysExpose" ) ).toBool() );
   if ( dlg->exec() )
   {
     currentGroup->setCustomProperty( QStringLiteral( "wmsShortName" ), dlg->groupShortName() );
     currentGroup->setCustomProperty( QStringLiteral( "wmsTitle" ), dlg->groupTitle() );
     currentGroup->setCustomProperty( QStringLiteral( "wmsAbstract" ), dlg->groupAbstract() );
+    currentGroup->setCustomProperty( QStringLiteral( "wmsAlwaysExpose" ), dlg->groupAlwaysExpose() );
   }
   delete dlg;
 }

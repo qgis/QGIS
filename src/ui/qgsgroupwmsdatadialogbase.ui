@@ -30,11 +30,10 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
@@ -43,10 +42,24 @@
    </item>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mShortNameLabel">
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="mTitleLineEdit">
+       <property name="placeholderText">
+        <string>The title is for the benefit of humans to identify group layer.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QTextEdit" name="mAbstractTextEdit">
+       <property name="toolTip">
+        <string>The abstract is a descriptive narrative providing more information about the group layer.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mTitleLabel">
        <property name="text">
-        <string>Short name</string>
+        <string>Title</string>
        </property>
       </widget>
      </item>
@@ -60,17 +73,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="mTitleLineEdit">
-       <property name="placeholderText">
-        <string>The title is for the benefit of humans to identify group layer.</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mTitleLabel">
+     <item row="0" column="0">
+      <widget class="QLabel" name="mShortNameLabel">
        <property name="text">
-        <string>Title</string>
+        <string>Short name</string>
        </property>
       </widget>
      </item>
@@ -81,10 +87,10 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QTextEdit" name="mAbstractTextEdit">
-       <property name="toolTip">
-        <string>The abstract is a descriptive narrative providing more information about the group layer.</string>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="mAlwaysExpose">
+       <property name="text">
+        <string>Always export, even if the group is empty</string>
        </property>
       </widget>
      </item>

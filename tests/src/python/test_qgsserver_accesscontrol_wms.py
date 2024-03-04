@@ -62,6 +62,27 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<Name>Country</Name>") != -1,
             f"Unexpected Country layer in GetCapabilities\n{response}")
 
+    def test_empty_group_getcapabilities(self):
+        """ Test empty groups in GetCapabilities. """
+        query_string = self._query_string({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetCapabilities"
+        })
+
+        name = "empty group excluded"
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find(f'<Name>{name}</Name>') == -1,
+            f"No '{name}' layer in GetCapabilities\n{response}")
+
+        name = "empty group included"
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find(f'<Name>{name}</Name>') != -1,
+            f"No '{name}' layer in GetCapabilities\n{response}")
+
     def test_wms_getprojectsettings(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),

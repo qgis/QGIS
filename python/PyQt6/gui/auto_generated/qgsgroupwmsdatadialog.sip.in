@@ -35,6 +35,13 @@ Returns group WMS short name
 Returns group WMS abstract
 %End
 
+    bool groupAlwaysExpose();
+%Docstring
+If the group is always exposed on QGIS Server, even if it's empty.
+
+.. versionadded:: 3.38
+%End
+
 
   public slots:
     void setGroupTitle( const QString &title );
@@ -50,6 +57,13 @@ Sets group WMS short name
     void setGroupAbstract( const QString &abstract );
 %Docstring
 Sets group WMS abstract
+%End
+
+    void setAlwaysExpose( bool alwaysExpose );
+%Docstring
+Set if the group is always exposed on QGIS Server, even if it's empty.
+
+.. versionadded:: 3.38
 %End
 
 

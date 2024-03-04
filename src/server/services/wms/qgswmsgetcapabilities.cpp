@@ -1021,7 +1021,7 @@ namespace QgsWms
           handleLayersFromTreeGroup( doc, layerElem, serverIface, project, request, treeGroupChild, wmsLayerInfos, projectSettings );
 
           // Check if child layer elements have been added
-          if ( layerElem.elementsByTagName( QStringLiteral( "Layer" ) ).length() == 0 )
+          if ( layerElem.elementsByTagName( QStringLiteral( "Layer" ) ).length() == 0 && ! treeGroupChild->customProperty( QStringLiteral( "wmsAlwaysExpose" ) ).toBool() )
           {
             continue;
           }

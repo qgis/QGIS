@@ -56,3 +56,13 @@ void QgsGroupWmsDataDialog::setGroupAbstract( const QString &abstract )
 {
   mAbstractTextEdit->setPlainText( abstract );
 }
+
+bool QgsGroupWmsDataDialog::groupAlwaysExpose()
+{
+  return mAlwaysExpose->isChecked();
+}
+
+void QgsGroupWmsDataDialog::setAlwaysExpose( bool alwaysExpose )
+{
+  mAlwaysExpose->setChecked( alwaysExpose );
+}

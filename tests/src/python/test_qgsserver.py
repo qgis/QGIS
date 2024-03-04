@@ -192,6 +192,11 @@ class QgsServerTestBase(QgisTestCase):
         self.temporary_dir.cleanup()
         super().tearDownClass()
 
+    @classmethod
+    def _query_string(cls, data: dict) -> str:
+        """ Build a query string. """
+        return urllib.parse.urlencode(data)
+
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
         return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')

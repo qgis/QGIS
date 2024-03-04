@@ -43,6 +43,13 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
     //! Returns group WMS abstract
     QString groupAbstract();
 
+    /**
+     * If the group is always exposed on QGIS Server, even if it's empty.
+     *
+     * \since QGIS 3.38
+     */
+    bool groupAlwaysExpose();
+
 
   public slots:
     //! Sets group WMS title
@@ -53,6 +60,13 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
     //! Sets group WMS abstract
     void setGroupAbstract( const QString &abstract );
+
+    /**
+     * Set if the group is always exposed on QGIS Server, even if it's empty.
+     *
+     * \since QGIS 3.38
+     */
+    void setAlwaysExpose( bool alwaysExpose );
 
 
   private:
