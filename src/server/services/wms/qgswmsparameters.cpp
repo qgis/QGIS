@@ -1360,7 +1360,7 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::highlightLabelString() const
   {
-    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELSTRING ).toStringList( ';' );
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELSTRING ).toStringList( ';', false );
   }
 
   QStringList QgsWmsParameters::highlightLabelSize() const
