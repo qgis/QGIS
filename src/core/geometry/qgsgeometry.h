@@ -991,7 +991,6 @@ class CORE_EXPORT QgsGeometry
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
-     * fix this bug?
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
