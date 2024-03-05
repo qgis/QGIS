@@ -93,6 +93,7 @@ email                : sherman at mrcc.com
 #include "qgsvectortilelayer.h"
 #include "qgsscreenhelper.h"
 #include "qgs2dmapcontroller.h"
+#include "qgsoverlaywidgetlayout.h"
 
 /**
  * \ingroup gui
@@ -130,6 +131,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   mScene = new QGraphicsScene();
+  mLayout = new QgsOverlayWidgetLayout();
+  setLayout( mLayout );
+
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -281,6 +285,10 @@ QgsMapCanvas::~QgsMapCanvas()
   delete mCache;
 }
 
+void QgsMapCanvas::addOverlayWidget( QWidget *widget, Qt::Edge edge )
+{
+  mLayout->addWidget( widget, edge );
+}
 
 void QgsMapCanvas::cancelJobs()
 {

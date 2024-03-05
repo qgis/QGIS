@@ -73,6 +73,7 @@ class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 class QgsRenderedItemResults;
 class QgsTemporaryCursorOverride;
+class QgsOverlayWidgetLayout;
 
 class QgsTemporalController;
 class QgsScreenHelper;
@@ -110,6 +111,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsMapCanvas() override;
+
+    /**
+     * Adds an overlay \a widget to the layout, which will be bound to the specified \a edge.
+     *
+     * The widget will always float above the map canvas.
+     *
+     * \note Widgets on the left and right edges will always be positioned first, with
+     * top and bottom edge widgets expanding to take the remaining horizontal space.
+     *
+     * \since QGIS 3.38
+     */
+    void addOverlayWidget( QWidget *widget SIP_TRANSFER, Qt::Edge edge );
 
     /**
      * Returns the magnification factor
@@ -1273,6 +1286,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
         QgsMapCanvas *mCanvas;
         double mLockedScale;
     };
+
+    QgsOverlayWidgetLayout *mLayout = nullptr;
 
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;

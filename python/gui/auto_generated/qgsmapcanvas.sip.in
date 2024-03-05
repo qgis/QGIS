@@ -47,6 +47,20 @@ Constructor
 
     ~QgsMapCanvas();
 
+    void addOverlayWidget( QWidget *widget /Transfer/, Qt::Edge edge );
+%Docstring
+Adds an overlay ``widget`` to the layout, which will be bound to the specified ``edge``.
+
+The widget will always float above the map canvas.
+
+.. note::
+
+   Widgets on the left and right edges will always be positioned first, with
+   top and bottom edge widgets expanding to take the remaining horizontal space.
+
+.. versionadded:: 3.38
+%End
+
     double magnificationFactor() const;
 %Docstring
 Returns the magnification factor
