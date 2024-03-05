@@ -589,8 +589,8 @@ void QgsProjectionSelectionWidget::selectCrs()
       mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs, StandardCoordinateReferenceSystemsModel::Role::RoleOption ) );
       mCrsComboBox->blockSignals( false );
       const QgsCoordinateReferenceSystem crs = dlg.crs();
+      // setCrs will emit crsChanged for us
       setCrs( crs );
-      emit crsChanged( crs );
     }
     else
     {
