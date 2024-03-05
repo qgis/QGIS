@@ -186,10 +186,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
     transparentObjectsRenderStateSet->addRenderState( blendEquation );
 
     Qt3DRender::QBlendEquationArguments *blenEquationArgs = new Qt3DRender::QBlendEquationArguments;
-    blenEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::Blending::One );
-    blenEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
-    blenEquationArgs->setSourceAlpha( Qt3DRender::QBlendEquationArguments::Blending::One );
-    blenEquationArgs->setDestinationAlpha( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
+    blenEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::Blending::SourceAlpha );
+    blenEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSourceAlpha );
     transparentObjectsRenderStateSet->addRenderState( blenEquationArgs );
   }
 
