@@ -719,21 +719,17 @@ void QgsProjectionSelectionWidget::setShowAccuracyWarnings( bool show )
 void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
   const QgsCoordinateReferenceSystem crs = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
-  switch ( static_cast< CrsOption >( mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption ).toInt() ) )
+  const QVariant optionData = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption );
+  if ( !optionData.isValid() || static_cast< CrsOption >( optionData.toInt() ) != QgsProjectionSelectionWidget::CrsNotSet )
   {
-    case QgsProjectionSelectionWidget::Invalid:
-    case QgsProjectionSelectionWidget::LayerCrs:
-    case QgsProjectionSelectionWidget::ProjectCrs:
-    case QgsProjectionSelectionWidget::DefaultCrs:
-    case QgsProjectionSelectionWidget::RecentCrs:
-    case QgsProjectionSelectionWidget::CurrentCrs:
-      emit crsChanged( crs );
-      break;
-
-    case QgsProjectionSelectionWidget::CrsNotSet:
-      emit cleared();
-      emit crsChanged( QgsCoordinateReferenceSystem() );
-      break;
+    // RoleOption is only available for items from the standard coordinate reference system model, but we
+    // are using a combined model which also has items from QgsRecentCoordinateReferenceSystemsModel
+    emit crsChanged( crs );
+  }
+  else
+  {
+    emit cleared();
+    emit crsChanged( QgsCoordinateReferenceSystem() );
   }
   updateTooltip();
 }

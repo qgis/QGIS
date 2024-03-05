@@ -190,6 +190,23 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
         self.assertEqual(cb.itemText(4), 'EPSG:28356 - GDA94 / MGA zone 56')
 
+        spy = QSignalSpy(w.crsChanged)
+        cb.setCurrentIndex(1)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0], QgsCoordinateReferenceSystem('EPSG:3113'))
+        cb.setCurrentIndex(0)
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(spy[-1][0], QgsCoordinateReferenceSystem('EPSG:4326'))
+        cb.setCurrentIndex(2)
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(spy[-1][0], QgsCoordinateReferenceSystem('EPSG:4326'))
+        cb.setCurrentIndex(3)
+        self.assertEqual(len(spy), 4)
+        self.assertEqual(spy[-1][0], QgsCoordinateReferenceSystem('EPSG:3111'))
+        cb.setCurrentIndex(4)
+        self.assertEqual(len(spy), 5)
+        self.assertEqual(spy[-1][0], QgsCoordinateReferenceSystem('EPSG:28356'))
+
     def testFilters(self):
         registry = QgsApplication.coordinateReferenceSystemRegistry()
         registry.clearRecent()
