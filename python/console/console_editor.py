@@ -26,6 +26,7 @@ import pyclbr
 import re
 import sys
 import tempfile
+from typing import Optional
 from functools import partial
 from operator import itemgetter
 from pathlib import Path
@@ -61,7 +62,7 @@ class Editor(QgsCodeEditorPython):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-        self.path = None
+        self.path: Optional[str] = None
         #  recent modification time
         self.lastModified = 0
 
@@ -454,24 +455,23 @@ class Editor(QgsCodeEditorPython):
         self.setModified(False)
         self.recolor()
 
-    def save(self, filename=None):
+    def save(self, filename: Optional[str] = None):
         if self.isReadOnly():
             return
 
         if QgsSettings().value("pythonConsole/formatOnSave", False, type=bool):
             self.reformatCode()
 
-        tabwidget = self.tabwidget
-        index = tabwidget.indexOf(self.parent)
+        index = self.tabwidget.indexOf(self.parent)
         if filename:
             self.path = filename
-        if self.path is None:
+        if not self.path:
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
             self.path, filter = QFileDialog().getSaveFileName(self,
                                                               saveTr,
-                                                              os.path.join(folder, tabwidget.tabText(index).replace('*', '') + '.py'),
+                                                              os.path.join(folder, self.tabwidget.tabText(index).replace('*', '') + '.py'),
                                                               "Script file (*.py)")
             # If the user didn't select a file, abort the save operation
             if not self.path:
@@ -486,15 +486,15 @@ class Editor(QgsCodeEditorPython):
         # Need to use newline='' to avoid adding extra \r characters on Windows
         with open(self.path, 'w', encoding='utf-8', newline='') as f:
             f.write(self.text())
-        tabwidget.setTabTitle(index, Path(self.path).name)
-        tabwidget.setTabToolTip(index, self.path)
+        self.tabwidget.setTabTitle(index, Path(self.path).name)
+        self.tabwidget.setTabToolTip(index, self.path)
         self.setModified(False)
         self.pythonconsole.saveFileButton.setEnabled(False)
         self.lastModified = QFileInfo(self.path).lastModified()
         self.pythonconsole.updateTabListScript(self.path, action='append')
-        tabwidget.listObject(self.parent)
-        lastDirPath = str(Path(self.path).parent)
-        QgsSettings().setValue("pythonConsole/lastDirPath", lastDirPath)
+        self.tabwidget.listObject(self.parent)
+        QgsSettings().setValue("pythonConsole/lastDirPath",
+                               Path(self.path).parent.as_posix())
 
     def event(self, e):
         """ Used to override the Application shortcuts when the editor has focus """
