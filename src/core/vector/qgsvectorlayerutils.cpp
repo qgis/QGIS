@@ -1250,7 +1250,7 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
     // So try to look at another field whose name would end with _name
     // And fallback to using the "id" field that should always be filled.
     if ( candidateName == QLatin1String( "gml_name" ) &&
-         fields.indexOf( QStringLiteral( "id" ) ) >= 0 )
+         fields.indexOf( QLatin1String( "id" ) ) >= 0 )
     {
       candidateName.clear();
       // Try to find a field ending with "_name", which is not "gml_name"

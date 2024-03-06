@@ -286,7 +286,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
 
   if ( !skippedLayers.isEmpty() )
   {
-    mFeedbackMessage = QObject::tr( "The following empty layers were skipped: %1" ).arg( skippedLayers.join( QStringLiteral( ", " ) ) );
+    mFeedbackMessage = QObject::tr( "The following empty layers were skipped: %1" ).arg( skippedLayers.join( QLatin1String( ", " ) ) );
   }
 
   return ExportResult::Success;

@@ -287,7 +287,7 @@ QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
   if ( nonEmptyFilters.size() == 1 )
     return nonEmptyFilters.at( 0 );
 
-  return QStringLiteral( "(" ) + nonEmptyFilters.join( QStringLiteral( ") and (" ) ) + QStringLiteral( ")" );
+  return QStringLiteral( "(" ) + nonEmptyFilters.join( QLatin1String( ") and (" ) ) + QStringLiteral( ")" );
 }
 
 QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback, const QString &authCfg )

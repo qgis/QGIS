@@ -2093,7 +2093,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
           //   field_max_occurs (Integer) = 1
           //   field_category (String) = REGULAR
 
-          const auto pos_gmlPoint = qFieldXPath.indexOf( QStringLiteral( "/gml:Point," ) );
+          const auto pos_gmlPoint = qFieldXPath.indexOf( QLatin1String( "/gml:Point," ) );
           qFieldXPath.resize( pos_gmlPoint );
           geomType = Qgis::WkbType::Unknown;
         }

@@ -1125,7 +1125,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   // make sure the other part of the ring isn't present in this feature. We may have OTHER parts in this feature though, depending on the GDAL version!
   for ( int i = 1; i < collectionResult->numGeometries(); ++i )
   {
-    QVERIFY( qgsgeometry_cast< const QgsPolygon * >( collectionResult->geometryN( i ) )->exteriorRing()->asWkt( 2 ) != QStringLiteral( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );
+    QVERIFY( qgsgeometry_cast< const QgsPolygon * >( collectionResult->geometryN( i ) )->exteriorRing()->asWkt( 2 ) != QLatin1String( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );
   }
   testContext.second[errs3[0]->layerId()]->getFeature( nextId, f );
   QCOMPARE( qgsgeometry_cast< const QgsPolygon * >( f.geometry().constGet() )->exteriorRing()->asWkt( 2 ), QStringLiteral( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );

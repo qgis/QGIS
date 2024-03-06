@@ -1615,7 +1615,7 @@ QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, Q
   {
     case QVariant::String:
     {
-      const QString escaped = variant.toString().replace( '\\', QStringLiteral( "\\\\" ) ).replace( '"', QStringLiteral( "\\\"" ) );
+      const QString escaped = variant.toString().replace( '\\', QLatin1String( "\\\\" ) ).replace( '"', QLatin1String( "\\\"" ) );
       return QString( QUrl::toPercentEncoding( escaped, "'" ) );
     }
 

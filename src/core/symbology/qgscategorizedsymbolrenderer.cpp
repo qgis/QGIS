@@ -740,9 +740,9 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
     }
     else if ( valueType == QLatin1String( "bool" ) )
     {
-      if ( value.toLower() == QStringLiteral( "false" ) )
+      if ( value.toLower() == QLatin1String( "false" ) )
         return false;
-      if ( value.toLower() == QStringLiteral( "true" ) )
+      if ( value.toLower() == QLatin1String( "true" ) )
         return true;
     }
     else if ( valueType == QLatin1String( "NULL" ) )

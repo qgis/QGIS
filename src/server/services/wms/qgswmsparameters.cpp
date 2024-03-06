@@ -2116,7 +2116,7 @@ namespace QgsWms
     if ( mStr.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) ||
          mStr.startsWith( QLatin1String( "on" ), Qt::CaseInsensitive ) ||
          mStr.startsWith( QLatin1String( "yes" ), Qt::CaseInsensitive ) ||
-         mStr.startsWith( QLatin1String( "1" ) ) )
+         mStr.startsWith( QLatin1Char( '1' ) ) )
       return true;
     else
       return false;

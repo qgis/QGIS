@@ -2670,7 +2670,7 @@ namespace QgsWms
 
               featureInfoString.append( featureInfoAttributeString );
             }
-            else if ( name == QStringLiteral( "maptip" ) )
+            else if ( name == QLatin1String( "maptip" ) )
             {
               featureInfoString.append( QStringLiteral( R"HTML(
       %1)HTML" ).arg( value ) );
@@ -2726,7 +2726,7 @@ namespace QgsWms
 
               featureInfoString.append( featureInfoAttributeString );
             }
-            else if ( name == QStringLiteral( "maptip" ) )
+            else if ( name == QLatin1String( "maptip" ) )
             {
               featureInfoString.append( QStringLiteral( R"HTML(
       %1)HTML" ).arg( value ) );
