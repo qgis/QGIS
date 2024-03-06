@@ -78,6 +78,10 @@ class CORE_EXPORT QgsGpsDetector : public QObject
 
     void detectionFailed();
 
+  private slots:
+
+    void connectionTimeout();
+
   private:
     int mPortIndex = 0;
     int mBaudIndex = -1;
