@@ -17,6 +17,7 @@
 
 #include "qgsnmeaconnection.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include <QIODevice>
 #include <QApplication>
@@ -60,15 +61,20 @@ void QgsNmeaConnection::parseData()
 
   if ( numBytes >= 6 )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Got %1 NMEA bytes" ).arg( numBytes ), QObject::tr( "GPS" ), Qgis::Info );
+    QgsMessageLog::logMessage( QObject::tr( "Current NMEA device status is %1" ).arg( mStatus ), QObject::tr( "GPS" ), Qgis::Info );
     if ( mStatus != GPSDataReceived )
     {
+      QgsMessageLog::logMessage( QObject::tr( "Setting device status to DataReceived" ), QObject::tr( "GPS" ), Qgis::Info );
       mStatus = DataReceived;
     }
 
     //append new data to the remaining results from last parseData() call
     mStringBuffer.append( mSource->read( numBytes ) );
     processStringBuffer();
+    QgsMessageLog::logMessage( QObject::tr( "Processed buffer" ), QObject::tr( "GPS" ), Qgis::Info );
 
+    QgsMessageLog::logMessage( QObject::tr( "New status is %1" ).arg( mStatus ), QObject::tr( "GPS" ), Qgis::Info );
     if ( mStatus == GPSDataReceived )
     {
       emit stateChanged( mLastGPSInformation );
