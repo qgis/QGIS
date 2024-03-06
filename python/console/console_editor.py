@@ -923,7 +923,8 @@ class EditorTabWidget(QTabWidget):
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget and tabWidget.path:
-            QgsSettings().setValue("pythonConsole/lastDirPath", tabWidget.path)
+            QgsSettings().setValue("pythonConsole/lastDirPath",
+                                   Path(tabWidget.path).parent.as_posix())
 
     def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
         currWidget = self.currentWidget()
