@@ -44,7 +44,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterBoolean)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
-settings_method_key = "/qgis/digitizing/validate_geometries"
+settings_method_key = "/digitizing/validate-geometries"
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
