@@ -21,7 +21,7 @@
 #include "qgsgpsdconnection.h"
 #include "qgssettingstree.h"
 #include "qgssettingsentryenumflag.h"
-
+#include "qgsmessagelog.h"
 
 #if defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -72,19 +72,30 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName )
 
   if ( portName.isEmpty() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Attempting to autodetect GPS connection" ), QObject::tr( "GPS" ), Qgis::Info );
     mPortList = availablePorts();
   }
   else
   {
+    QgsMessageLog::logMessage( QObject::tr( "Attempting GPS connection for %1" ).arg( portName ), QObject::tr( "GPS" ), Qgis::Info );
     mPortList << QPair<QString, QString>( portName, portName );
   }
 }
 
-QgsGpsDetector::~QgsGpsDetector() = default;
+QgsGpsDetector::~QgsGpsDetector()
+{
+  QgsMessageLog::logMessage( QObject::tr( "Destroying GPS detector" ), QObject::tr( "GPS" ), Qgis::Info );
+}
 
 void QgsGpsDetector::advance()
 {
-  mConn.reset();
+  if ( mConn )
+  {
+    disconnect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
+    mConn.reset();
+  }
+
+  QgsMessageLog::logMessage( QObject::tr( "Trying..." ), QObject::tr( "GPS" ), Qgis::Info );
 
   while ( !mConn )
   {
@@ -97,10 +108,13 @@ void QgsGpsDetector::advance()
 
     if ( mPortIndex == mPortList.size() )
     {
+      QgsMessageLog::logMessage( QObject::tr( "No more devices to try!" ), QObject::tr( "GPS" ), Qgis::Critical );
       emit detectionFailed();
       deleteLater();
       return;
     }
+
+    QgsMessageLog::logMessage( QObject::tr( "Attempting connection to device %1 @ %2" ).arg( mPortIndex ).arg( mBaudIndex ), QObject::tr( "GPS" ), Qgis::Info );
 
     if ( mPortList.at( mPortIndex ).first.contains( ':' ) )
     {
@@ -109,14 +123,17 @@ void QgsGpsDetector::advance()
       QStringList gpsParams = mPortList.at( mPortIndex ).first.split( ':' );
 
       Q_ASSERT( gpsParams.size() >= 3 );
+      QgsMessageLog::logMessage( QObject::tr( "Connecting to GPSD device %1" ).arg( gpsParams.join( ',' ) ), QObject::tr( "GPS" ), Qgis::Info );
 
       mConn = std::make_unique< QgsGpsdConnection >( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
     else if ( mPortList.at( mPortIndex ).first.contains( QLatin1String( "internalGPS" ) ) )
     {
 #if defined(QT_POSITIONING_LIB)
+      QgsMessageLog::logMessage( QObject::tr( "Connecting to QtLocation service device" ), QObject::tr( "GPS" ), Qgis::Info );
       mConn = std::make_unique< QgsQtLocationConnection >();
 #else
+      QgsMessageLog::logMessage( QObject::tr( "QT_POSITIONING_LIB not found and mPortList matches internalGPS, this should never happen" ), QObject::tr( "GPS" ), Qgis::Critical );
       qWarning( "QT_POSITIONING_LIB not found and mPortList matches internalGPS, this should never happen" );
 #endif
     }
@@ -132,45 +149,72 @@ void QgsGpsDetector::advance()
       serial->setDataBits( QgsGpsDetector::settingsGpsDataBits->value() );
       serial->setStopBits( QgsGpsDetector::settingsGpsStopBits->value() );
 
+      QgsMessageLog::logMessage( QObject::tr( "Connecting to GPSD device %1 (@ %2)" ).arg( mPortList.at( mPortIndex ).first ).arg( mBaudList[ mBaudIndex ] ), QObject::tr( "GPS" ), Qgis::Info );
+
       if ( serial->open( QIODevice::ReadOnly ) )
       {
+        QgsMessageLog::logMessage( QObject::tr( "Successfully opened, have a port connection ready" ), QObject::tr( "GPS" ), Qgis::Info );
         mConn = std::make_unique< QgsNmeaConnection >( serial.release() );
       }
+      else
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Serial port could NOT be opened" ), QObject::tr( "GPS" ), Qgis::Critical );
+      }
 #else
+      QgsMessageLog::logMessage( QObject::tr( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" ), QObject::tr( "GPS" ), Qgis::Critical );
       qWarning( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" );
 #endif
     }
   }
 
+  QgsMessageLog::logMessage( QObject::tr( "Have a connection, now listening for messages" ), QObject::tr( "GPS" ), Qgis::Info );
+
   connect( mConn.get(), &QgsGpsConnection::stateChanged, this, static_cast < void ( QgsGpsDetector::* )( const QgsGpsInformation & ) >( &QgsGpsDetector::detected ) );
   connect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
 
   // leave 2s to pickup a valid string
-  QTimer::singleShot( 2000, this, &QgsGpsDetector::advance );
+  QTimer::singleShot( 2000, this, &QgsGpsDetector::connectionTimeout );
 }
 
 void QgsGpsDetector::detected( const QgsGpsInformation &info )
 {
   Q_UNUSED( info )
 
+  QgsMessageLog::logMessage( QObject::tr( "Detected information" ), QObject::tr( "GPS" ), Qgis::Info );
+
   if ( !mConn )
   {
     // advance if connection was destroyed
+
+    QgsMessageLog::logMessage( QObject::tr( "Got information, but CONNECTION WAS DESTROYED EXTERNALLY!" ), QObject::tr( "GPS" ), Qgis::Critical );
     advance();
   }
   else if ( mConn->status() == QgsGpsConnection::GPSDataReceived )
   {
     // signal detected
+    QgsMessageLog::logMessage( QObject::tr( "Connection status IS GPSDataReceived" ), QObject::tr( "GPS" ), Qgis::Info );
 
     // let's hope there's a single, unique connection to this signal... otherwise... boom
     emit detected( mConn.release() );
 
     deleteLater();
   }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Connection status is NOT GPSDataReceived. It is %1" ).arg( mConn->status() ), QObject::tr( "GPS" ), Qgis::Critical );
+  }
+}
+
+void QgsGpsDetector::connectionTimeout()
+{
+  QgsMessageLog::logMessage( QObject::tr( "No data received within max listening time" ), QObject::tr( "GPS" ), Qgis::Info );
+  advance();
 }
 
 void QgsGpsDetector::connDestroyed( QObject *obj )
 {
+  QgsMessageLog::logMessage( QObject::tr( "CONNECTION WAS DESTROYED EXTERNALLY!" ), QObject::tr( "GPS" ), Qgis::Critical );
+
   // WTF? This whole class needs re-writing...
   if ( obj == mConn.get() )
   {
