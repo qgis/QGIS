@@ -54,6 +54,13 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   }
          );
 
+  connect( mUseCompleter, &QCheckBox::stateChanged, this,  [ = ]( int state )
+  {
+    mCompleterMatchFromStart->setEnabled( static_cast<Qt::CheckState>( state ) == Qt::CheckState::Checked );
+  } );
+
+  mCompleterMatchFromStart->setEnabled( mUseCompleter->isChecked() );
+
   connect( mNofColumns, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
 
   layerChanged();
@@ -78,6 +85,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
   cfg.insert( QStringLiteral( "OrderByValue" ), mOrderByValue->isChecked() );
   cfg.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
   cfg.insert( QStringLiteral( "UseCompleter" ), mUseCompleter->isChecked() );
+  cfg.insert( QStringLiteral( "CompleterMatchFromStart" ), mCompleterMatchFromStart->isChecked() );
 
   return cfg;
 }
@@ -100,6 +108,8 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
+  // Default is true for backwards compatibility
+  mCompleterMatchFromStart->setChecked( config.value( QStringLiteral( "CompleterMatchFromStart" ), true ).toBool() );
 }
 
 void QgsValueRelationConfigDlg::layerChanged()
