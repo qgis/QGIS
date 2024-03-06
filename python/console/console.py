@@ -145,8 +145,6 @@ class PythonConsoleWidget(QWidget):
         QWidget.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
-        self.settings = QgsSettings()
-
         self.shell = ShellScintilla(self)
         self.setFocusProxy(self.shell)
         self.shellOut = ShellOutputScintilla(self)
@@ -310,7 +308,7 @@ class PythonConsoleWidget(QWidget):
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
-        self.objectListButton.setEnabled(self.settings.value("pythonConsole/enableObjectInsp",
+        self.objectListButton.setEnabled(QgsSettings().value("pythonConsole/enableObjectInsp",
                                                              False, type=bool))
         self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg"))
         self.objectListButton.setMenuRole(QAction.MenuRole.PreferencesRole)
@@ -675,7 +673,8 @@ class PythonConsoleWidget(QWidget):
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
     def openScriptFile(self):
-        lastDirPath = self.settings.value("pythonConsole/lastDirPath", QDir.homePath())
+        settings = QgsSettings()
+        lastDirPath = settings.value("pythonConsole/lastDirPath", QDir.homePath())
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList, selected_filter = QFileDialog.getOpenFileNames(
             self, openFileTr, lastDirPath, "Script file (*.py)")
@@ -691,7 +690,7 @@ class PythonConsoleWidget(QWidget):
                     self.tabEditorWidget.newTabEditor(tabName, pyFile)
 
                     lastDirPath = QFileInfo(pyFile).path()
-                    self.settings.setValue("pythonConsole/lastDirPath", pyFile)
+                    settings.setValue("pythonConsole/lastDirPath", pyFile)
                     self.updateTabListScript(pyFile, action='append')
 
     def saveScriptFile(self):
@@ -710,7 +709,7 @@ class PythonConsoleWidget(QWidget):
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.path:
             fileName = self.tabEditorWidget.tabText(index).replace('*', '') + '.py'
-            folder = self.settings.value("pythonConsole/lastDirPath", QDir.homePath())
+            folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:
@@ -776,22 +775,24 @@ class PythonConsoleWidget(QWidget):
                 self.tabListScript.append(script)
         else:
             self.tabListScript = []
-        self.settings.setValue("pythonConsole/tabScripts",
+        QgsSettings().setValue("pythonConsole/tabScripts",
                                self.tabListScript)
 
     def saveSettingsConsole(self):
-        self.settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())
-        self.settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
-        self.settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
+        settings = QgsSettings()
+        settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())
+        settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
+        settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
 
         self.shell.writeHistoryFile()
 
     def restoreSettingsConsole(self):
-        storedTabScripts = self.settings.value("pythonConsole/tabScripts", [])
+        settings = QgsSettings()
+        storedTabScripts = settings.value("pythonConsole/tabScripts", [])
         self.tabListScript = storedTabScripts
-        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole", QByteArray()))
-        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor", QByteArray()))
-        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj", QByteArray()))
+        self.splitter.restoreState(settings.value("pythonConsole/splitterConsole", QByteArray()))
+        self.splitterEditor.restoreState(settings.value("pythonConsole/splitterEditor", QByteArray()))
+        self.splitterObj.restoreState(settings.value("pythonConsole/splitterObj", QByteArray()))
 
 
 if __name__ == '__main__':
