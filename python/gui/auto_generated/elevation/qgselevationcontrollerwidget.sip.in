@@ -1,0 +1,98 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/elevation/qgselevationcontrollerwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsElevationControllerWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for configuring vertical elevation slicing behavior for maps.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgselevationcontrollerwidget.h"
+%End
+  public:
+
+    QgsElevationControllerWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsElevationControllerWidget, with the specified ``parent`` widget.
+%End
+
+    virtual void resizeEvent( QResizeEvent *event );
+
+
+    QgsDoubleRange range() const;
+%Docstring
+Returns the current visible range from the widget.
+
+.. seealso:: :py:func:`setRange`
+
+.. seealso:: :py:func:`rangeChanged`
+%End
+
+    QgsDoubleRange rangeLimits() const;
+%Docstring
+Returns the limits of the elevation range which can be selected by the widget.
+
+.. seealso:: :py:func:`rangeLimits`
+%End
+
+    QgsRangeSlider *slider();
+%Docstring
+Returns a reference to the slider component of the widget.
+%End
+
+    QMenu *menu();
+%Docstring
+Returns a reference to the widget's configuration menu, which can be used
+to add actions to the menu.
+%End
+
+  public slots:
+
+    void setRange( const QgsDoubleRange &range );
+%Docstring
+Sets the current visible ``range`` for the widget.
+
+.. seealso:: :py:func:`range`
+
+.. seealso:: :py:func:`rangeChanged`
+%End
+
+    void setRangeLimits( const QgsDoubleRange &limits );
+%Docstring
+Sets the limits of the elevation range which can be selected by the widget.
+
+.. seealso:: :py:func:`rangeLimits`
+%End
+
+  signals:
+
+    void rangeChanged( const QgsDoubleRange &range );
+%Docstring
+Emitted when the visible range from the widget is changed.
+
+.. seealso:: :py:func:`setRange`
+
+.. seealso:: :py:func:`range`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/elevation/qgselevationcontrollerwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

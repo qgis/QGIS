@@ -233,6 +233,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  elevation/qgselevationcontrollerwidget.cpp
   elevation/qgselevationprofilecanvas.cpp
   elevation/qgselevationprofilelayertreeview.cpp
 
@@ -1197,6 +1198,7 @@ set(QGIS_GUI_HDRS
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
+  elevation/qgselevationcontrollerwidget.h
   elevation/qgselevationprofilecanvas.h
   elevation/qgselevationprofilelayertreeview.h
 
