@@ -1174,6 +1174,21 @@ namespace QgsWfs
 
         fcString = QStringLiteral( "{\"type\": \"FeatureCollection\",\n" );
         fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), prec ) + ", " + qgsDoubleToString( rect->yMinimum(), prec ) + ", " + qgsDoubleToString( rect->xMaximum(), prec ) + ", " + qgsDoubleToString( rect->yMaximum(), prec ) + "],\n";
+
+        const QString srsName {request.serverParameters().value( QStringLiteral( "SRSNAME" ) )};
+        const QgsCoordinateReferenceSystem destinationCrs { srsName.isEmpty( ) ? QStringLiteral( "EPSG:4326" ) : srsName };
+        if ( ! destinationCrs.isValid() )
+        {
+          throw QgsRequestNotWellFormedException( QStringLiteral( "srsName error: '%1' is not valid." ).arg( srsName ) );
+        }
+
+        json value;
+        QgsJsonUtils::addCrsInfo( value, destinationCrs );
+        for ( auto it : value.items() )
+        {
+          fcString += " \"" + QString::fromStdString( it.key() ) + "\": " + QString::fromStdString( it.value().dump() ) + ",\n";
+        }
+
         fcString += QLatin1String( " \"features\": [\n" );
         response.write( fcString.toUtf8() );
       }
