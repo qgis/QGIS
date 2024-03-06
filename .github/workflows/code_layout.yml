@@ -163,6 +163,14 @@ jobs:
         id: changed_files
         with:
           separator: ' '
+          files_ignore: |
+            **/*.sip.in
+            **/*.png
+            **/*.svg
+            **/*.tif*
+            **/*.gpkg
+            **/*.qgz
+            **/*.qgs
       - name: Spell Test
         run: ./scripts/spell_check/check_spelling.sh -r "${{ steps.changed_files.outputs.all_changed_files }}"
 
