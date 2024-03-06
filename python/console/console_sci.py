@@ -288,8 +288,6 @@ class ShellScintilla(QgsCodeEditorPython):
         self.opening = ['(', '{', '[', "'", '"']
         self.closing = [')', '}', ']', "'", '"']
 
-        self.settings = QgsSettings()
-
         self.setHistoryFilePath(
             os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt"))
 
