@@ -874,6 +874,8 @@ class QgsWmsSettings
     bool mSmoothPixmapTransform;
     enum QgsWmsDpiMode mDpiMode;
 
+    QString mFilter;
+
     /**
      * Active sublayers managed by this provider in a draw function, in order from bottom to top
      * (some may not be visible in a draw function, cf. activeSubLayerVisibility)

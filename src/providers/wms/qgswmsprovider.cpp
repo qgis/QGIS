@@ -1298,6 +1298,11 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
     setQueryItem( query, QStringLiteral( "OPACITIES" ), mSettings.mOpacities.join( ',' ) );
   }
 
+  if ( !mSettings.mFilter.isEmpty() )
+  {
+    setQueryItem( query, QStringLiteral( "FILTER" ), mSettings.mFilter );
+  }
+
   // For WMS-T layers
   if ( temporalCapabilities() &&
        temporalCapabilities()->hasTemporalCapabilities() )
