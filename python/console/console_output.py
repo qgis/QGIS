@@ -54,7 +54,7 @@ class writeOut(QObject):
 
         if self.style == "_traceback":
             # Show errors in red
-            stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
+            stderrColor = QColor(QgsSettings().value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 0o01, stderrColor)
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 0o01, True)
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 0o01, True)
@@ -121,8 +121,6 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         super().__init__(parent)
         self.parent = parent
         self.shell = self.parent.shell
-
-        self.settings = QgsSettings()
 
         # Creates layout for message bar
         self.layout = QGridLayout(self)
