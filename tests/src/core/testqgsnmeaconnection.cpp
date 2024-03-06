@@ -50,6 +50,14 @@ class ReplayNmeaConnection : public QgsNmeaConnection
       return spy.constLast().at( 0 ).value< QgsGpsInformation >();
     }
 
+    void pushString( const QString &string )
+    {
+      const qint64 pos = mBuffer->pos();
+      mBuffer->write( string.toLocal8Bit().constData() );
+      mBuffer->seek( pos );
+      parseData();
+    }
+
   private:
 
     QBuffer *mBuffer = nullptr;
@@ -74,6 +82,7 @@ class TestQgsNmeaConnection : public QgsTest
     void testConstellation();
     void testPosition();
     void testComponent();
+    void testIncompleteMessage();
 
 };
 
@@ -466,6 +475,32 @@ void TestQgsNmeaConnection::testComponent()
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(),  0.29632 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 2 );
+}
+
+void TestQgsNmeaConnection::testIncompleteMessage()
+{
+  ReplayNmeaConnection connection;
+  QSignalSpy stateChangedSpy( &connection, &QgsNmeaConnection::stateChanged );
+
+  QCOMPARE( connection.status(), QgsGpsConnection::Status::Connected );
+
+  // start with an incomplete message
+  connection.pushString( QStringLiteral( "$GPGGA," ) );
+  // status should be "data received", we don't have the full sentence yet
+  QCOMPARE( connection.status(), QgsGpsConnection::Status::DataReceived );
+  // should be no stateChanged signal yet, we are still waiting on more data
+  QCOMPARE( stateChangedSpy.size(), 0 );
+
+  connection.pushString( QStringLiteral( "084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63\r\n" ) );
+  // got a full sentence now, status should be "data received"
+  QCOMPARE( connection.status(), QgsGpsConnection::Status::GPSDataReceived );
+  QCOMPARE( stateChangedSpy.size(), 1 );
+  const QgsGpsInformation info = stateChangedSpy.at( 0 ).at( 0 ).value< QgsGpsInformation >();
+
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value< QgsPointXY >(), QgsPointXY( 18, 69 ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(), 0 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )
