@@ -184,7 +184,7 @@ bool QgsProjectElevationSettingsWidget::isValid()
 //
 
 QgsProjectElevationSettingsWidgetFactory::QgsProjectElevationSettingsWidgetFactory( QObject *parent )
-  : QgsOptionsWidgetFactory( tr( "Terrain" ), QgsApplication::getThemeIcon( QStringLiteral( "mLayoutItem3DMap.svg" ) ), QStringLiteral( "terrain" ) )
+  : QgsOptionsWidgetFactory( tr( "Elevation" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ), QStringLiteral( "terrain" ) )
 {
   setParent( parent );
 }
