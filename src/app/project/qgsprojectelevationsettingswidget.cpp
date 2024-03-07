@@ -40,6 +40,8 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   mComboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QStringLiteral( "raster" ) );
   mComboTerrainType->addItem( tr( "Mesh" ), QStringLiteral( "mesh" ) );
 
+  mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
   mStackedWidget->setCurrentWidget( mPageFlat );
   connect( mComboTerrainType, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
   {
