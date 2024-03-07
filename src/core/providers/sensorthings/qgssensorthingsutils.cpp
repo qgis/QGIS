@@ -237,7 +237,6 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityT
       geometryTypeString = QStringLiteral( "Polygon" );
       break;
     case Qgis::GeometryType::Line:
-      // TODO -- confirm
       geometryTypeString = QStringLiteral( "LineString" );
       break;
 
