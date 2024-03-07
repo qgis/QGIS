@@ -17,7 +17,6 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgis.h"
 #include "qgsterrainprovider.h"
-#include "qgsrasterbandstats.h"
 
 #include <QDomElement>
 
@@ -33,7 +32,9 @@ QgsProjectElevationProperties::~QgsProjectElevationProperties() = default;
 void QgsProjectElevationProperties::reset()
 {
   mTerrainProvider = std::make_unique< QgsFlatTerrainProvider >();
+  mElevationRange = QgsDoubleRange();
   emit changed();
+  emit elevationRangeChanged( mElevationRange );
 }
 
 void QgsProjectElevationProperties::resolveReferences( const QgsProject *project )
@@ -64,7 +65,19 @@ bool QgsProjectElevationProperties::readXml( const QDomElement &element, const Q
     mTerrainProvider = std::make_unique< QgsFlatTerrainProvider >();
   }
 
+  bool ok = false;
+  double rangeLower = std::numeric_limits< double >::lowest();
+  const double storedRangeLower = element.attribute( QStringLiteral( "RangeLower" ) ).toDouble( &ok );
+  if ( ok )
+    rangeLower = storedRangeLower;
+  double rangeUpper = std::numeric_limits< double >::max();
+  const double storedRangeUpper = element.attribute( QStringLiteral( "RangeUpper" ) ).toDouble( &ok );
+  if ( ok )
+    rangeUpper = storedRangeUpper;
+  mElevationRange = QgsDoubleRange( rangeLower, rangeUpper );
+
   emit changed();
+  emit elevationRangeChanged( mElevationRange );
   return true;
 }
 
@@ -79,6 +92,12 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
     providerElement.appendChild( mTerrainProvider->writeXml( document, context ) );
     element.appendChild( providerElement );
   }
+
+  if ( mElevationRange.lower() != std::numeric_limits< double >::lowest() )
+    element.setAttribute( QStringLiteral( "RangeLower" ), qgsDoubleToString( mElevationRange.lower() ) );
+  if ( mElevationRange.upper() != std::numeric_limits< double >::max() )
+    element.setAttribute( QStringLiteral( "RangeUpper" ), qgsDoubleToString( mElevationRange.upper() ) );
+
   return element;
 }
 
@@ -94,4 +113,14 @@ void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvid
 
   mTerrainProvider.reset( provider );
   emit changed();
+}
+
+void QgsProjectElevationProperties::setElevationRange( const QgsDoubleRange &range )
+{
+  if ( mElevationRange == range )
+    return;
+
+  mElevationRange = range;
+  emit changed();
+  emit elevationRangeChanged( mElevationRange );
 }

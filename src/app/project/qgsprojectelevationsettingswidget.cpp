@@ -26,6 +26,9 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
 {
   setupUi( this );
 
+  mElevationLowerSpin->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
+  mElevationUpperSpin->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
+
   mFlatHeightSpinBox->setClearValue( 0.0 );
 
   mDemOffsetSpinBox->setClearValue( 0.0 );
@@ -62,7 +65,8 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   } );
 
   // setup with current settings
-  const QgsAbstractTerrainProvider *provider = QgsProject::instance()->elevationProperties()->terrainProvider();
+  QgsProjectElevationProperties *elevationProperties = QgsProject::instance()->elevationProperties();
+  const QgsAbstractTerrainProvider *provider = elevationProperties->terrainProvider();
   mComboTerrainType->setCurrentIndex( mComboTerrainType->findData( provider->type() ) );
   if ( provider->type() == QLatin1String( "flat" ) )
   {
@@ -86,6 +90,15 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
 
   connect( mComboDemLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsProjectElevationSettingsWidget::validate );
   connect( mComboMeshLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsProjectElevationSettingsWidget::validate );
+
+  if ( elevationProperties->elevationRange().lower() != std::numeric_limits< double >::lowest() )
+    whileBlocking( mElevationLowerSpin )->setValue( elevationProperties->elevationRange().lower() );
+  else
+    whileBlocking( mElevationLowerSpin )->clear();
+  if ( elevationProperties->elevationRange().upper() != std::numeric_limits< double >::max() )
+    whileBlocking( mElevationUpperSpin )->setValue( elevationProperties->elevationRange().upper() );
+  else
+    whileBlocking( mElevationUpperSpin )->clear();
 
   validate();
 
@@ -122,6 +135,15 @@ void QgsProjectElevationSettingsWidget::apply()
   }
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( provider.release() );
+
+  double zLower = mElevationLowerSpin->value();
+  if ( zLower == mElevationLowerSpin->clearValue() )
+    zLower = std::numeric_limits< double >::lowest();
+  double zUpper = mElevationUpperSpin->value();
+  if ( zUpper == mElevationUpperSpin->clearValue() )
+    zUpper = std::numeric_limits< double >::max();
+
+  QgsProject::instance()->elevationProperties()->setElevationRange( QgsDoubleRange( zLower, zUpper ) );
 
   mElevationShadingSettingsWidget->apply();
 }

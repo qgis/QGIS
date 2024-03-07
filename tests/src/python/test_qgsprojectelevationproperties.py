@@ -13,6 +13,7 @@ import os
 
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsFlatTerrainProvider,
     QgsMeshTerrainProvider,
@@ -21,6 +22,7 @@ from qgis.core import (
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
     QgsReadWriteContext,
+    QgsDoubleRange,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -35,6 +37,7 @@ class TestQgsProjectElevationProperties(QgisTestCase):
     def testBasic(self):
         props = QgsProjectElevationProperties(None)
         self.assertIsInstance(props.terrainProvider(), QgsFlatTerrainProvider)
+        self.assertTrue(props.elevationRange().isInfinite())
 
         provider = QgsRasterDemTerrainProvider()
         provider.setOffset(5)
@@ -42,6 +45,16 @@ class TestQgsProjectElevationProperties(QgisTestCase):
         props.setTerrainProvider(provider)
 
         self.assertIsInstance(props.terrainProvider(), QgsRasterDemTerrainProvider)
+
+        range_changed_spy = QSignalSpy(props.elevationRangeChanged)
+        props.setElevationRange(QgsDoubleRange(34.2, 78.6))
+        self.assertEqual(props.elevationRange(), QgsDoubleRange(34.2, 78.6))
+        self.assertEqual(len(range_changed_spy), 1)
+        self.assertEqual(range_changed_spy[-1][0], QgsDoubleRange(34.2, 78.6))
+
+        # no signal if not changed
+        props.setElevationRange(QgsDoubleRange(34.2, 78.6))
+        self.assertEqual(len(range_changed_spy), 1)
 
         doc = QDomDocument("testdoc")
         elem = props.writeXml(doc, QgsReadWriteContext())
@@ -51,6 +64,7 @@ class TestQgsProjectElevationProperties(QgisTestCase):
         self.assertIsInstance(props2.terrainProvider(), QgsRasterDemTerrainProvider)
         self.assertEqual(props2.terrainProvider().offset(), 5)
         self.assertEqual(props2.terrainProvider().scale(), 3)
+        self.assertEqual(props2.elevationRange(), QgsDoubleRange(34.2, 78.6))
 
         mesh_provider = QgsMeshTerrainProvider()
         mesh_provider.setOffset(2)

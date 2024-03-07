@@ -69,11 +69,66 @@ Ownership of ``provider`` is transferred to this object.
 .. seealso:: :py:func:`terrainProvider`
 %End
 
+    QgsDoubleRange elevationRange() const;
+%Docstring
+Returns the project's elevation range, which indicates the upper and lower
+elevation limits associated with the project.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the elevation ranges for individual layers in the project.
+
+.. seealso:: :py:func:`setElevationRange`
+
+.. seealso:: :py:func:`elevationRangeChanged`
+
+
+.. versionadded:: 3.38
+%End
+
+  public slots:
+
+    void setElevationRange( const QgsDoubleRange &range );
+%Docstring
+Sets the project's elevation ``range``, which indicates the upper and lower
+elevation limits associated with the project.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the elevation ranges for individual layers in the project.
+
+.. seealso:: :py:func:`elevationRange`
+
+.. seealso:: :py:func:`elevationRangeChanged`
+
+
+.. versionadded:: 3.38
+%End
+
   signals:
 
     void changed();
 %Docstring
 Emitted when the elevation properties change.
+%End
+
+    void elevationRangeChanged( const QgsDoubleRange &range );
+%Docstring
+Emitted when the project's elevation ``is`` changed.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the elevation ranges for individual layers in the project.
+
+.. seealso:: :py:func:`elevationRange`
+
+.. seealso:: :py:func:`setElevationRange`
+
+
+.. versionadded:: 3.38
 %End
 
 };

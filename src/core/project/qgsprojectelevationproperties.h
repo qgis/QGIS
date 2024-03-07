@@ -86,6 +86,36 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      */
     void setTerrainProvider( QgsAbstractTerrainProvider *provider SIP_TRANSFER );
 
+    /**
+     * Returns the project's elevation range, which indicates the upper and lower
+     * elevation limits associated with the project.
+     *
+     * \note This is a manual, use-set property, and does not necessarily
+     * coincide with the elevation ranges for individual layers in the project.
+     *
+     * \see setElevationRange()
+     * \see elevationRangeChanged()
+     *
+     * \since QGIS 3.38
+     */
+    QgsDoubleRange elevationRange() const { return mElevationRange; }
+
+  public slots:
+
+    /**
+     * Sets the project's elevation \a range, which indicates the upper and lower
+     * elevation limits associated with the project.
+     *
+     * \note This is a manual, use-set property, and does not necessarily
+     * coincide with the elevation ranges for individual layers in the project.
+     *
+     * \see elevationRange()
+     * \see elevationRangeChanged()
+     *
+     * \since QGIS 3.38
+     */
+    void setElevationRange( const QgsDoubleRange &range );
+
   signals:
 
     /**
@@ -93,9 +123,23 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      */
     void changed();
 
+    /**
+    * Emitted when the project's elevation \a is changed.
+    *
+     * \note This is a manual, use-set property, and does not necessarily
+     * coincide with the elevation ranges for individual layers in the project.
+     *
+     * \see elevationRange()
+     * \see setElevationRange()
+     *
+     * \since QGIS 3.38
+    */
+    void elevationRangeChanged( const QgsDoubleRange &range );
+
   private:
 
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
+    QgsDoubleRange mElevationRange;
 
 };
 
