@@ -336,6 +336,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         err = b"HEIGHT (\'FOO\') cannot be converted into int" in r
         self.assertTrue(err)
 
+        # height should be > 0
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "-1",
+            "WIDTH": "1",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"The requested map size is too large" in r
+        self.assertTrue(err)
+
         # width should be an int
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -353,6 +372,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         err = b"WIDTH (\'FOO\') cannot be converted into int" in r
+        self.assertTrue(err)
+
+        # width should be > 0
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "1",
+            "WIDTH": "-1",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"The requested map size is too large" in r
         self.assertTrue(err)
 
         # bbox should be formatted like "double,double,double,double"
