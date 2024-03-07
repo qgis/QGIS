@@ -79,6 +79,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         super().tearDownClass()
 
     def test_filter_for_wkb_type(self):
+        """
+        Test constructing a valid filter string which will return only
+        features with a desired WKB type
+        """
         self.assertEqual(
             QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.Point),
             "location/type eq 'Point'"
@@ -175,6 +179,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         )
 
     def test_filter_for_extent(self):
+        """
+        Test constructing valid filter strings for features which intersect
+        an extent
+        """
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('', QgsRectangle()))
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('test', QgsRectangle()))
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('', QgsRectangle(1, 2, 3, 4)))
@@ -182,6 +190,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                          "geo.intersects(test, geography'POLYGON((1 2, 3 2, 3 4, 1 4, 1 2))')")
 
     def test_combine_filters(self):
+        """
+        Test combining multiple filter strings into one
+        """
         self.assertFalse(QgsSensorThingsUtils.combineFilters([]))
         self.assertFalse(QgsSensorThingsUtils.combineFilters(['']))
         self.assertEqual(QgsSensorThingsUtils.combineFilters(['', 'a eq 1']), 'a eq 1')
@@ -190,6 +201,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                          '(a eq 1) and (b eq 2) and (c eq 3)')
 
     def test_invalid_layer(self):
+        """
+        Test construction of layers using bad URLs
+        """
         vl = QgsVectorLayer(
             "url='http://fake.com/fake_qgis_http_endpoint'", "test", "sensorthings"
         )
@@ -202,6 +216,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         )
 
     def test_layer_invalid_json(self):
+        """
+        Test that connecting to services which return non-parsable JSON
+        are cleanly handled (i.e. no crashes!)
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -217,6 +235,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn("parse error", vl.dataProvider().error().summary())
 
     def test_layer(self):
+        """
+        Test construction of a basic layer using a valid SensorThings endpoint
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -318,6 +339,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
 
     def test_thing(self):
+        """
+        Test a layer retrieving 'Thing' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -423,6 +447,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertTrue(vl.extent().isNull())
@@ -430,7 +455,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Things"', vl.htmlMetadata())
-
             self.assertEqual(
                 [f.name() for f in vl.fields()],
                 [
@@ -452,6 +476,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -471,6 +496,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_location(self):
+        """
+        Test a layer retrieving 'Location' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -595,6 +623,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             # pessimistic "worst case" extent should initially be used
@@ -625,6 +654,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -653,6 +683,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.extent(), QgsRectangle(11.6, 52.1, 13.6, 55.1))
 
     def test_filter_rect(self):
+        """
+        Test retrieving features using feature requests with filter
+        rectangles set
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -867,6 +901,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 3)
@@ -876,6 +911,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn(f'href="http://{endpoint}/Locations"',
                           vl.htmlMetadata())
 
+            # test retrieving subset of features from a filter rect only
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(1, 0, 10, 80)
@@ -907,6 +943,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                  "Point (3.6 55.1)"],
             )
 
+            # test retrieving a different subset with a different extent
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(10, 0, 20, 80)
@@ -936,6 +973,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ["Point (12.6 53.1)"],
             )
 
+            # a filter rect which covers all features
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(0, 0, 20, 80)
@@ -949,6 +987,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_extent_limit(self):
+        """
+        Test a layer with a hardcoded extent limit set at the provider level
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -1073,6 +1114,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 2)
@@ -1084,6 +1126,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn(f'href="http://{endpoint}/Locations"',
                           vl.htmlMetadata())
 
+            # test retrieving a subset of the features from the layer,
+            # using a filter rect which only covers a part of the hardcoded
+            # provider's extent
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(1, 0, 3, 50)
@@ -1113,6 +1158,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ["Point (1.6 52.1)"],
             )
 
+            # test retrieving all features from layer -- the hardcoded
+            # provider level extent filter should still apply
             request = QgsFeatureRequest()
             features = list(vl.getFeatures(request))
             self.assertEqual([f["id"] for f in features], ["1", "3"])
@@ -1145,6 +1192,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                                                        55.13201699999999761))
 
     def test_subset_string(self):
+        """
+        Test a layer with a hardcoded user-defined filter string
+        at the provider level
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -1258,6 +1309,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 2)
@@ -1273,6 +1325,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn(f'href="http://{endpoint}/Locations"',
                           vl.htmlMetadata())
 
+            # test retrieving a subset of features, using a request which
+            # must be combined with the layer's subset filter
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(1, 0, 3, 50)
@@ -1302,6 +1356,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ["Point (1.6 52.1)"],
             )
 
+            # test retrieving all features from layer, only a subset
+            # which matches the layer's subset string should still be
+            # returned
             request = QgsFeatureRequest()
             features = list(vl.getFeatures(request))
             self.assertEqual([f["id"] for f in features], ["1"])
@@ -1334,6 +1391,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                                                        52.13201699999999761))
 
     def test_feature_limit(self):
+        """
+        Test a layer with a hardcoded maximum number of features to retrieve
+        from the service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -1505,10 +1566,13 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 3)
 
+            # test retrieving a subset of the 3 features by using
+            # a request with a filter rect only matching one of the features
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(1, 0, 3, 50)
@@ -1538,6 +1602,11 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ["Point (1.6 52.1)"],
             )
 
+            # test retrieving all features from layer using a filter rect
+            # which matches all features -- this is actually testing that
+            # the provider is correctly constructing a url with the right
+            # skip/limit values (if it isn't, then we'll get no features
+            # back since the dummy endpoint address used above won't match)
             request = QgsFeatureRequest()
             request.setFilterRect(
                 QgsRectangle(0, 0, 100, 150)
@@ -1556,6 +1625,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                                                        53))
 
     def test_historical_location(self):
+        """
+        Test a layer retrieving 'Historical Location' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -1644,6 +1716,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -1672,6 +1745,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -1693,6 +1767,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_datastream(self):
+        """
+        Test a layer retrieving 'Datastream' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -1817,6 +1894,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -1857,6 +1935,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -1937,6 +2016,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_sensor(self):
+        """
+        Test a layer retrieving 'Sensor' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -2043,6 +2125,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -2073,6 +2156,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -2101,6 +2185,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_observed_property(self):
+        """
+        Test a layer retrieving 'Observed Property' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -2204,6 +2291,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -2238,6 +2326,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -2270,6 +2359,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_observation(self):
+        """
+        Test a layer retrieving 'Observation' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -2377,6 +2469,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -2415,6 +2508,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
@@ -2477,6 +2571,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
 
     def test_feature_of_interest(self):
+        """
+        Test a layer retrieving 'Features of Interest' entities from a service
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
@@ -2609,6 +2706,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
+            # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 3)
@@ -2641,6 +2739,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+            # test retrieving all features from layer
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
             self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
