@@ -227,41 +227,30 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
 
 QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType )
 {
-  QString filterTarget;
-  switch ( entityType )
-  {
-    case Qgis::SensorThingsEntity::Location:
-      filterTarget = QStringLiteral( "location/type" );
-      break;
-
-    case Qgis::SensorThingsEntity::FeatureOfInterest:
-      filterTarget = QStringLiteral( "feature/type" );
-      break;
-
-    case Qgis::SensorThingsEntity::Invalid:
-    case Qgis::SensorThingsEntity::Thing:
-    case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
-    case Qgis::SensorThingsEntity::Sensor:
-    case Qgis::SensorThingsEntity::ObservedProperty:
-    case Qgis::SensorThingsEntity::Observation:
-      break;
-  }
-
+  QString geometryTypeString;
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
     case Qgis::GeometryType::Point:
-      return QStringLiteral( "%1 eq 'Point'" ).arg( filterTarget );
+      geometryTypeString = QStringLiteral( "Point" );
+      break;
     case Qgis::GeometryType::Polygon:
-      return QStringLiteral( "%1 eq 'Polygon'" ).arg( filterTarget );
+      geometryTypeString = QStringLiteral( "Polygon" );
+      break;
     case Qgis::GeometryType::Line:
       // TODO -- confirm
-      return QStringLiteral( "%1 eq 'LineString'" ).arg( filterTarget );
+      geometryTypeString = QStringLiteral( "LineString" );
+      break;
+
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:
-      break;
+      return QString();
   }
-  return QString();
+
+  const QString filterTarget = geometryFieldForEntityType( entityType );
+  if ( filterTarget.isEmpty() )
+    return QString();
+
+  return QStringLiteral( "%1/type eq '%2' or %1/geometry/type eq '%2'" ).arg( filterTarget, geometryTypeString );
 }
 
 QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback, const QString &authCfg )

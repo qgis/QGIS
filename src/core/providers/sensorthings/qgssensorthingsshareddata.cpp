@@ -606,9 +606,16 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               // NOLINTEND(bugprone-branch-clone)
 
               // Set geometry
-              if ( mGeometryType != Qgis::WkbType::NoGeometry && featureData.contains( mGeometryField.toLocal8Bit().constData() ) )
+              if ( mGeometryType != Qgis::WkbType::NoGeometry )
               {
-                feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( featureData[mGeometryField.toLocal8Bit().constData()] ) );
+                if ( featureData.contains( mGeometryField.toLocal8Bit().constData() ) )
+                {
+                  const auto &geometryPart = featureData[mGeometryField.toLocal8Bit().constData()];
+                  if ( geometryPart.contains( "geometry" ) )
+                    feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( geometryPart["geometry"] ) );
+                  else
+                    feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( geometryPart ) );
+                }
               }
 
               mCachedFeatures.insert( feature.id(), feature );
