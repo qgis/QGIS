@@ -143,7 +143,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   QgsAttributeIds subsetOfAttributes { keyIdx, valueIdx };
 
-  const int groupIdx = fields.indexOf( config.value( QStringLiteral( "Group" ) ).toString() );
+  const int groupIdx = fields.lookupField( config.value( QStringLiteral( "Group" ) ).toString() );
   if ( groupIdx > -1 )
   {
     subsetOfAttributes << groupIdx;

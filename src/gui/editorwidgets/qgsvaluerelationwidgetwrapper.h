@@ -47,6 +47,7 @@ class QgsFilteredTableWidget : public QWidget
      * \brief QgsFilteredTableWidget constructor
      * \param parent
      * \param showSearch Whether the search QgsFilterLineEdit should be visible or not
+     * \param displayGroupName Set to TRUE to display the grouping value as name in section header
      */
     QgsFilteredTableWidget( QWidget *parent, bool showSearch, bool displayGroupName );
 

@@ -52,6 +52,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
       QVariant key;
       QString value;
       QString description;
+      //! Value used to regroup items during sorting (since QGIS 3.38)
       QVariant group;
     };
 
