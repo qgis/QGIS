@@ -186,6 +186,7 @@ Returns ``True`` if the range consists of all possible values.
 
 
 
+
 typedef QgsRange<int> QgsRangeintBase;
 
 class QgsIntRange : QgsRangeintBase
@@ -239,6 +240,7 @@ Returns ``True`` if the range consists of all possible values.
 %End
 
 };
+
 
 
 template <T>
