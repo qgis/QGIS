@@ -173,35 +173,49 @@ void QgsFcgiServerRequest::readData()
   if ( lengthstr )
   {
     bool success = false;
-    int length = QString( lengthstr ).toInt( &success );
-    // Note: REQUEST_BODY is not part of CGI standard, and it is not
-    // normally passed by any CGI web server and it is implemented only
-    // to allow unit tests to inject a request body and simulate a POST
-    // request
-    const char *request_body  = getenv( "REQUEST_BODY" );
-    if ( success && request_body )
+    const int length = QString( lengthstr ).toInt( &success );
+    if ( !success || length < 0 )
     {
-      QString body( request_body );
-      body.truncate( length );
-      mData.append( body.toUtf8() );
-      length = 0;
-    }
-#ifdef QGISDEBUG
-    qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( request_body ? "REQUEST_BODY" : "stdin" );
-#endif
-    if ( success )
-    {
-      // XXX This not efficient at all  !!
-      for ( int i = 0; i < length; ++i )
-      {
-        mData.append( getchar() );
-      }
+      QgsMessageLog::logMessage( "fcgi: Invalid CONTENT_LENGTH",
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      mHasError = true;
     }
     else
     {
-      QgsMessageLog::logMessage( "fcgi: Failed to parse CONTENT_LENGTH",
-                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-      mHasError = true;
+      // Note: REQUEST_BODY is not part of CGI standard, and it is not
+      // normally passed by any CGI web server and it is implemented only
+      // to allow unit tests to inject a request body and simulate a POST
+      // request
+      const char *request_body = getenv( "REQUEST_BODY" );
+
+#ifdef QGISDEBUG
+      qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( request_body ? "REQUEST_BODY" : "stdin" );
+#endif
+
+      if ( request_body )
+      {
+        const size_t request_body_length = strlen( request_body );
+        const int actual_length = static_cast<int>( std::min<size_t>( length, request_body_length ) );
+        if ( static_cast<size_t>( actual_length ) < request_body_length )
+        {
+          QgsMessageLog::logMessage( "fcgi: CONTENT_LENGTH is larger than actual length of REQUEST_BODY",
+                                     QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+          mHasError = true;
+        }
+        mData = QByteArray::fromRawData( request_body, actual_length );
+      }
+      else
+      {
+        mData.resize( length );
+        const int actual_length = static_cast<int>( fread( mData.data(), 1, length, stdin ) );
+        if ( actual_length < length )
+        {
+          mData.resize( actual_length );
+          QgsMessageLog::logMessage( "fcgi: CONTENT_LENGTH is larger than actual length of stdin",
+                                     QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+          mHasError = true;
+        }
+      }
     }
   }
   else

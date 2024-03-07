@@ -197,6 +197,48 @@ class QgsServerRequestTest(QgsServerTestBase):
         _check_links(params)
         _check_links(params, 'POST')
 
+    def test_fcgiRequestPOST_invalid_length_not_an_integer(self):
+        """Test post request handler with wrong CONTENT_LENGTH"""
+
+        data = '<Literal>+1</Literal>'
+        self._set_env({
+            'SERVER_NAME': 'www.myserver.com',
+            'SERVICE': 'WFS',
+            'REQUEST_BODY': data,
+            'CONTENT_LENGTH': "not an integer",
+            'REQUEST_METHOD': 'POST',
+        })
+        request = QgsFcgiServerRequest()
+        self.assertTrue(request.hasError())
+
+    def test_fcgiRequestPOST_invalid_length_negative(self):
+        """Test post request handler with wrong CONTENT_LENGTH"""
+
+        data = '<Literal>+1</Literal>'
+        self._set_env({
+            'SERVER_NAME': 'www.myserver.com',
+            'SERVICE': 'WFS',
+            'REQUEST_BODY': data,
+            'CONTENT_LENGTH': "-1",
+            'REQUEST_METHOD': 'POST',
+        })
+        request = QgsFcgiServerRequest()
+        self.assertTrue(request.hasError())
+
+    def test_fcgiRequestPOST_too_short_length(self):
+        """Test post request handler with wrong CONTENT_LENGTH"""
+
+        data = '<Literal>+1</Literal>'
+        self._set_env({
+            'SERVER_NAME': 'www.myserver.com',
+            'SERVICE': 'WFS',
+            'REQUEST_BODY': data,
+            'CONTENT_LENGTH': str(len(data) - 1),
+            'REQUEST_METHOD': 'POST',
+        })
+        request = QgsFcgiServerRequest()
+        self.assertTrue(request.hasError())
+
     def test_fcgiRequestBody(self):
         """Test request body"""
         data = '<Literal>+1</Literal>'
@@ -208,6 +250,7 @@ class QgsServerRequestTest(QgsServerTestBase):
             'REQUEST_METHOD': 'POST',
         })
         request = QgsFcgiServerRequest()
+        self.assertFalse(request.hasError())
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
         self.assertEqual(request.parameter('REQUEST_BODY'), '<Literal>+1</Literal>')
