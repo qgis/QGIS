@@ -95,9 +95,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.FeatureOfInterest, Qgis.WkbType.Polygon),
             "feature/type eq 'Polygon' or feature/geometry/type eq 'Polygon'"
         )
-        # TODO -- there is NO documentation on what the type must be for line filtering,
-        # and I can't find any public servers with line geometries to test with!
-        # Find some way to confirm if this is 'Line' or 'LineString' or ...
         self.assertEqual(
             QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.LineString),
             "location/type eq 'LineString' or location/geometry/type eq 'LineString'"
