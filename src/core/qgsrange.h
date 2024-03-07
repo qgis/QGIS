@@ -273,6 +273,8 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 
 };
 
+Q_DECLARE_METATYPE( QgsDoubleRange )
+
 
 /**
  * \brief QgsRange which stores a range of integer values.
@@ -343,6 +345,8 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
 #endif
 
 };
+
+Q_DECLARE_METATYPE( QgsIntRange )
 
 
 /**
