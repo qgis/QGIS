@@ -650,6 +650,9 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
 
 bool QgsWmsRenderContext::isValidWidthHeight( int width, int height ) const
 {
+  if ( width <= 0 || height <= 0 )
+    return false;
+
   //test if maxWidth / maxHeight are set in the project or as an env variable
   //and WIDTH / HEIGHT parameter is in the range allowed range
   //WIDTH
@@ -692,14 +695,15 @@ bool QgsWmsRenderContext::isValidWidthHeight( int width, int height ) const
     return false;
   }
 
-  // Sanity check from internal QImage checks (see qimage.cpp)
+  // Sanity check from internal QImage checks
+  // (see QImageData::calculateImageParameters() in qimage_p.h)
   // this is to report a meaningful error message in case of
   // image creation failure and to differentiate it from out
   // of memory conditions.
 
   // depth for now it cannot be anything other than 32, but I don't like
   // to hardcode it: I hope we will support other depths in the future.
-  uint depth = 32;
+  int depth = 32;
   switch ( mParameters.format() )
   {
     case QgsWmsParameters::Format::JPG:
@@ -708,12 +712,12 @@ bool QgsWmsRenderContext::isValidWidthHeight( int width, int height ) const
       depth = 32;
   }
 
+  if ( width > ( std::numeric_limits<int>::max() - 31 ) / depth )
+    return false;
+
   const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width )
-       || bytes_per_line <= 0
-       || height <= 0
-       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
+  if ( std::numeric_limits<int>::max() / bytes_per_line < height
        || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
   {
     return false;
