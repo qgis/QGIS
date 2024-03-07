@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Project Elevation Settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -203,6 +203,85 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="mElevationRangeCheckBox">
+     <property name="title">
+      <string>Elevation Range</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,2">
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mElevationLowerSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="decimals">
+         <number>4</number>
+        </property>
+        <property name="minimum">
+         <double>-9999999999.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>9999999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mEndDateTimeLabel_2">
+        <property name="text">
+         <string>Upper</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mElevationUpperSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="decimals">
+         <number>4</number>
+        </property>
+        <property name="minimum">
+         <double>-9999999999.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>9999999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="mStartDateTimeLabel_2">
+        <property name="text">
+         <string>Lower</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="mElevationShadingSettingsLayout"/>
    </item>
    <item>
@@ -244,6 +323,18 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mComboTerrainType</tabstop>
+  <tabstop>mFlatHeightSpinBox</tabstop>
+  <tabstop>mDemOffsetSpinBox</tabstop>
+  <tabstop>mComboDemLayer</tabstop>
+  <tabstop>mDemScaleSpinBox</tabstop>
+  <tabstop>mMeshOffsetSpinBox</tabstop>
+  <tabstop>mComboMeshLayer</tabstop>
+  <tabstop>mMeshScaleSpinBox</tabstop>
+  <tabstop>mElevationLowerSpin</tabstop>
+  <tabstop>mElevationUpperSpin</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
