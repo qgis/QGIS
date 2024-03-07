@@ -186,31 +186,31 @@ void QgsFcgiServerRequest::readData()
       // normally passed by any CGI web server and it is implemented only
       // to allow unit tests to inject a request body and simulate a POST
       // request
-      const char *request_body = getenv( "REQUEST_BODY" );
+      const char *requestBody = getenv( "REQUEST_BODY" );
 
 #ifdef QGISDEBUG
-      qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( request_body ? "REQUEST_BODY" : "stdin" );
+      qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( requestBody ? "REQUEST_BODY" : "stdin" );
 #endif
 
-      if ( request_body )
+      if ( requestBody )
       {
-        const size_t request_body_length = strlen( request_body );
-        const int actual_length = static_cast<int>( std::min<size_t>( length, request_body_length ) );
-        if ( static_cast<size_t>( actual_length ) < request_body_length )
+        const size_t requestBodyLength = strlen( requestBody );
+        const int actualLength = static_cast<int>( std::min<size_t>( length, requestBodyLength ) );
+        if ( static_cast<size_t>( actualLength ) < requestBodyLength )
         {
           QgsMessageLog::logMessage( "fcgi: CONTENT_LENGTH is larger than actual length of REQUEST_BODY",
                                      QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
           mHasError = true;
         }
-        mData = QByteArray::fromRawData( request_body, actual_length );
+        mData = QByteArray::fromRawData( requestBody, actualLength );
       }
       else
       {
         mData.resize( length );
-        const int actual_length = static_cast<int>( fread( mData.data(), 1, length, stdin ) );
-        if ( actual_length < length )
+        const int actualLength = static_cast<int>( fread( mData.data(), 1, length, stdin ) );
+        if ( actualLength < length )
         {
-          mData.resize( actual_length );
+          mData.resize( actualLength );
           QgsMessageLog::logMessage( "fcgi: CONTENT_LENGTH is larger than actual length of stdin",
                                      QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
           mHasError = true;
