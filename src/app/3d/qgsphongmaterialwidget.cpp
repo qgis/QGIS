@@ -72,6 +72,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
     {
       lblDiffuse->setVisible( true );
       btnDiffuse->setVisible( true );
+      mDiffuseCoefficientWidget->setVisible( true );
       mAmbientDataDefinedButton->setVisible( false );
       mDiffuseDataDefinedButton->setVisible( false );
       mSpecularDataDefinedButton->setVisible( false );
@@ -82,6 +83,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
     {
       lblDiffuse->setVisible( false );
       btnDiffuse->setVisible( false );
+      mDiffuseCoefficientWidget->setVisible( false );
       mAmbientDataDefinedButton->setVisible( false );
       mDiffuseDataDefinedButton->setVisible( false );
       mSpecularDataDefinedButton->setVisible( false );
@@ -92,6 +94,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
     {
       lblDiffuse->setVisible( true );
       btnDiffuse->setVisible( true );
+      mDiffuseCoefficientWidget->setVisible( true );
       mAmbientDataDefinedButton->setVisible( true );
       mDiffuseDataDefinedButton->setVisible( true );
       mSpecularDataDefinedButton->setVisible( true );
