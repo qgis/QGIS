@@ -25,7 +25,7 @@
 
 #include "qgslogger.h"
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
 #include <sys/types.h>
 #include <sys/socket.h>
 
@@ -62,7 +62,7 @@ QgsSocketMonitoringThread::QgsSocketMonitoringThread( bool *isResponseFinished, 
   Q_ASSERT( mIsResponseFinished );
   Q_ASSERT( mFeedback );
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
     QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdin->fcgx_stream->data );
@@ -96,7 +96,7 @@ void QgsSocketMonitoringThread::run( )
     return;
   }
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   char c;
   while ( !*mIsResponseFinished )
   {
