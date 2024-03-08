@@ -2975,9 +2975,9 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::verticalCrs() const
     case Qgis::CrsType::Bound:
     case Qgis::CrsType::Other:
     case Qgis::CrsType::DerivedProjected:
+    case Qgis::CrsType::Geographic3d:
       return QgsCoordinateReferenceSystem();
 
-    case Qgis::CrsType::Geographic3d:
     case Qgis::CrsType::Vertical:
       return *this;
 
