@@ -560,15 +560,16 @@ void QgsValueRelationWidgetWrapper::populate()
     }
     QStringListModel *m = new QStringListModel( values, mLineEdit );
     QCompleter *completer = new QCompleter( m, mLineEdit );
-    if ( config().value( QStringLiteral( "CompleterMatchFromStart" ), true ).toBool() )
-    {
-      // This is the default, but better explicit than implicit
-      completer->setFilterMode( Qt::MatchFlag::MatchStartsWith );
 
+    const Qt::MatchFlags completerMatchFlags { config().contains( QStringLiteral( "CompleterMatchFlags" ) ) ? static_cast<Qt::MatchFlags>( config().value( QStringLiteral( "CompleterMatchFlags" ), Qt::MatchFlag::MatchStartsWith ).toInt( ) ) :  Qt::MatchFlag::MatchStartsWith };
+
+    if ( completerMatchFlags.testFlag( Qt::MatchFlag::MatchContains ) )
+    {
+      completer->setFilterMode( Qt::MatchFlag::MatchContains );
     }
     else
     {
-      completer->setFilterMode( Qt::MatchFlag::MatchContains );
+      completer->setFilterMode( Qt::MatchFlag::MatchStartsWith );
     }
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );

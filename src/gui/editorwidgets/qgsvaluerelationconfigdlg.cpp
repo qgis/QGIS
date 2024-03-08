@@ -85,7 +85,8 @@ QVariantMap QgsValueRelationConfigDlg::config()
   cfg.insert( QStringLiteral( "OrderByValue" ), mOrderByValue->isChecked() );
   cfg.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
   cfg.insert( QStringLiteral( "UseCompleter" ), mUseCompleter->isChecked() );
-  cfg.insert( QStringLiteral( "CompleterMatchFromStart" ), mCompleterMatchFromStart->isChecked() );
+  const Qt::MatchFlags completerMatchFlags { mCompleterMatchFromStart->isChecked() ? Qt::MatchFlag::MatchStartsWith : Qt::MatchFlag::MatchContains };
+  cfg.insert( QStringLiteral( "CompleterMatchFlags" ), static_cast<int>( completerMatchFlags ) );
 
   return cfg;
 }
@@ -108,8 +109,9 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
-  // Default is true for backwards compatibility
-  mCompleterMatchFromStart->setChecked( config.value( QStringLiteral( "CompleterMatchFromStart" ), true ).toBool() );
+  // Default is MatchStartsWith for backwards compatibility
+  const Qt::MatchFlags completerMatchFlags { config.contains( QStringLiteral( "CompleterMatchFlags" ) ) ? static_cast<Qt::MatchFlags>( config.value( QStringLiteral( "CompleterMatchFlags" ), Qt::MatchFlag::MatchStartsWith ).toInt( ) ) :  Qt::MatchFlag::MatchStartsWith };
+  mCompleterMatchFromStart->setChecked( completerMatchFlags.testFlag( Qt::MatchFlag::MatchStartsWith ) );
 }
 
 void QgsValueRelationConfigDlg::layerChanged()
