@@ -947,6 +947,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
   if ( crs != mCrs )
   {
+    const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
     mCrs = crs;
     writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -958,6 +959,9 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
     setDirty( true );
     emit crsChanged();
+    // Did vertical crs also change as a result of this? If so, emit signal
+    if ( oldVerticalCrs != verticalCrs() )
+      emit verticalCrsChanged();
   }
 
   if ( adjustEllipsoid )
@@ -985,6 +989,55 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
   mProjectScope.reset();
   writeEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), ellipsoid );
   emit ellipsoidChanged( ellipsoid );
+}
+
+QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
+{
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  switch ( mCrs.type() )
+  {
+    case Qgis::CrsType::Vertical: // would hope this never happens!
+      QgsDebugError( QStringLiteral( "Project has a vertical CRS set as the horizontal CRS!" ) );
+      return mCrs;
+
+    case Qgis::CrsType::Compound:
+      return mCrs.verticalCrs();
+
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Geographic3d:
+    case Qgis::CrsType::Projected:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::Other:
+    case Qgis::CrsType::DerivedProjected:
+      break;
+  }
+  return mVerticalCrs;
+}
+
+void QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( crs != mVerticalCrs )
+  {
+    const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+
+    mVerticalCrs = crs;
+    mProjectScope.reset();
+
+    setDirty( true );
+    // only emit signal if vertical crs was actually changed, so eg if mCrs is compound
+    // then we haven't actually changed the vertical crs by this call!
+    if ( verticalCrs() != oldVerticalCrs )
+      emit verticalCrsChanged();
+  }
 }
 
 QgsCoordinateTransformContext QgsProject::transformContext() const
@@ -1035,6 +1088,7 @@ void QgsProject::clear()
   mDirty = false;
   mCustomVariables.clear();
   mCrs = QgsCoordinateReferenceSystem();
+  mVerticalCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   mElevationShadingRenderer = QgsElevationShadingRenderer();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
@@ -1129,6 +1183,7 @@ void QgsProject::clear()
 
   setDirty( false );
   emit homePathChanged();
+  emit verticalCrsChanged();
   emit cleared();
 }
 
@@ -2021,6 +2076,17 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   }
   mCrs = projectCrs;
 
+  //vertical CRS
+  {
+    QgsCoordinateReferenceSystem verticalCrs;
+    const QDomNode verticalCrsNode = doc->documentElement().namedItem( QStringLiteral( "verticalCrs" ) );
+    if ( !verticalCrsNode.isNull() )
+    {
+      verticalCrs.readXml( verticalCrsNode );
+    }
+    mVerticalCrs = verticalCrs;
+  }
+
   QStringList datumErrors;
   if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) && !datumErrors.empty() )
   {
@@ -2363,6 +2429,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   emit customVariablesChanged();
   profile.switchTask( tr( "Updating CRS" ) );
   emit crsChanged();
+  emit verticalCrsChanged();
   emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend
@@ -3007,9 +3074,16 @@ bool QgsProject::writeProjectFile( const QString &filename )
   titleNode.appendChild( titleText );
 
   // write project CRS
-  QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
-  mCrs.writeXml( srsNode, *doc );
-  qgisNode.appendChild( srsNode );
+  {
+    QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
+    mCrs.writeXml( srsNode, *doc );
+    qgisNode.appendChild( srsNode );
+  }
+  {
+    QDomElement verticalSrsNode = doc->createElement( QStringLiteral( "verticalCrs" ) );
+    mVerticalCrs.writeXml( verticalSrsNode, *doc );
+    qgisNode.appendChild( verticalSrsNode );
+  }
 
   QDomElement elevationShadingNode = doc->createElement( QStringLiteral( "elevation-shading-renderer" ) );
   mElevationShadingRenderer.writeXml( elevationShadingNode, context );
