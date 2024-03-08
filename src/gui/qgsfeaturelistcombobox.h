@@ -253,6 +253,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
   private slots:
     void onCurrentTextChanged( const QString &text );
+    void onFilterLineEditCleared();
     void onFilterUpdateCompleted();
     void onLoadingChanged();
     void onItemSelected( const QModelIndex &index );
