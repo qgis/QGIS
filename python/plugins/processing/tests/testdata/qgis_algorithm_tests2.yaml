@@ -1823,6 +1823,7 @@ tests:
 
   - algorithm: native:shortestpathpointtopoint
     name: Shortest path (point to point, shortest route)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 5.0
@@ -1853,6 +1854,7 @@ tests:
 
   - algorithm: native:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 5.0
@@ -1884,6 +1886,7 @@ tests:
 
   - algorithm: native:shortestpathlayertopoint
     name: Shortest path layer to point
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 5.0
@@ -1914,6 +1917,7 @@ tests:
 
   - algorithm: native:shortestpathpointtolayer
     name: Shortest path point to layer
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 5.0
@@ -1944,6 +1948,7 @@ tests:
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, nodes)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -1975,6 +1980,7 @@ tests:
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, nodes, bounds)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -2001,6 +2007,7 @@ tests:
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, lines)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -2032,6 +2039,7 @@ tests:
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (fastest, old parameter)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -2066,6 +2074,7 @@ tests:
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (fastest, new parameter)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -2100,6 +2109,7 @@ tests:
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -2135,6 +2145,7 @@ tests:
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes, boundary)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
@@ -2162,6 +2173,7 @@ tests:
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, lines)
+    ellipsoid: WGS84
     params:
       DEFAULT_DIRECTION: 2
       DEFAULT_SPEED: 50.0
