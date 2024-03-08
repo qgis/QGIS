@@ -175,7 +175,7 @@ class CORE_EXPORT QgsProjUtils
     static proj_pj_unique_ptr crsToHorizontalCrs( const PJ *crs );
 
     /**
-     * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract the vertical crs
+     * Given a PROJ crs (which may be a compound crs, or some other type), extract the vertical crs
      * from it.
      *
      * If \a crs does not contain a vertical CRS (i.e. it is a horizontal CRS) NULLPTR will be returned.
