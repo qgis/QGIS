@@ -981,6 +981,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QgsCoordinateReferenceSystem toGeographicCrs() const;
 
+    /**
+     * Returns the vertical CRS associated with this CRS object.
+     *
+     * In the case of a compound CRS, this method will return just the vertical CRS component.
+     *
+     * An invalid CRS will be returned if the object does not contain a vertical component.
+     *
+     * \since QGIS 3.38
+     */
+    QgsCoordinateReferenceSystem verticalCrs() const;
+
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
