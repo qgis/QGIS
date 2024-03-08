@@ -66,6 +66,16 @@ void TestQgsMapSettingsUtils::createWorldFileContent()
 
   mMapSettings.setRotation( 145 );
   QCOMPARE( QgsMapSettingsUtils::worldFileContent( mMapSettings ), QString( "-0.81915204428899191\r\n0.57357643635104594\r\n0.57357643635104594\r\n0.81915204428899191\r\n0.5\r\n0.49999999999999994\r\n" ) );
+
+  mMapSettings.setRotation( 0 );
+  mMapSettings.setDevicePixelRatio( 2.0 );
+  QgsMapSettingsUtils::worldFileParameters( mMapSettings, a, b, c, d, e, f );
+  QCOMPARE( a, 0.5 );
+  QCOMPARE( b, 0.0 );
+  QCOMPARE( c, 0.5 );
+  QCOMPARE( d, 0.0 );
+  QCOMPARE( e, -0.5 );
+  QCOMPARE( f, 0.5 );
 }
 
 void TestQgsMapSettingsUtils::containsAdvancedEffects()
