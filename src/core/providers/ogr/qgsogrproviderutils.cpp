@@ -724,7 +724,7 @@ QStringList QgsOgrProviderUtils::tableNamesFromSelectSQL( const QString &sql )
 {
   QStringList tableNames;
   const QgsSQLStatement statement { sql };
-  const QgsSQLStatement::NodeSelect *nodeSelect { static_cast<const QgsSQLStatement::NodeSelect *>( statement.rootNode() ) };
+  const QgsSQLStatement::NodeSelect *nodeSelect { dynamic_cast<const QgsSQLStatement::NodeSelect *>( statement.rootNode() ) };
   if ( nodeSelect )
   {
     const QList<QgsSQLStatement::NodeTableDef *> tables { nodeSelect->tables() };
