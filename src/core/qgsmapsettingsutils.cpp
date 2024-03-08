@@ -93,11 +93,11 @@ void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings
 
   // scaling matrix
   double s[6];
-  s[0] = ms.mapUnitsPerPixel();
+  s[0] = ms.mapUnitsPerPixel() / ms.devicePixelRatio();
   s[1] = 0;
   s[2] = xOrigin;
   s[3] = 0;
-  s[4] = -ms.mapUnitsPerPixel();
+  s[4] = -ms.mapUnitsPerPixel() / ms.devicePixelRatio();
   s[5] = yOrigin;
 
   // rotation matrix
