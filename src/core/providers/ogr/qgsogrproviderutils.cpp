@@ -28,6 +28,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsfileutils.h"
 #include "qgsvariantutils.h"
 #include "qgssettings.h"
+#include "qgssqlstatement.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -717,6 +718,23 @@ QStringList QgsOgrProviderUtils::directoryExtensions()
 QStringList QgsOgrProviderUtils::wildcards()
 {
   return createFilters( QStringLiteral( "wildcards" ) ).split( '|' );
+}
+
+QStringList QgsOgrProviderUtils::tableNamesFromSelectSQL( const QString &sql )
+{
+  QStringList tableNames;
+  const QgsSQLStatement statement { sql };
+  const QgsSQLStatement::NodeSelect *nodeSelect { dynamic_cast<const QgsSQLStatement::NodeSelect *>( statement.rootNode() ) };
+  if ( nodeSelect )
+  {
+    const QList<QgsSQLStatement::NodeTableDef *> tables { nodeSelect->tables() };
+    for ( auto table : std::as_const( tables ) )
+    {
+      tableNames.push_back( table->name() );
+    }
+  }
+
+  return tableNames;
 }
 
 bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
