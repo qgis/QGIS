@@ -1076,6 +1076,17 @@ May return an invalid CRS if the geographic CRS could not be determined.
 .. versionadded:: 3.24
 %End
 
+    QgsCoordinateReferenceSystem verticalCrs() const;
+%Docstring
+Returns the vertical CRS associated with this CRS object.
+
+In the case of a compound CRS, this method will return just the vertical CRS component.
+
+An invalid CRS will be returned if the object does not contain a vertical component.
+
+.. versionadded:: 3.38
+%End
+
     QString geographicCrsAuthId() const;
 %Docstring
 Returns auth id of related geographic CRS

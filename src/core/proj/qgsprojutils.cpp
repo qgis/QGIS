@@ -217,6 +217,38 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToHorizontalCrs( const PJ *crs
 #endif
 }
 
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToVerticalCrs( const PJ *crs )
+{
+  if ( !crs )
+    return nullptr;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  switch ( proj_get_type( crs ) )
+  {
+    case PJ_TYPE_COMPOUND_CRS:
+    {
+      int i = 0;
+      QgsProjUtils::proj_pj_unique_ptr res( proj_crs_get_sub_crs( context, crs, i ) );
+      while ( res && ( proj_get_type( res.get() ) != PJ_TYPE_VERTICAL_CRS ) )
+      {
+        i++;
+        res.reset( proj_crs_get_sub_crs( context, crs, i ) );
+      }
+      return res;
+    }
+
+    case PJ_TYPE_VERTICAL_CRS:
+      return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
+
+    // maybe other types to handle??
+
+    default:
+      return nullptr;
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
 QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::unboundCrs( const PJ *crs )
 {
   if ( !crs )
