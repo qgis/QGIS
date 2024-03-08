@@ -133,7 +133,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
     mDirector->addStrategy( new QgsNetworkDistanceStrategy() );
   }
 
-  mBuilder = std::make_unique< QgsGraphBuilder >( mNetwork->sourceCrs(), true, tolerance );
+  mBuilder = std::make_unique< QgsGraphBuilder >( mNetwork->sourceCrs(), true, tolerance, context.ellipsoid() );
 }
 
 void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVector< QgsPointXY > &points, QHash< int, QgsAttributes > &attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
