@@ -370,6 +370,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the project's native coordinate reference system.
      * \see setCrs()
+     * \see verticalCrs()
      * \see ellipsoid()
      */
     QgsCoordinateReferenceSystem crs() const;
@@ -380,6 +381,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the ellipsoid imposed by the CRS.
      *
      * \see crs()
+     * \see setVerticalCrs()
      * \see setEllipsoid()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
@@ -398,6 +400,35 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setEllipsoid( const QString &ellipsoid );
 
+    /**
+     * Returns the project's vertical coordinate reference system.
+     *
+     * If the project crs() is a compound CRS, then the CRS returned will
+     * be the vertical component of crs(). Otherwise it will be the value
+     * explicitly set by a call to setVerticalCrs().
+     *
+     * The returned CRS will be invalid if the project has no vertical CRS.
+     *
+     * \see crs()
+     * \see setVerticalCrs()
+     *
+     * \since QGIS 3.38
+     */
+    QgsCoordinateReferenceSystem verticalCrs() const;
+
+    /**
+     * Sets the project's vertical coordinate reference system.
+     *
+     * \note If the project crs() is a compound CRS, then the CRS returned for
+     * verticalCrs() will be the vertical component of crs(). Otherwise it will be the value
+     * explicitly set by this call.
+     *
+     * \see verticalCrs()
+     * \see setCrs()
+     *
+     * \since QGIS 3.38
+     */
+    void setVerticalCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns a copy of the project's coordinate transform context, which stores various
@@ -1772,8 +1803,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the CRS of the project has changed.
      *
+     * \see verticalCrsChanged()
      */
     void crsChanged();
+
+    /**
+     * Emitted when the CRS of the project has changed.
+     *
+     * \see crsChanged()
+     * \see verticalCrs()
+     *
+     * \since QGIS 3.38
+     */
+    void verticalCrsChanged();
 
     /**
      * Emitted when the project \a ellipsoid is changed.
@@ -2334,6 +2376,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     Qgis::ProjectFlags mFlags;
     QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateReferenceSystem mVerticalCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
 

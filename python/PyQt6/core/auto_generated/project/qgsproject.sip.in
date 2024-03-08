@@ -307,6 +307,8 @@ Returns the project's native coordinate reference system.
 
 .. seealso:: :py:func:`setCrs`
 
+.. seealso:: :py:func:`verticalCrs`
+
 .. seealso:: :py:func:`ellipsoid`
 %End
 
@@ -317,6 +319,8 @@ If ``adjustEllipsoid`` is set to ``True``, the ellpsoid of this project will be 
 the ellipsoid imposed by the CRS.
 
 .. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`setVerticalCrs`
 
 .. seealso:: :py:func:`setEllipsoid`
 %End
@@ -339,6 +343,40 @@ Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
 .. seealso:: :py:func:`setCrs`
 %End
 
+    QgsCoordinateReferenceSystem verticalCrs() const;
+%Docstring
+Returns the project's vertical coordinate reference system.
+
+If the project :py:func:`~QgsProject.crs` is a compound CRS, then the CRS returned will
+be the vertical component of :py:func:`~QgsProject.crs`. Otherwise it will be the value
+explicitly set by a call to :py:func:`~QgsProject.setVerticalCrs`.
+
+The returned CRS will be invalid if the project has no vertical CRS.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`setVerticalCrs`
+
+.. versionadded:: 3.38
+%End
+
+    void setVerticalCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the project's vertical coordinate reference system.
+
+.. note::
+
+   If the project :py:func:`~QgsProject.crs` is a compound CRS, then the CRS returned for
+   :py:func:`~QgsProject.verticalCrs` will be the vertical component of :py:func:`~QgsProject.crs`. Otherwise it will be the value
+   explicitly set by this call.
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. seealso:: :py:func:`setCrs`
+
+
+.. versionadded:: 3.38
+%End
 
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
@@ -1723,6 +1761,19 @@ Emitted whenever the expression variables stored in the project have been change
     void crsChanged();
 %Docstring
 Emitted when the CRS of the project has changed.
+
+.. seealso:: :py:func:`verticalCrsChanged`
+%End
+
+    void verticalCrsChanged();
+%Docstring
+Emitted when the CRS of the project has changed.
+
+.. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. versionadded:: 3.38
 %End
 
     void ellipsoidChanged( const QString &ellipsoid );
