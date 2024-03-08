@@ -327,7 +327,7 @@ void TestQgsCoordinateReferenceSystem::toVertical()
   // already vertical
   QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ).verticalCrs().authid(), QStringLiteral( "EPSG:5703" ) );
   // geographic 3d
-  QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ).verticalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ).verticalCrs().isValid() );
 }
 
 void TestQgsCoordinateReferenceSystem::coordinateEpoch()
