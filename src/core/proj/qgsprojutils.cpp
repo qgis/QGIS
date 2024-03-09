@@ -24,6 +24,7 @@
 #include <QDate>
 
 #include <proj.h>
+#include <proj_experimental.h>
 
 #if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsProjContext QgsProjContext::sProjContext;
@@ -289,6 +290,18 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 #else
   throw QgsNotSupportedException( QObject::tr( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
 #endif
+}
+
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *horizontalCrs, const PJ *verticalCrs )
+{
+  if ( !horizontalCrs || !verticalCrs )
+    return nullptr;
+
+  // const cast here is for compatibility with proj < 9.5
+  return QgsProjUtils::proj_pj_unique_ptr( proj_create_compound_crs( QgsProjContext::get(),
+         nullptr,
+         const_cast< PJ *>( horizontalCrs ),
+         const_cast< PJ * >( verticalCrs ) ) );
 }
 
 bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags )

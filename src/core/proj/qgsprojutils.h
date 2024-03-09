@@ -208,6 +208,13 @@ class CORE_EXPORT QgsProjUtils
     static proj_pj_unique_ptr crsToDatumEnsemble( const PJ *crs );
 
     /**
+     * Given a PROJ horizontal and vertical CRS, attempt to create a compound CRS from them.
+     *
+     * \since QGIS 3.38
+     */
+    static proj_pj_unique_ptr createCompoundCrs( const PJ *horizontalCrs, const PJ *verticalCrs );
+
+    /**
      * Attempts to identify a \a crs, matching it to a known authority and code within
      * an acceptable level of tolerance.
      *

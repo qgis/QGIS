@@ -337,6 +337,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
+    /**
+     * Given a horizontal and vertical CRS, attempts to create a compound CRS
+     * from them.
+     *
+     * Returns an invalid CRS if the inputs are not suitable for a compound CRS,
+     * or the compound CRS could not be created for the combination.
+     *
+     * \since QGIS 3.38
+     */
+    static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs );
+
     // Misc helper functions -----------------------
 
     // TODO QGIS 4: remove type and always use EPSG code, rename to createFromEpsg
