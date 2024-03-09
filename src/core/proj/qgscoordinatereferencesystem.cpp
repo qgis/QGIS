@@ -241,6 +241,19 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromSrsId( long srsId
   return crs;
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs )
+{
+  PJ *horizontalObj = horizontalCrs.projObject();
+  PJ *verticalObj = verticalCrs.projObject();
+  if ( horizontalObj && verticalObj )
+  {
+    QgsProjUtils::proj_pj_unique_ptr compoundCrs = QgsProjUtils::createCompoundCrs( horizontalObj, verticalObj );
+    if ( compoundCrs )
+      return QgsCoordinateReferenceSystem::fromProjObject( compoundCrs.get() );
+  }
+  return QgsCoordinateReferenceSystem();
+}
+
 QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem() //NOLINT
 {
 }

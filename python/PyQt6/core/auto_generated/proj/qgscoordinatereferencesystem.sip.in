@@ -323,6 +323,17 @@ Creates a CRS from a specified QGIS SRS ID.
 .. seealso:: :py:func:`validSrsIds`
 %End
 
+    static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs );
+%Docstring
+Given a horizontal and vertical CRS, attempts to create a compound CRS
+from them.
+
+Returns an invalid CRS if the inputs are not suitable for a compound CRS,
+or the compound CRS could not be created for the combination.
+
+.. versionadded:: 3.38
+%End
+
 
 
  bool createFromId( long id, CrsType type = PostgisCrsId ) /Deprecated/;
