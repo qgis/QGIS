@@ -311,7 +311,7 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QSerialPort *mSerialPort = nullptr;
 
     QString mPortName;
-    QSerialPort::BaudRate mBaudRate;
+    QSerialPort::BaudRate mBaudRate = QSerialPort::Baud9600;
     QByteArray mDelimiter;
     bool mFirstDelimiterHit = false;
     QByteArray mDataBuffer;
