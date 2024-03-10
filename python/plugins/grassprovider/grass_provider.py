@@ -102,10 +102,10 @@ class GrassProvider(QgsProcessingProvider):
                         if alg.name().strip() != '':
                             algs.append(alg)
                         else:
-                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(algorithm_json.get('name')), self.tr('Processing'), Qgis.MessageLevel.Critical)
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS algorithm: {0}').format(algorithm_json.get('name')), self.tr('Processing'), Qgis.MessageLevel.Critical)
                     except Exception as e:
                         QgsMessageLog.logMessage(
-                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(algorithm_json.get('name'), e), self.tr('Processing'), Qgis.MessageLevel.Critical)
+                            self.tr('Could not open GRASS GIS algorithm: {0}\n{1}').format(algorithm_json.get('name'), e), self.tr('Processing'), Qgis.MessageLevel.Critical)
             else:
                 # slow approach - pass txt files one by one
                 for descriptionFile in folder.glob('*.txt'):
@@ -115,10 +115,10 @@ class GrassProvider(QgsProcessingProvider):
                         if alg.name().strip() != '':
                             algs.append(alg)
                         else:
-                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.MessageLevel.Critical)
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.MessageLevel.Critical)
                     except Exception as e:
                         QgsMessageLog.logMessage(
-                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.MessageLevel.Critical)
+                            self.tr('Could not open GRASS GIS algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.MessageLevel.Critical)
         return algs
 
     def loadAlgorithms(self):
@@ -180,5 +180,5 @@ class GrassProvider(QgsProcessingProvider):
 
     def tr(self, string, context=''):
         if context == '':
-            context = 'Grass7AlgorithmProvider'
+            context = 'GrassProvider'
         return QCoreApplication.translate(context, string)
