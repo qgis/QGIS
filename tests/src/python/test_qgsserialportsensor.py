@@ -15,7 +15,6 @@ import posix
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir, QIODevice, QBuffer, QByteArray
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-from PyQt5.QtSerialPort import *
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -63,7 +62,6 @@ class TestQgsSerialPortSensor(QgisTestCase):
         serial_port_sensor = QgsSerialPortSensor()
         serial_port_sensor.setName('serial port sensor')
         serial_port_sensor.setPortName(os.ttyname(fd2))
-        serial_port_sensor.setBaudRate(QSerialPort.Baud9600)
         serial_port_sensor.setDelimiter(b'\n')
 
         serial_port_sensor_id = serial_port_sensor.id()

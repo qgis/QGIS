@@ -400,7 +400,7 @@ void QgsSerialPortSensor::parseData()
     else
     {
       QByteArray data = mSerialPort->readAll();
-      const qsizetype lastIndex = data.lastIndexOf( mDelimiter );
+      const auto lastIndex = data.lastIndexOf( mDelimiter );
       if ( lastIndex > -1 )
       {
         mFirstDelimiterHit = true;
