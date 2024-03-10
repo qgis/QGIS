@@ -2394,6 +2394,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
+    bool mBlockChangeSignalsDuringClear = false;
     int mBlockSnappingUpdates = 0;
 
     QgsElevationShadingRenderer mElevationShadingRenderer;
