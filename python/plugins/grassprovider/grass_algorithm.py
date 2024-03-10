@@ -276,7 +276,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             except Exception as e:
                 QgsMessageLog.logMessage(
                     QCoreApplication.translate("GrassAlgorithm",
-                                               'Could not open GRASS GIS 7 algorithm: {0}').format(
+                                               'Could not open GRASS GIS algorithm: {0}').format(
                         self._name),
                     QCoreApplication.translate("GrassAlgorithm",
                                                'Processing'),
@@ -309,7 +309,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
 
         param = QgsProcessingParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,
-            self.tr('GRASS GIS 7 region extent'),
+            self.tr('GRASS GIS region extent'),
             optional=True
         )
         param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
@@ -319,7 +319,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             # Add a cellsize parameter
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
-                self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
+                self.tr('GRASS GIS region cellsize (leave 0 for default)'),
                 type=QgsProcessingParameterNumber.Type.Double,
                 minValue=0.0, maxValue=sys.float_info.max + 1, defaultValue=0.0
             )
@@ -450,8 +450,8 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             path = GrassUtils.grassPath()
             if path == '':
                 raise QgsProcessingException(
-                    self.tr('GRASS GIS 7 folder is not configured. Please '
-                            'configure it before running GRASS GIS 7 algorithms.'))
+                    self.tr('GRASS GIS folder is not configured. Please '
+                            'configure it before running GRASS GIS algorithms.'))
 
         # make a copy of the original parameters dictionary - it gets modified by grass algorithms
         parameters = {k: v for k, v in original_parameters.items()}
@@ -483,7 +483,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
                 getattr(self, fullName)(parameters, context, feedback)
 
         # Run GRASS
-        loglines = [self.tr('GRASS GIS 7 execution commands')]
+        loglines = [self.tr('GRASS GIS execution commands')]
         for line in self.commands:
             feedback.pushCommandInfo(line)
             loglines.append(line)
@@ -493,7 +493,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         GrassUtils.executeGrass(self.commands, feedback, self.outputCommands)
 
         # If the session has been created outside of this algorithm, add
-        # the new GRASS GIS 7 layers to it otherwise finish the session
+        # the new GRASS GIS layers to it otherwise finish the session
         if existingSession:
             GrassUtils.addSessionLayers(self.exportedLayers)
         else:

@@ -354,7 +354,7 @@ class GrassUtils:
             os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
         with open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w') as outfile:
             outfile.write(
-                'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
+                'QGIS GRASS GIS interface: temporary data processing location.\n')
 
         GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
@@ -412,7 +412,7 @@ class GrassUtils:
 
     @staticmethod
     def executeGrass(commands, feedback, outputCommands=None):
-        loglines = [GrassUtils.tr('GRASS GIS 7 execution console output')]
+        loglines = [GrassUtils.tr('GRASS GIS execution console output')]
         grassOutDone = False
         command, grassenv = GrassUtils.prepareGrassExecution(commands)
         # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
@@ -589,20 +589,20 @@ class GrassUtils:
                         'running GRASS algorithms.')
                 if GrassUtils.command is None:
                     return GrassUtils.tr(
-                        'GRASS GIS 7 binary {} can\'t be found on this system from a shell. '
+                        'GRASS GIS binary {} can\'t be found on this system from a shell. '
                         'Please install it or configure your PATH {} environment variable.'.format(
                             '(grass.bat)' if isWindows() else '(grass.sh)',
                             'or OSGEO4W_ROOT' if isWindows() else ''))
             # GNU/Linux
             else:
                 return GrassUtils.tr(
-                    'GRASS 7 can\'t be found on this system from a shell. '
+                    'GRASS can\'t be found on this system from a shell. '
                     'Please install it or configure your PATH environment variable.')
 
     @staticmethod
     def tr(string, context=''):
         if context == '':
-            context = 'Grass7Utils'
+            context = 'GrassUtils'
         return QCoreApplication.translate(context, string)
 
     @staticmethod

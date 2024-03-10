@@ -34,11 +34,11 @@ if os.name == 'nt':
 
 def rliPath():
     """Return r.li GRASS user dir"""
+    grass_version = GrassUtils.installedVersion().split('.')[0]
     if isWindows():
         homeDir = win32api.GetShortPathName(os.path.expanduser('~'))
-        return os.path.join(homeDir, 'AppData', 'Roaming', 'GRASS7', 'r.li')
+        return os.path.join(homeDir, 'AppData', 'Roaming', f'GRASS{grass_version}', 'r.li')
     else:
-        grass_version = GrassUtils.installedVersion().split('.')[0]
         return os.path.join(os.path.expanduser("~"), f'.grass{grass_version}', 'r.li')
 
 
