@@ -387,7 +387,7 @@ void QgsSerialPortSensor::parseData()
     if ( mFirstDelimiterHit )
     {
       mDataBuffer += mSerialPort->readAll();
-      const qsizetype lastIndex = mDataBuffer.lastIndexOf( mDelimiter );
+      const auto lastIndex = mDataBuffer.lastIndexOf( mDelimiter );
       if ( lastIndex > -1 )
       {
         QgsAbstractSensor::SensorData data;
