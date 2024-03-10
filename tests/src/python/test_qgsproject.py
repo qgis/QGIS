@@ -171,6 +171,16 @@ class TestQgsProject(QgisTestCase):
         project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
         self.assertEqual(len(spy), 1)
 
+        # check that project vertical crs variables are set in expression context
+        project_scope = project.createExpressionContextScope()
+        self.assertEqual(project_scope.variable('project_vertical_crs'), 'EPSG:5703')
+        self.assertIn('vunits=m',
+                      project_scope.variable('project_vertical_crs_definition'), '')
+        self.assertEqual(
+            project_scope.variable('project_vertical_crs_description'), 'NAVD88 height')
+        self.assertIn('VERTCRS',
+                      project_scope.variable('project_vertical_crs_wkt'), '')
+
         # check that vertical crs is saved/restored
         # Tests whether the home paths of a GPKG stored project returns the GPKG folder.
         with TemporaryDirectory() as d:
