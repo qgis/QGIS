@@ -373,6 +373,10 @@ ADD_PYTHON_TEST(PyQgsVtpk test_qgsvtpk.py)
 if (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)
 
+  if (WITH_QTSERIALPORT)
+    ADD_PYTHON_TEST(PyQgsSerialPortSensor test_qgsserialportsensor.py)
+  endif()
+
   # Add optional tests which depend on certain cmake options
   if (WITH_SERVER)
     ADD_PYTHON_TEST(PyQgsPalLabelingServer test_qgspallabeling_server.py)
