@@ -179,12 +179,10 @@ class TestQgsProject(QgisTestCase):
             spy2 = QSignalSpy(project2.verticalCrsChanged)
             project2.read(os.path.join(d, 'test_vertcrs.qgs'))
             self.assertEqual(project2.verticalCrs().authid(), 'EPSG:5703')
-            # todo -- should be 1!
-            self.assertEqual(len(spy2), 2)
+            self.assertEqual(len(spy2), 1)
             project2.read(os.path.join(d, 'test_vertcrs.qgs'))
             self.assertEqual(project2.verticalCrs().authid(), 'EPSG:5703')
-            # todo -- should STILL be 1!
-            self.assertEqual(len(spy2), 4)
+            self.assertEqual(len(spy2), 1)
 
         project.clear()
         self.assertEqual(len(spy), 2)

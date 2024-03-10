@@ -1183,7 +1183,10 @@ void QgsProject::clear()
 
   setDirty( false );
   emit homePathChanged();
-  emit verticalCrsChanged();
+  if ( !mBlockChangeSignalsDuringClear )
+  {
+    emit verticalCrsChanged();
+  }
   emit cleared();
 }
 
@@ -1956,13 +1959,20 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Creating auxiliary storage" ) );
   const QString fileName = mFile.fileName();
 
+  const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+
 
   // NOTE [ND] -- I suspect this is wrong, as the archive may contain any number of non-auxiliary
   // storage related files from the previously loaded project.
   std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
   std::unique_ptr<QgsArchive> archive = std::move( mArchive );
 
+  // don't emit xxxChanged signals during the clear() call, as we'll be emitting
+  // them again after reading the properties from the project file
+  mBlockChangeSignalsDuringClear = true;
   clear();
+  mBlockChangeSignalsDuringClear = false;
+
   // this is ugly, but clear() will have created a new archive and started populating it. We
   // need to release handles to this archive now as the subsequent call to move will need
   // to delete it, and requires free access to do so.
@@ -1970,8 +1980,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   mAuxiliaryStorage = std::move( aStorage );
   mArchive = std::move( archive );
-
-
 
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
@@ -2429,7 +2437,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   emit customVariablesChanged();
   profile.switchTask( tr( "Updating CRS" ) );
   emit crsChanged();
-  emit verticalCrsChanged();
+  if ( verticalCrs() != oldVerticalCrs )
+    emit verticalCrsChanged();
   emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend
