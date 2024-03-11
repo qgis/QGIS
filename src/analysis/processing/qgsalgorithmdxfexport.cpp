@@ -69,6 +69,7 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
   addParameter( extentParam.release() );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Use only selected features" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
@@ -108,6 +109,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   const double symbologyScale = parameterAsDouble( parameters, QStringLiteral( "SYMBOLOGY_SCALE" ), context );
   const QString encoding = parameterAsEnumString( parameters, QStringLiteral( "ENCODING" ), context );
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  const bool selectedFeaturesOnly = parameterAsBool( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
   const bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
   const bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
   const bool force2D = parameterAsBool( parameters, QStringLiteral( "FORCE_2D" ), context );
@@ -138,6 +140,8 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   QgsDxfExport::Flags flags = QgsDxfExport::Flags();
   if ( !useMText )
     flags = flags | QgsDxfExport::FlagNoMText;
+  if ( selectedFeaturesOnly )
+    flags = flags | QgsDxfExport::FlagOnlySelectedFeatures;
   dxfExport.setFlags( flags );
 
   QFile dxfFile( outputFile );
