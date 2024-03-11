@@ -710,6 +710,17 @@ these error conditions.  (Or maybe we add another method to this
 object to help make the distinction?)
 %End
 
+    bool addTopologicalPoint( const QgsPoint &point, double snappingTolerance = 1e-7, double segmentSearchEpsilon = 1e-12 );
+%Docstring
+Adds a vertex to the segment which intersect ``point`` but don't
+already have a vertex there. Closest segment is identified using ``segmentSearchEpsilon``.
+If a vertex already exists within ``snappingTolearnceDistance``, no additional vertex is inserted.
+
+:return: ``True`` if point was added, ``False`` otherwise
+
+.. versionadded:: 3.38
+%End
+
     bool moveVertex( double x, double y, int atVertex );
 %Docstring
 Moves the vertex at the given position number

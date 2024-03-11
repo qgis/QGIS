@@ -789,6 +789,15 @@ class CORE_EXPORT QgsGeometry
     bool insertVertex( const QgsPoint &point, int beforeVertex );
 
     /**
+     * Adds a vertex to the segment which intersect \a point but don't
+     * already have a vertex there. Closest segment is identified using \a segmentSearchEpsilon.
+     * If a vertex already exists within \a snappingTolearnceDistance, no additional vertex is inserted.
+     * \returns TRUE if point was added, FALSE otherwise
+     * \since QGIS 3.38
+     */
+    bool addTopologicalPoint( const QgsPoint &point, double snappingTolerance = 1e-7, double segmentSearchEpsilon = 1e-12 );
+
+    /**
      * Moves the vertex at the given position number
      * and item (first number is index 0)
      * to the given coordinates.
