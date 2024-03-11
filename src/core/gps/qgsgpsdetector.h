@@ -38,6 +38,7 @@ class QgsSettingsEntryEnumFlag;
 
 class QgsGpsConnection;
 class QgsGpsInformation;
+class QTimer;
 
 /**
  * \ingroup core
@@ -130,6 +131,7 @@ class CORE_EXPORT QgsGpsDetector : public QObject
     QList<qint32> mBaudList;
 
     std::unique_ptr< QgsGpsConnection > mConn;
+    QTimer *mTimeoutTimer = nullptr;
 };
 
 #endif // QGSGPSDETECTOR_H

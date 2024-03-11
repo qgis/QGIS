@@ -81,6 +81,10 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName, bool useUnsafeSignals )
     QgsMessageLog::logMessage( QObject::tr( "Attempting GPS connection for %1" ).arg( portName ), QObject::tr( "GPS" ), Qgis::Info );
     mPortList << QPair<QString, QString>( portName, portName );
   }
+
+  mTimeoutTimer = new QTimer( this );
+  mTimeoutTimer->setSingleShot( true );
+  connect( mTimeoutTimer, &QTimer::timeout, this, &QgsGpsDetector::connectionTimeout );
 }
 
 QgsGpsDetector::~QgsGpsDetector()
@@ -180,14 +184,14 @@ void QgsGpsDetector::advance()
 
   QgsMessageLog::logMessage( QObject::tr( "Have a connection, now listening for messages" ), QObject::tr( "GPS" ), Qgis::Info );
 
-  connect( mConn.get(), &QgsGpsConnection::stateChanged, this, static_cast < void ( QgsGpsDetector::* )( const QgsGpsInformation & ) >( &QgsGpsDetector::detected ) );
+  connect( mConn.get(), &QgsGpsConnection::stateChanged, this, qOverload< const QgsGpsInformation & >( &QgsGpsDetector::detected ) );
   if ( mUseUnsafeSignals )
   {
     connect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
   }
 
   // leave 2s to pickup a valid string
-  QTimer::singleShot( 2000, this, &QgsGpsDetector::connectionTimeout );
+  mTimeoutTimer->start( 2000 );
 }
 
 void QgsGpsDetector::detected( const QgsGpsInformation & )
@@ -196,12 +200,16 @@ void QgsGpsDetector::detected( const QgsGpsInformation & )
 
   if ( !mConn )
   {
+    mTimeoutTimer->stop();
+
     // advance if connection was destroyed
     QgsMessageLog::logMessage( QObject::tr( "Got information, but CONNECTION WAS DESTROYED EXTERNALLY!" ), QObject::tr( "GPS" ), Qgis::Critical );
     advance();
   }
   else if ( mConn->status() == QgsGpsConnection::GPSDataReceived )
   {
+    mTimeoutTimer->stop();
+
     // signal detected
     QgsMessageLog::logMessage( QObject::tr( "Connection status IS GPSDataReceived" ), QObject::tr( "GPS" ), Qgis::Info );
 
@@ -221,6 +229,7 @@ void QgsGpsDetector::detected( const QgsGpsInformation & )
   }
   else
   {
+    // don't stop timeout, we keep waiting to see if later we get the desired connection status...
     QgsMessageLog::logMessage( QObject::tr( "Connection status is NOT GPSDataReceived. It is %1" ).arg( mConn->status() ), QObject::tr( "GPS" ), Qgis::Critical );
   }
 }
