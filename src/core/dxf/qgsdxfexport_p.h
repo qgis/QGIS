@@ -47,8 +47,8 @@ struct DxfLayerJob
       {
         styleOverride.setOverrideStyle( layerStyleOverride );
       }
-
       fields = vl->fields();
+      selectedFeatureIds = vl->selectedFeatureIds();
       renderer.reset( vl->renderer()->clone() );
       renderContext.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( vl ) );
 
@@ -94,6 +94,7 @@ struct DxfLayerJob
 
     QgsRenderContext renderContext;
     QgsFields fields;
+    QgsFeatureIds selectedFeatureIds;
     QgsMapLayerStyleOverride styleOverride;
     QgsVectorLayerFeatureSource featureSource;
     std::unique_ptr< QgsFeatureRenderer > renderer;

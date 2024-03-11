@@ -56,6 +56,7 @@ unique value.
     enum Flag /BaseType=IntEnum/
     {
       FlagNoMText,
+      FlagOnlySelectedFeatures,
     };
     typedef QFlags<QgsDxfExport::Flag> Flags;
 

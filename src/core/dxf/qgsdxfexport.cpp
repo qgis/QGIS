@@ -258,7 +258,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
       const QgsRectangle extentRect = mMapSettings.mapToLayerCoordinates( vl, mExtent );
       request.setFilterRect( extentRect );
     }
-    QgsFeatureIterator featureIt = vl->getFeatures( request );
+    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( request ) : vl->getFeatures( request );
     QgsFeature feature;
     if ( featureIt.nextFeature( feature ) )
     {
@@ -720,6 +720,10 @@ void QgsDxfExport::writeEntities()
     QgsCoordinateTransform extentTransform = ct;
     extentTransform.setBallparkTransformsAreAppropriate( true );
     request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+    if ( mFlags & FlagOnlySelectedFeatures )
+    {
+      request.setFilterFids( job->selectedFeatureIds );
+    }
 
     QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
@@ -881,6 +885,10 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   {
     QgsDebugError( QStringLiteral( "QgsDxfExport::writeEntitiesSymbolLevels(): extent reprojection failed" ) );
     return;
+  }
+  if ( mFlags & FlagOnlySelectedFeatures )
+  {
+    req.setFilterFids( job->selectedFeatureIds );
   }
 
   QgsFeatureIterator fit = job->featureSource.getFeatures( req );
