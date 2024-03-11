@@ -49,6 +49,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void projectedCrs();
     void geocentricCrs();
     void geographic3d();
+    void toHorizontal();
     void toVertical();
     void coordinateEpoch();
     void createCompound();
@@ -315,6 +316,20 @@ void TestQgsCoordinateReferenceSystem::geographic3d()
   crs.createFromString( QStringLiteral( "EPSG:4979" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.type(), Qgis::CrsType::Geographic3d );
+}
+
+void TestQgsCoordinateReferenceSystem::toHorizontal()
+{
+  // invalid
+  QVERIFY( !QgsCoordinateReferenceSystem().horizontalCrs().isValid() );
+  // vertical only
+  QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ).horizontalCrs().isValid() );
+  // compound
+  QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) ).horizontalCrs().authid(), QStringLiteral( "EPSG:4759" ) );
+  // already horizontal
+  QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ).horizontalCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+  // geographic 3d
+  QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ).horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::toVertical()

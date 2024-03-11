@@ -2974,6 +2974,39 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeographicCrs() con
   }
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::horizontalCrs() const
+{
+  switch ( type() )
+  {
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Projected:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::Other:
+    case Qgis::CrsType::DerivedProjected:
+    case Qgis::CrsType::Geographic3d:
+      return *this;
+
+    case Qgis::CrsType::Vertical:
+      return QgsCoordinateReferenceSystem();
+
+    case Qgis::CrsType::Compound:
+      break;
+  }
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    QgsProjUtils::proj_pj_unique_ptr hozCrs = QgsProjUtils::crsToHorizontalCrs( obj );
+    if ( hozCrs )
+      return QgsCoordinateReferenceSystem::fromProjObject( hozCrs.get() );
+  }
+  return QgsCoordinateReferenceSystem();
+}
+
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::verticalCrs() const
 {
   switch ( type() )
