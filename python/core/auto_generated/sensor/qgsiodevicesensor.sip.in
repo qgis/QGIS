@@ -243,6 +243,25 @@ Sets the baudrate of the serial port the sensor connects to.
 .. versionadded:: 3.36
 %End
 
+    QByteArray delimiter() const;
+%Docstring
+Returns the current delimiter used to separate data frames. If empty,
+each serial port data update will be considered a data frame.
+
+.. versionadded:: 3.38
+%End
+
+    void setDelimiter( const QByteArray &delimiter );
+%Docstring
+Sets the delimiter used to identify data frames out of the data received
+from the serial port. If empty, each serial port data update will be
+considered a data frame.
+
+:param delimiter: Character used to identify data frames
+
+.. versionadded:: 3.38
+%End
+
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document );
@@ -253,6 +272,11 @@ Sets the baudrate of the serial port the sensor connects to.
     virtual void handleConnect();
 
     virtual void handleDisconnect();
+
+
+  protected slots:
+
+    virtual void parseData();
 
 
 };

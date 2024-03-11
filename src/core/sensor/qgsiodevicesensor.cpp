@@ -366,11 +366,62 @@ void QgsSerialPortSensor::setBaudRate( const QSerialPort::BaudRate &baudRate )
   mBaudRate = baudRate;
 }
 
+QByteArray QgsSerialPortSensor::delimiter() const
+{
+  return mDelimiter;
+}
+
+void QgsSerialPortSensor::setDelimiter( const QByteArray &delimiter )
+{
+  if ( mDelimiter == delimiter )
+    return;
+
+  mDelimiter = delimiter;
+}
+
+
+void QgsSerialPortSensor::parseData()
+{
+  if ( !mDelimiter.isEmpty() )
+  {
+    if ( mFirstDelimiterHit )
+    {
+      mDataBuffer += mSerialPort->readAll();
+      const auto lastIndex = mDataBuffer.lastIndexOf( mDelimiter );
+      if ( lastIndex > -1 )
+      {
+        QgsAbstractSensor::SensorData data;
+        data.lastValue = mDataBuffer.mid( 0, lastIndex );
+        mDataBuffer = mDataBuffer.mid( lastIndex + mDelimiter.size() );
+        data.lastTimestamp = QDateTime::currentDateTime();
+        setData( data );
+      }
+    }
+    else
+    {
+      QByteArray data = mSerialPort->readAll();
+      const auto lastIndex = data.lastIndexOf( mDelimiter );
+      if ( lastIndex > -1 )
+      {
+        mFirstDelimiterHit = true;
+        mDataBuffer = data.mid( lastIndex + mDelimiter.size() );
+      }
+    }
+  }
+  else
+  {
+    QgsAbstractSensor::SensorData data;
+    data.lastValue = mSerialPort->readAll();
+    data.lastTimestamp = QDateTime::currentDateTime();
+    setData( data );
+  }
+}
 
 void QgsSerialPortSensor::handleConnect()
 {
   mSerialPort->setPortName( mPortName );
   mSerialPort->setBaudRate( mBaudRate );
+  mFirstDelimiterHit = false;
 
   if ( mSerialPort->open( QIODevice::ReadOnly ) )
   {
@@ -417,6 +468,7 @@ bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDo
 {
   element.setAttribute( QStringLiteral( "portName" ), mPortName );
   element.setAttribute( QStringLiteral( "baudRate" ), static_cast<int>( mBaudRate ) );
+  element.setAttribute( QStringLiteral( "delimiter" ), QString( mDelimiter ) );
   return true;
 }
 
@@ -424,6 +476,7 @@ bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element,
 {
   mPortName = element.attribute( QStringLiteral( "portName" ) );
   mBaudRate = static_cast< QSerialPort::BaudRate >( element.attribute( QStringLiteral( "baudRate" ) ).toInt() );
+  mDelimiter = element.attribute( QStringLiteral( "delimiter" ) ).toLocal8Bit();
   return true;
 }
 #endif

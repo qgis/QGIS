@@ -274,6 +274,22 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
      */
     void setBaudRate( const QSerialPort::BaudRate &baudRate );
 
+    /**
+     * Returns the current delimiter used to separate data frames. If empty,
+     * each serial port data update will be considered a data frame.
+     * \since QGIS 3.38
+     */
+    QByteArray delimiter() const;
+
+    /**
+     * Sets the delimiter used to identify data frames out of the data received
+     * from the serial port. If empty, each serial port data update will be
+     * considered a data frame.
+     * \param delimiter Character used to identify data frames
+     * \since QGIS 3.38
+     */
+    void setDelimiter( const QByteArray &delimiter );
+
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document ) override;
 
@@ -281,6 +297,10 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
 
     void handleConnect() override;
     void handleDisconnect() override;
+
+  protected slots:
+
+    void parseData() override;
 
   private slots:
 
@@ -291,8 +311,10 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QSerialPort *mSerialPort = nullptr;
 
     QString mPortName;
-
-    QSerialPort::BaudRate mBaudRate;
+    QSerialPort::BaudRate mBaudRate = QSerialPort::Baud9600;
+    QByteArray mDelimiter;
+    bool mFirstDelimiterHit = false;
+    QByteArray mDataBuffer;
 
 };
 SIP_END

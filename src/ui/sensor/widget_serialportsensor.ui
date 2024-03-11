@@ -41,6 +41,9 @@
      <property name="toolTip">
       <string>Choose a serial port for the connection</string>
      </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
@@ -62,6 +65,55 @@
       <number>-1</number>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="mDataFrameDelimiterLabel">
+     <property name="text">
+      <string>Data frame delimiter</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="dataFrameDelimiterLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="mDataFrameDelimiterComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Choose a character to act as the data frame delimiter</string>
+       </property>    
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mDataFrameDelimiterLineEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>       
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="mSerialPortDetails">
