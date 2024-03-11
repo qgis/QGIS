@@ -30,6 +30,16 @@ class TestQgsCoordinateReferenceSystemUtils(QgisTestCase):
         self.assertEqual(QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(QgsCoordinateReferenceSystem()), Qgis.CoordinateOrder.XY)
         self.assertEqual(QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(QgsCoordinateReferenceSystem('EPSG:3111')), Qgis.CoordinateOrder.XY)
         self.assertEqual(QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(QgsCoordinateReferenceSystem('EPSG:4326')), Qgis.CoordinateOrder.YX)
+        # compound crs
+        self.assertEqual(
+            QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(
+                QgsCoordinateReferenceSystem('EPSG:5500')),
+            Qgis.CoordinateOrder.YX)
+        # vertical crs, should be no error here and just return the default
+        self.assertEqual(
+            QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(
+                QgsCoordinateReferenceSystem('EPSG:5703')),
+            Qgis.CoordinateOrder.XY)
 
     def test_axis_direction_to_abbreviation(self):
         """

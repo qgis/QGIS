@@ -19,7 +19,12 @@
 
 Qgis::CoordinateOrder QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  const QList< Qgis::CrsAxisDirection > axisList = crs.axisOrdering();
+  // crs may be a compound crs, so get just the horizontal component first
+  const QgsCoordinateReferenceSystem horizontalCrs = crs.horizontalCrs();
+  if ( !horizontalCrs.isValid() )
+    return Qgis::CoordinateOrder::XY;
+
+  const QList< Qgis::CrsAxisDirection > axisList = horizontalCrs.axisOrdering();
   if ( axisList.size() < 2 )
     return Qgis::CoordinateOrder::XY;
 
