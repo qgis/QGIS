@@ -310,15 +310,23 @@ Returns the project's native coordinate reference system.
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`ellipsoid`
+
+.. seealso:: :py:func:`crsChanged`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 %Docstring
 Sets the project's native coordinate reference system.
-If ``adjustEllipsoid`` is set to ``True``, the ellpsoid of this project will be set to
+
+If ``adjustEllipsoid`` is set to ``True``, the ellipsoid of this project will be set to
 the ellipsoid imposed by the CRS.
 
+Changing the CRS will trigger a :py:func:`~QgsProject.crsChanged` signal. Additionally, if ``crs`` is a compound
+CRS, then the :py:func:`~QgsProject.verticalCrsChanged` signal will also be emitted.
+
 .. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`crsChanged`
 
 .. seealso:: :py:func:`setVerticalCrs`
 
@@ -332,15 +340,19 @@ Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84
 .. seealso:: :py:func:`setEllipsoid`
 
 .. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`verticalCrs`
 %End
 
     void setEllipsoid( const QString &ellipsoid );
 %Docstring
-Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
+Sets the project's ``ellipsoid`` from a proj string representation, e.g., "WGS84".
 
 .. seealso:: :py:func:`ellipsoid`
 
 .. seealso:: :py:func:`setCrs`
+
+.. seealso:: :py:func:`setVerticalCrs`
 %End
 
     QgsCoordinateReferenceSystem verticalCrs() const;
@@ -363,6 +375,8 @@ The returned CRS will be invalid if the project has no vertical CRS.
     bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage /Out/ = 0 );
 %Docstring
 Sets the project's vertical coordinate reference system.
+
+The :py:func:`~QgsProject.verticalCrsChanged` signal will be raised if the vertical CRS is changed.
 
 .. note::
 
@@ -1769,14 +1783,28 @@ Emitted whenever the expression variables stored in the project have been change
 %Docstring
 Emitted when the CRS of the project has changed.
 
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`setCrs`
+
 .. seealso:: :py:func:`verticalCrsChanged`
+
+.. seealso:: :py:func:`ellipsoidChanged`
 %End
 
     void verticalCrsChanged();
 %Docstring
-Emitted when the CRS of the project has changed.
+Emitted when the vertical CRS of the project has changed.
+
+This signal will be emitted whenever the vertical CRS of the project is changed, either
+as a direct result of a call to :py:func:`~QgsProject.setVerticalCrs` or when :py:func:`~QgsProject.setCrs` is called with a compound
+CRS.
 
 .. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`setCrs`
+
+.. seealso:: :py:func:`setVerticalCrs`
 
 .. seealso:: :py:func:`verticalCrs`
 

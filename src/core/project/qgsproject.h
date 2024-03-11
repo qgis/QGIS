@@ -369,18 +369,25 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns the project's native coordinate reference system.
+     *
      * \see setCrs()
      * \see verticalCrs()
      * \see ellipsoid()
+     * \see crsChanged()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the project's native coordinate reference system.
-     * If \a adjustEllipsoid is set to TRUE, the ellpsoid of this project will be set to
+     *
+     * If \a adjustEllipsoid is set to TRUE, the ellipsoid of this project will be set to
      * the ellipsoid imposed by the CRS.
      *
+     * Changing the CRS will trigger a crsChanged() signal. Additionally, if \a crs is a compound
+     * CRS, then the verticalCrsChanged() signal will also be emitted.
+     *
      * \see crs()
+     * \see crsChanged()
      * \see setVerticalCrs()
      * \see setEllipsoid()
      */
@@ -388,15 +395,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
+     *
      * \see setEllipsoid()
      * \see crs()
+     * \see verticalCrs()
      */
     QString ellipsoid() const;
 
     /**
-     * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
+     * Sets the project's \a ellipsoid from a proj string representation, e.g., "WGS84".
+     *
      * \see ellipsoid()
      * \see setCrs()
+     * \see setVerticalCrs()
      */
     void setEllipsoid( const QString &ellipsoid );
 
@@ -418,6 +429,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's vertical coordinate reference system.
+     *
+     * The verticalCrsChanged() signal will be raised if the vertical CRS is changed.
      *
      * \note If the project crs() is a compound CRS, then the CRS returned for
      * verticalCrs() will be the vertical component of crs(). Otherwise it will be the value
@@ -1808,14 +1821,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the CRS of the project has changed.
      *
+     * \see crs()
+     * \see setCrs()
      * \see verticalCrsChanged()
+     * \see ellipsoidChanged()
      */
     void crsChanged();
 
     /**
-     * Emitted when the CRS of the project has changed.
+     * Emitted when the vertical CRS of the project has changed.
+     *
+     * This signal will be emitted whenever the vertical CRS of the project is changed, either
+     * as a direct result of a call to setVerticalCrs() or when setCrs() is called with a compound
+     * CRS.
      *
      * \see crsChanged()
+     * \see setCrs()
+     * \see setVerticalCrs()
      * \see verticalCrs()
      *
      * \since QGIS 3.38
