@@ -107,6 +107,11 @@ QgsGpsConnection *QgsGpsDetector::takeConnection()
     mConn->disconnect( this );
   }
 
+  if ( mConn )
+    QgsMessageLog::logMessage( QObject::tr( "Detected GPS connection is being taken by caller" ), QObject::tr( "GPS" ), Qgis::Info );
+  else
+    QgsMessageLog::logMessage( QObject::tr( "Something is trying to take the GPS connection, but it doesn't exist!" ), QObject::tr( "GPS" ), Qgis::Critical );
+
   return mConn.release();
 }
 
@@ -114,6 +119,7 @@ void QgsGpsDetector::advance()
 {
   if ( mConn )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Destroying existing connection to attempt next configuration combination" ), QObject::tr( "GPS" ), Qgis::Info );
     mConn.reset();
   }
 
@@ -186,6 +192,11 @@ void QgsGpsDetector::advance()
       QgsMessageLog::logMessage( QObject::tr( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" ), QObject::tr( "GPS" ), Qgis::Critical );
       qWarning( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" );
 #endif
+    }
+
+    if ( !mConn )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Got to end of connection handling loop, but have no connection!" ), QObject::tr( "GPS" ), Qgis::Critical );
     }
   }
 
