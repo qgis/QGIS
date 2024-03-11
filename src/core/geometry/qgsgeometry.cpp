@@ -801,6 +801,37 @@ bool QgsGeometry::insertVertex( const QgsPoint &point, int beforeVertex )
   return d->geometry->insertVertex( id, point );
 }
 
+bool QgsGeometry::addTopologicalPoint( const QgsPoint &point, double snappingTolerance, double segmentSearchEpsilon )
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  const double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
+  int segmentAfterVertex;
+  QgsPointXY snappedPoint;
+  const double sqrDistSegmentSnap = closestSegmentWithContext( point, snappedPoint, segmentAfterVertex, nullptr, segmentSearchEpsilon );
+
+  if ( sqrDistSegmentSnap > sqrSnappingTolerance )
+    return false;
+
+  int atVertex, beforeVertex, afterVertex;
+  double sqrDistVertexSnap;
+  closestVertex( point, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
+
+  if ( sqrDistVertexSnap < sqrSnappingTolerance )
+    return false;  // the vertex already exists - do not insert it
+
+  if ( !insertVertex( point, segmentAfterVertex ) )
+  {
+    QgsDebugError( QStringLiteral( "failed to insert topo point" ) );
+    return false;
+  }
+
+  return true;
+}
+
 QgsPoint QgsGeometry::vertexAt( int atVertex ) const
 {
   if ( !d->geometry )
@@ -1060,10 +1091,18 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
+  // We're trying adding the split line's vertices to the geometry so that
+  // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
+  QgsGeometry tmpGeom( *this );
+  for ( const QgsPoint &v : splitLine )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
 
-  QgsGeos geos( d->geometry.get() );
+  QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
 

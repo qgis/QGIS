@@ -799,9 +799,8 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
     }
   }
 
-  QgsRectangle searchRect( p.x() - threshold, p.y() - threshold,
-                           p.x() + threshold, p.y() + threshold );
-  double sqrSnappingTolerance = threshold * threshold;
+  QgsRectangle searchRect( p, p, false );
+  searchRect.grow( threshold );
 
   QgsFeature f;
   QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest()
@@ -809,45 +808,14 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
                            .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
                            .setNoAttributes() );
 
-  QMap<QgsFeatureId, QgsGeometry> features;
-  QMap<QgsFeatureId, int> segments;
-
+  bool pointsAdded = false;
   while ( fit.nextFeature( f ) )
   {
-    int afterVertex;
-    QgsPointXY snappedPoint;
-    double sqrDistSegmentSnap = f.geometry().closestSegmentWithContext( p, snappedPoint, afterVertex, nullptr, segmentSearchEpsilon );
-    if ( sqrDistSegmentSnap < sqrSnappingTolerance )
-    {
-      segments[f.id()] = afterVertex;
-      features[f.id()] = f.geometry();
-    }
-  }
-
-  if ( segments.isEmpty() )
-    return 2;
-
-  bool pointsAdded = false;
-  for ( QMap<QgsFeatureId, int>::const_iterator it = segments.constBegin(); it != segments.constEnd(); ++it )
-  {
-    QgsFeatureId fid = it.key();
-    int segmentAfterVertex = it.value();
-    QgsGeometry geom = features[fid];
-
-    int atVertex, beforeVertex, afterVertex;
-    double sqrDistVertexSnap;
-    geom.closestVertex( p, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
-
-    if ( sqrDistVertexSnap < sqrSnappingTolerance )
-      continue;  // the vertex already exists - do not insert it
-
-    if ( !mLayer->insertVertex( p, fid, segmentAfterVertex ) )
-    {
-      QgsDebugError( QStringLiteral( "failed to insert topo point" ) );
-    }
-    else
+    QgsGeometry geom = f.geometry();
+    if ( geom.addTopologicalPoint( p, threshold, segmentSearchEpsilon ) )
     {
       pointsAdded = true;
+      mLayer->changeGeometry( f.id(), geom );
     }
   }
 

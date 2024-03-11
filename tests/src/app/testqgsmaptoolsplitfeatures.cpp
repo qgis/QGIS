@@ -35,17 +35,21 @@ class TestQgsMapToolSplitFeatures : public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
+    void cleanup();
 
     void testNoFeaturesSplit();
     void testSplitPolygon();
     void testSplitPolygonTopologicalEditing();
     void testSplitSelectedLines();
     void testSplitSomeOfSelectedLines();
+    // see https://github.com/qgis/QGIS/issues/29270
+    void testSplitPolygonSnapToSegment();
 
   private:
     QPoint mapToPoint( double x, double y );
     QgisApp *mQgisApp = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
+    TestQgsMapToolUtils *mUtils = nullptr;
     QgsVectorLayer *mMultiLineStringLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
     QgsVectorLayer *mMultiPolygonLayer = nullptr;
@@ -72,31 +76,26 @@ void TestQgsMapToolSplitFeatures::initTestCase()
   mMultiLineStringLayer->startEditing();
   lineF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((0 0, 10 0))" ) ) );
   lineF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((0 5, 10 5),(10 5, 15 5))" ) ) );
-  mMultiLineStringLayer->addFeature( lineF1 );
-  mMultiLineStringLayer->addFeature( lineF2 );
+  mMultiLineStringLayer->dataProvider()->addFeatures( QgsFeatureList() << lineF1 << lineF2 );
 
   mPolygonLayer = new QgsVectorLayer( QStringLiteral( "PolygonZ?crs=EPSG:3946" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mPolygonLayer->isValid() );
   mPolygonLayer->startEditing();
   polygonF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" ) ) );
-  polygonF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 10 0 20, 0 0 10))" ) ) );
-  mPolygonLayer->addFeature( polygonF1 );
-  mPolygonLayer->addFeature( polygonF2 );
+  polygonF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 0 0 10))" ) ) );
+  mPolygonLayer->dataProvider()->addFeatures( QgsFeatureList() << polygonF1 << polygonF2 );
 
   mMultiPolygonLayer = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=EPSG:3946" ), QStringLiteral( "layer multipolygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mMultiPolygonLayer->isValid() );
   mMultiPolygonLayer->startEditing();
   multipolygonF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((0 5, 0 10, 10 10, 10 5, 0 5)),((0 0, 0 4, 10 4, 10 0, 0 0)))" ) ) );
-  mMultiPolygonLayer->addFeature( multipolygonF1 );
+  mMultiPolygonLayer->dataProvider()->addFeature( multipolygonF1 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 50, 50 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
-  // Disable flaky tests on windows...
-  // QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 50, 50 ) );
-  // QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 10, 10 ) );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMultiLineStringLayer
                                         << mPolygonLayer
@@ -107,11 +106,25 @@ void TestQgsMapToolSplitFeatures::initTestCase()
                       << mPolygonLayer
                       << mMultiPolygonLayer );
 
+  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
+  mCanvas->setMapTool( mapTool );
+  mUtils = new TestQgsMapToolUtils( mapTool );
 }
 
 void TestQgsMapToolSplitFeatures::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+// runs after each test
+void TestQgsMapToolSplitFeatures::cleanup()
+{
+  mMultiLineStringLayer->undoStack()->setIndex( 0 );
+  mMultiLineStringLayer->removeSelection();
+  mPolygonLayer->undoStack()->setIndex( 0 );
+  mPolygonLayer->removeSelection();
+  mMultiPolygonLayer->undoStack()->setIndex( 0 );
+  mMultiPolygonLayer->removeSelection();
 }
 
 QPoint TestQgsMapToolSplitFeatures::mapToPoint( double x, double y )
@@ -125,209 +138,123 @@ QPoint TestQgsMapToolSplitFeatures::mapToPoint( double x, double y )
 void TestQgsMapToolSplitFeatures::testNoFeaturesSplit()
 {
   mCanvas->setCurrentLayer( mMultiLineStringLayer );
-  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
-  mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 4, 7 ),
-        Qt::LeftButton
-      ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 8 ),
-                 Qt::LeftButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
+  mUtils->mouseClick( 4, 7, Qt::LeftButton );
+  mUtils->mouseClick( 4, 8, Qt::LeftButton );
+  mUtils->mouseClick( 4, 8, Qt::RightButton );
 
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 8 ),
-                 Qt::RightButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-
-
-  QVERIFY( mMultiLineStringLayer->featureCount() == 2 );
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
+  QCOMPARE( mMultiLineStringLayer->featureCount(), 2 );
+  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
 }
 
 void TestQgsMapToolSplitFeatures::testSplitPolygon()
 {
-  QgsProject::instance()->setTopologicalEditing( false );
   mCanvas->setCurrentLayer( mPolygonLayer );
-  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
-  mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 4, 11 ),
-        Qt::LeftButton
-      ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 3 ),
-                 Qt::LeftButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
+  mUtils->mouseClick( 4, 11, Qt::LeftButton );
+  mUtils->mouseClick( 4, 3, Qt::LeftButton );
+  mUtils->mouseClick( 4, 3, Qt::RightButton );
 
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 3 ),
-                 Qt::RightButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-
-  QVERIFY( mPolygonLayer->undoStack()->index() == 3 );
-  QVERIFY( mPolygonLayer->featureCount() == 3 );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 10 0 20, 0 0 10))" ) );
+  QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
+  QCOMPARE( mPolygonLayer->featureCount(), 3 );
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 0 0 10))" ) );
 
   // no change to other layers
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
-  QVERIFY( mMultiPolygonLayer->undoStack()->index() == 1 );
-
-  // undo changes
-  mPolygonLayer->undoStack()->undo();
-  QVERIFY( mPolygonLayer->undoStack()->index() == 2 );
+  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
+  QCOMPARE( mMultiPolygonLayer->undoStack()->index(), 0 );
 }
 
 void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
 {
   QgsProject::instance()->setTopologicalEditing( true );
   mCanvas->setCurrentLayer( mPolygonLayer );
-  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
-  mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 4, 11 ),
-        Qt::LeftButton
-      ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 3 ),
-                 Qt::LeftButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
+  mUtils->mouseClick( 4, 11, Qt::LeftButton );
+  mUtils->mouseClick( 4, 3, Qt::LeftButton );
+  mUtils->mouseClick( 4, 3, Qt::RightButton );
 
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 3 ),
-                 Qt::RightButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
+  QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
+  QCOMPARE( mPolygonLayer->featureCount(), 3 );
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 4 5 14, 10 5 30, 0 0 10))" ) );
 
-  QVERIFY( mPolygonLayer->undoStack()->index() == 3 );
-  QVERIFY( mPolygonLayer->featureCount() == 3 );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 4 5 14, 10 5 30, 10 0 20, 0 0 10))" ) );
+  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 1 );
+  QCOMPARE( mMultiLineStringLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))" ) );
+  QCOMPARE( mMultiPolygonLayer->undoStack()->index(), 1 );
+  QCOMPARE( mMultiPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 5, 0 10, 4 10, 10 10, 10 5, 4 5, 0 5)),((0 0, 0 4, 10 4, 10 0, 0 0)))" ) );
 
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
-  QCOMPARE( mMultiLineStringLayer->getFeature( lineF2.id() ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))" ) );
-  QVERIFY( mMultiPolygonLayer->undoStack()->index() == 2 );
-  QCOMPARE( mMultiPolygonLayer->getFeature( multipolygonF1.id() ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 5, 0 10, 4 10, 10 10, 10 5, 4 5, 0 5)),((0 0, 0 4, 10 4, 10 0, 0 0)))" ) );
-
-  // undo changes
-  mPolygonLayer->undoStack()->undo();
-  QVERIFY( mPolygonLayer->undoStack()->index() == 2 );
-  mMultiLineStringLayer->undoStack()->undo();
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
-  mMultiPolygonLayer->undoStack()->undo();
-  QVERIFY( mMultiPolygonLayer->undoStack()->index() == 1 );
+  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsMapToolSplitFeatures::testSplitSelectedLines()
 {
-  mMultiLineStringLayer->select( lineF1.id() );
+  mMultiLineStringLayer->select( 1 );
   mCanvas->setCurrentLayer( mMultiLineStringLayer );
-  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
-  mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 5, 6 ),
-        Qt::LeftButton
-      ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 5, -1 ),
-                 Qt::LeftButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 5, -1 ),
-                 Qt::RightButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-
+  mUtils->mouseClick( 5, 6, Qt::LeftButton );
+  mUtils->mouseClick( 5, -1, Qt::LeftButton );
+  mUtils->mouseClick( 5, -1, Qt::RightButton );
 
   // only the selected feature should be split
-  QVERIFY( mMultiLineStringLayer->featureCount() == 3 );
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
-
-  // undo changes
-  mMultiLineStringLayer->undoStack()->undo();
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
-  mMultiLineStringLayer->removeSelection();
+  QCOMPARE( mMultiLineStringLayer->featureCount(), 3 );
+  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 1 );
 }
 
 void TestQgsMapToolSplitFeatures::testSplitSomeOfSelectedLines()
 {
   mMultiLineStringLayer->selectAll();
   mCanvas->setCurrentLayer( mMultiLineStringLayer );
-  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
-  mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 5, 1 ),
-        Qt::LeftButton
-      ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 5, -1 ),
-                 Qt::LeftButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 5, -1 ),
-                 Qt::RightButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
+  mUtils->mouseClick( 5, 1, Qt::LeftButton );
+  mUtils->mouseClick( 5, -1, Qt::LeftButton );
+  mUtils->mouseClick( 5, -1, Qt::RightButton );
 
   // intersecting selected feature should be split
-  QVERIFY( mMultiLineStringLayer->featureCount() == 3 );
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
+  QCOMPARE( mMultiLineStringLayer->featureCount(), 3 );
+  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 1 );
+}
 
-  // undo changes
-  mMultiLineStringLayer->undoStack()->undo();
-  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
-  mMultiLineStringLayer->removeSelection();
+void TestQgsMapToolSplitFeatures::testSplitPolygonSnapToSegment()
+{
+  QgsProject::instance()->setTopologicalEditing( false );
+  QgsSnappingConfig oldCfg = mCanvas->snappingUtils()->config();
+  QgsSnappingConfig cfg( oldCfg );
+  cfg.setEnabled( true );
+  cfg.setTolerance( 20 );
+  cfg.setUnits( Qgis::MapToolUnit::Pixels );
+  cfg.setMode( Qgis::SnappingMode::ActiveLayer );
+  cfg.setTypeFlag( Qgis::SnappingType::Segment );
+  mCanvas->snappingUtils()->setConfig( cfg );
+  mCanvas->snappingUtils()->locatorForLayer( mPolygonLayer )->init();
+
+  mCanvas->setCurrentLayer( mPolygonLayer );
+
+  mUtils->mouseClick( 1, 0.6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 1, 4.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 2, 1.1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 2, 4.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 3, 1.6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 3, 4.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 4, 2.1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 4, 4.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 5, 2.6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 5, 4.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 6, 3.1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mUtils->mouseClick( 6, 3.1, Qt::RightButton, Qt::KeyboardModifiers(), true );
+
+  // Split line should split the triangle into 11 triangles
+  QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
+  QCOMPARE( mPolygonLayer->featureCount(), 12 );
+
+  // No change to the other feature in the layer
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "PolygonZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" ) );
+
+  // No change to other layers
+  QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
+  QCOMPARE( mMultiPolygonLayer->undoStack()->index(), 0 );
+
+  mCanvas->snappingUtils()->setConfig( oldCfg );
 }
 
 QGSTEST_MAIN( TestQgsMapToolSplitFeatures )
