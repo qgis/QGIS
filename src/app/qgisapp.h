@@ -161,6 +161,7 @@ class QgsGpsToolBar;
 class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
+class QgsAppCanvasFiltering;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2730,6 +2731,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
+
+    QgsAppCanvasFiltering *mAppCanvasFiltering = nullptr;
 
     QSet<QgsMapCanvasDockWidget *> mOpen2DMapViews;
 
