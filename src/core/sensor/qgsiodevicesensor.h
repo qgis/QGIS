@@ -276,14 +276,14 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
 
     /**
      * Returns the current delimiter used to separate data frames. If empty,
-     * each serial port data updates will be considered a data frame.
+     * each serial port data update will be considered a data frame.
      * \since QGIS 3.38
      */
     QByteArray delimiter() const;
 
     /**
      * Sets the delimiter used to identify data frames out of the data received
-     * from the serial port. If empty, each serial port data updates will be
+     * from the serial port. If empty, each serial port data update will be
      * considered a data frame.
      * \param delimiter Character used to identify data frames
      * \since QGIS 3.38

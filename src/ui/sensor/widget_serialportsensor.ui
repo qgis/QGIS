@@ -96,7 +96,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Choose a character acting as data frame delimiter</string>
+        <string>Choose a character to act as the data frame delimiter</string>
        </property>    
       </widget>
      </item>

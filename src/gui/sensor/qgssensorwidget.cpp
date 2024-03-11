@@ -157,9 +157,9 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
   mBaudRateComboBox->addItem( QStringLiteral( "115200 baud" ), static_cast<int>( QSerialPort::Baud115200 ) );
   mBaudRateComboBox->setCurrentIndex( 3 );
 
-  mDataFrameDelimiterComboBox->addItem( tr( "No delimiter" ), QString() );
-  mDataFrameDelimiterComboBox->addItem( tr( "New line" ), QString( "\n" ) );
-  mDataFrameDelimiterComboBox->addItem( tr( "Custom character" ), QString() );
+  mDataFrameDelimiterComboBox->addItem( tr( "No Delimiter" ), QString() );
+  mDataFrameDelimiterComboBox->addItem( tr( "New Line" ), QString( "\n" ) );
+  mDataFrameDelimiterComboBox->addItem( tr( "Custom Character" ), QString() );
 
   updateSerialPortDetails();
 
