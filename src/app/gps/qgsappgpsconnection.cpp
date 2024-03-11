@@ -57,7 +57,7 @@ void QgsAppGpsConnection::setConnection( QgsGpsConnection *connection )
     disconnectGps();
   }
 
-  onConnected( connection );
+  setConnectionPrivate( connection );
 }
 
 QgsPoint QgsAppGpsConnection::lastValidLocation() const
@@ -156,10 +156,11 @@ void QgsAppGpsConnection::connectGps()
 
   QgsMessageLog::logMessage( QObject::tr( "Firing up GPS detector" ), QObject::tr( "GPS" ), Qgis::Info );
 
-  QgsGpsDetector *detector = new QgsGpsDetector( port );
-  connect( detector, static_cast < void ( QgsGpsDetector::* )( QgsGpsConnection * ) > ( &QgsGpsDetector::detected ), this, &QgsAppGpsConnection::onConnected );
-  connect( detector, &QgsGpsDetector::detectionFailed, this, &QgsAppGpsConnection::onTimeOut );
-  detector->advance();   // start the detection process
+  // note -- QgsGpsDetector internally uses deleteLater to clean itself up!
+  mDetector = new QgsGpsDetector( port, false );
+  connect( mDetector, &QgsGpsDetector::connectionDetected, this, &QgsAppGpsConnection::onConnectionDetected );
+  connect( mDetector, &QgsGpsDetector::detectionFailed, this, &QgsAppGpsConnection::onTimeOut );
+  mDetector->advance();   // start the detection process
 }
 
 void QgsAppGpsConnection::disconnectGps()
@@ -181,6 +182,9 @@ void QgsAppGpsConnection::disconnectGps()
 
 void QgsAppGpsConnection::onTimeOut()
 {
+  if ( sender() != mDetector )
+    return;
+
   QgsMessageLog::logMessage( QObject::tr( "GPS detector reported timeout" ), QObject::tr( "GPS" ), Qgis::Critical );
   disconnectGps();
   emit connectionTimedOut();
@@ -189,11 +193,18 @@ void QgsAppGpsConnection::onTimeOut()
   showGpsConnectFailureWarning( tr( "TIMEOUT - Failed to connect to GPS device." ) );
 }
 
-void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
+void QgsAppGpsConnection::onConnectionDetected()
 {
-  QgsMessageLog::logMessage( QObject::tr( "GPS detector GOT a connection" ), QObject::tr( "GPS" ), Qgis::Info );
+  if ( sender() != mDetector )
+    return;
 
-  mConnection = conn;
+  QgsMessageLog::logMessage( QObject::tr( "GPS detector GOT a connection" ), QObject::tr( "GPS" ), Qgis::Info );
+  setConnectionPrivate( mDetector->takeConnection() );
+}
+
+void QgsAppGpsConnection::setConnectionPrivate( QgsGpsConnection *connection )
+{
+  mConnection = connection;
   connect( mConnection, &QgsGpsConnection::stateChanged, this, &QgsAppGpsConnection::stateChanged );
   connect( mConnection, &QgsGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsConnection::nmeaSentenceReceived );
   connect( mConnection, &QgsGpsConnection::fixStatusChanged, this, &QgsAppGpsConnection::fixStatusChanged );
