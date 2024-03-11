@@ -993,12 +993,25 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsCoordinateReferenceSystem toGeographicCrs() const;
 
     /**
+     * Returns the horizontal CRS associated with this CRS object.
+     *
+     * In the case of a compound CRS, this method will return just the horizontal CRS component.
+     *
+     * An invalid CRS will be returned if the object does not contain a horizontal component.
+     *
+     * \see verticalCrs()
+     * \since QGIS 3.38
+     */
+    QgsCoordinateReferenceSystem horizontalCrs() const;
+
+    /**
      * Returns the vertical CRS associated with this CRS object.
      *
      * In the case of a compound CRS, this method will return just the vertical CRS component.
      *
      * An invalid CRS will be returned if the object does not contain a vertical component.
      *
+     * \see horizontalCrs()
      * \since QGIS 3.38
      */
     QgsCoordinateReferenceSystem verticalCrs() const;
