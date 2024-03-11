@@ -23,10 +23,40 @@ Class to detect the GPS port
 #include "qgsgpsdetector.h"
 %End
   public:
-    QgsGpsDetector( const QString &portName );
+
+
+    QgsGpsDetector( const QString &portName = QString(), bool useUnsafeSignals = true );
+%Docstring
+Constructor for QgsGpsDetector.
+
+If ``portName`` is specified, then only devices from the given port will be scanned. Otherwise
+all connection types will be attempted (including internal GPS devices).
+
+Since QGIS 3.38, the ``useUnsafeSignals`` parameter can be set to ``False`` to avoid emitting the
+dangerous and fragile :py:func:`~QgsGpsDetector.detected` signal. This is highly recommended, but is opt-in to avoid
+breaking stable QGIS 3.x API. If ``useUnsafeSignals`` is set to ``False``, only the safe :py:func:`~QgsGpsDetector.connectionDetected` signal
+will be emitted and clients must manually take ownership of the detected connection via a call
+to :py:func:`~QgsGpsDetector.takeConnection`.
+%End
 
 
     ~QgsGpsDetector();
+
+    QgsGpsConnection *takeConnection() /TransferBack/;
+%Docstring
+Returns the detected GPS connection, and removes it from the detector.
+
+The caller takes ownership of the connection. Only the first call to this
+method following a :py:func:`~QgsGpsDetector.connectionDetected` signal will be able to retrieve the
+detected connection -- subsequent calls will return ``None``.
+
+.. warning::
+
+   Do not call this method if the useUnsafeSignals option in the
+   QgsGpsDetector constructor was set to ``True``.
+
+.. versionadded:: 3.38
+%End
 
     static QList< QPair<QString, QString> > availablePorts();
 
@@ -37,14 +67,28 @@ Class to detect the GPS port
 
   signals:
 
+    void connectionDetected();
+%Docstring
+Emitted when a GPS connection is successfully detected.
 
-    void detected( QgsGpsConnection *connection );
+Call :py:func:`~QgsGpsDetector.takeConnection` to take ownership of the detected connection.
+
+.. versionadded:: 3.38
+%End
+
+ void detected( QgsGpsConnection *connection ) /Deprecated/;
 %Docstring
 Emitted when the GPS connection has been detected. A single connection must listen for this signal and
 immediately take ownership of the ``connection`` object.
+
+.. deprecated::
+   This signal is dangerous and extremely unsafe! It is recommended to instead set the ``useUnsafeSignals`` parameter to ``False`` in the QgsGpsDetector constructor and use the safe :py:func:`~QgsGpsDetector.connectionDetected` signal instead.
 %End
 
     void detectionFailed();
+%Docstring
+Emitted when the detector could not find a valid GPS connection.
+%End
 
 };
 
