@@ -816,6 +816,8 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_start_time" ), QCoreApplication::translate( "variable_help", "Start of the map's temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_end_time" ), QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_interval" ), QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_z_range_lower" ), QCoreApplication::translate( "variable_help", "Lower elevation of the map's elevation range" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_z_range_upper" ), QCoreApplication::translate( "variable_help", "Upper elevation of the map's elevation range" ) );
 
   sVariableHelpTexts()->insert( QStringLiteral( "frame_rate" ), QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
