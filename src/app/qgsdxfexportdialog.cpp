@@ -710,6 +710,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
     mScaleWidget->setScale( 1.0 / oldScale );
   mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfLayerTitleAsName" ), settings.value( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), "false" ).toString() ) != QLatin1String( "false" ) );
   mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfMapRectangle" ), settings.value( QStringLiteral( "qgis/lastDxfMapRectangle" ), "false" ).toString() ) != QLatin1String( "false" ) );
+  mSelectedFeaturesOnly->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSelectedFeaturesOnly" ), settings.value( QStringLiteral( "qgis/lastDxfSelectedFeaturesOnly" ), "false" ).toString() ) != QLatin1String( "false" ) );
   mMTextCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfUseMText" ), settings.value( QStringLiteral( "qgis/lastDxfUseMText" ), "true" ).toString() ) != QLatin1String( "false" ) );
   mForce2d->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfForce2d" ), settings.value( QStringLiteral( "qgis/lastDxfForce2d" ), "false" ).toString() ) != QLatin1String( "false" ) );
 
@@ -850,6 +851,11 @@ bool QgsDxfExportDialog::exportMapExtent() const
   return mMapExtentCheckBox->isChecked();
 }
 
+bool QgsDxfExportDialog::selectedFeaturesOnly() const
+{
+  return mSelectedFeaturesOnly->isChecked();
+}
+
 bool QgsDxfExportDialog::layerTitleAsName() const
 {
   return mLayerTitleAsName->isChecked();
@@ -873,6 +879,7 @@ void QgsDxfExportDialog::saveSettings()
   settings.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
   settings.setValue( QStringLiteral( "qgis/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
   settings.setValue( QStringLiteral( "qgis/lastDxfMapRectangle" ), mMapExtentCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfSelectedFeaturesOnly" ), mSelectedFeaturesOnly->isChecked() );
   settings.setValue( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), mLayerTitleAsName->isChecked() );
   settings.setValue( QStringLiteral( "qgis/lastDxfEncoding" ), mEncoding->currentText() );
   settings.setValue( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
@@ -883,6 +890,7 @@ void QgsDxfExportDialog::saveSettings()
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfLayerTitleAsName" ), mLayerTitleAsName->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfMapRectangle" ), mMapExtentCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSelectedFeaturesOnly" ), mSelectedFeaturesOnly->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), mEncoding->currentText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastVisibilityPreset" ), mVisibilityPresets->currentText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
