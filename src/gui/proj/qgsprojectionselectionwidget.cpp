@@ -470,6 +470,7 @@ void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectio
     case QgsProjectionSelectionWidget::CurrentCrs:
     {
       mModel->setOption( option, visible );
+      updateTooltip();
       return;
     }
     case QgsProjectionSelectionWidget::RecentCrs:
@@ -488,6 +489,7 @@ void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectio
         if ( !mModel->combinedModel()->currentCrs().isValid() )
           whileBlocking( mCrsComboBox )->setCurrentIndex( 0 );
       }
+      updateTooltip();
 
       return;
     }
