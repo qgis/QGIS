@@ -100,6 +100,13 @@ QgsGpsConnection *QgsGpsDetector::takeConnection()
     return nullptr;
   }
 
+  if ( mConn )
+  {
+    // this is NOT the detectors connection anymore, so disconnect all signals from the connection
+    // to the detector so that there's no unwanted interaction with the detector
+    mConn->disconnect( this );
+  }
+
   return mConn.release();
 }
 
