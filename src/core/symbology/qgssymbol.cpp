@@ -943,7 +943,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   const bool prevForceVector = context->forceVectorOutput();
   context->setForceVectorOutput( true );
 
-  const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity ) : mOpacity;
+  const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity * 100 ) * 0.01 : mOpacity;
 
   QgsSymbolRenderContext symbolContext( *context, Qgis::RenderUnit::Unknown, opacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
