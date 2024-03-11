@@ -2330,7 +2330,13 @@ bool testIsGeographic( PJ *crs )
 {
   PJ_CONTEXT *pjContext = QgsProjContext::get();
   bool isGeographic = false;
-  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( pjContext, crs ) );
+
+  // check horizontal CRS units
+  QgsProjUtils::proj_pj_unique_ptr horizontalCrs( QgsProjUtils::crsToHorizontalCrs( crs ) );
+  if ( !horizontalCrs )
+    return false;
+
+  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( pjContext, horizontalCrs.get() ) );
   if ( coordinateSystem )
   {
     const int axisCount = proj_cs_get_axis_count( pjContext, coordinateSystem.get() );
