@@ -25,6 +25,7 @@ class QgsGpsConnection;
 class QgsGpsInformation;
 class QgsPoint;
 class QgsMessageBarItem;
+class QgsGpsDetector;
 
 /**
  * Manages a single "canonical" GPS connection for use in the QGIS app, eg for displaying GPS
@@ -140,8 +141,9 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
   private slots:
 
     void onTimeOut();
+    void onConnectionDetected();
 
-    void onConnected( QgsGpsConnection *conn );
+    void setConnectionPrivate( QgsGpsConnection *connection );
 
   private:
 
@@ -150,6 +152,7 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     void showGpsConnectFailureWarning( const QString &message );
     void showMessage( Qgis::MessageLevel level, const QString &message );
 
+    QPointer< QgsGpsDetector > mDetector;
     QgsGpsConnection *mConnection = nullptr;
     QPointer< QgsMessageBarItem > mConnectionMessageItem;
 };
