@@ -131,6 +131,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagNoMText = 1 << 1, //!< Export text as TEXT elements. If not set, text will be exported as MTEXT elements.
+      FlagOnlySelectedFeatures = 1 << 2, //!< Use only selected features for the export.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

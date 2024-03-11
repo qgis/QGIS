@@ -74,6 +74,7 @@ Returns the maximum number of data defined symbol classes for which blocks are c
     enum Flag
     {
       FlagNoMText,
+      FlagOnlySelectedFeatures,
     };
     typedef QFlags<QgsDxfExport::Flag> Flags;
 
