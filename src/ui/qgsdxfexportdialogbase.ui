@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>698</width>
+    <width>716</width>
     <height>680</height>
    </rect>
   </property>
@@ -60,22 +60,22 @@
     <widget class="QComboBox" name="mEncoding"/>
    </item>
    <item row="7" column="0" colspan="2">
-    <widget class="QWidget" name="mTreeViewContainer">
-     <layout class="QHBoxLayout" name="mTreeViewLayout"/>
+     <widget class="QWidget" name="mTreeViewContainer">
+    <layout class="QHBoxLayout" name="mTreeViewLayout"/>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
+    <widget class="QgsScaleWidget" name="mScaleWidget">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
-     <property name="showCurrentScaleButton" stdset="0">
+     <property name="showCurrentScaleButton">
       <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
@@ -85,7 +85,7 @@
     <widget class="QComboBox" name="mVisibilityPresets"/>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFileWidget" name="mFileName" native="true"/>
+    <widget class="QgsFileWidget" name="mFileName"/>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="label_3">
@@ -105,29 +105,30 @@
      <item row="0" column="0">
       <widget class="QPushButton" name="mSelectAllButton">
        <property name="text">
-        <string>Select All</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="mDeselectAllButton">
-       <property name="text">
-        <string>Deselect All</string>
+        <string>Select All Layers</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="mDeselectAllButton">
+       <property name="text">
+        <string>Deselect All Layers</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="mSelectDataDefinedBlocks">
+       <property name="text">
+        <string>Select Data DefinedBlocks</string>
        </property>
-      </spacer>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="mDeselectDataDefinedBlocks">
+       <property name="text">
+        <string>Deselect Data DefinedBlocks</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -219,9 +220,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleWidget</class>
+   <class>QgsFileWidget</class>
    <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -230,15 +232,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFileWidget</class>
+   <class>QgsScaleWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
-   <container>1</container>
+   <header>qgsscalewidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

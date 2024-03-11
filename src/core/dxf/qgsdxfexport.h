@@ -41,6 +41,7 @@ class QgsCircularString;
 class QgsCompoundCurve;
 struct DxfLayerJob;
 class QgsSymbolRenderContext;
+class QgsMarkerSymbolLayer;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
@@ -72,9 +73,11 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      */
     struct CORE_EXPORT DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = false, int ddBlocksMaxNumberOfClasses = -1 )
           : mLayer( vl )
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
+          , mBuildDDBlocks( buildDDBlocks )
+          , mDDBlocksMaxNumberOfClasses( ddBlocksMaxNumberOfClasses )
         {}
 
         //! Returns the layer
@@ -95,9 +98,33 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
          */
         QString splitLayerAttribute() const;
 
+        /**
+         * \brief Flag if data defined point block symbols should be created. Default is false
+         * \return True if data defined point block symbols should be created
+         * \since QGIS 3.38
+         */
+        bool buildDataDefinedBlocks() const { return mBuildDDBlocks; }
+
+        /**
+         * \brief Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
+         * \return
+         * \since QGIS 3.38
+         */
+        int dataDefinedBlocksMaximumNumberOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
+
       private:
         QgsVectorLayer *mLayer = nullptr;
         int mLayerOutputAttributeIndex = -1;
+
+        /**
+         * \brief try to build data defined symbol blocks if necessary
+         */
+        bool mBuildDDBlocks = false;
+
+        /**
+         * \brief Limit for the number of data defined symbol block classes (keep only the most used ones). -1 means no limit
+         */
+        int mDDBlocksMaxNumberOfClasses = -1;
     };
 
     //! Export flags
@@ -527,6 +554,15 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QgsDxfExport( const QgsDxfExport &other );
     QgsDxfExport &operator=( const QgsDxfExport & );
 #endif
+
+    struct DataDefinedBlockInfo
+    {
+      QString blockName;
+      double angle;
+      double size;
+      QgsFeature feature; //a feature representing the attribute combination (without geometry)
+    };
+
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
@@ -545,8 +581,11 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QHash< const QgsSymbolLayer *, QString > mPointSymbolBlocks; //reference to point symbol blocks
     QHash< const QgsSymbolLayer *, double > mPointSymbolBlockSizes; //reference to point symbol size used to create its block
     QHash< const QgsSymbolLayer *, double > mPointSymbolBlockAngles; //reference to point symbol size used to create its block
+    //! Layers with data defined symbology (other than size and angle) may also have blocks
+    QHash< const QgsSymbolLayer *, QHash <uint, DataDefinedBlockInfo> > mDataDefinedBlockInfo; // symbolLayerName -> symbolHash/Feature
 
     //AC1009
+    void createDDBlockInfo();
     void writeHeader( const QString &codepage );
     void prepareRenderers();
     void writeTables();
@@ -605,6 +644,10 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers( QgsRenderContext &context );
     static int nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol *> > &symbolLayers );
     static bool hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
+    void writeSymbolTableBlockRef( const QString &blockName );
+    void writeSymbolLayerBlock( const QString &blockName, const QgsMarkerSymbolLayer *ml, QgsSymbolRenderContext &ctx );
+    void writePointBlockReference( const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize );
+    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop );
 
     double dashSize() const;
     double dotSize() const;
@@ -622,6 +665,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QgsMapSettings mMapSettings;
     QList<QgsMapLayer *> mLayerList;
     QHash<QString, int> mLayerNameAttribute;
+    QHash<QString, int> mLayerDDBlockMaxNumberOfClasses;
     double mFactor = 1.0;
     bool mForce2d = false;
 

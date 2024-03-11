@@ -32,7 +32,9 @@
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgslinesymbol.h"
+#include "qgssymbollayerutils.h"
 
+#include <QBuffer>
 #include <QTemporaryFile>
 #include <QRegularExpression>
 
@@ -52,6 +54,7 @@ class TestQgsDxfExport : public QObject
     void cleanup();// will be called after every testfunction.
     void testPoints();
     void testPointsDataDefinedSizeAngle();
+    void testPointsDataDefinedSizeSymbol();
     void testLines();
     void testPolygons();
     void testMultiSurface();
@@ -79,6 +82,7 @@ class TestQgsDxfExport : public QObject
     QgsVectorLayer *mPointLayerNoSymbols = nullptr;
     QgsVectorLayer *mPointLayerGeometryGenerator = nullptr;
     QgsVectorLayer *mPointLayerDataDefinedSizeAngle = nullptr;
+    QgsVectorLayer *mPointLayerDataDefinedSizeSymbol = nullptr;
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
@@ -148,6 +152,24 @@ void TestQgsDxfExport::init()
   QgsMarkerSymbol *markerDataDefinedSymbol = new QgsMarkerSymbol( symbolLayerList );
   mPointLayerDataDefinedSizeAngle->setRenderer( new QgsSingleSymbolRenderer( markerDataDefinedSymbol ) );
   QgsProject::instance()->addMapLayer( mPointLayerDataDefinedSizeAngle );
+
+  // Point layer with data-defined size and data defined svg symbol
+  mPointLayerDataDefinedSizeSymbol = new  QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( mPointLayerDataDefinedSizeSymbol );
+  QgsSvgMarkerSymbolLayer *svgSymbolLayer = new QgsSvgMarkerSymbolLayer( QStringLiteral( "symbol.svg" ) );
+  QgsPropertyCollection ddProperties;
+  ddProperties.setProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( "Importance / 10.0" ) );
+  const QString planeSvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/gpsicons/plane.svg" ), QgsPathResolver() );
+  const QString planeOrangeSvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/gpsicons/plane_orange.svg" ), QgsPathResolver() );
+  const QString blueMarkerSvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/symbol/blue-marker.svg" ), QgsPathResolver() );
+  QString expressionString = QString( "CASE WHEN \"CLASS\" = 'B52' THEN '%1' WHEN \"CLASS\" = 'Biplane' THEN '%2' WHEN \"CLASS\" = 'Jet' THEN '%3' END" ).arg( planeSvgPath ).arg( planeOrangeSvgPath ).arg( blueMarkerSvgPath );
+  ddProperties.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( expressionString ) );
+  svgSymbolLayer->setDataDefinedProperties( ddProperties );
+  QgsSymbolLayerList ddSymbolLayerList;
+  ddSymbolLayerList << svgSymbolLayer;
+  QgsMarkerSymbol *markerSvgDataDefinedSymbol = new QgsMarkerSymbol( ddSymbolLayerList );
+  mPointLayerDataDefinedSizeSymbol->setRenderer( new QgsSingleSymbolRenderer( markerSvgDataDefinedSymbol ) );
+  QgsProject::instance()->addMapLayer( mPointLayerDataDefinedSizeSymbol );
 
   filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   mLineLayer = new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
@@ -223,6 +245,33 @@ void TestQgsDxfExport::testPointsDataDefinedSizeAngle()
 
   // Verify that blocks have been used even though size and angle were data defined properties
   QVERIFY( fileContainsText( file, QStringLiteral( "symbolLayer0" ) ) );
+}
+
+void TestQgsDxfExport::testPointsDataDefinedSizeSymbol()
+{
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeSymbol, -1, true, -1 ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerDataDefinedSizeAngle->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerDataDefinedSizeAngle );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerDataDefinedSizeAngle->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 2000000 );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
+
+  QByteArray dxfByteArray;
+  QBuffer dxfBuffer( &dxfByteArray );
+  dxfBuffer.open( QIODevice::WriteOnly );
+  QCOMPARE( d.writeToFile( &dxfBuffer, QStringLiteral( "ISO-8859-1" ) ), QgsDxfExport::ExportResult::Success );
+  dxfBuffer.close();
+
+  QString dxfString = QString::fromLatin1( dxfByteArray );
+  QVERIFY( dxfString.contains( QStringLiteral( "symbolLayer0class" ) ) );
 }
 
 void TestQgsDxfExport::testLines()
