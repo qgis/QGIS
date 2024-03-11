@@ -209,6 +209,9 @@ void QgsGpsDetector::detected( const QgsGpsInformation & )
   else if ( mConn->status() == QgsGpsConnection::GPSDataReceived )
   {
     mTimeoutTimer->stop();
+    // stop listening for state changed signals, we've already validated this connection and don't want subsequent calls
+    // to QgsGpsDetector::detected being made
+    disconnect( mConn.get(), &QgsGpsConnection::stateChanged, this, qOverload< const QgsGpsInformation & >( &QgsGpsDetector::detected ) );
 
     // signal detected
     QgsMessageLog::logMessage( QObject::tr( "Connection status IS GPSDataReceived" ), QObject::tr( "GPS" ), Qgis::Info );
