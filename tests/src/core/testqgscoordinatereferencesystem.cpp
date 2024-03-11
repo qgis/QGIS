@@ -300,6 +300,13 @@ void TestQgsCoordinateReferenceSystem::verticalCrs()
   QVERIFY( crs.isValid() );
 
   QCOMPARE( crs.type(), Qgis::CrsType::Vertical );
+  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Meters );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:6358" ) );
+  QVERIFY( crs.isValid() );
+
+  QCOMPARE( crs.type(), Qgis::CrsType::Vertical );
+  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Feet );
 }
 
 void TestQgsCoordinateReferenceSystem::projectedCrs()
