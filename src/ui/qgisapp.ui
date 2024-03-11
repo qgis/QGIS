@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1277</width>
+    <width>1368</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1277</width>
-     <height>20</height>
+     <width>1368</width>
+     <height>27</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -142,6 +142,13 @@
      <addaction name="mActionToggleSelectedLayersIndependently"/>
      <addaction name="mActionHideDeselectedLayers"/>
     </widget>
+    <widget class="QMenu" name="menuData_Filtering">
+     <property name="title">
+      <string>Data Filtering</string>
+     </property>
+     <addaction name="mActionTemporalController"/>
+     <addaction name="mActionElevationController"/>
+    </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="m3DMapViewsMenu"/>
     <addaction name="mActionPan"/>
@@ -149,6 +156,7 @@
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
+    <addaction name="menuData_Filtering"/>
     <addaction name="mActionIdentify"/>
     <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
@@ -3365,8 +3373,22 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Get Involved</string>
    </property>
   </action>
+  <action name="mActionElevationController">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mesh/Elevation.svg</normaloff>
+     <normalon>:/images/themes/default/mesh/Elevation.svg</normalon>:/images/themes/default/mesh/Elevation.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Elevation Controller</string>
+   </property>
+   <property name="toolTip">
+    <string>Elevation Controller Panel</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

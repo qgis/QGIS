@@ -110,6 +110,7 @@ set(QGIS_APP_SRCS
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
 
+  canvas/qgsappcanvasfiltering.cpp
   canvas/qgscanvasrefreshblocker.cpp
 
   decorations/qgsdecorationitem.cpp
