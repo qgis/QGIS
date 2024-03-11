@@ -1390,7 +1390,7 @@ bool QgsPostgresProvider::loadFields()
                              .arg( quotedValue( mQuery ) )
                              .arg( quotedValue( fieldName ) );
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
-      if ( seqResult.PQntuples() == 1 && !QgsVariantUtils::isNull( seqResult.PQgetvalue( 0, 0 ) ) )
+      if ( seqResult.PQntuples() == 1 && !seqResult.PQgetisnull( 0, 0 ) )
       {
         defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1)" ).arg( quotedValue( seqResult.PQgetvalue( 0, 0 ) ) );
       }
