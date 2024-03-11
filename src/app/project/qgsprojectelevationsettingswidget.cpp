@@ -20,6 +20,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgselevationshadingrenderersettingswidget.h"
+#include "qgsprojectionselectionwidget.h"
 
 QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
@@ -42,6 +43,17 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   mComboTerrainType->addItem( tr( "Flat Terrain" ), QStringLiteral( "flat" ) );
   mComboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QStringLiteral( "raster" ) );
   mComboTerrainType->addItem( tr( "Mesh" ), QStringLiteral( "mesh" ) );
+
+  mVerticalCrsStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  mVerticalCrsWidget = new QgsProjectionSelectionWidget( nullptr, QgsCoordinateReferenceSystemProxyModel::FilterVertical );
+  mVerticalCrsWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mVerticalCrsWidget->setNotSetText( tr( "Not set" ) );
+  mVerticalCrsWidget->setDialogTitle( tr( "Project Vertical CRS" ) );
+  vl->addWidget( mVerticalCrsWidget );
+  mCrsPageEnabled->setLayout( vl );
 
   mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
@@ -100,6 +112,9 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   else
     whileBlocking( mElevationUpperSpin )->clear();
 
+  updateVerticalCrsOptions();
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgsProjectElevationSettingsWidget::updateVerticalCrsOptions );
+
   validate();
 
   mElevationShadingSettingsWidget = new QgsElevationShadingRendererSettingsWidget( nullptr, nullptr, this );
@@ -145,7 +160,39 @@ void QgsProjectElevationSettingsWidget::apply()
 
   QgsProject::instance()->elevationProperties()->setElevationRange( QgsDoubleRange( zLower, zUpper ) );
 
+  QgsProject::instance()->setVerticalCrs( mVerticalCrsWidget->crs() );
+
   mElevationShadingSettingsWidget->apply();
+}
+
+void QgsProjectElevationSettingsWidget::updateVerticalCrsOptions()
+{
+  switch ( QgsProject::instance()->crs().type() )
+  {
+    case Qgis::CrsType::Compound:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a compound CRS (%1), so the project's vertical CRS is the vertical component of this CRS (%2)." ).arg(
+                                    QgsProject::instance()->crs().userFriendlyIdentifier(),
+                                    QgsProject::instance()->verticalCrs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Geographic3d:
+    case Qgis::CrsType::Vertical:
+    case Qgis::CrsType::Projected:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::Other:
+    case Qgis::CrsType::DerivedProjected:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageEnabled );
+      mVerticalCrsWidget->setCrs( QgsProject::instance()->verticalCrs() );
+      break;
+  }
 }
 
 bool QgsProjectElevationSettingsWidget::validate()
