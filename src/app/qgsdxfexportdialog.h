@@ -100,6 +100,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     Qgis::FeatureSymbologyExport symbologyMode() const;
     QString saveFile() const;
     bool exportMapExtent() const;
+    bool selectedFeaturesOnly() const;
     bool layerTitleAsName() const;
     bool force2d() const;
     bool useMText() const;
