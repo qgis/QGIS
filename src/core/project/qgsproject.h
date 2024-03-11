@@ -423,12 +423,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * verticalCrs() will be the vertical component of crs(). Otherwise it will be the value
      * explicitly set by this call.
      *
+     * \param crs the vertical CRS
+     * \param errorMessage will be set to a descriptive message if the vertical CRS could not be set
+     *
+     * \returns TRUE if vertical CRS was successfully set
+     *
      * \see verticalCrs()
      * \see setCrs()
      *
      * \since QGIS 3.38
      */
-    void setVerticalCrs( const QgsCoordinateReferenceSystem &crs );
+    bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Returns a copy of the project's coordinate transform context, which stores various

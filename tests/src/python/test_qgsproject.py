@@ -164,11 +164,20 @@ class TestQgsProject(QgisTestCase):
         self.assertFalse(project.verticalCrs().isValid())
 
         spy = QSignalSpy(project.verticalCrsChanged)
-        project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        # not a vertical crs
+        ok, err = project.setVerticalCrs(
+            QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Specified CRS is a Projected CRS, not a Vertical CRS')
+        self.assertFalse(project.verticalCrs().isValid())
+
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
         self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
         self.assertEqual(len(spy), 1)
         # try overwriting with same crs, should be no new signal
-        project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
         self.assertEqual(len(spy), 1)
 
         # check that project vertical crs variables are set in expression context
@@ -198,6 +207,16 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(spy), 2)
         self.assertFalse(project.verticalCrs().isValid())
 
+        # test resetting vertical crs back to not set
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(len(spy), 3)
+
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem())
+        self.assertTrue(ok)
+        self.assertEqual(len(spy), 4)
+        self.assertFalse(project.verticalCrs().isValid())
+
     def test_vertical_crs_with_compound_horizontal_crs(self):
         """
         Test vertical crs logic when project has a compound crs set
@@ -220,15 +239,23 @@ class TestQgsProject(QgisTestCase):
         # if we explicitly set a vertical crs now, it should be ignored
         # because the main project crs is a compound crs and that takes
         # precedence
-        project.setVerticalCrs(other_vert_crs)
+        ok, err = project.setVerticalCrs(other_vert_crs)
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Project CRS is a Compound CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
+        # setting the vertical crs to the vertical component of the compound crs
+        # IS permitted, even though it effectively has no impact...
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
         self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
         self.assertEqual(len(spy), 1)
 
         # reset horizontal crs to a non-compound crs, now the manually
         # specified vertical crs should take precedence
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        self.assertEqual(project.verticalCrs().authid(), 'ESRI:115700')
-        self.assertEqual(len(spy), 2)
+        self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
 
     def testEllipsoid(self):
         prj = QgsProject.instance()

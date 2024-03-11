@@ -360,7 +360,7 @@ The returned CRS will be invalid if the project has no vertical CRS.
 .. versionadded:: 3.38
 %End
 
-    void setVerticalCrs( const QgsCoordinateReferenceSystem &crs );
+    bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage /Out/ = 0 );
 %Docstring
 Sets the project's vertical coordinate reference system.
 
@@ -369,6 +369,13 @@ Sets the project's vertical coordinate reference system.
    If the project :py:func:`~QgsProject.crs` is a compound CRS, then the CRS returned for
    :py:func:`~QgsProject.verticalCrs` will be the vertical component of :py:func:`~QgsProject.crs`. Otherwise it will be the value
    explicitly set by this call.
+
+:param crs: the vertical CRS
+
+
+:return: - ``True`` if vertical CRS was successfully set
+         - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
+
 
 .. seealso:: :py:func:`verticalCrs`
 
