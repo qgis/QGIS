@@ -64,7 +64,8 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
   return devs;
 }
 
-QgsGpsDetector::QgsGpsDetector( const QString &portName )
+QgsGpsDetector::QgsGpsDetector( const QString &portName, bool useUnsafeSignals )
+  : mUseUnsafeSignals( useUnsafeSignals )
 {
 #if defined( HAVE_QTSERIALPORT )
   mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200;  //add 57600 for SXBlueII GPS unit
@@ -87,11 +88,21 @@ QgsGpsDetector::~QgsGpsDetector()
   QgsMessageLog::logMessage( QObject::tr( "Destroying GPS detector" ), QObject::tr( "GPS" ), Qgis::Info );
 }
 
+QgsGpsConnection *QgsGpsDetector::takeConnection()
+{
+  if ( mUseUnsafeSignals )
+  {
+    QgsDebugError( QStringLiteral( "QgsGpsDetector::takeConnection() incorrectly called when useUnsafeSignals option is in effect" ) );
+    return nullptr;
+  }
+
+  return mConn.release();
+}
+
 void QgsGpsDetector::advance()
 {
   if ( mConn )
   {
-    disconnect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
     mConn.reset();
   }
 
@@ -170,22 +181,22 @@ void QgsGpsDetector::advance()
   QgsMessageLog::logMessage( QObject::tr( "Have a connection, now listening for messages" ), QObject::tr( "GPS" ), Qgis::Info );
 
   connect( mConn.get(), &QgsGpsConnection::stateChanged, this, static_cast < void ( QgsGpsDetector::* )( const QgsGpsInformation & ) >( &QgsGpsDetector::detected ) );
-  connect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
+  if ( mUseUnsafeSignals )
+  {
+    connect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
+  }
 
   // leave 2s to pickup a valid string
   QTimer::singleShot( 2000, this, &QgsGpsDetector::connectionTimeout );
 }
 
-void QgsGpsDetector::detected( const QgsGpsInformation &info )
+void QgsGpsDetector::detected( const QgsGpsInformation & )
 {
-  Q_UNUSED( info )
-
   QgsMessageLog::logMessage( QObject::tr( "Detected information" ), QObject::tr( "GPS" ), Qgis::Info );
 
   if ( !mConn )
   {
     // advance if connection was destroyed
-
     QgsMessageLog::logMessage( QObject::tr( "Got information, but CONNECTION WAS DESTROYED EXTERNALLY!" ), QObject::tr( "GPS" ), Qgis::Critical );
     advance();
   }
@@ -194,8 +205,17 @@ void QgsGpsDetector::detected( const QgsGpsInformation &info )
     // signal detected
     QgsMessageLog::logMessage( QObject::tr( "Connection status IS GPSDataReceived" ), QObject::tr( "GPS" ), Qgis::Info );
 
-    // let's hope there's a single, unique connection to this signal... otherwise... boom
-    emit detected( mConn.release() );
+    if ( mUseUnsafeSignals )
+    {
+      // let's hope there's a single, unique connection to this signal... otherwise... boom!
+      Q_NOWARN_DEPRECATED_PUSH
+      emit detected( mConn.release() );
+      Q_NOWARN_DEPRECATED_POP
+    }
+    else
+    {
+      emit connectionDetected();
+    }
 
     deleteLater();
   }
