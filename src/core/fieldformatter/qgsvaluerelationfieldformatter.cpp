@@ -33,12 +33,12 @@ using namespace nlohmann;
 
 bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
-  return qgsVariantLessThan( p1.key, p2.key );
+  return p1.group == p2.group ? qgsVariantLessThan( p1.key, p2.key ) : qgsVariantLessThan( p1.group, p2.group );
 }
 
 bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
-  return qgsVariantLessThan( p1.value, p2.value );
+  return p1.group == p2.group ? qgsVariantLessThan( p1.value, p2.value ) : qgsVariantLessThan( p1.group, p2.group );
 }
 
 QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
@@ -135,13 +135,19 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
     return cache;
 
   QgsFields fields = layer->fields();
-  int ki = fields.indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
-  int vi = fields.indexOf( config.value( QStringLiteral( "Value" ) ).toString() );
+  const int keyIdx = fields.indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
+  const int valueIdx = fields.indexOf( config.value( QStringLiteral( "Value" ) ).toString() );
 
   QgsFeatureRequest request;
 
   request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  QgsAttributeIds subsetOfAttributes { ki, vi };
+  QgsAttributeIds subsetOfAttributes { keyIdx, valueIdx };
+
+  const int groupIdx = fields.lookupField( config.value( QStringLiteral( "Group" ) ).toString() );
+  if ( groupIdx > -1 )
+  {
+    subsetOfAttributes << groupIdx;
+  }
 
   const QString descriptionExpressionString = config.value( "Description" ).toString();
   QgsExpression descriptionExpression( descriptionExpressionString );
@@ -180,7 +186,8 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
       context.setFeature( f );
       description = descriptionExpression.evaluate( &context ).toString();
     }
-    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString(), description ) );
+    const QVariant group = groupIdx > -1 ? f.attribute( groupIdx ) : QVariant();
+    cache.append( ValueRelationItem( f.attribute( keyIdx ), f.attribute( valueIdx ).toString(), description, group ) );
   }
 
   if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )

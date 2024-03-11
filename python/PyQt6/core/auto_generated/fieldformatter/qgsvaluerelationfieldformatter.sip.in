@@ -24,7 +24,7 @@ features on another layer.
   public:
     struct ValueRelationItem
     {
-      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString() );
+      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString(), const QVariant group = QVariant() );
 %Docstring
 Constructor for ValueRelationItem
 %End
@@ -37,6 +37,7 @@ Constructor for ValueRelationItem
       QVariant key;
       QString value;
       QString description;
+      QVariant group;
     };
 
     typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
