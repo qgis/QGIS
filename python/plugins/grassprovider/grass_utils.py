@@ -602,7 +602,7 @@ class GrassUtils:
     @staticmethod
     def tr(string, context=''):
         if context == '':
-            context = 'GrassUtils'
+            context = 'Grass7Utils'
         return QCoreApplication.translate(context, string)
 
     @staticmethod

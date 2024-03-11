@@ -180,5 +180,5 @@ class GrassProvider(QgsProcessingProvider):
 
     def tr(self, string, context=''):
         if context == '':
-            context = 'GrassProvider'
+            context = 'Grass7AlgorithmProvider'
         return QCoreApplication.translate(context, string)
