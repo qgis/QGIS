@@ -1021,13 +1021,65 @@ QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
   return mVerticalCrs;
 }
 
-void QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs )
+bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( crs.isValid() )
+  {
+    // validate that passed crs is a vertical crs
+    switch ( crs.type() )
+    {
+      case Qgis::CrsType::Vertical:
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Compound:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geocentric:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Specified CRS is a %1 CRS, not a Vertical CRS" ).arg( qgsEnumValueToKey( crs.type() ) );
+        return false;
+    }
+  }
 
   if ( crs != mVerticalCrs )
   {
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+
+    switch ( mCrs.type() )
+    {
+      case Qgis::CrsType::Compound:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Compound CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geocentric:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::Vertical:
+      case Qgis::CrsType::DerivedProjected:
+        break;
+    }
 
     mVerticalCrs = crs;
     mProjectScope.reset();
@@ -1038,6 +1090,7 @@ void QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs )
     if ( verticalCrs() != oldVerticalCrs )
       emit verticalCrsChanged();
   }
+  return true;
 }
 
 QgsCoordinateTransformContext QgsProject::transformContext() const
