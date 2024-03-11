@@ -280,6 +280,14 @@ void TestQgsCoordinateReferenceSystem::compoundCrs()
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.type(), Qgis::CrsType::Compound );
+  QVERIFY( crs.isGeographic() );
+  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Degrees );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9388" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.type(), Qgis::CrsType::Compound );
+  QVERIFY( !crs.isGeographic() );
+  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Meters );
 }
 
 void TestQgsCoordinateReferenceSystem::verticalCrs()
