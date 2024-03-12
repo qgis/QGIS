@@ -51,6 +51,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsrasterlayerelevationproperties.h"
 #include "qgssymbol.h"
 #include "qgsguiutils.h"
 
@@ -999,6 +1000,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     dprovider->temporalCapabilities()->setRequestedTemporalRange( identifyContext.temporalRange() );
   }
 
+  if ( !identifyContext.zRange().isInfinite() )
+  {
+    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange() ) )
+      return false;
+  }
+
   QgsPointXY pointInCanvasCrs = point;
   try
   {
@@ -1075,6 +1082,46 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ), 2 );
 
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
+  }
+
+  QgsRasterLayerElevationProperties *elevationProperties = qobject_cast< QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
+  if ( identifyResult.isValid() && !identifyContext.zRange().isInfinite() && elevationProperties && elevationProperties->isEnabled() )
+  {
+    // filter results by z range
+    switch ( format )
+    {
+      case Qgis::RasterIdentifyFormat::Value:
+      {
+        bool foundMatch = false;
+        QMap<int, QVariant> values = identifyResult.results();
+        for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+        {
+          if ( QgsVariantUtils::isNull( it.value() ) )
+          {
+            continue;
+          }
+          const double value = it.value().toDouble();
+          const double elevation = elevationProperties->elevationForPixelValue( it.key(), value );
+          if ( identifyContext.zRange().contains( elevation ) )
+          {
+            foundMatch = true;
+            break;
+          }
+        }
+
+        if ( !foundMatch )
+          return false;
+
+        break;
+      }
+
+      // can't filter by z for these formats
+      case Qgis::RasterIdentifyFormat::Undefined:
+      case Qgis::RasterIdentifyFormat::Text:
+      case Qgis::RasterIdentifyFormat::Html:
+      case Qgis::RasterIdentifyFormat::Feature:
+        break;
+    }
   }
 
   derivedAttributes.insert( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
