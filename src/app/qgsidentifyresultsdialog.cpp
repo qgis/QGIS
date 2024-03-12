@@ -1984,26 +1984,23 @@ QgsTiledSceneLayer *QgsIdentifyResultsDialog::tiledSceneLayer( QTreeWidgetItem *
   return qobject_cast<QgsTiledSceneLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
-QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
+QgsAttributeMap QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
-    return nullptr;
+    return {};
 
-  idx = -1;
-
-  attributes.clear();
+  QgsAttributeMap attributes;
   for ( int i = 0; i < featItem->childCount(); i++ )
   {
     QTreeWidgetItem *item = featItem->child( i );
     if ( item->childCount() > 0 )
       continue;
-    if ( item == lstResults->currentItem() )
-      idx = item->data( 0, Qt::UserRole + 1 ).toInt();
+
     attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, REPRESENTED_VALUE_ROLE ) );
   }
 
-  return featItem;
+  return attributes;
 }
 
 void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
@@ -2399,12 +2396,8 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
   if ( vlayer )
   {
-    int idx;
-    QgsAttributeMap attributes;
-    retrieveAttributes( lstResults->currentItem(), attributes, idx );
-
-    const QgsFields &fields = vlayer->fields();
-
+    const QgsAttributeMap attributes = retrieveAttributes( lstResults->currentItem() );
+    const QgsFields fields = vlayer->fields();
     for ( QgsAttributeMap::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
     {
       const int attrIdx = it.key();
