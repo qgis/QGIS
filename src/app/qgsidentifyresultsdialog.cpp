@@ -1976,10 +1976,19 @@ QgsAttributeMap QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *i
     if ( item->childCount() > 0 )
       continue;
 
-    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, REPRESENTED_VALUE_ROLE ) );
+    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(),
+                       retrieveAttribute( item ) );
   }
 
   return attributes;
+}
+
+QVariant QgsIdentifyResultsDialog::retrieveAttribute( QTreeWidgetItem *item )
+{
+  if ( !item )
+    return QVariant();
+
+  return item->data( 1, REPRESENTED_VALUE_ROLE );
 }
 
 void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
@@ -2349,7 +2358,8 @@ void QgsIdentifyResultsDialog::collapseAll()
 void QgsIdentifyResultsDialog::copyAttributeValue()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  const QString text = lstResults->currentItem()->data( 1, REPRESENTED_VALUE_ROLE ).toString();
+  const QVariant attributeValue = retrieveAttribute( lstResults->currentItem() );
+  const QString text = attributeValue.toString();
   QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( text ), 2 );
   clipboard->setText( text );
 }
