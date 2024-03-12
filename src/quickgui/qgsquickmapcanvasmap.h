@@ -185,6 +185,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void onExtentChanged();
     void onLayersChanged();
     void onTemporalStateChanged();
+    void onzRangeChanged();
 
   private:
 
@@ -196,6 +197,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void updateTransform();
     void zoomToFullExtent();
     void clearTemporalCache();
+    void clearElevationCache();
 
     std::unique_ptr<QgsQuickMapSettings> mMapSettings;
     bool mPinching = false;
