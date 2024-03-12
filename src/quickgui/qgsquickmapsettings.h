@@ -135,6 +135,16 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
      */
     Q_PROPERTY( QDateTime temporalEnd READ temporalEnd WRITE setTemporalEnd NOTIFY temporalStateChanged )
 
+    /**
+     * The Z range's lower value (since QGIS 3.38)
+     */
+    Q_PROPERTY( double zRangeLower READ zRangeLower WRITE setZRangeLower NOTIFY zRangeChanged )
+
+    /**
+     * The Z range's upper value (since QGIS 3.38)
+     */
+    Q_PROPERTY( double zRangeUpper READ zRangeUpper WRITE setZRangeUpper NOTIFY zRangeChanged )
+
   public:
     //! Create new map settings
     explicit QgsQuickMapSettings( QObject *parent = nullptr );
@@ -288,6 +298,18 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     //! \copydoc QgsQuickMapSettings::temporalEnd
     void setTemporalEnd( const QDateTime &end );
 
+    //! \copydoc QgsQuickMapSettings::zRangeLower
+    double zRangeLower() const;
+
+    //! \copydoc QgsQuickMapSettings::zRangeLower
+    void setZRangeLower( const double &lower );
+
+    //! \copydoc QgsQuickMapSettings::zRangeLower
+    double zRangeUpper() const;
+
+    //! \copydoc QgsQuickMapSettings::zRangeLower
+    void setZRangeUpper( const double &upper );
+
   signals:
     //! \copydoc QgsQuickMapSettings::project
     void projectChanged();
@@ -328,6 +350,14 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
      * \see temporalEnd()
      */
     void temporalStateChanged();
+
+    /**
+     * Emitted when the Z range has changed.
+     * \see zRangeLower()
+     * \see zRangeUpper()
+     * \since QGIS 3.38
+     */
+    void zRangeChanged();
 
     //! \copydoc QgsQuickMapSettings::devicePixelRatio
     void devicePixelRatioChanged();

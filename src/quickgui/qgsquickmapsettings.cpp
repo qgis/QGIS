@@ -272,6 +272,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
   emit outputDpiChanged();
   emit layersChanged();
   emit temporalStateChanged();
+  emit zRangeChanged();
 }
 
 double QgsQuickMapSettings::rotation() const
@@ -343,4 +344,40 @@ void QgsQuickMapSettings::setTemporalEnd( const QDateTime &end )
   const QgsDateTimeRange range = mMapSettings.temporalRange();
   mMapSettings.setTemporalRange( QgsDateTimeRange( range.begin(), end ) );
   emit temporalStateChanged();
+}
+
+double QgsQuickMapSettings::zRangeLower() const
+{
+  const QgsDoubleRange zRange = mMapSettings.zRange();
+  return zRange.lower();
+}
+
+void QgsQuickMapSettings::setZRangeLower( const double &lower )
+{
+  const QgsDoubleRange zRange = mMapSettings.zRange();
+  if ( zRange.lower() == lower )
+  {
+    return;
+  }
+
+  mMapSettings.setZRange( QgsDoubleRange( lower, zRange.upper(), zRange.includeLower(), zRange.includeUpper() ) );
+  emit zRangeChanged();
+}
+
+double QgsQuickMapSettings::zRangeUpper() const
+{
+  const QgsDoubleRange zRange = mMapSettings.zRange();
+  return zRange.upper();
+}
+
+void QgsQuickMapSettings::setZRangeUpper( const double &upper )
+{
+  const QgsDoubleRange zRange = mMapSettings.zRange();
+  if ( zRange.upper() == upper )
+  {
+    return;
+  }
+
+  mMapSettings.setZRange( QgsDoubleRange( zRange.lower(), upper, zRange.includeLower(), zRange.includeUpper() ) );
+  emit zRangeChanged();
 }
