@@ -24,7 +24,6 @@
 #include "qgsmessagebaritem.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
-#include "qgsmessagelog.h"
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
@@ -154,7 +153,7 @@ void QgsAppGpsConnection::connectGps()
   QgisApp::instance()->statusBarIface()->clearMessage();
   showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
-  QgsMessageLog::logMessage( QObject::tr( "Firing up GPS detector" ), QObject::tr( "GPS" ), Qgis::Info );
+  QgsDebugMsgLevel( QStringLiteral( "Firing up GPS detector" ), 2 );
 
   // note -- QgsGpsDetector internally uses deleteLater to clean itself up!
   mDetector = new QgsGpsDetector( port, false );
@@ -185,7 +184,7 @@ void QgsAppGpsConnection::onTimeOut()
   if ( sender() != mDetector )
     return;
 
-  QgsMessageLog::logMessage( QObject::tr( "GPS detector reported timeout" ), QObject::tr( "GPS" ), Qgis::Critical );
+  QgsDebugMsgLevel( QStringLiteral( "GPS detector reported timeout" ), 2 );
   disconnectGps();
   emit connectionTimedOut();
 
@@ -198,7 +197,7 @@ void QgsAppGpsConnection::onConnectionDetected()
   if ( sender() != mDetector )
     return;
 
-  QgsMessageLog::logMessage( QObject::tr( "GPS detector GOT a connection" ), QObject::tr( "GPS" ), Qgis::Info );
+  QgsDebugMsgLevel( QStringLiteral( "GPS detector GOT a connection" ), 2 );
   setConnectionPrivate( mDetector->takeConnection() );
 }
 
