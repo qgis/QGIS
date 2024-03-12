@@ -84,6 +84,15 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     void setBandNumber( int band );
 
     /**
+     * Returns the elevation corresponding to a raw pixel value from the specified \a band.
+     *
+     * Returns NaN if the pixel value does not correspond to an elevation value.
+     *
+     * \since QGIS 3.38
+     */
+    double elevationForPixelValue( int band, double pixelValue ) const;
+
+    /**
      * Returns the line symbol used to render the raster profile in elevation profile plots.
      *
      * \see setProfileLineSymbol()

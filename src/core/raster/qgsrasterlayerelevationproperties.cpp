@@ -150,6 +150,17 @@ void QgsRasterLayerElevationProperties::setBandNumber( int band )
   emit profileGenerationPropertyChanged();
 }
 
+double QgsRasterLayerElevationProperties::elevationForPixelValue( int band, double pixelValue ) const
+{
+  if ( !mEnabled )
+    return std::numeric_limits< double >::quiet_NaN();
+
+  if ( band != mBandNumber )
+    return std::numeric_limits< double >::quiet_NaN();
+
+  return pixelValue * mZScale + mZOffset;
+}
+
 QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
 {
   return mProfileLineSymbol.get();
