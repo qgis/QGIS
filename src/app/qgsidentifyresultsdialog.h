@@ -255,12 +255,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void collapseAll();
     void selectFeatureByAttribute();
 
-    /**
-     * Called when an item is expanded so that we can ensure that the
-     * column width if expanded to show it.
-     */
-    void itemExpanded( QTreeWidgetItem * );
-
     //! sends signal if current feature id has changed
     void handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
     /* Item in tree was clicked */
