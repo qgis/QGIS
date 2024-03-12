@@ -11022,6 +11022,7 @@ void TestQgsProcessing::parameterDxfLayers()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( vectorLayer ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "PointLayer" ), &context ) );
 
   // should also be OK
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
@@ -11051,6 +11052,32 @@ void TestQgsProcessing::parameterDxfLayers()
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
+  // checkValueIsAcceptable on non-spatial layers
+  QgsVectorLayer *nonSpatialLayer = new QgsVectorLayer( QStringLiteral( "None" ),
+      QStringLiteral( "NonSpatialLayer" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( nonSpatialLayer );
+
+  QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( nonSpatialLayer ) ) );
+  QVariantList wrongLayerList;
+  wrongLayerList.append( QVariant::fromValue( nonSpatialLayer ) );
+  QVERIFY( !def->checkValueIsAcceptable( wrongLayerList ) );
+
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "NonSpatialLayer" ), &context ) );
+
+  QStringList stringList = { QStringLiteral( "PointLayer" ) };
+  QVERIFY( def->checkValueIsAcceptable( stringList ) );
+  stringList << QStringLiteral( "NonSpatialLayer" );
+  QVERIFY( !def->checkValueIsAcceptable( stringList, &context ) );
+
+  QVariantMap wrongLayerMap;
+  wrongLayerMap["layer"] = "NonSpatialLayer";
+  wrongLayerMap["attributeIndex"] = -1;
+  QVariantList wrongLayerMapList;
+  wrongLayerMapList.append( wrongLayerMap );
+  QVERIFY( !def->checkValueIsAcceptable( wrongLayerMapList, &context ) );
+
+  // Check values
   const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
