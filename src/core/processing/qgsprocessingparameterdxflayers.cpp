@@ -37,9 +37,11 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
   if ( !input.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) ) )
+  QgsMapLayer *mapLayer = nullptr;
+  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) );
+  if ( vectorLayer )
   {
-    return true;
+    return vectorLayer->isSpatial();
   }
 
   if ( input.type() == QVariant::String )
@@ -50,8 +52,8 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
     if ( !context )
       return true;
 
-    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
-    return mapLayer && ( mapLayer->type() == Qgis::LayerType::Vector );
+    mapLayer = QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+    return mapLayer && ( mapLayer->type() == Qgis::LayerType::Vector && mapLayer->isSpatial() );
   }
   else if ( input.type() == QVariant::List )
   {
@@ -61,16 +63,22 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
     const QVariantList layerList = input.toList();
     for ( const QVariant &variantLayer : layerList )
     {
-      if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( variantLayer ) ) )
-        continue;
+      vectorLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( variantLayer ) );
+      if ( vectorLayer )
+      {
+        if ( vectorLayer->isSpatial() )
+          continue;
+        else
+          return false;
+      }
 
       if ( variantLayer.type() == QVariant::String )
       {
         if ( !context )
           return true;
 
-        QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( variantLayer.toString(), *context );
-        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
+        mapLayer = QgsProcessingUtils::mapLayerFromString( variantLayer.toString(), *context );
+        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector || !mapLayer->isSpatial() )
           return false;
       }
       else if ( variantLayer.type() == QVariant::Map )
@@ -83,11 +91,11 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
         if ( !context )
           return true;
 
-        QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context );
-        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
+        mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context );
+        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector || !mapLayer->isSpatial() )
           return false;
 
-        QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
+        vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
 
         if ( !vectorLayer )
           return false;
@@ -113,7 +121,13 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
 
     for ( const QString &v : constToStringList )
     {
-      if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+      mapLayer = QgsProcessingUtils::mapLayerFromString( v, *context );
+      if ( !mapLayer )
+        return false;
+
+      if ( mapLayer->type() == Qgis::LayerType::Vector && mapLayer->isSpatial() )
+        continue;
+      else
         return false;
     }
     return true;
