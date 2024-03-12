@@ -1436,7 +1436,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsTiledSceneLayer *layer,
   }
 }
 
-
 void QgsIdentifyResultsDialog::editingToggled()
 {
   QTreeWidgetItem *layItem = layerItem( sender() );
@@ -2006,7 +2005,12 @@ QVariant QgsIdentifyResultsDialog::retrieveAttribute( QTreeWidgetItem *item )
   if ( !item )
     return QVariant();
 
-  return item->data( 1, REPRESENTED_VALUE_ROLE );
+  // prefer represented values, if available.
+  const QVariant representedValue = item->data( 1, REPRESENTED_VALUE_ROLE );
+  if ( !QgsVariantUtils::isNull( representedValue ) )
+    return representedValue;
+
+  return item->data( 1, Qt::DisplayRole );
 }
 
 void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
