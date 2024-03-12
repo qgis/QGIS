@@ -342,6 +342,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void initSelectionModes();
     QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem );
+
+    friend class TestQgsMapToolIdentifyAction;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

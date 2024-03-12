@@ -226,11 +226,12 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=epsg:3111&field=pk:int&field=col1:double&field=url:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
-  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
+  f1.setAttribute( QStringLiteral( "col1" ), 3.3 );
+  f1.setAttribute( QStringLiteral( "url" ), QStringLiteral( "home: http://qgis.org" ) );
   QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
   const QgsGeometry line3111G = QgsGeometry::fromWkt( QStringLiteral( "LineStringZM( 2484588 2425722 11 31, 2484588 2398853 15 37)" ) ) ;
@@ -248,6 +249,7 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484587, 2399800 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QgsIdentifyResultsDialog *dlg = action->resultsDialog();
 
   //check that closest point attributes are present
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -256,6 +258,44 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800.000" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated M" )].left( 4 ), QStringLiteral( "36.7" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated Z" )].left( 4 ), QStringLiteral( "14.8" ) );
+  dlg->addFeature( result.at( 0 ) );
+
+  QTreeWidgetItem *layerItem = dlg->layerItem( tempLayer.get() );
+  QVERIFY( layerItem );
+  QTreeWidgetItem *featureItem = layerItem->child( 0 );
+  QTreeWidgetItem *derivedItem = featureItem->child( 0 );
+  QTreeWidgetItem *closestXItem = nullptr;
+  for ( int row = 0; row < derivedItem->childCount(); ++row )
+  {
+    if ( derivedItem->child( row )->text( 0 ) == tr( "Closest X" ) )
+    {
+      closestXItem = derivedItem->child( row );
+      break;
+    }
+  }
+  QVERIFY( closestXItem );
+  QCOMPARE( closestXItem->text( 1 ), QStringLiteral( "2484588.000" ) );
+  QCOMPARE( dlg->retrieveAttribute( closestXItem ).toString(), QStringLiteral( "2484588.000" ) );
+
+  QTreeWidgetItem *col1Item = nullptr;
+  QTreeWidgetItem *urlAttributeItem = nullptr;
+  for ( int row = 0; row < featureItem->childCount(); ++row )
+  {
+    if ( featureItem->child( row )->text( 0 ) == tr( "col1" ) )
+    {
+      col1Item = featureItem->child( row );
+    }
+    else if ( featureItem->child( row )->text( 0 ) == tr( "url" ) )
+    {
+      urlAttributeItem = featureItem->child( row );
+    }
+  }
+  QVERIFY( col1Item );
+  QCOMPARE( col1Item->text( 1 ), QStringLiteral( "3.30000" ) );
+  QCOMPARE( dlg->retrieveAttribute( col1Item ).toString(), QStringLiteral( "3.30000" ) );
+  QVERIFY( urlAttributeItem );
+  // urlAttributeItem has a delegate widget, but we should still be able to retrieve the raw field value from it
+  QCOMPARE( dlg->retrieveAttribute( urlAttributeItem ).toString(), QStringLiteral( "home: http://qgis.org" ) );
 
   // polygons
   //create a temporary layer
