@@ -531,11 +531,18 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-  Q_UNUSED( identifyContext )
+  if ( !identifyContext.zRange().isInfinite() )
+  {
+    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange() ) )
+      return false;
+  }
+
   QgsPointCloudRenderer *renderer = layer->renderer();
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   context.setCoordinateTransform( QgsCoordinateTransform( layer->crs(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() ) );
+  if ( !identifyContext.zRange().isInfinite() )
+    context.setZRange( identifyContext.zRange() );
 
   const double searchRadiusMapUnits = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
 

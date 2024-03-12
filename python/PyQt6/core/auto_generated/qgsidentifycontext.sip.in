@@ -50,6 +50,27 @@ Returns the datetime range to be used with the identify action.
 Returns ``True`` if the temporal range setting is enabled.
 %End
 
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the range of z-values to identify within, or an infinite range if no filtering by
+z should be applied.
+
+.. seealso:: :py:func:`setZRange`
+
+.. versionadded:: 3.38
+%End
+
+    void setZRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of z-values to identify within.
+
+Set to an infinite range if no filtering by z should be applied.
+
+.. seealso:: :py:func:`zRange`
+
+.. versionadded:: 3.38
+%End
+
 };
 
 /************************************************************************
