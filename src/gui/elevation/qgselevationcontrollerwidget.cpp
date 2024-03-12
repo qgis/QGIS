@@ -187,7 +187,18 @@ void QgsElevationControllerWidget::updateWidgetMask()
 QgsElevationControllerLabels::QgsElevationControllerLabels( QWidget *parent )
   : QWidget( parent )
 {
-  const QFontMetrics fm( font() );
+  // Drop the default widget font size by a couple of points
+  QFont smallerFont = font();
+  int fontSize = smallerFont.pointSize();
+#ifdef Q_OS_WIN
+  fontSize = std::max( fontSize - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+#else
+  fontSize = std::max( fontSize - 2, 7 );
+#endif
+  smallerFont.setPointSize( fontSize );
+  setFont( smallerFont );
+
+  const QFontMetrics fm( smallerFont );
   setMinimumWidth( fm.horizontalAdvance( '0' ) * 5 );
   setAttribute( Qt::WA_TransparentForMouseEvents );
 }
