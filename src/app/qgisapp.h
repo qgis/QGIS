@@ -894,6 +894,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMapLayerActionContext createMapLayerActionContext();
 
+    QgsAppCanvasFiltering *canvasFiltering();
+
     /**
      * Take screenshots for user documentation
      * @param saveDirectory path were the screenshots will be saved
