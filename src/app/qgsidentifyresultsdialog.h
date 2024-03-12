@@ -266,7 +266,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
 
-    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
+    QgsAttributeMap retrieveAttributes( QTreeWidgetItem *item );
 
     void cmbIdentifyMode_currentIndexChanged( int index );
 
