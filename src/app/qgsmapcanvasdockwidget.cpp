@@ -115,7 +115,10 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsMenu->addAction( mActionSetCrs );
   settingsMenu->addAction( mActionRename );
 
-  QgisApp::instance()->canvasFiltering()->setupElevationControllerAction( mActionElevationController, mMapCanvas );
+  if ( QgisApp *app = QgisApp::instance() )
+  {
+    app->canvasFiltering()->setupElevationControllerAction( mActionElevationController, mMapCanvas );
+  }
 
   connect( settingsMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::settingsMenuAboutToShow );
 
