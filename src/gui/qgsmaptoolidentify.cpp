@@ -213,30 +213,51 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType, const QgsIdentifyContext &identifyContext )
 {
-  if ( layer->type() == Qgis::LayerType::Raster && layerType.testFlag( RasterLayer ) )
+  switch ( layer->type() )
   {
-    return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), geometry, viewExtent, mapUnitsPerPixel, identifyContext );
+    case Qgis::LayerType::Vector:
+      if ( layerType.testFlag( VectorLayer ) )
+      {
+        return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry, identifyContext );
+      }
+      break;
+
+    case Qgis::LayerType::Raster:
+      if ( layerType.testFlag( RasterLayer ) )
+      {
+        return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), geometry, viewExtent, mapUnitsPerPixel, identifyContext );
+      }
+      break;
+
+    case Qgis::LayerType::Mesh:
+      if ( layerType.testFlag( MeshLayer ) )
+      {
+        return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry, identifyContext );
+      }
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      if ( layerType.testFlag( VectorTileLayer ) )
+      {
+        return identifyVectorTileLayer( results, qobject_cast<QgsVectorTileLayer *>( layer ), geometry, identifyContext );
+      }
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      if ( layerType.testFlag( PointCloudLayer ) )
+      {
+        return identifyPointCloudLayer( results, qobject_cast<QgsPointCloudLayer *>( layer ), geometry, identifyContext );
+      }
+      break;
+
+    // not supported
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
+      break;
   }
-  else if ( layer->type() == Qgis::LayerType::Vector && layerType.testFlag( VectorLayer ) )
-  {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry, identifyContext );
-  }
-  else if ( layer->type() == Qgis::LayerType::Mesh && layerType.testFlag( MeshLayer ) )
-  {
-    return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry, identifyContext );
-  }
-  else if ( layer->type() == Qgis::LayerType::VectorTile && layerType.testFlag( VectorTileLayer ) )
-  {
-    return identifyVectorTileLayer( results, qobject_cast<QgsVectorTileLayer *>( layer ), geometry, identifyContext );
-  }
-  else if ( layer->type() == Qgis::LayerType::PointCloud && layerType.testFlag( PointCloudLayer ) )
-  {
-    return identifyPointCloudLayer( results, qobject_cast<QgsPointCloudLayer *>( layer ), geometry, identifyContext );
-  }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point, const QgsIdentifyContext &identifyContext )
