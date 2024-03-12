@@ -10,6 +10,9 @@
 
 
 
+
+
+
 class QgsElevationControllerWidget : QWidget
 {
 %Docstring(signature="appended")

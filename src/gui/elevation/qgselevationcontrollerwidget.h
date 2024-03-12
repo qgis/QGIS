@@ -27,6 +27,30 @@ class QgsRangeSlider;
 class QToolButton;
 class QMenu;
 
+///@cond PRIVATE
+
+class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
+{
+    Q_OBJECT
+
+  public:
+
+    QgsElevationControllerLabels( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    void paintEvent( QPaintEvent *event ) override;
+
+    void setLimits( const QgsDoubleRange &limits );
+    void setRange( const QgsDoubleRange &range );
+
+  private:
+
+    QgsDoubleRange mLimits;
+    QgsDoubleRange mRange;
+
+};
+
+///@endcond PRIVATE
+
 /**
  * \ingroup gui
  * \brief A widget for configuring vertical elevation slicing behavior for maps.
@@ -107,6 +131,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QToolButton *mConfigureButton = nullptr;
     QMenu *mMenu = nullptr;
     QgsRangeSlider *mSlider = nullptr;
+    QgsElevationControllerLabels *mSliderLabels = nullptr;
     QgsDoubleRange mRangeLimits;
     QgsDoubleRange mCurrentRange;
     int mBlockSliderChanges = 0;
