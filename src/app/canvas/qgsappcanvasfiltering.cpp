@@ -38,7 +38,7 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
       controller->menu()->addAction( setProjectLimitsAction );
       connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), []
       {
-        QgisApp::instance()->showProjectProperties( QStringLiteral( "terrain" ) );
+        QgisApp::instance()->showProjectProperties( tr( "Elevation" ) );
       } );
       QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
       controller->menu()->addAction( disableAction );
