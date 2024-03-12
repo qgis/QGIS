@@ -436,9 +436,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mPlot->setSizePolicy( sizePolicy );
   mPlot->updateGeometry();
 
-  connect( lstResults, &QTreeWidget::itemExpanded,
-           this, &QgsIdentifyResultsDialog::itemExpanded );
-
   connect( lstResults, &QTreeWidget::currentItemChanged,
            this, &QgsIdentifyResultsDialog::handleCurrentItemChanged );
 
@@ -2001,13 +1998,6 @@ QgsAttributeMap QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *i
   }
 
   return attributes;
-}
-
-void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
-{
-  Q_UNUSED( item )
-  // column width is now stored in settings
-  //expandColumnsToFit();
 }
 
 void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
