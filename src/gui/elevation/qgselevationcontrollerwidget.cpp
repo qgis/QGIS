@@ -28,6 +28,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QPainterPath>
 
 QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   : QWidget( parent )
@@ -49,9 +50,13 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mSlider = new QgsRangeSlider( Qt::Vertical );
   mSlider->setFlippedDirection( true );
   mSlider->setRangeLimits( 0, 100000 );
+  mSliderLabels = new QgsElevationControllerLabels();
+
   QHBoxLayout *hlSlider = new QHBoxLayout();
   hlSlider->setContentsMargins( 0, 0, 0, 0 );
+  hlSlider->setSpacing( 2 );
   hlSlider->addWidget( mSlider );
+  hlSlider->addWidget( mSliderLabels, 1 );
   hlSlider->addStretch();
   vl->addLayout( hlSlider );
 
@@ -75,10 +80,12 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
       return;
 
     emit rangeChanged( range() );
+    mSliderLabels->setRange( range() );
   } );
 
   // default initial value to full range
   setRange( rangeLimits() );
+  mSliderLabels->setRange( rangeLimits() );
 }
 
 void QgsElevationControllerWidget::resizeEvent( QResizeEvent *event )
@@ -124,6 +131,8 @@ void QgsElevationControllerWidget::setRange( const QgsDoubleRange &range )
                      static_cast< int >( std::ceil( range.upper() * mSliderPrecision ) ) );
   mBlockSliderChanges = false;
   emit rangeChanged( range );
+
+  mSliderLabels->setRange( mCurrentRange );
 }
 
 void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits )
@@ -153,6 +162,8 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
   mBlockSliderChanges = false;
   if ( rangeHasChanged )
     emit rangeChanged( mCurrentRange );
+
+  mSliderLabels->setLimits( mRangeLimits );
 }
 
 void QgsElevationControllerWidget::updateWidgetMask()
@@ -168,3 +179,112 @@ void QgsElevationControllerWidget::updateWidgetMask()
   reg += childrenRegion();
   setMask( reg );
 }
+
+//
+// QgsElevationControllerLabels
+//
+///@cond PRIVATE
+QgsElevationControllerLabels::QgsElevationControllerLabels( QWidget *parent )
+  : QWidget( parent )
+{
+  const QFontMetrics fm( font() );
+  setMinimumWidth( fm.horizontalAdvance( '0' ) * 5 );
+  setAttribute( Qt::WA_TransparentForMouseEvents );
+}
+
+void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
+{
+  QStyleOptionSlider styleOption;
+  styleOption.initFrom( this );
+
+  const QRect sliderRect = style()->subControlRect( QStyle::CC_Slider, &styleOption,  QStyle::SC_SliderHandle, this );
+  const int sliderHeight = sliderRect.height();
+
+  QFont f = font();
+  const QFontMetrics fm( f );
+
+  const int left = rect().left() + 2;
+
+  const double limitRange = mLimits.upper() - mLimits.lower();
+  const double lowerFraction = ( mRange.lower() - mLimits.lower() ) / limitRange;
+  const double upperFraction = ( mRange.upper() - mLimits.lower() ) / limitRange;
+  const int lowerY = static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) );
+  const int upperY = static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) );
+
+  const bool lowerIsCloseToLimit = lowerY + fm.height() > rect().bottom() - fm.descent();
+  const bool upperIsCloseToLimit = upperY - fm.height() < rect().top() + fm.ascent();
+
+  QLocale locale;
+
+  QPainterPath path;
+  if ( mLimits.lower() > std::numeric_limits< double >::lowest() )
+  {
+    if ( lowerIsCloseToLimit )
+    {
+      f.setBold( true );
+      path.addText( left, lowerY, f, locale.toString( mRange.lower() ) );
+    }
+    else
+    {
+      f.setBold( true );
+      path.addText( left, lowerY, f, locale.toString( mRange.lower() ) );
+      f.setBold( false );
+      path.addText( left, rect().bottom() - fm.descent(), f, locale.toString( mLimits.lower() ) );
+    }
+  }
+
+  if ( mLimits.upper() < std::numeric_limits< double >::max() )
+  {
+    if ( upperIsCloseToLimit )
+    {
+      f.setBold( true );
+      path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
+    }
+    else
+    {
+      f.setBold( true );
+      path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
+      f.setBold( false );
+      path.addText( left, rect().top() + fm.ascent(), f, locale.toString( mLimits.upper() ) );
+    }
+  }
+
+  QPainter p( this );
+  p.setRenderHint( QPainter::Antialiasing, true );
+  const QColor bufferColor = palette().color( QPalette::Window );
+  const QColor textColor = palette().color( QPalette::WindowText );
+  QPen pen( bufferColor );
+  pen.setJoinStyle( Qt::RoundJoin );
+  pen.setCapStyle( Qt::RoundCap );
+  pen.setWidthF( 4 );
+  p.setPen( pen );
+  p.setBrush( Qt::NoBrush );
+  p.drawPath( path );
+  p.setPen( Qt::NoPen );
+  p.setBrush( QBrush( textColor ) );
+  p.drawPath( path );
+  p.end();
+}
+
+void QgsElevationControllerLabels::setLimits( const QgsDoubleRange &limits )
+{
+  if ( limits == mLimits )
+    return;
+
+  const QFontMetrics fm( font() );
+  const int maxChars = QLocale().toString( std::floor( limits.upper() ) ).length() + 3;
+  setMinimumWidth( fm.horizontalAdvance( '0' ) * maxChars );
+
+  mLimits = limits;
+  update();
+}
+
+void QgsElevationControllerLabels::setRange( const QgsDoubleRange &range )
+{
+  if ( range == mRange )
+    return;
+
+  mRange = range;
+  update();
+}
+///@endcond PRIVATE
