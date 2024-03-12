@@ -132,6 +132,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   QgsIdentifyContext identifyContext;
   if ( mCanvas->mapSettings().isTemporal() )
     identifyContext.setTemporalRange( mCanvas->temporalRange() );
+  identifyContext.setZRange( mCanvas->zRange() );
   const QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, layerList, AllLayers, identifyContext );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
