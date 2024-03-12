@@ -16221,6 +16221,11 @@ QgsMapLayerActionContext QgisApp::createMapLayerActionContext()
   return context;
 }
 
+QgsAppCanvasFiltering *QgisApp::canvasFiltering()
+{
+  return mAppCanvasFiltering;
+}
+
 void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int categories )
 {
   QgsAppScreenShots ass( saveDirectory );
