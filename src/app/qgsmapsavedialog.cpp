@@ -367,6 +367,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
   mapSettings.setTemporalRange( mMapCanvas->mapSettings().temporalRange() );
   mapSettings.setIsTemporal( mMapCanvas->mapSettings().isTemporal() );
+  mapSettings.setZRange( mMapCanvas->mapSettings().zRange() );
   mapSettings.setElevationShadingRenderer( mMapCanvas->mapSettings().elevationShadingRenderer() );
 
   //build the expression context
