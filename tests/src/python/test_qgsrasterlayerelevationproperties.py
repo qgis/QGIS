@@ -10,6 +10,7 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
+import math
 
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -120,6 +121,28 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         layer.setName('i am a aster satellite layer')
         self.assertTrue(
             QgsRasterLayerElevationProperties.layerLooksLikeDem(layer))
+
+    def test_elevation_for_pixel_value(self):
+        """
+        Test transforming pixel values to elevations
+        """
+        props = QgsRasterLayerElevationProperties(None)
+        self.assertTrue(math.isnan(props.elevationForPixelValue(band=1, pixelValue=3)))
+        props.setEnabled(True)
+        self.assertEqual(props.elevationForPixelValue(band=1, pixelValue=3),
+                         3)
+
+        # check that band number is respected
+        props.setBandNumber(2)
+        self.assertTrue(math.isnan(props.elevationForPixelValue(band=1, pixelValue=3)))
+        self.assertEqual(props.elevationForPixelValue(band=2, pixelValue=3),
+                         3)
+
+        # check that offset/scale is respected
+        props.setZOffset(0.5)
+        props.setZScale(2)
+        self.assertEqual(props.elevationForPixelValue(band=2, pixelValue=3),
+                         6.5)
 
 
 if __name__ == '__main__':

@@ -75,6 +75,15 @@ Sets the ``band`` number from which the elevation should be taken.
 .. seealso:: :py:func:`bandNumber`
 %End
 
+    double elevationForPixelValue( int band, double pixelValue ) const;
+%Docstring
+Returns the elevation corresponding to a raw pixel value from the specified ``band``.
+
+Returns NaN if the pixel value does not correspond to an elevation value.
+
+.. versionadded:: 3.38
+%End
+
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
 Returns the line symbol used to render the raster profile in elevation profile plots.
