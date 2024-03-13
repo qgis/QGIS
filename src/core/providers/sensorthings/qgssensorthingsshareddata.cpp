@@ -254,7 +254,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
 
   // TODO -- is using 'geography' always correct here?
   const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
-  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$top=%2&$count=false&$filter=geo.intersects(%3, geography'%4')%5" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ).arg( mGeometryField, extent.asWktPolygon(), typeFilter.isEmpty() ? QString() : ( QStringLiteral( " and " ) + typeFilter ) );
+  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$top=%2&$count=false&$filter=geo.intersects(%3, geography'%4')%5" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ).arg( mGeometryField, extent.asWktPolygon(), typeFilter.isEmpty() ? QString() : ( QStringLiteral( " and (" ) + typeFilter + QStringLiteral( ")" ) ) );
 
   if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
   {
