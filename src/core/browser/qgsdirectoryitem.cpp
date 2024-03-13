@@ -58,6 +58,10 @@ void QgsDirectoryItem::init( const QString &dirName )
 
   QgsSettings settings;
 
+  const QFileInfo fi { mDirPath };
+  mIsDir = fi.isDir();
+  mIsSymLink = fi.isSymLink();
+
   mMonitoring = monitoringForPath( mDirPath );
   switch ( mMonitoring )
   {
@@ -164,8 +168,7 @@ QIcon QgsDirectoryItem::icon()
     return QgsDataItem::icon();
 
   // symbolic link? use link icon
-  const QFileInfo fi( mDirPath );
-  if ( fi.isDir() && fi.isSymLink() )
+  if ( mIsDir && mIsSymLink )
   {
     return mIconColor.isValid()
            ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLinkParams.svg" ), mIconColor, mIconColor.darker() )
