@@ -48,7 +48,6 @@ class QgsCameraPose;
 class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
-class QgsCameraController4Test;
 
 /**
  * \ingroup 3d
@@ -356,7 +355,8 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     MouseOperation mCurrentOperation = MouseOperation::None;
 
-    friend QgsCameraController4Test;
+    // To test the cameracontroller
+    friend class TestQgs3DRendering;
 };
 
 #endif // QGSCAMERACONTROLLER_H
