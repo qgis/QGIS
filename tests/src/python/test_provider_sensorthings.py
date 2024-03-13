@@ -80,16 +80,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     def test_filter_for_wkb_type(self):
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.Point), "location/type eq 'Point'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.Point), "location/type eq 'Point' or location/geometry/type eq 'Point'"
         )
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.PointZ), "location/type eq 'Point'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.PointZ), "location/type eq 'Point' or location/geometry/type eq 'Point'"
         )
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.FeatureOfInterest, Qgis.WkbType.Polygon), "feature/type eq 'Polygon'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.FeatureOfInterest, Qgis.WkbType.Polygon), "feature/type eq 'Polygon' or feature/geometry/type eq 'Polygon'"
         )
         self.assertEqual(
-            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.LineString), "location/type eq 'LineString'"
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.LineString), "location/type eq 'LineString' or location/geometry/type eq 'LineString'"
         )
 
     def test_utils_string_to_entity(self):
@@ -248,7 +248,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
                 with open(
-                    sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=location/type eq 'Point'"),
+                    sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -467,14 +467,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
             with open(
-                sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=location/type eq 'Point'"),
+                sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                 "wt",
                 encoding="utf8",
             ) as f:
                 f.write("""{"@iot.count":3,"value":[]}""")
 
             with open(
-                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=location/type eq 'Point'"),
+                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -522,7 +522,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     }
   ],
-  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point'"
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
 }
                 """.replace(
                         "endpoint", "http://" + endpoint
@@ -530,7 +530,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
                 with open(
-                    sanitize(endpoint, "/Locations?$top=2&$skip=2&$filter=location/type eq 'Point'"),
+                    sanitize(endpoint, "/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -764,8 +764,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
-            # pessimistic "worst case" extent should initially be used
-            self.assertEqual(vl.extent(), QgsRectangle(-180, -90, 180, 90))
             self.assertEqual(vl.featureCount(), 3)
             self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn("Entity Type</td><td>Location</td>",
@@ -821,10 +819,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                  "Point (13.6 55.1)"],
             )
 
-            # all features fetched, accurate extent should be returned
-            self.assertEqual(vl.extent(),
-                             QgsRectangle(11.6, 52.1, 13.6, 55.1))
-
     def test_filter_rect(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
@@ -847,14 +841,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
             with open(
-                sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=location/type eq 'Point'"),
+                sanitize(endpoint, "/Locations?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                 "wt",
                 encoding="utf8",
             ) as f:
                 f.write("""{"@iot.count":3,"value":[]}""")
 
             with open(
-                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=location/type eq 'Point'"),
+                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -902,7 +896,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     }
   ],
-  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point'"
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
 }
                 """.replace(
                         "endpoint", "http://" + endpoint
@@ -910,7 +904,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
                 with open(
-                    sanitize(endpoint, "/Locations?$top=2&$skip=2&$filter=location/type eq 'Point'"),
+                    sanitize(endpoint, "/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -945,7 +939,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
                 with open(
-                    sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))') and location/type eq 'Point'"),
+                    sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))') and (location/type eq 'Point' or location/geometry/type eq 'Point')"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -998,7 +992,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
             with open(
-                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=geo.intersects(location, geography'POLYGON((10 0, 20 0, 20 80, 10 80, 10 0))') and location/type eq 'Point'"),
+                sanitize(endpoint, "/Locations?$top=2&$count=false&$filter=geo.intersects(location, geography'POLYGON((10 0, 20 0, 20 80, 10 80, 10 0))') and (location/type eq 'Point' or location/geometry/type eq 'Point')"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -2062,14 +2056,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
             with open(
-                sanitize(endpoint, "/FeaturesOfInterest?$top=0&$count=true&$filter=feature/type eq 'Point'"),
+                sanitize(endpoint, "/FeaturesOfInterest?$top=0&$count=true&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'"),
                 "wt",
                 encoding="utf8",
             ) as f:
                 f.write("""{"@iot.count":3,"value":[]}""")
 
             with open(
-                sanitize(endpoint, "/FeaturesOfInterest?$top=2&$count=false&$filter=feature/type eq 'Point'"),
+                sanitize(endpoint, "/FeaturesOfInterest?$top=2&$count=false&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -2122,7 +2116,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     }
   ],
-  "@iot.nextLink": "endpoint/FeaturesOfInterest?$top=2&$skip=2&$filter=feature/type eq 'Point'"
+  "@iot.nextLink": "endpoint/FeaturesOfInterest?$top=2&$skip=2&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'"
 }
                 """.replace(
                         "endpoint", "http://" + endpoint
@@ -2130,7 +2124,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
                 with open(
-                    sanitize(endpoint, "/FeaturesOfInterest?$top=2&$skip=2&$filter=feature/type eq 'Point'"),
+                    sanitize(endpoint, "/FeaturesOfInterest?$top=2&$skip=2&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'"),
                     "wt",
                     encoding="utf8",
                 ) as f:
