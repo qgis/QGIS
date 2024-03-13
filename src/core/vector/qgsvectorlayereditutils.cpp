@@ -787,7 +787,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
 
   if ( qgsDoubleNear( threshold, 0.0 ) )
   {
-    threshold = 0.0000001;
+    threshold = 1e-8;
 
     if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Meters )
     {
