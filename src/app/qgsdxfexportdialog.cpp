@@ -538,7 +538,6 @@ void QgsVectorLayerAndAttributeModel::loadLayersOutputAttribute( QgsLayerTreeNod
           emit dataChanged( idx, idx, QVector<int>() << Qt::EditRole );
         }
       }
-      continue;
     }
     else if ( QgsLayerTree::isGroup( child ) )
     {
@@ -569,7 +568,6 @@ void QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute( QgsLayerTreeNod
           vl->removeCustomProperty( QStringLiteral( "lastDxfOutputAttribute" ) );
         }
       }
-      continue;
     }
     else if ( QgsLayerTree::isGroup( child ) )
     {
