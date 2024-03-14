@@ -61,6 +61,15 @@ Returns a reference to the widget's configuration menu, which can be used
 to add actions to the menu.
 %End
 
+    double fixedRangeWidth() const;
+%Docstring
+Returns the fixed range width, or -1 if no fixed width is set.
+
+A fixed width forces the selected elevation range to have a matching width.
+
+.. seealso:: :py:func:`setFixedRangeWidth`
+%End
+
   public slots:
 
     void setRange( const QgsDoubleRange &range );
@@ -77,6 +86,15 @@ Sets the current visible ``range`` for the widget.
 Sets the limits of the elevation range which can be selected by the widget.
 
 .. seealso:: :py:func:`rangeLimits`
+%End
+
+    void setFixedRangeWidth( double width );
+%Docstring
+Sets the fixed range ``width``. Set to -1 if no fixed width is desired.
+
+A fixed width forces the selected elevation range to have a matching width.
+
+.. seealso:: :py:func:`fixedRangeWidth`
 %End
 
   signals:
