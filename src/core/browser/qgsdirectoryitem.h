@@ -216,6 +216,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QDateTime mLastScan;
     QColor mIconColor;
 
+    bool mIsDir = false;
+    bool mIsSymLink = false;
+
     friend class TestQgsDataItem;
 };
 
