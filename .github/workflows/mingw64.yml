@@ -79,7 +79,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /w/.ccache/QGIS
-          key: build-ccache-mingw64-${{ github.ref_name }}
+          key: build-ccache-mingw64-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Create Portable zip
         run: |

@@ -76,7 +76,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-ogc-${{ github.ref_name }}
+          key: build-ccache-ogc-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Install pyogctest
         run: |

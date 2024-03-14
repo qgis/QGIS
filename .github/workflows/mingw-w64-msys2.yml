@@ -91,4 +91,4 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: build
-          key: build-ccache-mingw64-msys2-${{ github.ref_name }}
+          key: build-ccache-mingw64-msys2-${{ github.ref_name }}-${{ github.run_id }}

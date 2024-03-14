@@ -141,7 +141,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
             build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-master
 
@@ -173,7 +173,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Push artifact
         id: push_artifact

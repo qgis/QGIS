@@ -135,4 +135,4 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: build-ccache-mac-${{ github.ref_name }}
+          key: build-ccache-mac-${{ github.ref_name }}-${{ github.run_id }}
