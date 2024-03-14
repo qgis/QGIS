@@ -1369,7 +1369,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     {
       return;
     }
-    myBands << myGrayRenderer->grayBand();
+    myBands << myGrayRenderer->inputBand();
     myRasterRenderer = myGrayRenderer;
     myMinMaxOrigin = myGrayRenderer->minMaxOrigin();
   }
@@ -1391,7 +1391,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     {
       return;
     }
-    myBands << myPseudoColorRenderer->band();
+    myBands << myPseudoColorRenderer->inputBand();
     myRasterRenderer = myPseudoColorRenderer;
     myMinMaxOrigin = myPseudoColorRenderer->minMaxOrigin();
   }
@@ -1442,7 +1442,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
           QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
           if ( colorRampShader )
           {
-            colorRampShader->classifyColorRamp( myPseudoColorRenderer->band(), extent, myPseudoColorRenderer->input() );
+            colorRampShader->classifyColorRamp( myPseudoColorRenderer->inputBand(), extent, myPseudoColorRenderer->input() );
           }
         }
       }
@@ -1573,7 +1573,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
       double min;
       double max;
-      computeMinMax( sbpcr->band(),
+      computeMinMax( sbpcr->inputBand(),
                      rasterRenderer->minMaxOrigin(),
                      rasterRenderer->minMaxOrigin().limits(), extent,
                      static_cast<int>( SAMPLE_SIZE ), min, max );
@@ -1585,7 +1585,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
         QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( sbpcr->shader()->rasterShaderFunction() );
         if ( colorRampShader )
         {
-          colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
+          colorRampShader->classifyColorRamp( sbpcr->inputBand(), extent, rasterRenderer->input() );
         }
       }
 
@@ -1598,7 +1598,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
         QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( r->shader()->rasterShaderFunction() );
         if ( colorRampShader )
         {
-          colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
+          colorRampShader->classifyColorRamp( sbpcr->inputBand(), extent, rasterRenderer->input() );
         }
       }
 

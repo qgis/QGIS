@@ -610,7 +610,7 @@ void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const
   // add Channel Selection tags (if band is not default 1)
   // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
   // after opacity or geometry or as first element after sld:RasterSymbolizer
-  if ( band() != 1 )
+  if ( mBand != 1 )
   {
     QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
     elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
@@ -637,7 +637,7 @@ void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const
 
     // set band
     QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
-    sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+    sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( mBand ) ) );
     channelElem.appendChild( sourceChannelNameElem );
   }
 

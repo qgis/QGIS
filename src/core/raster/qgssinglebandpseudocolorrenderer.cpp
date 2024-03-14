@@ -122,13 +122,13 @@ void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader )
 
 void QgsSingleBandPseudoColorRenderer::createShader( QgsColorRamp *colorRamp, QgsColorRampShader::Type colorRampType, QgsColorRampShader::ClassificationMode classificationMode, int classes, bool clip, const QgsRectangle &extent )
 {
-  if ( band() == -1 || classificationMin() >= classificationMax() )
+  if ( mBand == -1 || classificationMin() >= classificationMax() )
   {
     return;
   }
 
   QgsColorRampShader *colorRampShader = new QgsColorRampShader( classificationMin(), classificationMax(), colorRamp,  colorRampType, classificationMode );
-  colorRampShader->classifyColorRamp( classes, band(), extent, input() );
+  colorRampShader->classifyColorRamp( classes, mBand, extent, input() );
   colorRampShader->setClip( clip );
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
@@ -376,7 +376,7 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
 
   // set band
   QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
-  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( mBand ) ) );
   channelElem.appendChild( sourceChannelNameElem );
 
   // add ColorMap tag
