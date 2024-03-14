@@ -79,7 +79,7 @@ void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer *rende
   const QgsHillshadeRenderer *r = dynamic_cast<const QgsHillshadeRenderer *>( renderer );
   if ( r )
   {
-    mBandsCombo->setBand( r->band() );
+    mBandsCombo->setBand( r->inputBand() );
     mLightAngle->setValue( r->altitude() );
     mLightAzimuth->setValue( r->azimuth() );
     mZFactor->setValue( r->zFactor() );

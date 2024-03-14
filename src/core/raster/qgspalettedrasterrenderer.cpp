@@ -17,7 +17,6 @@
 
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsmessagelog.h"
@@ -357,7 +356,7 @@ void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
   // set band
   QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
-  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( mBand ) ) );
   channelElem.appendChild( sourceChannelNameElem );
 
   // add ColorMap tag

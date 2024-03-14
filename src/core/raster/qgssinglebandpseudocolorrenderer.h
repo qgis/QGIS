@@ -87,14 +87,19 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     /**
      * Returns the band used by the renderer
+     *
+     * \deprecated since QGIS 3.38 use inputBand() instead
      */
-    int band() const { return mBand; }
+    Q_DECL_DEPRECATED int band() const SIP_DEPRECATED { return mBand; }
 
     /**
      * Sets the band used by the renderer.
      * \see band
+     *
+     * \deprecated since QGIS 3.38 use setInputBand() instead
      */
-    void setBand( int bandNo );
+    Q_DECL_DEPRECATED void setBand( int bandNo ) SIP_DEPRECATED;
+
     int inputBand() const override;
     bool setInputBand( int band ) override;
 

@@ -1078,7 +1078,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
 
     if ( bandNumber )
     {
-      *bandNumber = palettedRenderer->band();
+      *bandNumber = palettedRenderer->inputBand();
     }
     return rat;
   }
@@ -1174,7 +1174,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
 
         if ( bandNumber )
         {
-          *bandNumber = pseudoColorRenderer->band();
+          *bandNumber = pseudoColorRenderer->inputBand();
         }
 
         return rat;

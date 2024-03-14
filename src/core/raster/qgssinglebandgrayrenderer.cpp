@@ -22,7 +22,6 @@
 #include "qgscolorramplegendnodesettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgscolorrampimpl.h"
-#include "qgssymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -339,7 +338,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
   // set band
   QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
-  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( grayBand() ) ) );
+  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( mGrayBand ) ) );
   channelElem.appendChild( sourceChannelNameElem );
 
   // set ContrastEnhancement
@@ -358,7 +357,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       case QgsContrastEnhancement::ClipToMinimumMaximum:
       {
         // with this renderer export have to be check against real min/max values of the raster
-        const QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max );
+        const QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( mGrayBand, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max );
 
         // if minimum range differ from the real minimum => set is in exported SLD vendor option
         if ( !qgsDoubleNear( lContrastEnhancement->minimumValue(), myRasterBandStats.minimumValue ) )

@@ -155,7 +155,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
   const QgsPalettedRasterRenderer *pr = dynamic_cast<const QgsPalettedRasterRenderer *>( r );
   if ( pr )
   {
-    mBand = pr->band();
+    mBand = pr->inputBand();
     whileBlocking( mBandComboBox )->setBand( mBand );
 
     //read values and colors and fill into tree widget

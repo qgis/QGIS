@@ -122,9 +122,12 @@ Returns optional category label
 Set category label
 %End
 
-    int band() const;
+ int band() const /Deprecated/;
 %Docstring
 Returns the raster band used for rendering the raster.
+
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsPalettedRasterRenderer.inputBand` instead
 %End
 
     virtual int inputBand() const;

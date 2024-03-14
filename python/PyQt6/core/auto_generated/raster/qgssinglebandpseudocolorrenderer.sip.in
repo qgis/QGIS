@@ -90,17 +90,24 @@ Creates a color ramp shader
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    int band() const;
+ int band() const /Deprecated/;
 %Docstring
 Returns the band used by the renderer
+
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead
 %End
 
-    void setBand( int bandNo );
+ void setBand( int bandNo ) /Deprecated/;
 %Docstring
 Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
+
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsSingleBandPseudoColorRenderer.setInputBand` instead
 %End
+
     virtual int inputBand() const;
 
     virtual bool setInputBand( int band );
