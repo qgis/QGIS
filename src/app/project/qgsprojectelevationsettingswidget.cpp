@@ -124,6 +124,7 @@ void QgsProjectElevationSettingsWidget::apply()
     QgsRasterLayer *demLayer = qobject_cast< QgsRasterLayer * >( mComboDemLayer->currentLayer() );
     // always mark the terrain layer as a "dem" layer -- it seems odd for a user to have to manually set this after picking a terrain raster!
     qobject_cast< QgsRasterLayerElevationProperties * >( demLayer->elevationProperties() )->setEnabled( true );
+    qobject_cast< QgsRasterLayerElevationProperties * >( demLayer->elevationProperties() )->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
     qgis::down_cast< QgsRasterDemTerrainProvider * >( provider.get() )->setLayer( demLayer );
   }
   else if ( terrainType == QLatin1String( "mesh" ) )

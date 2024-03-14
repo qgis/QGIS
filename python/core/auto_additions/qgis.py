@@ -3166,6 +3166,20 @@ Qgis.AltitudeBinding.__doc__ = "Altitude binding.\n\n.. versionadded:: 3.26\n\n"
 # --
 Qgis.AltitudeBinding.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.RangeLimits.IncludeBoth.__doc__ = "Both lower and upper values are included in the range"
+Qgis.RangeLimits.IncludeLowerExcludeUpper.__doc__ = "Lower value is included in the range, upper value is excluded"
+Qgis.RangeLimits.ExcludeLowerIncludeUpper.__doc__ = "Lower value is excluded from the range, upper value in inccluded"
+Qgis.RangeLimits.ExcludeBoth.__doc__ = "Both lower and upper values are excluded from the range"
+Qgis.RangeLimits.__doc__ = "Describes how the limits of a range are handled.\n\n.. versionadded:: 3.38\n\n" + '* ``IncludeBoth``: ' + Qgis.RangeLimits.IncludeBoth.__doc__ + '\n' + '* ``IncludeLowerExcludeUpper``: ' + Qgis.RangeLimits.IncludeLowerExcludeUpper.__doc__ + '\n' + '* ``ExcludeLowerIncludeUpper``: ' + Qgis.RangeLimits.ExcludeLowerIncludeUpper.__doc__ + '\n' + '* ``ExcludeBoth``: ' + Qgis.RangeLimits.ExcludeBoth.__doc__
+# --
+Qgis.RangeLimits.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterElevationMode.FixedElevationRange.__doc__ = "Layer has a fixed elevation range"
+Qgis.RasterElevationMode.RepresentsElevationSurface.__doc__ = "Pixel values represent an elevation surface"
+Qgis.RasterElevationMode.__doc__ = "Raster layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.RasterElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``RepresentsElevationSurface``: ' + Qgis.RasterElevationMode.RepresentsElevationSurface.__doc__
+# --
+Qgis.RasterElevationMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.NoConstraint = Qgis.BetweenLineConstraint.NoConstraint
 Qgis.NoConstraint.is_monkey_patched = True
 Qgis.BetweenLineConstraint.NoConstraint.__doc__ = "No additional constraint"

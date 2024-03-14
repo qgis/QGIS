@@ -70,7 +70,25 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     void setEnabled( bool enabled );
 
     /**
+     * Returns the elevation mode.
+     *
+     * \see setMode()
+     * \since QGIS 3.38
+    */
+    Qgis::RasterElevationMode mode() const;
+
+    /**
+     * Sets the elevation \a mode.
+     *
+     * \see mode()
+     * \since QGIS 3.38
+    */
+    void setMode( Qgis::RasterElevationMode mode );
+
+    /**
      * Returns the band number from which the elevation should be taken.
+     *
+     * \note This is only considered when mode() is Qgis::RasterElevationMode::RepresentsElevationSurface.
      *
      * \see setBandNumber()
      */
@@ -79,18 +97,44 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     /**
      * Sets the \a band number from which the elevation should be taken.
      *
+     * \note This is only considered when mode() is Qgis::RasterElevationMode::RepresentsElevationSurface.
+     *
      * \see bandNumber()
      */
     void setBandNumber( int band );
 
     /**
-     * Returns the elevation corresponding to a raw pixel value from the specified \a band.
+     * Returns the fixed elevation range for the raster.
      *
-     * Returns NaN if the pixel value does not correspond to an elevation value.
+     * \note This is only considered when mode() is Qgis::RasterElevationMode::FixedElevationRange.
+     *
+     * \note When a fixed range is set any zOffset() and zScale() is ignored.
+     *
+     * \see setFixedRange()
+     * \since QGIS 3.38
+     */
+    QgsDoubleRange fixedRange() const;
+
+    /**
+     * Sets the fixed elevation \a range for the raster.
+     *
+     * \note This is only considered when mode() is Qgis::RasterElevationMode::FixedElevationRange.
+     *
+     * \note When a fixed range is set any zOffset() and zScale() is ignored.
+     *
+     * \see fixedRange()
+     * \since QGIS 3.38
+     */
+    void setFixedRange( const QgsDoubleRange &range );
+
+    /**
+     * Returns the elevation range corresponding to a raw pixel value from the specified \a band.
+     *
+     * Returns an infinite range if the pixel value does not correspond to an elevation value.
      *
      * \since QGIS 3.38
      */
-    double elevationForPixelValue( int band, double pixelValue ) const;
+    QgsDoubleRange elevationRangeForPixelValue( int band, double pixelValue ) const;
 
     /**
      * Returns the line symbol used to render the raster profile in elevation profile plots.
@@ -185,11 +229,16 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     void setDefaultProfileFillSymbol( const QColor &color );
 
     bool mEnabled = false;
+
+    Qgis::RasterElevationMode mMode = Qgis::RasterElevationMode::RepresentsElevationSurface;
+
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
     int mBandNumber = 1;
+
+    QgsDoubleRange mFixedRange;
 
 };
 

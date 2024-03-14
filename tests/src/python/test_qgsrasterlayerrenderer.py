@@ -13,6 +13,7 @@ import os
 
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsGeometry,
     QgsMapClippingRegion,
@@ -112,6 +113,57 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
             self.render_map_settings_check(
                 'Z range filter on map settings, elevation enabled layer with offset and scale',
                 'dem_filter_offset_and_scale',
+                map_settings)
+        )
+
+    def test_render_fixed_elevation_range_with_z_range_filter(self):
+        """
+        Test rendering a raster with a fixed elevation range when
+        map settings has a z range filtrer
+        """
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, '3d', 'dtm.tif'))
+        self.assertTrue(raster_layer.isValid())
+
+        # set layer as elevation enabled
+        raster_layer.elevationProperties().setEnabled(True)
+        raster_layer.elevationProperties().setMode(
+            Qgis.RasterElevationMode.FixedElevationRange
+        )
+        raster_layer.elevationProperties().setFixedRange(
+            QgsDoubleRange(33, 38)
+        )
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+
+        # no filter on map settings
+        map_settings.setZRange(QgsDoubleRange())
+        self.assertTrue(
+            self.render_map_settings_check(
+                'No Z range filter on map settings, fixed elevation range layer',
+                'dem_no_filter',
+                map_settings)
+        )
+
+        # map settings range includes layer's range
+        map_settings.setZRange(QgsDoubleRange(30, 35))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings includes layers fixed range',
+                'fixed_elevation_range_included',
+                map_settings)
+        )
+
+        # map settings range excludes layer's range
+        map_settings.setZRange(QgsDoubleRange(130, 135))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings outside of layers fixed range',
+                'fixed_elevation_range_excluded',
                 map_settings)
         )
 

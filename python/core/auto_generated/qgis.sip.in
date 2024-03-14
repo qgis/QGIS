@@ -1835,6 +1835,20 @@ The development version
       Centroid,
     };
 
+    enum class RangeLimits
+    {
+      IncludeBoth,
+      IncludeLowerExcludeUpper,
+      ExcludeLowerIncludeUpper,
+      ExcludeBoth,
+    };
+
+    enum class RasterElevationMode
+    {
+      FixedElevationRange,
+      RepresentsElevationSurface
+    };
+
     enum class BetweenLineConstraint
     {
       NoConstraint,

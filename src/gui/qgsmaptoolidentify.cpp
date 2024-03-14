@@ -1101,8 +1101,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             continue;
           }
           const double value = it.value().toDouble();
-          const double elevation = elevationProperties->elevationForPixelValue( it.key(), value );
-          if ( identifyContext.zRange().contains( elevation ) )
+          const QgsDoubleRange elevationRange = elevationProperties->elevationRangeForPixelValue( it.key(), value );
+          if ( !elevationRange.isInfinite() && identifyContext.zRange().overlaps( elevationRange ) )
           {
             foundMatch = true;
             break;

@@ -163,6 +163,7 @@ class EnableElevationPropertiesPostProcessor : public QgsProcessingLayerPostProc
       if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
       {
         QgsRasterLayerElevationProperties *props = qgis::down_cast< QgsRasterLayerElevationProperties * >( rl->elevationProperties() );
+        props->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
         props->setEnabled( true );
         rl->trigger3DUpdate();
       }
