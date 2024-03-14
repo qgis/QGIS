@@ -109,6 +109,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       if ( QgsRasterLayerElevationProperties::layerLooksLikeDem( rasterLayer ) )
       {
         qgis::down_cast< QgsRasterLayerElevationProperties * >( rasterLayer->elevationProperties() )->setEnabled( true );
+        qgis::down_cast< QgsRasterLayerElevationProperties * >( rasterLayer->elevationProperties() )->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
       }
 
       break;

@@ -3235,6 +3235,32 @@ class CORE_EXPORT Qgis
     Q_ENUM( AltitudeBinding )
 
     /**
+     * Describes how the limits of a range are handled.
+     *
+     * \since QGIS 3.38
+     */
+    enum class RangeLimits : int
+    {
+      IncludeBoth = 0, //!< Both lower and upper values are included in the range
+      IncludeLowerExcludeUpper, //!< Lower value is included in the range, upper value is excluded
+      ExcludeLowerIncludeUpper, //!< Lower value is excluded from the range, upper value in inccluded
+      ExcludeBoth, //!< Both lower and upper values are excluded from the range
+    };
+    Q_ENUM( RangeLimits )
+
+    /**
+     * Raster layer elevation modes.
+     *
+     * \since QGIS 3.38
+     */
+    enum class RasterElevationMode : int
+    {
+      FixedElevationRange = 0, //!< Layer has a fixed elevation range
+      RepresentsElevationSurface = 1 //!< Pixel values represent an elevation surface
+    };
+    Q_ENUM( RasterElevationMode )
+
+    /**
      * Between line constraints which can be enabled
      *
      * \since QGIS 3.26

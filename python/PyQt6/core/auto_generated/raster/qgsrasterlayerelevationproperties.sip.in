@@ -61,9 +61,31 @@ Sets whether the elevation properties are enabled, i.e. the raster layer values 
 .. seealso:: :py:func:`isEnabled`
 %End
 
+    Qgis::RasterElevationMode mode() const;
+%Docstring
+Returns the elevation mode.
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.38
+%End
+
+    void setMode( Qgis::RasterElevationMode mode );
+%Docstring
+Sets the elevation ``mode``.
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.38
+%End
+
     int bandNumber() const;
 %Docstring
 Returns the band number from which the elevation should be taken.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerElevationProperties.mode` is :py:class:`Qgis`.RasterElevationMode.RepresentsElevationSurface.
 
 .. seealso:: :py:func:`setBandNumber`
 %End
@@ -72,14 +94,54 @@ Returns the band number from which the elevation should be taken.
 %Docstring
 Sets the ``band`` number from which the elevation should be taken.
 
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerElevationProperties.mode` is :py:class:`Qgis`.RasterElevationMode.RepresentsElevationSurface.
+
 .. seealso:: :py:func:`bandNumber`
 %End
 
-    double elevationForPixelValue( int band, double pixelValue ) const;
+    QgsDoubleRange fixedRange() const;
 %Docstring
-Returns the elevation corresponding to a raw pixel value from the specified ``band``.
+Returns the fixed elevation range for the raster.
 
-Returns NaN if the pixel value does not correspond to an elevation value.
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerElevationProperties.mode` is :py:class:`Qgis`.RasterElevationMode.FixedElevationRange.
+
+.. note::
+
+   When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
+
+
+.. seealso:: :py:func:`setFixedRange`
+
+.. versionadded:: 3.38
+%End
+
+    void setFixedRange( const QgsDoubleRange &range );
+%Docstring
+Sets the fixed elevation ``range`` for the raster.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerElevationProperties.mode` is :py:class:`Qgis`.RasterElevationMode.FixedElevationRange.
+
+.. note::
+
+   When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
+
+
+.. seealso:: :py:func:`fixedRange`
+
+.. versionadded:: 3.38
+%End
+
+    QgsDoubleRange elevationRangeForPixelValue( int band, double pixelValue ) const;
+%Docstring
+Returns the elevation range corresponding to a raw pixel value from the specified ``band``.
+
+Returns an infinite range if the pixel value does not correspond to an elevation value.
 
 .. versionadded:: 3.38
 %End

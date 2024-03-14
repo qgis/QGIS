@@ -37,6 +37,7 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
 
   private slots:
 
+    void modeChanged();
     void onChanged();
 
   private:
