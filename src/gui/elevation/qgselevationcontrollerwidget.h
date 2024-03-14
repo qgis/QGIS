@@ -97,6 +97,15 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      */
     QMenu *menu();
 
+    /**
+     * Returns the fixed range width, or -1 if no fixed width is set.
+     *
+     * A fixed width forces the selected elevation range to have a matching width.
+     *
+     * \see setFixedRangeWidth()
+     */
+    double fixedRangeWidth() const;
+
   public slots:
 
     /**
@@ -113,6 +122,15 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      * \see rangeLimits()
      */
     void setRangeLimits( const QgsDoubleRange &limits );
+
+    /**
+     * Sets the fixed range \a width. Set to -1 if no fixed width is desired.
+     *
+     * A fixed width forces the selected elevation range to have a matching width.
+     *
+     * \see fixedRangeWidth()
+     */
+    void setFixedRangeWidth( double width );
 
   signals:
 
@@ -134,6 +152,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QgsElevationControllerLabels *mSliderLabels = nullptr;
     QgsDoubleRange mRangeLimits;
     QgsDoubleRange mCurrentRange;
+    double mFixedRangeWidth = -1;
     int mBlockSliderChanges = 0;
     double mSliderPrecision = 100;
 

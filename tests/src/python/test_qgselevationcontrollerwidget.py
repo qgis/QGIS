@@ -108,6 +108,20 @@ class TestQgsElevationControllerWidget(QgisTestCase):
         self.assertAlmostEqual(w.range().lower(), 459.644, 3)
         self.assertAlmostEqual(w.range().upper(), 729.495, 3)
 
+    def testFixedRangeWidth(self):
+        """
+        Test that fixed range width is correctly handled
+        """
+        w = QgsElevationControllerWidget()
+        w.setRangeLimits(QgsDoubleRange(100.5, 1000))
+        w.setFixedRangeWidth(10.0001)
+        self.assertEqual(w.fixedRangeWidth(), 10.0001)
+        w.setRange(QgsDoubleRange(130.3, 920.6))
+        self.assertAlmostEqual(w.range().upper() - w.range().lower(), 10.0001, 6)
+
+        w.slider().setLowerValue(50)
+        self.assertAlmostEqual(w.range().upper() - w.range().lower(), 10.0001, 6)
+
     def test_project_interaction(self):
         """
         Test interaction of widget with project
