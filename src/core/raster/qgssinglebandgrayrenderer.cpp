@@ -200,8 +200,17 @@ void QgsSingleBandGrayRenderer::setGrayBand( int band )
 
 bool QgsSingleBandGrayRenderer::setInputBand( int band )
 {
-  mGrayBand = band;
-  return true;
+  if ( !mInput )
+  {
+    mGrayBand = band;
+    return true;
+  }
+  else if ( band > 0 && band <= mInput->bandCount() )
+  {
+    mGrayBand = band;
+    return true;
+  }
+  return false;
 }
 
 void QgsSingleBandGrayRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
