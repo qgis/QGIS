@@ -41,6 +41,10 @@ class TestQgsRangeSlider(QgisTestCase):
         w.setPageStep(5)
         self.assertEqual(w.pageStep(), 5)
 
+        self.assertEqual(w.fixedRangeWidth(), -1)
+        w.setFixedRangeWidth(5)
+        self.assertEqual(w.fixedRangeWidth(), 5)
+
     def testLimits(self):
         w = QgsRangeSlider()
         spy = QSignalSpy(w.rangeLimitsChanged)
@@ -267,6 +271,56 @@ class TestQgsRangeSlider(QgisTestCase):
         self.assertEqual(w.upperValue(), 7)
         self.assertEqual(len(spy), 6)
         self.assertEqual(spy[-1], [3, 7])
+
+    def test_fixed_range_width(self):
+        """
+        Test interactions with fixed range widths
+        """
+        w = QgsRangeSlider()
+        w.setRangeLimits(0, 100)
+        w.setFixedRangeWidth(10)
+        self.assertEqual(w.upperValue() - w.lowerValue(), 10)
+
+        w.setUpperValue(70)
+        self.assertEqual(w.upperValue(), 70)
+        self.assertEqual(w.lowerValue(), 60)
+
+        w.setLowerValue(5)
+        self.assertEqual(w.upperValue(), 15)
+        self.assertEqual(w.lowerValue(), 5)
+
+        # try to force value outside range
+        w.setUpperValue(5)
+        self.assertEqual(w.upperValue(), 10)
+        self.assertEqual(w.lowerValue(), 0)
+
+        w.setLowerValue(95)
+        self.assertEqual(w.upperValue(), 100)
+        self.assertEqual(w.lowerValue(), 90)
+
+        w.setRange(0, 5)
+        self.assertEqual(w.upperValue(), 10)
+        self.assertEqual(w.lowerValue(), 0)
+
+        w.setRange(95, 100)
+        self.assertEqual(w.upperValue(), 100)
+        self.assertEqual(w.lowerValue(), 90)
+
+        # with zero width fixed range
+        w.setFixedRangeWidth(0)
+        self.assertEqual(w.upperValue() - w.lowerValue(), 0)
+
+        w.setUpperValue(70)
+        self.assertEqual(w.upperValue(), 70)
+        self.assertEqual(w.lowerValue(), 70)
+
+        w.setLowerValue(5)
+        self.assertEqual(w.upperValue(), 5)
+        self.assertEqual(w.lowerValue(), 5)
+
+        w.setRange(0, 5)
+        self.assertEqual(w.upperValue(), 0)
+        self.assertEqual(w.lowerValue(), 0)
 
 
 if __name__ == '__main__':

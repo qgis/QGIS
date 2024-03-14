@@ -170,6 +170,32 @@ This corresponds to the larger increment or decrement applied when the user pres
 .. seealso:: :py:func:`singleStep`
 %End
 
+    int fixedRangeWidth() const;
+%Docstring
+Returns the slider's fixed range width, or -1 if not set.
+
+If a fixed range width is set then moving either the lower or upper slider will automatically
+move the other slider accordingly, in order to keep the selected range at the specified
+fixed width.
+
+.. seealso:: :py:func:`setFixedRangeWidth`
+
+.. versionadded:: 3.38
+%End
+
+    void setFixedRangeWidth( int width );
+%Docstring
+Sets the slider's fixed range ``width``. Set to -1 if no fixed width is desired.
+
+If a fixed range width is set then moving either the lower or upper slider will automatically
+move the other slider accordingly, in order to keep the selected range at the specified
+fixed width.
+
+.. seealso:: :py:func:`fixedRangeWidth`
+
+.. versionadded:: 3.38
+%End
+
   public slots:
 
     void setMaximum( int maximum );
@@ -265,6 +291,17 @@ Emitted when the range selected in the widget is changed.
     void rangeLimitsChanged( int minimum, int maximum );
 %Docstring
 Emitted when the limits of values allowed in the widget is changed.
+%End
+
+    void fixedRangeWidthChanged( int width );
+%Docstring
+Emitted when the widget's fixed range width is changed.
+
+.. seealso:: :py:func:`fixedRangeWidth`
+
+.. seealso:: :py:func:`setFixedRangeWidth`
+
+.. versionadded:: 3.38
 %End
 
 };
