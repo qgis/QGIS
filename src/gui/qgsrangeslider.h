@@ -169,6 +169,30 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      */
     int pageStep() const;
 
+    /**
+     * Returns the slider's fixed range width, or -1 if not set.
+     *
+     * If a fixed range width is set then moving either the lower or upper slider will automatically
+     * move the other slider accordingly, in order to keep the selected range at the specified
+     * fixed width.
+     *
+     * \see setFixedRangeWidth()
+     * \since QGIS 3.38
+     */
+    int fixedRangeWidth() const;
+
+    /**
+     * Sets the slider's fixed range \a width. Set to -1 if no fixed width is desired.
+     *
+     * If a fixed range width is set then moving either the lower or upper slider will automatically
+     * move the other slider accordingly, in order to keep the selected range at the specified
+     * fixed width.
+     *
+     * \see fixedRangeWidth()
+     * \since QGIS 3.38
+     */
+    void setFixedRangeWidth( int width );
+
   public slots:
 
     /**
@@ -255,6 +279,16 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      */
     void rangeLimitsChanged( int minimum, int maximum );
 
+    /**
+     * Emitted when the widget's fixed range width is changed.
+     *
+     * \see fixedRangeWidth()
+     * \see setFixedRangeWidth()
+     *
+     * \since QGIS 3.38
+     */
+    void fixedRangeWidthChanged( int width );
+
   private:
 
     int pick( const QPoint &pt ) const;
@@ -269,6 +303,8 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
 
     int mSingleStep = 1;
     int mPageStep = 10;
+
+    int mFixedRangeWidth = -1;
 
     QStyleOptionSlider mStyleOption;
     enum Control
