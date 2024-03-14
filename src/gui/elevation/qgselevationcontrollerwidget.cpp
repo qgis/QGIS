@@ -224,6 +224,7 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
 
   const bool lowerIsCloseToLimit = lowerY + fm.height() > rect().bottom() - fm.descent();
   const bool upperIsCloseToLimit = upperY - fm.height() < rect().top() + fm.ascent();
+  const bool lowerIsCloseToUpperLimit = lowerY - fm.height() < rect().top() + fm.ascent();
 
   QLocale locale;
 
@@ -246,17 +247,28 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
 
   if ( mLimits.upper() < std::numeric_limits< double >::max() )
   {
-    if ( upperIsCloseToLimit )
+    if ( qgsDoubleNear( mRange.upper(), mRange.lower() ) )
     {
-      f.setBold( true );
-      path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
+      if ( !lowerIsCloseToUpperLimit )
+      {
+        f.setBold( false );
+        path.addText( left, rect().top() + fm.ascent(), f, locale.toString( mLimits.upper() ) );
+      }
     }
     else
     {
-      f.setBold( true );
-      path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
-      f.setBold( false );
-      path.addText( left, rect().top() + fm.ascent(), f, locale.toString( mLimits.upper() ) );
+      if ( upperIsCloseToLimit )
+      {
+        f.setBold( true );
+        path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
+      }
+      else
+      {
+        f.setBold( true );
+        path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
+        f.setBold( false );
+        path.addText( left, rect().top() + fm.ascent(), f, locale.toString( mLimits.upper() ) );
+      }
     }
   }
 
