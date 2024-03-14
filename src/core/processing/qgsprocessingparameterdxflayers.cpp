@@ -38,7 +38,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   QgsMapLayer *mapLayer = nullptr;
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) );
+  QgsVectorLayer *vectorLayer = input.value<QgsVectorLayer *>();
   if ( vectorLayer )
   {
     return vectorLayer->isSpatial();
@@ -63,7 +63,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
     const QVariantList layerList = input.toList();
     for ( const QVariant &variantLayer : layerList )
     {
-      vectorLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( variantLayer ) );
+      vectorLayer = input.value<QgsVectorLayer *>();
       if ( vectorLayer )
       {
         if ( vectorLayer->isSpatial() )
