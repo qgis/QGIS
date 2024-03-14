@@ -1876,7 +1876,6 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   if ( brushStyle != Qt::NoBrush )
   {
     const QgsAbstractGeometry *sourceGeom = geom.constGet();
-    std::unique_ptr< QgsAbstractGeometry > tempGeom;
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
