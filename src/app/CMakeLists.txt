@@ -644,6 +644,7 @@ if(WIN32)
   add_definitions(-DQWT_DLL)
   add_definitions(-DQSCINTILLA_DLL)
   target_link_libraries(${QGIS_APP_NAME} dbghelp)
+  target_compile_options(${QGIS_APP_NAME} PRIVATE -municode)
   target_link_libraries(qgis_app dbghelp)
 endif()
 
