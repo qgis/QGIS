@@ -17,6 +17,7 @@
 #include "qgselevationcontrollerwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"
+#include <QInputDialog>
 
 QgsAppCanvasFiltering::QgsAppCanvasFiltering( QObject *parent )
   : QObject( parent )
@@ -39,6 +40,18 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
       connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), []
       {
         QgisApp::instance()->showProjectProperties( tr( "Elevation" ) );
+      } );
+      QAction *setRangeWidthAction = new QAction( tr( "Set Fixed Range Width…" ), controller );
+      controller->menu()->addAction( setRangeWidthAction );
+      connect( setRangeWidthAction, &QAction::triggered, QgisApp::instance(), [controller ]
+      {
+        const double existingWidth = controller->fixedRangeWidth();
+        QgsElevationControllerFixedWidthDialog dialog( controller );
+        dialog.setFixedRangeWidth( existingWidth >= 0 ? existingWidth : -1 );
+        if ( dialog.exec() )
+        {
+          controller->setFixedRangeWidth( dialog.fixedRangeWidth() );
+        }
       } );
       QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
       controller->menu()->addAction( disableAction );
@@ -67,4 +80,27 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
       }
     }
   } );
+}
+
+//
+// QgsElevationControllerFixedWidthDialog
+//
+QgsElevationControllerFixedWidthDialog::QgsElevationControllerFixedWidthDialog( QWidget *parent )
+  : QDialog( parent )
+{
+  setupUi( this );
+  mWidthSpin->setClearValue( -1, tr( "Not set" ) );
+
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsElevationControllerFixedWidthDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsElevationControllerFixedWidthDialog::reject );
+}
+
+void QgsElevationControllerFixedWidthDialog::setFixedRangeWidth( double width )
+{
+  mWidthSpin->setValue( width );
+}
+
+double QgsElevationControllerFixedWidthDialog::fixedRangeWidth() const
+{
+  return mWidthSpin->value();
 }

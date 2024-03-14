@@ -16,12 +16,25 @@
 #define QGSAPPCANVASFILTERING_H
 
 #include "qgis.h"
+#include "ui_qgselevationcontrollerfixedwidthdialogbase.h"
 #include <QObject>
 #include <QHash>
+#include <QDialog>
 
 class QAction;
 class QgsMapCanvas;
 class QgsElevationControllerWidget;
+
+class QgsElevationControllerFixedWidthDialog : public QDialog, private Ui::QgsElevationControllerFixedWidthDialogBase
+{
+    Q_OBJECT
+  public:
+
+    QgsElevationControllerFixedWidthDialog( QWidget *parent );
+    void setFixedRangeWidth( double width );
+    double fixedRangeWidth() const;
+
+};
 
 class QgsAppCanvasFiltering : public QObject
 {
