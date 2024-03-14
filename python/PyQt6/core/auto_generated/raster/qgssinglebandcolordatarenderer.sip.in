@@ -35,6 +35,8 @@ QgsSingleBandColorDataRenderer cannot be copied. Use :py:func:`~QgsSingleBandCol
 
     virtual bool setInput( QgsRasterInterface *input );
 
+    virtual bool setInputBand( int band );
+
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 

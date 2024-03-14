@@ -127,6 +127,9 @@ Set category label
 Returns the raster band used for rendering the raster.
 %End
 
+    virtual bool setInputBand( int band );
+
+
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;

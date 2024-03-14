@@ -146,6 +146,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     int band() const { return mBand; }
 
+    bool setInputBand( int band ) override;
+
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
     QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;

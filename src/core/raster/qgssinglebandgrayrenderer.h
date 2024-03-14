@@ -56,7 +56,9 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     int grayBand() const { return mGrayBand; }
-    void setGrayBand( int band ) { mGrayBand = band; }
+    void setGrayBand( int band );
+    bool setInputBand( int band ) override;
+
     const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement.get(); }
     //! Takes ownership
     void setContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );

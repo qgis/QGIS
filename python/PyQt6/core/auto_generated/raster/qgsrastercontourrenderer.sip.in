@@ -56,10 +56,8 @@ Creates an instance of the renderer based on definition from XML (used by render
 %Docstring
 Returns the number of the input raster band
 %End
-    void setInputBand( int band );
-%Docstring
-Sets the number of the input raster band
-%End
+    virtual bool setInputBand( int band );
+
 
     double contourInterval() const;
 %Docstring

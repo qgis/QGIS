@@ -571,11 +571,17 @@ QList<int> QgsHillshadeRenderer::usesBands() const
 
 void QgsHillshadeRenderer::setBand( int bandNo )
 {
-  if ( bandNo > mInput->bandCount() || bandNo <= 0 )
+  setInputBand( bandNo );
+}
+
+bool QgsHillshadeRenderer::setInputBand( int band )
+{
+  if ( band > mInput->bandCount() || band <= 0 )
   {
-    return;
+    return false;
   }
-  mBand = bandNo;
+  mBand = band;
+  return true;
 }
 
 void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const

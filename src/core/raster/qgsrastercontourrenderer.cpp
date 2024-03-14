@@ -232,6 +232,12 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterContourRenderer::createLegendNodes
   return nodes;
 }
 
+bool QgsRasterContourRenderer::setInputBand( int band )
+{
+  mInputBand = band;
+  return true;
+}
+
 void QgsRasterContourRenderer::setContourSymbol( QgsLineSymbol *symbol )
 {
   mContourSymbol.reset( symbol );

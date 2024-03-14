@@ -95,6 +95,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
      * \see band
      */
     void setBand( int bandNo );
+    bool setInputBand( int band ) override;
 
     double classificationMin() const { return mClassificationMin; }
     double classificationMax() const { return mClassificationMax; }

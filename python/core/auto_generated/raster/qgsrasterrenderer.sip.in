@@ -67,6 +67,19 @@ The default implementation returns ``False``.
     virtual bool setInput( QgsRasterInterface *input );
 
 
+    virtual bool setInputBand( int band );
+%Docstring
+Attempts to set the input ``band`` for the renderer.
+
+Returns ``True`` if the band was successfully set, or ``False`` if the band could not be set.
+
+.. note::
+
+   Not all renderers support setting the input band.
+
+.. versionadded:: 3.38
+%End
+
      virtual QgsRasterBlock *block( int bandNo,
                            const QgsRectangle &extent,
                            int width,

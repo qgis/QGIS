@@ -23,8 +23,9 @@
 #include <QImage>
 #include <memory>
 
-QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band ):
-  QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
+QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band )
+  : QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) )
+  , mBand( band )
 {
 
 }
@@ -138,4 +139,10 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
     return true;
   }
   return false;
+}
+
+bool QgsSingleBandColorDataRenderer::setInputBand( int band )
+{
+  mBand = band;
+  return true;
 }

@@ -85,6 +85,17 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface *input ) override;
 
+    /**
+     * Attempts to set the input \a band for the renderer.
+     *
+     * Returns TRUE if the band was successfully set, or FALSE if the band could not be set.
+     *
+     * \note Not all renderers support setting the input band.
+     *
+     * \since QGIS 3.38
+     */
+    virtual bool setInputBand( int band );
+
     QgsRasterBlock *block( int bandNo,
                            const QgsRectangle &extent,
                            int width,

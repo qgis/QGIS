@@ -38,16 +38,22 @@ QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInt
 
 void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 {
+  setInputBand( bandNo );
+}
+
+bool QgsSingleBandPseudoColorRenderer::setInputBand( int band )
+{
   if ( !mInput )
   {
-    mBand = bandNo;
-    return;
+    mBand = band;
+    return true;
   }
-
-  if ( bandNo <= mInput->bandCount() || bandNo > 0 )
+  else if ( band <= mInput->bandCount() || band > 0 )
   {
-    mBand = bandNo;
+    mBand = band;
+    return true;
   }
+  return false;
 }
 
 void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
@@ -481,3 +487,4 @@ bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const
 {
   return true;
 }
+
