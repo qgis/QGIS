@@ -77,6 +77,9 @@ Returns ``True`` if the band was successfully set, or ``False`` if the band coul
 
    Not all renderers support setting the input band.
 
+.. seealso:: :py:func:`usesBands`
+
+
 .. versionadded:: 3.38
 %End
 
@@ -169,7 +172,9 @@ Useful when cloning renderers.
 
     virtual QList<int> usesBands() const;
 %Docstring
-Returns a list of band numbers used by the renderer
+Returns a list of band numbers used by the renderer.
+
+.. seealso:: :py:func:`setInputBand`
 %End
 
     const QgsRasterMinMaxOrigin &minMaxOrigin() const;

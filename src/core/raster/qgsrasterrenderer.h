@@ -92,6 +92,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      * \note Not all renderers support setting the input band.
      *
+     * \see usesBands()
+     *
      * \since QGIS 3.38
      */
     virtual bool setInputBand( int band );
@@ -175,7 +177,11 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      */
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
 
-    //! Returns a list of band numbers used by the renderer
+    /**
+     * Returns a list of band numbers used by the renderer.
+     *
+     * \see setInputBand()
+     */
     virtual QList<int> usesBands() const { return QList<int>(); }
 
     //! Returns const reference to origin of min/max values
