@@ -22,6 +22,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgsdxfexport.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QList>
 #include <QPair>
