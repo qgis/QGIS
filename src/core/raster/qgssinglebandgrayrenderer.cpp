@@ -198,6 +198,11 @@ void QgsSingleBandGrayRenderer::setGrayBand( int band )
   setInputBand( band );
 }
 
+int QgsSingleBandGrayRenderer::inputBand() const
+{
+  return mGrayBand;
+}
+
 bool QgsSingleBandGrayRenderer::setInputBand( int band )
 {
   if ( !mInput )

@@ -101,6 +101,8 @@ Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
 %End
+    virtual int inputBand() const;
+
     virtual bool setInputBand( int band );
 
 

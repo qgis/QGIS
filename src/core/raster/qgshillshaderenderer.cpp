@@ -569,6 +569,11 @@ QList<int> QgsHillshadeRenderer::usesBands() const
 
 }
 
+int QgsHillshadeRenderer::inputBand() const
+{
+  return mBand;
+}
+
 void QgsHillshadeRenderer::setBand( int bandNo )
 {
   setInputBand( bandNo );

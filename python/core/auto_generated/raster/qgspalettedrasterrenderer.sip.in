@@ -127,6 +127,8 @@ Set category label
 Returns the raster band used for rendering the raster.
 %End
 
+    virtual int inputBand() const;
+
     virtual bool setInputBand( int band );
 
 

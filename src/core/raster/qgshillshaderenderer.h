@@ -61,6 +61,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     QList<int> usesBands() const override;
+    int inputBand() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 

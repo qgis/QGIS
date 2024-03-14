@@ -146,6 +146,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     int band() const { return mBand; }
 
+    int inputBand() const override;
     bool setInputBand( int band ) override;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;

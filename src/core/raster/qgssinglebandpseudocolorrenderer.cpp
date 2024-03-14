@@ -41,6 +41,11 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
   setInputBand( bandNo );
 }
 
+int QgsSingleBandPseudoColorRenderer::inputBand() const
+{
+  return mBand;
+}
+
 bool QgsSingleBandPseudoColorRenderer::setInputBand( int band )
 {
   if ( !mInput )
