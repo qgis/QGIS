@@ -219,8 +219,10 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   const double limitRange = mLimits.upper() - mLimits.lower();
   const double lowerFraction = ( mRange.lower() - mLimits.lower() ) / limitRange;
   const double upperFraction = ( mRange.upper() - mLimits.lower() ) / limitRange;
-  const int lowerY = static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) );
-  const int upperY = static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) );
+  const int lowerY = std::min( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ),
+                               rect().bottom() - fm.descent() );
+  const int upperY = std::max( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ),
+                               rect().top() + fm.ascent() );
 
   const bool lowerIsCloseToLimit = lowerY + fm.height() > rect().bottom() - fm.descent();
   const bool upperIsCloseToLimit = upperY - fm.height() < rect().top() + fm.ascent();
