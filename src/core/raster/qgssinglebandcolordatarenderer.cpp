@@ -143,6 +143,15 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
 
 bool QgsSingleBandColorDataRenderer::setInputBand( int band )
 {
-  mBand = band;
-  return true;
+  if ( !mInput )
+  {
+    mBand = band;
+    return true;
+  }
+  else if ( band > 0 && band <= mInput->bandCount() )
+  {
+    mBand = band;
+    return true;
+  }
+  return false;
 }

@@ -177,8 +177,17 @@ void QgsPalettedRasterRenderer::setLabel( double idx, const QString &label )
 
 bool QgsPalettedRasterRenderer::setInputBand( int band )
 {
-  mBand = band;
-  return true;
+  if ( !mInput )
+  {
+    mBand = band;
+    return true;
+  }
+  else if ( band > 0 && band <= mInput->bandCount() )
+  {
+    mBand = band;
+    return true;
+  }
+  return false;
 }
 
 QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )

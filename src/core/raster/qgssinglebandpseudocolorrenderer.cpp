@@ -48,7 +48,7 @@ bool QgsSingleBandPseudoColorRenderer::setInputBand( int band )
     mBand = band;
     return true;
   }
-  else if ( band <= mInput->bandCount() || band > 0 )
+  else if ( band > 0 && band <= mInput->bandCount() )
   {
     mBand = band;
     return true;
