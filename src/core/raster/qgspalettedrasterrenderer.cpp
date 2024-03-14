@@ -175,6 +175,12 @@ void QgsPalettedRasterRenderer::setLabel( double idx, const QString &label )
   }
 }
 
+bool QgsPalettedRasterRenderer::setInputBand( int band )
+{
+  mBand = band;
+  return true;
+}
+
 QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );

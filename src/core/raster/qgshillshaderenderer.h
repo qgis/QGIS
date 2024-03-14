@@ -74,6 +74,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * \see band
      */
     void setBand( int bandNo );
+    bool setInputBand( int band ) override;
 
     /**
      * Returns the direction of the light over the raster between 0-360.

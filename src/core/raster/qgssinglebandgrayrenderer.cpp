@@ -193,6 +193,17 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
   return outputBlock.release();
 }
 
+void QgsSingleBandGrayRenderer::setGrayBand( int band )
+{
+  setInputBand( band );
+}
+
+bool QgsSingleBandGrayRenderer::setInputBand( int band )
+{
+  mGrayBand = band;
+  return true;
+}
+
 void QgsSingleBandGrayRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )

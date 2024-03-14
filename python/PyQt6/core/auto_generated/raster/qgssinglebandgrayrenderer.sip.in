@@ -45,6 +45,9 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
 
     int grayBand() const;
     void setGrayBand( int band );
+    virtual bool setInputBand( int band );
+
+
     const QgsContrastEnhancement *contrastEnhancement() const;
     void setContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring

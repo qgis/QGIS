@@ -55,8 +55,7 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
 
     //! Returns the number of the input raster band
     int inputBand() const { return mInputBand; }
-    //! Sets the number of the input raster band
-    void setInputBand( int band ) { mInputBand = band; }
+    bool setInputBand( int band ) override;
 
     //! Returns the interval of contour lines generation
     double contourInterval() const { return mContourInterval; }

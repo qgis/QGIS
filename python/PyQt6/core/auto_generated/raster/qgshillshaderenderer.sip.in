@@ -71,6 +71,8 @@ Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
 %End
+    virtual bool setInputBand( int band );
+
 
     double azimuth() const;
 %Docstring
