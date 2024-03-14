@@ -45,6 +45,8 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
 
     int grayBand() const;
     void setGrayBand( int band );
+    virtual int inputBand() const;
+
     virtual bool setInputBand( int band );
 
 

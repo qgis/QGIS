@@ -141,6 +141,11 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
   return false;
 }
 
+int QgsSingleBandColorDataRenderer::inputBand() const
+{
+  return mBand;
+}
+
 bool QgsSingleBandColorDataRenderer::setInputBand( int band )
 {
   if ( !mInput )

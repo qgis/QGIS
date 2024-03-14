@@ -44,6 +44,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     bool setInput( QgsRasterInterface *input ) override;
+    int inputBand() const override;
     bool setInputBand( int band ) override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;

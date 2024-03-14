@@ -175,6 +175,11 @@ void QgsPalettedRasterRenderer::setLabel( double idx, const QString &label )
   }
 }
 
+int QgsPalettedRasterRenderer::inputBand() const
+{
+  return mBand;
+}
+
 bool QgsPalettedRasterRenderer::setInputBand( int band )
 {
   if ( !mInput )

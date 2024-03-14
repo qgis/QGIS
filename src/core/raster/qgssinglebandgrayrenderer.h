@@ -57,6 +57,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band );
+    int inputBand() const override;
     bool setInputBand( int band ) override;
 
     const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement.get(); }

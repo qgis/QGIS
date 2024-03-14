@@ -67,6 +67,21 @@ The default implementation returns ``False``.
     virtual bool setInput( QgsRasterInterface *input );
 
 
+    virtual int inputBand() const;
+%Docstring
+Returns the input band for the renderer, or -1 if no input band is available.
+
+For renderers which utilize multiple input bands -1 will be returned. In these
+cases :py:func:`~QgsRasterRenderer.usesBands` will return a list of all utilized bands (including alpha
+bands).
+
+.. seealso:: :py:func:`setInputBand`
+
+.. seealso:: :py:func:`usesBands`
+
+.. versionadded:: 3.38
+%End
+
     virtual bool setInputBand( int band );
 %Docstring
 Attempts to set the input ``band`` for the renderer.
@@ -76,6 +91,8 @@ Returns ``True`` if the band was successfully set, or ``False`` if the band coul
 .. note::
 
    Not all renderers support setting the input band.
+
+.. seealso:: :py:func:`inputBand`
 
 .. seealso:: :py:func:`usesBands`
 
