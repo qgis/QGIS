@@ -17,6 +17,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmaptooloffsetcurve.h"
@@ -345,6 +346,33 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
     return;
 
   destLayer->beginEditCommand( tr( "Offset curve" ) );
+
+  QgsAvoidIntersectionsOperation avoidIntersections;
+
+  connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
+
+  QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+  ignoreFeatures.insert( destLayer, QSet<QgsFeatureId> { mModifiedFeature } );
+
+  const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( destLayer, mModifiedFeature, mModifiedGeometry, ignoreFeatures );
+
+  if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+  {
+    emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
+    destLayer->destroyEditCommand();
+    deleteRubberBandAndGeometry();
+    deleteUserInputWidget();
+    return;
+  }
+
+  if ( mModifiedGeometry.isEmpty() )
+  {
+    emit messageEmitted( tr( "Resulting geometry would be empty" ), Qgis::MessageLevel::Warning );
+    destLayer->destroyEditCommand();
+    deleteRubberBandAndGeometry();
+    deleteUserInputWidget();
+    return;
+  }
 
   bool editOk = true;
   if ( !mCtrlHeldOnFirstClick && !( modifiers & Qt::ControlModifier ) )
