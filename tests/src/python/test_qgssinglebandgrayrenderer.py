@@ -1,7 +1,7 @@
-"""QGIS Unit tests for QgsSingleBandColorDataRenderer
+"""QGIS Unit tests for QgsSingleBandGrayRenderer.
 
 From build dir, run:
-ctest -R PyQgsSingleBandColorDataRenderer -V
+ctest -R PyQgsSingleBandGrayRenderer -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -13,8 +13,8 @@ import os
 
 from qgis.PyQt.QtCore import QFileInfo
 from qgis.core import (
-    QgsSingleBandColorDataRenderer,
     QgsRasterLayer,
+    QgsSingleBandGrayRenderer,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -26,7 +26,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsSingleBandColorDataRenderer(QgisTestCase):
+class TestQgsSingleBandGrayRenderer(QgisTestCase):
 
     def test_renderer(self):
         path = os.path.join(unitTestDataPath(),
@@ -36,7 +36,8 @@ class TestQgsSingleBandColorDataRenderer(QgisTestCase):
         layer = QgsRasterLayer(path, base_name)
         self.assertTrue(layer.isValid(), f'Raster not loaded: {path}')
 
-        renderer = QgsSingleBandColorDataRenderer(layer.dataProvider(), 1)
+        renderer = QgsSingleBandGrayRenderer(layer.dataProvider(),
+                                             1)
 
         self.assertEqual(renderer.inputBand(), 1)
 
@@ -47,13 +48,14 @@ class TestQgsSingleBandColorDataRenderer(QgisTestCase):
         self.assertTrue(renderer.setInputBand(2))
         self.assertEqual(renderer.inputBand(), 2)
 
-    def test_singleband_invalid_layer(self):
+    def test_invalid_layer(self):
         """
-        Test singleband raster render band with a broken layer path
+        Test gray renderer band with a broken layer path
         """
-        renderer = QgsSingleBandColorDataRenderer(None, 5)
+        renderer = QgsSingleBandGrayRenderer(None,
+                                             11)
 
-        self.assertEqual(renderer.inputBand(), 5)
+        self.assertEqual(renderer.inputBand(), 11)
 
         # the renderer input is broken, we don't know what bands are valid, so all should be accepted
         self.assertTrue(renderer.setInputBand(10))
