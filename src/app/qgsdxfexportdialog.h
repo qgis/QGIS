@@ -33,10 +33,6 @@
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
-static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "dxf" ) );
-static const inline QgsSettingsEntryBool *settingsDxfEnableDDBlocks = new QgsSettingsEntryBool( QStringLiteral( "enable-datadefined-blocks" ), sTreeAppDdxf,  false );
-
-
 class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -103,6 +99,9 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
+    static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "dxf" ) );
+    static const inline QgsSettingsEntryBool *settingsDxfEnableDDBlocks = new QgsSettingsEntryBool( QStringLiteral( "enable-datadefined-blocks" ), sTreeAppDdxf,  false );
+
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsDxfExportDialog() override;
 
