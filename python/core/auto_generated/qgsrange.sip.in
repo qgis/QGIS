@@ -43,6 +43,14 @@ Constructor for QgsRange. The ``lower`` and ``upper`` bounds are specified,
 and optionally whether or not these bounds are included in the range.
 %End
 
+    QgsRange( T lower, T upper, Qgis::RangeLimits limits );
+%Docstring
+Constructor for QgsRange. The ``lower`` and ``upper`` bounds are specified,
+and whether or not these bounds are included in the range.
+
+.. versionadded:: 3.38
+%End
+
     T lower() const;
 %Docstring
 Returns the lower bound of the range.
@@ -79,6 +87,13 @@ bound is exclusive.
 .. seealso:: :py:func:`upper`
 
 .. seealso:: :py:func:`includeLower`
+%End
+
+    Qgis::RangeLimits rangeLimits() const;
+%Docstring
+Returns the limit handling of the range.
+
+.. versionadded:: 3.38
 %End
 
     bool isEmpty() const;
@@ -146,6 +161,14 @@ typedef QgsRange<double> QgsRangedoubleBase;
 %End
   public:
 
+    QgsDoubleRange( double lower, double upper, Qgis::RangeLimits limits );
+%Docstring
+Constructor for QgsDoubleRange. The ``lower`` and ``upper`` bounds are specified,
+and whether or not these bounds are included in the range.
+
+.. versionadded:: 3.38
+%End
+
 
     QgsDoubleRange( double lower,
                     double upper,
@@ -206,6 +229,14 @@ class QgsIntRange : QgsRangeintBase
 typedef QgsRange<int> QgsRangeintBase;
 %End
   public:
+
+    QgsIntRange( int lower, int upper, Qgis::RangeLimits limits );
+%Docstring
+Constructor for QgsIntRange. The ``lower`` and ``upper`` bounds are specified,
+and whether or not these bounds are included in the range.
+
+.. versionadded:: 3.38
+%End
 
 
     QgsIntRange( int lower,
