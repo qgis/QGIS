@@ -98,13 +98,14 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QMenu *menu();
 
     /**
-     * Returns the fixed range width, or -1 if no fixed width is set.
+     * Returns the fixed range size, or -1 if no fixed size is set.
      *
-     * A fixed width forces the selected elevation range to have a matching width.
+     * A fixed size forces the selected elevation range to have a matching difference between
+     * the upper and lower elevation.
      *
-     * \see setFixedRangeWidth()
+     * \see setFixedRangeSize()
      */
-    double fixedRangeWidth() const;
+    double fixedRangeSize() const;
 
   public slots:
 
@@ -124,13 +125,14 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     void setRangeLimits( const QgsDoubleRange &limits );
 
     /**
-     * Sets the fixed range \a width. Set to -1 if no fixed width is desired.
+     * Sets the fixed range \a size. Set to -1 if no fixed size is desired.
      *
-     * A fixed width forces the selected elevation range to have a matching width.
+     * A fixed size forces the selected elevation range to have a matching difference between
+     * the upper and lower elevation.
      *
-     * \see fixedRangeWidth()
+     * \see fixedRangeSize()
      */
-    void setFixedRangeWidth( double width );
+    void setFixedRangeSize( double size );
 
   signals:
 
@@ -152,7 +154,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QgsElevationControllerLabels *mSliderLabels = nullptr;
     QgsDoubleRange mRangeLimits;
     QgsDoubleRange mCurrentRange;
-    double mFixedRangeWidth = -1;
+    double mFixedRangeSize = -1;
     int mBlockSliderChanges = 0;
     double mSliderPrecision = 100;
 
