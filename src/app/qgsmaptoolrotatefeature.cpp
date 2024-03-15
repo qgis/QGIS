@@ -439,18 +439,13 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     {
       const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, id, geom, ignoreFeatures );
 
-      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
       {
-        emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
-        vlayer->destroyEditCommand();
-        deleteRotationWidget();
-        deleteRubberband();
-        return;
-      }
+        QString errorMessage = ( geom.isEmpty() ) ?
+                               tr( "Resulting geometry would be empty" ) :
+                               tr( "An error was reported during intersection removal" );
 
-      if ( geom.isEmpty() )
-      {
-        emit messageEmitted( tr( "Resulting geometry would be empty" ), Qgis::MessageLevel::Warning );
+        emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
         vlayer->destroyEditCommand();
         deleteRotationWidget();
         deleteRubberband();

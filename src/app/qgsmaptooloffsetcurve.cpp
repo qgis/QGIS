@@ -356,18 +356,13 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( destLayer, mModifiedFeature, mModifiedGeometry, ignoreFeatures );
 
-  if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+  if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || mModifiedGeometry.isEmpty() )
   {
-    emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
-    destLayer->destroyEditCommand();
-    deleteRubberBandAndGeometry();
-    deleteUserInputWidget();
-    return;
-  }
+    QString errorMessage = ( mModifiedGeometry.isEmpty() ) ?
+                           tr( "Resulting geometry would be empty" ) :
+                           tr( "An error was reported during intersection removal" );
 
-  if ( mModifiedGeometry.isEmpty() )
-  {
-    emit messageEmitted( tr( "Resulting geometry would be empty" ), Qgis::MessageLevel::Warning );
+    emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
     destLayer->destroyEditCommand();
     deleteRubberBandAndGeometry();
     deleteUserInputWidget();
