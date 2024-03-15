@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Restore build cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: build-ccache-mac-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -128,8 +128,8 @@ jobs:
           make -j $(sysctl -n hw.ncpu)
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: ${{ github.event_name == 'push' }}
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: build-ccache-mac-${{ github.ref_name }}
+          key: build-ccache-mac-${{ github.ref_name }}-${{ github.run_id }}
