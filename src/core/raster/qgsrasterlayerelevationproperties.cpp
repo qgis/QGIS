@@ -237,7 +237,8 @@ QgsDoubleRange QgsRasterLayerElevationProperties::elevationRangeForPixelValue( i
       if ( band != mBandNumber )
         return QgsDoubleRange();
 
-      return QgsDoubleRange( pixelValue * mZScale + mZOffset, pixelValue * mZScale + mZOffset );
+      const double z = pixelValue * mZScale + mZOffset;
+      return QgsDoubleRange( z, z );
     }
   }
   BUILTIN_UNREACHABLE
