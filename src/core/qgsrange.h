@@ -58,6 +58,19 @@ class QgsRange
     {}
 
     /**
+     * Constructor for QgsRange. The \a lower and \a upper bounds are specified,
+     * and whether or not these bounds are included in the range.
+     *
+     * \since QGIS 3.38
+     */
+    QgsRange( T lower, T upper, Qgis::RangeLimits limits )
+      : mLower( lower )
+      , mUpper( upper )
+      , mIncludeLower( limits == Qgis::RangeLimits::IncludeLowerExcludeUpper || limits == Qgis::RangeLimits::IncludeBoth )
+      , mIncludeUpper( limits == Qgis::RangeLimits::ExcludeLowerIncludeUpper || limits == Qgis::RangeLimits::IncludeBoth )
+    {}
+
+    /**
      * Returns the lower bound of the range.
      * \see upper()
      * \see includeLower()
@@ -86,6 +99,23 @@ class QgsRange
      * \see includeLower()
      */
     bool includeUpper() const { return mIncludeUpper; }
+
+    /**
+     * Returns the limit handling of the range.
+     *
+     * \since QGIS 3.38
+     */
+    Qgis::RangeLimits rangeLimits() const
+    {
+      if ( mIncludeLower && mIncludeUpper )
+        return Qgis::RangeLimits::IncludeBoth;
+      else if ( mIncludeLower && !mIncludeUpper )
+        return Qgis::RangeLimits::IncludeLowerExcludeUpper;
+      else if ( !mIncludeLower && mIncludeUpper )
+        return Qgis::RangeLimits::ExcludeLowerIncludeUpper;
+      else
+        return Qgis::RangeLimits::ExcludeBoth;
+    }
 
     /**
      * Returns TRUE if the range is empty, ie the lower bound equals (or exceeds) the upper bound
@@ -201,6 +231,16 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 {
   public:
 
+    /**
+     * Constructor for QgsDoubleRange. The \a lower and \a upper bounds are specified,
+     * and whether or not these bounds are included in the range.
+     *
+     * \since QGIS 3.38
+     */
+    QgsDoubleRange( double lower, double upper, Qgis::RangeLimits limits )
+      : QgsRange( lower, upper, limits )
+    {}
+
 #ifndef SIP_RUN
 
     /**
@@ -286,6 +326,16 @@ Q_DECLARE_METATYPE( QgsDoubleRange )
 class CORE_EXPORT QgsIntRange : public QgsRange< int >
 {
   public:
+
+    /**
+     * Constructor for QgsIntRange. The \a lower and \a upper bounds are specified,
+     * and whether or not these bounds are included in the range.
+     *
+     * \since QGIS 3.38
+     */
+    QgsIntRange( int lower, int upper, Qgis::RangeLimits limits )
+      : QgsRange( lower, upper, limits )
+    {}
 
 #ifndef SIP_RUN
 
