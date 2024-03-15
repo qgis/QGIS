@@ -15,6 +15,7 @@
 
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -217,6 +218,20 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         request.setFilterFids( mMovedFeatures ).setNoAttributes();
         QgsFeatureIterator fi = vlayer->getFeatures( request );
         QgsFeature f;
+
+        QgsAvoidIntersectionsOperation avoidIntersections;
+        connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
+
+        // when removing intersections ignore all features being moved
+        QSet<QgsFeatureId> ignoreFeatureIds;
+        for ( const auto &feat : mMovedFeatures )
+        {
+          ignoreFeatureIds.insert( feat );
+        }
+
+        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+        ignoreFeatures.insert( vlayer, ignoreFeatureIds );
+
         while ( fi.nextFeature( f ) )
         {
           if ( !f.hasGeometry() )
@@ -227,6 +242,26 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             continue;
 
           const QgsFeatureId id = f.id();
+
+          if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
+          {
+            const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, id, geom, ignoreFeatures );
+
+            if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+            {
+              emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
+              vlayer->destroyEditCommand();
+              return;
+            }
+
+            if ( geom.isEmpty() )
+            {
+              emit messageEmitted( tr( "Resulting geometry would be empty" ), Qgis::MessageLevel::Warning );
+              vlayer->destroyEditCommand();
+              return;
+            }
+          }
+
           vlayer->changeGeometry( id, geom );
 
           if ( QgsProject::instance()->topologicalEditing() )
