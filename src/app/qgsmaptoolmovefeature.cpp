@@ -222,7 +222,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsAvoidIntersectionsOperation avoidIntersections;
         connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
-        // when removing intersections ignore all features being moved
+        // when removing intersections don't check for intersections with selected features
         QSet<QgsFeatureId> ignoreFeatureIds;
         for ( const auto &feat : mMovedFeatures )
         {
