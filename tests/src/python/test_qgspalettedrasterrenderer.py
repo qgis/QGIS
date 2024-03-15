@@ -164,6 +164,19 @@ class TestQgsPalettedRasterRenderer(QgisTestCase):
                 ms)
         )
 
+    def testPalettedBandInvalidLayer(self):
+        """ test paletted raster render band with a broken layer path"""
+        renderer = QgsPalettedRasterRenderer(None, 2,
+                                             [QgsPalettedRasterRenderer.Class(137, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(138, QColor(255, 0, 0), 'class 1'),
+                                              QgsPalettedRasterRenderer.Class(139, QColor(0, 0, 255), 'class 1')])
+
+        self.assertEqual(renderer.inputBand(), 2)
+
+        # the renderer input is broken, we don't know what bands are valid, so all should be accepted
+        self.assertTrue(renderer.setInputBand(10))
+        self.assertEqual(renderer.inputBand(), 10)
+
     def testPalettedBand(self):
         """ test paletted raster render band"""
         path = os.path.join(unitTestDataPath(),
@@ -177,6 +190,15 @@ class TestQgsPalettedRasterRenderer(QgisTestCase):
                                              [QgsPalettedRasterRenderer.Class(137, QColor(0, 255, 0), 'class 2'),
                                               QgsPalettedRasterRenderer.Class(138, QColor(255, 0, 0), 'class 1'),
                                               QgsPalettedRasterRenderer.Class(139, QColor(0, 0, 255), 'class 1')])
+
+        self.assertEqual(renderer.inputBand(), 2)
+        self.assertFalse(renderer.setInputBand(0))
+        self.assertEqual(renderer.inputBand(), 2)
+        self.assertFalse(renderer.setInputBand(10))
+        self.assertEqual(renderer.inputBand(), 2)
+        self.assertTrue(renderer.setInputBand(1))
+        self.assertEqual(renderer.inputBand(), 1)
+        self.assertTrue(renderer.setInputBand(2))
 
         layer.setRenderer(renderer)
         ms = QgsMapSettings()
