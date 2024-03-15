@@ -24,6 +24,7 @@
 #include "qgsdxfexport.h"
 #include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsxmlutils.h"
 
 #include <QList>
 #include <QPair>
@@ -118,6 +119,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QString mapTheme() const;
     QString encoding() const;
     QgsCoordinateReferenceSystem crs() const;
+    bool loadSettingsFromXML( QDomDocument &document ) const;
+    void saveSettingsToXML( QDomDocument &document ) const;
 
   public slots:
     //! Change the selection of layers in the list
@@ -125,6 +128,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void deSelectAll();
     void selectDataDefinedBlocks();
     void deselectDataDefinedBlocks();
+    void loadSettingsFromFile();
+    void saveSettingsToFile();
 
   private slots:
     void setOkEnabled();
@@ -139,6 +144,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
     QgsVectorLayerAndAttributeModel *mModel = nullptr;
     QgsDxfExportLayerTreeView *mTreeView = nullptr;
+    QPushButton *mBtnLoadSaveSettings = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };
