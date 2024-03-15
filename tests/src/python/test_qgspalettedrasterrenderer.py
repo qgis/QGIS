@@ -13,8 +13,8 @@ import os
 
 import numpy as np
 from osgeo import gdal
-from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
-from qgis.PyQt.QtGui import QColor, QResizeEvent
+from qgis.PyQt.QtCore import QFileInfo, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
@@ -23,12 +23,10 @@ from qgis.core import (
     QgsLimitedRandomColorRamp,
     QgsMapSettings,
     QgsPalettedRasterRenderer,
-    QgsProject,
     QgsRasterLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
-from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
 
@@ -38,14 +36,6 @@ start_app()
 
 
 class TestQgsPalettedRasterRenderer(QgisTestCase):
-
-    def setUp(self):
-        self.iface = get_iface()
-        QgsProject.instance().removeAllMapLayers()
-
-        self.iface.mapCanvas().viewport().resize(400, 400)
-        # For some reason the resizeEvent is not delivered, fake it
-        self.iface.mapCanvas().resizeEvent(QResizeEvent(QSize(400, 400), self.iface.mapCanvas().size()))
 
     def testPaletted(self):
         """ test paletted raster renderer with raster with color table"""

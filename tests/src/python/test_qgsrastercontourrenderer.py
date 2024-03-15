@@ -1,7 +1,7 @@
-"""QGIS Unit tests for QgsHillshadeRenderer
+"""QGIS Unit tests for QgsRasterContourRenderer
 
 From build dir, run:
-ctest -R PyQgsHillshadeRenderer -V
+ctest -R PyQgsRasterContourRenderer -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@ import os
 
 from qgis.PyQt.QtCore import QFileInfo
 from qgis.core import (
-    QgsHillshadeRenderer,
+    QgsRasterContourRenderer,
     QgsRasterLayer,
 )
 import unittest
@@ -26,7 +26,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsHillshadeRenderer(QgisTestCase):
+class TestQgsRasterContourRenderer(QgisTestCase):
 
     def test_renderer(self):
         path = os.path.join(unitTestDataPath(),
@@ -36,11 +36,8 @@ class TestQgsHillshadeRenderer(QgisTestCase):
         layer = QgsRasterLayer(path, base_name)
         self.assertTrue(layer.isValid(), f'Raster not loaded: {path}')
 
-        renderer = QgsHillshadeRenderer(layer.dataProvider(),
-                                        1, 90, 45)
+        renderer = QgsRasterContourRenderer(layer.dataProvider())
 
-        self.assertEqual(renderer.azimuth(), 90)
-        self.assertEqual(renderer.altitude(), 45)
         self.assertEqual(renderer.inputBand(), 1)
 
         self.assertFalse(renderer.setInputBand(0))
@@ -50,15 +47,12 @@ class TestQgsHillshadeRenderer(QgisTestCase):
         self.assertTrue(renderer.setInputBand(2))
         self.assertEqual(renderer.inputBand(), 2)
 
-    def test_hillshade_invalid_layer(self):
+    def test_contour_invalid_layer(self):
         """
-        Test hillshade raster render band with a broken layer path
+        Test contour raster render band with a broken layer path
         """
-        renderer = QgsHillshadeRenderer(None,
-                                        1, 90, 45)
+        renderer = QgsRasterContourRenderer(None)
 
-        self.assertEqual(renderer.azimuth(), 90)
-        self.assertEqual(renderer.altitude(), 45)
         self.assertEqual(renderer.inputBand(), 1)
 
         # the renderer input is broken, we don't know what bands are valid, so all should be accepted
