@@ -9,9 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import filecmp
 import os
-from shutil import copyfile
 
 import numpy as np
 from osgeo import gdal
@@ -20,35 +18,13 @@ from qgis.PyQt.QtGui import QColor, QResizeEvent
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
-    QgsBilinearRasterResampler,
     QgsColorRampShader,
-    QgsContrastEnhancement,
-    QgsCoordinateReferenceSystem,
-    QgsCoordinateTransformContext,
-    QgsCubicRasterResampler,
-    QgsDataProvider,
-    QgsExpressionContext,
-    QgsExpressionContextScope,
     QgsGradientColorRamp,
-    QgsHueSaturationFilter,
-    QgsLayerDefinition,
     QgsLimitedRandomColorRamp,
-    QgsMapLayerServerProperties,
     QgsMapSettings,
     QgsPalettedRasterRenderer,
-    QgsPointXY,
     QgsProject,
-    QgsProperty,
-    QgsRaster,
-    QgsRasterHistogram,
-    QgsRasterLayer,
-    QgsRasterMinMaxOrigin,
-    QgsRasterPipe,
-    QgsRasterShader,
-    QgsRasterTransparency,
-    QgsReadWriteContext,
-    QgsSingleBandGrayRenderer,
-    QgsSingleBandPseudoColorRenderer,
+    QgsRasterLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
