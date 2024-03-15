@@ -130,14 +130,7 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mFixedUpperSpinBox->setValue( props->fixedRange().upper() );
   else
     mFixedUpperSpinBox->clear();
-  if ( props->fixedRange().includeLower() && props->fixedRange().includeUpper() )
-    mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( QVariant::fromValue( Qgis::RangeLimits::IncludeBoth ) ) );
-  else if ( props->fixedRange().includeLower() )
-    mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( QVariant::fromValue( Qgis::RangeLimits::IncludeLowerExcludeUpper ) ) );
-  else if ( props->fixedRange().includeUpper() )
-    mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( QVariant::fromValue( Qgis::RangeLimits::ExcludeLowerIncludeUpper ) ) );
-  else
-    mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( QVariant::fromValue( Qgis::RangeLimits::ExcludeBoth ) ) );
+  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( QVariant::fromValue( props->fixedRange().rangeLimits() ) ) );
 
   mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast <int >( props->profileSymbology() ) ) );
   switch ( props->profileSymbology() )
@@ -189,24 +182,7 @@ void QgsRasterElevationPropertiesWidget::apply()
   if ( mFixedUpperSpinBox->value() != mFixedUpperSpinBox->clearValue() )
     fixedUpper = mFixedUpperSpinBox->value();
 
-  bool includeLower = true;
-  bool includeUpper = true;
-  switch ( mLimitsComboBox->currentData().value< Qgis::RangeLimits >() )
-  {
-    case Qgis::RangeLimits::IncludeBoth:
-      break;
-    case Qgis::RangeLimits::IncludeLowerExcludeUpper:
-      includeUpper = false;
-      break;
-    case Qgis::RangeLimits::ExcludeLowerIncludeUpper:
-      includeLower = false;
-      break;
-    case Qgis::RangeLimits::ExcludeBoth:
-      includeLower = false;
-      includeUpper = false;
-      break;
-  }
-  props->setFixedRange( QgsDoubleRange( fixedLower, fixedUpper, includeLower, includeUpper ) );
+  props->setFixedRange( QgsDoubleRange( fixedLower, fixedUpper, mLimitsComboBox->currentData().value< Qgis::RangeLimits >() ) );
 
   mLayer->trigger3DUpdate();
 }
