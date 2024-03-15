@@ -23,6 +23,7 @@
 #include <cmath>
 
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolscalefeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
@@ -368,6 +369,20 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   request.setFilterFids( mScaledFeatures ).setNoAttributes();
   QgsFeatureIterator fi = vlayer->getFeatures( request );
   QgsFeature feat;
+
+  QgsAvoidIntersectionsOperation avoidIntersections;
+  connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
+
+  // when removing intersections don't check for intersections with selected features
+  QSet<QgsFeatureId> ignoreFeatureIds;
+  for ( const auto &f : mScaledFeatures )
+  {
+    ignoreFeatureIds.insert( f );
+  }
+
+  QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+  ignoreFeatures.insert( vlayer, ignoreFeatureIds );
+
   while ( fi.nextFeature( feat ) )
   {
     if ( !feat.hasGeometry() )
@@ -378,6 +393,30 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
       continue;
 
     const QgsFeatureId id = feat.id();
+
+    if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
+    {
+      const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, id, geom, ignoreFeatures );
+
+      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+      {
+        emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
+        vlayer->destroyEditCommand();
+        deleteScalingWidget();
+        deleteRubberband();
+        return;
+      }
+
+      if ( geom.isEmpty() )
+      {
+        emit messageEmitted( tr( "Resulting geometry would be empty" ), Qgis::MessageLevel::Warning );
+        vlayer->destroyEditCommand();
+        deleteScalingWidget();
+        deleteRubberband();
+        return;
+      }
+    }
+
     vlayer->changeGeometry( id, geom );
   }
 

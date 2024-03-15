@@ -429,7 +429,6 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
   ignoreFeatures.insert( vlayer, ignoreFeatureIds );
 
-
   while ( fi.nextFeature( f ) )
   {
     const QgsFeatureId id = f.id();
@@ -440,7 +439,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     {
       const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, id, geom, ignoreFeatures );
 
-      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType)
+      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
       {
         emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
         vlayer->destroyEditCommand();
