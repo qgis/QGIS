@@ -119,7 +119,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QString mapTheme() const;
     QString encoding() const;
     QgsCoordinateReferenceSystem crs() const;
-    bool loadSettingsFromXML( QDomDocument &document ) const;
+    bool loadSettingsFromXML( QDomDocument &document, QString &errorMessage ) const;
     void saveSettingsToXML( QDomDocument &document ) const;
 
   public slots:
