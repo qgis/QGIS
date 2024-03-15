@@ -375,9 +375,6 @@ if(WITH_CORE)
 
   find_package(Protobuf CONFIG)
   find_package(Protobuf REQUIRED)
-  if(Protobuf_VERSION GREATER_EQUAL 4.23)
-    set(Protobuf_LITE_LIBRARY protobuf::libprotobuf-lite)
-  endif()
 
   message(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
   if (NOT Protobuf_PROTOC_EXECUTABLE)

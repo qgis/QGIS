@@ -2460,7 +2460,7 @@ target_link_libraries(qgis_core
   EXPAT::EXPAT
   ${SQLITE3_LIBRARY}
   ${LIBZIP_LIBRARY}
-  ${Protobuf_LITE_LIBRARY}
+  $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
   PROJ::proj
