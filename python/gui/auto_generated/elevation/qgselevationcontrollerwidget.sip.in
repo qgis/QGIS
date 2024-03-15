@@ -61,13 +61,14 @@ Returns a reference to the widget's configuration menu, which can be used
 to add actions to the menu.
 %End
 
-    double fixedRangeWidth() const;
+    double fixedRangeSize() const;
 %Docstring
-Returns the fixed range width, or -1 if no fixed width is set.
+Returns the fixed range size, or -1 if no fixed size is set.
 
-A fixed width forces the selected elevation range to have a matching width.
+A fixed size forces the selected elevation range to have a matching difference between
+the upper and lower elevation.
 
-.. seealso:: :py:func:`setFixedRangeWidth`
+.. seealso:: :py:func:`setFixedRangeSize`
 %End
 
   public slots:
@@ -88,13 +89,14 @@ Sets the limits of the elevation range which can be selected by the widget.
 .. seealso:: :py:func:`rangeLimits`
 %End
 
-    void setFixedRangeWidth( double width );
+    void setFixedRangeSize( double size );
 %Docstring
-Sets the fixed range ``width``. Set to -1 if no fixed width is desired.
+Sets the fixed range ``size``. Set to -1 if no fixed size is desired.
 
-A fixed width forces the selected elevation range to have a matching width.
+A fixed size forces the selected elevation range to have a matching difference between
+the upper and lower elevation.
 
-.. seealso:: :py:func:`fixedRangeWidth`
+.. seealso:: :py:func:`fixedRangeSize`
 %End
 
   signals:

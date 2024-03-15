@@ -41,16 +41,16 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
       {
         QgisApp::instance()->showProjectProperties( tr( "Elevation" ) );
       } );
-      QAction *setRangeWidthAction = new QAction( tr( "Set Fixed Range Width…" ), controller );
-      controller->menu()->addAction( setRangeWidthAction );
-      connect( setRangeWidthAction, &QAction::triggered, QgisApp::instance(), [controller ]
+      QAction *setRangeSizeAction = new QAction( tr( "Set Fixed Range Size…" ), controller );
+      controller->menu()->addAction( setRangeSizeAction );
+      connect( setRangeSizeAction, &QAction::triggered, QgisApp::instance(), [controller ]
       {
-        const double existingWidth = controller->fixedRangeWidth();
-        QgsElevationControllerFixedWidthDialog dialog( controller );
-        dialog.setFixedRangeWidth( existingWidth >= 0 ? existingWidth : -1 );
+        const double existingSize = controller->fixedRangeSize();
+        QgsElevationControllerFixedSizeDialog dialog( controller );
+        dialog.setFixedRangeSize( existingSize >= 0 ? existingSize : -1 );
         if ( dialog.exec() )
         {
-          controller->setFixedRangeWidth( dialog.fixedRangeWidth() );
+          controller->setFixedRangeSize( dialog.fixedRangeSize() );
         }
       } );
       QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
@@ -85,22 +85,22 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
 //
 // QgsElevationControllerFixedWidthDialog
 //
-QgsElevationControllerFixedWidthDialog::QgsElevationControllerFixedWidthDialog( QWidget *parent )
+QgsElevationControllerFixedSizeDialog::QgsElevationControllerFixedSizeDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  mWidthSpin->setClearValue( -1, tr( "Not set" ) );
+  mSizeSpin->setClearValue( -1, tr( "Not set" ) );
 
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsElevationControllerFixedWidthDialog::accept );
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsElevationControllerFixedWidthDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsElevationControllerFixedSizeDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsElevationControllerFixedSizeDialog::reject );
 }
 
-void QgsElevationControllerFixedWidthDialog::setFixedRangeWidth( double width )
+void QgsElevationControllerFixedSizeDialog::setFixedRangeSize( double size )
 {
-  mWidthSpin->setValue( width );
+  mSizeSpin->setValue( size );
 }
 
-double QgsElevationControllerFixedWidthDialog::fixedRangeWidth() const
+double QgsElevationControllerFixedSizeDialog::fixedRangeSize() const
 {
-  return mWidthSpin->value();
+  return mSizeSpin->value();
 }

@@ -103,14 +103,14 @@ QgsDoubleRange QgsElevationControllerWidget::range() const
     return mCurrentRange;
 
   const QgsDoubleRange sliderRange( mSlider->lowerValue() / mSliderPrecision, mSlider->upperValue() / mSliderPrecision );
-  if ( mFixedRangeWidth >= 0 )
+  if ( mFixedRangeSize >= 0 )
   {
     // adjust range so that it has exactly the fixed width (given slider int precision the slider range
     // will not have the exact fixed width)
-    if ( sliderRange.upper() + mFixedRangeWidth <= mRangeLimits.upper() )
-      return QgsDoubleRange( sliderRange.lower(), sliderRange.lower() + mFixedRangeWidth );
+    if ( sliderRange.upper() + mFixedRangeSize <= mRangeLimits.upper() )
+      return QgsDoubleRange( sliderRange.lower(), sliderRange.lower() + mFixedRangeSize );
     else
-      return QgsDoubleRange( sliderRange.upper() - mFixedRangeWidth, sliderRange.upper() );
+      return QgsDoubleRange( sliderRange.upper() - mFixedRangeSize, sliderRange.upper() );
   }
   else
   {
@@ -193,24 +193,24 @@ void QgsElevationControllerWidget::updateWidgetMask()
   setMask( reg );
 }
 
-double QgsElevationControllerWidget::fixedRangeWidth() const
+double QgsElevationControllerWidget::fixedRangeSize() const
 {
-  return mFixedRangeWidth;
+  return mFixedRangeSize;
 }
 
-void QgsElevationControllerWidget::setFixedRangeWidth( double width )
+void QgsElevationControllerWidget::setFixedRangeSize( double size )
 {
-  if ( width == mFixedRangeWidth )
+  if ( size == mFixedRangeSize )
     return;
 
-  mFixedRangeWidth = width;
-  if ( mFixedRangeWidth < 0 )
+  mFixedRangeSize = size;
+  if ( mFixedRangeSize < 0 )
   {
     mSlider->setFixedRangeWidth( -1 );
   }
   else
   {
-    mSlider->setFixedRangeWidth( static_cast< int >( std::round( mFixedRangeWidth * mSliderPrecision ) ) );
+    mSlider->setFixedRangeWidth( static_cast< int >( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
 }
 

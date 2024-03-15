@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsElevationControllerFixedWidthDialogBase</class>
- <widget class="QWidget" name="QgsElevationControllerFixedWidthDialogBase">
+ <class>QgsElevationControllerFixedSizeDialogBase</class>
+ <widget class="QWidget" name="QgsElevationControllerFixedSizeDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,12 +17,12 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Elevation range width</string>
+      <string>Elevation range size</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsDoubleSpinBox" name="mWidthSpin">
+    <widget class="QgsDoubleSpinBox" name="mSizeSpin">
      <property name="decimals">
       <number>4</number>
      </property>
