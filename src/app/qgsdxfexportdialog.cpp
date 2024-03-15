@@ -149,7 +149,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
     const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vLayer )
     {
-      mCreateDDBlockInfo[vLayer] = settingsDxfEnableDDBlocks.value();
+      mCreateDDBlockInfo[vLayer] = settingsDxfEnableDDBlocks->value();
       mDDBlocksMaxNumberOfClasses[vLayer] = -1;
     }
   }
