@@ -41,9 +41,9 @@ class TestQgsRangeSlider(QgisTestCase):
         w.setPageStep(5)
         self.assertEqual(w.pageStep(), 5)
 
-        self.assertEqual(w.fixedRangeWidth(), -1)
-        w.setFixedRangeWidth(5)
-        self.assertEqual(w.fixedRangeWidth(), 5)
+        self.assertEqual(w.fixedRangeSize(), -1)
+        w.setFixedRangeSize(5)
+        self.assertEqual(w.fixedRangeSize(), 5)
 
     def testLimits(self):
         w = QgsRangeSlider()
@@ -278,7 +278,7 @@ class TestQgsRangeSlider(QgisTestCase):
         """
         w = QgsRangeSlider()
         w.setRangeLimits(0, 100)
-        w.setFixedRangeWidth(10)
+        w.setFixedRangeSize(10)
         self.assertEqual(w.upperValue() - w.lowerValue(), 10)
 
         w.setUpperValue(70)
@@ -307,7 +307,7 @@ class TestQgsRangeSlider(QgisTestCase):
         self.assertEqual(w.lowerValue(), 90)
 
         # with zero width fixed range
-        w.setFixedRangeWidth(0)
+        w.setFixedRangeSize(0)
         self.assertEqual(w.upperValue() - w.lowerValue(), 0)
 
         w.setUpperValue(70)
