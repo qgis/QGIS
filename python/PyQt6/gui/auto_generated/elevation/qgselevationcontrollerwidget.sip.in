@@ -12,6 +12,21 @@
 
 
 
+class QgsElevationControllerSettingsAction: QWidgetAction
+{
+
+%TypeHeaderCode
+#include "qgselevationcontrollerwidget.h"
+%End
+  public:
+
+    QgsElevationControllerSettingsAction( QWidget *parent = 0 );
+
+    QgsDoubleSpinBox *sizeSpin();
+
+};
+
+
 
 class QgsElevationControllerWidget : QWidget
 {
