@@ -22,8 +22,10 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include <QWidget>
+#include <QWidgetAction>
 
 class QgsRangeSlider;
+class QgsDoubleSpinBox;
 class QToolButton;
 class QMenu;
 
@@ -48,6 +50,22 @@ class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
     QgsDoubleRange mRange;
 
 };
+
+class GUI_EXPORT QgsElevationControllerSettingsAction: public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+
+    QgsElevationControllerSettingsAction( QWidget *parent = nullptr );
+
+    QgsDoubleSpinBox *sizeSpin();
+
+  private:
+
+    QgsDoubleSpinBox *mSizeSpin = nullptr;
+};
+
 
 ///@endcond PRIVATE
 

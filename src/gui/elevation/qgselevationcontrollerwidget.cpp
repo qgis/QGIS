@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -29,6 +30,7 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QPainterPath>
+#include <QLabel>
 
 QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   : QWidget( parent )
@@ -46,6 +48,17 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   vl->addLayout( hl );
   mMenu = new QMenu( this );
   mConfigureButton->setMenu( mMenu );
+
+  QgsElevationControllerSettingsAction *settingsAction = new QgsElevationControllerSettingsAction( mMenu );
+  mMenu->addAction( settingsAction );
+
+  settingsAction->sizeSpin()->clear();
+  connect( settingsAction->sizeSpin(), qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size )
+  {
+    setFixedRangeSize( size < 0 ? -1 : size );
+  } );
+
+  mMenu->addSeparator();
 
   mSlider = new QgsRangeSlider( Qt::Vertical );
   mSlider->setFlippedDirection( true );
@@ -346,4 +359,38 @@ void QgsElevationControllerLabels::setRange( const QgsDoubleRange &range )
   mRange = range;
   update();
 }
+
+//
+// QgsElevationControllerSettingsAction
+//
+
+QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  QLabel *label = new QLabel( tr( "Fixed Range Size" ) );
+  gLayout->addWidget( label, 0, 0 );
+
+  mSizeSpin = new QgsDoubleSpinBox();
+  mSizeSpin->setDecimals( 4 );
+  mSizeSpin->setMinimum( -1.0 );
+  mSizeSpin->setMaximum( 999999999.0 );
+  mSizeSpin->setClearValue( -1, tr( "Not set" ) );
+  mSizeSpin->setKeyboardTracking( false );
+  mSizeSpin->setToolTip( tr( "Limit elevation range to a fixed size" ) );
+
+  gLayout->addWidget( mSizeSpin, 0, 1 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+}
+
+QgsDoubleSpinBox *QgsElevationControllerSettingsAction::sizeSpin()
+{
+  return mSizeSpin;
+}
+
 ///@endcond PRIVATE
