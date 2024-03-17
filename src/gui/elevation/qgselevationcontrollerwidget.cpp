@@ -206,11 +206,11 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
   mFixedRangeSize = size;
   if ( mFixedRangeSize < 0 )
   {
-    mSlider->setFixedRangeWidth( -1 );
+    mSlider->setFixedRangeSize( -1 );
   }
   else
   {
-    mSlider->setFixedRangeWidth( static_cast< int >( std::round( mFixedRangeSize * mSliderPrecision ) ) );
+    mSlider->setFixedRangeSize( static_cast< int >( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
 }
 
