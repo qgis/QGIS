@@ -170,28 +170,28 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     int pageStep() const;
 
     /**
-     * Returns the slider's fixed range width, or -1 if not set.
+     * Returns the slider's fixed range size, or -1 if not set.
      *
-     * If a fixed range width is set then moving either the lower or upper slider will automatically
+     * If a fixed range size is set then moving either the lower or upper slider will automatically
      * move the other slider accordingly, in order to keep the selected range at the specified
-     * fixed width.
+     * fixed size.
      *
-     * \see setFixedRangeWidth()
+     * \see setFixedRangeSize()
      * \since QGIS 3.38
      */
-    int fixedRangeWidth() const;
+    int fixedRangeSize() const;
 
     /**
-     * Sets the slider's fixed range \a width. Set to -1 if no fixed width is desired.
+     * Sets the slider's fixed range \a size. Set to -1 if no fixed size is desired.
      *
-     * If a fixed range width is set then moving either the lower or upper slider will automatically
+     * If a fixed range size is set then moving either the lower or upper slider will automatically
      * move the other slider accordingly, in order to keep the selected range at the specified
-     * fixed width.
+     * fixed size.
      *
-     * \see fixedRangeWidth()
+     * \see fixedRangeSize()
      * \since QGIS 3.38
      */
-    void setFixedRangeWidth( int width );
+    void setFixedRangeSize( int size );
 
   public slots:
 
@@ -280,14 +280,14 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void rangeLimitsChanged( int minimum, int maximum );
 
     /**
-     * Emitted when the widget's fixed range width is changed.
+     * Emitted when the widget's fixed range size is changed.
      *
-     * \see fixedRangeWidth()
-     * \see setFixedRangeWidth()
+     * \see fixedRangeSize()
+     * \see setFixedRangeSize()
      *
      * \since QGIS 3.38
      */
-    void fixedRangeWidthChanged( int width );
+    void fixedRangeSizeChanged( int size );
 
   private:
 
@@ -304,7 +304,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     int mSingleStep = 1;
     int mPageStep = 10;
 
-    int mFixedRangeWidth = -1;
+    int mFixedRangeSize = -1;
 
     QStyleOptionSlider mStyleOption;
     enum Control

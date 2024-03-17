@@ -170,28 +170,28 @@ This corresponds to the larger increment or decrement applied when the user pres
 .. seealso:: :py:func:`singleStep`
 %End
 
-    int fixedRangeWidth() const;
+    int fixedRangeSize() const;
 %Docstring
-Returns the slider's fixed range width, or -1 if not set.
+Returns the slider's fixed range size, or -1 if not set.
 
-If a fixed range width is set then moving either the lower or upper slider will automatically
+If a fixed range size is set then moving either the lower or upper slider will automatically
 move the other slider accordingly, in order to keep the selected range at the specified
-fixed width.
+fixed size.
 
-.. seealso:: :py:func:`setFixedRangeWidth`
+.. seealso:: :py:func:`setFixedRangeSize`
 
 .. versionadded:: 3.38
 %End
 
-    void setFixedRangeWidth( int width );
+    void setFixedRangeSize( int size );
 %Docstring
-Sets the slider's fixed range ``width``. Set to -1 if no fixed width is desired.
+Sets the slider's fixed range ``size``. Set to -1 if no fixed size is desired.
 
-If a fixed range width is set then moving either the lower or upper slider will automatically
+If a fixed range size is set then moving either the lower or upper slider will automatically
 move the other slider accordingly, in order to keep the selected range at the specified
-fixed width.
+fixed size.
 
-.. seealso:: :py:func:`fixedRangeWidth`
+.. seealso:: :py:func:`fixedRangeSize`
 
 .. versionadded:: 3.38
 %End
@@ -293,13 +293,13 @@ Emitted when the range selected in the widget is changed.
 Emitted when the limits of values allowed in the widget is changed.
 %End
 
-    void fixedRangeWidthChanged( int width );
+    void fixedRangeSizeChanged( int size );
 %Docstring
-Emitted when the widget's fixed range width is changed.
+Emitted when the widget's fixed range size is changed.
 
-.. seealso:: :py:func:`fixedRangeWidth`
+.. seealso:: :py:func:`fixedRangeSize`
 
-.. seealso:: :py:func:`setFixedRangeWidth`
+.. seealso:: :py:func:`setFixedRangeSize`
 
 .. versionadded:: 3.38
 %End
