@@ -20,7 +20,9 @@ from qgis.core import (
     QgsMapSettings,
     QgsRasterLayer,
     QgsRectangle,
-    QgsDoubleRange
+    QgsDoubleRange,
+    QgsSingleBandGrayRenderer,
+    QgsContrastEnhancement
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -119,7 +121,7 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
     def test_render_fixed_elevation_range_with_z_range_filter(self):
         """
         Test rendering a raster with a fixed elevation range when
-        map settings has a z range filtrer
+        map settings has a z range filter
         """
         raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, '3d', 'dtm.tif'))
         self.assertTrue(raster_layer.isValid())
@@ -163,6 +165,84 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check(
                 'Z range filter on map settings outside of layers fixed range',
+                'fixed_elevation_range_excluded',
+                map_settings)
+        )
+
+    def test_render_fixed_range_per_band_with_z_range_filter(self):
+        """
+        Test rendering a raster with a fixed range per band when
+        map settings has a z range filter
+        """
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, 'landsat_4326.tif'))
+        self.assertTrue(raster_layer.isValid())
+
+        renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 3)
+        contrast = QgsContrastEnhancement()
+        contrast.setMinimumValue(70)
+        contrast.setMaximumValue(125)
+        renderer.setContrastEnhancement(contrast)
+        raster_layer.setRenderer(renderer)
+
+        # set layer as elevation enabled
+        raster_layer.elevationProperties().setEnabled(True)
+        raster_layer.elevationProperties().setMode(
+            Qgis.RasterElevationMode.FixedRangePerBand
+        )
+        raster_layer.elevationProperties().setFixedRangePerBand(
+            {3: QgsDoubleRange(33, 38),
+             4: QgsDoubleRange(35, 40),
+             5: QgsDoubleRange(40, 48)}
+        )
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+
+        # no filter on map settings
+        map_settings.setZRange(QgsDoubleRange())
+        self.assertTrue(
+            self.render_map_settings_check(
+                'No Z range filter on map settings, elevation range per band',
+                'elevation_range_per_band_no_filter',
+                map_settings)
+        )
+
+        # map settings range matches band 3 only
+        map_settings.setZRange(QgsDoubleRange(30, 34))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings matches band 3 only',
+                'elevation_range_per_band_match_3',
+                map_settings)
+        )
+
+        # map settings range matches band 3 and 4, should pick the highest (4)
+        map_settings.setZRange(QgsDoubleRange(36, 38.5))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings matches band 3 and 4',
+                'elevation_range_per_band_match_4',
+                map_settings)
+        )
+
+        # map settings range matches band 5
+        map_settings.setZRange(QgsDoubleRange(46, 58.5))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings matches band 5',
+                'elevation_range_per_band_match_5',
+                map_settings)
+        )
+
+        # map settings range excludes layer's range
+        map_settings.setZRange(QgsDoubleRange(130, 135))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings outside of layer band ranges',
                 'fixed_elevation_range_excluded',
                 map_settings)
         )
