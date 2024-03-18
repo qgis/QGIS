@@ -18,10 +18,52 @@
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-
 #include "ui_qgsrasterelevationpropertieswidgetbase.h"
 
+#include <QAbstractItemModel>
+#include <QStyledItemDelegate>
+
 class QgsRasterLayer;
+
+class QgsRasterBandFixedElevationRangeModel : public QAbstractItemModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRasterBandFixedElevationRangeModel( QObject *parent );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+
+    void setLayerData( QgsRasterLayer *layer, const QMap<int, QgsDoubleRange > &ranges );
+    QMap<int, QgsDoubleRange > rangeData() const { return mRanges; }
+
+  private:
+
+    int mBandCount = 0;
+    QMap<int, QString > mBandNames;
+    QMap<int, QgsDoubleRange > mRanges;
+};
+
+class QgsFixedElevationRangeDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFixedElevationRangeDelegate( QObject *parent );
+
+  protected:
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+};
 
 class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterElevationPropertiesWidgetBase
 {
@@ -39,11 +81,15 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
 
     void modeChanged();
     void onChanged();
+    void calculateRangeByExpression( bool isUpper );
 
   private:
 
     QgsRasterLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
+    QgsRasterBandFixedElevationRangeModel *mFixedRangePerBandModel = nullptr;
+    QString mFixedRangeLowerExpression = QStringLiteral( "@band" );
+    QString mFixedRangeUpperExpression = QStringLiteral( "@band" );
 
 };
 
