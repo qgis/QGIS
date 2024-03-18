@@ -21,6 +21,8 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsrasterrenderer.h"
 #include <QMenu>
 #include <QAction>
 
@@ -58,7 +60,7 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
   // NOTE -- this doesn't work, there's something broken in QgsStackedWidget which breaks the height calculations
-  mPageFixedRangePerBand->setFixedHeight( QFontMetrics( font() ).height() * 15 );
+  mWidgetFixedRangePerBand->setFixedHeight( QFontMetrics( font() ).height() * 15 );
 
   mFixedRangePerBandModel = new QgsRasterBandFixedElevationRangeModel( this );
   mBandElevationTable->verticalHeader()->setVisible( false );
@@ -170,6 +172,12 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mBandElevationTable->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
   mBandElevationTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
   mBandElevationTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
+
+  if ( QgsApplication::rasterRendererRegistry()->rendererCapabilities( mLayer->renderer()->type() ) & Qgis::RasterRendererCapability::UsesMultipleBands )
+  {
+    mWidgetFixedRangePerBand->hide();
+    mFixedRangePerBandLabel->setText( tr( "This mode cannot be used with a multi-band renderer." ) );
+  }
 
   mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast <int >( props->profileSymbology() ) ) );
   switch ( props->profileSymbology() )
