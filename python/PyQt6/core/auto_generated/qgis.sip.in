@@ -1846,7 +1846,8 @@ The development version
     enum class RasterElevationMode /BaseType=IntEnum/
     {
       FixedElevationRange,
-      RepresentsElevationSurface
+      RepresentsElevationSurface,
+      FixedRangePerBand,
     };
 
     enum class BetweenLineConstraint /BaseType=IntEnum/

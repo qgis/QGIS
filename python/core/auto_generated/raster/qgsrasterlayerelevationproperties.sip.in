@@ -137,6 +137,42 @@ Sets the fixed elevation ``range`` for the raster.
 .. versionadded:: 3.38
 %End
 
+    QMap<int, QgsDoubleRange> fixedRangePerBand() const;
+%Docstring
+Returns the fixed elevation range for each band.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerElevationProperties.mode` is :py:class:`Qgis`.RasterElevationMode.FixedRangePerBand.
+
+.. note::
+
+   When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
+
+
+.. seealso:: :py:func:`setFixedRangePerBand`
+
+.. versionadded:: 3.38
+%End
+
+    void setFixedRangePerBand( const QMap<int, QgsDoubleRange> &ranges );
+%Docstring
+Sets the fixed elevation range for each band.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerElevationProperties.mode` is :py:class:`Qgis`.RasterElevationMode.FixedRangePerBand.
+
+.. note::
+
+   When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
+
+
+.. seealso:: :py:func:`fixedRangePerBand`
+
+.. versionadded:: 3.38
+%End
+
     QgsDoubleRange elevationRangeForPixelValue( int band, double pixelValue ) const;
 %Docstring
 Returns the elevation range corresponding to a raw pixel value from the specified ``band``.
