@@ -43,11 +43,25 @@ bool QgsMeshLayerElevationProperties::hasElevation() const
 QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
+  element.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mMode ) );
   element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
   if ( !std::isnan( mElevationLimit ) )
     element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
 
   writeCommonProperties( element, document, context );
+
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+      element.setAttribute( QStringLiteral( "lower" ), qgsDoubleToString( mFixedRange.lower() ) );
+      element.setAttribute( QStringLiteral( "upper" ), qgsDoubleToString( mFixedRange.upper() ) );
+      element.setAttribute( QStringLiteral( "includeLower" ), mFixedRange.includeLower() ? "1" : "0" );
+      element.setAttribute( QStringLiteral( "includeUpper" ), mFixedRange.includeUpper() ? "1" : "0" );
+      break;
+
+    case Qgis::MeshElevationMode::FromVertices:
+      break;
+  }
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
@@ -64,6 +78,7 @@ QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElemen
 bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
+  mMode = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "mode" ) ), Qgis::MeshElevationMode::FromVertices );
   mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
   if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
     mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
@@ -71,6 +86,21 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
     mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
   readCommonProperties( elevationElement, context );
+
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+    {
+      const double lower = elevationElement.attribute( QStringLiteral( "lower" ) ).toDouble();
+      const double upper = elevationElement.attribute( QStringLiteral( "upper" ) ).toDouble();
+      const bool includeLower = elevationElement.attribute( QStringLiteral( "includeLower" ) ).toInt();
+      const bool includeUpper = elevationElement.attribute( QStringLiteral( "includeUpper" ) ).toInt();
+      mFixedRange = QgsDoubleRange( lower, upper, includeLower, includeUpper );
+      break;
+    }
+    case Qgis::MeshElevationMode::FromVertices:
+      break;
+  }
 
   const QColor defaultColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
@@ -90,37 +120,92 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
 QString QgsMeshLayerElevationProperties::htmlSummary() const
 {
   QStringList properties;
-  properties << tr( "Scale: %1" ).arg( mZScale );
-  properties << tr( "Offset: %1" ).arg( mZOffset );
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+      properties << tr( "Elevation range: %1 to %2" ).arg( mFixedRange.lower() ).arg( mFixedRange.upper() );
+      break;
+
+    case Qgis::MeshElevationMode::FromVertices:
+      properties << tr( "Scale: %1" ).arg( mZScale );
+      properties << tr( "Offset: %1" ).arg( mZOffset );
+      break;
+  }
   return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
 QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
 {
   std::unique_ptr< QgsMeshLayerElevationProperties > res = std::make_unique< QgsMeshLayerElevationProperties >( nullptr );
+  res->setMode( mMode );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileSymbology( mSymbology );
   res->setElevationLimit( mElevationLimit );
+  res->setFixedRange( mFixedRange );
   res->copyCommonProperties( this );
   return res.release();
 }
 
-bool QgsMeshLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
+bool QgsMeshLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &range ) const
 {
-  // TODO -- test actual raster z range
-  return true;
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+      return mFixedRange.overlaps( range );
+
+    case Qgis::MeshElevationMode::FromVertices:
+      // TODO -- test actual mesh z range
+      return true;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QgsDoubleRange QgsMeshLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
 {
-  // TODO -- determine actual z range from raster statistics
-  return QgsDoubleRange();
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+      return mFixedRange;
+
+    case Qgis::MeshElevationMode::FromVertices:
+      // TODO -- determine actual z range from mesh statistics
+      return QgsDoubleRange();
+  }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsMeshLayerElevationProperties::showByDefaultInElevationProfilePlots() const
 {
   return true;
+}
+
+Qgis::MeshElevationMode QgsMeshLayerElevationProperties::mode() const
+{
+  return mMode;
+}
+
+void QgsMeshLayerElevationProperties::setMode( Qgis::MeshElevationMode mode )
+{
+  if ( mMode == mode )
+    return;
+
+  mMode = mode;
+  emit changed();
+}
+
+QgsDoubleRange QgsMeshLayerElevationProperties::fixedRange() const
+{
+  return mFixedRange;
+}
+
+void QgsMeshLayerElevationProperties::setFixedRange( const QgsDoubleRange &range )
+{
+  if ( range == mFixedRange )
+    return;
+
+  mFixedRange = range;
+  emit changed();
 }
 
 QgsLineSymbol *QgsMeshLayerElevationProperties::profileLineSymbol() const

@@ -27,6 +27,17 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   setupUi( this );
   setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
 
+  mModeComboBox->addItem( tr( "From Vertices" ), QVariant::fromValue( Qgis::MeshElevationMode::FromVertices ) );
+  mModeComboBox->addItem( tr( "Fixed Elevation Range" ), QVariant::fromValue( Qgis::MeshElevationMode::FixedElevationRange ) );
+
+  mLimitsComboBox->addItem( tr( "Include Lower and Upper" ), QVariant::fromValue( Qgis::RangeLimits::IncludeBoth ) );
+  mLimitsComboBox->addItem( tr( "Include Lower, Exclude Upper" ), QVariant::fromValue( Qgis::RangeLimits::IncludeLowerExcludeUpper ) );
+  mLimitsComboBox->addItem( tr( "Exclude Lower, Include Upper" ), QVariant::fromValue( Qgis::RangeLimits::ExcludeLowerIncludeUpper ) );
+  mLimitsComboBox->addItem( tr( "Exclude Lower and Upper" ), QVariant::fromValue( Qgis::RangeLimits::ExcludeBoth ) );
+
+  mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+  mSymbologyStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
@@ -36,8 +47,14 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
   mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
+  mFixedLowerSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
+  mFixedUpperSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
+  mFixedLowerSpinBox->clear();
+  mFixedUpperSpinBox->clear();
+
   syncToLayer( layer );
 
+  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshElevationPropertiesWidget::modeChanged );
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mElevationLimitSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
@@ -70,12 +87,35 @@ void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   mBlockUpdates = true;
   const QgsMeshLayerElevationProperties *props = qgis::down_cast< const QgsMeshLayerElevationProperties * >( mLayer->elevationProperties() );
+
+  mModeComboBox->setCurrentIndex( mModeComboBox->findData( QVariant::fromValue( props->mode() ) ) );
+  switch ( props->mode() )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+      mStackedWidget->setCurrentWidget( mPageFixedRange );
+      break;
+    case Qgis::MeshElevationMode::FromVertices:
+      mStackedWidget->setCurrentWidget( mPageFromVertices );
+      break;
+  }
+
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
   if ( std::isnan( props->elevationLimit() ) )
     mElevationLimitSpinBox->clear();
   else
     mElevationLimitSpinBox->setValue( props->elevationLimit() );
+
+  if ( props->fixedRange().lower() != std::numeric_limits< double >::lowest() )
+    mFixedLowerSpinBox->setValue( props->fixedRange().lower() );
+  else
+    mFixedLowerSpinBox->clear();
+  if ( props->fixedRange().upper() != std::numeric_limits< double >::max() )
+    mFixedUpperSpinBox->setValue( props->fixedRange().upper() );
+  else
+    mFixedUpperSpinBox->clear();
+  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( QVariant::fromValue( props->fixedRange().rangeLimits() ) ) );
+
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
 
@@ -100,16 +140,46 @@ void QgsMeshElevationPropertiesWidget::apply()
     return;
 
   QgsMeshLayerElevationProperties *props = qgis::down_cast< QgsMeshLayerElevationProperties * >( mLayer->elevationProperties() );
+  props->setMode( mModeComboBox->currentData().value< Qgis::MeshElevationMode >() );
+
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
   if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
     props->setElevationLimit( mElevationLimitSpinBox->value() );
   else
     props->setElevationLimit( std::numeric_limits< double >::quiet_NaN() );
+
+  double fixedLower = std::numeric_limits< double >::lowest();
+  double fixedUpper = std::numeric_limits< double >::max();
+  if ( mFixedLowerSpinBox->value() != mFixedLowerSpinBox->clearValue() )
+    fixedLower = mFixedLowerSpinBox->value();
+  if ( mFixedUpperSpinBox->value() != mFixedUpperSpinBox->clearValue() )
+    fixedUpper = mFixedUpperSpinBox->value();
+
+  props->setFixedRange( QgsDoubleRange( fixedLower, fixedUpper, mLimitsComboBox->currentData().value< Qgis::RangeLimits >() ) );
+
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
   props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
   mLayer->trigger3DUpdate();
+}
+
+void QgsMeshElevationPropertiesWidget::modeChanged()
+{
+  if ( mModeComboBox->currentData().isValid() )
+  {
+    switch ( mModeComboBox->currentData().value< Qgis::MeshElevationMode >() )
+    {
+      case Qgis::MeshElevationMode::FixedElevationRange:
+        mStackedWidget->setCurrentWidget( mPageFixedRange );
+        break;
+      case Qgis::MeshElevationMode::FromVertices:
+        mStackedWidget->setCurrentWidget( mPageFromVertices );
+        break;
+    }
+  }
+
+  onChanged();
 }
 
 void QgsMeshElevationPropertiesWidget::onChanged()

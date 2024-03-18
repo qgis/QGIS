@@ -3281,6 +3281,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterElevationMode )
 
     /**
+     * Mesh layer elevation modes.
+     *
+     * \since QGIS 3.38
+     */
+    enum class MeshElevationMode : int
+    {
+      FixedElevationRange = 0, //!< Layer has a fixed elevation range
+      FromVertices = 1 //!< Elevation should be taken from mesh vertices
+    };
+    Q_ENUM( MeshElevationMode )
+
+    /**
      * Between line constraints which can be enabled
      *
      * \since QGIS 3.26

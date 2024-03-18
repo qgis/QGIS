@@ -36,7 +36,7 @@ class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private
     void apply() override;
 
   private slots:
-
+    void modeChanged();
     void onChanged();
 
   private:
