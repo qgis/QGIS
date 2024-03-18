@@ -94,6 +94,8 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
       {
       ZOffset, //! Z offset
       ExtrusionHeight, //!< Extrusion height
+      RasterPerBandLowerElevation, //!< Lower elevation for each raster band (since QGIS 3.38)
+      RasterPerBandUpperElevation, //!< Upper elevation for each raster band (since QGIS 3.38)
     };
     // *INDENT-ON*
 
@@ -153,8 +155,10 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 
     /**
      * Returns TRUE if the layer should be visible and rendered for the specified z \a range.
+     *
+     * Since QGIS 3.38 the \a layer argument can be used to specify the target layer.
      */
-    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const;
 
     /**
      * Returns flags associated to the elevation properties.

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setDefaultsFromLayer( QgsMapLayer *layer ) override;
     QgsVectorLayerElevationProperties *clone() const override SIP_FACTORY;
     QString htmlSummary() const override;
-    bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
+    bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
 

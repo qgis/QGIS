@@ -3183,8 +3183,9 @@ Qgis.RangeLimits.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterElevationMode.FixedElevationRange.__doc__ = "Layer has a fixed elevation range"
 Qgis.RasterElevationMode.RepresentsElevationSurface.__doc__ = "Pixel values represent an elevation surface"
-Qgis.RasterElevationMode.FixedRangePerBand.__doc__ = "Layer has a fixed elevation range per band"
-Qgis.RasterElevationMode.__doc__ = "Raster layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.RasterElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``RepresentsElevationSurface``: ' + Qgis.RasterElevationMode.RepresentsElevationSurface.__doc__ + '\n' + '* ``FixedRangePerBand``: ' + Qgis.RasterElevationMode.FixedRangePerBand.__doc__
+Qgis.RasterElevationMode.FixedRangePerBand.__doc__ = "Layer has a fixed (manually specified) elevation range per band"
+Qgis.RasterElevationMode.DynamicRangePerBand.__doc__ = "Layer has a elevation range per band, calculated dynamically from an expression"
+Qgis.RasterElevationMode.__doc__ = "Raster layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.RasterElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``RepresentsElevationSurface``: ' + Qgis.RasterElevationMode.RepresentsElevationSurface.__doc__ + '\n' + '* ``FixedRangePerBand``: ' + Qgis.RasterElevationMode.FixedRangePerBand.__doc__ + '\n' + '* ``DynamicRangePerBand``: ' + Qgis.RasterElevationMode.DynamicRangePerBand.__doc__
 # --
 Qgis.RasterElevationMode.baseClass = Qgis
 # monkey patching scoped based enum

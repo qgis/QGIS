@@ -232,7 +232,7 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
   return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
-bool QgsVectorLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
+bool QgsVectorLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const
 {
   // TODO -- test actual layer z range
   return true;

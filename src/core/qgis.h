@@ -3276,7 +3276,8 @@ class CORE_EXPORT Qgis
     {
       FixedElevationRange = 0, //!< Layer has a fixed elevation range
       RepresentsElevationSurface = 1, //!< Pixel values represent an elevation surface
-      FixedRangePerBand = 2, //!< Layer has a fixed elevation range per band
+      FixedRangePerBand = 2, //!< Layer has a fixed (manually specified) elevation range per band
+      DynamicRangePerBand = 3, //!< Layer has a elevation range per band, calculated dynamically from an expression
     };
     Q_ENUM( RasterElevationMode )
 

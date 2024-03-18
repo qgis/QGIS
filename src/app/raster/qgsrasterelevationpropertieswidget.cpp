@@ -23,6 +23,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterrenderer.h"
+#include "qgsexpressioncontextutils.h"
 #include <QMenu>
 #include <QAction>
 
@@ -36,6 +37,7 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mModeComboBox->addItem( tr( "Represents Elevation Surface" ), QVariant::fromValue( Qgis::RasterElevationMode::RepresentsElevationSurface ) );
   mModeComboBox->addItem( tr( "Fixed Elevation Range" ), QVariant::fromValue( Qgis::RasterElevationMode::FixedElevationRange ) );
   mModeComboBox->addItem( tr( "Fixed Elevation Range Per Band" ), QVariant::fromValue( Qgis::RasterElevationMode::FixedRangePerBand ) );
+  mModeComboBox->addItem( tr( "Dynamic Elevation Range Per Band" ), QVariant::fromValue( Qgis::RasterElevationMode::DynamicRangePerBand ) );
 
   mLimitsComboBox->addItem( tr( "Include Lower and Upper" ), QVariant::fromValue( Qgis::RangeLimits::IncludeBoth ) );
   mLimitsComboBox->addItem( tr( "Include Lower, Exclude Upper" ), QVariant::fromValue( Qgis::RangeLimits::IncludeLowerExcludeUpper ) );
@@ -51,6 +53,9 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mFixedUpperSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
   mFixedLowerSpinBox->clear();
   mFixedUpperSpinBox->clear();
+
+  mLowerExpressionWidget->registerExpressionContextGenerator( this );
+  mUpperExpressionWidget->registerExpressionContextGenerator( this );
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
@@ -143,6 +148,9 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       case Qgis::RasterElevationMode::FixedRangePerBand:
         mStackedWidget->setCurrentWidget( mPageFixedRangePerBand );
         break;
+      case Qgis::RasterElevationMode::DynamicRangePerBand:
+        mStackedWidget->setCurrentWidget( mPageDynamicPerBand );
+        break;
     }
     mProfileChartGroupBox->show();
   }
@@ -191,7 +199,25 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       break;
   }
 
+  mLowerExpressionWidget->setExpression(
+    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ).asExpression() );
+  mUpperExpressionWidget->setExpression(
+    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ).asExpression() );
+
   mBlockUpdates = false;
+}
+
+QgsExpressionContext QgsRasterElevationPropertiesWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( 1 ) : QString(), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( 1 ) : QString(), true, false, tr( "Band description" ) ) );
+  context.appendScope( bandScope );
+  context.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" )} );
+  return context;
 }
 
 void QgsRasterElevationPropertiesWidget::apply()
@@ -233,6 +259,11 @@ void QgsRasterElevationPropertiesWidget::apply()
 
   props->setFixedRangePerBand( mFixedRangePerBandModel->rangeData() );
 
+  QgsPropertyCollection properties;
+  properties.setProperty( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation, QgsProperty::fromExpression( mLowerExpressionWidget->asExpression() ) );
+  properties.setProperty( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation, QgsProperty::fromExpression( mUpperExpressionWidget->asExpression() ) );
+  props->setDataDefinedProperties( properties );
+
   mLayer->trigger3DUpdate();
 }
 
@@ -250,6 +281,9 @@ void QgsRasterElevationPropertiesWidget::modeChanged()
         break;
       case Qgis::RasterElevationMode::FixedRangePerBand:
         mStackedWidget->setCurrentWidget( mPageFixedRangePerBand );
+        break;
+      case Qgis::RasterElevationMode::DynamicRangePerBand:
+        mStackedWidget->setCurrentWidget( mPageDynamicPerBand );
         break;
     }
     mProfileChartGroupBox->show();

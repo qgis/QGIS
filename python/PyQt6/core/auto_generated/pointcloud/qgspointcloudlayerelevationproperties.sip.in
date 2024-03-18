@@ -38,7 +38,7 @@ Constructor for QgsPointCloudLayerElevationProperties, with the specified ``pare
 
     virtual QString htmlSummary() const;
 
-    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = 0 ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 

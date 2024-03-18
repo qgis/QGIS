@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QString htmlSummary() const override;
     QgsMeshLayerElevationProperties *clone() const override SIP_FACTORY;
-    bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
+    bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
