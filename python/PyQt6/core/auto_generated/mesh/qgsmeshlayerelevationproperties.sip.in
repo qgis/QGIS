@@ -46,6 +46,8 @@ Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` o
 
     virtual bool showByDefaultInElevationProfilePlots() const;
 
+    virtual QgsMapLayerElevationProperties::Flags flags() const;
+
 
     Qgis::MeshElevationMode mode() const;
 %Docstring

@@ -55,6 +55,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
+    QgsMapLayerElevationProperties::Flags flags() const override;
 
     /**
      * Returns the elevation mode.
