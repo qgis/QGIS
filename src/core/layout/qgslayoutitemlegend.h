@@ -23,7 +23,7 @@
 #include "qgslayoutitem.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
-#include "qgslayertreegroup.h"
+#include "qgslayertree.h"
 #include "qgsexpressioncontext.h"
 
 class QgsLayerTreeModel;
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Returns the legend model.
      */
-    QgsLegendModel *model() { return mLegendModel.get(); }
+    QgsLegendModel *model();
 
     /**
      * Sets whether the legend content should auto update to reflect changes in the project's
@@ -634,8 +634,10 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void setModelStyleOverrides( const QMap<QString, QString> &overrides );
 
+    void ensureModelIsInitialized();
     std::unique_ptr< QgsLegendModel > mLegendModel;
-    std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
+    std::unique_ptr< QgsLayerTree > mCustomLayerTree;
+    bool mDeferLegendModelInitialization = true;
 
     QgsLegendSettings mSettings;
 
