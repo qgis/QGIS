@@ -60,6 +60,23 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
       element.setAttribute( QStringLiteral( "includeUpper" ), mFixedRange.includeUpper() ? "1" : "0" );
       break;
 
+    case Qgis::RasterElevationMode::FixedRangePerBand:
+    {
+      QDomElement ranges = document.createElement( QStringLiteral( "ranges" ) );
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        QDomElement range = document.createElement( QStringLiteral( "range" ) );
+        range.setAttribute( QStringLiteral( "band" ), it.key() );
+        range.setAttribute( QStringLiteral( "lower" ), qgsDoubleToString( it.value().lower() ) );
+        range.setAttribute( QStringLiteral( "upper" ), qgsDoubleToString( it.value().upper() ) );
+        range.setAttribute( QStringLiteral( "includeLower" ), it.value().includeLower() ? "1" : "0" );
+        range.setAttribute( QStringLiteral( "includeUpper" ), it.value().includeUpper() ? "1" : "0" );
+        ranges.appendChild( range );
+      }
+      element.appendChild( ranges );
+      break;
+    }
+
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
       element.setAttribute( QStringLiteral( "band" ), mBandNumber );
       break;
@@ -101,6 +118,25 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
       mFixedRange = QgsDoubleRange( lower, upper, includeLower, includeUpper );
       break;
     }
+
+    case Qgis::RasterElevationMode::FixedRangePerBand:
+    {
+      mRangePerBand.clear();
+
+      const QDomNodeList ranges = elevationElement.firstChildElement( QStringLiteral( "ranges" ) ).childNodes();
+      for ( int i = 0; i < ranges.size(); ++i )
+      {
+        const QDomElement rangeElement = ranges.at( i ).toElement();
+        const int band = rangeElement.attribute( QStringLiteral( "band" ) ).toInt();
+        const double lower = rangeElement.attribute( QStringLiteral( "lower" ) ).toDouble();
+        const double upper = rangeElement.attribute( QStringLiteral( "upper" ) ).toDouble();
+        const bool includeLower = rangeElement.attribute( QStringLiteral( "includeLower" ) ).toInt();
+        const bool includeUpper = rangeElement.attribute( QStringLiteral( "includeUpper" ) ).toInt();
+        mRangePerBand.insert( band, QgsDoubleRange( lower, upper, includeLower, includeUpper ) );
+      }
+      break;
+    }
+
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
       mBandNumber = elevationElement.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
       break;
@@ -132,6 +168,7 @@ QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() co
   res->setElevationLimit( mElevationLimit );
   res->setBandNumber( mBandNumber );
   res->setFixedRange( mFixedRange );
+  res->setFixedRangePerBand( mRangePerBand );
   res->copyCommonProperties( this );
   return res.release();
 }
@@ -144,6 +181,15 @@ QString QgsRasterLayerElevationProperties::htmlSummary() const
     case Qgis::RasterElevationMode::FixedElevationRange:
       properties << tr( "Elevation range: %1 to %2" ).arg( mFixedRange.lower() ).arg( mFixedRange.upper() );
       break;
+
+    case Qgis::RasterElevationMode::FixedRangePerBand:
+    {
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        properties << tr( "Elevation for band %1: %2 to %3" ).arg( it.key() ).arg( it.value().lower() ).arg( it.value().upper() );
+      }
+      break;
+    }
 
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
       properties << tr( "Elevation band: %1" ).arg( mBandNumber );
@@ -162,6 +208,16 @@ bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange 
     case Qgis::RasterElevationMode::FixedElevationRange:
       return mFixedRange.overlaps( range );
 
+    case Qgis::RasterElevationMode::FixedRangePerBand:
+    {
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        if ( it.value().overlaps( range ) )
+          return true;
+      }
+      return false;
+    }
+
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
       // TODO -- test actual raster z range
       return true;
@@ -175,6 +231,36 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
   {
     case Qgis::RasterElevationMode::FixedElevationRange:
       return mFixedRange;
+
+    case Qgis::RasterElevationMode::FixedRangePerBand:
+    {
+      double lower = std::numeric_limits< double >::max();
+      double upper = std::numeric_limits< double >::min();
+      bool includeLower = true;
+      bool includeUpper = true;
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        if ( it.value().lower() < lower )
+        {
+          lower = it.value().lower();
+          includeLower = it.value().includeLower();
+        }
+        else if ( !includeLower && it.value().lower() == lower && it.value().includeLower() )
+        {
+          includeLower = true;
+        }
+        if ( it.value().upper() > upper )
+        {
+          upper = it.value().upper();
+          includeUpper = it.value().includeUpper();
+        }
+        else if ( !includeUpper && it.value().upper() == upper && it.value().includeUpper() )
+        {
+          includeUpper = true;
+        }
+      }
+      return QgsDoubleRange( lower, upper, includeLower, includeUpper );
+    }
 
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
       // TODO -- determine actual z range from raster statistics
@@ -231,6 +317,14 @@ QgsDoubleRange QgsRasterLayerElevationProperties::elevationRangeForPixelValue( i
   {
     case Qgis::RasterElevationMode::FixedElevationRange:
       return mFixedRange;
+
+    case Qgis::RasterElevationMode::FixedRangePerBand:
+    {
+      auto it = mRangePerBand.constFind( band );
+      if ( it != mRangePerBand.constEnd() )
+        return it.value();
+      return QgsDoubleRange();
+    }
 
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
     {
@@ -380,6 +474,20 @@ void QgsRasterLayerElevationProperties::setDefaultProfileFillSymbol( const QColo
   std::unique_ptr< QgsSimpleFillSymbolLayer > profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
   profileFillLayer->setStrokeStyle( Qt::NoPen );
   mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
+}
+
+QMap<int, QgsDoubleRange> QgsRasterLayerElevationProperties::fixedRangePerBand() const
+{
+  return mRangePerBand;
+}
+
+void QgsRasterLayerElevationProperties::setFixedRangePerBand( const QMap<int, QgsDoubleRange> &ranges )
+{
+  if ( ranges == mRangePerBand )
+    return;
+
+  mRangePerBand = ranges;
+  emit changed();
 }
 
 QgsDoubleRange QgsRasterLayerElevationProperties::fixedRange() const

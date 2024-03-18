@@ -166,6 +166,76 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
                                                              includeLower=False,
                                                              includeUpper=True))
 
+    def test_basic_fixed_range_per_band(self):
+        """
+        Basic tests for the class using the FixedRangePerBand mode
+        """
+        props = QgsRasterLayerElevationProperties(None)
+        self.assertFalse(props.fixedRangePerBand())
+
+        props.setMode(Qgis.RasterElevationMode.FixedRangePerBand)
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8),
+                                   2: QgsDoubleRange(106.8, 116.8),
+                                   3: QgsDoubleRange(116.8, 126.8)})
+        # fixed ranges should not be affected by scale/offset
+        props.setZOffset(0.5)
+        props.setZScale(2)
+        self.assertEqual(props.fixedRangePerBand(), {1: QgsDoubleRange(103.1, 106.8),
+                                                     2: QgsDoubleRange(106.8, 116.8),
+                                                     3: QgsDoubleRange(116.8, 126.8)})
+        self.assertEqual(props.calculateZRange(None),
+                         QgsDoubleRange(103.1, 126.8))
+        self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 104.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(114.8, 124.8)))
+        self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(128.8, 134.8)))
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsRasterLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.mode(),
+                         Qgis.RasterElevationMode.FixedRangePerBand)
+        self.assertEqual(props2.fixedRangePerBand(), {1: QgsDoubleRange(103.1, 106.8),
+                                                      2: QgsDoubleRange(106.8, 116.8),
+                                                      3: QgsDoubleRange(116.8, 126.8)})
+
+        props2 = props.clone()
+        self.assertEqual(props2.mode(),
+                         Qgis.RasterElevationMode.FixedRangePerBand)
+        self.assertEqual(props2.fixedRangePerBand(), {1: QgsDoubleRange(103.1, 106.8),
+                                                      2: QgsDoubleRange(106.8, 116.8),
+                                                      3: QgsDoubleRange(116.8, 126.8)})
+
+        # include lower, exclude upper
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8,
+                                                      includeLower=True,
+                                                      includeUpper=False)})
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsRasterLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.fixedRangePerBand(), {1: QgsDoubleRange(103.1, 106.8,
+                                                                        includeLower=True,
+                                                                        includeUpper=False)})
+
+        # exclude lower, include upper
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8,
+                                                      includeLower=False,
+                                                      includeUpper=True)})
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsRasterLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.fixedRangePerBand(), {1: QgsDoubleRange(103.1, 106.8,
+                                                                        includeLower=False,
+                                                                        includeUpper=True)})
+
     def test_looks_like_dem(self):
         layer = QgsRasterLayer(
             os.path.join(unitTestDataPath(), 'landsat.tif'), 'i am not a dem')
@@ -244,6 +314,20 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         self.assertEqual(
             props.elevationRangeForPixelValue(band=1, pixelValue=3),
             QgsDoubleRange(11, 15))
+
+        # with fixed range per band mode
+        props.setMode(Qgis.RasterElevationMode.FixedRangePerBand)
+        props.setFixedRangePerBand({1: QgsDoubleRange(11, 15),
+                                   2: QgsDoubleRange(16, 25)})
+        self.assertEqual(
+            props.elevationRangeForPixelValue(band=1, pixelValue=math.nan),
+            QgsDoubleRange())
+        self.assertEqual(
+            props.elevationRangeForPixelValue(band=1, pixelValue=3),
+            QgsDoubleRange(11, 15))
+        self.assertEqual(
+            props.elevationRangeForPixelValue(band=2, pixelValue=3),
+            QgsDoubleRange(16, 25))
 
 
 if __name__ == '__main__':

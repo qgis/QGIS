@@ -3256,7 +3256,8 @@ class CORE_EXPORT Qgis
     enum class RasterElevationMode : int
     {
       FixedElevationRange = 0, //!< Layer has a fixed elevation range
-      RepresentsElevationSurface = 1 //!< Pixel values represent an elevation surface
+      RepresentsElevationSurface = 1, //!< Pixel values represent an elevation surface
+      FixedRangePerBand = 2, //!< Layer has a fixed elevation range per band
     };
     Q_ENUM( RasterElevationMode )
 
