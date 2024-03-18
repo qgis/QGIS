@@ -344,7 +344,8 @@ void QgsElevationControllerLabels::setLimits( const QgsDoubleRange &limits )
     return;
 
   const QFontMetrics fm( font() );
-  const int maxChars = QLocale().toString( std::floor( limits.upper() ) ).length() + 3;
+  const int maxChars = std::max( QLocale().toString( std::floor( limits.lower() ) ).length(),
+                                 QLocale().toString( std::floor( limits.upper() ) ).length() ) + 3;
   setMinimumWidth( fm.horizontalAdvance( '0' ) * maxChars );
 
   mLimits = limits;
