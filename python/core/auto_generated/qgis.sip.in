@@ -1858,6 +1858,12 @@ The development version
       FixedRangePerBand,
     };
 
+    enum class MeshElevationMode
+    {
+      FixedElevationRange,
+      FromVertices
+    };
+
     enum class BetweenLineConstraint
     {
       NoConstraint,

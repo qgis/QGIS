@@ -57,6 +57,46 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     bool showByDefaultInElevationProfilePlots() const override;
 
     /**
+     * Returns the elevation mode.
+     *
+     * \see setMode()
+     * \since QGIS 3.38
+    */
+    Qgis::MeshElevationMode mode() const;
+
+    /**
+     * Sets the elevation \a mode.
+     *
+     * \see mode()
+     * \since QGIS 3.38
+    */
+    void setMode( Qgis::MeshElevationMode mode );
+
+    /**
+     * Returns the fixed elevation range for the mesh.
+     *
+     * \note This is only considered when mode() is Qgis::MeshElevationMode::FixedElevationRange.
+     *
+     * \note When a fixed range is set any zOffset() and zScale() is ignored.
+     *
+     * \see setFixedRange()
+     * \since QGIS 3.38
+     */
+    QgsDoubleRange fixedRange() const;
+
+    /**
+     * Sets the fixed elevation \a range for the mesh.
+     *
+     * \note This is only considered when mode() is Qgis::MeshElevationMode::FixedElevationRange.
+     *
+     * \note When a fixed range is set any zOffset() and zScale() is ignored.
+     *
+     * \see fixedRange()
+     * \since QGIS 3.38
+     */
+    void setFixedRange( const QgsDoubleRange &range );
+
+    /**
      * Returns the line symbol used to render the mesh profile in elevation profile plots.
      *
      * \see setProfileLineSymbol()
@@ -131,10 +171,14 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
 
+    Qgis::MeshElevationMode mMode = Qgis::MeshElevationMode::FromVertices;
+
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+
+    QgsDoubleRange mFixedRange;
 };
 
 #endif // QGSMESHLAYERELEVATIONPROPERTIES_H

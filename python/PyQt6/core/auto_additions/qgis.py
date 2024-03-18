@@ -3243,6 +3243,12 @@ Qgis.RasterElevationMode.__doc__ = "Raster layer elevation modes.\n\n.. versiona
 # --
 Qgis.RasterElevationMode.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MeshElevationMode.FixedElevationRange.__doc__ = "Layer has a fixed elevation range"
+Qgis.MeshElevationMode.FromVertices.__doc__ = "Elevation should be taken from mesh vertices"
+Qgis.MeshElevationMode.__doc__ = "Mesh layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.MeshElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``FromVertices``: ' + Qgis.MeshElevationMode.FromVertices.__doc__
+# --
+Qgis.MeshElevationMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.NoConstraint = Qgis.BetweenLineConstraint.NoConstraint
 Qgis.NoConstraint.is_monkey_patched = True
 Qgis.BetweenLineConstraint.NoConstraint.__doc__ = "No additional constraint"
