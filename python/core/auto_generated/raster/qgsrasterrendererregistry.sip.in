@@ -1,0 +1,72 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrendererregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRasterRendererRegistry
+{
+%Docstring(signature="appended")
+Registry for raster renderers.
+
+:py:class:`QgsRasterRendererRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.rasterRendererRegistry()`.
+
+.. note::
+
+   Exposed to Python bindings in QGIS 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsrasterrendererregistry.h"
+%End
+  public:
+
+    QgsRasterRendererRegistry();
+%Docstring
+Constructor for QgsRasterRendererRegistry.
+
+QgsRasterRendererRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.rasterRendererRegistry()`.
+
+The registry is pre-populated with standard raster renderers.
+%End
+
+
+
+
+    QStringList renderersList() const;
+%Docstring
+Returns a list of the names of registered renderers.
+%End
+
+
+    Qgis::RasterRendererCapabilities rendererCapabilities( const QString &rendererName ) const;
+%Docstring
+Returns the capabilities for the renderer with the specified name.
+
+.. versionadded:: 3.38
+%End
+
+    QgsRasterRenderer *defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const /Factory/;
+%Docstring
+Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
+Caller takes ownership.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrendererregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
