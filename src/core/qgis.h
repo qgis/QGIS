@@ -1164,6 +1164,25 @@ class CORE_EXPORT Qgis
     Q_FLAG( RasterRendererFlags )
 
     /**
+     * Raster renderer capabilities.
+     *
+     * \since QGIS 3.48
+     */
+    enum class RasterRendererCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      UsesMultipleBands = 1 << 0, //!< The renderer utilizes multiple raster bands for color data (note that alpha bands are not considered for this capability)
+    };
+    Q_ENUM( RasterRendererCapability )
+
+    /**
+     * Raster renderer capabilities.
+     *
+     * \since QGIS 3.38
+     */
+    Q_DECLARE_FLAGS( RasterRendererCapabilities, RasterRendererCapability )
+    Q_FLAG( RasterRendererCapabilities )
+
+    /**
      * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
      * \note Directly mapped from GDALRATFieldUsage enum values.
      * \since QGIS 3.30
@@ -4977,6 +4996,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )

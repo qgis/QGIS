@@ -35,9 +35,10 @@
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName,
     QgsRasterRendererCreateFunc rendererFunction,
-    QgsRasterRendererWidgetCreateFunc widgetFunction )
+    QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities )
   : name( name )
   , visibleName( visibleName )
+  , capabilities( capabilities )
   , rendererCreateFunction( rendererFunction )
   , widgetCreateFunction( widgetFunction )
 {
@@ -52,7 +53,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
   // insert items in a particular order, which is returned in renderersList()
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "multibandcolor" ), QObject::tr( "Multiband color" ),
-                                          QgsMultiBandColorRenderer::create, nullptr ) );
+                                          QgsMultiBandColorRenderer::create, nullptr,
+                                          Qgis::RasterRendererCapability::UsesMultipleBands ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "paletted" ), QObject::tr( "Paletted/Unique values" ), QgsPalettedRasterRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandgray" ), QObject::tr( "Singleband gray" ),
                                           QgsSingleBandGrayRenderer::create, nullptr ) );
@@ -107,6 +109,16 @@ QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() con
     result.push_back( it.value() );
   }
   return result;
+}
+
+Qgis::RasterRendererCapabilities QgsRasterRendererRegistry::rendererCapabilities( const QString &rendererName ) const
+{
+  const QHash< QString, QgsRasterRendererRegistryEntry >::const_iterator it = mEntries.constFind( rendererName );
+  if ( it != mEntries.constEnd() )
+  {
+    return it.value().capabilities;
+  }
+  return Qgis::RasterRendererCapabilities();
 }
 
 QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
