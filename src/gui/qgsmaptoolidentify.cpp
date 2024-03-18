@@ -1100,6 +1100,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       {
         bool foundMatch = false;
         QMap<int, QVariant> values = identifyResult.results();
+        QMap<int, QVariant> filteredValues;
         for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
         {
           if ( QgsVariantUtils::isNull( it.value() ) )
@@ -1110,13 +1111,15 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           const QgsDoubleRange elevationRange = elevationProperties->elevationRangeForPixelValue( layer, it.key(), value );
           if ( !elevationRange.isInfinite() && identifyContext.zRange().overlaps( elevationRange ) )
           {
+            filteredValues.insert( it.key(), it.value() );
             foundMatch = true;
-            break;
           }
         }
 
         if ( !foundMatch )
           return false;
+
+        identifyResult = QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, filteredValues );
 
         break;
       }
