@@ -540,7 +540,7 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
 {
   if ( !identifyContext.zRange().isInfinite() )
   {
-    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange() ) )
+    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange(), layer ) )
       return false;
   }
 
@@ -1008,7 +1008,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
   if ( !identifyContext.zRange().isInfinite() )
   {
-    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange() ) )
+    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange(), layer ) )
       return false;
   }
 
@@ -1107,7 +1107,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             continue;
           }
           const double value = it.value().toDouble();
-          const QgsDoubleRange elevationRange = elevationProperties->elevationRangeForPixelValue( it.key(), value );
+          const QgsDoubleRange elevationRange = elevationProperties->elevationRangeForPixelValue( layer, it.key(), value );
           if ( !elevationRange.isInfinite() && identifyContext.zRange().overlaps( elevationRange ) )
           {
             foundMatch = true;

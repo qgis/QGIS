@@ -21,7 +21,8 @@ from qgis.core import (
     QgsRasterLayerElevationProperties,
     QgsReadWriteContext,
     QgsRasterLayer,
-    QgsDoubleRange
+    QgsDoubleRange,
+    QgsProperty
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -190,6 +191,20 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(114.8, 124.8)))
         self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(128.8, 134.8)))
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(1, 2)), -1)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(103, 104)), 1)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(104, 108)), 2)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(112, 112)), 2)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(112, 118)), 3)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(118, 218)), 3)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(212, 218)), -1)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -236,6 +251,80 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
                                                                         includeLower=False,
                                                                         includeUpper=True)})
 
+    def test_basic_dynamic_range_per_band(self):
+        """
+        Basic tests for the class using the DynamicRangePerBand mode
+        """
+        raster_layer = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
+        self.assertTrue(raster_layer.isValid())
+
+        props = QgsRasterLayerElevationProperties(None)
+
+        props.setMode(Qgis.RasterElevationMode.DynamicRangePerBand)
+        props.dataDefinedProperties().setProperty(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandLowerElevation,
+            QgsProperty.fromExpression("@band*2"))
+        props.dataDefinedProperties().setProperty(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandUpperElevation,
+            QgsProperty.fromExpression("@band*2 + 1"))
+        # fixed ranges should not be affected by scale/offset
+        props.setZOffset(0.5)
+        props.setZScale(2)
+        self.assertEqual(props.dataDefinedProperties().property(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandLowerElevation).asExpression(),
+            '@band*2')
+        self.assertEqual(props.dataDefinedProperties().property(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandUpperElevation).asExpression(),
+            '@band*2 + 1')
+
+        # layer is required to calculated z range
+        self.assertEqual(props.calculateZRange(None), QgsDoubleRange())
+        self.assertEqual(props.calculateZRange(raster_layer), QgsDoubleRange(2, 19))
+
+        self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8), raster_layer))
+        self.assertFalse(
+            props.isVisibleInZRange(QgsDoubleRange(1.1, 1.9), raster_layer))
+        self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
+
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(1, 2)), -1)
+        self.assertEqual(
+            props.bandForElevationRange(None, QgsDoubleRange(3.1, 6.8)), -1)
+        self.assertEqual(
+            props.bandForElevationRange(raster_layer, QgsDoubleRange(3.1, 6.8)), 3)
+        self.assertEqual(
+            props.bandForElevationRange(raster_layer, QgsDoubleRange(13.1, 16.8)), 8)
+        self.assertEqual(
+            props.bandForElevationRange(raster_layer, QgsDoubleRange(113.1, 116.8)), -1)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsRasterLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.mode(),
+                         Qgis.RasterElevationMode.DynamicRangePerBand)
+        self.assertEqual(props2.dataDefinedProperties().property(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandLowerElevation).asExpression(),
+            '@band*2')
+        self.assertEqual(props2.dataDefinedProperties().property(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandUpperElevation).asExpression(),
+            '@band*2 + 1')
+
+        props2 = props.clone()
+        self.assertEqual(props2.mode(),
+                         Qgis.RasterElevationMode.DynamicRangePerBand)
+        self.assertEqual(
+            props2.dataDefinedProperties().property(
+                QgsRasterLayerElevationProperties.Property.RasterPerBandLowerElevation).asExpression(),
+            '@band*2')
+
+        self.assertEqual(props2.dataDefinedProperties().property(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandUpperElevation).asExpression(),
+            '@band*2 + 1')
+
     def test_looks_like_dem(self):
         layer = QgsRasterLayer(
             os.path.join(unitTestDataPath(), 'landsat.tif'), 'i am not a dem')
@@ -276,43 +365,45 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         """
         Test transforming pixel values to elevation ranges
         """
-        props = QgsRasterLayerElevationProperties(None)
+        raster_layer = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
+        self.assertTrue(raster_layer.isValid())
+        props = QgsRasterLayerElevationProperties(raster_layer)
 
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=3),
             QgsDoubleRange())
         props.setEnabled(True)
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=3),
             QgsDoubleRange(3, 3))
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=math.nan),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=math.nan),
             QgsDoubleRange())
 
         # check that band number is respected
         props.setBandNumber(2)
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=3),
             QgsDoubleRange())
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=2, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=2, pixelValue=3),
             QgsDoubleRange(3, 3))
 
         # check that offset/scale is respected
         props.setZOffset(0.5)
         props.setZScale(2)
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=2, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=2, pixelValue=3),
             QgsDoubleRange(6.5, 6.5))
 
         # with fixed range mode
         props.setMode(Qgis.RasterElevationMode.FixedElevationRange)
         props.setFixedRange(QgsDoubleRange(11, 15))
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=math.nan),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=math.nan),
             QgsDoubleRange())
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=3),
             QgsDoubleRange(11, 15))
 
         # with fixed range per band mode
@@ -320,14 +411,35 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         props.setFixedRangePerBand({1: QgsDoubleRange(11, 15),
                                    2: QgsDoubleRange(16, 25)})
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=math.nan),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=math.nan),
             QgsDoubleRange())
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=1, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=3),
             QgsDoubleRange(11, 15))
         self.assertEqual(
-            props.elevationRangeForPixelValue(band=2, pixelValue=3),
+            props.elevationRangeForPixelValue(layer=None, band=2, pixelValue=3),
             QgsDoubleRange(16, 25))
+
+        # with dynamic range per band mode
+        props.setMode(Qgis.RasterElevationMode.DynamicRangePerBand)
+        props.dataDefinedProperties().setProperty(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandLowerElevation,
+            QgsProperty.fromExpression("@band*2"))
+        props.dataDefinedProperties().setProperty(
+            QgsRasterLayerElevationProperties.Property.RasterPerBandUpperElevation,
+            QgsProperty.fromExpression("@band*2 + 1"))
+        self.assertEqual(
+            props.elevationRangeForPixelValue(layer=None, band=1, pixelValue=math.nan),
+            QgsDoubleRange())
+        self.assertEqual(
+            props.elevationRangeForPixelValue(layer=raster_layer, band=1, pixelValue=3),
+            QgsDoubleRange(2, 3))
+        self.assertEqual(
+            props.elevationRangeForPixelValue(layer=raster_layer, band=2, pixelValue=3),
+            QgsDoubleRange(4, 5))
+        self.assertEqual(
+            props.elevationRangeForPixelValue(layer=raster_layer, band=100, pixelValue=3),
+            QgsDoubleRange())
 
 
 if __name__ == '__main__':

@@ -18,6 +18,7 @@
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "ui_qgsrasterelevationpropertieswidgetbase.h"
 
 #include <QAbstractItemModel>
@@ -65,7 +66,7 @@ class QgsFixedElevationRangeDelegate : public QStyledItemDelegate
 
 };
 
-class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterElevationPropertiesWidgetBase
+class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, public QgsExpressionContextGenerator, private Ui::QgsRasterElevationPropertiesWidgetBase
 {
     Q_OBJECT
   public:
@@ -73,6 +74,7 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
     QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
+    QgsExpressionContext createExpressionContext() const final;
 
   public slots:
     void apply() override;

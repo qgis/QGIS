@@ -316,29 +316,14 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
           break;
 
         case Qgis::RasterElevationMode::FixedRangePerBand:
+        case Qgis::RasterElevationMode::DynamicRangePerBand:
         {
-          // find the top-most band which matches the map range
-          const QMap< int, QgsDoubleRange > rangePerBand = elevProp->fixedRangePerBand();
-          int currentMatchingBand = -1;
-          QgsDoubleRange currentMatchingRange;
-          for ( auto it = rangePerBand.constBegin(); it != rangePerBand.constEnd(); ++it )
-          {
-            if ( it.value().overlaps( rendererContext.zRange() ) )
-            {
-              if ( currentMatchingRange.isInfinite()
-                   || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
-                   || ( !currentMatchingRange.includeUpper() && it.value().upper() >= currentMatchingRange.upper() ) )
-              {
-                currentMatchingBand = it.key();
-                currentMatchingRange = it.value();
-              }
-            }
-          }
+          const int matchingBand = elevProp->bandForElevationRange( layer, rendererContext.zRange() );
 
           // this is guaranteed, as we won't ever be creating a renderer if this condition is not met, but let's be ultra safe!
-          if ( currentMatchingBand > 0 )
+          if ( matchingBand > 0 )
           {
-            mPipe->renderer()->setInputBand( currentMatchingBand );
+            mPipe->renderer()->setInputBand( matchingBand );
           }
           break;
         }

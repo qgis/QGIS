@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsRasterLayerElevationProperties *clone() const override SIP_FACTORY;
     QString htmlSummary() const override;
-    bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
+    bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
@@ -159,7 +159,17 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \since QGIS 3.38
      */
-    QgsDoubleRange elevationRangeForPixelValue( int band, double pixelValue ) const;
+    QgsDoubleRange elevationRangeForPixelValue( QgsRasterLayer *layer, int band, double pixelValue ) const;
+
+    /**
+     * Returns the band corresponding to the specified \a range.
+     *
+     * \note This is only considered when mode() is Qgis::RasterElevationMode::FixedRangePerBand or
+     * Qgis::RasterElevationMode::DynamicRangePerBand. For other modes it will always return -1.
+     *
+     * \since QGIS 3.38
+     */
+    int bandForElevationRange( QgsRasterLayer *layer, const QgsDoubleRange &range ) const;
 
     /**
      * Returns the line symbol used to render the raster profile in elevation profile plots.
@@ -265,7 +275,6 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
 
     QgsDoubleRange mFixedRange;
     QMap< int, QgsDoubleRange > mRangePerBand;
-
 };
 
 #endif // QGSRASTERLAYERELEVATIONPROPERTIES_H

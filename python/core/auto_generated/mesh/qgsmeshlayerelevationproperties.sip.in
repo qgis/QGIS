@@ -40,7 +40,7 @@ Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` o
 
     virtual QgsMeshLayerElevationProperties *clone() const /Factory/;
 
-    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = 0 ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
