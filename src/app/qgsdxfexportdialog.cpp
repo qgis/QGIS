@@ -836,13 +836,18 @@ void QgsDxfExportDialog::loadSettingsFromFile()
     myFile.close();
   }
 
-  resultFlag = loadSettingsFromXML( myDocument, myErrorMessage );
-  if ( !resultFlag )
-    QMessageBox::information( this, tr( "Load DXF settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1. %2" ).arg( fileName, myErrorMessage ) );
-  else
+  if ( QMessageBox::question( this,
+                              tr( "DXF Export load from XML file" ),
+                              tr( "Are you sure you want to load settings from XML? This will change some values in the DXF Export dialog." ) ) == QMessageBox::Yes )
   {
-    settings.setValue( QStringLiteral( "dxf/lastSettingsDir" ), QFileInfo( fileName ).path() );
-    QMessageBox::information( this, tr( "Load DXF settings" ), tr( "DXF Export settings loaded!" ) );
+    resultFlag = loadSettingsFromXML( myDocument, myErrorMessage );
+    if ( !resultFlag )
+      QMessageBox::information( this, tr( "Load DXF settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1. %2" ).arg( fileName, myErrorMessage ) );
+    else
+    {
+      settings.setValue( QStringLiteral( "dxf/lastSettingsDir" ), QFileInfo( fileName ).path() );
+      QMessageBox::information( this, tr( "Load DXF settings" ), tr( "DXF Export settings loaded!" ) );
+    }
   }
 }
 
@@ -857,36 +862,57 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
   }
 
   QDomElement mne;
+  QVariant value;
+
   mne = myRoot.namedItem( QStringLiteral( "symbology_mode" ) ).toElement();
-  mSymbologyModeComboBox->setCurrentIndex( QgsXmlUtils::readVariant( mne.firstChildElement() ).toInt() );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mSymbologyModeComboBox->setCurrentIndex( value.toInt() );
 
   mne = myRoot.namedItem( QStringLiteral( "symbology_scale" ) ).toElement();
-  mScaleWidget->setScale( QgsXmlUtils::readVariant( mne.firstChildElement() ).toDouble() );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mScaleWidget->setScale( value.toDouble() );
 
   mne = myRoot.namedItem( QStringLiteral( "encoding" ) ).toElement();
-  mEncoding->setCurrentText( QgsXmlUtils::readVariant( mne.firstChildElement() ).toString() );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mEncoding->setCurrentText( value.toString() );
 
   mne = myRoot.namedItem( QStringLiteral( "crs" ) ).toElement();
-  mCrsSelector->setCrs( QgsXmlUtils::readVariant( mne.firstChildElement() ).value< QgsCoordinateReferenceSystem >() );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mCrsSelector->setCrs( value.value< QgsCoordinateReferenceSystem >() );
 
   mne = myRoot.namedItem( QStringLiteral( "map_theme" ) ).toElement();
-  mVisibilityPresets->setCurrentText( QgsXmlUtils::readVariant( mne.firstChildElement() ).toString() );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mVisibilityPresets->setCurrentText( value.toString() );
 
-  // layers
   mne = myRoot.namedItem( QStringLiteral( "use_layer_title" ) ).toElement();
-  mLayerTitleAsName->setChecked( QgsXmlUtils::readVariant( mne.firstChildElement() ) == true );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mLayerTitleAsName->setChecked( value == true );
 
   mne = myRoot.namedItem( QStringLiteral( "use_map_extent" ) ).toElement();
-  mMapExtentCheckBox->setChecked( QgsXmlUtils::readVariant( mne.firstChildElement() ) == true );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mMapExtentCheckBox->setChecked( value == true );
 
   mne = myRoot.namedItem( QStringLiteral( "force_2d" ) ).toElement();
-  mForce2d->setChecked( QgsXmlUtils::readVariant( mne.firstChildElement() ) == true );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mForce2d->setChecked( value == true );
 
   mne = myRoot.namedItem( QStringLiteral( "mtext" ) ).toElement();
-  mMTextCheckBox->setChecked( QgsXmlUtils::readVariant( mne.firstChildElement() ) == true );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mMTextCheckBox->setChecked( value == true );
 
   mne = myRoot.namedItem( QStringLiteral( "selected_features_only" ) ).toElement();
-  mSelectedFeaturesOnly->setChecked( QgsXmlUtils::readVariant( mne.firstChildElement() ) == true );
+  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  if ( !value.isNull() )
+    mSelectedFeaturesOnly->setChecked( value == true );
 
   return true;
 }
