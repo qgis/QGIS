@@ -46,7 +46,7 @@
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
-  , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot(), this ) )
+  , mLegendModel( new QgsLegendModel( nullptr, this ) )
 {
 #if 0 //no longer required?
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
@@ -104,6 +104,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 {
   if ( !painter )
     return;
+
+  ensureModelIsInitialized();
 
   if ( mFilterAskedForUpdate )
   {
@@ -309,11 +311,28 @@ bool QgsLayoutItemLegend::resizeToContents() const
 
 void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 {
-  mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mLayout ? mLayout->project()->layerTreeRoot() : nullptr ) );
+  if ( !mDeferLegendModelInitialization )
+  {
+    mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mLayout ? mLayout->project()->layerTreeRoot() : nullptr ) );
+  }
 
   mCustomLayerTree.reset( rootGroup );
 }
 
+void QgsLayoutItemLegend::ensureModelIsInitialized()
+{
+  if ( mDeferLegendModelInitialization )
+  {
+    mDeferLegendModelInitialization = false;
+    setCustomLayerTree( mCustomLayerTree.release() );
+  }
+}
+
+QgsLegendModel *QgsLayoutItemLegend::model()
+{
+  ensureModelIsInitialized();
+  return mLegendModel.get();
+}
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
@@ -1020,7 +1039,10 @@ void QgsLayoutItemLegend::clearLegendCachedData()
     }
   };
 
-  clearNodeCache( mLegendModel->rootGroup() );
+  if ( QgsLayerTree *rootGroup = mLegendModel->rootGroup() )
+  {
+    clearNodeCache( rootGroup );
+  }
 }
 
 void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
