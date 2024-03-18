@@ -278,6 +278,12 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   if ( !layer )
     return false;
 
+  if ( !identifyContext.zRange().isInfinite() )
+  {
+    if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange() ) )
+      return false;
+  }
+
   double searchRadius = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
   bool isTemporal = identifyContext.isTemporal() && layer->temporalProperties()->isActive();
 
