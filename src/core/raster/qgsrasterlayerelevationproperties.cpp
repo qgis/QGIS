@@ -282,7 +282,9 @@ QgsMapLayerElevationProperties::Flags QgsRasterLayerElevationProperties::flags()
     {
       case Qgis::RasterElevationMode::FixedElevationRange:
         return QgsMapLayerElevationProperties::Flag::FlagDontInvalidateCachedRendersWhenRangeChanges;
+
       case Qgis::RasterElevationMode::RepresentsElevationSurface:
+      case Qgis::RasterElevationMode::FixedRangePerBand:
         break;
     }
   }
