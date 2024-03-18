@@ -41,7 +41,10 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   , mRootNode( rootNode )
   , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
 {
-  connectToRootNode();
+  if ( rootNode )
+  {
+    connectToRootNode();
+  }
 
   mFontLayer.setBold( true );
 
@@ -1072,9 +1075,11 @@ void QgsLayerTreeModel::connectToRootNode()
 
 void QgsLayerTreeModel::disconnectFromRootNode()
 {
-  disconnect( mRootNode, nullptr, this, nullptr );
-
-  disconnectFromLayers( mRootNode );
+  if ( mRootNode )
+  {
+    disconnect( mRootNode, nullptr, this, nullptr );
+    disconnectFromLayers( mRootNode );
+  }
 }
 
 void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex &idx )
