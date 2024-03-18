@@ -142,7 +142,6 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
   : QgsLayerTreeModel( rootNode, parent )
 {
   //init mCreateDDBlockInfo, mDDBlocksMaxNumberOfClasses
-  bool ddBlockDefaultEnabled = QgsSettings().value( QStringLiteral( "/qgis/dxfEnableDDBlocks" ), false ).toBool();
   QSet<QString> layerIds;
   retrieveAllLayers( rootNode, layerIds );
   for ( const auto &id : std::as_const( layerIds ) )
@@ -150,7 +149,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
     const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vLayer )
     {
-      mCreateDDBlockInfo[vLayer] = ddBlockDefaultEnabled;
+      mCreateDDBlockInfo[vLayer] = QgsDxfExportDialog::settingsDxfEnableDDBlocks->value();
       mDDBlocksMaxNumberOfClasses[vLayer] = -1;
     }
   }

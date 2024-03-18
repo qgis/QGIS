@@ -22,6 +22,8 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgsdxfexport.h"
+#include "qgssettingstree.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QList>
 #include <QPair>
@@ -97,6 +99,9 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
+    static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "dxf" ) );
+    static const inline QgsSettingsEntryBool *settingsDxfEnableDDBlocks = new QgsSettingsEntryBool( QStringLiteral( "enable-datadefined-blocks" ), sTreeAppDdxf,  false );
+
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsDxfExportDialog() override;
 
