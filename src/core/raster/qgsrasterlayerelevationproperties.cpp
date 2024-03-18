@@ -274,6 +274,21 @@ bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() c
   return mEnabled;
 }
 
+QgsMapLayerElevationProperties::Flags QgsRasterLayerElevationProperties::flags() const
+{
+  if ( mEnabled )
+  {
+    switch ( mMode )
+    {
+      case Qgis::RasterElevationMode::FixedElevationRange:
+        return QgsMapLayerElevationProperties::Flag::FlagDontInvalidateCachedRendersWhenRangeChanges;
+      case Qgis::RasterElevationMode::RepresentsElevationSurface:
+        break;
+    }
+  }
+  return QgsMapLayerElevationProperties::Flags();
+}
+
 void QgsRasterLayerElevationProperties::setEnabled( bool enabled )
 {
   if ( enabled == mEnabled )

@@ -46,6 +46,8 @@ Constructor for QgsRasterLayerElevationProperties, with the specified ``parent``
 
     virtual bool showByDefaultInElevationProfilePlots() const;
 
+    virtual QgsMapLayerElevationProperties::Flags flags() const;
+
 
     bool isEnabled() const;
 %Docstring

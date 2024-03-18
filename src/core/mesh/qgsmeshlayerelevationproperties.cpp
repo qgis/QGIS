@@ -180,6 +180,19 @@ bool QgsMeshLayerElevationProperties::showByDefaultInElevationProfilePlots() con
   return true;
 }
 
+QgsMapLayerElevationProperties::Flags QgsMeshLayerElevationProperties::flags() const
+{
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+      return QgsMapLayerElevationProperties::Flag::FlagDontInvalidateCachedRendersWhenRangeChanges;
+
+    case Qgis::MeshElevationMode::FromVertices:
+      break;
+  }
+  return QgsMapLayerElevationProperties::Flags();
+}
+
 Qgis::MeshElevationMode QgsMeshLayerElevationProperties::mode() const
 {
   return mMode;
