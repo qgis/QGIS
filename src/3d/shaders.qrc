@@ -39,5 +39,7 @@
         <file>shaders/default.vert</file>
         <file>shaders/maskedtexture.frag</file>
         <file>shaders/maskedtexture.vert</file>
+        <file>shaders/maskeddiffusespecular.frag</file>
+        <file>shaders/maskeddiffusespecular.vert</file>
     </qresource>
 </RCC>
