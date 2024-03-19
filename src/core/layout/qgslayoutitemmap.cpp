@@ -835,8 +835,10 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   }
 
   mapElem.setAttribute( QStringLiteral( "enableZRange" ), mZRangeEnabled ? 1 : 0 );
-  mapElem.setAttribute( QStringLiteral( "zRangeLower" ), qgsDoubleToString( mZRange.lower() ) );
-  mapElem.setAttribute( QStringLiteral( "zRangeUpper" ), qgsDoubleToString( mZRange.upper() ) );
+  if ( mZRange.lower() != std::numeric_limits< double >::lowest() )
+    mapElem.setAttribute( QStringLiteral( "zRangeLower" ), qgsDoubleToString( mZRange.lower() ) );
+  if ( mZRange.upper() != std::numeric_limits< double >::max() )
+    mapElem.setAttribute( QStringLiteral( "zRangeUpper" ), qgsDoubleToString( mZRange.upper() ) );
 
   mAtlasClippingSettings->writeXml( mapElem, doc, context );
   mItemClippingSettings->writeXml( mapElem, doc, context );
