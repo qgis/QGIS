@@ -374,14 +374,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
   // when removing intersections don't check for intersections with selected features
-  QSet<QgsFeatureId> ignoreFeatureIds;
-  for ( const auto &f : mScaledFeatures )
-  {
-    ignoreFeatureIds.insert( f );
-  }
-
-  QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
-  ignoreFeatures.insert( vlayer, ignoreFeatureIds );
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{vlayer, mScaledFeatures}};
 
   while ( fi.nextFeature( feat ) )
   {
@@ -400,9 +393,9 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
       if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
       {
-        QString errorMessage = ( geom.isEmpty() ) ?
-                               tr( "Resulting geometry would be empty" ) :
-                               tr( "An error was reported during intersection removal" );
+        const QString errorMessage = ( geom.isEmpty() ) ?
+                                     tr( "The feature cannot be scaled because the resulting geometry would be empty" ) :
+                                     tr( "An error was reported during intersection removal" );
 
         emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
         vlayer->destroyEditCommand();

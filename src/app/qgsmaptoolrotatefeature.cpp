@@ -420,14 +420,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
   // when removing intersections don't check for intersections with selected features
-  QSet<QgsFeatureId> ignoreFeatureIds;
-  for ( const auto &feat : mRotatedFeatures )
-  {
-    ignoreFeatureIds.insert( feat );
-  }
-
-  QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
-  ignoreFeatures.insert( vlayer, ignoreFeatureIds );
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{vlayer, mRotatedFeatures}};
 
   while ( fi.nextFeature( f ) )
   {
@@ -441,9 +434,9 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
       if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
       {
-        QString errorMessage = ( geom.isEmpty() ) ?
-                               tr( "Resulting geometry would be empty" ) :
-                               tr( "An error was reported during intersection removal" );
+        const QString errorMessage = ( geom.isEmpty() ) ?
+                                     tr( "The feature cannot be rotated because the resulting geometry would be empty" ) :
+                                     tr( "An error was reported during intersection removal" );
 
         emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
         vlayer->destroyEditCommand();

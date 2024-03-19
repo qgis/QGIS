@@ -351,16 +351,15 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
-  QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
-  ignoreFeatures.insert( destLayer, QSet<QgsFeatureId> { mModifiedFeature } );
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = {{ destLayer, {mModifiedFeature} }};
 
   const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( destLayer, mModifiedFeature, mModifiedGeometry, ignoreFeatures );
 
   if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || mModifiedGeometry.isEmpty() )
   {
-    QString errorMessage = ( mModifiedGeometry.isEmpty() ) ?
-                           tr( "Resulting geometry would be empty" ) :
-                           tr( "An error was reported during intersection removal" );
+    const QString errorMessage = ( mModifiedGeometry.isEmpty() ) ?
+                                 tr( "The feature cannot be modified because the resulting geometry would be empty" ) :
+                                 tr( "An error was reported during intersection removal" );
 
     emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
     destLayer->destroyEditCommand();

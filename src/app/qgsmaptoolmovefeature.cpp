@@ -223,14 +223,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
         // when removing intersections don't check for intersections with selected features
-        QSet<QgsFeatureId> ignoreFeatureIds;
-        for ( const auto &feat : mMovedFeatures )
-        {
-          ignoreFeatureIds.insert( feat );
-        }
-
-        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
-        ignoreFeatures.insert( vlayer, ignoreFeatureIds );
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{ vlayer, mMovedFeatures }};
 
         while ( fi.nextFeature( f ) )
         {
@@ -249,9 +242,9 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
             if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
             {
-              QString errorMessage = ( geom.isEmpty() ) ?
-                                     tr( "Resulting geometry would be empty" ) :
-                                     tr( "An error was reported during intersection removal" );
+              const QString errorMessage = ( geom.isEmpty() ) ?
+                                           tr( "The feature cannot be moved because the resulting geometry would be empty" ) :
+                                           tr( "An error was reported during intersection removal" );
 
               emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
               vlayer->destroyEditCommand();
