@@ -473,7 +473,11 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
         if ( !layerIdx.contains( vl->id() ) )
         {
           layerIdx.insert( vl->id(), layers.size() );
-          layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, true ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
+          layers << QgsDxfExport::DxfLayer( vl,
+                                            mAttributeIdx.value( vl, -1 ),
+                                            mCreateDDBlockInfo.value( vl, true ),
+                                            mDDBlocksMaxNumberOfClasses.value( vl,  -1 ),
+                                            mOverriddenName.value( vl, QString() ) );
         }
       }
     }
@@ -484,7 +488,11 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
       if ( !layerIdx.contains( vl->id() ) )
       {
         layerIdx.insert( vl->id(), layers.size() );
-        layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, true ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
+        layers << QgsDxfExport::DxfLayer( vl,
+                                          mAttributeIdx.value( vl, -1 ),
+                                          mCreateDDBlockInfo.value( vl, true ),
+                                          mDDBlocksMaxNumberOfClasses.value( vl,  -1 ),
+                                          mOverriddenName.value( vl, QString() ) );
       }
     }
   }

@@ -27,7 +27,7 @@ Exports QGIS layers to the DXF format.
 
     struct DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1 );
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() );
 
         QgsVectorLayer *layer() const;
 %Docstring
@@ -65,6 +65,13 @@ Flag if data defined point block symbols should be created. Default is false
 Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
 
 :return:
+
+.. versionadded:: 3.38
+%End
+
+        QString overriddenName() const;
+%Docstring
+Returns the overridden layer name to be used in the exported DXF.
 
 .. versionadded:: 3.38
 %End
