@@ -65,6 +65,7 @@ set(QGIS_3D_SRCS
   lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
+  materials/qgsdiffusespecularmaterial.cpp
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
@@ -158,6 +159,7 @@ set(QGIS_3D_HDRS
   lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h
+  materials/qgsdiffusespecularmaterial.h
   materials/qgsgoochmaterialsettings.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
