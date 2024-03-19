@@ -167,7 +167,7 @@ void TestQgsMapToolMoveFeature::testTopologicalMoveFeature()
 void TestQgsMapToolMoveFeature::testAvoidIntersectionAndTopoEdit()
 {
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()-> avoidIntersectionsMode() );
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
 
   QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
   QgsProject::instance()->setTopologicalEditing( true );
