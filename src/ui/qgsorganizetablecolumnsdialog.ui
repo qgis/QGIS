@@ -45,6 +45,9 @@
      <property name="text">
       <string>Hide All</string>
      </property>
+     <property name="toolTip">
+      <string>Hides all the fields and actions in the table</string>
+     </property>
     </widget>
    </item>
    <item row="2" column="4">
@@ -62,12 +65,18 @@
      <property name="text">
       <string>Show All</string>
      </property>
+     <property name="toolTip">
+      <string>Displays all the fields and actions in the table</string>
+     </property>
     </widget>
    </item>
    <item row="2" column="2">
     <widget class="QPushButton" name="mToggleSelectionButton">
      <property name="text">
       <string>Toggle Selection</string>
+     </property>
+     <property name="toolTip">
+      <string>Toggles visibility of the selected fields and actions</string>
      </property>
     </widget>
    </item>
