@@ -74,6 +74,7 @@ set(QGIS_3D_SRCS
   materials/qgsphongtexturedmaterial.cpp
   materials/qgsphongtexturedmaterialsettings.cpp
   materials/qgssimplelinematerialsettings.cpp
+  materials/qgstexturematerial.cpp
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
@@ -167,6 +168,7 @@ set(QGIS_3D_HDRS
   materials/qgsphongtexturedmaterial.h
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
+  materials/qgstexturematerial.h
 
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
