@@ -37,5 +37,7 @@
         <file>shaders/phongConstant.vert</file>
         <file>shaders/metalrough.frag</file>
         <file>shaders/default.vert</file>
+        <file>shaders/maskedtexture.frag</file>
+        <file>shaders/maskedtexture.vert</file>
     </qresource>
 </RCC>

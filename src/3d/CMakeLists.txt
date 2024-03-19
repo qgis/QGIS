@@ -65,6 +65,7 @@ set(QGIS_3D_SRCS
 
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
+  materials/qgsmaskedtexturematerial.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
   materials/qgsmetalroughmaterialsettings.cpp
@@ -156,6 +157,7 @@ set(QGIS_3D_HDRS
 
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
+  materials/qgsmaskedtexturematerial.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterialsettings.h
