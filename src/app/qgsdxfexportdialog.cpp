@@ -49,7 +49,23 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 {
   Q_UNUSED( option )
 
-  if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL )
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
+  if ( !vl )
+    return nullptr;
+
+  if ( index.column() == LAYER_COL )
+  {
+    QLineEdit *le = new QLineEdit( parent );
+    return le;
+  }
+  else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
+  {
+    QgsFieldComboBox *w = new QgsFieldComboBox( parent );
+    w->setLayer( vl );
+    w->setAllowEmptyFieldName( true );
+    return w;
+  }
+  else if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL )
   {
     return nullptr;
   }
@@ -60,44 +76,68 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
     return le;
   }
 
-  QgsVectorLayer *vl = indexToLayer( index.model(), index );
-  if ( !vl )
-    return nullptr;
-
-  QgsFieldComboBox *w = new QgsFieldComboBox( parent );
-  w->setLayer( vl );
-  w->setAllowEmptyFieldName( true );
-  return w;
+  return nullptr;
 }
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
+  if ( !vl )
+    return;
+
+  if ( index.column() == LAYER_COL )
+  {
+    QLineEdit *le = qobject_cast< QLineEdit * >( editor );
+    if ( le )
+    {
+      le->setText( index.data().toString() );
+    }
+  }
+  else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
+  {
+    QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
+    if ( !fcb )
+      return;
+
+    int idx = attributeIndex( index.model(), vl );
+    if ( vl->fields().exists( idx ) )
+    {
+      fcb->setField( vl->fields().at( idx ).name() );
+    }
+  }
+  else if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     QLineEdit *le = qobject_cast<QLineEdit *>( editor );
     if ( le )
     {
       le->setText( index.data().toString() );
     }
-    return;
   }
-
-  QgsVectorLayer *vl = indexToLayer( index.model(), index );
-  if ( !vl )
-    return;
-
-  QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
-  if ( !fcb )
-    return;
-
-  int idx = attributeIndex( index.model(), vl );
-  if ( vl->fields().exists( idx ) )
-    fcb->setField( vl->fields().at( idx ).name() );
 }
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
+  if ( !vl )
+    return;
+
+  if ( index.column() == LAYER_COL )
+  {
+    QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+    if ( le )
+    {
+      model->setData( index, le->text() );
+    }
+  }
+  else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
+  {
+    QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
+    if ( !fcb )
+      return;
+
+    model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
+  }
+  else if ( index.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
     QLineEdit *le = qobject_cast<QLineEdit *>( editor );
     if ( le )
@@ -105,16 +145,6 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
       model->setData( index, le->text().toInt() );
     }
   }
-
-  QgsVectorLayer *vl = indexToLayer( index.model(), index );
-  if ( !vl )
-    return;
-
-  QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
-  if ( !fcb )
-    return;
-
-  model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
 }
 
 QgsVectorLayer *FieldSelectorDelegate::indexToLayer( const QAbstractItemModel *model, const QModelIndex &index ) const
@@ -167,7 +197,7 @@ Qt::ItemFlags QgsVectorLayerAndAttributeModel::flags( const QModelIndex &index )
   QgsVectorLayer *vl = vectorLayer( index );
   if ( index.column() == LAYER_COL )
   {
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    return vl ? Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable : Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
   }
   else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
   {
@@ -229,6 +259,9 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role ) const
 {
   QgsVectorLayer *vl = vectorLayer( idx );
+  if ( !vl )
+    return QVariant();
+
   if ( idx.column() == LAYER_COL )
   {
     if ( role == Qt::CheckStateRole )
@@ -277,12 +310,37 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       Q_ASSERT( hasUnchecked );
       return Qt::Unchecked;
     }
+    else if ( role == Qt::DisplayRole && mOverriddenName.contains( vl ) )
+    {
+      return mOverriddenName[ vl ];
+    }
     else
+    {
       return QgsLayerTreeModel::data( idx, role );
+    }
+  }
+  else if ( idx.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
+  {
+    int idx = mAttributeIdx.value( vl, -1 );
+    if ( role == Qt::EditRole )
+      return idx;
+
+    if ( role == Qt::DisplayRole )
+    {
+      if ( vl->fields().exists( idx ) )
+        return vl->fields().at( idx ).name();
+      else
+        return mOverriddenName.contains( vl ) ? mOverriddenName[ vl ] : vl->name();
+    }
+
+    if ( role == Qt::ToolTipRole )
+    {
+      return tr( "Attribute containing the name of the destination layer in the DXF output." );
+    }
   }
   else if ( idx.column() == ALLOW_DD_SYMBOL_BLOCKS_COL )
   {
-    if ( !vl || vl->geometryType() != Qgis::GeometryType::Point )
+    if ( vl->geometryType() != Qgis::GeometryType::Point )
     {
       return QVariant();
     }
@@ -299,7 +357,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
   }
   else if ( idx.column() == MAXIMUM_DD_SYMBOL_BLOCKS_COL )
   {
-    if ( !vl || vl->geometryType() != Qgis::GeometryType::Point )
+    if ( vl->geometryType() != Qgis::GeometryType::Point )
     {
       return QVariant();
     }
@@ -317,65 +375,58 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
     }
   }
 
-
-  if ( idx.column() == OUTPUT_LAYER_ATTRIBUTE_COL && vl )
-  {
-    int idx = mAttributeIdx.value( vl, -1 );
-    if ( role == Qt::EditRole )
-      return idx;
-
-    if ( role == Qt::DisplayRole )
-    {
-      if ( vl->fields().exists( idx ) )
-        return vl->fields().at( idx ).name();
-      else
-        return vl->name();
-    }
-
-    if ( role == Qt::ToolTipRole )
-    {
-      return tr( "Attribute containing the name of the destination layer in the DXF output." );
-    }
-  }
-
   return QVariant();
 }
 
 bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( index.column() == LAYER_COL && role == Qt::CheckStateRole )
-  {
-    int i = 0;
-    for ( i = 0; ; i++ )
-    {
-      QModelIndex child = QgsVectorLayerAndAttributeModel::index( i, 0, index );
-      if ( !child.isValid() )
-        break;
-
-      setData( child, value, role );
-    }
-
-    if ( i == 0 )
-    {
-      if ( value.toInt() == Qt::Checked )
-        mCheckedLeafs.insert( index );
-      else if ( value.toInt() == Qt::Unchecked )
-        mCheckedLeafs.remove( index );
-      else
-        Q_ASSERT( "expected checked or unchecked" );
-
-      emit dataChanged( QModelIndex(), index );
-    }
-
-    return true;
-  }
-
   QgsVectorLayer *vl = vectorLayer( index );
-  if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
+
+  if ( index.column() == LAYER_COL )
+  {
+    if ( role == Qt::CheckStateRole )
+    {
+      int i = 0;
+      for ( i = 0; ; i++ )
+      {
+        QModelIndex child = QgsVectorLayerAndAttributeModel::index( i, 0, index );
+        if ( !child.isValid() )
+          break;
+
+        setData( child, value, role );
+      }
+
+      if ( i == 0 )
+      {
+        if ( value.toInt() == Qt::Checked )
+          mCheckedLeafs.insert( index );
+        else if ( value.toInt() == Qt::Unchecked )
+          mCheckedLeafs.remove( index );
+        else
+          Q_ASSERT( "expected checked or unchecked" );
+
+        emit dataChanged( QModelIndex(), index );
+      }
+
+      return true;
+    }
+    else if ( role == Qt::EditRole )
+    {
+      if ( !value.toString().trimmed().isEmpty() && value.toString() != vl->name() )
+      {
+        mOverriddenName[ vl ] = value.toString();
+      }
+      else
+      {
+        mOverriddenName.remove( vl );
+      }
+      return true;
+    }
+  }
+  else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
   {
     if ( role != Qt::EditRole )
       return false;
-
 
     if ( vl )
     {
@@ -383,8 +434,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
       return true;
     }
   }
-
-  if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL && role == Qt::CheckStateRole )
+  else if ( index.column() == ALLOW_DD_SYMBOL_BLOCKS_COL && role == Qt::CheckStateRole )
   {
     if ( vl )
     {
