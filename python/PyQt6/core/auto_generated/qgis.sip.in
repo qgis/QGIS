@@ -1257,6 +1257,7 @@ The development version
       FixedTemporalRange,
       TemporalRangeFromDataProvider,
       RedrawLayerOnly,
+      FixedRangePerBand,
     };
 
     enum class TemporalIntervalMatchMethod /BaseType=IntEnum/

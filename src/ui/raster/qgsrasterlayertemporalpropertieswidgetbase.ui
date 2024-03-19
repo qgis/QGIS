@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>577</width>
-    <height>413</height>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,10 +49,10 @@
         <x>0</x>
         <y>0</y>
         <width>577</width>
-        <height>663</height>
+        <height>678</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0,1">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -65,10 +65,19 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item row="1" column="0">
+        <widget class="QWidget" name="mExtraWidgetContainer" native="true"/>
+       </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="mTemporalGroupBox">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="styleSheet">
           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}
@@ -80,147 +89,193 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
          <property name="checkable">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="4" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeRedrawLayer">
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>Redraw layer only</string>
+             <string>Configuration</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeAutomaticRadio">
-            <property name="toolTip">
-             <string>Delegates temporal handling to the data provider</string>
-            </property>
-            <property name="text">
-             <string>Automatic</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mModeComboBox"/>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QFrame" name="mFixedTimeRangeFrame">
-            <property name="enabled">
-             <bool>false</bool>
+          <item row="1" column="0" colspan="2">
+           <widget class="QgsStackedWidget" name="mStackedWidget">
+            <property name="currentIndex">
+             <number>3</number>
             </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,3">
-             <property name="leftMargin">
-              <number>20</number>
+            <widget class="QWidget" name="mPageFixedRange">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="topMargin">
-              <number>0</number>
+             <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,2">
+              <item row="1" column="1">
+               <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>&lt;p&gt;&lt;b&gt;The layer will be rendered whenever the map's temporal range overlaps the range defined below.&lt;/b&gt;&lt;/p&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDateTimeEdit" name="mEndTemporalDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Start date</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>End date</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="mPageAutomatic">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="bottomMargin">
-              <number>0</number>
+             <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0">
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_28">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The layer's data provider will automatically handle temporal settings for the layer.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="mPageRedrawOnly">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Start date</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" colspan="2">
-              <widget class="QgsDateTimeEdit" name="mEndTemporalDateTimeEdit">
-               <property name="displayFormat">
-                <string>M/d/yyyy h:mm AP</string>
-               </property>
-               <property name="timeSpec">
-                <enum>Qt::UTC</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="0" column="1" colspan="2">
-              <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
-               <property name="displayFormat">
-                <string>M/d/yyyy h:mm AP</string>
-               </property>
-               <property name="timeSpec">
-                <enum>Qt::UTC</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_4">
-               <property name="text">
-                <string>End date</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeFixedRangeRadio">
-            <property name="text">
-             <string>Fixed time range (only show this layer if animation time is within this range)</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QFrame" name="frame">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <property name="leftMargin">
-              <number>20</number>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The layer will automatically be redrawn whenever the temporal range is changed, but no time based filtering will be applied to the layer.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This configuration is useful when the layer has renderer settings which vary based on the temporal range. For instance, when it is using time-dependent data-defined renderer expressions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="mPageFixedRangePerBand">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="mLabelRedrawLayer">
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The layer will automatically be redrawn whenever the temporal range is changed, but no time based filtering will be applied to the layer.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This configuration is useful when the layer has renderer settings which vary based on the temporal range. For instance, when it is using time-dependent data-defined renderer expressions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="2" column="0">
+               <widget class="QTableView" name="mBandRangesTable">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="2" colspan="2">
+               <widget class="QLabel" name="mFixedRangePerBandLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Each band in the raster layer is associated with a fixed time range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This mode can be used when a layer has temporal data exposed through different raster bands.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="mCalculateFixedRangePerBandButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+                  </property>
+                  <property name="popupMode">
+                   <enum>QToolButton::MenuButtonPopup</enum>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QWidget" name="mExtraWidgetContainer" native="true"/>
        </item>
       </layout>
      </widget>
@@ -240,15 +295,19 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
    <extends>QDateTimeEdit</extends>
    <header>qgsdatetimeedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mTemporalGroupBox</tabstop>
-  <tabstop>mModeAutomaticRadio</tabstop>
-  <tabstop>mModeFixedRangeRadio</tabstop>
-  <tabstop>mStartTemporalDateTimeEdit</tabstop>
-  <tabstop>mEndTemporalDateTimeEdit</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

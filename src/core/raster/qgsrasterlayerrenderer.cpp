@@ -280,6 +280,19 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
       case Qgis::RasterTemporalMode::RedrawLayerOnly:
         break;
 
+      case Qgis::RasterTemporalMode::FixedRangePerBand:
+      {
+        const int matchingBand = temporalProperties->bandForTemporalRange( layer, rendererContext.temporalRange() );
+
+        // this is guaranteed, as we won't ever be creating a renderer if this condition is not met, but let's be ultra safe!
+        if ( matchingBand > 0 )
+        {
+          mPipe->renderer()->setInputBand( matchingBand );
+        }
+
+        break;
+      }
+
       case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
         // in this mode we need to pass on the desired render temporal range to the data provider
         if ( QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = mPipe->provider()->temporalCapabilities() )

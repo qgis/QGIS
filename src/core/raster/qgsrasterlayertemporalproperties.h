@@ -25,6 +25,8 @@
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
 
+class QgsRasterLayer;
+
 /**
  * \class QgsRasterLayerTemporalProperties
  * \ingroup core
@@ -90,7 +92,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * a render context intersects the specified \a range.
      *
      * \warning This setting is only effective when mode() is
-     * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
+     * Qgis::RasterTemporalMode::FixedTemporalRange
      *
      * \see fixedTemporalRange()
      */
@@ -99,12 +101,41 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     /**
      * Returns the fixed temporal range for the layer.
      *
-     * \warning To be used only when mode() is
-     * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
+     * \warning To be used only when mode() is Qgis::RasterTemporalMode::FixedTemporalRange
      *
      * \see setFixedTemporalRange()
     */
     const QgsDateTimeRange &fixedTemporalRange() const;
+
+    /**
+     * Returns the fixed temporal range for each band.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::FixedRangePerBand.
+     *
+     * \see setFixedRangePerBand()
+     * \since QGIS 3.38
+     */
+    QMap<int, QgsDateTimeRange> fixedRangePerBand() const;
+
+    /**
+     * Sets the fixed temporal range for each band.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::FixedRangePerBand.
+     *
+     * \see fixedRangePerBand()
+     * \since QGIS 3.38
+     */
+    void setFixedRangePerBand( const QMap<int, QgsDateTimeRange> &ranges );
+
+    /**
+     * Returns the band corresponding to the specified \a range.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::FixedRangePerBand.
+     * For other modes it will always return -1.
+     *
+     * \since QGIS 3.38
+     */
+    int bandForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -122,6 +153,8 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;
+
+    QMap< int, QgsDateTimeRange > mRangePerBand;
 };
 
 #endif // QGSRASTERLAYERTEMPORALPROPERTIES_H

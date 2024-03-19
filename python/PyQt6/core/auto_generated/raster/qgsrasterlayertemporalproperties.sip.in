@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
 %Docstring(signature="appended")
@@ -80,7 +81,7 @@ a render context intersects the specified ``range``.
 .. warning::
 
    This setting is only effective when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
-   QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
+   :py:class:`Qgis`.RasterTemporalMode.FixedTemporalRange
 
 .. seealso:: :py:func:`fixedTemporalRange`
 %End
@@ -91,10 +92,47 @@ Returns the fixed temporal range for the layer.
 
 .. warning::
 
-   To be used only when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
-   QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
+   To be used only when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.FixedTemporalRange
 
 .. seealso:: :py:func:`setFixedTemporalRange`
+%End
+
+    QMap<int, QgsDateTimeRange> fixedRangePerBand() const;
+%Docstring
+Returns the fixed temporal range for each band.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.FixedRangePerBand.
+
+.. seealso:: :py:func:`setFixedRangePerBand`
+
+.. versionadded:: 3.38
+%End
+
+    void setFixedRangePerBand( const QMap<int, QgsDateTimeRange> &ranges );
+%Docstring
+Sets the fixed temporal range for each band.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.FixedRangePerBand.
+
+.. seealso:: :py:func:`fixedRangePerBand`
+
+.. versionadded:: 3.38
+%End
+
+    int bandForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
+%Docstring
+Returns the band corresponding to the specified ``range``.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.FixedRangePerBand.
+   For other modes it will always return -1.
+
+.. versionadded:: 3.38
 %End
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );

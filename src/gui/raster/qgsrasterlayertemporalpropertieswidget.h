@@ -20,9 +20,55 @@
 
 #include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
 #include "qgis_gui.h"
+#include "qgsrange.h"
+#include <QStyledItemDelegate>
 
 class QgsRasterLayer;
 class QgsMapLayerConfigWidget;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsRasterBandFixedTemporalRangeModel : public QAbstractItemModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRasterBandFixedTemporalRangeModel( QObject *parent );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+
+    void setLayerData( QgsRasterLayer *layer, const QMap<int, QgsDateTimeRange > &ranges );
+    QMap<int, QgsDateTimeRange > rangeData() const { return mRanges; }
+
+  private:
+
+    int mBandCount = 0;
+    QMap<int, QString > mBandNames;
+    QMap<int, QgsDateTimeRange > mRanges;
+};
+
+class QgsFixedTemporalRangeDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFixedTemporalRangeDelegate( QObject *parent );
+
+  protected:
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+};
+///@endcond PRIVATE
+#endif
 
 /**
  * \ingroup gui
@@ -61,6 +107,8 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
 
   private slots:
     void temporalGroupBoxChecked( bool checked );
+    void modeChanged();
+    void calculateRangeByExpression( bool isUpper );
 
   private:
 
@@ -72,5 +120,8 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
 
     QList< QgsMapLayerConfigWidget * > mExtraWidgets;
 
+    QgsRasterBandFixedTemporalRangeModel *mFixedRangePerBandModel = nullptr;
+    QString mFixedRangeLowerExpression;
+    QString mFixedRangeUpperExpression;
 };
 #endif // QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H

@@ -34,6 +34,16 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       return range.isInfinite() || mFixedRange.isInfinite() || mFixedRange.overlaps( range );
 
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        if ( it.value().overlaps( range ) )
+          return true;
+      }
+      return false;
+    }
+
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
       return true;
@@ -55,6 +65,36 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
       return rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
 
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      QDateTime begin;
+      QDateTime end;
+      bool includeBeginning = true;
+      bool includeEnd = true;
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        if ( it.value().begin() < begin || !begin.isValid() )
+        {
+          begin = it.value().begin();
+          includeBeginning = it.value().includeBeginning();
+        }
+        else if ( !includeBeginning && it.value().begin() == begin && it.value().includeBeginning() )
+        {
+          includeBeginning = true;
+        }
+        if ( it.value().end() > end || !end.isValid() )
+        {
+          end = it.value().end();
+          includeEnd = it.value().includeEnd();
+        }
+        else if ( !includeEnd && it.value().end() == end && it.value().includeEnd() )
+        {
+          includeEnd = true;
+        }
+      }
+      return QgsDateTimeRange( begin, end, includeBeginning, includeEnd );
+    }
+
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
       break;
   }
@@ -65,16 +105,28 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
 QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( QgsMapLayer *layer ) const
 {
   QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
-  if ( !rasterLayer )
-    return {};
 
   switch ( mMode )
   {
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       return { mFixedRange };
 
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      QList<QgsDateTimeRange> results;
+      results.reserve( mRangePerBand.size() );
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        results.append( it.value() );
+      }
+      return results;
+    }
+
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     {
+      if ( !rasterLayer || !rasterLayer->dataProvider() )
+        return {};
+
       const QList< QgsDateTimeRange > ranges = rasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
       return ranges.empty() ? QList< QgsDateTimeRange > { rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange() } : ranges;
     }
@@ -100,7 +152,17 @@ void QgsRasterLayerTemporalProperties::setMode( Qgis::RasterTemporalMode mode )
 
 QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
 {
-  return mode() == Qgis::RasterTemporalMode::FixedTemporalRange ? QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges : QgsTemporalProperty::Flags();
+  switch ( mMode )
+  {
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+      return QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges;
+
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+      return QgsTemporalProperty::Flags();
+  }
+  BUILTIN_UNREACHABLE
 }
 
 Qgis::TemporalIntervalMatchMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const
@@ -125,6 +187,53 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() c
   return mFixedRange;
 }
 
+QMap<int, QgsDateTimeRange> QgsRasterLayerTemporalProperties::fixedRangePerBand() const
+{
+  return mRangePerBand;
+}
+
+void QgsRasterLayerTemporalProperties::setFixedRangePerBand( const QMap<int, QgsDateTimeRange> &ranges )
+{
+  if ( mRangePerBand == ranges )
+    return;
+
+  mRangePerBand = ranges;
+  emit changed();
+}
+
+int QgsRasterLayerTemporalProperties::bandForTemporalRange( QgsRasterLayer *, const QgsDateTimeRange &range ) const
+{
+  switch ( mMode )
+  {
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+      return -1;
+
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      // find the latest-most band which matches the map range
+      int currentMatchingBand = -1;
+      QgsDateTimeRange currentMatchingRange;
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        if ( it.value().overlaps( range ) )
+        {
+          if ( currentMatchingRange.isInfinite()
+               || ( it.value().includeEnd() && it.value().end() >= currentMatchingRange.end() )
+               || ( !currentMatchingRange.includeEnd() && it.value().end() >= currentMatchingRange.end() ) )
+          {
+            currentMatchingBand = it.key();
+            currentMatchingRange = it.value();
+          }
+        }
+      }
+      return currentMatchingBand;
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
+
 bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
@@ -137,16 +246,45 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   mMode = static_cast< Qgis::RasterTemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   mIntervalHandlingMethod = static_cast< Qgis::TemporalIntervalMatchMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
 
-  const QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
+  switch ( mMode )
+  {
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+    {
+      const QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
-  const QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
-  const QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+      const QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
+      const QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
 
-  const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
-  const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+      const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+      const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
-  const QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
-  setFixedTemporalRange( range );
+      const QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
+      setFixedTemporalRange( range );
+      break;
+    }
+
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      mRangePerBand.clear();
+
+      const QDomNodeList ranges = temporalNode.firstChildElement( QStringLiteral( "ranges" ) ).childNodes();
+      for ( int i = 0; i < ranges.size(); ++i )
+      {
+        const QDomElement rangeElement = ranges.at( i ).toElement();
+        const int band = rangeElement.attribute( QStringLiteral( "band" ) ).toInt();
+        const QDateTime begin = QDateTime::fromString( rangeElement.attribute( QStringLiteral( "begin" ) ), Qt::ISODate );
+        const QDateTime end = QDateTime::fromString( rangeElement.attribute( QStringLiteral( "end" ) ), Qt::ISODate );
+        const bool includeBeginning = rangeElement.attribute( QStringLiteral( "includeBeginning" ) ).toInt();
+        const bool includeEnd = rangeElement.attribute( QStringLiteral( "includeEnd" ) ).toInt();
+        mRangePerBand.insert( band, QgsDateTimeRange( begin, end, includeBeginning, includeEnd ) );
+      }
+      break;
+    }
+
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+      break;
+  }
 
   return true;
 }
@@ -162,19 +300,48 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( static_cast< int >( mMode ) ) );
   temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( static_cast< int >( mIntervalHandlingMethod ) ) );
 
-  QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
+  switch ( mMode )
+  {
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+    {
 
-  QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
-  QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
+      QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
 
-  const QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-  const QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-  startElement.appendChild( startText );
-  endElement.appendChild( endText );
-  rangeElement.appendChild( startElement );
-  rangeElement.appendChild( endElement );
+      QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
+      QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
 
-  temporalElement.appendChild( rangeElement );
+      const QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      const QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      startElement.appendChild( startText );
+      endElement.appendChild( endText );
+      rangeElement.appendChild( startElement );
+      rangeElement.appendChild( endElement );
+
+      temporalElement.appendChild( rangeElement );
+      break;
+    }
+
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      QDomElement ranges = document.createElement( QStringLiteral( "ranges" ) );
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        QDomElement range = document.createElement( QStringLiteral( "range" ) );
+        range.setAttribute( QStringLiteral( "band" ), it.key() );
+        range.setAttribute( QStringLiteral( "begin" ), it.value().begin().toString( Qt::ISODate ) );
+        range.setAttribute( QStringLiteral( "end" ), it.value().end().toString( Qt::ISODate ) );
+        range.setAttribute( QStringLiteral( "includeBeginning" ), it.value().includeBeginning() ? "1" : "0" );
+        range.setAttribute( QStringLiteral( "includeEnd" ), it.value().includeEnd() ? "1" : "0" );
+        ranges.appendChild( range );
+      }
+      temporalElement.appendChild( ranges );
+      break;
+    }
+
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+      break;
+  }
 
   element.appendChild( temporalElement );
 
