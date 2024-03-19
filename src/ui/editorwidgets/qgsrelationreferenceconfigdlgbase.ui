@@ -194,29 +194,31 @@
     </widget>
    </item>
    <item row="8" column="0" colspan="2">
-    <widget class="QGroupBox" name="mFetchLimitGroupBox">
-     <property name="toolTip">
-      <string>If no limit is set, all entries are loaded.</string>
-     </property>
-     <property name="title">
-      <string>Limit number of entries</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_fetchLimit">
-        <property name="text">
-         <string>Maximum number of entries</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsSpinBox" name="mFetchLimit"/>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCheckBox" name="mFetchLimitCheckBox">
+       <property name="toolTip">
+        <string>If unchecked, all the entries are loaded.</string>
+       </property>
+       <property name="text">
+        <string>Limit number of entries to</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsSpinBox" name="mFetchLimit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="3" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxShowForm">
@@ -262,6 +264,8 @@
   <tabstop>mCbxMapIdentification</tabstop>
   <tabstop>mCbxReadOnly</tabstop>
   <tabstop>mCbxAllowAddFeatures</tabstop>
+  <tabstop>mFetchLimitCheckBox</tabstop>
+  <tabstop>mFetchLimit</tabstop>
   <tabstop>mFilterGroupBox</tabstop>
   <tabstop>mAvailableFieldsList</tabstop>
   <tabstop>mAddFilterButton</tabstop>
@@ -272,7 +276,6 @@
   <tabstop>mFilterExpression</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
