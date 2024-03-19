@@ -36,5 +36,6 @@
         <file>shaders/default.vert</file>
         <file>shaders/texture.frag</file>
         <file>shaders/texture.vert</file>
+        <file>shaders/diffusespecular.frag</file>
     </qresource>
 </RCC>
