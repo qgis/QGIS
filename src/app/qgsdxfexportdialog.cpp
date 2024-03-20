@@ -807,10 +807,8 @@ void QgsDxfExportDialog::deselectDataDefinedBlocks()
 
 void QgsDxfExportDialog::loadSettingsFromFile()
 {
-  QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "dxf/lastSettingsDir" ), QDir::homePath() ).toString();
-
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load DXF Export settings" ), lastUsedDir,
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load DXF Export settings" ),
+                           QgsDxfExportDialog::settingsDxfLastSettingsDir->value(),
                            tr( "XML file" ) + " (*.xml)" );
   if ( fileName.isNull() )
   {
@@ -845,7 +843,7 @@ void QgsDxfExportDialog::loadSettingsFromFile()
       QMessageBox::information( this, tr( "Load DXF settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1. %2" ).arg( fileName, errorMessage ) );
     else
     {
-      settings.setValue( QStringLiteral( "dxf/lastSettingsDir" ), QFileInfo( fileName ).path() );
+      QgsDxfExportDialog::settingsDxfLastSettingsDir->setValue( QFileInfo( fileName ).path() );
       QMessageBox::information( this, tr( "Load DXF settings" ), tr( "DXF Export settings loaded!" ) );
     }
   }
@@ -920,11 +918,9 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
 
 void QgsDxfExportDialog::saveSettingsToFile()
 {
-  QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "dxf/lastSettingsDir" ), QDir::homePath() ).toString();
-
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save DXF Export settings as XML" ),
-                           lastUsedDir, tr( "XML file" ) + " (*.xml)" );
+                           QgsDxfExportDialog::settingsDxfLastSettingsDir->value(),
+                           tr( "XML file" ) + " (*.xml)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -960,7 +956,7 @@ void QgsDxfExportDialog::saveSettingsToFile()
     domDocument.save( fileStream, 2 );
     file.close();
     QMessageBox::information( this, tr( "Save DXF settings" ), tr( "Created DXF settings file as %1" ).arg( outputFileName ) );
-    settings.setValue( QStringLiteral( "dxf/lastSettingsDir" ), QFileInfo( outputFileName ).absolutePath() );
+    QgsDxfExportDialog::settingsDxfLastSettingsDir->setValue( QFileInfo( outputFileName ).absolutePath() );
     return;
   }
   else
