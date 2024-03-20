@@ -144,7 +144,7 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveDefault()
   utils.mouseClick( 1.25, 1.25, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt1 = "Polygon ((0 -0.35, -0.07 -0.35, -0.14 -0.33, -0.2 -0.29, -0.25 -0.25, -0.29 -0.2, -0.33 -0.14, -0.35 -0.07, -0.35 0, -0.35 1, -0.35 1.07, -0.33 1.14, -0.29 1.2, -0.25 1.25, -0.2 1.29, -0.14 1.33, -0.07 1.35, 0 1.35, 1 1.35, 1.07 1.35, 1.14 1.33, 1.2 1.29, 1.25 1.25, 1.29 1.2, 1.33 1.14, 1.35 1.07, 1.35 1, 1.35 0, 1.35 -0.07, 1.33 -0.14, 1.29 -0.2, 1.25 -0.25, 1.2 -0.29, 1.14 -0.33, 1.07 -0.35, 1 -0.35, 0 -0.35))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1);
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
 
   mLayerBase->undoStack()->undo();
 
@@ -154,7 +154,7 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveDefault()
   utils.mouseClick( 2.1, 0.1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt2 = "Polygon ((2.09 0.09, 2.09 4.91, 2.91 4.91, 2.91 0.09, 2.09 0.09))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2);
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2 );
 
   mLayerBase->undoStack()->undo();
 }
@@ -172,7 +172,7 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveJoinStyle()
   utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt1 = "Polygon ((-0.71 -0.71, -0.71 1.71, 1.71 1.71, 1.71 -0.71, -0.71 -0.71))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1);
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
 
   mLayerBase->undoStack()->undo();
 
@@ -182,7 +182,7 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveJoinStyle()
   utils.mouseClick( 2.25, 0.25, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt2 = "Polygon ((2.25 0.25, 2.25 4.75, 2.75 4.75, 2.75 0.25, 2.25 0.25))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2);
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2 );
 
   mLayerBase->undoStack()->undo();
 
@@ -194,7 +194,7 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveJoinStyle()
   utils.mouseClick( 0.75, 0.75, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt3 = "Polygon ((0.25 0.25, 0.25 0.75, 0.75 0.75, 0.75 0.25, 0.25 0.25))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt3);
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt3 );
 
   mLayerBase->undoStack()->undo();
 
@@ -204,7 +204,7 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveJoinStyle()
   utils.mouseClick( 1.75, -0.25, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt4 = "Polygon ((2 -0.35, 1.65 0, 1.65 5, 2 5.35, 3 5.35, 3.35 5, 3.35 0, 3 -0.35, 2 -0.35))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt4);
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt4 );
 
   mLayerBase->undoStack()->undo();
 
@@ -229,9 +229,9 @@ void TestQgsMapToolOffsetCurve::testAvoidIntersectionAndTopoEdit()
   utils.mouseClick( 2, 1.75, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt1 = "Polygon ((-1.25 0, -1.25 1, 0 2.25, 1 2.25, 2 1.25, 2 0, 2.25 0, 1 -1.25, 0 -1.25, -1.25 0))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1);
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
   const QString wkt2 = "Polygon ((2 0, 2 1.25, 2 5, 3 5, 3 0, 2.25 0, 2 0))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2);
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2 );
 
   mLayerBase->undoStack()->undo();
 
