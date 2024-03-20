@@ -284,7 +284,7 @@ tests:
         pk: id
 
   - algorithm: native:voronoipolygons
-    name: Voronoi without source atributes
+    name: Voronoi without source attributes
     params:
       BUFFER: 0.0
       COPY_ATTRIBUTES: false
