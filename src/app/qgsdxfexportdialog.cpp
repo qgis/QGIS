@@ -819,30 +819,30 @@ void QgsDxfExportDialog::loadSettingsFromFile()
 
   bool resultFlag = false;
 
-  QDomDocument myDocument( QStringLiteral( "qgis" ) );
+  QDomDocument domDocument( QStringLiteral( "qgis" ) );
 
   // location of problem associated with errorMsg
   int line, column;
-  QString myErrorMessage;
+  QString errorMessage;
 
-  QFile myFile( fileName );
-  if ( myFile.open( QFile::ReadOnly ) )
+  QFile file( fileName );
+  if ( file.open( QFile::ReadOnly ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "file found %1" ).arg( fileName ), 2 );
     // read file
-    resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
+    resultFlag = domDocument.setContent( &file, &errorMessage, &line, &column );
     if ( !resultFlag )
-      myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
-    myFile.close();
+      errorMessage = tr( "%1 at line %2 column %3" ).arg( errorMessage ).arg( line ).arg( column );
+    file.close();
   }
 
   if ( QMessageBox::question( this,
                               tr( "DXF Export load from XML file" ),
                               tr( "Are you sure you want to load settings from XML? This will change some values in the DXF Export dialog." ) ) == QMessageBox::Yes )
   {
-    resultFlag = loadSettingsFromXML( myDocument, myErrorMessage );
+    resultFlag = loadSettingsFromXML( domDocument, errorMessage );
     if ( !resultFlag )
-      QMessageBox::information( this, tr( "Load DXF settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1. %2" ).arg( fileName, myErrorMessage ) );
+      QMessageBox::information( this, tr( "Load DXF settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1. %2" ).arg( fileName, errorMessage ) );
     else
     {
       settings.setValue( QStringLiteral( "dxf/lastSettingsDir" ), QFileInfo( fileName ).path() );
@@ -854,8 +854,8 @@ void QgsDxfExportDialog::loadSettingsFromFile()
 
 bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorMessage ) const
 {
-  const QDomElement myRoot = doc.firstChildElement( QStringLiteral( "qgis" ) );
-  if ( myRoot.isNull() )
+  const QDomElement rootElement = doc.firstChildElement( QStringLiteral( "qgis" ) );
+  if ( rootElement.isNull() )
   {
     errorMessage = tr( "Root <qgis> element could not be found" );
     return false;
@@ -864,52 +864,52 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
   QDomElement mne;
   QVariant value;
 
-  mne = myRoot.namedItem( QStringLiteral( "symbology_mode" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "symbology_mode" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mSymbologyModeComboBox->setCurrentIndex( value.toInt() );
 
-  mne = myRoot.namedItem( QStringLiteral( "symbology_scale" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "symbology_scale" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mScaleWidget->setScale( value.toDouble() );
 
-  mne = myRoot.namedItem( QStringLiteral( "encoding" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "encoding" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mEncoding->setCurrentText( value.toString() );
 
-  mne = myRoot.namedItem( QStringLiteral( "crs" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "crs" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mCrsSelector->setCrs( value.value< QgsCoordinateReferenceSystem >() );
 
-  mne = myRoot.namedItem( QStringLiteral( "map_theme" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "map_theme" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mVisibilityPresets->setCurrentText( value.toString() );
 
-  mne = myRoot.namedItem( QStringLiteral( "use_layer_title" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "use_layer_title" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mLayerTitleAsName->setChecked( value == true );
 
-  mne = myRoot.namedItem( QStringLiteral( "use_map_extent" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "use_map_extent" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mMapExtentCheckBox->setChecked( value == true );
 
-  mne = myRoot.namedItem( QStringLiteral( "force_2d" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "force_2d" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mForce2d->setChecked( value == true );
 
-  mne = myRoot.namedItem( QStringLiteral( "mtext" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "mtext" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mMTextCheckBox->setChecked( value == true );
 
-  mne = myRoot.namedItem( QStringLiteral( "selected_features_only" ) ).toElement();
+  mne = rootElement.namedItem( QStringLiteral( "selected_features_only" ) ).toElement();
   value = QgsXmlUtils::readVariant( mne.firstChildElement() );
   if ( !value.isNull() )
     mSelectedFeaturesOnly->setChecked( value == true );
@@ -939,26 +939,26 @@ void QgsDxfExportDialog::saveSettingsToFile()
     outputFileName += QStringLiteral( ".xml" );
   }
 
-  QString myErrorMessage;
-  QDomDocument myDocument;
+  QString errorMessage;
+  QDomDocument domDocument;
 
-  saveSettingsToXML( myDocument );
+  saveSettingsToXML( domDocument );
 
-  const QFileInfo myFileInfo( outputFileName );
-  const QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
-  if ( !myDirInfo.isWritable() )
+  const QFileInfo fileInfo( outputFileName );
+  const QFileInfo dirInfo( fileInfo.path() );  //excludes file name
+  if ( !dirInfo.isWritable() )
   {
     QMessageBox::information( this, tr( "Save DXF settings" ), tr( "The directory containing your dataset needs to be writable!" ) );
     return;
   }
 
-  QFile myFile( outputFileName );
-  if ( myFile.open( QFile::WriteOnly | QFile::Truncate ) )
+  QFile file( outputFileName );
+  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
   {
-    QTextStream myFileStream( &myFile );
+    QTextStream fileStream( &file );
     // save as utf-8 with 2 spaces for indents
-    myDocument.save( myFileStream, 2 );
-    myFile.close();
+    domDocument.save( fileStream, 2 );
+    file.close();
     QMessageBox::information( this, tr( "Save DXF settings" ), tr( "Created DXF settings file as %1" ).arg( outputFileName ) );
     settings.setValue( QStringLiteral( "dxf/lastSettingsDir" ), QFileInfo( outputFileName ).absolutePath() );
     return;
@@ -975,66 +975,66 @@ void QgsDxfExportDialog::saveSettingsToXML( QDomDocument &doc ) const
 {
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-  QDomDocument myDocument( documentType );
+  QDomDocument domDocument( documentType );
 
-  QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
-  myDocument.appendChild( myRootNode );
+  QDomElement rootElement = domDocument.createElement( QStringLiteral( "qgis" ) );
+  rootElement.setAttribute( QStringLiteral( "version" ), Qgis::version() );
+  domDocument.appendChild( rootElement );
 
-  QDomElement symbologyModeElement = myDocument.createElement( QStringLiteral( "symbology_mode" ) );
+  QDomElement symbologyModeElement = domDocument.createElement( QStringLiteral( "symbology_mode" ) );
   symbologyModeElement.appendChild( QgsXmlUtils::writeVariant( static_cast<int>( symbologyMode() ), doc ) );
-  myRootNode.appendChild( symbologyModeElement );
+  rootElement.appendChild( symbologyModeElement );
 
-  QDomElement symbologyScaleElement = myDocument.createElement( QStringLiteral( "symbology_scale" ) );
+  QDomElement symbologyScaleElement = domDocument.createElement( QStringLiteral( "symbology_scale" ) );
   symbologyScaleElement.appendChild( QgsXmlUtils::writeVariant( symbologyScale(), doc ) );
-  myRootNode.appendChild( symbologyScaleElement );
+  rootElement.appendChild( symbologyScaleElement );
 
-  QDomElement encodingElement = myDocument.createElement( QStringLiteral( "encoding" ) );
+  QDomElement encodingElement = domDocument.createElement( QStringLiteral( "encoding" ) );
   encodingElement.appendChild( QgsXmlUtils::writeVariant( encoding(), doc ) );
-  myRootNode.appendChild( encodingElement );
+  rootElement.appendChild( encodingElement );
 
-  QDomElement crsElement = myDocument.createElement( QStringLiteral( "crs" ) );
+  QDomElement crsElement = domDocument.createElement( QStringLiteral( "crs" ) );
   crsElement.appendChild( QgsXmlUtils::writeVariant( crs(), doc ) );
-  myRootNode.appendChild( crsElement );
+  rootElement.appendChild( crsElement );
 
-  QDomElement mapThemeElement = myDocument.createElement( QStringLiteral( "map_theme" ) );
+  QDomElement mapThemeElement = domDocument.createElement( QStringLiteral( "map_theme" ) );
   mapThemeElement.appendChild( QgsXmlUtils::writeVariant( mapTheme(), doc ) );
-  myRootNode.appendChild( mapThemeElement );
+  rootElement.appendChild( mapThemeElement );
 
-  QDomElement layersElement = myDocument.createElement( QStringLiteral( "layers" ) );
+  QDomElement layersElement = domDocument.createElement( QStringLiteral( "layers" ) );
   for ( const auto dxfLayer : layers() )
   {
     QgsVectorLayer *vl = dxfLayer.layer();
-    QDomElement layerElement = myDocument.createElement( QStringLiteral( "layer" ) );
+    QDomElement layerElement = domDocument.createElement( QStringLiteral( "layer" ) );
     layerElement.setAttribute( QStringLiteral( "source" ), vl->publicSource() );
     layerElement.setAttribute( QStringLiteral( "attribute-index" ), dxfLayer.layerOutputAttributeIndex() ) ;
     layerElement.setAttribute( QStringLiteral( "use_symbol_blocks" ), dxfLayer.buildDataDefinedBlocks() ) ;
     layerElement.setAttribute( QStringLiteral( "max_number_of_classes" ), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() ) ;
     layersElement.appendChild( layerElement );
   }
-  myRootNode.appendChild( layersElement );
+  rootElement.appendChild( layersElement );
 
-  QDomElement titleAsNameElement = myDocument.createElement( QStringLiteral( "use_layer_title" ) );
+  QDomElement titleAsNameElement = domDocument.createElement( QStringLiteral( "use_layer_title" ) );
   titleAsNameElement.appendChild( QgsXmlUtils::writeVariant( layerTitleAsName(), doc ) );
-  myRootNode.appendChild( titleAsNameElement );
+  rootElement.appendChild( titleAsNameElement );
 
-  QDomElement useMapExtentElement = myDocument.createElement( QStringLiteral( "use_map_extent" ) );
+  QDomElement useMapExtentElement = domDocument.createElement( QStringLiteral( "use_map_extent" ) );
   useMapExtentElement.appendChild( QgsXmlUtils::writeVariant( exportMapExtent(), doc ) );
-  myRootNode.appendChild( useMapExtentElement );
+  rootElement.appendChild( useMapExtentElement );
 
-  QDomElement force2dElement = myDocument.createElement( QStringLiteral( "force_2d" ) );
+  QDomElement force2dElement = domDocument.createElement( QStringLiteral( "force_2d" ) );
   force2dElement.appendChild( QgsXmlUtils::writeVariant( force2d(), doc ) );
-  myRootNode.appendChild( force2dElement );
+  rootElement.appendChild( force2dElement );
 
-  QDomElement useMTextElement = myDocument.createElement( QStringLiteral( "mtext" ) );
+  QDomElement useMTextElement = domDocument.createElement( QStringLiteral( "mtext" ) );
   useMTextElement.appendChild( QgsXmlUtils::writeVariant( useMText(), doc ) );
-  myRootNode.appendChild( useMTextElement );
+  rootElement.appendChild( useMTextElement );
 
-  QDomElement selectedFeatures = myDocument.createElement( QStringLiteral( "selected_features_only" ) );
+  QDomElement selectedFeatures = domDocument.createElement( QStringLiteral( "selected_features_only" ) );
   selectedFeatures.appendChild( QgsXmlUtils::writeVariant( selectedFeaturesOnly(), doc ) );
-  myRootNode.appendChild( selectedFeatures );
+  rootElement.appendChild( selectedFeatures );
 
-  doc = myDocument;
+  doc = domDocument;
 }
 
 
