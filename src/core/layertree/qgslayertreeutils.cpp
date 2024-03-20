@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsrenderer.h"
 
 #include <QDomElement>
 #include <QTextStream>
@@ -695,4 +696,22 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
       break;
   }
   return group->insertLayer( index, layer );
+}
+
+QString QgsLayerTreeUtils::expressionForLegendKey( QgsLayerTreeNode *node, const QString &legendKey )
+{
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+    if ( !layer )
+      return QString();
+    if ( QgsFeatureRenderer *renderer = layer->renderer() )
+    {
+      bool ok = false;
+      return ( renderer->legendKeyToExpression( legendKey, layer, ok ) );
+    }
+    return QString( "TRUE" );
+  }
+  return QString();
 }
