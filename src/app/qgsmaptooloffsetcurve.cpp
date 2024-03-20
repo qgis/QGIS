@@ -363,8 +363,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
     emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
     destLayer->destroyEditCommand();
-    deleteRubberBandAndGeometry();
-    deleteUserInputWidget();
+    cancel();
     return;
   }
 
