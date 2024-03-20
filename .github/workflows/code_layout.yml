@@ -154,25 +154,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Install Requirements
         run: |
           sudo apt install -y \
               expect \
               silversearcher-ag
-      - uses: tj-actions/changed-files@v42
+
+      - name: Retrieve changed files
+        uses: tj-actions/changed-files@v43
         id: changed_files
         with:
-          separator: ' '
-          files_ignore: |
-            **/*.sip.in
-            **/*.png
-            **/*.svg
-            **/*.tif*
-            **/*.gpkg
-            **/*.qgz
-            **/*.qgs
+          separator: " "
+
       - name: Spell Test
-        run: ./scripts/spell_check/check_spelling.sh -r "${{ steps.changed_files.outputs.all_changed_files }}"
+        if: steps.changed_files.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+        run: echo "$ALL_CHANGED_FILES" | ./scripts/spell_check/check_spelling.sh
 
   sip_check:
     runs-on: ubuntu-latest
