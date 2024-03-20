@@ -41,6 +41,7 @@ class TestQgsMapToolOffsetCurve: public QObject
 
     void testOffsetCurveDefault();
     void testOffsetCurveJoinStyle();
+    void testOffsetCurveControlModifier();
     void testAvoidIntersectionAndTopoEdit();
 
   private:
@@ -206,6 +207,57 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveJoinStyle()
   const QString wkt4 = "Polygon ((2 -0.35, 1.65 0, 1.65 5, 2 5.35, 3 5.35, 3.35 5, 3.35 0, 3 -0.35, 2 -0.35))";
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt4 );
 
+  mLayerBase->undoStack()->undo();
+
+  // reset settings
+  QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( joinStyle );
+}
+
+void TestQgsMapToolOffsetCurve::testOffsetCurveControlModifier()
+{
+  TestQgsMapToolUtils utils( mOffsetCurveTool );
+
+  const Qgis::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->value();
+  QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( Qgis::JoinStyle::Miter );
+
+  // positive offset
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  const QString wkt1 = "Polygon ((-0.71 -0.71, -0.71 1.71, 1.71 1.71, 1.71 -0.71, -0.71 -0.71))";
+  QgsFeatureIterator fi1 = mLayerBase->getFeatures();
+  QgsFeature f1;
+
+  while ( fi1.nextFeature( f1 ) )
+  {
+    QCOMPARE( f1.geometry().asWkt( 2 ), wkt1 );
+    break;
+  }
+
+  const QString wkt2 = "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))";
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt2 );
+
+
+  mLayerBase->undoStack()->undo();
+
+  // negative offset
+  utils.mouseClick( 2, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 2.25, 0.25 );
+  utils.mouseClick( 2.25, 0.25, Qt::LeftButton, Qt::ControlModifier, true );
+
+  const QString wkt3 = "Polygon ((2.25 0.25, 2.25 4.75, 2.75 4.75, 2.75 0.25, 2.25 0.25))";
+  QgsFeatureIterator fi2 = mLayerBase->getFeatures();
+  QgsFeature f2;
+
+  while ( fi2.nextFeature( f2 ) )
+  {
+    QCOMPARE( f2.geometry().asWkt( 2 ), wkt3 );
+    break;
+  }
+
+  const QString wkt4 = "Polygon ((2 0, 2 5, 3 5, 3 0, 2 0))";
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt4 );
   mLayerBase->undoStack()->undo();
 
   // reset settings
