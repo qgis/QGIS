@@ -119,7 +119,8 @@ bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &
   mFilterFeatures = atlasElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "0" ) ).toInt();
   mFilterExpression = atlasElem.attribute( QStringLiteral( "featureFilter" ) );
 
-  setHideCoverage( atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "0" ) ).toInt() );
+  mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "0" ) ).toInt();
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, mHideCoverage );
 
   emit toggled( mEnabled );
   emit changed();
