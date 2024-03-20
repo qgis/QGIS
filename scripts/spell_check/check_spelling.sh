@@ -61,9 +61,21 @@ while getopts ":rdl:" opt; do
 done
 shift $((OPTIND - 1))
 
-if [ $# -ne 0 ]; then
+# check pipe or command line
+if [ -p /dev/stdin ]; then
+  # with pipe input
+  read SCRIPT_INPUT
+  if [ -z "$SCRIPT_INPUT" ]; then
+    exit 0
+  fi
+else
+  # no pipe input
+  SCRIPT_INPUT="$@"
+fi
+
+if [ -n "$SCRIPT_INPUT" ]; then
   EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
-  INPUTFILES=$(echo "$@" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | tr '\n' ' ' )
+  INPUTFILES=$(echo "$SCRIPT_INPUT" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | tr '\n' ' ' )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
   fi
