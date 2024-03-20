@@ -175,7 +175,7 @@ void TestQgsMapToolMoveFeature::testAvoidIntersectionAndTopoEdit()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 2.5F, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2.5, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt1 = "Polygon ((1.5 1, 2 1, 2 0, 1.5 0, 1.5 1))";
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );

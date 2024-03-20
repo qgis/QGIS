@@ -258,8 +258,8 @@ void TestQgsMapToolRotateFeature::testAvoidIntersectionsAndTopoEdit()
   utils.mouseClick( 1, 1, Qt::RightButton, Qt::KeyboardModifiers(), true );
 
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseMove( 1.6F, 0.5F );
-  utils.mouseClick( 1.6F, 0.5F, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 1.6, 0.5 );
+  utils.mouseClick( 1.6, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   const QString wkt1 = "Polygon ((0.5 1.21, 1.1 0.61, 1.1 0.39, 0.5 -0.21, -0.21 0.5, 0.5 1.21))";
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );

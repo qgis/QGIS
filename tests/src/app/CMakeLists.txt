@@ -41,6 +41,7 @@ set(TESTS
   testqgsmaptoolregularpolygon.cpp
   testqgsmaptoolsplitparts.cpp
   testqgsmaptoolsplitfeatures.cpp
+  testqgsmaptooloffsetcurve.cpp
   testqgsmeasuretool.cpp
   testqgsmeasurebearingtool.cpp
   testqgsvertexeditor.cpp
