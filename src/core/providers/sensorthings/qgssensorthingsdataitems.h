@@ -52,11 +52,14 @@ class CORE_EXPORT QgsSensorThingsEntityContainerItem : public QgsDataCollectionI
 {
     Q_OBJECT
   public:
-    QgsSensorThingsEntityContainerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &entityUri );
+    QgsSensorThingsEntityContainerItem( QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &entityUriParts,
+                                        Qgis::SensorThingsEntity entityType, const QString &connectionName );
     bool equal( const QgsDataItem *other ) override;
     QVector<QgsDataItem *> createChildren() override;
   private:
-    QString mEntityUri;
+    QVariantMap mEntityUriParts;
+    Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
+    QString mConnectionName;
 };
 
 
@@ -64,8 +67,14 @@ class CORE_EXPORT QgsSensorThingsLayerEntityItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsSensorThingsLayerEntityItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri, const QString &provider, Qgis::BrowserLayerType type );
-
+    QgsSensorThingsLayerEntityItem( QgsDataItem *parent, const QString &name, const QString &path,
+                                    const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type,
+                                    Qgis::SensorThingsEntity entityType, const QString &connectionName );
+    QString layerName() const final;
+  private:
+    QVariantMap mUriParts;
+    Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
+    QString mConnectionName;
 };
 
 //! Provider for sensor things root data item
