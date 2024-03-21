@@ -52,6 +52,30 @@ class QgsRasterBandFixedElevationRangeModel : public QAbstractItemModel
     QMap<int, QgsDoubleRange > mRanges;
 };
 
+class QgsRasterBandDynamicElevationRangeModel : public QAbstractItemModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRasterBandDynamicElevationRangeModel( QObject *parent );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    void setLayer( QgsRasterLayer *layer );
+    void setLowerExpression( const QString &expression );
+    void setUpperExpression( const QString &expression );
+  private:
+
+    QPointer< QgsRasterLayer > mLayer;
+    QString mLowerExpression;
+    QString mUpperExpression;
+};
+
 class QgsFixedElevationRangeDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -92,6 +116,7 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, publi
     QgsRasterLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
     QgsRasterBandFixedElevationRangeModel *mFixedRangePerBandModel = nullptr;
+    QgsRasterBandDynamicElevationRangeModel *mDynamicRangePerBandModel = nullptr;
     QString mFixedRangeLowerExpression = QStringLiteral( "@band" );
     QString mFixedRangeUpperExpression = QStringLiteral( "@band" );
 
