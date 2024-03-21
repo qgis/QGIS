@@ -866,56 +866,91 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
     return false;
   }
 
-  QDomElement mne;
+  QDomElement element;
   QVariant value;
 
-  mne = dxfElement.namedItem( QStringLiteral( "symbology_mode" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "symbology_mode" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mSymbologyModeComboBox->setCurrentIndex( value.toInt() );
 
-  mne = dxfElement.namedItem( QStringLiteral( "symbology_scale" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "symbology_scale" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mScaleWidget->setScale( value.toDouble() );
 
-  mne = dxfElement.namedItem( QStringLiteral( "encoding" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "encoding" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mEncoding->setCurrentText( value.toString() );
 
-  mne = dxfElement.namedItem( QStringLiteral( "crs" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "crs" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mCrsSelector->setCrs( value.value< QgsCoordinateReferenceSystem >() );
 
-  mne = dxfElement.namedItem( QStringLiteral( "map_theme" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "map_theme" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mVisibilityPresets->setCurrentText( value.toString() );
 
-  mne = dxfElement.namedItem( QStringLiteral( "use_layer_title" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  // layer settings
+  element = dxfElement.namedItem( QStringLiteral( "layers" ) ).toElement();
+  QDomNodeList layerNodeList = element.elementsByTagName( QStringLiteral( "layer" ) );
+  const QgsReadWriteContext rwContext = QgsReadWriteContext();
+
+  QgsVectorLayer *vl;
+  QgsVectorLayerRef vlRef;
+
+  for ( int i = 0; i < layerNodeList.length(); i++ )
+  {
+    element = layerNodeList.at( i ).toElement();
+    if ( vlRef.readXml( element, rwContext ) )
+    {
+      vl = vlRef.resolveWeakly( QgsProject::instance() );
+      if ( vl )
+      {
+        QgsLayerTreeLayer *treeNode = mLayerTreeGroup->findLayer( vl );
+        QModelIndex idx = mModel->node2index( treeNode );
+
+        idx = mModel->index( idx.row(), OUTPUT_LAYER_ATTRIBUTE_COL, idx.parent() );
+        mModel->setData( idx, element.attribute( QStringLiteral( "attribute-index" ), QStringLiteral( "-1" ) ) );
+
+        idx = mModel->index( idx.row(), ALLOW_DD_SYMBOL_BLOCKS_COL, idx.parent() );
+        mModel->setData( idx, element.attribute( QStringLiteral( "use_symbol_blocks" ), QStringLiteral( "0" ) ), Qt::CheckStateRole );
+
+        idx = mModel->index( idx.row(), MAXIMUM_DD_SYMBOL_BLOCKS_COL, idx.parent() );
+        mModel->setData( idx, element.attribute( QStringLiteral( "max_number_of_classes" ), QStringLiteral( "-1" ) ) );
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( " Layer '%1' found in the DXF settings XML file, but not present in the project." ).arg( element.attribute( QStringLiteral( "name" ) ) ), 1 );
+      }
+    }
+  }
+
+  element = dxfElement.namedItem( QStringLiteral( "use_layer_title" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mLayerTitleAsName->setChecked( value == true );
 
-  mne = dxfElement.namedItem( QStringLiteral( "use_map_extent" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "use_map_extent" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mMapExtentCheckBox->setChecked( value == true );
 
-  mne = dxfElement.namedItem( QStringLiteral( "force_2d" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "force_2d" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mForce2d->setChecked( value == true );
 
-  mne = dxfElement.namedItem( QStringLiteral( "mtext" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "mtext" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mMTextCheckBox->setChecked( value == true );
 
-  mne = dxfElement.namedItem( QStringLiteral( "selected_features_only" ) ).toElement();
-  value = QgsXmlUtils::readVariant( mne.firstChildElement() );
+  element = dxfElement.namedItem( QStringLiteral( "selected_features_only" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
   if ( !value.isNull() )
     mSelectedFeaturesOnly->setChecked( value == true );
 
@@ -1008,11 +1043,14 @@ void QgsDxfExportDialog::saveSettingsToXML( QDomDocument &doc ) const
   dxfElement.appendChild( mapThemeElement );
 
   QDomElement layersElement = domDocument.createElement( QStringLiteral( "layers" ) );
+  QgsVectorLayerRef vlRef;
+  const QgsReadWriteContext rwContext = QgsReadWriteContext();
+
   for ( const auto dxfLayer : layers() )
   {
-    QgsVectorLayer *vl = dxfLayer.layer();
     QDomElement layerElement = domDocument.createElement( QStringLiteral( "layer" ) );
-    layerElement.setAttribute( QStringLiteral( "source" ), vl->publicSource() );
+    vlRef.setLayer( dxfLayer.layer() );
+    vlRef.writeXml( layerElement, rwContext );
     layerElement.setAttribute( QStringLiteral( "attribute-index" ), dxfLayer.layerOutputAttributeIndex() ) ;
     layerElement.setAttribute( QStringLiteral( "use_symbol_blocks" ), dxfLayer.buildDataDefinedBlocks() ) ;
     layerElement.setAttribute( QStringLiteral( "max_number_of_classes" ), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() ) ;

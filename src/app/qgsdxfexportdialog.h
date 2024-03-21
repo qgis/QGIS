@@ -25,6 +25,7 @@
 #include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsxmlutils.h"
+#include "qgsvectorlayerref.h"
 
 #include <QList>
 #include <QPair>
