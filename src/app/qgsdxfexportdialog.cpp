@@ -739,6 +739,10 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mBtnLoadSaveSettings->setMenu( menuSettings );
   buttonBox->addButton( mBtnLoadSaveSettings, QDialogButtonBox::ResetRole );
 
+  mMessageBar = new QgsMessageBar();
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  mainLayout->insertWidget( 0, mMessageBar );
+
   mModel->loadLayersOutputAttribute( mModel->rootGroup() );
 }
 
@@ -844,7 +848,7 @@ void QgsDxfExportDialog::loadSettingsFromFile()
     else
     {
       QgsDxfExportDialog::settingsDxfLastSettingsDir->setValue( QFileInfo( fileName ).path() );
-      QMessageBox::information( this, tr( "Load DXF settings" ), tr( "DXF Export settings loaded!" ) );
+      mMessageBar->pushMessage( QString(), tr( "DXF Export settings loaded!" ), Qgis::MessageLevel::Success, 0 );
     }
   }
 }
