@@ -617,6 +617,11 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
+void QgsExpressionBuilderWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant> > &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+{
+  mExpressionPreviewWidget->setCustomPreviewGenerator( label, choices, previewContextGenerator );
+}
+
 void QgsExpressionBuilderWidget::saveToRecent( const QString &collection )
 {
   mExpressionTreeView->saveToRecent( expressionText(), collection );

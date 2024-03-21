@@ -147,7 +147,7 @@ QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
   return res.release();
 }
 
-bool QgsMeshLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const
+bool QgsMeshLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer * ) const
 {
   switch ( mMode )
   {
