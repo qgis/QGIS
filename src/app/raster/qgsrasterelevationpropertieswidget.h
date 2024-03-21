@@ -87,6 +87,8 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, publi
 
   private:
 
+    QgsExpressionContext createExpressionContextForBand( int band ) const;
+
     QgsRasterLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
     QgsRasterBandFixedElevationRangeModel *mFixedRangePerBandModel = nullptr;
