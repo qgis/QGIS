@@ -110,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          route: GET /repos/qgis/QGIS/pulls/:pull_number/commits
+          route: GET /repos/qgis/QGIS/pulls/{pull_number}/commits
           pull_number: ${{ github.event.pull_request.number }}
 
       # extracts the matching commits
@@ -152,7 +152,7 @@ jobs:
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             @${{ github.event.pull_request.user.login }}
