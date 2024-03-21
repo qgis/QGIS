@@ -26,6 +26,7 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsxmlutils.h"
 #include "qgsvectorlayerref.h"
+#include "qgsmessagebar.h"
 
 #include <QList>
 #include <QPair>
@@ -147,6 +148,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsVectorLayerAndAttributeModel *mModel = nullptr;
     QgsDxfExportLayerTreeView *mTreeView = nullptr;
     QPushButton *mBtnLoadSaveSettings = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };
