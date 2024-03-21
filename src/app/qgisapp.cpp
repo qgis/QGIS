@@ -10001,22 +10001,14 @@ void QgisApp::reshapeFeatures()
 
 void QgisApp::addFeature()
 {
-  if ( mMapCanvas->mapTool()->toolName() != tr( "Add feature" ) )
+  if ( mMapCanvas->currentLayer()->isSpatial() )
   {
     mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
-    if ( !mMapCanvas->currentLayer()->isSpatial() )
-    {
-      mMapCanvas->setCursor( QCursor( Qt::ArrowCursor ) );
-      mMapCanvas->mapTool()->action()->setChecked( false );
-      mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
-      return;
-    }
-    mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
   }
-  if ( !mMapCanvas->currentLayer()->isSpatial() )
+  else
   {
-    mMapCanvas->mapTool()->activate();
-    mMapCanvas->mapTool()->action()->setChecked( false );
+    mMapTools->mapTool( QgsAppMapTools::AddFeature )->activate();
+    mMapTools->mapTool( QgsAppMapTools::AddFeature )->action()->setChecked( false );
   }
 }
 
@@ -15302,7 +15294,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionFeatureAction->setEnabled( layerHasActions );
 
-      if ( mMapCanvas->mapTool()->toolName() == tr( "Add feature" ) )
+      if ( mMapCanvas->mapTool() == mMapTools->mapTool( QgsAppMapTools::AddFeature ) )
       {
         if ( vlayer->isSpatial() )
           mMapCanvas->mapTool()->action()->setChecked( true );
