@@ -162,6 +162,13 @@ void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpr
   mExpressionContextGenerator = generator;
 }
 
+void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant> > &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+{
+  mCustomPreviewLabel = label;
+  mCustomChoices = choices;
+  mPreviewContextGenerator = previewContextGenerator;
+}
+
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
@@ -242,6 +249,11 @@ void QgsFieldExpressionWidget::editExpression()
   }
   dlg.setWindowTitle( mExpressionDialogTitle );
   dlg.setAllowEvalErrors( mAllowEvalErrors );
+
+  if ( !mCustomChoices.isEmpty() )
+  {
+    dlg.expressionBuilder()->setCustomPreviewGenerator( mCustomPreviewLabel, mCustomChoices, mPreviewContextGenerator );
+  }
 
   if ( !vl )
     dlg.expressionBuilder()->expressionTree()->loadFieldNames( mFieldProxyModel->sourceFieldModel()->fields() );
