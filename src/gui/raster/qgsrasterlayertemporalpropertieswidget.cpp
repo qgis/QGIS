@@ -22,6 +22,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsdatetimeedit.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include <QMenu>
 #include <QAction>
 
@@ -190,6 +191,17 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
 
   QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, QStringLiteral( "generic" ), expressionContext );
   dlg.setExpectedOutputFormat( !isUpper ? tr( "Temporal range start date / time" ) : tr( "Temporal range end date / time" ) );
+
+  QList<QPair<QString, QVariant> > bandChoices;
+  for ( int band = 1; band <= mLayer->bandCount(); ++band )
+  {
+    bandChoices << qMakePair( mLayer->dataProvider()->displayBandName( band ), band );
+  }
+  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant & value )-> QgsExpressionContext
+  {
+    return createExpressionContextForBand( value.toInt() );
+  } );
+
   if ( dlg.exec() )
   {
     if ( isUpper )
@@ -209,6 +221,19 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
       mFixedRangePerBandModel->setData( mFixedRangePerBandModel->index( band - 1, isUpper ? 2 : 1 ), res, Qt::EditRole );
     }
   }
+}
+
+QgsExpressionContext QgsRasterLayerTemporalPropertiesWidget::createExpressionContextForBand( int band ) const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+  context.appendScope( bandScope );
+  context.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" )} );
+  return context;
 }
 
 ///@cond PRIVATE
