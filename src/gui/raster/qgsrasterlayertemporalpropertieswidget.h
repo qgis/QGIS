@@ -25,6 +25,7 @@
 
 class QgsRasterLayer;
 class QgsMapLayerConfigWidget;
+class QgsExpressionContext;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -111,6 +112,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     void calculateRangeByExpression( bool isUpper );
 
   private:
+    QgsExpressionContext createExpressionContextForBand( int band ) const;
 
     /**
      * The corresponding map layer with temporal attributes
