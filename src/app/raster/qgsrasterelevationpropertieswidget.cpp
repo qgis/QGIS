@@ -74,6 +74,10 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mBandElevationTable->setItemDelegateForColumn( 1, tableDelegate );
   mBandElevationTable->setItemDelegateForColumn( 2, tableDelegate );
 
+  mDynamicRangePerBandModel = new QgsRasterBandDynamicElevationRangeModel( this );
+  mBandDynamicElevationTable->verticalHeader()->setVisible( false );
+  mBandDynamicElevationTable->setModel( mDynamicRangePerBandModel );
+
   QMenu *calculateFixedRangePerBandMenu = new QMenu( mCalculateFixedRangePerBandButton );
   mCalculateFixedRangePerBandButton->setMenu( calculateFixedRangePerBandMenu );
   mCalculateFixedRangePerBandButton->setPopupMode( QToolButton::InstantPopup );
@@ -114,6 +118,16 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
     }
 
     onChanged();
+  } );
+  connect( mLowerExpressionWidget, qOverload< const QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString & expression, bool isValid )
+  {
+    if ( isValid )
+      mDynamicRangePerBandModel->setLowerExpression( expression );
+  } );
+  connect( mUpperExpressionWidget, qOverload< const QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString & expression, bool isValid )
+  {
+    if ( isValid )
+      mDynamicRangePerBandModel->setUpperExpression( expression );
   } );
 
   setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#elevation-properties" ) );
@@ -181,6 +195,11 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mBandElevationTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
   mBandElevationTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
 
+  mDynamicRangePerBandModel->setLayer( mLayer );
+  mBandDynamicElevationTable->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
+  mBandDynamicElevationTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+  mBandDynamicElevationTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
+
   if ( QgsApplication::rasterRendererRegistry()->rendererCapabilities( mLayer->renderer()->type() ) & Qgis::RasterRendererCapability::UsesMultipleBands )
   {
     mWidgetFixedRangePerBand->hide();
@@ -203,6 +222,9 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ).asExpression() );
   mUpperExpressionWidget->setExpression(
     props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ).asExpression() );
+
+  mDynamicRangePerBandModel->setLowerExpression( mLowerExpressionWidget->expression() );
+  mDynamicRangePerBandModel->setUpperExpression( mUpperExpressionWidget->expression() );
 
   QList<QPair<QString, QVariant> > bandChoices;
   for ( int band = 1; band <= mLayer->bandCount(); ++band )
@@ -600,6 +622,171 @@ void QgsRasterBandFixedElevationRangeModel::setLayerData( QgsRasterLayer *layer,
 
   endResetModel();
 }
+
+
+//
+// QgsRasterBandDynamicElevationRangeModel
+//
+
+QgsRasterBandDynamicElevationRangeModel::QgsRasterBandDynamicElevationRangeModel( QObject *parent )
+  : QAbstractItemModel( parent )
+{
+
+}
+
+int QgsRasterBandDynamicElevationRangeModel::columnCount( const QModelIndex & ) const
+{
+  return 3;
+}
+
+int QgsRasterBandDynamicElevationRangeModel::rowCount( const QModelIndex &parent ) const
+{
+  if ( parent.isValid() || !mLayer )
+    return 0;
+  return mLayer->bandCount();
+}
+
+QModelIndex QgsRasterBandDynamicElevationRangeModel::index( int row, int column, const QModelIndex &parent ) const
+{
+  if ( hasIndex( row, column, parent ) )
+  {
+    return createIndex( row, column, row );
+  }
+
+  return QModelIndex();
+}
+
+QModelIndex QgsRasterBandDynamicElevationRangeModel::parent( const QModelIndex &child ) const
+{
+  Q_UNUSED( child )
+  return QModelIndex();
+}
+
+Qt::ItemFlags QgsRasterBandDynamicElevationRangeModel::flags( const QModelIndex &index ) const
+{
+  if ( !index.isValid() || !mLayer )
+    return Qt::ItemFlags();
+
+  if ( index.row() < 0 || index.row() >= mLayer->bandCount() || index.column() < 0 || index.column() >= columnCount() )
+    return Qt::ItemFlags();
+
+  switch ( index.column() )
+  {
+    case 0:
+    case 1:
+    case 2:
+
+      return Qt::ItemFlag::ItemIsEnabled  | Qt::ItemFlag::ItemIsSelectable;;
+    default:
+      break;
+  }
+
+  return Qt::ItemFlags();
+}
+
+QVariant QgsRasterBandDynamicElevationRangeModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() || !mLayer )
+    return QVariant();
+
+  if ( index.row() < 0 || index.row() >= mLayer->bandCount() || index.column() < 0 || index.column() >= columnCount() )
+    return QVariant();
+
+  const int band = index.row() + 1;
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+    case Qt::ToolTipRole:
+    {
+      switch ( index.column() )
+      {
+        case 0:
+          return mLayer->dataProvider() ? QVariant( mLayer->dataProvider()->displayBandName( band ) ) : QVariant( band );
+
+        case 1:
+        case 2:
+        {
+          const QString expressionString = index.column() == 1 ? mLowerExpression : mUpperExpression;
+          QgsExpression expression( expressionString );
+
+          QgsExpressionContext context;
+          context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+          QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+          context.appendScope( bandScope );
+
+          return expression.evaluate( &context );
+        }
+
+        default:
+          break;
+      }
+      break;
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      switch ( index.column() )
+      {
+        case 0:
+          return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
+
+        case 1:
+        case 2:
+          return static_cast<Qt::Alignment::Int>( Qt::AlignRight | Qt::AlignVCenter );
+        default:
+          break;
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+  return QVariant();
+}
+
+QVariant QgsRasterBandDynamicElevationRangeModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( role == Qt::DisplayRole && orientation == Qt::Horizontal )
+  {
+    switch ( section )
+    {
+      case 0:
+        return tr( "Band" );
+      case 1:
+        return tr( "Lower" );
+      case 2:
+        return tr( "Upper" );
+      default:
+        break;
+    }
+  }
+  return QAbstractItemModel::headerData( section, orientation, role );
+}
+
+void QgsRasterBandDynamicElevationRangeModel::setLayer( QgsRasterLayer *layer )
+{
+  beginResetModel();
+  mLayer = layer;
+  endResetModel();
+}
+
+void QgsRasterBandDynamicElevationRangeModel::setLowerExpression( const QString &expression )
+{
+  mLowerExpression = expression;
+  emit dataChanged( index( 0, 1 ), index( rowCount() - 1, 1 ) );
+}
+
+void QgsRasterBandDynamicElevationRangeModel::setUpperExpression( const QString &expression )
+{
+  mUpperExpression = expression;
+  emit dataChanged( index( 0, 2 ), index( rowCount() - 1, 2 ) );
+}
+
 
 //
 // QgsFixedElevationRangeDelegate
