@@ -372,6 +372,7 @@ QgsMapLayerElevationProperties::Flags QgsRasterLayerElevationProperties::flags()
 
       case Qgis::RasterElevationMode::RepresentsElevationSurface:
       case Qgis::RasterElevationMode::FixedRangePerBand:
+      case Qgis::RasterElevationMode::DynamicRangePerBand:
         break;
     }
   }
