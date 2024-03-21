@@ -351,7 +351,11 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
-  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = {{ destLayer, {mModifiedFeature} }};
+  const QSet<QgsFeatureId> ignoredFeatures = ( QgsProject::instance()->avoidIntersectionsMode() != Qgis::AvoidIntersectionsMode::AllowIntersections && ( modifiers & Qt::ControlModifier ) ) ?
+      QSet<QgsFeatureId>() :
+      QSet<QgsFeatureId>( {mModifiedFeature} );
+
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = {{ destLayer, {ignoredFeatures} }};
 
   const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( destLayer, mModifiedFeature, mModifiedGeometry, ignoreFeatures );
 

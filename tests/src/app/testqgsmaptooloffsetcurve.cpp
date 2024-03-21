@@ -238,7 +238,6 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveControlModifier()
   const QString wkt2 = "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))";
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt2 );
 
-
   mLayerBase->undoStack()->undo();
 
   // negative offset
@@ -284,6 +283,26 @@ void TestQgsMapToolOffsetCurve::testAvoidIntersectionAndTopoEdit()
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
   const QString wkt2 = "Polygon ((2 0, 2 1.25, 2 5, 3 5, 3 0, 2.25 0, 2 0))";
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2 );
+
+  mLayerBase->undoStack()->undo();
+
+  // with control modifier
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 2, 1.75 );
+  utils.mouseClick( 2, 1.75, Qt::LeftButton, Qt::ControlModifier, true );
+
+  const QString wkt3 = "Polygon ((-1.25 0, -1.25 1, 0 2.25, 1 2.25, 2 1.25, 2 0, 2.25 0, 1 -1.25, 0 -1.25, -1.25 0),(0 0, 1 0, 1 1, 0 1, 0 0))";
+  QgsFeatureIterator fi = mLayerBase->getFeatures();
+  QgsFeature f;
+
+  while ( fi.nextFeature( f ) )
+  {
+    QCOMPARE( f.geometry().asWkt( 2 ), wkt3 );
+    break;
+  }
+
+  const QString wkt4 = "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))";
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt4 );
 
   mLayerBase->undoStack()->undo();
 
