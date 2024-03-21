@@ -11,7 +11,12 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import (
+    QSize,
+    QDate,
+    QTime,
+    QDateTime
+)
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
