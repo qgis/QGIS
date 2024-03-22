@@ -19,6 +19,7 @@
 
   <project_group>QGIS</project_group>
   <releases>
+    <release version="3.34.5" date="2024-03-22" />
     <release version="3.34.4" date="2024-02-23" />
     <release version="3.34.3" date="2024-01-19" />
     <release version="3.34.2" date="2023-12-22" />
