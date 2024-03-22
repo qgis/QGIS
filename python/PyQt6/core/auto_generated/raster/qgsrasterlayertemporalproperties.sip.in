@@ -135,6 +135,13 @@ Returns the band corresponding to the specified ``range``.
 .. versionadded:: 3.38
 %End
 
+    QList< int > filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
+%Docstring
+Returns a filtered list of bands which match the specified ``range``.
+
+.. versionadded:: 3.38
+%End
+
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
 

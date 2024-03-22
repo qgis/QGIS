@@ -234,6 +234,41 @@ int QgsRasterLayerTemporalProperties::bandForTemporalRange( QgsRasterLayer *, co
   BUILTIN_UNREACHABLE
 }
 
+QList<int> QgsRasterLayerTemporalProperties::filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const
+{
+  switch ( mMode )
+  {
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+    {
+      const int bandCount = layer->bandCount();
+      QList< int > res;
+      res.reserve( bandCount );
+      for ( int i = 1; i <= bandCount; ++i )
+        res.append( i );
+      return res;
+    }
+
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      QList<int> res;
+      res.reserve( mRangePerBand.size() );
+      // find the latest-most band which matches the map range
+      QgsDateTimeRange currentMatchingRange;
+      for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
+      {
+        if ( it.value().overlaps( range ) )
+        {
+          res.append( it.key() );
+        }
+      }
+      return res;
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
+
 bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
