@@ -257,9 +257,12 @@
   <tabstop>mVisibilityPresets</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mDeselectAllButton</tabstop>
+  <tabstop>mSelectDataDefinedBlocks</tabstop>
+  <tabstop>mDeselectDataDefinedBlocks</tabstop>
   <tabstop>mLayerTitleAsName</tabstop>
   <tabstop>mMTextCheckBox</tabstop>
   <tabstop>mMapExtentCheckBox</tabstop>
+  <tabstop>mSelectedFeaturesOnly</tabstop>
   <tabstop>mForce2d</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
