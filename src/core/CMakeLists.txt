@@ -759,6 +759,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrasterlayerprofilegenerator.cpp
   raster/qgsrasterlayerrenderer.cpp
   raster/qgsrasterlayertemporalproperties.cpp
+  raster/qgsrasterlayerutils.cpp
   raster/qgsrasterminmaxorigin.cpp
   raster/qgsrasternuller.cpp
   raster/qgsrasterpipe.cpp
@@ -1861,6 +1862,7 @@ set(QGIS_CORE_HDRS
   raster/qgsrasterlayerprofilegenerator.h
   raster/qgsrasterlayerrenderer.h
   raster/qgsrasterlayertemporalproperties.h
+  raster/qgsrasterlayerutils.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h

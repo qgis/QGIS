@@ -137,6 +137,13 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      */
     int bandForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
 
+    /**
+     * Returns a filtered list of bands which match the specified \a range.
+     *
+     * \since QGIS 3.38
+     */
+    QList< int > filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
+
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;

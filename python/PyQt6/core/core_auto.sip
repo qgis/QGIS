@@ -635,6 +635,7 @@
 %Include auto_generated/raster/qgsrasterlayer.sip
 %Include auto_generated/raster/qgsrasterlayerelevationproperties.sip
 %Include auto_generated/raster/qgsrasterlayertemporalproperties.sip
+%Include auto_generated/raster/qgsrasterlayerutils.sip
 %Include auto_generated/raster/qgsrasterminmaxorigin.sip
 %Include auto_generated/raster/qgsrasternuller.sip
 %Include auto_generated/raster/qgsrasterpipe.sip

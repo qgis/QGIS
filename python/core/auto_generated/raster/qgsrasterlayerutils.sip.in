@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayerutils.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterLayerUtils
+{
+%Docstring(signature="appended")
+Contains utility functions for working with raster layers.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayerutils.h"
+%End
+  public:
+
+    static int renderedBandForElevationAndTemporalRange(
+      QgsRasterLayer *layer,
+      const QgsDateTimeRange &temporalRange,
+      const QgsDoubleRange &elevationRange,
+      bool &matched /Out/ );
+%Docstring
+Given a raster ``layer``, returns the band which should be used for
+rendering the layer for a specified temporal and elevation range,
+respecting any elevation and temporal settings which affect the rendered band.
+
+:param layer: Target raster layer
+:param temporalRange: temporal range for rendering
+:param elevationRange: elevation range for rendering
+
+:return: - Matched band, or -1 if the layer does not have any elevation
+         - matched: will be set to ``True`` if a band matching the temporal and elevation range was found
+         or temporal settings which affect the rendered band.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayerutils.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
