@@ -81,7 +81,7 @@ Build-Depends:
  protobuf-compiler,
  libzstd-dev,
  git,
- doxygen,
+#apidoc# doxygen,
  graphviz,
  xvfb,
  xauth,
@@ -563,19 +563,19 @@ Description: QGIS server providing various OGC services
  display databases of geographic information.
  .
  This package contains the landing page service.
-
-Package: qgis-api-doc
-Architecture: all
-Section: doc
-Depends:
- ${misc:Depends}
-Recommends:
- qt5-doc-html
-Description: QGIS API documentation
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the QGIS API documentation.
+#apidoc#
+#apidoc#Package: qgis-api-doc
+#apidoc#Architecture: all
+#apidoc#Section: doc
+#apidoc#Depends:
+#apidoc# ${misc:Depends}
+#apidoc#Recommends:
+#apidoc# qt5-doc-html
+#apidoc#Description: QGIS API documentation
+#apidoc# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#apidoc# display databases of geographic information.
+#apidoc# .
+#apidoc# This package contains the QGIS API documentation.
 #oracle#
 #oracle#Package: qgis-oracle-provider
 #oracle#Architecture: any

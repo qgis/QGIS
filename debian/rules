@@ -88,8 +88,6 @@ CMAKE_OPTS := \
 	-DPEDANTIC=TRUE \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
-	-DWITH_APIDOC=TRUE \
-	-DGENERATE_QHP=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
@@ -133,6 +131,13 @@ ifneq (0,$(.SHELLSTATUS))
 		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
 		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
 endif
+
+ifneq (,$(WITH_APIDOC))
+	CMAKE_OPTS += -DWITH_APIDOC=TRUE -DGENERATE_QHP=TRUE
+else
+	CMAKE_OPTS += -DWITH_APIDOC=OFF -DGENERATE_QHP=OFF
+endif
+
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
@@ -195,12 +200,16 @@ endif
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
+ifneq (,$(WITH_APIDOC))
+CONTROL_EXPRESSIONS += apidoc
+endif
+
 ifneq (,$(WITH_ORACLE))
-	CONTROL_EXPRESSIONS += oracle
+CONTROL_EXPRESSIONS += oracle
 endif
 
 ifeq ($(shell pkg-config --exists pdal && dpkg --compare-versions $$(pkg-config --modversion pdal) ge 2.5 && echo 1 || echo 0),1)
-	CONTROL_EXPRESSIONS += pdal_wrench
+CONTROL_EXPRESSIONS += pdal_wrench
 endif
 
 define gentemplate
@@ -253,7 +262,9 @@ else
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif
 
+ifneq (,$(WITH_APIDOC))
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
+endif
 
 override_dh_auto_test: test-stamp
 
@@ -280,8 +291,10 @@ endif
 override_dh_auto_install:
 	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) install
 
+ifneq (,$(WITH_APIDOC))
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
+endif
 
 	# replace leaflet and jquery urls
 	perl -i -p \

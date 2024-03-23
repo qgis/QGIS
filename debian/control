@@ -67,7 +67,6 @@ Build-Depends:
  qttools5-dev-tools,
  qttools5-dev,
  git,
- doxygen,
  graphviz,
  xvfb,
  xauth,
