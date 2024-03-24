@@ -863,6 +863,12 @@ void QgisApp::annotationItemTypeAdded( int id )
   } );
 }
 
+void QgisApp::addLayerDefinition()
+{
+  QgsLayerTreeRegistryBridge::InsertionPoint pt = layerTreeInsertionPoint();
+  QgsAppLayerHandling::addLayerDefinition( &pt );
+}
+
 /*
  * This function contains forced validation of CRS used in QGIS.
  * There are 4 options depending on the settings:
@@ -3030,7 +3036,7 @@ void QgisApp::createActions()
   connect( mActionShowRasterCalculator, &QAction::triggered, this, &QgisApp::showRasterCalculator );
   connect( mActionShowMeshCalculator, &QAction::triggered, this, &QgisApp::showMeshCalculator );
   connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
-  connect( mActionAddLayerDefinition, &QAction::triggered, this, [] { QgsAppLayerHandling::addLayerDefinition(); } );
+  connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
   connect( mActionAddOgrLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ogr" ) ); } );
   connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "gdal" ) ); } );
   connect( mActionAddMeshLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "mdal" ) ); } );
@@ -7062,7 +7068,8 @@ QList< QgsMapLayer * > QgisApp::openFile( const QString &fileName, const QString
   }
   else if ( fi.suffix().compare( QLatin1String( "qlr" ), Qt::CaseInsensitive ) == 0 )
   {
-    QgsAppLayerHandling::openLayerDefinition( fileName );
+    QgsLayerTreeRegistryBridge::InsertionPoint p = layerTreeInsertionPoint();
+    QgsAppLayerHandling::openLayerDefinition( fileName, &p );
   }
   else if ( fi.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
   {
