@@ -1209,7 +1209,7 @@ void QgsAppLayerHandling::addMapLayer( QgsMapLayer *mapLayer, bool addToLegend )
   }
 }
 
-void QgsAppLayerHandling::openLayerDefinition( const QString &filename )
+void QgsAppLayerHandling::openLayerDefinition( const QString &filename, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
 {
   QString errorMessage;
   QgsReadWriteContext context;
@@ -1236,7 +1236,7 @@ void QgsAppLayerHandling::openLayerDefinition( const QString &filename )
       context.setPathResolver( QgsPathResolver( filename ) );
       context.setProjectTranslator( QgsProject::instance() );
 
-      loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage, context );
+      loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage, context, insertPoint );
     }
   }
 
@@ -1260,7 +1260,7 @@ void QgsAppLayerHandling::openLayerDefinition( const QString &filename )
   }
 }
 
-void QgsAppLayerHandling::addLayerDefinition()
+void QgsAppLayerHandling::addLayerDefinition( const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
 {
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
@@ -1272,7 +1272,7 @@ void QgsAppLayerHandling::addLayerDefinition()
   QFileInfo fi( path );
   settings.setValue( QStringLiteral( "UI/lastQLRDir" ), fi.path() );
 
-  openLayerDefinition( path );
+  openLayerDefinition( path, insertPoint );
 }
 
 QList< QgsMapLayer * > QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok )
