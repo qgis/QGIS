@@ -47,8 +47,13 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
       expandQueryParts.append( QgsSensorThingsUtils::entityToSetString( expandToEntityType ) );
     }
   }
+  mExpansionLimit = uriParts.value( QStringLiteral( "expansionLimit" ) ).toInt();
   if ( !expandQueryParts.empty() )
+  {
     mExpandQueryString = QStringLiteral( "$expand=" ) + expandQueryParts.join( '/' );
+    if ( mExpansionLimit > 0 )
+      mExpandQueryString += QStringLiteral( "($top=%1)" ).arg( mExpansionLimit );
+  }
 
   mFields = QgsSensorThingsUtils::fieldsForExpandedEntityType( mEntityType, mExpandTo );
 
