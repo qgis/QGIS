@@ -73,7 +73,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( wrapper );
       const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsListWidget *widget = qobject_cast< QgsListWidget * >( wrapper->widget() );
+      QgsListWidget *widget = wrapper->widget()->findChild<QgsListWidget *>();
       QVERIFY( widget );
 
       QStringList initial;
@@ -108,7 +108,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( wrapper );
       QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsListWidget *widget = qobject_cast< QgsListWidget * >( wrapper->widget() );
+      QgsListWidget *widget = wrapper->widget()->findChild<QgsListWidget *>();
       QVERIFY( widget );
 
       QVariantList initial;
@@ -160,7 +160,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( vl_array_int->isValid( ) );
 
       QgsListWidgetWrapper w_array_int( vl_array_int, vl_array_int->fields().indexOf( QLatin1String( "location" ) ), nullptr, nullptr );
-      QgsListWidget *widget = qobject_cast< QgsListWidget * >( w_array_int.widget( ) );
+      QgsListWidget *widget = w_array_int.widget( )->findChild<QgsListWidget *>();
 
       vl_array_int->startEditing( );
       QVariantList newList;
@@ -204,7 +204,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( vl_array_str->isValid() );
 
       QgsListWidgetWrapper w_array_str( vl_array_str, vl_array_str->fields().indexOf( QLatin1String( "value" ) ), nullptr, nullptr );
-      widget = qobject_cast< QgsListWidget * >( w_array_str.widget( ) );
+      widget = w_array_str.widget( )->findChild<QgsListWidget *>();
       vl_array_str->startEditing( );
       QVariantList newListStr;
 
