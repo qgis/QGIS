@@ -45,31 +45,35 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
-    const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
-    if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+    if ( uriParts.contains( QStringLiteral( "geometryType" ) ) )
     {
-      mGeometryType = Qgis::WkbType::PointZ;
+      const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+      if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+      {
+        mGeometryType = Qgis::WkbType::PointZ;
+      }
+      else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+      {
+        mGeometryType = Qgis::WkbType::MultiPointZ;
+      }
+      else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+      {
+        mGeometryType = Qgis::WkbType::MultiLineStringZ;
+      }
+      else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+      {
+        mGeometryType = Qgis::WkbType::MultiPolygonZ;
+      }
+
+      if ( mGeometryType != Qgis::WkbType::NoGeometry )
+      {
+        // geometry is always GeoJSON spec (for now, at least), so CRS will always be WGS84
+        mSourceCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+      }
     }
-    else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
-    {
-      mGeometryType = Qgis::WkbType::MultiPointZ;
-    }
-    else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
-    {
-      mGeometryType = Qgis::WkbType::MultiLineStringZ;
-    }
-    else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
-    {
-      mGeometryType = Qgis::WkbType::MultiPolygonZ;
-    }
-    else if ( !uriParts.contains( QStringLiteral( "geometryType" ) ) )
+    else
     {
       mGeometryType = Qgis::WkbType::NoGeometry;
-    }
-    if ( mGeometryType != Qgis::WkbType::NoGeometry )
-    {
-      // geometry is always GeoJSON spec (for now, at least), so CRS will always be WGS84
-      mSourceCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
     }
   }
   else
