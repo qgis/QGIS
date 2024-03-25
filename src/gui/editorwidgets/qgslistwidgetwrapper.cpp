@@ -37,20 +37,19 @@ void QgsListWidgetWrapper::setEnabled( bool enabled )
 
 QWidget *QgsListWidgetWrapper::createWidget( QWidget *parent )
 {
+  QFrame *ret = new QFrame( parent );
+  ret->setFrameShape( QFrame::StyledPanel );
+  QHBoxLayout *layout = new QHBoxLayout( ret );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  QgsListWidget *widget = new QgsListWidget( field().subType(), ret );
+  layout->addWidget( widget );
+
   if ( isInTable( parent ) )
   {
-    // if to be put in a table, draw a border and set a decent size
-    QFrame *ret = new QFrame( parent );
-    ret->setFrameShape( QFrame::StyledPanel );
-    QHBoxLayout *layout = new QHBoxLayout( ret );
-    layout->addWidget( new QgsListWidget( field().subType(), ret ) );
+    // if to be put in a table, set a decent size
     ret->setMinimumSize( QSize( 320, 110 ) );
-    return ret;
   }
-  else
-  {
-    return new QgsListWidget( field().subType(), parent );
-  }
+  return ret;
 }
 
 void QgsListWidgetWrapper::initWidget( QWidget *editor )
