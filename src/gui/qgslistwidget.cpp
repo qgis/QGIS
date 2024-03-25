@@ -29,6 +29,12 @@ void QgsListWidget::setList( const QVariantList &list )
   mModel.setList( list );
 }
 
+void QgsListWidget::setReadOnly( bool readOnly )
+{
+  mModel.setReadOnly( readOnly );
+  QgsTableWidgetBase::setReadOnly( readOnly );
+}
+
 
 ///@cond PRIVATE
 QgsListModel::QgsListModel( QVariant::Type subType, QObject *parent ) :
@@ -101,6 +107,9 @@ QVariant QgsListModel::data( const QModelIndex &index, int role ) const
 
 bool QgsListModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  if ( mReadOnly )
+    return false;
+
   if ( index.row() < 0 || index.row() >= mLines.count() ||
        index.column() != 0 || role != Qt::EditRole )
   {
@@ -113,11 +122,17 @@ bool QgsListModel::setData( const QModelIndex &index, const QVariant &value, int
 
 Qt::ItemFlags QgsListModel::flags( const QModelIndex &index ) const
 {
-  return QAbstractTableModel::flags( index ) | Qt::ItemIsEditable;
+  if ( !mReadOnly )
+    return QAbstractTableModel::flags( index ) | Qt::ItemIsEditable;
+  else
+    return QAbstractTableModel::flags( index );
 }
 
 bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
+  if ( mReadOnly )
+    return false;
+
   Q_UNUSED( parent )
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
@@ -130,11 +145,19 @@ bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent
 
 bool QgsListModel::removeRows( int position, int rows, const QModelIndex &parent )
 {
+  if ( mReadOnly )
+    return false;
+
   Q_UNUSED( parent )
   beginRemoveRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
     mLines.removeAt( position );
   endRemoveRows();
   return true;
+}
+
+void QgsListModel::setReadOnly( bool readOnly )
+{
+  mReadOnly = readOnly;
 }
 ///@endcond

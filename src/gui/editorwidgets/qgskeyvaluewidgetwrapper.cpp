@@ -33,6 +33,14 @@ void QgsKeyValueWidgetWrapper::showIndeterminateState()
   mWidget->setMap( QVariantMap() );
 }
 
+void QgsKeyValueWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( mWidget )
+  {
+    mWidget->setReadOnly( !enabled );
+  }
+}
+
 QWidget *QgsKeyValueWidgetWrapper::createWidget( QWidget *parent )
 {
   if ( isInTable( parent ) )

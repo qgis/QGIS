@@ -38,6 +38,10 @@ Gets the edit value.
 :return: the QVariantMap
 %End
 
+  public slots:
+
+    virtual void setReadOnly( bool readOnly );
+
 };
 
 

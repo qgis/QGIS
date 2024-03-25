@@ -46,6 +46,11 @@ Check the content is valid
 :return: ``True`` if valid
 %End
 
+  public slots:
+
+    virtual void setReadOnly( bool readOnly );
+
+
 };
 
 

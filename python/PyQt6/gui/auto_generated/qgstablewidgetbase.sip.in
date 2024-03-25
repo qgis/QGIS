@@ -27,6 +27,26 @@ Child classes must call init(QAbstractTableModel*) from their constructor.
 Constructor.
 %End
 
+    bool isReadOnly() const;
+%Docstring
+Returns ``True`` if the widget is shown in a read-only state.
+
+.. seealso:: :py:func:`setReadOnly`
+
+.. versionadded:: 3.38
+%End
+
+  public slots:
+
+    virtual void setReadOnly( bool readOnly );
+%Docstring
+Sets whether the widget should be shown in a read-only state.
+
+.. seealso:: :py:func:`isReadOnly`
+
+.. versionadded:: 3.38
+%End
+
   protected:
 
     void init( QAbstractTableModel *model );
