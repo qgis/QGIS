@@ -71,4 +71,15 @@ void QgsTableWidgetBase::setReadOnly( bool readOnly )
 
   addButton->setEnabled( !mReadOnly );
   removeButton->setEnabled( !mReadOnly && tableView->selectionModel()->hasSelection() );
+
+  if ( mReadOnly )
+  {
+    mWidgetActions->hide();
+    layout()->setSpacing( 0 );
+  }
+  else
+  {
+    mWidgetActions->show();
+    layout()->setSpacing( 6 );
+  }
 }
