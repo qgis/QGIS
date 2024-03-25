@@ -57,6 +57,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
           Qgis::SensorThingsEntity::ObservedProperty,
           Qgis::SensorThingsEntity::Observation,
           Qgis::SensorThingsEntity::FeatureOfInterest,
+          Qgis::SensorThingsEntity::MultiDatastream,
         } )
   {
     mComboEntityType->addItem( QgsSensorThingsUtils::displayString( type, true ), QVariant::fromValue( type ) );
@@ -190,6 +191,9 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
       case Qgis::WkbType::MultiPolygon:
         parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "polygon" ) );
         break;
+      case Qgis::WkbType::NoGeometry:
+        parts.remove( QStringLiteral( "geometryType" ) );
+        break;
       default:
         break;
     }
@@ -297,8 +301,10 @@ void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity
     mPropertiesTask = nullptr;
   }
 
-  mRetrieveTypesButton->setEnabled( QgsSensorThingsUtils::entityTypeHasGeometry( type ) && !mSourceParts.value( QStringLiteral( "url" ) ).toString().isEmpty() );
-  if ( QgsSensorThingsUtils::entityTypeHasGeometry( type ) && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) < 0 )
+  mRetrieveTypesButton->setEnabled( QgsSensorThingsUtils::geometryTypeForEntity( type ) == Qgis::GeometryType::Unknown
+                                    && !mSourceParts.value( QStringLiteral( "url" ) ).toString().isEmpty() );
+  const Qgis::GeometryType geometryTypeForEntity = QgsSensorThingsUtils::geometryTypeForEntity( type );
+  if ( geometryTypeForEntity == Qgis::GeometryType::Unknown && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) < 0 )
   {
     mComboGeometryType->clear();
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point" ), QVariant::fromValue( Qgis::WkbType::Point ) );
@@ -307,10 +313,36 @@ void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "Polygon" ), QVariant::fromValue( Qgis::WkbType::MultiPolygon ) );
     setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
   }
-  else if ( !QgsSensorThingsUtils::entityTypeHasGeometry( type ) && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) < 0 )
+  else if ( geometryTypeForEntity == Qgis::GeometryType::Null && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) < 0 )
   {
     mComboGeometryType->clear();
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
+  }
+  else if ( ( geometryTypeForEntity != Qgis::GeometryType::Null && geometryTypeForEntity != Qgis::GeometryType::Unknown )
+            && mComboGeometryType->findData( QVariant::fromValue( geometryTypeForEntity ) ) < 0 )
+  {
+    mComboGeometryType->clear();
+    switch ( geometryTypeForEntity )
+    {
+      case Qgis::GeometryType::Point:
+        mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point" ), QVariant::fromValue( Qgis::WkbType::Point ) );
+        mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPoint ), tr( "Multipoint" ), QVariant::fromValue( Qgis::WkbType::MultiPoint ) );
+        break;
+      case Qgis::GeometryType::Line:
+        mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "Line" ), QVariant::fromValue( Qgis::WkbType::MultiLineString ) );
+        break;
+
+      case Qgis::GeometryType::Polygon:
+        mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "Polygon" ), QVariant::fromValue( Qgis::WkbType::MultiPolygon ) );
+        break;
+
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
+        break;
+    }
+    // we always add a "no geometry" option here, as some services don't correctly respect the mandated geometry types for eg MultiDatastreams
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
+    setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() ); mComboGeometryType->setCurrentIndex( 0 );
   }
 }
 
@@ -331,6 +363,10 @@ void QgsSensorThingsSourceWidget::setCurrentGeometryTypeFromString( const QStrin
   else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
   {
     mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiPolygon ) ) );
+  }
+  else if ( geometryType.isEmpty() && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) >= 0 )
+  {
+    mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) );
   }
   else if ( geometryType.isEmpty() && mComboGeometryType->currentIndex() < 0 )
   {

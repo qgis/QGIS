@@ -4872,6 +4872,7 @@ class CORE_EXPORT Qgis
       ObservedProperty, //!< An ObservedProperty specifies the phenomenon of an Observation
       Observation, //!< An Observation is the act of measuring or otherwise determining the value of a property
       FeatureOfInterest, //!< In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed
+      MultiDatastream, //!< A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 "MultiDatastream extension". (Since QGIS 3.38)
     };
     Q_ENUM( SensorThingsEntity )
 

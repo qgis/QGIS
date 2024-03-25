@@ -77,6 +77,15 @@ class CORE_EXPORT QgsSensorThingsUtils
     static bool entityTypeHasGeometry( Qgis::SensorThingsEntity type );
 
     /**
+     * Returns the geometry type for if the specified entity \a type.
+     *
+     * If there are no restrictions on the geometry type an ntity can have Qgis::GeometryType::Unknown will be returned.
+     *
+     * \since QGIS 3.38
+     */
+    static Qgis::GeometryType geometryTypeForEntity( Qgis::SensorThingsEntity type );
+
+    /**
      * Returns a filter string which restricts results to those matching the specified
      * \a entityType and \a wkbType.
      */

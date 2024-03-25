@@ -62,8 +62,15 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
     {
       mGeometryType = Qgis::WkbType::MultiPolygonZ;
     }
-    // geometry is always GeoJSON spec (for now, at least), so CRS will always be WGS84
-    mSourceCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    else if ( !uriParts.contains( QStringLiteral( "geometryType" ) ) )
+    {
+      mGeometryType = Qgis::WkbType::NoGeometry;
+    }
+    if ( mGeometryType != Qgis::WkbType::NoGeometry )
+    {
+      // geometry is always GeoJSON spec (for now, at least), so CRS will always be WGS84
+      mSourceCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    }
   }
   else
   {
@@ -484,6 +491,14 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QgsJsonUtils::jsonToVariant( json[tag] );
               };
 
+              auto getVariantList = []( const basic_json<> &json, const char *tag ) -> QVariant
+              {
+                if ( !json.contains( tag ) )
+                  return QVariant();
+
+                return QgsJsonUtils::jsonToVariant( json[tag] );
+              };
+
               auto getStringList = []( const basic_json<> &json, const char *tag ) -> QVariant
               {
                 if ( !json.contains( tag ) )
@@ -659,6 +674,28 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                     << properties
                   );
                   break;
+
+                case Qgis::SensorThingsEntity::MultiDatastream:
+                {
+                  std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( featureData, "phenomenonTime" );
+                  std::pair< QVariant, QVariant > resultTime = getDateTimeRange( featureData, "resultTime" );
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "description" )
+                    << getVariantList( featureData, "unitOfMeasurements" )
+                    << getString( featureData, "observationType" )
+                    << getStringList( featureData, "multiObservationDataTypes" )
+                    << properties
+                    << phenomenonTime.first
+                    << phenomenonTime.second
+                    << resultTime.first
+                    << resultTime.second
+                  );
+                  break;
+                }
               }
               // NOLINTEND(bugprone-branch-clone)
 

@@ -2751,6 +2751,7 @@ The development version
       ObservedProperty,
       Observation,
       FeatureOfInterest,
+      MultiDatastream,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

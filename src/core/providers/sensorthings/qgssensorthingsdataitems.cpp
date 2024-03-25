@@ -86,6 +86,7 @@ QVector<QgsDataItem *> QgsSensorThingsConnectionItem::createChildren()
           Qgis::SensorThingsEntity::ObservedProperty,
           Qgis::SensorThingsEntity::Observation,
           Qgis::SensorThingsEntity::FeatureOfInterest,
+          Qgis::SensorThingsEntity::MultiDatastream,
         } )
   {
     QVariantMap entityUriParts = connectionUriParts;
@@ -138,13 +139,28 @@ QVector<QgsDataItem *> QgsSensorThingsEntityContainerItem::createChildren()
   QVector<QgsDataItem *> children;
 
   int sortKey = 1;
-  for ( const Qgis::WkbType wkbType :
-        {
-          Qgis::WkbType::Point,
-          Qgis::WkbType::MultiPoint,
-          Qgis::WkbType::MultiLineString,
-          Qgis::WkbType::MultiPolygon
-        } )
+  QList< Qgis::WkbType > compatibleTypes;
+  // we always expose "no geometry" types for these, even though they have a restricted fixed type
+  // according to the spec. This is because not all services respect the mandated geometry types!
+  switch ( QgsSensorThingsUtils::geometryTypeForEntity( mEntityType ) )
+  {
+    case Qgis::GeometryType::Point:
+      compatibleTypes << Qgis::WkbType::Point << Qgis::WkbType::MultiPoint << Qgis::WkbType::NoGeometry;
+      break;
+    case Qgis::GeometryType::Line:
+      compatibleTypes << Qgis::WkbType::MultiLineString << Qgis::WkbType::NoGeometry;
+      break;
+    case Qgis::GeometryType::Polygon:
+      compatibleTypes << Qgis::WkbType::MultiPolygon << Qgis::WkbType::NoGeometry;
+      break;
+    case Qgis::GeometryType::Unknown:
+      compatibleTypes << Qgis::WkbType::Point << Qgis::WkbType::MultiPoint << Qgis::WkbType::MultiLineString << Qgis::WkbType::MultiPolygon;
+      break;
+    case Qgis::GeometryType::Null:
+      compatibleTypes << Qgis::WkbType::NoGeometry;;
+  }
+
+  for ( const Qgis::WkbType wkbType : std::as_const( compatibleTypes ) )
   {
     QVariantMap geometryUriParts = mEntityUriParts;
     QString name;
@@ -170,6 +186,11 @@ QVector<QgsDataItem *> QgsSensorThingsEntityContainerItem::createChildren()
         geometryUriParts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "polygon" ) );
         name = tr( "Polygons" );
         layerType = Qgis::BrowserLayerType::Polygon;
+        break;
+      case Qgis::WkbType::NoGeometry:
+        geometryUriParts.remove( QStringLiteral( "geometryType" ) );
+        name = tr( "No Geometry" );
+        layerType = Qgis::BrowserLayerType::TableLayer;
         break;
       default:
         break;

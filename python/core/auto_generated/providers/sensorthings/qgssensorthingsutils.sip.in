@@ -57,6 +57,15 @@ Returns the geometry field for a specified entity ``type``.
 Returns ``True`` if the specified entity ``type`` can have geometry attached.
 %End
 
+    static Qgis::GeometryType geometryTypeForEntity( Qgis::SensorThingsEntity type );
+%Docstring
+Returns the geometry type for if the specified entity ``type``.
+
+If there are no restrictions on the geometry type an ntity can have :py:class:`Qgis`.GeometryType.Unknown will be returned.
+
+.. versionadded:: 3.38
+%End
+
     static QString filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType );
 %Docstring
 Returns a filter string which restricts results to those matching the specified
