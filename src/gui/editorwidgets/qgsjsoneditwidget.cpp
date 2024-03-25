@@ -40,8 +40,6 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORCURRENT, SCINTILLA_UNDERLINE_INDICATOR_INDEX );
   mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETMOUSEDWELLTIME, 400 );
 
-  mTreeWidget->setStyleSheet( QStringLiteral( "font-family: %1;" ).arg( QgsCodeEditor::getMonospaceFont().family() ) );
-
   mTreeWidget->setContextMenuPolicy( Qt::ActionsContextMenu );
   mTreeWidget->addAction( mCopyValueAction );
   mTreeWidget->addAction( mCopyKeyAction );
@@ -261,6 +259,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     {
       const QJsonValue jsonValue = jsonDocument.object().value( key );
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << key );
+      treeWidgetItem->setFont( 0, monospaceFont() );
       refreshTreeViewItem( treeWidgetItem, jsonValue );
       mTreeWidget->addTopLevelItem( treeWidgetItem );
       mTreeWidget->expandItem( treeWidgetItem );
@@ -281,6 +280,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
     {
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << QString::number( index ) );
+      treeWidgetItem->setFont( 0, monospaceFont() );
       if ( arraySize <= MAX_ELTS || ( index < MAX_ELTS / 2 || index + MAX_ELTS / 2 > arraySize ) )
       {
         refreshTreeViewItem( treeWidgetItem, array.at( index ) );
@@ -334,6 +334,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
       {
         QLabel *label = new QLabel( QString( "<a href='%1'>%1</a>" ).arg( jsonValueString ) );
         label->setOpenExternalLinks( true );
+        label->setFont( monospaceFont() );
         mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 
         mClickableLinkList.append( jsonValueString );
@@ -359,6 +360,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
       for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << QString::number( index ) );
+        treeWidgetItemChild->setFont( 0, monospaceFont() );
         if ( arraySize <= MAX_ELTS || ( index < MAX_ELTS / 2 || index + MAX_ELTS / 2 > arraySize ) )
         {
           refreshTreeViewItem( treeWidgetItemChild, jsonArray.at( index ) );
@@ -382,6 +384,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
       for ( const QString &key : keys )
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << key );
+        treeWidgetItemChild->setFont( 0, monospaceFont() );
         refreshTreeViewItem( treeWidgetItemChild, jsonObject.value( key ) );
         treeWidgetItem->addChild( treeWidgetItemChild );
         treeWidgetItem->setExpanded( true );
@@ -399,7 +402,17 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
 void QgsJsonEditWidget::refreshTreeViewItemValue( QTreeWidgetItem *treeWidgetItem, const QString &jsonValueString, const QColor &textColor )
 {
   QLabel *label = new QLabel( jsonValueString );
+  label->setFont( monospaceFont() );
+
   if ( textColor.isValid() )
     label->setStyleSheet( QStringLiteral( "color: %1;" ).arg( textColor.name() ) );
   mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
+}
+
+QFont QgsJsonEditWidget::monospaceFont() const
+{
+  QFont f = QgsCodeEditor::getMonospaceFont();
+  // use standard widget font size, not code editor font size
+  f.setPointSize( font().pointSize() );
+  return f;
 }
