@@ -50,6 +50,9 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
     QVariant value() const override;
     void showIndeterminateState() override;
 
+  public slots:
+    void setEnabled( bool enabled ) override;
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;

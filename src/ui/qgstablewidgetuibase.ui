@@ -58,7 +58,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="mActionLayout">
      <item>
       <widget class="QToolButton" name="addButton">
        <property name="toolTip">

@@ -27,6 +27,14 @@ void QgsListWidgetWrapper::showIndeterminateState()
   mWidget->setList( QVariantList() );
 }
 
+void QgsListWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( mWidget )
+  {
+    mWidget->setReadOnly( !enabled );
+  }
+}
+
 QWidget *QgsListWidgetWrapper::createWidget( QWidget *parent )
 {
   if ( isInTable( parent ) )

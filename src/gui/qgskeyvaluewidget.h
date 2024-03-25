@@ -48,10 +48,11 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool insertRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
-
+    void setReadOnly( bool readOnly );
     typedef QPair<QString, QVariant> Line;
 
   private:
+    bool mReadOnly = false;
     QVector<Line> mLines;
 };
 ///@endcond
@@ -83,6 +84,9 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
      */
     QVariantMap map() const { return mModel.map(); }
 
+  public slots:
+
+    void setReadOnly( bool readOnly ) override;
   private:
     QgsKeyValueModel mModel;
 };
