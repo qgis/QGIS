@@ -31,7 +31,8 @@ def sanitize(endpoint, x):
     for prefix in ('/Locations',
                    '/HistoricalLocations',
                    '/Things',
-                   '/FeaturesOfInterest'):
+                   '/FeaturesOfInterest',
+                   '/MultiDatastreams'):
         if x.startswith(prefix):
             x = x[len(prefix):]
             endpoint = endpoint + "_" + prefix[1:]
@@ -99,6 +100,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.Location, Qgis.WkbType.LineString),
             "location/type eq 'LineString' or location/geometry/type eq 'LineString'"
         )
+        self.assertEqual(
+            QgsSensorThingsUtils.filterForWkbType(Qgis.SensorThingsEntity.MultiDatastream, Qgis.WkbType.Polygon),
+            "observedArea/type eq 'Polygon' or observedArea/geometry/type eq 'Polygon'"
+        )
 
     def test_utils_string_to_entity(self):
         self.assertEqual(
@@ -135,6 +140,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(
             QgsSensorThingsUtils.stringToEntity(" FeatureOfInterest "),
             Qgis.SensorThingsEntity.FeatureOfInterest,
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.stringToEntity(" MultiDataStream "),
+            Qgis.SensorThingsEntity.MultiDatastream,
         )
 
     def test_utils_string_to_entityset(self):
@@ -173,6 +182,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(
             QgsSensorThingsUtils.entitySetStringToEntity(" FeaturesOfInterest "),
             Qgis.SensorThingsEntity.FeatureOfInterest,
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entitySetStringToEntity(" MultidataStreams "),
+            Qgis.SensorThingsEntity.MultiDatastream,
         )
 
     def test_filter_for_extent(self):
@@ -2971,6 +2984,598 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.geometry().asWkt(1) for f in features],
                 ['Point (16.4 48.2)', 'Point (16.5 48.2)', 'Point (16.5 48.2)'],
+            )
+
+    def test_multidatastream_no_geometry(self):
+        """
+        Test a layer retrieving 'MultiDatastream' entities from a service without geometry
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "MultiDatastreams",
+      "url": "endpoint/MultiDatastreams"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+            with open(
+                sanitize(endpoint, "/MultiDatastreams?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/MultiDatastreams?$top=2&$count=false"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/MultiDatastreams(1)",
+      "@iot.id": 1,
+      "name": "MultiDatastream 1",
+      "description": "Desc 1",
+      "unitOfMeasurements": [
+          {
+            "name": "ug.m-3",
+            "symbol": "ug.m-3",
+            "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+          }
+      ],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2017-12-31T23:00:00Z/2018-01-12T04:00:00Z",
+      "resultTime": "2017-12-31T23:30:00Z/2017-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@iot.navigationLink": "endpoint/MultiDatastreams(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/MultiDatastreams(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/MultiDatastreams(2)",
+      "@iot.id": 2,
+      "name": "MultiDatastream 2",
+      "description": "Desc 2",
+      "unitOfMeasurements": [
+      {
+        "name": "ug.m-3",
+        "symbol": "ug.m-3",
+        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+      }],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2018-12-31T23:00:00Z/2019-01-12T04:00:00Z",
+      "resultTime": "2018-12-31T23:30:00Z/2018-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@iot.navigationLink": "endpoint/MultiDatastreams(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/MultiDatastreams(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/MultiDatastreams?$top=2&$skip=2"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint, "/MultiDatastreams?$top=2&$skip=2"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/MultiDatastreams(3)",
+                  "@iot.id": 3,
+                  "name": "MultiDatastream 3",
+                  "description": "Desc 3",
+                  "unitOfMeasurements": [{
+                    "name": "ug.m-3",
+                    "symbol": "ug.m-3",
+                    "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+                  }],
+                  "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                  "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                  "phenomenonTime": "2020-12-31T23:00:00Z/2021-01-12T04:00:00Z",
+                  "resultTime": "2020-12-31T23:30:00Z/2020-12-31T23:31:00Z",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@iot.navigationLink": "endpoint/MultiDatastreams(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/MultiDatastreams(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='MultiDatastream'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertFalse(vl.crs().isValid())
+            self.assertIn("Entity Type</td><td>MultiDatastream</td>",
+                          vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/MultiDatastreams"',
+                          vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "unitOfMeasurements",
+                    "observationType",
+                    "multiObservationDataTypes",
+                    "properties",
+                    "phenomenonTimeStart",
+                    "phenomenonTimeEnd",
+                    "resultTimeStart",
+                    "resultTimeEnd",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.StringList,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-20:] for f in features],
+                ["/MultiDatastreams(1)", "/MultiDatastreams(2)", "/MultiDatastreams(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["MultiDatastream 1", "MultiDatastream 2", "MultiDatastream 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["unitOfMeasurements"] for f in features],
+                [
+                    [{
+                        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3",
+                        "name": "ug.m-3",
+                        "symbol": "ug.m-3",
+                    }],
+                    [{
+                        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3",
+                        "name": "ug.m-3",
+                        "symbol": "ug.m-3",
+                    }],
+                    [{
+                        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3",
+                        "name": "ug.m-3",
+                        "symbol": "ug.m-3",
+                    }],
+                ],
+            )
+            self.assertEqual(
+                [f["observationType"] for f in features],
+                [
+                    "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                    "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                    "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                ],
+            )
+            self.assertEqual(
+                [f["multiObservationDataTypes"] for f in features],
+                [
+                    ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                    ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                    ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                ],
+            )
+            self.assertEqual(
+                [f["phenomenonTimeStart"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["phenomenonTimeEnd"] for f in features],
+                [
+                    QDateTime(QDate(2018, 1, 12), QTime(4, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 1, 12), QTime(4, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2021, 1, 12), QTime(4, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["resultTimeStart"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 30, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 30, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 30, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["resultTimeEnd"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 31, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 31, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 31, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"},
+                 {"owner": "owner 3"}],
+            )
+
+    def test_multidatastream_polygons(self):
+        """
+        Test a layer retrieving 'MultiDatastream' entities from a service using polygons
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "MultiDatastreams",
+      "url": "endpoint/MultiDatastreams"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+            with open(
+                sanitize(endpoint, "/MultiDatastreams?$top=0&$count=true&$filter=observedArea/type eq 'Polygon' or observedArea/geometry/type eq 'Polygon'"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/MultiDatastreams?$top=2&$count=false&$filter=observedArea/type eq 'Polygon' or observedArea/geometry/type eq 'Polygon'"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/MultiDatastreams(1)",
+      "@iot.id": 1,
+      "name": "MultiDatastream 1",
+      "description": "Desc 1",
+      "unitOfMeasurements": [
+          {
+            "name": "ug.m-3",
+            "symbol": "ug.m-3",
+            "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+          }
+      ],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2017-12-31T23:00:00Z/2018-01-12T04:00:00Z",
+      "resultTime": "2017-12-31T23:30:00Z/2017-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "observedArea": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [100, 0], [101, 0], [101, 1], [100, 1], [100, 0]
+              ]
+            ]
+          },
+      "Things@iot.navigationLink": "endpoint/MultiDatastreams(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/MultiDatastreams(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/MultiDatastreams(2)",
+      "@iot.id": 2,
+      "name": "MultiDatastream 2",
+      "description": "Desc 2",
+      "unitOfMeasurements": [
+      {
+        "name": "ug.m-3",
+        "symbol": "ug.m-3",
+        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+      }],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2018-12-31T23:00:00Z/2019-01-12T04:00:00Z",
+      "resultTime": "2018-12-31T23:30:00Z/2018-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 2"
+      },
+            "observedArea": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [102, 0], [103, 0], [103, 1], [102, 1], [102, 0]
+              ]
+            ]
+          },
+      "Things@iot.navigationLink": "endpoint/MultiDatastreams(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/MultiDatastreams(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/MultiDatastreams?$top=2&$skip=2&$filter=observedArea/type eq 'Polygon' or observedArea/geometry/type eq 'Polygon'"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint, "/MultiDatastreams?$top=2&$skip=2&$filter=observedArea/type eq 'Polygon' or observedArea/geometry/type eq 'Polygon'"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/MultiDatastreams(3)",
+                  "@iot.id": 3,
+                  "name": "MultiDatastream 3",
+                  "description": "Desc 3",
+                  "unitOfMeasurements": [{
+                    "name": "ug.m-3",
+                    "symbol": "ug.m-3",
+                    "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+                  }],
+                  "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                  "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                  "phenomenonTime": "2020-12-31T23:00:00Z/2021-01-12T04:00:00Z",
+                  "resultTime": "2020-12-31T23:30:00Z/2020-12-31T23:31:00Z",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                        "observedArea": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [103, 0], [104, 0], [104, 1], [103, 1], [103, 0]
+              ]
+            ]
+          },
+                  "Things@iot.navigationLink": "endpoint/MultiDatastreams(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/MultiDatastreams(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='MultiDatastream'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertEqual(vl.crs().authid(), 'EPSG:4326')
+            self.assertIn("Entity Type</td><td>MultiDatastream</td>",
+                          vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/MultiDatastreams"',
+                          vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "unitOfMeasurements",
+                    "observationType",
+                    "multiObservationDataTypes",
+                    "properties",
+                    "phenomenonTimeStart",
+                    "phenomenonTimeEnd",
+                    "resultTimeStart",
+                    "resultTimeEnd",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.StringList,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-20:] for f in features],
+                ["/MultiDatastreams(1)", "/MultiDatastreams(2)", "/MultiDatastreams(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["MultiDatastream 1", "MultiDatastream 2", "MultiDatastream 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["unitOfMeasurements"] for f in features],
+                [
+                    [{
+                        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3",
+                        "name": "ug.m-3",
+                        "symbol": "ug.m-3",
+                    }],
+                    [{
+                        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3",
+                        "name": "ug.m-3",
+                        "symbol": "ug.m-3",
+                    }],
+                    [{
+                        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3",
+                        "name": "ug.m-3",
+                        "symbol": "ug.m-3",
+                    }],
+                ],
+            )
+            self.assertEqual(
+                [f["observationType"] for f in features],
+                [
+                    "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                    "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                    "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                ],
+            )
+            self.assertEqual(
+                [f["multiObservationDataTypes"] for f in features],
+                [
+                    ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                    ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                    ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                ],
+            )
+            self.assertEqual(
+                [f["phenomenonTimeStart"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["phenomenonTimeEnd"] for f in features],
+                [
+                    QDateTime(QDate(2018, 1, 12), QTime(4, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 1, 12), QTime(4, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2021, 1, 12), QTime(4, 0, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["resultTimeStart"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 30, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 30, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 30, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["resultTimeEnd"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 31, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 31, 0, 0),
+                              Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 31, 0, 0),
+                              Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"},
+                 {"owner": "owner 3"}],
+            )
+            self.assertEqual(
+                [f.geometry().asWkt() for f in features],
+                ['Polygon ((100 0, 101 0, 101 1, 100 1, 100 0))',
+                 'Polygon ((102 0, 103 0, 103 1, 102 1, 102 0))',
+                 'Polygon ((103 0, 104 0, 104 1, 103 1, 103 0))'],
             )
 
     def testDecodeUri(self):

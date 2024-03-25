@@ -18,7 +18,6 @@
 #include "qgssensorthingsprovider.h"
 #include "qgssensorthingsutils.h"
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsthreadingutils.h"
@@ -26,6 +25,7 @@
 #include "qgssensorthingsfeatureiterator.h"
 #include "qgssensorthingsdataitems.h"
 #include "qgssensorthingsconnection.h"
+#include "qgsmessagelog.h"
 
 #include <QIcon>
 #include <QNetworkRequest>
@@ -99,7 +99,28 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
 
     if ( !foundMatchingEntity )
     {
-      appendError( QgsErrorMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), QStringLiteral( "SensorThings" ) ) );
+      switch ( mSharedData->mEntityType )
+      {
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+          appendError( QgsErrorMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), QStringLiteral( "SensorThings" ) ) );
+          QgsMessageLog::logMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          appendError( QgsErrorMessage( tr( "MultiDatastreams are not supported by this connection" ), QStringLiteral( "SensorThings" ) ) );
+          QgsMessageLog::logMessage( tr( "MultiDatastreams are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+      }
+
       return;
     }
   }
@@ -306,8 +327,7 @@ QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata():
 
 QIcon QgsSensorThingsProviderMetadata::icon() const
 {
-  // TODO
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconAfs.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconSensorThings.svg" ) );
 }
 
 QList<QgsDataItemProvider *> QgsSensorThingsProviderMetadata::dataItemProviders() const
