@@ -394,6 +394,12 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   {
     components.insert( QStringLiteral( "featureLimit" ), featureLimitParam );
   }
+  ok = false;
+  const int expansionLimitParam = dsUri.param( QStringLiteral( "expansionLimit" ) ).toInt( &ok );
+  if ( ok )
+  {
+    components.insert( QStringLiteral( "expansionLimit" ), expansionLimitParam );
+  }
 
   switch ( QgsWkbTypes::geometryType( dsUri.wkbType() ) )
   {
@@ -486,6 +492,12 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   if ( ok )
   {
     dsUri.setParam( QStringLiteral( "featureLimit" ), QString::number( featureLimitParam ) );
+  }
+  ok = false;
+  const int expansionLimitParam = parts.value( QStringLiteral( "expansionLimit" ) ).toInt( &ok );
+  if ( ok )
+  {
+    dsUri.setParam( QStringLiteral( "expansionLimit" ), QString::number( expansionLimitParam ) );
   }
 
   const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();

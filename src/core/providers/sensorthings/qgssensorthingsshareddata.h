@@ -85,6 +85,7 @@ class QgsSensorThingsSharedData
     QList< Qgis::SensorThingsEntity > mExpandTo;
 
     int mFeatureLimit = 0;
+    int mExpansionLimit = 0;
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QString mGeometryField;
     QgsFields mFields;

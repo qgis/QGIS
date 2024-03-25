@@ -42,10 +42,16 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   vl->addWidget( mExtentWidget );
   mExtentLimitFrame->setLayout( vl );
 
+  mSpinExpansionLimit->setEnabled( false );
+
   mSpinPageSize->setClearValue( 0, tr( "Default (%1)" ).arg( QgsSensorThingsUtils::DEFAULT_PAGE_SIZE ) );
   mSpinFeatureLimit->setClearValue( 0, tr( "No limit" ) );
+  mSpinExpansionLimit->setClearValue( 0, tr( "No limit" ) );
+  mSpinExpansionLimit->setToolTip( tr( "Limits the maximum number of related features to fetch when expanding child features" ) );
+
   // set a relatively conservative feature limit by default, to make it so they have to opt-in to shoot themselves in the foot!
   mSpinFeatureLimit->setValue( QgsSensorThingsUtils::DEFAULT_FEATURE_LIMIT );
+  mSpinExpansionLimit->setValue( QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT );
 
   for ( Qgis::SensorThingsEntity type :
         {
@@ -72,7 +78,11 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mRetrieveTypesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveTypes );
   mRetrieveTypesButton->setEnabled( false );
   connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, &QgsSensorThingsSourceWidget::validate );
-  connect( mComboExpandTo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
+  connect( mComboExpandTo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    mSpinExpansionLimit->setEnabled( mComboExpandTo->currentData().isValid() );
+    validate();
+  } );
   validate();
 }
 
@@ -122,6 +132,23 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   {
     // when setting an initial uri, use the default, not "no limit"
     mSpinFeatureLimit->setValue( QgsSensorThingsUtils::DEFAULT_FEATURE_LIMIT );
+  }
+
+  ok = false;
+  const int expansionLimitParam = mSourceParts.value( QStringLiteral( "expansionLimit" ) ).toInt( &ok );
+  if ( ok )
+  {
+    mSpinExpansionLimit->setValue( expansionLimitParam );
+  }
+  else if ( type != Qgis::SensorThingsEntity::Invalid )
+  {
+    // if not setting an initial uri for a new layer, use "no limit" if it's not present in the uri
+    mSpinExpansionLimit->clear();
+  }
+  else
+  {
+    // when setting an initial uri, use the default, not "no limit"
+    mSpinExpansionLimit->setValue( QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT );
   }
 
   const QgsRectangle bounds = mSourceParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
@@ -224,6 +251,15 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
   else
   {
     parts.remove( QStringLiteral( "featureLimit" ) );
+  }
+
+  if ( mSpinExpansionLimit->value() > 0 )
+  {
+    parts.insert( QStringLiteral( "expansionLimit" ), QString::number( mSpinExpansionLimit->value() ) );
+  }
+  else
+  {
+    parts.remove( QStringLiteral( "expansionLimit" ) );
   }
 
   if ( !mComboExpandTo->currentData().isValid() )
