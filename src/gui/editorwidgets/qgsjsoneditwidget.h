@@ -116,6 +116,8 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     void refreshTreeViewItem( QTreeWidgetItem *treeWidgetItemParent, const QJsonValue &jsonValue );
     void refreshTreeViewItemValue( QTreeWidgetItem *treeWidgetItem, const QString &jsonValueString, const QColor &textColor );
 
+    QFont monospaceFont() const;
+
     QString mJsonText;
 
     FormatJson mFormatJsonMode = FormatJson::Indented;
