@@ -91,15 +91,6 @@ done:
 
 %End
 
-%Import QtXml/QtXmlmod.sip
-%Import QtNetwork/QtNetworkmod.sip
-%Import QtSql/QtSqlmod.sip
-
-%Import QtPrintSupport/QtPrintSupportmod.sip
-%Import QtWidgets/QtWidgetsmod.sip
-%Import QtPositioning/QtPositioningmod.sip
-%Import QtSerialPort/QtSerialPortmod.sip
-
 %Feature HAVE_GUI
 %Feature HAVE_QTSERIALPORT
 %Feature HAVE_QTPRINTER
@@ -107,6 +98,18 @@ done:
 %Feature VECTOR_MAPPED_TYPE
 %Feature HAVE_WEBENGINE_SIP
 %Feature PYQT6
+
+%Import QtXml/QtXmlmod.sip
+%Import QtNetwork/QtNetworkmod.sip
+%Import QtSql/QtSqlmod.sip
+
+%Import QtPrintSupport/QtPrintSupportmod.sip
+%Import QtWidgets/QtWidgetsmod.sip
+%Import QtPositioning/QtPositioningmod.sip
+
+%If (HAVE_QTSERIALPORT)
+%Import QtSerialPort/QtSerialPortmod.sip
+%End
 
 %Include conversions.sip
 %Include qgsexception.sip
