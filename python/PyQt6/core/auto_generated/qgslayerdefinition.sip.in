@@ -48,7 +48,6 @@ Loads the QLR from the XML document.  New layers are added to given project into
 :param rootGroup: the layer tree group to insert the qlr content
 :param context: the read write context
 :param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted
-:param true: in case of success
 
 :return: - true in case of success
          - errorMessage: the returned error message
