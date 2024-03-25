@@ -26,8 +26,8 @@
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )
-  , mCopyValueAction( new QAction( tr( "Copy value" ), this ) )
-  , mCopyKeyAction( new QAction( tr( "Copy key" ), this ) )
+  , mCopyValueAction( new QAction( tr( "Copy Value" ), this ) )
+  , mCopyKeyAction( new QAction( tr( "Copy Key" ), this ) )
 {
   setupUi( this );
 
