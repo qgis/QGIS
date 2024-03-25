@@ -27,7 +27,7 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the offset curve tool
+ * This is a unit test for the vertex tool
  */
 class TestQgsMapToolOffsetCurve: public QObject
 {
@@ -271,6 +271,7 @@ void TestQgsMapToolOffsetCurve::testAvoidIntersectionAndTopoEdit()
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
 
+  // test with bevel
   QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( Qgis::JoinStyle::Bevel );
   QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
   QgsProject::instance()->setTopologicalEditing( true );
