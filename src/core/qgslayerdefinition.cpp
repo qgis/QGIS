@@ -196,24 +196,25 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   delete root;
 
   QgsSettings settings;
-  if ( !insertPoint )
+
+  Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup );
+  switch ( insertionMethod )
   {
-    rootGroup->insertChildNodes( -1, nodes );
-  }
-  else
-  {
-    Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( QStringLiteral( "qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::AboveInsertionPoint );
-    switch ( insertionMethod )
-    {
-      case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+    case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+      if ( insertPoint )
+      {
         insertPoint->group->insertChildNodes( insertPoint->position, nodes );
-        break;
-      case Qgis::LayerTreeInsertionMethod::TopOfTree:
-        rootGroup->insertChildNodes( 0, nodes );
-        break;
-      default:
-        rootGroup->insertChildNodes( -1, nodes ); //Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup does not really make sense for qlr
-    }
+      }
+      else
+      {
+        rootGroup->insertChildNodes( -1, nodes );
+      }
+      break;
+    case Qgis::LayerTreeInsertionMethod::TopOfTree:
+      rootGroup->insertChildNodes( 0, nodes );
+      break;
+    default: //Keep current behavior for Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup
+      rootGroup->insertChildNodes( -1, nodes );
   }
 
   return true;
