@@ -45,7 +45,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
       expandedEntities.append( expansion.childEntity() );
     }
 
-    mExpandQueryString = QgsSensorThingsUtils::asQueryString( mExpansions );
+    mExpandQueryString = QgsSensorThingsUtils::asQueryString( mEntityType, mExpansions );
   }
 
   mFields = QgsSensorThingsUtils::fieldsForExpandedEntityType( mEntityType, expandedEntities );
@@ -754,51 +754,73 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               {
                 mRetrievedBaseFeatureCount++;
 
-                std::function< void( const nlohmann::json &, const QList<QgsSensorThingsExpansionDefinition > &, const QString &, const QgsAttributes & ) > traverseExpansion;
-                traverseExpansion = [this, &feature, &getString, &traverseExpansion, &fetchedFeatureCallback, &extendAttributes, &processFeature]( const nlohmann::json & currentLevelData, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString & lowerLevelId, const QgsAttributes & lowerLevelAttributes )
+                std::function< void( const nlohmann::json &, Qgis::SensorThingsEntity, const QList<QgsSensorThingsExpansionDefinition > &, const QString &, const QgsAttributes & ) > traverseExpansion;
+                traverseExpansion = [this, &feature, &getString, &traverseExpansion, &fetchedFeatureCallback, &extendAttributes, &processFeature]( const nlohmann::json & currentLevelData, Qgis::SensorThingsEntity parentEntityType, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString & lowerLevelId, const QgsAttributes & lowerLevelAttributes )
                 {
                   const QgsSensorThingsExpansionDefinition currentExpansionTarget = expansionTargets.at( 0 );
                   const QList< QgsSensorThingsExpansionDefinition > remainingExpansionTargets = expansionTargets.mid( 1 );
 
-                  const QString currentExpansionPropertyString = QgsSensorThingsUtils::entityToSetString( currentExpansionTarget.childEntity() );
+                  bool ok = false;
+                  const Qgis::RelationshipCardinality cardinality = QgsSensorThingsUtils::relationshipCardinality( parentEntityType, currentExpansionTarget.childEntity(), ok );
+                  QString currentExpansionPropertyString;
+                  switch ( cardinality )
+                  {
+                    case Qgis::RelationshipCardinality::OneToOne:
+                    case Qgis::RelationshipCardinality::ManyToOne:
+                      currentExpansionPropertyString = qgsEnumValueToKey( currentExpansionTarget.childEntity() );
+                      break;
+
+                    case Qgis::RelationshipCardinality::OneToMany:
+                    case Qgis::RelationshipCardinality::ManyToMany:
+                      currentExpansionPropertyString = QgsSensorThingsUtils::entityToSetString( currentExpansionTarget.childEntity() );
+                      break;
+                  }
+
                   if ( currentLevelData.contains( currentExpansionPropertyString.toLocal8Bit().constData() ) )
                   {
+                    auto parseExpandedEntity = [lowerLevelAttributes, &feature, &processFeature, &lowerLevelId, &getString, &remainingExpansionTargets, &fetchedFeatureCallback, &extendAttributes, &traverseExpansion, &currentExpansionTarget, this]( const json & expandedEntityElement )
+                    {
+                      QgsAttributes expandedAttributes = lowerLevelAttributes;
+                      const QString expandedEntityIotId = getString( expandedEntityElement, "@iot.id" ).toString();
+                      const QString expandedFeatureId = lowerLevelId + '_' + expandedEntityIotId;
+
+                      if ( remainingExpansionTargets.empty() )
+                      {
+                        auto existingFeatureIdIt = mIotIdToFeatureId.constFind( expandedFeatureId );
+                        if ( existingFeatureIdIt != mIotIdToFeatureId.constEnd() )
+                        {
+                          // we've previously fetched and cached this feature, skip it
+                          fetchedFeatureCallback( *mCachedFeatures.find( *existingFeatureIdIt ) );
+                          return;
+                        }
+                      }
+
+                      extendAttributes( currentExpansionTarget.childEntity(), expandedEntityElement, expandedAttributes );
+                      if ( !remainingExpansionTargets.empty() )
+                      {
+                        // traverse deeper
+                        traverseExpansion( expandedEntityElement, currentExpansionTarget.childEntity(), remainingExpansionTargets, expandedFeatureId, expandedAttributes );
+                      }
+                      else
+                      {
+                        feature.setAttributes( expandedAttributes );
+                        processFeature( feature, expandedFeatureId );
+                      }
+                    };
                     const auto &expandedEntity = currentLevelData[currentExpansionPropertyString.toLocal8Bit().constData()];
                     if ( expandedEntity.is_array() )
                     {
                       for ( const auto &expandedEntityElement : expandedEntity )
                       {
-                        QgsAttributes expandedAttributes = lowerLevelAttributes;
-                        const QString expandedEntityIotId = getString( expandedEntityElement, "@iot.id" ).toString();
-                        const QString expandedFeatureId = lowerLevelId + '_' + expandedEntityIotId;
-
-                        if ( remainingExpansionTargets.empty() )
-                        {
-                          auto existingFeatureIdIt = mIotIdToFeatureId.constFind( expandedFeatureId );
-                          if ( existingFeatureIdIt != mIotIdToFeatureId.constEnd() )
-                          {
-                            // we've previously fetched and cached this feature, skip it
-                            fetchedFeatureCallback( *mCachedFeatures.find( *existingFeatureIdIt ) );
-                            continue;
-                          }
-                        }
-
-                        extendAttributes( currentExpansionTarget.childEntity(), expandedEntityElement, expandedAttributes );
-                        if ( !remainingExpansionTargets.empty() )
-                        {
-                          // traverse deeper
-                          traverseExpansion( expandedEntityElement, remainingExpansionTargets, expandedFeatureId, expandedAttributes );
-                        }
-                        else
-                        {
-                          feature.setAttributes( expandedAttributes );
-                          processFeature( feature, expandedFeatureId );
-
-                        }
+                        parseExpandedEntity( expandedEntityElement );
                       }
                       // NOTE: What do we do when the expanded entity has a next link? Does this situation ever arise?
                       // The specification doesn't explicitly state whether pagination is supported for expansion, so we assume
                       // it's not possible.
+                    }
+                    else if ( expandedEntity.is_object() )
+                    {
+                      parseExpandedEntity( expandedEntity );
                     }
                   }
                   else
@@ -809,7 +831,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                   }
                 };
 
-                traverseExpansion( featureData, expansions, baseFeatureId, attributes );
+                traverseExpansion( featureData, mEntityType, expansions, baseFeatureId, attributes );
 
                 if ( mFeatureLimit > 0 && mFeatureLimit <= mRetrievedBaseFeatureCount )
                   break;
