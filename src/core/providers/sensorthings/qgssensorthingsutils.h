@@ -22,6 +22,7 @@
 class QgsFields;
 class QgsFeedback;
 class QgsRectangle;
+class QgsSensorThingsExpansionDefinition;
 
 /**
  * \ingroup core
@@ -70,6 +71,13 @@ class CORE_EXPORT QgsSensorThingsUtils
      * \since QGIS 3.38
     */
     static QString entityToSetString( Qgis::SensorThingsEntity type );
+
+    /**
+     * Returns the SensorThings properties which correspond to a specified entity \a type.
+     *
+     * \since QGIS 3.38
+     */
+    static QStringList propertiesForEntityType( Qgis::SensorThingsEntity type );
 
     /**
      * Returns the fields which correspond to a specified entity \a type.
@@ -141,8 +149,163 @@ class CORE_EXPORT QgsSensorThingsUtils
      *
      * \since QGIS 3.38
      */
-    static QList< QList< Qgis::SensorThingsEntity > > expandableTargets( Qgis::SensorThingsEntity type );
+    static QList< Qgis::SensorThingsEntity > expandableTargets( Qgis::SensorThingsEntity type );
+
+    /**
+     * Returns a list of \a expansions as a valid SensorThings API query string, eg "$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))".
+     *
+     * \since QGIS 3.38
+     */
+    static QString asQueryString( const QList< QgsSensorThingsExpansionDefinition > &expansions );
 
 };
+
+
+/**
+ * \ingroup core
+ * \brief Encapsulates information about how relationships in a SensorThings API service should be expanded.
+ *
+ * \since QGIS 3.38
+ */
+class CORE_EXPORT QgsSensorThingsExpansionDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
+     */
+    QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+                                        const QString &orderBy = QString(),
+                                        Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT );
+
+    /**
+     * Returns TRUE if the definition is valid.
+     */
+    bool isValid() const;
+
+    /**
+     * Returns the target child entity which should be expanded.
+     *
+     * \see setChildEntity()
+     */
+    Qgis::SensorThingsEntity childEntity() const;
+
+    /**
+    * Sets the target child \a entity which should be expanded.
+    *
+    * \see childEntity()
+    */
+    void setChildEntity( Qgis::SensorThingsEntity entity );
+
+    /**
+     * Returns the field name to order the expanded child entities by.
+     *
+     * \see sortOrder()
+     * \see setOrderBy()
+     */
+    QString orderBy() const;
+
+    /**
+     * Sets the \a field name to order the expanded child entities by.
+     *
+     * \see orderBy()
+     * \see setSortOrder()
+     */
+    void setOrderBy( const QString &field );
+
+    /**
+     * Returns the sort order for the expanded child entities.
+     *
+     * \see orderBy()
+     * \see setSortOrder()
+     */
+    Qt::SortOrder sortOrder() const;
+
+    /**
+     * Sets the sort order for the expanded child entities.
+     *
+     * \see setOrderBy()
+     * \see sortOrder()
+     */
+    void setSortOrder( Qt::SortOrder order );
+
+    /**
+     * Returns the limit on the number of child features to fetch.
+     *
+     * Returns -1 if no limit is defined.
+     *
+     * \see setLimit()
+     */
+    int limit() const;
+
+    /**
+     * Sets the \a limit on the number of child features to fetch.
+     *
+     * Set to -1 if no limit is desired.
+     *
+     * \see limit()
+     */
+    void setLimit( int limit );
+
+    /**
+     * Returns a string encapsulation of the expansion definition.
+     *
+     * \see fromString()
+     */
+    QString toString() const;
+
+    /**
+     * Returns a QgsSensorThingsExpansionDefinition from a string representation.
+     *
+     * \see toString()
+     */
+    static QgsSensorThingsExpansionDefinition fromString( const QString &string );
+
+    /**
+     * Returns the expansion as a valid SensorThings API query string, eg "$expand=Observations($orderby=phenomenonTime desc;$top=10)".
+     *
+     * Optionally a list of additional query options can be specified for the expansion.
+     */
+    QString asQueryString( const QStringList &additionalOptions = QStringList() ) const;
+
+    bool operator==( const QgsSensorThingsExpansionDefinition &other ) const;
+    bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" );
+      return;
+    }
+
+    QString innerDefinition;
+    if ( !sipCpp->orderBy().isEmpty() )
+    {
+      innerDefinition = QStringLiteral( "by %1 (%2)" ).arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) );
+    }
+    if ( sipCpp->limit() >= 0 )
+    {
+      if ( !innerDefinition.isEmpty() )
+        innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
+      else
+        innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
+    }
+
+    QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
+  private:
+
+    Qgis::SensorThingsEntity mChildEntity = Qgis::SensorThingsEntity::Invalid;
+    QString mOrderBy;
+    Qt::SortOrder mSortOrder = Qt::SortOrder::AscendingOrder;
+    int mLimit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT;
+};
+Q_DECLARE_METATYPE( QgsSensorThingsExpansionDefinition )
 
 #endif // QGSSENSORTHINGSUTILS_H

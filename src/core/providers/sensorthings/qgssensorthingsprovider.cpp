@@ -377,9 +377,23 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   if ( entity != Qgis::SensorThingsEntity::Invalid )
     components.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entity ) );
 
-  const QString expandToParam = dsUri.param( QStringLiteral( "expandTo" ) );
+  const QStringList expandToParam = dsUri.param( QStringLiteral( "expandTo" ) ).split( ';', Qt::SkipEmptyParts );
   if ( !expandToParam.isEmpty() )
-    components.insert( QStringLiteral( "expandTo" ), expandToParam.split( ',' ) );
+  {
+    QVariantList expandParts;
+    for ( const QString &expandString : expandToParam )
+    {
+      const QgsSensorThingsExpansionDefinition definition = QgsSensorThingsExpansionDefinition::fromString( expandString );
+      if ( definition.isValid() )
+      {
+        expandParts.append( QVariant::fromValue( definition ) );
+      }
+    }
+    if ( !expandParts.isEmpty() )
+    {
+      components.insert( QStringLiteral( "expandTo" ), expandParts );
+    }
+  }
 
   bool ok = false;
   const int maxPageSizeParam = dsUri.param( QStringLiteral( "pageSize" ) ).toInt( &ok );
@@ -393,12 +407,6 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   if ( ok )
   {
     components.insert( QStringLiteral( "featureLimit" ), featureLimitParam );
-  }
-  ok = false;
-  const int expansionLimitParam = dsUri.param( QStringLiteral( "expansionLimit" ) ).toInt( &ok );
-  if ( ok )
-  {
-    components.insert( QStringLiteral( "expansionLimit" ), expansionLimitParam );
   }
 
   switch ( QgsWkbTypes::geometryType( dsUri.wkbType() ) )
@@ -476,9 +484,23 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
                     qgsEnumValueToKey( entity ) );
   }
 
-  const QStringList expandToParam = parts.value( QStringLiteral( "expandTo" ) ).toStringList();
+  const QVariantList expandToParam = parts.value( QStringLiteral( "expandTo" ) ).toList();
   if ( !expandToParam.isEmpty() )
-    dsUri.setParam( QStringLiteral( "expandTo" ), expandToParam.join( ',' ) );
+  {
+    QStringList expandToStringList;
+    for ( const QVariant &expansion : expandToParam )
+    {
+      const QgsSensorThingsExpansionDefinition expansionDefinition = expansion.value< QgsSensorThingsExpansionDefinition >();
+      if ( !expansionDefinition.isValid() )
+        continue;
+
+      expandToStringList.append( expansionDefinition.toString() );
+    }
+    if ( !expandToStringList.isEmpty() )
+    {
+      dsUri.setParam( QStringLiteral( "expandTo" ), expandToStringList.join( ';' ) );
+    }
+  }
 
   bool ok = false;
   const int maxPageSizeParam = parts.value( QStringLiteral( "pageSize" ) ).toInt( &ok );
@@ -492,12 +514,6 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   if ( ok )
   {
     dsUri.setParam( QStringLiteral( "featureLimit" ), QString::number( featureLimitParam ) );
-  }
-  ok = false;
-  const int expansionLimitParam = parts.value( QStringLiteral( "expansionLimit" ) ).toInt( &ok );
-  if ( ok )
-  {
-    dsUri.setParam( QStringLiteral( "expansionLimit" ), QString::number( expansionLimitParam ) );
   }
 
   const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();
