@@ -261,24 +261,25 @@ Optionally a list of additional query options can be specified for the expansion
     if ( !sipCpp->isValid() )
     {
       sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" );
-      return;
     }
-
-    QString innerDefinition;
-    if ( !sipCpp->orderBy().isEmpty() )
+    else
     {
-      innerDefinition = QStringLiteral( "by %1 (%2)" ).arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) );
-    }
-    if ( sipCpp->limit() >= 0 )
-    {
-      if ( !innerDefinition.isEmpty() )
-        innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
-      else
-        innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
-    }
+      QString innerDefinition;
+      if ( !sipCpp->orderBy().isEmpty() )
+      {
+        innerDefinition = QStringLiteral( "by %1 (%2)" ).arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) );
+      }
+      if ( sipCpp->limit() >= 0 )
+      {
+        if ( !innerDefinition.isEmpty() )
+          innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
+        else
+          innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
+      }
 
-    QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
-    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    }
 %End
 
 };
