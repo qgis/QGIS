@@ -785,6 +785,8 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
 QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::SensorThingsEntity type )
 {
   // note that we are restricting these choices so that the geometry enabled entity type MUST be the base type
+
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( type )
   {
     case Qgis::SensorThingsEntity::Invalid:
@@ -852,6 +854,8 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
         Qgis::SensorThingsEntity::Observation
       };
   }
+  // NOLINTEND(bugprone-branch-clone)
+
   BUILTIN_UNREACHABLE
 }
 
