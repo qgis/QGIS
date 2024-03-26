@@ -237,7 +237,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         """
         expansion = QgsSensorThingsExpansionDefinition()
         self.assertFalse(expansion.isValid())
-        self.assertFalse(expansion.asQueryString())
+        self.assertFalse(expansion.asQueryString(Qgis.SensorThingsEntity.Invalid))
 
         # test getters/setters
         expansion = QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.ObservedProperty)
@@ -245,52 +245,54 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(expansion.childEntity(), Qgis.SensorThingsEntity.ObservedProperty)
         self.assertEqual(expansion.limit(), 100)
         self.assertEqual(repr(expansion), '<QgsSensorThingsExpansionDefinition: ObservedProperty limit 100>')
-        self.assertEqual(expansion.asQueryString(), '$expand=ObservedProperties($top=100)')
-        self.assertEqual(expansion.asQueryString(['$expand=Locations($top=101)']),
-                         '$expand=ObservedProperties($top=100;$expand=Locations($top=101))')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Datastream), '$expand=ObservedProperty($top=100)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Datastream, ['$expand=Locations($top=101)']),
+                         '$expand=ObservedProperty($top=100;$expand=Locations($top=101))')
 
         expansion.setChildEntity(Qgis.SensorThingsEntity.Location)
         self.assertEqual(expansion.childEntity(),
                          Qgis.SensorThingsEntity.Location)
         self.assertEqual(repr(expansion),
                          '<QgsSensorThingsExpansionDefinition: Location limit 100>')
-        self.assertEqual(expansion.asQueryString(),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
                          '$expand=Locations($top=100)')
-        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
                          '$expand=Locations($top=100;$expand=Datastreams($top=101))')
 
         expansion.setLimit(-1)
         self.assertEqual(expansion.limit(), -1)
         self.assertEqual(repr(expansion),
                          '<QgsSensorThingsExpansionDefinition: Location>')
-        self.assertEqual(expansion.asQueryString(),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
                          '$expand=Locations')
-        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                                 ['$expand=Datastreams($top=101)']),
                          '$expand=Locations($expand=Datastreams($top=101))')
 
         expansion.setOrderBy('id')
         self.assertEqual(expansion.orderBy(), 'id')
         self.assertEqual(repr(expansion),
                          '<QgsSensorThingsExpansionDefinition: Location by id (asc)>')
-        self.assertEqual(expansion.asQueryString(),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
                          '$expand=Locations($orderby=id)')
-        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                                 ['$expand=Datastreams($top=101)']),
                          '$expand=Locations($orderby=id;$expand=Datastreams($top=101))')
         expansion.setSortOrder(Qt.SortOrder.DescendingOrder)
         self.assertEqual(expansion.sortOrder(), Qt.SortOrder.DescendingOrder)
         self.assertEqual(repr(expansion),
                          '<QgsSensorThingsExpansionDefinition: Location by id (desc)>')
-        self.assertEqual(expansion.asQueryString(),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
                          '$expand=Locations($orderby=id desc)')
-        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
                          '$expand=Locations($orderby=id desc;$expand=Datastreams($top=101))')
 
         expansion.setLimit(3)
         self.assertEqual(repr(expansion),
                          '<QgsSensorThingsExpansionDefinition: Location by id (desc), limit 3>')
-        self.assertEqual(expansion.asQueryString(),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
                          '$expand=Locations($orderby=id desc;$top=3)')
-        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
                          '$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))')
 
         # test equality
@@ -380,45 +382,75 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         Test constructing query strings from a list of expansions
         """
         self.assertFalse(
-            QgsSensorThingsUtils.asQueryString([])
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Invalid,
+                                               [])
         )
         self.assertEqual(
-            QgsSensorThingsUtils.asQueryString([
-                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
-                                                   orderBy='id', limit=3)
-            ]),
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Location,
+                                                       orderBy='id', limit=3)
+                                               ]),
             '$expand=Locations($orderby=id;$top=3)'
         )
         self.assertEqual(
-            QgsSensorThingsUtils.asQueryString([
-                QgsSensorThingsExpansionDefinition(),
-                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
-                                                   orderBy='id', limit=3)
-            ]),
-            '$expand=Locations($orderby=id;$top=3)'
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(),
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Datastream,
+                                                       orderBy='id', limit=3)
+                                               ]),
+            '$expand=Datastreams($orderby=id;$top=3)'
         )
         self.assertEqual(
-            QgsSensorThingsUtils.asQueryString([
-                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
-                                                   orderBy='id', limit=3),
-                QgsSensorThingsExpansionDefinition(
-                    Qgis.SensorThingsEntity.Sensor,
-                    orderBy='description', limit=30)
-            ]),
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Datastream,
+                                                       orderBy='id', limit=3)
+                                               ]),
+            '$expand=Datastreams($orderby=id;$top=3)'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(
+                Qgis.SensorThingsEntity.Observation,
+                [QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Datastream,
+                    orderBy='id', limit=3)
+                 ]),
+            '$expand=Datastream($orderby=id;$top=3)'
+        )
+
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Location,
+                                                       orderBy='id', limit=3),
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Sensor,
+                                                       orderBy='description',
+                                                       limit=30)
+                                               ]),
             '$expand=Locations($orderby=id;$top=3;$expand=Sensors($orderby=description;$top=30))'
         )
         self.assertEqual(
-            QgsSensorThingsUtils.asQueryString([
-                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
-                                                   orderBy='id', limit=3),
-                QgsSensorThingsExpansionDefinition(
-                    Qgis.SensorThingsEntity.Sensor,
-                    orderBy='description', limit=30),
-                QgsSensorThingsExpansionDefinition(
-                    Qgis.SensorThingsEntity.Datastream,
-                    orderBy='name', limit=-1)
-            ]),
-            '$expand=Locations($orderby=id;$top=3;$expand=Sensors($orderby=description;$top=30;$expand=Datastreams($orderby=name)))'
+            QgsSensorThingsUtils.asQueryString(
+                Qgis.SensorThingsEntity.Location,
+                [
+                    QgsSensorThingsExpansionDefinition(
+                        Qgis.SensorThingsEntity.Thing,
+                        orderBy='id', limit=3),
+                    QgsSensorThingsExpansionDefinition(
+                        Qgis.SensorThingsEntity.Datastream,
+                        orderBy='description', limit=30),
+                    QgsSensorThingsExpansionDefinition(
+                        Qgis.SensorThingsEntity.ObservedProperty,
+                        orderBy='name', limit=-1)
+                ]),
+            '$expand=Things($orderby=id;$top=3;$expand=Datastreams($orderby=description;$top=30;$expand=ObservedProperty($orderby=name)))'
         )
 
     def test_fields_for_expanded_entity(self):
@@ -3920,7 +3952,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
       "properties": {
         "owner": "owner 1"
       },
-      "Things": [
+      "Things":
         {
           "@iot.selfLink": "endpoint/Things(1)",
           "@iot.id": 1,
@@ -3963,8 +3995,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
               }
             }
             ]
-        }
-       ],
+        },
       "location": {
             "type": "Polygon",
             "coordinates": [

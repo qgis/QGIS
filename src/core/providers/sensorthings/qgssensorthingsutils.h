@@ -152,11 +152,26 @@ class CORE_EXPORT QgsSensorThingsUtils
     static QList< Qgis::SensorThingsEntity > expandableTargets( Qgis::SensorThingsEntity type );
 
     /**
-     * Returns a list of \a expansions as a valid SensorThings API query string, eg "$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))".
+     * Returns the cardinality of the relationship between a base entity type and a related entity type.
+     *
+     * \param baseType base entity type
+     * \param relatedType related entity type
+     * \param valid will be set to TRUE if a relationship exists between the entity types, or FALSE if no relationship exists
+     *
+     * \returns relationship cardinality
      *
      * \since QGIS 3.38
      */
-    static QString asQueryString( const QList< QgsSensorThingsExpansionDefinition > &expansions );
+    static Qgis::RelationshipCardinality relationshipCardinality( Qgis::SensorThingsEntity baseType, Qgis::SensorThingsEntity relatedType, bool &valid SIP_OUT );
+
+    /**
+     * Returns a list of \a expansions as a valid SensorThings API query string, eg "$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))".
+     *
+     * The base entity type for the query must be specified.
+     *
+     * \since QGIS 3.38
+     */
+    static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList< QgsSensorThingsExpansionDefinition > &expansions );
 
 };
 
@@ -265,9 +280,11 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     /**
      * Returns the expansion as a valid SensorThings API query string, eg "$expand=Observations($orderby=phenomenonTime desc;$top=10)".
      *
+     * The parent entity type for the expansion must be specified.
+     *
      * Optionally a list of additional query options can be specified for the expansion.
      */
-    QString asQueryString( const QStringList &additionalOptions = QStringList() ) const;
+    QString asQueryString( Qgis::SensorThingsEntity parentEntityType, const QStringList &additionalOptions = QStringList() ) const;
 
     bool operator==( const QgsSensorThingsExpansionDefinition &other ) const;
     bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
