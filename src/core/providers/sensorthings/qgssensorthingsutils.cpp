@@ -122,14 +122,39 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::fromStrin
   return definition;
 }
 
-QString QgsSensorThingsExpansionDefinition::asQueryString( const QStringList &additionalOptions ) const
+QString QgsSensorThingsExpansionDefinition::asQueryString( Qgis::SensorThingsEntity parentEntityType, const QStringList &additionalOptions ) const
 {
   if ( !isValid() )
     return QString();
 
-  // NOTE: from the specifications, it looks look SOMETIMES plural is used, sometimes singular??
-  // We might need to be more flexible here to support all connections
-  QString res = QStringLiteral( "$expand=%1" ).arg( QgsSensorThingsUtils::entityToSetString( mChildEntity ) );
+  bool ok = false;
+  // From the specifications, it SOMETIMES the plural form is used for the expansion query, and sometimes singular.
+  // The choice depends on the cardinality of the relationship between the involved entities.
+  const Qgis::RelationshipCardinality cardinality = QgsSensorThingsUtils::relationshipCardinality( parentEntityType, mChildEntity, ok );
+  QString childEntityString;
+  if ( !ok )
+  {
+    childEntityString = QgsSensorThingsUtils::entityToSetString( mChildEntity );
+  }
+  else
+  {
+    switch ( cardinality )
+    {
+      case Qgis::RelationshipCardinality::OneToOne:
+      case Qgis::RelationshipCardinality::ManyToOne:
+        // use singular strings, eg "Thing"
+        childEntityString = qgsEnumValueToKey( mChildEntity );
+        break;
+
+      case Qgis::RelationshipCardinality::OneToMany:
+      case Qgis::RelationshipCardinality::ManyToMany:
+        // use plural strings, eg "Things"
+        childEntityString = QgsSensorThingsUtils::entityToSetString( mChildEntity );
+        break;
+    }
+  }
+
+  QString res = QStringLiteral( "$expand=%1" ).arg( childEntityString );
 
   QStringList queryOptions;
   if ( !mOrderBy.isEmpty() )
@@ -830,7 +855,228 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
   BUILTIN_UNREACHABLE
 }
 
-QString QgsSensorThingsUtils::asQueryString( const QList<QgsSensorThingsExpansionDefinition> &expansions )
+Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgis::SensorThingsEntity baseType, Qgis::SensorThingsEntity relatedType, bool &valid )
+{
+  valid = true;
+  switch ( baseType )
+  {
+    case Qgis::SensorThingsEntity::Invalid:
+      break;
+
+    case Qgis::SensorThingsEntity::Thing:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Location:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+          break;
+      }
+      break;
+    }
+    case Qgis::SensorThingsEntity::Location:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          break;
+      }
+      break;
+    }
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Location:
+          // The SensorThings specification MAY be wrong here. There's an inconsistency between
+          // the inheritance graph which shows HistoricalLocation linking to "location", when
+          // the text description describes the relationship as linking to "locationS".
+          // We assume the text description is correct and the graph is wrong, as the reverse
+          // relationship between Location and HistoricalLocation is many-to-many.
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Thing:
+          return Qgis::RelationshipCardinality::OneToOne;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::Datastream:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+          return Qgis::RelationshipCardinality::ManyToOne;
+
+        case Qgis::SensorThingsEntity::Observation:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::Sensor:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::ObservedProperty:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Datastream:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+          break;
+      }
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::Observation:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          return Qgis::RelationshipCardinality::ManyToOne;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Observation:
+          break;
+      }
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Observation:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::MultiDatastream:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Sensor:
+          return Qgis::RelationshipCardinality::ManyToOne;
+
+        case Qgis::SensorThingsEntity::ObservedProperty:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Observation:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+          break;
+      }
+      break;
+    }
+  }
+
+  valid = false;
+  return Qgis::RelationshipCardinality::ManyToMany;
+}
+
+QString QgsSensorThingsUtils::asQueryString( Qgis::SensorThingsEntity baseType, const QList<QgsSensorThingsExpansionDefinition> &expansions )
 {
   QString res;
   for ( int i = expansions.size() - 1; i >= 0 ; i-- )
@@ -839,7 +1085,9 @@ QString QgsSensorThingsUtils::asQueryString( const QList<QgsSensorThingsExpansio
     if ( !expansion.isValid() )
       continue;
 
-    res = expansion.asQueryString( res.isEmpty() ? QStringList() : QStringList{ res } );
+    const Qgis::SensorThingsEntity parentType = i > 0 ? expansions.at( i - 1 ).childEntity() : baseType;
+
+    res = expansion.asQueryString( parentType, res.isEmpty() ? QStringList() : QStringList{ res } );
   }
 
   return res;
