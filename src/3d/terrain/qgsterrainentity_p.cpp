@@ -31,7 +31,7 @@
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
-
+#include "qgs3dmapsettings.h"
 
 ///@cond PRIVATE
 
@@ -250,4 +250,39 @@ void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
   }
 }
 
+
+// -----------
+
+QgsTerrainLayer3DRenderer::QgsTerrainLayer3DRenderer()
+{
+}
+
+QString QgsTerrainLayer3DRenderer::type() const
+{
+  return "terrain";
+}
+
+QgsTerrainLayer3DRenderer *QgsTerrainLayer3DRenderer::clone() const
+{
+  return new QgsTerrainLayer3DRenderer();
+}
+
+Qt3DCore::QEntity *QgsTerrainLayer3DRenderer::createEntity( const Qgs3DMapSettings &map3DSettings ) const
+{
+  QgsTerrainEntity *terrainEntity = nullptr;
+  if ( map3DSettings.terrainRenderingEnabled() && map3DSettings.terrainGenerator() )
+  {
+    const double tile0width = map3DSettings.terrainGenerator()->rootChunkExtent().width();
+    const int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, map3DSettings.mapTileResolution(), map3DSettings.maxTerrainGroundError() );
+    const QgsAABB rootBbox = map3DSettings.terrainGenerator()->rootChunkBbox( map3DSettings );
+    const float rootError = map3DSettings.terrainGenerator()->rootChunkError( map3DSettings );
+    const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( map3DSettings.extent(), rootBbox.zMin, rootBbox.zMax, map3DSettings.origin() );
+    map3DSettings.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
+
+    terrainEntity = new QgsTerrainEntity( map3DSettings );
+    terrainEntity->setShowBoundingBoxes( map3DSettings.showTerrainBoundingBoxes() );
+  }
+
+  return terrainEntity;
+}
 /// @endcond

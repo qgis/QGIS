@@ -54,11 +54,6 @@ Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed t
 .. versionadded:: 3.26
 %End
 
-    int terrainPendingJobsCount() const;
-%Docstring
-Returns number of pending jobs of the terrain entity
-%End
-
     int totalPendingJobsCount() const;
 %Docstring
 Returns number of pending jobs for all chunked entities
@@ -137,10 +132,6 @@ Returns a map of 3D map scenes (by name) open in the QGIS application.
     void terrainEntityChanged();
 %Docstring
 Emitted when the current terrain entity is replaced by a new one
-%End
-    void terrainPendingJobsCountChanged();
-%Docstring
-Emitted when the number of terrain's pending jobs changes
 %End
 
     void totalPendingJobsCountChanged();

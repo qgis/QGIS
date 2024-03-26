@@ -84,7 +84,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * Returns terrain entity (may be temporarily NULLPTR)
      * \note Not available in Python bindings
      */
-    QgsTerrainEntity *terrainEntity() SIP_SKIP { return mTerrain; }
+    QgsTerrainEntity *terrainEntity() const SIP_SKIP;
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
@@ -102,9 +102,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \since QGIS 3.26
      */
     QVector<QgsPointXY> viewFrustum2DExtent() const;
-
-    //! Returns number of pending jobs of the terrain entity
-    int terrainPendingJobsCount() const;
 
     /**
      * Returns number of pending jobs for all chunked entities
@@ -205,8 +202,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
-    //! Emitted when the number of terrain's pending jobs changes
-    void terrainPendingJobsCountChanged();
 
     /**
      * Emitted when the total number of pending jobs changes
@@ -286,8 +281,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! Provides a way to have a synchronous function executed each frame
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
-    QgsTerrainEntity *mTerrain = nullptr;
-    QList<Qgs3DMapSceneEntity *> mSceneEntities;
+    QgsMapLayer *mTerrainLayer = nullptr;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer

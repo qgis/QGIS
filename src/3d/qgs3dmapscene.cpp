@@ -79,6 +79,7 @@
 
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
+#include "qgsmeshterraingenerator.h"
 
 std::function< QMap< QString, Qgs3DMapScene * >() > Qgs3DMapScene::sOpenScenesFunction = [] { return QMap< QString, Qgs3DMapScene * >(); };
 
@@ -114,9 +115,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   addCameraRotationCenterEntity( mCameraController );
   updateLights();
 
-  // create terrain entity
-
+  // create terrain entity and other entities from other layers
   createTerrainDeferred();
+
   connect( &map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
@@ -202,6 +203,14 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   on3DAxisSettingsChanged();
 }
 
+QgsTerrainEntity *Qgs3DMapScene::terrainEntity() const
+{
+  if ( mTerrainLayer )
+    return dynamic_cast<QgsTerrainEntity *>( mLayerEntities[mTerrainLayer] );
+
+  return nullptr;
+}
+
 void Qgs3DMapScene::viewZoomFull()
 {
   const QgsDoubleRange yRange = elevationRange();
@@ -266,16 +275,17 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
   return extent;
 }
 
-int Qgs3DMapScene::terrainPendingJobsCount() const
-{
-  return mTerrain ? mTerrain->pendingJobsCount() : 0;
-}
-
 int Qgs3DMapScene::totalPendingJobsCount() const
 {
   int count = 0;
-  for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
-    count += entity->pendingJobsCount();
+  for ( auto it = mLayerEntities.begin(); it != mLayerEntities.end(); ++it )
+  {
+    Qgs3DMapSceneEntity *entity = dynamic_cast<Qgs3DMapSceneEntity *>( it.value() );
+    if ( entity )
+    {
+      count += entity->pendingJobsCount();
+    }
+  }
   return count;
 }
 
@@ -371,8 +381,9 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
     QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
   Qgs3DMapSceneEntity::SceneContext sceneContext = buildSceneContext();
-  for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
+  for ( auto it = mLayerEntities.begin(); it != mLayerEntities.end(); ++it )
   {
+    Qgs3DMapSceneEntity *entity = dynamic_cast<Qgs3DMapSceneEntity *>( it.value() );
     if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
     {
       entity->handleSceneUpdate( sceneContext );
@@ -405,12 +416,16 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
   // Iterate all scene entities to make sure that they will not get
   // clipped by the near or far plane
-  for ( Qgs3DMapSceneEntity *se : std::as_const( mSceneEntities ) )
+  for ( auto it = mLayerEntities.begin(); it != mLayerEntities.end(); ++it )
   {
-    const QgsRange<float> depthRange = se->getNearFarPlaneRange( viewMatrix );
+    Qgs3DMapSceneEntity *sceneEntity = dynamic_cast<Qgs3DMapSceneEntity *>( it.value() );
+    if ( sceneEntity )
+    {
+      const QgsRange<float> depthRange = sceneEntity->getNearFarPlaneRange( viewMatrix );
 
-    fnear = std::min( fnear, depthRange.lower() );
-    ffar = std::max( ffar, depthRange.upper() );
+      fnear = std::min( fnear, depthRange.lower() );
+      ffar = std::max( ffar, depthRange.upper() );
+    }
   }
 
   if ( fnear < 1 )
@@ -474,12 +489,9 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
 void Qgs3DMapScene::createTerrain()
 {
-  if ( mTerrain )
+  if ( mTerrainLayer )
   {
-    mSceneEntities.removeOne( mTerrain );
-
-    delete mTerrain;
-    mTerrain = nullptr;
+    removeLayerEntity( mTerrainLayer );
   }
 
   if ( !mTerrainUpdateScheduled )
@@ -497,30 +509,22 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
+  if ( mMap.terrainRenderingEnabled() )
   {
-    double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
-    int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
-    QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
-    float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-    const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), rootBbox.zMin, rootBbox.zMax, mMap.origin() );
-    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
-
-    mTerrain = new QgsTerrainEntity( mMap );
-    mTerrain->setParent( this );
-    mTerrain->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
-
-    mSceneEntities << mTerrain;
-
-    connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
-    connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
-  }
-  else
-  {
-    mTerrain = nullptr;
+    if ( !mTerrainLayer )
+    {
+      Qgis::LayerType type;
+      if ( dynamic_cast<QgsMeshTerrainGenerator *>( mMap.terrainGenerator() ) )
+        type = Qgis::LayerType::Mesh;
+      else
+        type = Qgis::LayerType::Raster;
+      mTerrainLayer = new QgsDummyLayer( type, "technicalTerrainLayer" );
+      mTerrainLayer->setRenderer3D( new QgsTerrainLayer3DRenderer() );
+    }
+    addLayerEntity( mTerrainLayer );
   }
 
-  // make sure that renderers for layers are re-created as well
+  // make sure that renderers for layers are re-created as well to handle new terrain properties
   const QList<QgsMapLayer *> layers = mMap.layers();
   for ( QgsMapLayer *layer : layers )
   {
@@ -568,6 +572,9 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
   Q_ASSERT( layer );
 
+  if ( layer == mTerrainLayer )
+    return;
+
   // remove old entity - if any
   removeLayerEntity( layer );
 
@@ -595,6 +602,9 @@ void Qgs3DMapScene::onLayersChanged()
   // what is left in layersBefore are layers that have been removed
   for ( QgsMapLayer *layer : std::as_const( layersBefore ) )
   {
+    if ( layer == mTerrainLayer )
+      continue;
+
     removeLayerEntity( layer );
   }
 
@@ -693,7 +703,6 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       if ( Qgs3DMapSceneEntity *sceneNewEntity = qobject_cast<Qgs3DMapSceneEntity *>( newEntity ) )
       {
         needsSceneUpdate = true;
-        mSceneEntities.append( sceneNewEntity );
 
         connect( sceneNewEntity, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
         {
@@ -718,13 +727,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
-
-  if ( layer->type() == Qgis::LayerType::Mesh )
+  else if ( layer->type() == Qgis::LayerType::Mesh )
   {
     connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
-
-  if ( layer->type() == Qgis::LayerType::PointCloud )
+  else if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -736,13 +743,16 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 {
   Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
 
-  if ( Qgs3DMapSceneEntity *sceneEntity = qobject_cast<Qgs3DMapSceneEntity *>( entity ) )
-  {
-    mSceneEntities.removeOne( sceneEntity );
-  }
+  mLayerEntities.remove( layer );
 
   if ( entity )
+  {
+    if ( Qgs3DMapSceneEntity *sceneEntity = qobject_cast<Qgs3DMapSceneEntity *>( entity ) )
+    {
+      disconnect( sceneEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+    }
     entity->deleteLater();
+  }
 
   disconnect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
@@ -753,17 +763,19 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     disconnect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     mModelVectorLayers.removeAll( layer );
   }
-
-  if ( layer->type() == Qgis::LayerType::Mesh )
+  else if ( layer->type() == Qgis::LayerType::Mesh )
   {
     disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
-
-  if ( layer->type() == Qgis::LayerType::PointCloud )
+  else if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+  else if ( layer == mTerrainLayer )
+  {
+    mTerrainLayer = nullptr;
   }
 }
 
@@ -902,9 +914,10 @@ void Qgs3DMapScene::updateSceneState()
     return;
   }
 
-  for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
+  for ( auto it = mLayerEntities.begin(); it != mLayerEntities.end(); ++it )
   {
-    if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
+    Qgs3DMapSceneEntity *entity = dynamic_cast<Qgs3DMapSceneEntity *>( it.value() );
+    if ( entity && entity->isEnabled() && entity->pendingJobsCount() > 0 )
     {
       setSceneState( Updating );
       return;
@@ -1052,8 +1065,8 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     }
   }
 
-  if ( mTerrain )
-    exporter.parseTerrain( mTerrain, "Terrain" );
+  if ( mTerrainLayer )
+    exporter.parseTerrain( terrainEntity(), "Terrain" );
 
   exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
 
@@ -1088,9 +1101,9 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
 {
   double yMin = std::numeric_limits< double >::max();
   double yMax = std::numeric_limits< double >::lowest();
-  if ( mMap.terrainRenderingEnabled() && mTerrain )
+  if ( mMap.terrainRenderingEnabled() && mTerrainLayer )
   {
-    const QgsAABB bbox = mTerrain->rootNode()->bbox();
+    const QgsAABB bbox = terrainEntity()->rootNode()->bbox();
     yMin = std::min( yMin, static_cast< double >( bbox.yMin ) );
     yMax = std::max( yMax, static_cast< double >( bbox.yMax ) );
   }

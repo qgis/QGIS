@@ -34,6 +34,7 @@
 
 #include <memory>
 
+#include "qgsabstract3drenderer.h"
 
 namespace Qt3DCore
 {
@@ -111,6 +112,27 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
     int mJobId;
 };
+
+/**
+ * \ingroup core
+ * \brief 3D renderer that renders all mesh triangles of a mesh layer.
+ * \since QGIS 3.6
+ */
+class _3D_EXPORT QgsTerrainLayer3DRenderer : public QgsAbstract3DRenderer
+{
+  public:
+    //! Takes ownership of the symbol object
+    explicit QgsTerrainLayer3DRenderer();
+
+    QString type() const override;
+    QgsTerrainLayer3DRenderer *clone() const override SIP_FACTORY;
+    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
+
+    void writeXml( QDomElement &, const QgsReadWriteContext & ) const override {}
+    void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}
+    void resolveReferences( const QgsProject & ) override {}
+};
+
 
 /// @endcond
 
