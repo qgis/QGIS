@@ -162,7 +162,7 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
 
   QString fileName = QFileDialog::getOpenFileName(
                        this,
-                       tr( "Load layer properties from style file" ),
+                       tr( "Load Layer Properties from Style File" ),
                        lastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml)" );
   if ( fileName.isEmpty() )
@@ -198,7 +198,7 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
 
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,
-                             tr( "Save layer properties as style file" ),
+                             tr( "Save Layer Properties as Style File" ),
                              lastUsedDir,
                              tr( "QGIS Layer Style File" ) + " (*.qml)" );
   // return dialog focus on Mac
@@ -369,7 +369,7 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
         QString errorMessage;
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
         {
-          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+          if ( QMessageBox::question( nullptr, QObject::tr( "Save Style to Database" ),
                                       QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
                                       QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
           {
@@ -378,7 +378,7 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
         }
         else if ( !errorMessage.isEmpty() )
         {
-          QMessageBox::warning( nullptr, QObject::tr( "Save style in database" ),
+          QMessageBox::warning( nullptr, QObject::tr( "Save Style to Database" ),
                                 errorMessage );
           return;
         }
@@ -441,13 +441,13 @@ void QgsLayerPropertiesDialog::saveStyleAs()
       }
       case DatasourceDatabase:
       {
-        QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( mLayer->providerType() );
+        QString infoWindowTitle = QObject::tr( "Save Style to DB (%1)" ).arg( mLayer->providerType() );
 
         QgsMapLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
         {
-          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+          if ( QMessageBox::question( nullptr, QObject::tr( "Save Style to Database" ),
                                       QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
                                       QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
           {
@@ -474,7 +474,7 @@ void QgsLayerPropertiesDialog::saveStyleAs()
       }
       case UserDatabase:
       {
-        QString infoWindowTitle = tr( "Save default style to local database" );
+        QString infoWindowTitle = tr( "Save Default Style to Local Database" );
         errorMessage = mLayer->saveDefaultStyle( defaultLoadedFlag, dlg.styleCategories() );
         if ( !defaultLoadedFlag )
         {

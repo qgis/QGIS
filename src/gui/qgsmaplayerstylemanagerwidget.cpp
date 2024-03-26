@@ -305,7 +305,7 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
       break;
 
     case Qgis::LayerType::Raster:
-      QgsRasterLayerProperties( mLayer, mMapCanvas ).loadStyleFromFile();
+      QgsRasterLayerProperties( mLayer, mMapCanvas ).loadStyle();
       break;
 
     case Qgis::LayerType::Mesh:
