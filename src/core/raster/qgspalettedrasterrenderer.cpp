@@ -41,21 +41,33 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
   : QgsRasterRenderer( input, QStringLiteral( "paletted" ) )
   , mBand( bandNumber )
 {
+
+  QHash<QString, QHash<QColor, QVector<QVariant>>> classData;
+  // Prepare for the worst case, where we have to store all the values for each class
+  classData.reserve( classes.size() );
+  // This is to keep the ordering of the labels, because hash is fast but unordered
+  QVector<QString> labels;
+  labels.reserve( classes.size() );
+
   for ( const Class &klass : std::as_const( classes ) )
   {
-    MultiValueClassData::iterator it = std::find_if( mMultiValueClassData.begin(), mMultiValueClassData.end(), [&klass]( const MultiValueClass & val ) -> bool
+    if ( !classData.contains( klass.label ) )
     {
-      return val.label == klass.label && val.color == klass.color ;
-    } );
-    if ( it != mMultiValueClassData.end() )
-    {
-      it->values.push_back( klass.value );
+      labels.push_back( klass.label );
     }
-    else
+    classData[klass.label][klass.color].push_back( klass.value );
+  }
+
+  mMultiValueClassData.reserve( classData.size() );
+
+  for ( auto labelIt = labels.constBegin(); labelIt != labels.constEnd(); ++labelIt )
+  {
+    for ( auto colorIt = classData[*labelIt].constBegin(); colorIt != classData[*labelIt].constEnd(); ++colorIt )
     {
-      mMultiValueClassData.push_back( MultiValueClass{ { klass.value }, klass.color, klass.label } );
+      mMultiValueClassData.push_back( MultiValueClass{ colorIt.value(), colorIt.key(), *labelIt } );
     }
   }
+
   updateArrays();
 }
 
