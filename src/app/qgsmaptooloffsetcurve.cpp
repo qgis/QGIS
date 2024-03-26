@@ -17,6 +17,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmaptooloffsetcurve.h"
@@ -345,6 +346,30 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
     return;
 
   destLayer->beginEditCommand( tr( "Offset curve" ) );
+
+  QgsAvoidIntersectionsOperation avoidIntersections;
+
+  connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
+
+  const QSet<QgsFeatureId> ignoredFeatures = ( modifiers & Qt::ControlModifier ) ?
+      QSet<QgsFeatureId>() :
+      QSet<QgsFeatureId>( {mModifiedFeature} );
+
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = {{ destLayer, {ignoredFeatures} }};
+
+  const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( destLayer, mModifiedFeature, mModifiedGeometry, ignoreFeatures );
+
+  if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || mModifiedGeometry.isEmpty() )
+  {
+    const QString errorMessage = ( mModifiedGeometry.isEmpty() ) ?
+                                 tr( "The feature cannot be modified because the resulting geometry would be empty" ) :
+                                 tr( "An error was reported during intersection removal" );
+
+    emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
+    destLayer->destroyEditCommand();
+    cancel();
+    return;
+  }
 
   bool editOk = true;
   if ( !mCtrlHeldOnFirstClick && !( modifiers & Qt::ControlModifier ) )

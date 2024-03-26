@@ -15,6 +15,7 @@
 
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -217,6 +218,13 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         request.setFilterFids( mMovedFeatures ).setNoAttributes();
         QgsFeatureIterator fi = vlayer->getFeatures( request );
         QgsFeature f;
+
+        QgsAvoidIntersectionsOperation avoidIntersections;
+        connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
+
+        // when removing intersections don't check for intersections with selected features
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{ vlayer, mMovedFeatures }};
+
         while ( fi.nextFeature( f ) )
         {
           if ( !f.hasGeometry() )
@@ -227,6 +235,23 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             continue;
 
           const QgsFeatureId id = f.id();
+
+          if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
+          {
+            const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, id, geom, ignoreFeatures );
+
+            if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
+            {
+              const QString errorMessage = ( geom.isEmpty() ) ?
+                                           tr( "The feature cannot be moved because the resulting geometry would be empty" ) :
+                                           tr( "An error was reported during intersection removal" );
+
+              emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
+              vlayer->destroyEditCommand();
+              return;
+            }
+          }
+
           vlayer->changeGeometry( id, geom );
 
           if ( QgsProject::instance()->topologicalEditing() )
