@@ -1888,7 +1888,8 @@ The development version
     enum class MeshElevationMode /BaseType=IntEnum/
     {
       FixedElevationRange,
-      FromVertices
+      FromVertices,
+      FixedRangePerGroup,
     };
 
     enum class BetweenLineConstraint /BaseType=IntEnum/

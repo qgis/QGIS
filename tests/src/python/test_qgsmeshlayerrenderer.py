@@ -81,6 +81,72 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
                 map_settings)
         )
 
+    def test_render_fixed_range_per_group_with_z_range_filter(self):
+        """
+        Test rendering a mesh with a fixed range per group when
+        map settings has a z range filter
+        """
+        layer = QgsMeshLayer(
+            self.get_test_data_path(
+                'mesh/netcdf_parent_quantity.nc').as_posix(),
+            'mesh',
+            'mdal'
+        )
+        self.assertTrue(layer.isValid())
+
+        # set layer as elevation enabled
+        layer.elevationProperties().setMode(
+            Qgis.MeshElevationMode.FixedRangePerGroup
+        )
+        layer.elevationProperties().setFixedRangePerGroup(
+            {1: QgsDoubleRange(33, 38),
+             2: QgsDoubleRange(35, 40),
+             3: QgsDoubleRange(40, 48)}
+        )
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(layer.crs())
+        map_settings.setExtent(layer.extent())
+        map_settings.setLayers([layer])
+
+        # no filter on map settings
+        map_settings.setZRange(QgsDoubleRange())
+        self.assertTrue(
+            self.render_map_settings_check(
+                'No Z range filter on map settings, elevation range per group',
+                'elevation_range_per_group_no_filter',
+                map_settings)
+        )
+
+        # map settings range matches group 3 only
+        map_settings.setZRange(QgsDoubleRange(40.5, 49.5))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings matches group 3 only',
+                'elevation_range_per_group_match3',
+                map_settings)
+        )
+
+        # map settings range matches group 1 and 2
+        map_settings.setZRange(QgsDoubleRange(33, 39.5))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings matches group 1 and 2',
+                'elevation_range_per_group_match1and2',
+                map_settings)
+        )
+
+        # map settings range excludes layer's range
+        map_settings.setZRange(QgsDoubleRange(130, 135))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings outside of layer group ranges',
+                'fixed_elevation_range_excluded',
+                map_settings)
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
