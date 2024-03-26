@@ -3223,7 +3223,8 @@ Qgis.RasterElevationMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MeshElevationMode.FixedElevationRange.__doc__ = "Layer has a fixed elevation range"
 Qgis.MeshElevationMode.FromVertices.__doc__ = "Elevation should be taken from mesh vertices"
-Qgis.MeshElevationMode.__doc__ = "Mesh layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.MeshElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``FromVertices``: ' + Qgis.MeshElevationMode.FromVertices.__doc__
+Qgis.MeshElevationMode.FixedRangePerGroup.__doc__ = "Layer has a fixed (manually specified) elevation range per group"
+Qgis.MeshElevationMode.__doc__ = "Mesh layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.MeshElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``FromVertices``: ' + Qgis.MeshElevationMode.FromVertices.__doc__ + '\n' + '* ``FixedRangePerGroup``: ' + Qgis.MeshElevationMode.FixedRangePerGroup.__doc__
 # --
 Qgis.MeshElevationMode.baseClass = Qgis
 # monkey patching scoped based enum
