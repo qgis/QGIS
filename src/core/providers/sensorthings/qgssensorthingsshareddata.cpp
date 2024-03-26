@@ -34,28 +34,21 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   const QVariantMap uriParts = QgsSensorThingsProviderMetadata().decodeUri( uri );
 
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
-  const QStringList expandTo = uriParts.value( QStringLiteral( "expandTo" ) ).toStringList();
-  QStringList expandQueryParts;
-  for ( const QString &expand : expandTo )
+  const QVariantList expandTo = uriParts.value( QStringLiteral( "expandTo" ) ).toList();
+  QList< Qgis::SensorThingsEntity > expandedEntities;
+  for ( const QVariant &expansionVariant : expandTo )
   {
-    const Qgis::SensorThingsEntity expandToEntityType = qgsEnumKeyToValue( expand, Qgis::SensorThingsEntity::Invalid );
-    if ( expandToEntityType != Qgis::SensorThingsEntity::Invalid )
+    const QgsSensorThingsExpansionDefinition expansion = expansionVariant.value< QgsSensorThingsExpansionDefinition >();
+    if ( expansion.isValid() )
     {
-      mExpandTo.append( expandToEntityType );
-      // NOTE: from the specifications, it looks look SOMETIMES plural is used, sometimes singular??
-      // We might need to be more flexible here to support all connections
-      expandQueryParts.append( QgsSensorThingsUtils::entityToSetString( expandToEntityType ) );
+      mExpansions.append( expansion );
+      expandedEntities.append( expansion.childEntity() );
     }
-  }
-  mExpansionLimit = uriParts.value( QStringLiteral( "expansionLimit" ) ).toInt();
-  if ( !expandQueryParts.empty() )
-  {
-    mExpandQueryString = QStringLiteral( "$expand=" ) + expandQueryParts.join( '/' );
-    if ( mExpansionLimit > 0 )
-      mExpandQueryString += QStringLiteral( "($top=%1)" ).arg( mExpansionLimit );
+
+    mExpandQueryString = QgsSensorThingsUtils::asQueryString( mExpansions );
   }
 
-  mFields = QgsSensorThingsUtils::fieldsForExpandedEntityType( mEntityType, mExpandTo );
+  mFields = QgsSensorThingsUtils::fieldsForExpandedEntityType( mEntityType, expandedEntities );
 
   mGeometryField = QgsSensorThingsUtils::geometryFieldForEntityType( mEntityType );
   // use initial value of maximum page size as default
@@ -190,7 +183,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   // MISSING PART -- how to handle feature count when we are expanding features?
   // This situation is not handled by the SensorThings standard at all, so we'll just have
   // to return an unknown count whenever expansion is used
-  if ( !mExpandTo.isEmpty() )
+  if ( !mExpansions.isEmpty() )
   {
     return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
   }
@@ -414,7 +407,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
   const QString authcfg = mAuthCfg;
   const QgsHttpHeaders headers = mHeaders;
   const QgsFields fields = mFields;
-  const QList< Qgis::SensorThingsEntity > expandTo = mExpandTo;
+  const QList< QgsSensorThingsExpansionDefinition > expansions = mExpansions;
 
   while ( continueFetchingCallback() )
   {
@@ -587,7 +580,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               };
 
               const QString iotId = getString( featureData, "@iot.id" ).toString();
-              if ( expandTo.isEmpty() )
+              if ( expansions.isEmpty() )
               {
                 auto existingFeatureIdIt = mIotIdToFeatureId.constFind( iotId );
                 if ( existingFeatureIdIt != mIotIdToFeatureId.constEnd() )
@@ -757,17 +750,17 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               };
 
               const QString baseFeatureId = getString( featureData, "@iot.id" ).toString();
-              if ( !expandTo.empty() )
+              if ( !expansions.empty() )
               {
                 mRetrievedBaseFeatureCount++;
 
-                std::function< void( const nlohmann::json &, const QList<Qgis::SensorThingsEntity > &, const QString &, const QgsAttributes & ) > traverseExpansion;
-                traverseExpansion = [this, &feature, &getString, &traverseExpansion, &fetchedFeatureCallback, &extendAttributes, &processFeature]( const nlohmann::json & currentLevelData, const QList<Qgis::SensorThingsEntity > &expansionTargets, const QString & lowerLevelId, const QgsAttributes & lowerLevelAttributes )
+                std::function< void( const nlohmann::json &, const QList<QgsSensorThingsExpansionDefinition > &, const QString &, const QgsAttributes & ) > traverseExpansion;
+                traverseExpansion = [this, &feature, &getString, &traverseExpansion, &fetchedFeatureCallback, &extendAttributes, &processFeature]( const nlohmann::json & currentLevelData, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString & lowerLevelId, const QgsAttributes & lowerLevelAttributes )
                 {
-                  const Qgis::SensorThingsEntity currentExpansionTarget = expansionTargets.at( 0 );
-                  const QList< Qgis::SensorThingsEntity > remainingExpansionTargets = expansionTargets.mid( 1 );
+                  const QgsSensorThingsExpansionDefinition currentExpansionTarget = expansionTargets.at( 0 );
+                  const QList< QgsSensorThingsExpansionDefinition > remainingExpansionTargets = expansionTargets.mid( 1 );
 
-                  const QString currentExpansionPropertyString = QgsSensorThingsUtils::entityToSetString( currentExpansionTarget );
+                  const QString currentExpansionPropertyString = QgsSensorThingsUtils::entityToSetString( currentExpansionTarget.childEntity() );
                   if ( currentLevelData.contains( currentExpansionPropertyString.toLocal8Bit().constData() ) )
                   {
                     const auto &expandedEntity = currentLevelData[currentExpansionPropertyString.toLocal8Bit().constData()];
@@ -790,8 +783,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                           }
                         }
 
-
-                        extendAttributes( currentExpansionTarget, expandedEntityElement, expandedAttributes );
+                        extendAttributes( currentExpansionTarget.childEntity(), expandedEntityElement, expandedAttributes );
                         if ( !remainingExpansionTargets.empty() )
                         {
                           // traverse deeper
@@ -817,7 +809,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                   }
                 };
 
-                traverseExpansion( featureData, expandTo, baseFeatureId, attributes );
+                traverseExpansion( featureData, expansions, baseFeatureId, attributes );
 
                 if ( mFeatureLimit > 0 && mFeatureLimit <= mRetrievedBaseFeatureCount )
                   break;

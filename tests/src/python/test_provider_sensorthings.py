@@ -22,7 +22,8 @@ from qgis.core import (
     QgsSettings,
     QgsSensorThingsUtils,
     QgsFeatureRequest,
-    QgsRectangle
+    QgsRectangle,
+    QgsSensorThingsExpansionDefinition
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -230,6 +231,196 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             "MultiDatastreams",
         )
 
+    def test_expansion_definition(self):
+        """
+        Test QgsSensorThingsExpansionDefinition
+        """
+        expansion = QgsSensorThingsExpansionDefinition()
+        self.assertFalse(expansion.isValid())
+        self.assertFalse(expansion.asQueryString())
+
+        # test getters/setters
+        expansion = QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertTrue(expansion.isValid())
+        self.assertEqual(expansion.childEntity(), Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertEqual(expansion.limit(), 100)
+        self.assertEqual(repr(expansion), '<QgsSensorThingsExpansionDefinition: ObservedProperty limit 100>')
+        self.assertEqual(expansion.asQueryString(), '$expand=ObservedProperties($top=100)')
+        self.assertEqual(expansion.asQueryString(['$expand=Locations($top=101)']),
+                         '$expand=ObservedProperties($top=100;$expand=Locations($top=101))')
+
+        expansion.setChildEntity(Qgis.SensorThingsEntity.Location)
+        self.assertEqual(expansion.childEntity(),
+                         Qgis.SensorThingsEntity.Location)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location limit 100>')
+        self.assertEqual(expansion.asQueryString(),
+                         '$expand=Locations($top=100)')
+        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($top=100;$expand=Datastreams($top=101))')
+
+        expansion.setLimit(-1)
+        self.assertEqual(expansion.limit(), -1)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location>')
+        self.assertEqual(expansion.asQueryString(),
+                         '$expand=Locations')
+        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($expand=Datastreams($top=101))')
+
+        expansion.setOrderBy('id')
+        self.assertEqual(expansion.orderBy(), 'id')
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (asc)>')
+        self.assertEqual(expansion.asQueryString(),
+                         '$expand=Locations($orderby=id)')
+        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id;$expand=Datastreams($top=101))')
+        expansion.setSortOrder(Qt.SortOrder.DescendingOrder)
+        self.assertEqual(expansion.sortOrder(), Qt.SortOrder.DescendingOrder)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (desc)>')
+        self.assertEqual(expansion.asQueryString(),
+                         '$expand=Locations($orderby=id desc)')
+        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id desc;$expand=Datastreams($top=101))')
+
+        expansion.setLimit(3)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (desc), limit 3>')
+        self.assertEqual(expansion.asQueryString(),
+                         '$expand=Locations($orderby=id desc;$top=3)')
+        self.assertEqual(expansion.asQueryString(['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))')
+
+        # test equality
+        expansion1 = QgsSensorThingsExpansionDefinition(
+            Qgis.SensorThingsEntity.ObservedProperty)
+        expansion2 = QgsSensorThingsExpansionDefinition(
+            Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertEqual(expansion1, expansion2)
+        self.assertNotEqual(expansion1, QgsSensorThingsExpansionDefinition())
+        self.assertNotEqual(QgsSensorThingsExpansionDefinition(), expansion2)
+        self.assertEqual(QgsSensorThingsExpansionDefinition(),
+                         QgsSensorThingsExpansionDefinition())
+
+        expansion2.setChildEntity(Qgis.SensorThingsEntity.Sensor)
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setChildEntity(Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setOrderBy('x')
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setOrderBy('')
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setSortOrder(Qt.SortOrder.DescendingOrder)
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setSortOrder(Qt.SortOrder.AscendingOrder)
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setLimit(33)
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setLimit(100)
+        self.assertEqual(expansion1, expansion2)
+
+        # test to/from string
+        expansion = QgsSensorThingsExpansionDefinition()
+        string = expansion.toString()
+        self.assertFalse(string)
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertFalse(res.isValid())
+
+        expansion.setChildEntity(Qgis.SensorThingsEntity.Sensor)
+        expansion.setLimit(-1)
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertFalse(res.orderBy())
+        self.assertEqual(res.limit(), -1)
+
+        expansion.setOrderBy('test')
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertEqual(res.orderBy(), 'test')
+        self.assertEqual(res.sortOrder(), Qt.SortOrder.AscendingOrder)
+        self.assertEqual(res.limit(), -1)
+
+        expansion.setSortOrder(Qt.SortOrder.DescendingOrder)
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertEqual(res.orderBy(), 'test')
+        self.assertEqual(res.sortOrder(), Qt.SortOrder.DescendingOrder)
+        self.assertEqual(res.limit(), -1)
+
+        expansion.setLimit(5)
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertEqual(res.orderBy(), 'test')
+        self.assertEqual(res.sortOrder(), Qt.SortOrder.DescendingOrder)
+        self.assertEqual(res.limit(), 5)
+
+        expansion.setOrderBy('')
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertFalse(res.orderBy())
+        self.assertEqual(res.limit(), 5)
+
+    def test_expansions_as_query_string(self):
+        """
+        Test constructing query strings from a list of expansions
+        """
+        self.assertFalse(
+            QgsSensorThingsUtils.asQueryString([])
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString([
+                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
+                                                   orderBy='id', limit=3)
+            ]),
+            '$expand=Locations($orderby=id;$top=3)'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString([
+                QgsSensorThingsExpansionDefinition(),
+                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
+                                                   orderBy='id', limit=3)
+            ]),
+            '$expand=Locations($orderby=id;$top=3)'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString([
+                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
+                                                   orderBy='id', limit=3),
+                QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Sensor,
+                    orderBy='description', limit=30)
+            ]),
+            '$expand=Locations($orderby=id;$top=3;$expand=Sensors($orderby=description;$top=30))'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString([
+                QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Location,
+                                                   orderBy='id', limit=3),
+                QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Sensor,
+                    orderBy='description', limit=30),
+                QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Datastream,
+                    orderBy='name', limit=-1)
+            ]),
+            '$expand=Locations($orderby=id;$top=3;$expand=Sensors($orderby=description;$top=30;$expand=Datastreams($orderby=name)))'
+        )
+
     def test_fields_for_expanded_entity(self):
         """
         Test calculating fields for an expanded entity
@@ -273,14 +464,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         """
         self.assertEqual(QgsSensorThingsUtils.expandableTargets(
             Qgis.SensorThingsEntity.Thing),
-            [[Qgis.SensorThingsEntity.HistoricalLocation],
-             [Qgis.SensorThingsEntity.Datastream],
-             [Qgis.SensorThingsEntity.Datastream,
-             Qgis.SensorThingsEntity.Sensor],
-             [Qgis.SensorThingsEntity.Datastream,
-              Qgis.SensorThingsEntity.ObservedProperty],
-             [Qgis.SensorThingsEntity.Datastream,
-              Qgis.SensorThingsEntity.Observation]]
+            [Qgis.SensorThingsEntity.HistoricalLocation,
+             Qgis.SensorThingsEntity.Datastream
+             ]
         )
 
     def test_filter_for_extent(self):
@@ -3707,7 +3893,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$expand=Things/Datastreams&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                         "/Locations?$top=2&$count=false&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -3877,7 +4063,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     }
   ],
-  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things/Datastreams&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
 }
                 """.replace(
                         "endpoint", "http://" + endpoint
@@ -3886,7 +4072,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
                 with open(
                     sanitize(endpoint,
-                             "/Locations?$top=2&$skip=2&$expand=Things/Datastreams&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                             "/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -3975,7 +4161,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='Location' expandTo='Thing,Datastream'",
+                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='Location' expandTo='Thing;Datastream'",
                 "test",
                 "sensorthings",
             )
@@ -4162,7 +4348,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$expand=Things/Datastreams($top=1)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                         "/Locations?$top=2&$count=false&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -4289,7 +4475,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     }
   ],
-  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things/Datastreams($top=1)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
 }
                 """.replace(
                         "endpoint", "http://" + endpoint
@@ -4298,7 +4484,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
                 with open(
                     sanitize(endpoint,
-                             "/Locations?$top=2&$skip=2&$expand=Things/Datastreams($top=1)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                             "/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -4371,7 +4557,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='Location' expansionLimit=1 expandTo='Thing,Datastream'",
+                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='Location' expandTo='Thing;Datastream:limit=1'",
                 "test",
                 "sensorthings",
             )
@@ -4603,7 +4789,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             },
         )
 
-        uri = "url='https://sometest.com/api' type=MultiPolygonZ authcfg='abc' expandTo='Thing,Datastream' expansionLimit=30 entity='Location'"
+        uri = "url='https://sometest.com/api' type=MultiPolygonZ authcfg='abc' expandTo='Thing:orderby=description,asc:limit=5;Datastream:orderby=time,asc:limit=3' entity='Location'"
         parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
         self.assertEqual(
             parts,
@@ -4612,8 +4798,12 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "entity": "Location",
                 "geometryType": "polygon",
                 "authcfg": "abc",
-                'expansionLimit': 30,
-                "expandTo": ['Thing', 'Datastream']
+                "expandTo": [QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Thing, orderBy='description',
+                    limit=5),
+                    QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Datastream,
+                    orderBy='time', limit=3)],
             },
         )
 
@@ -4714,13 +4904,13 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             "authcfg": "aaaaa",
             "entity": "location",
             "geometryType": "polygon",
-            "expandTo": ["Thing", "Datastream"],
-            'expansionLimit': 30
+            "expandTo": [QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Thing, orderBy='description', limit=5),
+                         QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Datastream, orderBy='time', limit=3)]
         }
         uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
         self.assertEqual(
             uri,
-            "authcfg=aaaaa type=MultiPolygonZ entity='Location' expandTo='Thing,Datastream' expansionLimit='30' url='http://blah.com'",
+            "authcfg=aaaaa type=MultiPolygonZ entity='Location' expandTo='Thing:orderby=description,asc:limit=5;Datastream:orderby=time,asc:limit=3' url='http://blah.com'",
         )
 
 
