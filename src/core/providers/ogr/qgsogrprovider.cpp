@@ -1002,7 +1002,7 @@ void QgsOgrProvider::loadMetadata()
                 QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
                 QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );
 
-        if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+        if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql.toUtf8().constData() ) )
         {
           gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
           if ( f )
