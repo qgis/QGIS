@@ -106,7 +106,11 @@ void QgsExpressionContextScope::addVariable( const QgsExpressionContextScope::St
 
 bool QgsExpressionContextScope::removeVariable( const QString &name )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  return mVariables.remove( name );
+#else
   return mVariables.remove( name ) > 0;
+#endif
 }
 
 bool QgsExpressionContextScope::hasVariable( const QString &name ) const
