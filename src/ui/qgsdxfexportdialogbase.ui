@@ -147,14 +147,14 @@
      <item row="0" column="2">
       <widget class="QPushButton" name="mSelectDataDefinedBlocks">
        <property name="text">
-        <string>Select Data DefinedBlocks</string>
+        <string>Select Data Defined Blocks</string>
        </property>
       </widget>
      </item>
      <item row="0" column="3">
       <widget class="QPushButton" name="mDeselectDataDefinedBlocks">
        <property name="text">
-        <string>Deselect Data DefinedBlocks</string>
+        <string>Deselect Data Defined Blocks</string>
        </property>
       </widget>
      </item>
