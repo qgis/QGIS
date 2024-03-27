@@ -45,8 +45,9 @@
 #include "qgsmapcanvasutils.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsactionmenu.h"
-
+#include "qgsfieldcalculator.h"
 
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
@@ -953,6 +954,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( hide, &QAction::triggered, this, &QgsDualView::hideColumn );
   hide->setData( col );
   mHorizontalHeaderMenu->addAction( hide );
+
   QAction *setWidth = new QAction( tr( "&Set Width…" ), mHorizontalHeaderMenu );
   connect( setWidth, &QAction::triggered, this, &QgsDualView::resizeColumn );
   setWidth->setData( col );
@@ -980,6 +982,33 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   QAction *sort = new QAction( tr( "&Sort…" ), mHorizontalHeaderMenu );
   connect( sort, &QAction::triggered, this, [ = ]() {modifySort();} );
   mHorizontalHeaderMenu->addAction( sort );
+
+  mConfig.update( mLayer->fields() );
+  // get layer field index from column name
+  const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
+  const QgsFields::FieldOrigin fieldOrigin  = mLayer->fields().fieldOrigin( fieldIndex );
+
+  mHorizontalHeaderMenu->addSeparator();
+  bool fieldCalculatorEnabled = false;
+
+  if ( fieldOrigin == QgsFields::OriginProvider || fieldOrigin == QgsFields::OriginEdit )
+    fieldCalculatorEnabled = true;
+
+  if ( fieldOrigin == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() )
+      fieldCalculatorEnabled = true;
+  }
+
+  QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
+  connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
+  fieldCalculator->setData( fieldIndex );
+  mHorizontalHeaderMenu->addAction( fieldCalculator );
+
+  fieldCalculator->setEnabled( fieldCalculatorEnabled );
 
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
 }
@@ -1020,6 +1049,21 @@ void QgsDualView::hideColumn()
   {
     config.setColumnHidden( sourceCol, true );
     setAttributeTableConfig( config );
+  }
+}
+
+void QgsDualView::fieldCalculator()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  const int fieldIndex = action->data().toInt();
+  mConfig.update( mLayer->fields() );
+  QgsFieldCalculator calc( mLayer, this, fieldIndex );
+  if ( calc.exec() == QDialog::Accepted )
+  {
+    int col = mMasterModel->fieldCol( calc.changedAttributeId() );
+
+    if ( col >= 0 )
+      mMasterModel->reload( mMasterModel->index( 0, col ), mMasterModel->index( mMasterModel->rowCount() - 1, col ) );
   }
 }
 
