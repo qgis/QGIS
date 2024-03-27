@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayerDefinition
      * \param project the current project
      * \param rootGroup the layer tree group to insert the qlr content
      * \param errorMessage the returned error message
-     * \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted
+     * \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
      * \return true in case of success
     */
     static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
