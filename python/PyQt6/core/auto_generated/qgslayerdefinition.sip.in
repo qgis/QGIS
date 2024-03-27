@@ -26,20 +26,21 @@ files also store the layer tree info for the exported layers, including group in
 %End
   public:
 
-    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0 );
+    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0 );
 %Docstring
 Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
 
 :param path: file path to the qlr
 :param project: the current project
 :param rootGroup: the layer tree group to insert the qlr content
-:param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted
+:param insertMethod: method for layer tree (since QGIS 3.38)
+:param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
 
 :return: - true in case of success
          - errorMessage: the returned error message
 %End
 
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, QgsReadWriteContext &context, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0 );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0 );
 %Docstring
 Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
 
@@ -47,7 +48,8 @@ Loads the QLR from the XML document.  New layers are added to given project into
 :param project: the current project
 :param rootGroup: the layer tree group to insert the qlr content
 :param context: the read write context
-:param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted
+:param insertMethod: method for layer tree (since QGIS 3.38)
+:param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
 
 :return: - true in case of success
          - errorMessage: the returned error message

@@ -10791,8 +10791,11 @@ void QgisApp::pasteLayer()
       root = QgsProject::instance()->layerTreeRoot();
     }
 
+    QgsSettings settings;
+    Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup );
+    QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
     bool loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), root,
-                  errorMessage, readWriteContext );
+                  errorMessage, readWriteContext, insertionMethod, &insertionPoint );
 
     if ( !loaded || !errorMessage.isEmpty() )
     {

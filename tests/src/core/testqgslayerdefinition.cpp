@@ -97,10 +97,8 @@ void TestQgsLayerDefinition::testFindLayers()
 
 void TestQgsLayerDefinition::testLoadTopOfTree()
 {
-  QgsSettings settings;
-  settings.setEnumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::TopOfTree );
   QString errorMsg;
-  QgsLayerDefinition::loadLayerDefinition( TEST_DATA_DIR + QStringLiteral( "/vector_and_raster.qlr" ), QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMsg );
+  QgsLayerDefinition::loadLayerDefinition( TEST_DATA_DIR + QStringLiteral( "/vector_and_raster.qlr" ), QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMsg, Qgis::LayerTreeInsertionMethod::TopOfTree );
   //todo: test if new layers are on top
   QList<QgsMapLayer *> orderedLayers = QgsProject::instance()->layerTreeRoot()->layerOrder();
   QCOMPARE( orderedLayers.length(), 3 );
