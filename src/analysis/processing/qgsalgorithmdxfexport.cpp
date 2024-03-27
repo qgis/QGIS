@@ -47,7 +47,8 @@ QString QgsDxfExportAlgorithm::groupId() const
 
 QString QgsDxfExportAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports layers to DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output." );
+  return QObject::tr( "Exports layers to DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
+                      "If no field is chosen, you can still override the output layer name by preferring layer title (set in layer properties) or by directly entering a new output layer name in the Configure Layer panel." );
 }
 
 QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
