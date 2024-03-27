@@ -937,7 +937,7 @@ namespace QgsWms
       QgsLayoutFrame *htmlFrame = html->frame( 0 );
       bool ok = false;
       const QString htmlId = htmlFrame->id();
-      const QString url = mWmsParameters.layoutParameter( htmlId, ok );
+      const QString htmlValue = mWmsParameters.layoutParameter( htmlId, ok );
 
       if ( !ok )
       {
@@ -947,15 +947,22 @@ namespace QgsWms
 
       //remove exported Htmls referenced in the request
       //but with empty string
-      if ( url.isEmpty() )
+      if ( htmlValue.isEmpty() )
       {
         c->removeMultiFrame( html );
         delete html;
         continue;
       }
 
-      QUrl newUrl( url );
-      html->setUrl( newUrl );
+      if ( html->contentMode() == QgsLayoutItemHtml::Url )
+      {
+        QUrl newUrl( htmlValue );
+        html->setUrl( newUrl );
+      }
+      else if ( html->contentMode() == QgsLayoutItemHtml::ManualHtml )
+      {
+        html->setHtml( htmlValue );
+      }
       html->update();
     }
 
