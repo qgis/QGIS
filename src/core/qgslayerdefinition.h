@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayerDefinition
      *  \param rootGroup the layer tree group to insert the qlr content
      *  \param errorMessage the returned error message
      *  \param context the read write context
-     *  \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted
+     *  \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
      *  \return true in case of success
      */
     static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
