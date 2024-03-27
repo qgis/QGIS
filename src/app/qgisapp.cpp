@@ -1137,7 +1137,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
   mInfoBar->raise();
 
-  connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgisApp::showMapCanvas );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
 
   mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
 
