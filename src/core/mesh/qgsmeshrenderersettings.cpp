@@ -612,6 +612,7 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc, const Qg
   elem.appendChild( mArrowsSettings.writeXml( doc ) );
   elem.appendChild( mStreamLinesSettings.writeXml( doc ) );
   elem.appendChild( mTracesSettings.writeXml( doc ) );
+  elem.appendChild( mWindBarbSettings.writeXml( doc ) );
 
   return elem;
 }
@@ -644,6 +645,10 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem, const QgsR
   const QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
   if ( ! elemTraces.isNull() )
     mTracesSettings.readXml( elemTraces );
+
+  const QDomElement elemWindBarb = elem.firstChildElement( QStringLiteral( "vector-windbarb-settings" ) );
+  if ( ! elemWindBarb.isNull() )
+    mWindBarbSettings.readXml( elemWindBarb );
 }
 
 QgsInterpolatedLineColor::ColoringMethod QgsMeshRendererVectorSettings::coloringMethod() const
@@ -743,4 +748,74 @@ void QgsMeshRendererVectorTracesSettings::setParticlesCount( int value )
 bool QgsMeshRendererSettings::hasSettings( int datasetGroupIndex ) const
 {
   return mRendererScalarSettings.contains( datasetGroupIndex ) || mRendererVectorSettings.contains( datasetGroupIndex );
+}
+
+QgsMeshRendererVectorWindBarbSettings QgsMeshRendererVectorSettings::windBarbSettings() const
+{
+  return mWindBarbSettings;
+}
+
+void QgsMeshRendererVectorSettings::setWindBarbSettings( const QgsMeshRendererVectorWindBarbSettings &windBarbSettings )
+{
+  mWindBarbSettings = windBarbSettings;
+}
+
+void QgsMeshRendererVectorWindBarbSettings::readXml( const QDomElement &elem )
+{
+  mShaftLength = elem.attribute( QStringLiteral( "shaft-length" ), QStringLiteral( "10" ) ).toDouble();
+  mShaftLengthUnits = static_cast<Qgis::RenderUnit>(
+                        elem.attribute( QStringLiteral( "shaft-length-units" ) ).toInt() );
+  mMagnitudeMultiplier = elem.attribute( QStringLiteral( "magnitude-multiplier" ), QStringLiteral( "1" ) ).toDouble();
+  mMagnitudeUnits = static_cast<WindSpeedUnit>(
+                      elem.attribute( QStringLiteral( "magnitude-units" ), QStringLiteral( "0" ) ).toInt() );
+}
+
+QDomElement QgsMeshRendererVectorWindBarbSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-windbarb-settings" ) );
+  elem.setAttribute( QStringLiteral( "shaft-length" ), mShaftLength );
+  elem.setAttribute( QStringLiteral( "shaft-length-units" ), static_cast< int >( mShaftLengthUnits ) );
+  elem.setAttribute( QStringLiteral( "magnitude-multiplier" ), mMagnitudeMultiplier );
+  elem.setAttribute( QStringLiteral( "magnitude-units" ), static_cast< int >( mMagnitudeUnits ) );
+  return elem;
+}
+
+double QgsMeshRendererVectorWindBarbSettings::magnitudeMultiplier() const
+{
+  return mMagnitudeMultiplier;
+}
+
+void QgsMeshRendererVectorWindBarbSettings::setMagnitudeMultiplier( double magnitudeMultiplier )
+{
+  mMagnitudeMultiplier = magnitudeMultiplier;
+}
+
+double QgsMeshRendererVectorWindBarbSettings::shaftLength() const
+{
+  return mShaftLength;
+}
+
+void QgsMeshRendererVectorWindBarbSettings::setShaftLength( double shaftLength )
+{
+  mShaftLength = shaftLength;
+}
+
+Qgis::RenderUnit QgsMeshRendererVectorWindBarbSettings::shaftLengthUnits()
+{
+  return mShaftLengthUnits;
+}
+
+void QgsMeshRendererVectorWindBarbSettings::setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit )
+{
+  mShaftLengthUnits = shaftLengthUnit;
+}
+
+QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit QgsMeshRendererVectorWindBarbSettings::magnitudeUnits() const
+{
+  return mMagnitudeUnits;
+}
+
+void QgsMeshRendererVectorWindBarbSettings::setMagnitudeUnits( WindSpeedUnit units )
+{
+  mMagnitudeUnits = units;
 }

@@ -419,6 +419,84 @@ Writes configuration to a new DOM element
 
 };
 
+class QgsMeshRendererVectorWindBarbSettings
+{
+%Docstring(signature="appended")
+
+Represents a mesh renderer settings for vector datasets displayed with wind barbs
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+    enum class WindSpeedUnit
+    {
+      MetersPerSecond,
+      KilometersPerHour,
+      Knots,
+      MilesPerHour,
+      FeetPerSecond,
+      OtherUnit
+    };
+
+    double magnitudeMultiplier() const;
+%Docstring
+Returns the multiplier for the magnitude to convert it to knots
+%End
+
+    void setMagnitudeMultiplier( double magnitudeMultiplier );
+%Docstring
+Sets a multiplier for the magnitude to convert it to knots
+%End
+
+    double shaftLength() const;
+%Docstring
+Returns the shaft length (in millimeters)
+%End
+
+    void setShaftLength( double shaftLength );
+%Docstring
+Sets the shaft length  (in millimeters)
+%End
+
+    Qgis::RenderUnit shaftLengthUnits();
+%Docstring
+Sets the units for the shaft length
+%End
+
+    void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
+%Docstring
+Returns the units for the shaft length
+%End
+
+    WindSpeedUnit magnitudeUnits() const;
+%Docstring
+Returns the units that the data are in
+%End
+
+    void setMagnitudeUnits( WindSpeedUnit units );
+%Docstring
+Sets the units that the data are in
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
 class QgsMeshRendererVectorSettings
 {
 %Docstring(signature="appended")
@@ -444,7 +522,9 @@ Represents a renderer settings for vector datasets
       //! Displaying vector dataset with streamlines
       Streamlines,
       //! Displaying vector dataset with particle traces
-      Traces
+      Traces,
+      //! Displaying vector dataset with wind barbs
+      WindBarbs
     };
 
     double lineWidth() const;
@@ -609,6 +689,20 @@ Returns settings for vector rendered with traces
 Sets settings for vector rendered with traces
 
 .. versionadded:: 3.12
+%End
+
+    QgsMeshRendererVectorWindBarbSettings windBarbSettings() const;
+%Docstring
+Returns settings for vector rendered with wind barbs
+
+.. versionadded:: 3.38
+%End
+
+    void setWindBarbSettings( const QgsMeshRendererVectorWindBarbSettings &windBarbSettings );
+%Docstring
+Sets settings for vector rendered with wind barbs
+
+.. versionadded:: 3.38
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
