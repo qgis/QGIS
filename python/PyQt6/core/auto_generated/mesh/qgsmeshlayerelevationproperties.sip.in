@@ -103,6 +103,42 @@ Sets the fixed elevation ``range`` for the mesh.
 .. versionadded:: 3.38
 %End
 
+    QMap<int, QgsDoubleRange> fixedRangePerGroup() const;
+%Docstring
+Returns the fixed elevation range for each group.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsMeshLayerElevationProperties.mode` is :py:class:`Qgis`.MeshElevationMode.FixedRangePerGroup.
+
+.. note::
+
+   When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
+
+
+.. seealso:: :py:func:`setFixedRangePerGroup`
+
+.. versionadded:: 3.38
+%End
+
+    void setFixedRangePerGroup( const QMap<int, QgsDoubleRange> &ranges );
+%Docstring
+Sets the fixed elevation range for each group.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsMeshLayerElevationProperties.mode` is :py:class:`Qgis`.MeshElevationMode.FixedRangePerGroup.
+
+.. note::
+
+   When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
+
+
+.. seealso:: :py:func:`fixedRangePerGroup`
+
+.. versionadded:: 3.38
+%End
+
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
 Returns the line symbol used to render the mesh profile in elevation profile plots.

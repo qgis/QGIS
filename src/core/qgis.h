@@ -3290,7 +3290,8 @@ class CORE_EXPORT Qgis
     enum class MeshElevationMode : int
     {
       FixedElevationRange = 0, //!< Layer has a fixed elevation range
-      FromVertices = 1 //!< Elevation should be taken from mesh vertices
+      FromVertices = 1, //!< Elevation should be taken from mesh vertices
+      FixedRangePerGroup = 2, //!< Layer has a fixed (manually specified) elevation range per group
     };
     Q_ENUM( MeshElevationMode )
 
