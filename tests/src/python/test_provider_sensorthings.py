@@ -22,7 +22,8 @@ from qgis.core import (
     QgsSettings,
     QgsSensorThingsUtils,
     QgsFeatureRequest,
-    QgsRectangle
+    QgsRectangle,
+    QgsSensorThingsExpansionDefinition
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -186,6 +187,318 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(
             QgsSensorThingsUtils.entitySetStringToEntity(" MultidataStreams "),
             Qgis.SensorThingsEntity.MultiDatastream,
+        )
+
+    def test_utils_entity_to_set_string(self):
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Invalid),
+            '',
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Thing),
+            "Things"
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Location),
+            "Locations",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.HistoricalLocation),
+            "HistoricalLocations",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Datastream),
+            "Datastreams",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Sensor),
+            "Sensors"
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.ObservedProperty),
+            "ObservedProperties",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Observation),
+            "Observations"
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.FeatureOfInterest),
+            "FeaturesOfInterest",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.MultiDatastream),
+            "MultiDatastreams",
+        )
+
+    def test_expansion_definition(self):
+        """
+        Test QgsSensorThingsExpansionDefinition
+        """
+        expansion = QgsSensorThingsExpansionDefinition()
+        self.assertFalse(expansion.isValid())
+        self.assertFalse(expansion.asQueryString(Qgis.SensorThingsEntity.Invalid))
+
+        # test getters/setters
+        expansion = QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertTrue(expansion.isValid())
+        self.assertEqual(expansion.childEntity(), Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertEqual(expansion.limit(), 100)
+        self.assertEqual(repr(expansion), '<QgsSensorThingsExpansionDefinition: ObservedProperty limit 100>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Datastream), '$expand=ObservedProperty($top=100)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Datastream, ['$expand=Locations($top=101)']),
+                         '$expand=ObservedProperty($top=100;$expand=Locations($top=101))')
+
+        expansion.setChildEntity(Qgis.SensorThingsEntity.Location)
+        self.assertEqual(expansion.childEntity(),
+                         Qgis.SensorThingsEntity.Location)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location limit 100>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
+                         '$expand=Locations($top=100)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($top=100;$expand=Datastreams($top=101))')
+
+        expansion.setLimit(-1)
+        self.assertEqual(expansion.limit(), -1)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
+                         '$expand=Locations')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                                 ['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($expand=Datastreams($top=101))')
+
+        expansion.setOrderBy('id')
+        self.assertEqual(expansion.orderBy(), 'id')
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (asc)>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
+                         '$expand=Locations($orderby=id)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                                 ['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id;$expand=Datastreams($top=101))')
+        expansion.setSortOrder(Qt.SortOrder.DescendingOrder)
+        self.assertEqual(expansion.sortOrder(), Qt.SortOrder.DescendingOrder)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (desc)>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
+                         '$expand=Locations($orderby=id desc)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id desc;$expand=Datastreams($top=101))')
+
+        expansion.setLimit(3)
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (desc), limit 3>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
+                         '$expand=Locations($orderby=id desc;$top=3)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))')
+
+        # test equality
+        expansion1 = QgsSensorThingsExpansionDefinition(
+            Qgis.SensorThingsEntity.ObservedProperty)
+        expansion2 = QgsSensorThingsExpansionDefinition(
+            Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertEqual(expansion1, expansion2)
+        self.assertNotEqual(expansion1, QgsSensorThingsExpansionDefinition())
+        self.assertNotEqual(QgsSensorThingsExpansionDefinition(), expansion2)
+        self.assertEqual(QgsSensorThingsExpansionDefinition(),
+                         QgsSensorThingsExpansionDefinition())
+
+        expansion2.setChildEntity(Qgis.SensorThingsEntity.Sensor)
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setChildEntity(Qgis.SensorThingsEntity.ObservedProperty)
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setOrderBy('x')
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setOrderBy('')
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setSortOrder(Qt.SortOrder.DescendingOrder)
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setSortOrder(Qt.SortOrder.AscendingOrder)
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setLimit(33)
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setLimit(100)
+        self.assertEqual(expansion1, expansion2)
+
+        # test to/from string
+        expansion = QgsSensorThingsExpansionDefinition()
+        string = expansion.toString()
+        self.assertFalse(string)
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertFalse(res.isValid())
+
+        expansion.setChildEntity(Qgis.SensorThingsEntity.Sensor)
+        expansion.setLimit(-1)
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertFalse(res.orderBy())
+        self.assertEqual(res.limit(), -1)
+
+        expansion.setOrderBy('test')
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertEqual(res.orderBy(), 'test')
+        self.assertEqual(res.sortOrder(), Qt.SortOrder.AscendingOrder)
+        self.assertEqual(res.limit(), -1)
+
+        expansion.setSortOrder(Qt.SortOrder.DescendingOrder)
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertEqual(res.orderBy(), 'test')
+        self.assertEqual(res.sortOrder(), Qt.SortOrder.DescendingOrder)
+        self.assertEqual(res.limit(), -1)
+
+        expansion.setLimit(5)
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertEqual(res.orderBy(), 'test')
+        self.assertEqual(res.sortOrder(), Qt.SortOrder.DescendingOrder)
+        self.assertEqual(res.limit(), 5)
+
+        expansion.setOrderBy('')
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
+        self.assertFalse(res.orderBy())
+        self.assertEqual(res.limit(), 5)
+
+    def test_expansions_as_query_string(self):
+        """
+        Test constructing query strings from a list of expansions
+        """
+        self.assertFalse(
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Invalid,
+                                               [])
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Location,
+                                                       orderBy='id', limit=3)
+                                               ]),
+            '$expand=Locations($orderby=id;$top=3)'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(),
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Datastream,
+                                                       orderBy='id', limit=3)
+                                               ]),
+            '$expand=Datastreams($orderby=id;$top=3)'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Datastream,
+                                                       orderBy='id', limit=3)
+                                               ]),
+            '$expand=Datastreams($orderby=id;$top=3)'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(
+                Qgis.SensorThingsEntity.Observation,
+                [QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Datastream,
+                    orderBy='id', limit=3)
+                 ]),
+            '$expand=Datastream($orderby=id;$top=3)'
+        )
+
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(Qgis.SensorThingsEntity.Thing,
+                                               [
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Location,
+                                                       orderBy='id', limit=3),
+                                                   QgsSensorThingsExpansionDefinition(
+                                                       Qgis.SensorThingsEntity.Sensor,
+                                                       orderBy='description',
+                                                       limit=30)
+                                               ]),
+            '$expand=Locations($orderby=id;$top=3;$expand=Sensors($orderby=description;$top=30))'
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.asQueryString(
+                Qgis.SensorThingsEntity.Location,
+                [
+                    QgsSensorThingsExpansionDefinition(
+                        Qgis.SensorThingsEntity.Thing,
+                        orderBy='id', limit=3),
+                    QgsSensorThingsExpansionDefinition(
+                        Qgis.SensorThingsEntity.Datastream,
+                        orderBy='description', limit=30),
+                    QgsSensorThingsExpansionDefinition(
+                        Qgis.SensorThingsEntity.ObservedProperty,
+                        orderBy='name', limit=-1)
+                ]),
+            '$expand=Things($orderby=id;$top=3;$expand=Datastreams($orderby=description;$top=30;$expand=ObservedProperty($orderby=name)))'
+        )
+
+    def test_fields_for_expanded_entity(self):
+        """
+        Test calculating fields for an expanded entity
+        """
+        fields = QgsSensorThingsUtils.fieldsForExpandedEntityType(
+            Qgis.SensorThingsEntity.Location,
+            [])
+        self.assertEqual([field.name() for field in fields],
+                         ['id', 'selfLink', 'name', 'description',
+                          'properties'])
+        fields = QgsSensorThingsUtils.fieldsForExpandedEntityType(
+            Qgis.SensorThingsEntity.Location,
+            [Qgis.SensorThingsEntity.Thing])
+        self.assertEqual([field.name() for field in fields],
+                         ['id', 'selfLink', 'name', 'description',
+                          'properties', 'Thing_id', 'Thing_selfLink',
+                          'Thing_name', 'Thing_description',
+                          'Thing_properties'])
+        fields = QgsSensorThingsUtils.fieldsForExpandedEntityType(
+            Qgis.SensorThingsEntity.Location,
+            [Qgis.SensorThingsEntity.Thing,
+             Qgis.SensorThingsEntity.Datastream])
+        self.assertEqual([field.name() for field in fields],
+                         ['id', 'selfLink', 'name', 'description',
+                          'properties', 'Thing_id', 'Thing_selfLink',
+                          'Thing_name', 'Thing_description',
+                          'Thing_properties', 'Thing_Datastream_id',
+                          'Thing_Datastream_selfLink', 'Thing_Datastream_name',
+                          'Thing_Datastream_description',
+                          'Thing_Datastream_unitOfMeasurement',
+                          'Thing_Datastream_observationType',
+                          'Thing_Datastream_properties',
+                          'Thing_Datastream_phenomenonTimeStart',
+                          'Thing_Datastream_phenomenonTimeEnd',
+                          'Thing_Datastream_resultTimeStart',
+                          'Thing_Datastream_resultTimeEnd'])
+
+    def test_expandable_targets(self):
+        """
+        Test valid expansion targets for entity types
+        """
+        self.assertEqual(QgsSensorThingsUtils.expandableTargets(
+            Qgis.SensorThingsEntity.Thing),
+            [Qgis.SensorThingsEntity.HistoricalLocation,
+             Qgis.SensorThingsEntity.Datastream
+             ]
         )
 
     def test_filter_for_extent(self):
@@ -3578,6 +3891,841 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                  'Polygon ((103 0, 104 0, 104 1, 103 1, 103 0))'],
             )
 
+    def test_feature_expansion(self):
+        """
+        Test a layer using feature expansion
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+            with open(
+                sanitize(endpoint,
+                         "/Locations?$top=0&$count=true&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint,
+                         "/Locations?$top=2&$count=false&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/Locations(1)",
+      "@iot.id": 1,
+      "name": "Location 1",
+      "description": "Desc 1",
+      "unitOfMeasurements": [
+          {
+            "name": "ug.m-3",
+            "symbol": "ug.m-3",
+            "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+          }
+      ],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2017-12-31T23:00:00Z/2018-01-12T04:00:00Z",
+      "resultTime": "2017-12-31T23:30:00Z/2017-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things":
+        {
+          "@iot.selfLink": "endpoint/Things(1)",
+          "@iot.id": 1,
+          "name": "Thing 1",
+          "description": "Description Thing 1",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(45)",
+              "@iot.id": 45,
+              "name": "Datastream 45",
+              "description": "Description datastream 45",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            },
+            {
+              "@iot.selfLink": "endpoint/Datastreams(46)",
+              "@iot.id": 46,
+              "name": "Datastream 46",
+              "description": "Description datastream 46",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2018-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        },
+      "location": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [100, 0], [101, 0], [101, 1], [100, 1], [100, 0]
+              ]
+            ]
+          },
+      "Things@iot.navigationLink": "endpoint/Locations(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/Locations(2)",
+      "@iot.id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "unitOfMeasurements": [
+      {
+        "name": "ug.m-3",
+        "symbol": "ug.m-3",
+        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+      }],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2018-12-31T23:00:00Z/2019-01-12T04:00:00Z",
+      "resultTime": "2018-12-31T23:30:00Z/2018-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things": [
+        {
+          "@iot.selfLink": "endpoint/Things(2)",
+          "@iot.id": 2,
+          "name": "Thing 2",
+          "description": "Description Thing 2",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(51)",
+              "@iot.id": 51,
+              "name": "Datastream 51",
+              "description": "Description datastream 51",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        },
+        {
+          "@iot.selfLink": "endpoint/Things(3)",
+          "@iot.id": 3,
+          "name": "Thing 3",
+          "description": "Description Thing 3",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(52)",
+              "@iot.id": 52,
+              "name": "Datastream 52",
+              "description": "Description datastream 52",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        }
+       ],
+            "location": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [102, 0], [103, 0], [103, 1], [102, 1], [102, 0]
+              ]
+            ]
+          },
+      "Things@iot.navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint,
+                             "/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/Locations(3)",
+                  "@iot.id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "unitOfMeasurements": [{
+                    "name": "ug.m-3",
+                    "symbol": "ug.m-3",
+                    "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+                  }],
+                  "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                  "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                  "phenomenonTime": "2020-12-31T23:00:00Z/2021-01-12T04:00:00Z",
+                  "resultTime": "2020-12-31T23:30:00Z/2020-12-31T23:31:00Z",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things": [
+        {
+          "@iot.selfLink": "endpoint/Things(8)",
+          "@iot.id": 8,
+          "name": "Thing 8",
+          "description": "Description Thing 8",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(59)",
+              "@iot.id": 59,
+              "name": "Datastream 59",
+              "description": "Description datastream 59",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            },
+            {
+              "@iot.selfLink": "endpoint/Datastreams(60)",
+              "@iot.id": 60,
+              "name": "Datastream 60",
+              "description": "Description datastream 60",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        }
+       ],
+                        "location": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [103, 0], [104, 0], [104, 1], [103, 1], [103, 0]
+              ]
+            ]
+          },
+                  "Things@iot.navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='Location' expandTo='Thing;Datastream'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
+
+            self.assertEqual(vl.featureCount(), -1)
+            self.assertEqual(vl.crs().authid(), 'EPSG:4326')
+            self.assertIn("Entity Type</td><td>Location</td>",
+                          vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Locations"',
+                          vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ['id', 'selfLink', 'name', 'description', 'properties',
+                 'Thing_id', 'Thing_selfLink', 'Thing_name',
+                 'Thing_description', 'Thing_properties',
+                 'Thing_Datastream_id', 'Thing_Datastream_selfLink',
+                 'Thing_Datastream_name', 'Thing_Datastream_description',
+                 'Thing_Datastream_unitOfMeasurement',
+                 'Thing_Datastream_observationType',
+                 'Thing_Datastream_properties',
+                 'Thing_Datastream_phenomenonTimeStart',
+                 'Thing_Datastream_phenomenonTimeEnd',
+                 'Thing_Datastream_resultTimeStart',
+                 'Thing_Datastream_resultTimeEnd'],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features],
+                             [0, 1, 2, 3, 4, 5])
+            self.assertEqual([f["id"] for f in features],
+                             ["1", "1", "2", "2", "3", "3"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(1)",
+                 "/Locations(2)", "/Locations(2)",
+                 "/Locations(3)", "/Locations(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 1", "Location 1",
+                 "Location 2", "Location 2",
+                 "Location 3", "Location 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                ["Desc 1", "Desc 1",
+                 "Desc 2", "Desc 2",
+                 "Desc 3", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{'owner': 'owner 1'}, {'owner': 'owner 1'},
+                 {'owner': 'owner 2'}, {'owner': 'owner 2'},
+                 {'owner': 'owner 3'}, {'owner': 'owner 3'}]
+            )
+            self.assertEqual(
+                [f["Thing_id"] for f in features],
+                ['1', '1', '2', '3', '8', '8']
+            )
+            self.assertEqual(
+                [f["Thing_selfLink"][-10:] for f in features],
+                ['/Things(1)', '/Things(1)', '/Things(2)', '/Things(3)',
+                 '/Things(8)', '/Things(8)']
+            )
+            self.assertEqual(
+                [f["Thing_name"] for f in features],
+                ['Thing 1', 'Thing 1', 'Thing 2', 'Thing 3', 'Thing 8',
+                 'Thing 8']
+            )
+            self.assertEqual(
+                [f["Thing_description"] for f in features],
+                ['Description Thing 1', 'Description Thing 1',
+                 'Description Thing 2', 'Description Thing 3',
+                 'Description Thing 8', 'Description Thing 8']
+            )
+            self.assertEqual(
+                [f["Thing_properties"] for f in features],
+                [{'countryCode': 'AT'}, {'countryCode': 'AT'},
+                 {'countryCode': 'AT'}, {'countryCode': 'AT'},
+                 {'countryCode': 'AT'}, {'countryCode': 'AT'}]
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_id"] for f in features],
+                ['45', '46', '51', '52', '59', '60']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_selfLink"][-16:] for f in features],
+                ['/Datastreams(45)', '/Datastreams(46)',
+                 '/Datastreams(51)',
+                 '/Datastreams(52)', '/Datastreams(59)',
+                 '/Datastreams(60)']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_name"] for f in features],
+                ['Datastream 45', 'Datastream 46', 'Datastream 51',
+                 'Datastream 52', 'Datastream 59', 'Datastream 60']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_description"] for f in features],
+                ['Description datastream 45', 'Description datastream 46',
+                 'Description datastream 51', 'Description datastream 52',
+                 'Description datastream 59', 'Description datastream 60']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_properties"] for f in features],
+                [{'owner': 'someone'}, {'owner': 'someone'},
+                 {'owner': 'someone'}, {'owner': 'someone'},
+                 {'owner': 'someone'}, {'owner': 'someone'}]
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt() for f in features],
+                ['Polygon ((100 0, 101 0, 101 1, 100 1, 100 0))',
+                 'Polygon ((100 0, 101 0, 101 1, 100 1, 100 0))',
+                 'Polygon ((102 0, 103 0, 103 1, 102 1, 102 0))',
+                 'Polygon ((102 0, 103 0, 103 1, 102 1, 102 0))',
+                 'Polygon ((103 0, 104 0, 104 1, 103 1, 103 0))',
+                 'Polygon ((103 0, 104 0, 104 1, 103 1, 103 0))'],
+            )
+
+    def test_feature_expansion_with_limit(self):
+        """
+        Test a layer using feature expansion with limited child features
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+            with open(
+                sanitize(endpoint,
+                         "/Locations?$top=0&$count=true&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint,
+                         "/Locations?$top=2&$count=false&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/Locations(1)",
+      "@iot.id": 1,
+      "name": "Location 1",
+      "description": "Desc 1",
+      "unitOfMeasurements": [
+          {
+            "name": "ug.m-3",
+            "symbol": "ug.m-3",
+            "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+          }
+      ],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2017-12-31T23:00:00Z/2018-01-12T04:00:00Z",
+      "resultTime": "2017-12-31T23:30:00Z/2017-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things": [
+        {
+          "@iot.selfLink": "endpoint/Things(1)",
+          "@iot.id": 1,
+          "name": "Thing 1",
+          "description": "Description Thing 1",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(45)",
+              "@iot.id": 45,
+              "name": "Datastream 45",
+              "description": "Description datastream 45",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        }
+       ],
+      "location": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [100, 0], [101, 0], [101, 1], [100, 1], [100, 0]
+              ]
+            ]
+          },
+      "Things@iot.navigationLink": "endpoint/Locations(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/Locations(2)",
+      "@iot.id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "unitOfMeasurements": [
+      {
+        "name": "ug.m-3",
+        "symbol": "ug.m-3",
+        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+      }],
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+      "phenomenonTime": "2018-12-31T23:00:00Z/2019-01-12T04:00:00Z",
+      "resultTime": "2018-12-31T23:30:00Z/2018-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things": [
+        {
+          "@iot.selfLink": "endpoint/Things(2)",
+          "@iot.id": 2,
+          "name": "Thing 2",
+          "description": "Description Thing 2",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(51)",
+              "@iot.id": 51,
+              "name": "Datastream 51",
+              "description": "Description datastream 51",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        }
+       ],
+            "location": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [102, 0], [103, 0], [103, 1], [102, 1], [102, 0]
+              ]
+            ]
+          },
+      "Things@iot.navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint,
+                             "/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/Locations(3)",
+                  "@iot.id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "unitOfMeasurements": [{
+                    "name": "ug.m-3",
+                    "symbol": "ug.m-3",
+                    "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+                  }],
+                  "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                  "multiObservationDataTypes": ["http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement"],
+                  "phenomenonTime": "2020-12-31T23:00:00Z/2021-01-12T04:00:00Z",
+                  "resultTime": "2020-12-31T23:30:00Z/2020-12-31T23:31:00Z",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things": [
+        {
+          "@iot.selfLink": "endpoint/Things(8)",
+          "@iot.id": 8,
+          "name": "Thing 8",
+          "description": "Description Thing 8",
+          "properties": {
+            "countryCode": "AT"
+          },
+          "Datastreams": [
+            {
+              "@iot.selfLink": "endpoint/Datastreams(59)",
+              "@iot.id": 59,
+              "name": "Datastream 59",
+              "description": "Description datastream 59",
+              "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+              "unitOfMeasurement": {
+                "name": "ug.m-3",
+                "symbol": "ug.m-3",
+                "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+              },
+              "phenomenonTime": "2017-12-31T23:00:00Z/2024-03-25T04:00:00Z",
+              "properties": {
+                "owner": "someone"
+              }
+            }
+            ]
+        }
+       ],
+                        "location": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [103, 0], [104, 0], [104, 1], [103, 1], [103, 0]
+              ]
+            ]
+          },
+                  "Things@iot.navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=MultiPolygonZ entity='Location' expandTo='Thing;Datastream:limit=1'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
+
+            self.assertEqual(vl.featureCount(), -1)
+            self.assertEqual(vl.crs().authid(), 'EPSG:4326')
+            self.assertIn("Entity Type</td><td>Location</td>",
+                          vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Locations"',
+                          vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ['id', 'selfLink', 'name', 'description', 'properties',
+                 'Thing_id', 'Thing_selfLink', 'Thing_name',
+                 'Thing_description', 'Thing_properties',
+                 'Thing_Datastream_id', 'Thing_Datastream_selfLink',
+                 'Thing_Datastream_name', 'Thing_Datastream_description',
+                 'Thing_Datastream_unitOfMeasurement',
+                 'Thing_Datastream_observationType',
+                 'Thing_Datastream_properties',
+                 'Thing_Datastream_phenomenonTimeStart',
+                 'Thing_Datastream_phenomenonTimeEnd',
+                 'Thing_Datastream_resultTimeStart',
+                 'Thing_Datastream_resultTimeEnd'],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features],
+                             [0, 1, 2])
+            self.assertEqual([f["id"] for f in features],
+                             ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(2)",
+                 "/Locations(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 1", "Location 2",
+                 "Location 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                ["Desc 1", "Desc 2",
+                 "Desc 3"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{'owner': 'owner 1'},
+                 {'owner': 'owner 2'},
+                 {'owner': 'owner 3'}]
+            )
+            self.assertEqual(
+                [f["Thing_id"] for f in features],
+                ['1', '2', '8']
+            )
+            self.assertEqual(
+                [f["Thing_selfLink"][-10:] for f in features],
+                ['/Things(1)', '/Things(2)', '/Things(8)']
+            )
+            self.assertEqual(
+                [f["Thing_name"] for f in features],
+                ['Thing 1', 'Thing 2', 'Thing 8']
+            )
+            self.assertEqual(
+                [f["Thing_description"] for f in features],
+                ['Description Thing 1', 'Description Thing 2',
+                 'Description Thing 8']
+            )
+            self.assertEqual(
+                [f["Thing_properties"] for f in features],
+                [{'countryCode': 'AT'}, {'countryCode': 'AT'},
+                 {'countryCode': 'AT'}]
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_id"] for f in features],
+                ['45', '51', '59']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_selfLink"][-16:] for f in features],
+                ['/Datastreams(45)', '/Datastreams(51)',
+                 '/Datastreams(59)']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_name"] for f in features],
+                ['Datastream 45', 'Datastream 51', 'Datastream 59']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_description"] for f in features],
+                ['Description datastream 45', 'Description datastream 51',
+                 'Description datastream 59']
+            )
+            self.assertEqual(
+                [f["Thing_Datastream_properties"] for f in features],
+                [{'owner': 'someone'}, {'owner': 'someone'},
+                 {'owner': 'someone'}]
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt() for f in features],
+                ['Polygon ((100 0, 101 0, 101 1, 100 1, 100 0))',
+                 'Polygon ((102 0, 103 0, 103 1, 102 1, 102 0))',
+                 'Polygon ((103 0, 104 0, 104 1, 103 1, 103 0))'],
+            )
+
     def testDecodeUri(self):
         """
         Test decoding a SensorThings uri
@@ -3672,6 +4820,24 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             },
         )
 
+        uri = "url='https://sometest.com/api' type=MultiPolygonZ authcfg='abc' expandTo='Thing:orderby=description,asc:limit=5;Datastream:orderby=time,asc:limit=3' entity='Location'"
+        parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
+        self.assertEqual(
+            parts,
+            {
+                "url": "https://sometest.com/api",
+                "entity": "Location",
+                "geometryType": "polygon",
+                "authcfg": "abc",
+                "expandTo": [QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Thing, orderBy='description',
+                    limit=5),
+                    QgsSensorThingsExpansionDefinition(
+                    Qgis.SensorThingsEntity.Datastream,
+                    orderBy='time', limit=3)],
+            },
+        )
+
     def testEncodeUri(self):
         """
         Test encoding a SensorThings uri
@@ -3762,6 +4928,20 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(
             uri,
             "authcfg=aaaaa type=MultiPolygonZ entity='Location' featureLimit='50' url='http://blah.com'",
+        )
+
+        parts = {
+            "url": "http://blah.com",
+            "authcfg": "aaaaa",
+            "entity": "location",
+            "geometryType": "polygon",
+            "expandTo": [QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Thing, orderBy='description', limit=5),
+                         QgsSensorThingsExpansionDefinition(Qgis.SensorThingsEntity.Datastream, orderBy='time', limit=3)]
+        }
+        uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
+        self.assertEqual(
+            uri,
+            "authcfg=aaaaa type=MultiPolygonZ entity='Location' expandTo='Thing:orderby=description,asc:limit=5;Datastream:orderby=time,asc:limit=3' url='http://blah.com'",
         )
 
 
