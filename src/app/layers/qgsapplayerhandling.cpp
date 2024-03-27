@@ -1236,7 +1236,9 @@ void QgsAppLayerHandling::openLayerDefinition( const QString &filename, const Qg
       context.setPathResolver( QgsPathResolver( filename ) );
       context.setProjectTranslator( QgsProject::instance() );
 
-      loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage, context, insertPoint );
+      QgsSettings settings;
+      Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup );
+      loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage, context, insertionMethod, insertPoint );
     }
   }
 

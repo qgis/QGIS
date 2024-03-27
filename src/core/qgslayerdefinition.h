@@ -52,10 +52,11 @@ class CORE_EXPORT QgsLayerDefinition
      * \param project the current project
      * \param rootGroup the layer tree group to insert the qlr content
      * \param errorMessage the returned error message
+     * \param insertMethod method for layer tree (since QGIS 3.38)
      * \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
      * \return true in case of success
     */
-    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
+    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
 
     /**
      * Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
@@ -64,10 +65,11 @@ class CORE_EXPORT QgsLayerDefinition
      *  \param rootGroup the layer tree group to insert the qlr content
      *  \param errorMessage the returned error message
      *  \param context the read write context
+     *  \param insertMethod method for layer tree (since QGIS 3.38)
      *  \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
      *  \return true in case of success
      */
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
 
     /**
      * Exports the selected layer tree nodes to a QLR file.
