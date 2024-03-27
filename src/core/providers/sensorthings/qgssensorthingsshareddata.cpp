@@ -527,7 +527,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QVariant();
               };
 
-              auto getDateTimeRange = []( const basic_json<> &json, const char *tag ) -> std::pair< QVariant, QVariant >
+              auto getDateTimeRange = []( const basic_json<> &json, const char *tag, bool allowInstant = false ) -> std::pair< QVariant, QVariant >
               {
                 if ( !json.contains( tag ) )
                   return { QVariant(), QVariant() };
@@ -544,6 +544,11 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                       QDateTime::fromString( rangeParts.at( 0 ), Qt::ISODateWithMs ),
                       QDateTime::fromString( rangeParts.at( 1 ), Qt::ISODateWithMs )
                     };
+                  }
+                  else if ( allowInstant )
+                  {
+                    const QDateTime instant = QDateTime::fromString( rangeString, Qt::ISODateWithMs );
+                    return { instant, instant };
                   }
                 }
 
@@ -650,7 +655,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
 
                 case Qgis::SensorThingsEntity::Observation:
                 {
-                  std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( featureData, "phenomenonTime" );
+                  std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( featureData, "phenomenonTime", true );
                   std::pair< QVariant, QVariant > validTime = getDateTimeRange( featureData, "validTime" );
                   feature.setAttributes(
                     QgsAttributes()
