@@ -811,7 +811,7 @@ void QgsDxfExportDialog::deselectDataDefinedBlocks()
 
 void QgsDxfExportDialog::loadSettingsFromFile()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load DXF Export settings" ),
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load DXF Export Settings" ),
                            QgsDxfExportDialog::settingsDxfLastSettingsDir->value(),
                            tr( "XML file" ) + " (*.xml)" );
   if ( fileName.isNull() )
@@ -839,12 +839,12 @@ void QgsDxfExportDialog::loadSettingsFromFile()
   }
 
   if ( QMessageBox::question( this,
-                              tr( "DXF Export load from XML file" ),
+                              tr( "DXF Export - Load from XML File" ),
                               tr( "Are you sure you want to load settings from XML? This will change some values in the DXF Export dialog." ) ) == QMessageBox::Yes )
   {
     resultFlag = loadSettingsFromXML( domDocument, errorMessage );
     if ( !resultFlag )
-      QMessageBox::information( this, tr( "Load DXF settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1.\n\n%2" ).arg( fileName, errorMessage ) );
+      QMessageBox::information( this, tr( "Load DXF Export Settings" ), tr( "ERROR: Failed to load DXF Export settings file as %1.\n\n%2" ).arg( fileName, errorMessage ) );
     else
     {
       QgsDxfExportDialog::settingsDxfLastSettingsDir->setValue( QFileInfo( fileName ).path() );
@@ -866,7 +866,7 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
   const QDomElement dxfElement = rootElement.firstChildElement( QStringLiteral( "dxf_settings" ) );
   if ( dxfElement.isNull() )
   {
-    errorMessage = tr( "The XML file does not correspond to DXF settings. It must have a <dxf-settings> element." );
+    errorMessage = tr( "The XML file does not correspond to DXF Export settings. It must have a <dxf-settings> element." );
     return false;
   }
 
@@ -928,7 +928,7 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( " Layer '%1' found in the DXF settings XML file, but not present in the project." ).arg( element.attribute( QStringLiteral( "name" ) ) ), 1 );
+        QgsDebugMsgLevel( QStringLiteral( " Layer '%1' found in the DXF Export settings XML file, but not present in the project." ).arg( element.attribute( QStringLiteral( "name" ) ) ), 1 );
       }
     }
   }
@@ -964,7 +964,7 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
 
 void QgsDxfExportDialog::saveSettingsToFile()
 {
-  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save DXF Export settings as XML" ),
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save DXF Export Settings as XML" ),
                            QgsDxfExportDialog::settingsDxfLastSettingsDir->value(),
                            tr( "XML file" ) + " (*.xml)" );
   // return dialog focus on Mac
@@ -981,7 +981,6 @@ void QgsDxfExportDialog::saveSettingsToFile()
     outputFileName += QStringLiteral( ".xml" );
   }
 
-  QString errorMessage;
   QDomDocument domDocument;
 
   saveSettingsToXML( domDocument );
@@ -990,7 +989,7 @@ void QgsDxfExportDialog::saveSettingsToFile()
   const QFileInfo dirInfo( fileInfo.path() );  //excludes file name
   if ( !dirInfo.isWritable() )
   {
-    QMessageBox::information( this, tr( "Save DXF settings" ), tr( "The directory containing your dataset needs to be writable!" ) );
+    QMessageBox::information( this, tr( "Save DXF Export Settings" ), tr( "The directory containing your dataset needs to be writable!" ) );
     return;
   }
 
@@ -1001,13 +1000,13 @@ void QgsDxfExportDialog::saveSettingsToFile()
     // save as utf-8 with 2 spaces for indents
     domDocument.save( fileStream, 2 );
     file.close();
-    QMessageBox::information( this, tr( "Save DXF settings" ), tr( "Created DXF settings file as %1" ).arg( outputFileName ) );
+    QMessageBox::information( this, tr( "Save DXF Export Settings" ), tr( "Created DXF Export settings file as %1" ).arg( outputFileName ) );
     QgsDxfExportDialog::settingsDxfLastSettingsDir->setValue( QFileInfo( outputFileName ).absolutePath() );
     return;
   }
   else
   {
-    QMessageBox::information( this, tr( "Save DXF settings" ), tr( "ERROR: Failed to created DXF Export settings file as %1. Check file permissions and retry." ).arg( outputFileName ) );
+    QMessageBox::information( this, tr( "Save DXF Export Settings" ), tr( "ERROR: Failed to created DXF Export settings file as %1. Check file permissions and retry." ).arg( outputFileName ) );
     return;
   }
 }
