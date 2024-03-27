@@ -1184,7 +1184,7 @@ namespace QgsWfs
 
         json value;
         QgsJsonUtils::addCrsInfo( value, destinationCrs );
-        for ( auto it : value.items() )
+        for ( const auto &it : value.items() )
         {
           fcString += " \"" + QString::fromStdString( it.key() ) + "\": " + QString::fromStdString( it.value().dump() ) + ",\n";
         }
