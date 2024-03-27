@@ -68,6 +68,7 @@ class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshR
   private slots:
     void onSymbologyChanged( int currentIndex );
     void onStreamLineSeedingMethodChanged( int currentIndex );
+    void onWindBarbUnitsChanged( int currentIndex );
     void onColoringMethodChanged();
     void onColorRampMinMaxChanged();
     void loadColorRampShader();

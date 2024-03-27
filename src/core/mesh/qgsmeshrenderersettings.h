@@ -398,6 +398,81 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
 /**
  * \ingroup core
  *
+ * \brief Represents a mesh renderer settings for vector datasets displayed with wind barbs
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.38
+ */
+class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
+{
+  public:
+    //! Wind speed units. Wind barbs use knots so we use this enum for preset conversion values
+    enum class WindSpeedUnit
+    {
+      MetersPerSecond = 0, //!< Meters per second
+      KilometersPerHour, //!< Kilometers per hour
+      Knots, //!< Knots (Nautical miles per hour)
+      MilesPerHour, //!< Miles per hour
+      FeetPerSecond, //!< Feet per second
+      OtherUnit //!< Other unit
+    };
+
+    /**
+     * Returns the multiplier for the magnitude to convert it to knots
+     */
+    double magnitudeMultiplier() const;
+
+    /**
+     * Sets a multiplier for the magnitude to convert it to knots
+     */
+    void setMagnitudeMultiplier( double magnitudeMultiplier );
+
+    /**
+     * Returns the shaft length (in millimeters)
+     */
+    double shaftLength() const;
+
+    /**
+     * Sets the shaft length  (in millimeters)
+     */
+    void setShaftLength( double shaftLength );
+
+    /**
+     * Sets the units for the shaft length
+     */
+    Qgis::RenderUnit shaftLengthUnits();
+
+    /**
+     * Returns the units for the shaft length
+     */
+    void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
+
+    /**
+     * Returns the units that the data are in
+     */
+    WindSpeedUnit magnitudeUnits() const;
+
+    /**
+     * Sets the units that the data are in
+     */
+    void setMagnitudeUnits( WindSpeedUnit units );
+
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+
+  private:
+    double mShaftLength = 10;
+    Qgis::RenderUnit mShaftLengthUnits = Qgis::RenderUnit::Millimeters;
+    WindSpeedUnit mMagnitudeUnits = WindSpeedUnit::MetersPerSecond;
+    double mMagnitudeMultiplier = 1;
+};
+
+/**
+ * \ingroup core
+ *
  * \brief Represents a renderer settings for vector datasets
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -419,7 +494,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       //! Displaying vector dataset with streamlines
       Streamlines,
       //! Displaying vector dataset with particle traces
-      Traces
+      Traces,
+      //! Displaying vector dataset with wind barbs
+      WindBarbs
     };
 
     //! Returns line width of the arrow (in millimeters)
@@ -551,6 +628,18 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
      */
     void setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings );
 
+    /**
+    * Returns settings for vector rendered with wind barbs
+    * \since QGIS 3.38
+    */
+    QgsMeshRendererVectorWindBarbSettings windBarbSettings() const;
+
+    /**
+     * Sets settings for vector rendered with wind barbs
+     * \since QGIS 3.38
+     */
+    void setWindBarbSettings( const QgsMeshRendererVectorWindBarbSettings &windBarbSettings );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
     //! Reads configuration from the given DOM element
@@ -573,6 +662,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     QgsMeshRendererVectorArrowSettings mArrowsSettings;
     QgsMeshRendererVectorStreamlineSettings mStreamLinesSettings;
     QgsMeshRendererVectorTracesSettings mTracesSettings;
+    QgsMeshRendererVectorWindBarbSettings mWindBarbSettings;
 };
 
 /**

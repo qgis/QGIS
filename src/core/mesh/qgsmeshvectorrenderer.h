@@ -105,7 +105,7 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     //! Draws data on user-defined grid
     void drawVectorDataOnGrid( );
     //! Draws arrow from start point and vector data
-    void drawVectorArrow( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
+    virtual void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
     //! Calculates the end point of the arrow based on start point and vector data
     bool calcVectorLineEnd( QgsPointXY &lineEnd,
                             double &vectorLength,
@@ -130,18 +130,46 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     const QVector<double> &mDatasetValuesMag; //magnitudes
     double mMinMag = 0.0;
     double mMaxMag = 0.0;
-    QgsRenderContext &mContext;
-    const QgsMeshRendererVectorSettings mCfg;
     QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-    QSize mOutputSize;
     QgsRectangle mBufferedExtent;
     QPen mPen;
 
+  protected:
+    QgsRenderContext &mContext;
+    const QgsMeshRendererVectorSettings mCfg;
+    QSize mOutputSize;
     QgsInterpolatedLineColor mVectorColoring;
 
 };
 
+/**
+ * \ingroup core
+ *
+ * \brief Helper private class for rendering vector datasets using Wind Barbs
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.38
+ */
+class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
+{
+  public:
+    //! Ctor
+    QgsMeshVectorWindBarbRenderer( const QgsTriangularMesh &m,
+                                   const QgsMeshDataBlock &datasetValues,
+                                   const QVector<double> &datasetValuesMag,
+                                   double datasetMagMaximumValue,
+                                   double datasetMagMinimumValue,
+                                   QgsMeshDatasetGroupMetadata::DataType dataType,
+                                   const QgsMeshRendererVectorSettings &settings,
+                                   QgsRenderContext &context,
+                                   QSize size );
+    //! Dtor
+    ~QgsMeshVectorWindBarbRenderer() override;
 
+  private:
+    void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude ) override;
+
+};
 
 ///@endcond
 

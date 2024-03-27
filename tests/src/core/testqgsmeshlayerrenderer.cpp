@@ -85,6 +85,7 @@ class TestQgsMeshRenderer : public QgsTest
     void test_face_vector_on_user_grid();
     void test_face_vector_on_user_grid_streamlines();
     void test_vertex_vector_on_user_grid();
+    void test_vertex_vector_on_user_grid_wind_barbs();
     void test_vertex_vector_on_user_grid_streamlines();
     void test_vertex_vector_on_user_grid_streamlines_colorRamp();
     void test_vertex_vector_traces();
@@ -161,6 +162,7 @@ void TestQgsMeshRenderer::initTestCase()
   // Mdal layer
   mMdalLayer = new QgsMeshLayer( mDataDir + "/quad_and_triangle.2dm", "Triangle and Quad Mdal", "mdal" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar_with_inactive_face.dat" );
+  mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector2.dat" );
   QVERIFY( mMdalLayer->isValid() );
 
   // Memory layer
@@ -472,6 +474,34 @@ void TestQgsMeshRenderer::test_vertex_scalar_dataset_with_inactive_face_renderin
   mMdalLayer->setStaticScalarDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset_with_inactive_face", mMdalLayer ) );
+}
+
+void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_wind_barbs()
+{
+  const QgsMeshDatasetIndex ds( 2, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMdalLayer->dataProvider()->datasetGroupMetadata( ds );
+  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset2" ) );
+
+  QgsMeshRendererSettings rendererSettings = mMdalLayer->rendererSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
+  settings.setOnUserDefinedGrid( true );
+  settings.setUserGridCellWidth( 30 );
+  settings.setUserGridCellHeight( 30 );
+  settings.setLineWidth( 0.5 );
+  settings.setSymbology( QgsMeshRendererVectorSettings::WindBarbs );
+  settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
+  QgsMeshRendererVectorWindBarbSettings windBarbSettings = settings.windBarbSettings();
+  windBarbSettings.setShaftLength( 20 );
+  windBarbSettings.setShaftLengthUnits( Qgis::RenderUnit::Pixels );
+  windBarbSettings.setMagnitudeUnits( QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit );
+  windBarbSettings.setMagnitudeMultiplier( 2 );
+  settings.setWindBarbSettings( windBarbSettings );
+  rendererSettings.setVectorSettings( ds.group(), settings );
+  mMdalLayer->setRendererSettings( rendererSettings );
+  mMdalLayer->setStaticVectorDatasetIndex( ds );
+
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_wind_barbs", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_wind_barbs_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_face_vector_on_user_grid()
