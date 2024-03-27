@@ -60,6 +60,7 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgsmeasuredialog.h"
+#include "qgsdxfexportdialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -551,6 +552,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanZipInBrowser->setCurrentIndex( index );
 
   mCheckMonitorDirectories->setChecked( mSettings->value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool() );
+  mEnableDxfDataDefinedBlocks->setChecked( QgsDxfExportDialog::settingsDxfEnableDDBlocks->value() );
 
   //set the default projection behavior radio buttons
   const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
@@ -1628,6 +1630,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
                        cmbScanZipInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), mCheckMonitorDirectories->isChecked() );
+  QgsDxfExportDialog::settingsDxfEnableDDBlocks->setValue( mEnableDxfDataDefinedBlocks->isChecked() );
 
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
