@@ -213,6 +213,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     }
   }
 
+  if ( uri.hasParam( QStringLiteral( "filter" ) ) )
+  {
+    mFilter = uri.param( QStringLiteral( "filter" ) );
+  }
+
   mImageMimeType = uri.param( QStringLiteral( "format" ) );
   QgsDebugMsgLevel( "Setting image encoding to " + mImageMimeType + '.', 2 );
 
