@@ -703,7 +703,7 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face
   if ( error != QgsMeshEditingError() )
     return error;
 
-  if ( clockwise > 0 )// clockwise --> reverse the order of the index;
+  if ( clockwise )// clockwise --> reverse the order of the index;
   {
     for ( int i = 0; i < faceSize / 2; ++i )
     {

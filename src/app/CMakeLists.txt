@@ -514,6 +514,10 @@ if (ANDROID)
 else()
   add_executable(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
 
+  if(MSVC AND BUILD_WITH_QT6)
+    qt_disable_unicode_defines(${QGIS_APP_NAME})
+  endif(MSVC AND BUILD_WITH_QT6)
+
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
   target_compile_definitions(${QGIS_APP_NAME} PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")

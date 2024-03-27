@@ -574,7 +574,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
         geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, xp, yp ) );
         contains = ( GEOSPreparedContainsProperly_r( geosctxt, mPreparedOuterBoundsGeos, point.get() ) == 1 );
       }
-      catch ( GEOSException &e )
+      catch ( GEOSException & )
       {
         contains = false;
       }
