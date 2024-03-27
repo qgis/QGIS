@@ -906,6 +906,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString toOgcUri() const;
 
+    /**
+     * Returns the crs as OGC URN (format: urn:ogc:def:crs:OGC:1.3:CRS84)
+     * Returns an empty string on failure.
+     *
+     * \since QGIS 3.38
+     */
+    QString toOgcUrn() const;
+
     // Mutators -----------------------------------
 
     /**

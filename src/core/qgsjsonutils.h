@@ -423,6 +423,15 @@ class CORE_EXPORT QgsJsonUtils
      */
     static QVariant jsonToVariant( const json &value ) SIP_SKIP;
 
+    /**
+     * Add \a crs information entry in \a json object regarding old GeoJSON specification format
+     * if it differs from OGC:CRS84 or EPSG:4326.
+     * According to new specification RFC 7946, coordinate reference system for all GeoJSON coordinates
+     * is assumed to be OGC:CRS84 but when user specifically request a different CRS, this method
+     * adds this information in the JSON output
+     */
+    static void addCrsInfo( json &value, const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
+
 };
 
 #endif // QGSJSONUTILS_H

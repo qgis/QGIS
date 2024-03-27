@@ -1613,6 +1613,30 @@ QString QgsCoordinateReferenceSystem::toOgcUri() const
   return QString();
 }
 
+QString QgsCoordinateReferenceSystem::toOgcUrn() const
+{
+  const auto parts { authid().split( ':' ) };
+  if ( parts.length() == 2 )
+  {
+    if ( parts[0] == QLatin1String( "EPSG" ) )
+      return  QStringLiteral( "urn:ogc:def:crs:EPSG:0:%1" ).arg( parts[1] );
+    else if ( parts[0] == QLatin1String( "OGC" ) )
+    {
+      return  QStringLiteral( "urn:ogc:def:crs:OGC:1.3:%1" ).arg( parts[1] );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URN %1: (not OGC or EPSG)" ).arg( authid() ), QStringLiteral( "CRS" ), Qgis::MessageLevel::Critical );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URN: %1" ).arg( authid() ), QStringLiteral( "CRS" ), Qgis::MessageLevel::Critical );
+  }
+  return QString();
+}
+
+
 void QgsCoordinateReferenceSystem::updateDefinition()
 {
   if ( !d->mIsValid )

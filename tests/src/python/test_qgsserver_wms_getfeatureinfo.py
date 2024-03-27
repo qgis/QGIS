@@ -615,6 +615,30 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_raster_json',
                                  normalizeJson=True)
 
+        # simple test with geometry with underlying layer in 4326 and CRS is EPSG:4326
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG:4326&' +
+                                 'bbox=44.9014173,8.2034387,44.9015094,8.2036094&' +
+                                 'query_layers=testlayer2&X=203&Y=116&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_CRS84_json',
+                                 'test_project.qgs',
+                                 normalizeJson=True)
+
+        # simple test with geometry with underlying layer in 4326 and CRS is CRS84
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=OGC:CRS84&' +
+                                 'bbox=8.2034387,44.9014173,8.2036094,44.9015094&' +
+                                 'query_layers=testlayer2&X=203&Y=116&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_CRS84_json',
+                                 'test_project.qgs',
+                                 normalizeJson=True)
+
     def testGetFeatureInfoGroupedLayers(self):
         """Test that we can get feature info from the top and group layers"""
 
