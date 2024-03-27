@@ -45,7 +45,8 @@ class QgsSensorThingsExpansionsModel : public QAbstractItemModel
       Entity = 0,
       Limit = 1,
       OrderBy = 2,
-      SortOrder = 3
+      SortOrder = 3,
+      Actions = 4,
     };
 
     QgsSensorThingsExpansionsModel( QObject *parent );
@@ -85,6 +86,24 @@ class QgsSensorThingsExpansionsDelegate : public QStyledItemDelegate
 
     Qgis::SensorThingsEntity mBaseEntityType = Qgis::SensorThingsEntity::Invalid;
 };
+
+
+class QgsSensorThingsRemoveExpansionDelegate : public QStyledItemDelegate SIP_SKIP
+{
+    Q_OBJECT
+
+  public:
+    QgsSensorThingsRemoveExpansionDelegate( QObject *parent );
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+  protected:
+    void paint( QPainter *painter,
+                const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+  private:
+    void setHoveredIndex( const QModelIndex &index );
+
+    QModelIndex mHoveredIndex;
+};
+
 
 class QgsSensorThingsConfigureExpansionsDialog : public QDialog
 {
