@@ -51,16 +51,48 @@ QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 bool QgsPythonUtilsImpl::checkSystemImports()
 {
   runString( QStringLiteral( "import sys" ) ); // import sys module (for display / exception hooks)
-  runString( QStringLiteral( "import os" ) ); // import os module (for user paths)
+  runString( QStringLiteral( "import os" ) ); // import os module (for environ variables)
+  runString( QStringLiteral( "import pathlib" ) ); // import pathlib module (for path manipulation)
 
   // support for PYTHONSTARTUP-like environment variable: PYQGIS_STARTUP
   // (unlike PYTHONHOME and PYTHONPATH, PYTHONSTARTUP is not supported for embedded interpreter by default)
   // this is different than user's 'startup.py' (below), since it is loaded just after Py_Initialize
   // it is very useful for cleaning sys.path, which may have undesirable paths, or for
   // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
-  runString( QStringLiteral( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" ) );
-  runString( QStringLiteral( "if pyqgstart is not None and os.path.exists(pyqgstart):\n    with open(pyqgstart) as f:\n        exec(f.read())\n" ) );
-  runString( QStringLiteral( "if pyqgstart is not None and os.path.exists(os.path.join('%1', pyqgstart)):\n    with open(os.path.join('%1', pyqgstart)) as f:\n        exec(f.read())\n" ).arg( pythonPath() ) );
+  runString( QStringLiteral( "pyqgstart = os.getenv('PYQGIS_STARTUP')" ) );
+  runString( QStringLiteral(
+               R""""(
+def run_startup_script(script_path):
+    script_executed = False
+    if not script_path:
+        return script_executed
+
+    from qgis.core import Qgis, QgsMessageLog
+
+    p1 = pathlib.Path(script_path)
+    if p1.exists():
+        QgsMessageLog.logMessage(f"Running {p1}", "QGIS", Qgis.MessageLevel.Info)
+        code = compile(p1.read_text(), p1, 'exec')
+        exec(code, globals())
+        script_executed = True
+
+    p2 = pathlib.Path('%1') / script_path
+    if p2.exists() and p2 != p1:
+        QgsMessageLog.logMessage(f"Running {p2}", "QGIS", Qgis.MessageLevel.Info)
+        code = compile(p2.read_text(), p2, 'exec')
+        exec(code, globals())
+        script_executed = True
+
+    if not script_executed:
+        QgsMessageLog.logMessage(
+            f"Startup script not executed - neither {p1} nor {p2} exist!",
+            "QGIS",
+            Qgis.MessageLevel.Warning,
+        )
+
+    return script_executed
+)"""" ).arg( pythonPath() ) );
+  runString( QStringLiteral( "run_startup_script(pyqgstart)" ) );
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
