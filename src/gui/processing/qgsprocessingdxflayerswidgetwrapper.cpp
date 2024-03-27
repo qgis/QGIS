@@ -48,7 +48,9 @@ QgsProcessingDxfLayerDetailsWidget::QgsProcessingDxfLayerDetailsWidget( const QV
     return;
 
   mFieldsComboBox->setLayer( mLayer );
-  mFieldsComboBox->setCurrentIndex( layer.layerOutputAttributeIndex() );
+
+  if ( mLayer->fields().exists( layer.layerOutputAttributeIndex() ) )
+    mFieldsComboBox->setField( mLayer->fields().at( layer.layerOutputAttributeIndex() ).name() );
 
   connect( mFieldsComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsPanelWidget::widgetChanged );
 }
