@@ -444,7 +444,7 @@ QgsSensorThingsExpansionsModel::QgsSensorThingsExpansionsModel( QObject *parent 
 
 int QgsSensorThingsExpansionsModel::columnCount( const QModelIndex & ) const
 {
-  return 4;
+  return 5;
 }
 
 int QgsSensorThingsExpansionsModel::rowCount( const QModelIndex &parent ) const
@@ -485,6 +485,8 @@ Qt::ItemFlags QgsSensorThingsExpansionsModel::flags( const QModelIndex &index ) 
     case Column::OrderBy:
     case Column::SortOrder:
       return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsEditable | Qt::ItemFlag::ItemIsSelectable;
+    case Column::Actions:
+      return Qt::ItemFlag::ItemIsEnabled;
     default:
       break;
   }
@@ -520,6 +522,9 @@ QVariant QgsSensorThingsExpansionsModel::data( const QModelIndex &index, int rol
 
         case Column::SortOrder:
           return !expansion.isValid() ? QVariant() : ( expansion.sortOrder() == Qt::SortOrder::AscendingOrder ? tr( "Ascending" ) : tr( "Descending" ) );
+
+        case Column::Actions:
+          return role == Qt::ToolTipRole ? tr( "Remove expansion" ) : QString();
 
         default:
           break;
@@ -586,6 +591,8 @@ QVariant QgsSensorThingsExpansionsModel::headerData( int section, Qt::Orientatio
         return tr( "Order By" );
       case Column::SortOrder:
         return tr( "Sort Order" );
+      case Column::Actions:
+        return QString();
       default:
         break;
     }
@@ -616,12 +623,6 @@ bool QgsSensorThingsExpansionsModel::setData( const QModelIndex &index, const QV
           {
             if ( wasInvalid )
               break;
-
-            // entity type cleared, remove row, and all subsequent ones
-            beginRemoveRows( QModelIndex(), index.row() + 1, mExpansions.size() - 1 );
-            mExpansions = mExpansions.mid( 0, index.row() );
-            mExpansions.append( QgsSensorThingsExpansionDefinition() );
-            endRemoveRows();
           }
           else
           {
@@ -695,6 +696,13 @@ bool QgsSensorThingsExpansionsModel::removeRows( int position, int rows, const Q
   for ( int i = 0; i < rows; ++i )
     mExpansions.removeAt( position );
   endRemoveRows();
+
+  if ( mExpansions.empty() )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mExpansions.append( QgsSensorThingsExpansionDefinition() );
+    endInsertRows();
+  }
   return true;
 }
 
@@ -733,6 +741,18 @@ QgsSensorThingsConfigureExpansionsDialog::QgsSensorThingsConfigureExpansionsDial
   mTable->setItemDelegateForColumn( 1, tableDelegate );
   mTable->setItemDelegateForColumn( 2, tableDelegate );
   mTable->setItemDelegateForColumn( 3, tableDelegate );
+
+  QgsSensorThingsRemoveExpansionDelegate *removeDelegate = new QgsSensorThingsRemoveExpansionDelegate( mTable );
+  mTable->setItemDelegateForColumn( 4, removeDelegate );
+  mTable->viewport()->installEventFilter( removeDelegate );
+  connect( mTable, &QTableView::clicked, this, [this]( const QModelIndex & index )
+  {
+    if ( index.column() == QgsSensorThingsExpansionsModel::Column::Actions )
+    {
+      mModel->removeRows( index.row(), 1 );
+    }
+  } );
+
   mTable->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mTable->verticalHeader()->hide();
   const QFontMetrics fm( font() );
@@ -740,6 +760,7 @@ QgsSensorThingsConfigureExpansionsDialog::QgsSensorThingsConfigureExpansionsDial
   mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Limit, fm.horizontalAdvance( '0' ) * 15 );
   mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::OrderBy, fm.horizontalAdvance( '0' ) * 30 );
   mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::SortOrder, fm.horizontalAdvance( '0' ) * 15 );
+  mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Actions, fm.horizontalAdvance( '0' ) * 5 );
 
   hLayout->addWidget( mTable, 1 );
 
@@ -793,7 +814,6 @@ QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const
       }
 
       QComboBox *combo = new QComboBox( parent );
-      combo->addItem( QString() );
       for ( Qgis::SensorThingsEntity type : compatibleEntities )
       {
         combo->addItem( QgsSensorThingsUtils::displayString( type, true ), QVariant::fromValue( type ) );
@@ -902,6 +922,63 @@ void QgsSensorThingsExpansionsDelegate::setModelData( QWidget *editor, QAbstract
     default:
       break;
   }
+}
+
+
+//
+// QgsSensorThingsRemoveExpansionDelegate
+//
+
+QgsSensorThingsRemoveExpansionDelegate::QgsSensorThingsRemoveExpansionDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
+
+bool QgsSensorThingsRemoveExpansionDelegate::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() == QEvent::HoverEnter || event->type() == QEvent::HoverMove )
+  {
+    QHoverEvent *hoverEvent = static_cast<QHoverEvent *>( event );
+    if ( QAbstractItemView *view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
+    {
+      const QModelIndex indexUnderMouse = view->indexAt( hoverEvent->pos() );
+      setHoveredIndex( indexUnderMouse );
+      view->viewport()->update();
+    }
+  }
+  else if ( event->type() == QEvent::HoverLeave )
+  {
+    setHoveredIndex( QModelIndex() );
+    qobject_cast< QWidget * >( obj )->update();
+  }
+  return QStyledItemDelegate::eventFilter( obj, event );
+}
+
+void QgsSensorThingsRemoveExpansionDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QStyledItemDelegate::paint( painter, option, index );
+
+  if ( index == mHoveredIndex )
+  {
+    QStyleOptionButton buttonOption;
+    buttonOption.initFrom( option.widget );
+    buttonOption.rect = option.rect;
+
+    option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+  }
+
+  const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
+  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2,
+                        option.rect.top() + ( option.rect.height() - 16 ) / 2,
+                        16, 16 );
+
+  icon.paint( painter, iconRect );
+}
+
+void QgsSensorThingsRemoveExpansionDelegate::setHoveredIndex( const QModelIndex &index )
+{
+  mHoveredIndex = index;
 }
 
 ///@endcond
