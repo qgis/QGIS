@@ -31,6 +31,9 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas
 
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
+  if ( canvas()->currentLayer() && !canvas()->currentLayer()->isSpatial() )
+    return;
+
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
     mCadDockWidget->applyConstraints( e );  // updates event's map point
@@ -54,6 +57,9 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
+  if ( canvas()->currentLayer() && !canvas()->currentLayer()->isSpatial() )
+    return;
+
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
     if ( e->button() == Qt::RightButton )
@@ -94,6 +100,9 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
+  if ( canvas()->currentLayer() && !canvas()->currentLayer()->isSpatial() )
+    return;
+
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
     mCadDockWidget->applyConstraints( e );     // updates event's map point
@@ -165,10 +174,15 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
       mSnapToGridCanvasItem->setCrs( layer->crs() );
     }
 
-    if ( !layer )
+    if ( !layer || !layer->isSpatial() )
+    {
       mSnapToGridCanvasItem->setEnabled( false );
+      mCadDockWidget->clear();
+    }
     else
+    {
       mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
+    }
   }
 }
 

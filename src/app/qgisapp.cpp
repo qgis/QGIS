@@ -10012,7 +10012,15 @@ void QgisApp::reshapeFeatures()
 
 void QgisApp::addFeature()
 {
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
+  if ( mMapCanvas->currentLayer()->isSpatial() )
+  {
+    mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
+  }
+  else
+  {
+    mMapTools->mapTool( QgsAppMapTools::AddFeature )->activate();
+    mMapTools->mapTool( QgsAppMapTools::AddFeature )->action()->setChecked( false );
+  }
 }
 
 void QgisApp::setMapTool( QgsMapTool *tool, bool clean )
@@ -15296,6 +15304,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLayerSaveAs->setEnabled( true );
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionFeatureAction->setEnabled( layerHasActions );
+
+      if ( mMapCanvas->mapTool() == mMapTools->mapTool( QgsAppMapTools::AddFeature ) )
+      {
+        if ( vlayer->isSpatial() )
+          mMapCanvas->mapTool()->action()->setChecked( true );
+        else
+          mMapCanvas->mapTool()->action()->setChecked( false );
+      }
 
       if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
            && ( mMapCanvas->mapTool()->flags() & QgsMapTool::EditTool ) && !mSaveRollbackInProgress )

@@ -49,6 +49,8 @@ Change the layer edited by the map tool
 
     virtual void activate();
 
+    virtual void reactivate();
+
     virtual void deactivate();
 
 
