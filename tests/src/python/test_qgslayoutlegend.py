@@ -691,30 +691,29 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         layer = QgsProject.instance().addMapLayer(point_layer)
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
-
         counterTask = point_layer.countSymbolFeatures()
         counterTask.waitForFinished()
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
         legendnodes[0].setUserLabel('[% @symbol_id %]')
-        legendnodes[1].setUserLabel('[% @symbol_count %]')
+        legendnodes[1].setUserLabel('[% @legend_item_expression %]')
         legendnodes[2].setUserLabel('[% sum("Pilots") %]')
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
         self.assertEqual(label1, '0')
-        # self.assertEqual(label2, '5')
-        # self.assertEqual(label3, '12')
+        self.assertEqual(label2, '"Class" = \'Biplane\'')
+        self.assertEqual(label3, '34')
 
-        legendlayer.setLabelExpression("Concat(@symbol_label, @symbol_id)")
+        legendlayer.setLabelExpression("Concat(@symbol_label,sum(@id, filter:=eval(@legend_item_expression)))")
 
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
 
-        self.assertEqual(label1, ' @symbol_id 0')
-        # self.assertEqual(label2, '@symbol_count 1')
-        # self.assertEqual(label3, 'sum("Pilots") 2')
+        self.assertEqual(label1, ' @symbol_id 42')
+        self.assertEqual(label2, ' @legend_item_expression 27')
+        self.assertEqual(label3, ' sum("Pilots") 67')
 
         QgsProject.instance().clear()
 

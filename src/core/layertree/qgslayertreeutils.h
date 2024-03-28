@@ -146,6 +146,16 @@ class CORE_EXPORT QgsLayerTreeUtils
      * \since QGIS 3.28
      */
     static QgsLayerTreeLayer *insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer );
+
+    /**
+     * Returns an expression representing a legend key for a given layer tree \a node.
+     *
+     * This method only works with nodes representing vector layers. For all nodes of all other layer types
+     * an empty string will be returned.
+     *
+     * \since QGIS 3.38
+     */
+    static QString expressionForLegendKey( QgsLayerTreeNode *node, const QString &legendKey );
 };
 
 #endif // QGSLAYERTREEUTILS_H
