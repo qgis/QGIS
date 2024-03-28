@@ -78,6 +78,9 @@ Initialize from settings
 %End
 
 
+  signals:
+    void projectRemovedFromCache( const QString &path );
+
   private:
     QgsConfigCache();
   public slots:

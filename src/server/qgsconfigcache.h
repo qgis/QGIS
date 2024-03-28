@@ -128,6 +128,9 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     //! Initialize with a strategy implementation.
     QgsConfigCache( QgsAbstractCacheStrategy *strategy ) SIP_SKIP;
 
+  signals:
+    void projectRemovedFromCache( const QString &path );
+
   private:
     // SIP require this
     QgsConfigCache() SIP_FORCE;

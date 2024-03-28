@@ -249,6 +249,8 @@ void QgsConfigCache::removeEntry( const QString &path )
   mXmlDocumentCache.remove( path );
 
   mStrategy->entryRemoved( path );
+
+  emit projectRemovedFromCache( path );
 }
 
 // slots
