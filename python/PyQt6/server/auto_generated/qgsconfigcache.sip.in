@@ -79,6 +79,7 @@ Initialize from settings
 
 
   signals:
+
     void projectRemovedFromCache( const QString &path );
 %Docstring
 Emitted whenever a project is removed from the cache.

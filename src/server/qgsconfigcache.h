@@ -129,6 +129,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QgsConfigCache( QgsAbstractCacheStrategy *strategy ) SIP_SKIP;
 
   signals:
+
     /**
      * Emitted whenever a project is removed from the cache.
      * \since QGIS 3.38
