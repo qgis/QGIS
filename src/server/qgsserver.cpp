@@ -368,6 +368,8 @@ bool QgsServer::init()
   // Initialize config cache
   QgsConfigCache::initialize( sSettings );
 
+  QObject::connect( QgsConfigCache::instance(), &QgsConfigCache::projectRemovedFromCache, sCapabilitiesCache, &QgsCapabilitiesCache::removeCapabilitiesDocument );
+
   sInitialized = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   return true;
