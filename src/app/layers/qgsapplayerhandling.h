@@ -20,6 +20,7 @@
 #include "qgsconfig.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayerref.h"
+#include "qgslayertreeregistrybridge.h"
 
 #include <QObject>
 
@@ -149,10 +150,18 @@ class APP_EXPORT QgsAppLayerHandling
     //! Add a 'pre-made' map layer to the project
     static void addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true );
 
-    static void openLayerDefinition( const QString &filename );
+    /**
+     * Opens qlr
+     * \param filename file path to the qlr
+     * \param insertPoint describes where the qlr layers/groups shall be inserted
+     */
+    static void openLayerDefinition( const QString &filename, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
 
-    //! Add a Layer Definition file
-    static void addLayerDefinition();
+    /**
+     * Add a Layer Definition file
+     * \param insertPoint describes where the qlr layers/groups shall be inserted
+     */
+    static void addLayerDefinition( const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint );
 
     //! Add a list of database layers to the map
     static QList< QgsMapLayer * > addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
