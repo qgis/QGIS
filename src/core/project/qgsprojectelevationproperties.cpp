@@ -111,8 +111,11 @@ void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvid
   if ( mTerrainProvider.get() == provider )
     return;
 
+  const bool hasChanged = ( provider && mTerrainProvider ) ? !mTerrainProvider->equals( provider ) : ( static_cast< bool >( provider ) != static_cast< bool >( mTerrainProvider.get() ) );
+
   mTerrainProvider.reset( provider );
-  emit changed();
+  if ( hasChanged )
+    emit changed();
 }
 
 void QgsProjectElevationProperties::setElevationRange( const QgsDoubleRange &range )
