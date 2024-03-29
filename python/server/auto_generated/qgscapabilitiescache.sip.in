@@ -39,9 +39,11 @@ Inserts new capabilities document (creates a copy of the document, does not take
 :param doc: the DOM document
 %End
 
+  public slots:
+
     void removeCapabilitiesDocument( const QString &path );
 %Docstring
-Remove capabilities document
+Removes capabilities document
 
 :param path: the project file path
 %End
