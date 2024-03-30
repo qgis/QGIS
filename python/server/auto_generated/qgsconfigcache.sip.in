@@ -78,6 +78,15 @@ Initialize from settings
 %End
 
 
+  signals:
+
+    void projectRemovedFromCache( const QString &path );
+%Docstring
+Emitted whenever a project is removed from the cache.
+
+.. versionadded:: 3.38
+%End
+
   private:
     QgsConfigCache();
   public slots:
