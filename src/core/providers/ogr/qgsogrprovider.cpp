@@ -1591,6 +1591,24 @@ static int strictToInt( const QVariant &v, bool *ok )
   return 0;
 }
 
+// Converts a string with values "0", "false", "1", "true" to 0 / 1
+static int stringToBool( const QString &strVal, bool *ok )
+{
+  if ( strVal.compare( QLatin1String( "0" ) ) == 0 || strVal.compare( QLatin1String( "false" ), Qt::CaseInsensitive ) == 0 )
+  {
+    *ok = true;
+    return 0;
+  }
+  else if ( strVal.compare( QLatin1String( "1" ) ) == 0 || strVal.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    *ok = true;
+    return 1;
+  }
+  *ok = false;
+  return 0;
+}
+
+
 bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId incrementalFeatureId )
 {
   bool returnValue = true;
@@ -1686,12 +1704,29 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     }
     else
     {
+      bool errorEmitted = false;
       bool ok = false;
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, strictToInt( attrVal, &ok ) );
+        {
+          if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean && qType == QVariant::String )
+          {
+            // compatibility with use case of https://github.com/qgis/QGIS/issues/55517
+            const QString strVal = attrVal.toString();
+            OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, stringToBool( strVal, &ok ) );
+            if ( !ok )
+            {
+              pushError( tr( "wrong value for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( strVal ) );
+              errorEmitted = true;
+            }
+          }
+          else
+          {
+            OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, strictToInt( attrVal, &ok ) );
+          }
           break;
+        }
 
         case OFTInteger64:
           OGR_F_SetFieldInteger64( feature.get(), ogrAttributeId, attrVal.toLongLong( &ok ) );
@@ -1893,7 +1928,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
 
       if ( !ok )
       {
-        pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( qType ) );
+        if ( !errorEmitted )
+        {
+          pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( attrVal.typeName() ) );
+        }
         returnValue = false;
       }
     }
@@ -2634,12 +2672,29 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
       else
       {
+        bool errorEmitted = false;
         bool ok = false;
         switch ( type )
         {
           case OFTInteger:
-            OGR_F_SetFieldInteger( of.get(), f, strictToInt( *it2, &ok ) );
+          {
+            if ( OGR_Fld_GetSubType( fd ) == OFSTBoolean && qType == QVariant::String )
+            {
+              // compatibility with use case of https://github.com/qgis/QGIS/issues/55517
+              const QString strVal = it2->toString();
+              OGR_F_SetFieldInteger( of.get(), f, stringToBool( strVal, &ok ) );
+              if ( !ok )
+              {
+                pushError( tr( "wrong value for attribute %1 of feature %2: %3" ).arg( it2.key() ) . arg( fid ) .arg( strVal ) );
+                errorEmitted = true;
+              }
+            }
+            else
+            {
+              OGR_F_SetFieldInteger( of.get(), f, strictToInt( *it2, &ok ) );
+            }
             break;
+          }
           case OFTInteger64:
             OGR_F_SetFieldInteger64( of.get(), f, it2->toLongLong( &ok ) );
             break;
@@ -2835,7 +2890,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
         if ( !ok )
         {
-          pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( it2.key() ) . arg( fid ) .arg( qType ) );
+          if ( !errorEmitted )
+          {
+            pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( it2.key() ) . arg( fid ) .arg( it2->typeName() ) );
+          }
           returnValue = false;
         }
       }
