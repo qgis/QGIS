@@ -290,7 +290,7 @@ class TableFieldsModel(SimpleTableModel):
         match = regex.match(typestr)
         if match.hasMatch():
             fld.dataType = match.captured(1).strip()
-            fld.modifier = regex.captured(2).strip()
+            fld.modifier = match.captured(2).strip()
         else:
             fld.modifier = None
             fld.dataType = typestr
