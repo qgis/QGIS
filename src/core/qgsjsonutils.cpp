@@ -245,6 +245,9 @@ json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features
     { "type", "FeatureCollection" },
     { "features", json::array() }
   };
+
+  QgsJsonUtils::addCrsInfo( data, mDestinationCrs );
+
   for ( const QgsFeature &feature : std::as_const( features ) )
   {
     data["features"].push_back( exportFeatureToJsonObject( feature ) );
@@ -911,4 +914,15 @@ json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsV
     attrs[fields.at( i ).name().toStdString()] = jsonFromVariant( val );
   }
   return attrs;
+}
+
+void QgsJsonUtils::addCrsInfo( json &value, const QgsCoordinateReferenceSystem &crs )
+{
+  // When user request EPSG:4326 we return a compliant CRS84 lon/lat GeoJSON
+  // so no need to add CRS information
+  if ( crs.authid() == "OGC:CRS84" || crs.authid() == "EPSG:4326" )
+    return;
+
+  value["crs"]["type"] = "name";
+  value["crs"]["properties"]["name"] = crs.toOgcUrn().toStdString();
 }
