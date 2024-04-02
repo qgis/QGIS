@@ -93,6 +93,8 @@ void QgsTiledSceneSourceSelect::btnNewCesium3DTiles_clicked()
 
     QgsTiledSceneProviderConnection::addConnection( nc.connectionName(), connectionData );
     populateConnectionList();
+    QgsTiledSceneProviderConnection::setSelectedConnection( nc.connectionName() );
+    setConnectionListPosition();
     emit connectionsChanged();
   }
 }
