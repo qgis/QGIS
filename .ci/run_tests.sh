@@ -2,13 +2,9 @@
 
 set -e
 
-# check for docker-compose and docker availability
+# check for docker availability
 command -v docker > /dev/null || {
 	echo "Please install docker" >&2
-	exit 1
-}
-command -v docker-compose > /dev/null || {
-	echo "Please install docker-compose" >&2
 	exit 1
 }
 
@@ -115,7 +111,7 @@ if test "$(docker images -q qgis3-build-deps-binary-image)" = ""; then
 fi
 
 if test "${INTERACTIVE}" = "no"; then
-  echo "--=[ Running tests via docker-compose"
+  echo "--=[ Running tests via docker compose"
   COMMAND=${QGIS_WORKSPACE_MOUNTPOINT}/.docker/docker-qgis-test.sh
   COMMAND_ARGS="${TESTS_TO_RUN}"
 else
@@ -129,7 +125,7 @@ mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
 # Create an empty webdav folder with appropriate permissions so www user can write inside it
 mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
 
-docker-compose \
+docker compose \
   -f .docker/docker-compose-testing.yml \
   run \
   -w "${QGIS_WORKSPACE_MOUNTPOINT}" \

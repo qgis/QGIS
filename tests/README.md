@@ -61,7 +61,7 @@ Some tests require a specific PostgreSQL server configuration
 to bring up such server would be to (tweak $srcdir appropriately):
 
     QGIS_WORKSPACE=${srcdir} \
-    docker-compose -f .docker/docker-compose-testing-postgres.yml up -d postgres
+    docker compose -f .docker/docker-compose-testing-postgres.yml up -d postgres
     export PGHOST=`docker inspect docker_postgres_1 | jq -r .[0].NetworkSettings.Networks.docker_default.IPAddress`
     export PGUSER=docker
     export PGPASSWORD=docker
