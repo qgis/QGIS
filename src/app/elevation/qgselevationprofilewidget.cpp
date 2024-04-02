@@ -890,7 +890,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 
   const QList< QgsMapLayer * > layersToGenerate = mCanvas->layers();
   QList< QgsAbstractProfileSource * > sources;
-  sources.reserve( layersToGenerate .size() );
+  sources.reserve( layersToGenerate.size() );
   for ( QgsMapLayer *layer : layersToGenerate )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
