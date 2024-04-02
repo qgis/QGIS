@@ -65,7 +65,6 @@ jobs:
 
       - name: Configure QGIS
         run: |
-          CXXFLAGS="-DQWT_POLAR_VERSION=0x060200" \
           cmake \
             -G"Ninja" \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
@@ -74,7 +73,6 @@ jobs:
             -DWITH_DRACO=ON \
             -DWITH_PDAL=OFF \
             -DWITH_CUSTOM_WIDGETS=ON \
-            -DWITH_QWTPOLAR=OFF \
             -DWITH_BINDINGS=OFF \
             -DWITH_GRASS=OFF \
             -DUSE_CCACHE=ON \
