@@ -135,6 +135,7 @@ class QgsElevationProfileWidget : public QWidget
     void nudgeRight();
     void nudgeCurve( Qgis::BufferSide side );
     void axisScaleLockToggled( bool active );
+    void onProjectElevationPropertiesChanged();
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
