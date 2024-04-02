@@ -9,7 +9,7 @@ From build dir, run: ctest -R PyQgsAuthManagerPasswordPostgresTest -V
 
 It uses a docker container as postgres/postgis server with certificates from tests/testdata/auth_system/certs_keys_2048
 
-Use docker-compose -f .docker/docker-compose-testing-postgres.yml up postgres to start the server
+Use docker compose -f .docker/docker-compose-testing-postgres.yml up postgres to start the server
 
 TODO:
     - Document how to restore the server data
