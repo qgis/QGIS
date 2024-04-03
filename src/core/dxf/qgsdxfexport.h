@@ -73,7 +73,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      */
     struct CORE_EXPORT DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = false, int ddBlocksMaxNumberOfClasses = -1 )
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1 )
           : mLayer( vl )
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
           , mBuildDDBlocks( buildDDBlocks )
