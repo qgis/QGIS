@@ -144,6 +144,90 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      */
     QList< int > filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
 
+    /**
+     * Returns the band number from which the temporal values should be taken.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setTemporalRepresentationBandNumber()
+     * \since QGIS 3.38
+     */
+    int temporalRepresentationBandNumber() const;
+
+    /**
+     * Sets the band number from which the temporal values should be taken.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see temporalRepresentationBandNumber()
+     * \since QGIS 3.38
+     */
+    void setTemporalRepresentationBandNumber( int number );
+
+    /**
+     * Returns the temporal offset, which is a fixed datetime which should be added to individual pixel values
+     * from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setTemporalRepresentationOffset()
+     * \since QGIS 3.38
+     */
+    QDateTime temporalRepresentationOffset() const;
+
+    /**
+     * Sets the temporal offset, which is a fixed datetime which should be added to individual pixel values
+     * from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see temporalRepresentationOffset()
+     * \since QGIS 3.38
+     */
+    void setTemporalRepresentationOffset( const QDateTime &offset );
+
+    /**
+     * Returns the scale, which is a duration factor which should be applied to individual pixel
+     * values from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setTemporalRepresentationScale()
+     * \see temporalRepresentationScaleUnit()
+     * \see setTemporalRepresentationScaleUnit()
+     * \since QGIS 3.38
+     */
+    double temporalRepresentationScale() const;
+
+    /**
+     * Sets the scale, which is a duration factor which should be applied to individual pixel
+     * values from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see temporalRepresentationScale()
+     * \see temporalRepresentationScaleUnit()
+     * \see setTemporalRepresentationScaleUnit()
+     * \since QGIS 3.38
+     */
+    void setTemporalRepresentationScale( double scale );
+
+    /**
+     * Returns the scale's temporal unit type.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setTemporalRepresentationScaleUnit()
+     * \see temporalRepresentationScale()
+     * \see setTemporalRepresentationScale()
+     * \since QGIS 3.38
+     */
+    Qgis::TemporalUnit temporalRepresentationScaleUnit() const;
+
+    /**
+     * Sets the scale's temporal unit type.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see temporalRepresentationScaleUnit()
+     * \see temporalRepresentationScale()
+     * \see setTemporalRepresentationScale()
+     * \since QGIS 3.38
+     */
+    void setTemporalRepresentationScaleUnit( Qgis::TemporalUnit unit );
+
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -162,6 +246,11 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsDateTimeRange mFixedRange;
 
     QMap< int, QgsDateTimeRange > mRangePerBand;
+
+    int mTemporalRepresentationBandNumber = 1;
+    QDateTime mTemporalRepresentationOffset;
+    double mTemporalRepresentationScale = 1.0;
+    Qgis::TemporalUnit mTemporalRepresentationScaleUnit = Qgis::TemporalUnit::Days;
 };
 
 #endif // QGSRASTERLAYERTEMPORALPROPERTIES_H
