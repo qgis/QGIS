@@ -273,6 +273,45 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
                              includeBeginning=False,
                              includeEnd=True)})
 
+    def test_basic_represents_temporal_value(self):
+        """
+        Basic tests for the class using the RepresentsTemporalValue mode
+        """
+        props = QgsRasterLayerTemporalProperties(None)
+        props.setMode(Qgis.RasterTemporalMode.RepresentsTemporalValues)
+        self.assertEqual(props.mode(),
+                         Qgis.RasterTemporalMode.RepresentsTemporalValues)
+        self.assertEqual(props.temporalRepresentationScale(), 1)
+        self.assertEqual(props.temporalRepresentationScaleUnit(), Qgis.TemporalUnit.Days)
+        self.assertEqual(props.temporalRepresentationOffset(), QDateTime())
+        self.assertEqual(props.temporalRepresentationBandNumber(), 1)
+        self.assertFalse(props.isActive())
+
+        props.setTemporalRepresentationScale(2.5)
+        props.setTemporalRepresentationScaleUnit(Qgis.TemporalUnit.Weeks)
+        props.setTemporalRepresentationOffset(QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
+        props.setTemporalRepresentationBandNumber(2)
+        props.setIsActive(True)
+        self.assertEqual(props.temporalRepresentationScale(), 2.5)
+        self.assertEqual(props.temporalRepresentationScaleUnit(), Qgis.TemporalUnit.Weeks)
+        self.assertEqual(props.temporalRepresentationOffset(), QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
+        self.assertEqual(props.temporalRepresentationBandNumber(), 2)
+        self.assertTrue(props.isActive())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsRasterLayerTemporalProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.mode(),
+                         Qgis.RasterTemporalMode.RepresentsTemporalValues)
+        self.assertEqual(props2.temporalRepresentationScale(), 2.5)
+        self.assertEqual(props2.temporalRepresentationScaleUnit(), Qgis.TemporalUnit.Weeks)
+        self.assertEqual(props2.temporalRepresentationOffset(), QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
+        self.assertEqual(props2.temporalRepresentationBandNumber(), 2)
+        self.assertTrue(props2.isActive())
+
 
 if __name__ == '__main__':
     unittest.main()

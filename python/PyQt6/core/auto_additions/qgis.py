@@ -2116,7 +2116,10 @@ QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = "Redraw the layer
 QgsRasterLayerTemporalProperties.FixedRangePerBand = Qgis.RasterTemporalMode.FixedRangePerBand
 QgsRasterLayerTemporalProperties.FixedRangePerBand.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed temporal range per band (since QGIS 3.38)"
-Qgis.RasterTemporalMode.__doc__ = "Raster layer temporal modes\n\n.. versionadded:: 3.22\n\n" + '* ``ModeFixedTemporalRange``: ' + Qgis.RasterTemporalMode.FixedTemporalRange.__doc__ + '\n' + '* ``ModeTemporalRangeFromDataProvider``: ' + Qgis.RasterTemporalMode.TemporalRangeFromDataProvider.__doc__ + '\n' + '* ``ModeRedrawLayerOnly``: ' + Qgis.RasterTemporalMode.RedrawLayerOnly.__doc__ + '\n' + '* ``FixedRangePerBand``: ' + Qgis.RasterTemporalMode.FixedRangePerBand.__doc__
+QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
+QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
+QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
+Qgis.RasterTemporalMode.__doc__ = "Raster layer temporal modes\n\n.. versionadded:: 3.22\n\n" + '* ``ModeFixedTemporalRange``: ' + Qgis.RasterTemporalMode.FixedTemporalRange.__doc__ + '\n' + '* ``ModeTemporalRangeFromDataProvider``: ' + Qgis.RasterTemporalMode.TemporalRangeFromDataProvider.__doc__ + '\n' + '* ``ModeRedrawLayerOnly``: ' + Qgis.RasterTemporalMode.RedrawLayerOnly.__doc__ + '\n' + '* ``FixedRangePerBand``: ' + Qgis.RasterTemporalMode.FixedRangePerBand.__doc__ + '\n' + '* ``RepresentsTemporalValues``: ' + Qgis.RasterTemporalMode.RepresentsTemporalValues.__doc__
 # --
 Qgis.RasterTemporalMode.baseClass = Qgis
 QgsRasterDataProviderTemporalCapabilities.IntervalHandlingMethod = Qgis.TemporalIntervalMatchMethod

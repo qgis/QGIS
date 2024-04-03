@@ -35,6 +35,7 @@
 #include "qgsapplication.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterlayerutils.h"
+#include "qgsunittypes.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -299,6 +300,30 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
       case Qgis::RasterTemporalMode::FixedTemporalRange:
       case Qgis::RasterTemporalMode::RedrawLayerOnly:
       case Qgis::RasterTemporalMode::FixedRangePerBand:
+        break;
+
+      case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+        if ( mPipe->renderer()->usesBands().contains( temporalProperties->temporalRepresentationBandNumber() ) )
+        {
+          // if layer has elevation settings and we are only rendering a temporal range => we need to filter pixels by temporal values
+          std::unique_ptr< QgsRasterTransparency > transparency;
+          if ( const QgsRasterTransparency *rendererTransparency = mPipe->renderer()->rasterTransparency() )
+            transparency = std::make_unique< QgsRasterTransparency >( *rendererTransparency );
+          else
+            transparency = std::make_unique< QgsRasterTransparency >();
+
+          QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentPixels = transparency->transparentSingleValuePixelList();
+
+          const qint64 msecsLower = temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().begin() );
+          const qint64 msecsUpper = temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().end() );
+          const double adjustedLower = msecsLower * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
+          const double adjustedUpper = msecsUpper * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
+          transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
+          transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
+
+          transparency->setTransparentSingleValuePixelList( transparentPixels );
+          mPipe->renderer()->setRasterTransparency( transparency.release() );
+        }
         break;
 
       case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:

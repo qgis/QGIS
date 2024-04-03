@@ -142,6 +142,130 @@ Returns a filtered list of bands which match the specified ``range``.
 .. versionadded:: 3.38
 %End
 
+    int temporalRepresentationBandNumber() const;
+%Docstring
+Returns the band number from which the temporal values should be taken.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`setTemporalRepresentationBandNumber`
+
+.. versionadded:: 3.38
+%End
+
+    void setTemporalRepresentationBandNumber( int number );
+%Docstring
+Sets the band number from which the temporal values should be taken.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`temporalRepresentationBandNumber`
+
+.. versionadded:: 3.38
+%End
+
+    QDateTime temporalRepresentationOffset() const;
+%Docstring
+Returns the temporal offset, which is a fixed datetime which should be added to individual pixel values
+from the layer.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`setTemporalRepresentationOffset`
+
+.. versionadded:: 3.38
+%End
+
+    void setTemporalRepresentationOffset( const QDateTime &offset );
+%Docstring
+Sets the temporal offset, which is a fixed datetime which should be added to individual pixel values
+from the layer.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`temporalRepresentationOffset`
+
+.. versionadded:: 3.38
+%End
+
+    double temporalRepresentationScale() const;
+%Docstring
+Returns the scale, which is a duration factor which should be applied to individual pixel
+values from the layer.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`setTemporalRepresentationScale`
+
+.. seealso:: :py:func:`temporalRepresentationScaleUnit`
+
+.. seealso:: :py:func:`setTemporalRepresentationScaleUnit`
+
+.. versionadded:: 3.38
+%End
+
+    void setTemporalRepresentationScale( double scale );
+%Docstring
+Sets the scale, which is a duration factor which should be applied to individual pixel
+values from the layer.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`temporalRepresentationScale`
+
+.. seealso:: :py:func:`temporalRepresentationScaleUnit`
+
+.. seealso:: :py:func:`setTemporalRepresentationScaleUnit`
+
+.. versionadded:: 3.38
+%End
+
+    Qgis::TemporalUnit temporalRepresentationScaleUnit() const;
+%Docstring
+Returns the scale's temporal unit type.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`setTemporalRepresentationScaleUnit`
+
+.. seealso:: :py:func:`temporalRepresentationScale`
+
+.. seealso:: :py:func:`setTemporalRepresentationScale`
+
+.. versionadded:: 3.38
+%End
+
+    void setTemporalRepresentationScaleUnit( Qgis::TemporalUnit unit );
+%Docstring
+Sets the scale's temporal unit type.
+
+.. note::
+
+   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
+
+.. seealso:: :py:func:`temporalRepresentationScaleUnit`
+
+.. seealso:: :py:func:`temporalRepresentationScale`
+
+.. seealso:: :py:func:`setTemporalRepresentationScale`
+
+.. versionadded:: 3.38
+%End
+
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
 
