@@ -152,6 +152,8 @@ class TestQgsGeometry : public QgsTest
     void isSimple_data();
     void isSimple();
 
+    void contains();
+
     void reshapeGeometryLineMerge();
     void createCollectionOfType();
 
@@ -2074,6 +2076,19 @@ void TestQgsGeometry::isSimple()
 
   bool res = gInput.isSimple();
   QCOMPARE( res, simple );
+}
+
+void TestQgsGeometry::contains()
+{
+  QgsGeometry geomTest = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 5 5, -2.1 12.1, -7.1 7.1))" ) );
+
+  QgsPointXY pointInside( 1, 2 );
+  QVERIFY( geomTest.contains( &pointInside ) );
+  QVERIFY( geomTest.contains( QgsGeometry::fromWkt( QStringLiteral( "Point(1 2)" ) ) ) );
+
+  QgsPointXY pointOutside( 3, 1 );
+  QVERIFY( !geomTest.contains( &pointOutside ) );
+  QVERIFY( !geomTest.contains( QgsGeometry::fromWkt( QStringLiteral( "Point(3 1)" ) ) ) );
 }
 
 void TestQgsGeometry::reshapeGeometryLineMerge()
