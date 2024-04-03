@@ -1347,7 +1347,7 @@ void TestQgsGeometry::simplifyCheck1()
   initPainterTest();
   QVERIFY( mpPolylineGeometryD->simplify( 0.5 ) );
   // should be a single polygon as A intersect B
-  QgsGeometry *mypSimplifyGeometry  =  mpPolylineGeometryD->simplify( 0.5 );
+  QgsGeometry *mypSimplifyGeometry = mpPolylineGeometryD->simplify( 0.5 );
   qDebug( "Geometry Type: %s", Qgis::WkbType::displayString( mypSimplifyGeometry->wkbType() ) );
   QVERIFY( mypSimplifyGeometry->wkbType() == Qgis::WkbType::LineString );
   QgsPolyline myLine = mypSimplifyGeometry->asPolyline();
@@ -1369,7 +1369,7 @@ void TestQgsGeometry::intersectionCheck1()
   QVERIFY( engine->intersects( mpPolygonGeometryB.constGet() ) );
 
   // should be a single polygon as A intersect B
-  QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
+  QgsGeometry mypIntersectionGeometry = mpPolygonGeometryA.intersection( mpPolygonGeometryB );
   QVERIFY( mypIntersectionGeometry.wkbType() == Qgis::WkbType::Polygon );
   QgsPolygonXY myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -1460,7 +1460,7 @@ void TestQgsGeometry::unionCheck1()
 {
   initPainterTest();
   // should be a multipolygon with 2 parts as A does not intersect C
-  QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryC );
+  QgsGeometry mypUnionGeometry = mpPolygonGeometryA.combine( mpPolygonGeometryC );
   QVERIFY( mypUnionGeometry.wkbType() == Qgis::WkbType::MultiPolygon );
   QgsMultiPolygonXY myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
@@ -1472,7 +1472,7 @@ void TestQgsGeometry::unionCheck2()
 {
   initPainterTest();
   // should be a single polygon as A intersect B
-  QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryB );
+  QgsGeometry mypUnionGeometry = mpPolygonGeometryA.combine( mpPolygonGeometryB );
   QVERIFY( mypUnionGeometry.wkbType() == Qgis::WkbType::Polygon );
   QgsPolygonXY myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
