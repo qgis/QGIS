@@ -1418,6 +1418,13 @@ class CORE_EXPORT QgsGeometry
     bool contains( const QgsPointXY *p ) const;
 
     /**
+     * Returns TRUE if the geometry contains the point at (\a x, \a y).
+     *
+     * \since QGIS 3.38
+     */
+    bool contains( double x, double y ) const;
+
+    /**
      * Returns TRUE if the geometry completely contains another \a geometry.
      *
      * \note For performance critical code, or when testing for contains against many different
