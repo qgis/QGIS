@@ -1492,6 +1492,19 @@ bool QgsGeometry::contains( const QgsPointXY *p ) const
   return geos.contains( &pt, &mLastError );
 }
 
+bool QgsGeometry::contains( double x, double y ) const
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  QgsPoint pt( x, y );
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  return geos.contains( &pt, &mLastError );
+}
+
 bool QgsGeometry::contains( const QgsGeometry &geometry ) const
 {
   if ( !d->geometry || geometry.isNull() )

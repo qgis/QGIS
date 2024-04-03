@@ -1324,6 +1324,13 @@ geometries.
 Returns ``True`` if the geometry contains the point ``p``.
 %End
 
+    bool contains( double x, double y ) const;
+%Docstring
+Returns ``True`` if the geometry contains the point at (``x``, ``y``).
+
+.. versionadded:: 3.38
+%End
+
     bool contains( const QgsGeometry &geometry ) const;
 %Docstring
 Returns ``True`` if the geometry completely contains another ``geometry``.

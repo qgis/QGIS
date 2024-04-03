@@ -2085,10 +2085,12 @@ void TestQgsGeometry::contains()
   QgsPointXY pointInside( 1, 2 );
   QVERIFY( geomTest.contains( &pointInside ) );
   QVERIFY( geomTest.contains( QgsGeometry::fromWkt( QStringLiteral( "Point(1 2)" ) ) ) );
+  QVERIFY( geomTest.contains( pointInside.x(), pointInside.y() ) );
 
   QgsPointXY pointOutside( 3, 1 );
   QVERIFY( !geomTest.contains( &pointOutside ) );
   QVERIFY( !geomTest.contains( QgsGeometry::fromWkt( QStringLiteral( "Point(3 1)" ) ) ) );
+  QVERIFY( !geomTest.contains( pointOutside.x(), pointOutside.y() ) );
 }
 
 void TestQgsGeometry::reshapeGeometryLineMerge()
