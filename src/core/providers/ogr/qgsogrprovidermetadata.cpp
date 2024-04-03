@@ -418,7 +418,7 @@ bool QgsOgrProviderMetadata::saveStyle(
 bool QgsOgrProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QString filePath;
-  QgsOgrLayerUniquePtr userLayer = LoadDataSourceAndLayer( uri, false, filePath, errCause );
+  QgsOgrLayerUniquePtr userLayer = LoadDataSourceAndLayer( uri, true, filePath, errCause );
   if ( !userLayer )
     return false;
   QRecursiveMutex *mutex = nullptr;
