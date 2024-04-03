@@ -11042,6 +11042,8 @@ void TestQgsProcessing::parameterDxfLayers()
   layerMap["layer"] = "layerName";
   layerMap["attributeIndex"] = -1;
   layerMap["overriddenLayerName"] = QString();
+  layerMap["buildDataDefinedBlocks"] = false;
+  layerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList ) );
   QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) ); //no corresponding layer in the context's project
@@ -11055,6 +11057,14 @@ void TestQgsProcessing::parameterDxfLayers()
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
   layerMap["overriddenLayerName"] = QStringLiteral( "My Point Layer" );
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  layerMap["buildDataDefinedBlocks"] = true;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  layerMap["dataDefinedBlocksMaximumNumberOfClasses"] = 8;
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
@@ -11080,15 +11090,17 @@ void TestQgsProcessing::parameterDxfLayers()
   wrongLayerMap["layer"] = "NonSpatialLayer";
   wrongLayerMap["attributeIndex"] = -1;
   wrongLayerMap["overriddenLayerName"] = QString();
+  wrongLayerMap["buildDataDefinedBlocks"] = false;
+  wrongLayerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   QVariantList wrongLayerMapList;
   wrongLayerMapList.append( wrongLayerMap );
   QVERIFY( !def->checkValueIsAcceptable( wrongLayerMapList, &context ) );
 
   // Check values
   const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
-  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': 'My Point Layer'}]" ).arg( vectorLayer->source() ) );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': 'My Point Layer','buildDataDefinedBlocks': True,'dataDefinedBlocksMaximumNumberOfClasses': 8}]" ).arg( vectorLayer->source() ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
-            QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"memory://%1\",\"overriddenLayerName\":\"My Point Layer\"}]" ).arg( vectorLayer->source() ) );
+            QStringLiteral( "[{\"attributeIndex\":-1,\"buildDataDefinedBlocks\":true,\"dataDefinedBlocksMaximumNumberOfClasses\":8,\"layer\":\"memory://%1\",\"overriddenLayerName\":\"My Point Layer\"}]" ).arg( vectorLayer->source() ) );
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
   QVERIFY( !ok );
@@ -11101,6 +11113,8 @@ void TestQgsProcessing::parameterDxfLayers()
 
   // Default values for parameters other than the vector layer
   layerMap["overriddenLayerName"] = QString();
+  layerMap["buildDataDefinedBlocks"] = false;
+  layerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   layerList[0] = layerMap;
 
   const QgsDxfExport::DxfLayer dxfLayer( vectorLayer );
@@ -11108,14 +11122,20 @@ void TestQgsProcessing::parameterDxfLayers()
   QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
   QCOMPARE( dxfList.at( 0 ).overriddenName(), dxfLayer.overriddenName() );
+  QCOMPARE( dxfList.at( 0 ).buildDataDefinedBlocks(), dxfLayer.buildDataDefinedBlocks() );
+  QCOMPARE( dxfList.at( 0 ).dataDefinedBlocksMaximumNumberOfClasses(), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() );
   dxfList = def->parameterAsLayers( QVariant( QStringList() << vectorLayer->source() ), context );
   QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
   QCOMPARE( dxfList.at( 0 ).overriddenName(), dxfLayer.overriddenName() );
+  QCOMPARE( dxfList.at( 0 ).buildDataDefinedBlocks(), dxfLayer.buildDataDefinedBlocks() );
+  QCOMPARE( dxfList.at( 0 ).dataDefinedBlocksMaximumNumberOfClasses(), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() );
   dxfList = def->parameterAsLayers( layerList, context );
   QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
   QCOMPARE( dxfList.at( 0 ).overriddenName(), dxfLayer.overriddenName() );
+  QCOMPARE( dxfList.at( 0 ).buildDataDefinedBlocks(), dxfLayer.buildDataDefinedBlocks() );
+  QCOMPARE( dxfList.at( 0 ).dataDefinedBlocksMaximumNumberOfClasses(), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() );
 }
 
 void TestQgsProcessing::parameterAnnotationLayer()

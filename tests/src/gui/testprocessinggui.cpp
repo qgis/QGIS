@@ -9989,6 +9989,8 @@ void TestProcessingGui::testDxfLayersWrapper()
   layerMap["layer"] = "PointLayer";
   layerMap["attributeIndex"] = -1;
   layerMap["overriddenLayerName"] = QString();
+  layerMap["buildDataDefinedBlocks"] = false;
+  layerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   layerList.append( layerMap );
 
   QVERIFY( definition.checkValueIsAcceptable( layerList, &context ) );
@@ -9999,7 +10001,7 @@ void TestProcessingGui::testDxfLayersWrapper()
 
   QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
   QString valueAsPythonString = definition.valueAsPythonString( value, context );
-  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': ''}]" ).arg( vectorLayer->source() ) );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': '','buildDataDefinedBlocks': False,'dataDefinedBlocksMaximumNumberOfClasses': -1}]" ).arg( vectorLayer->source() ) );
 }
 
 void TestProcessingGui::testAlignRasterLayersWrapper()
