@@ -4631,7 +4631,7 @@ QString QgsGdalProviderMetadata::getStyleById( const QString &uri, const QString
 bool QgsGdalProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_UPDATE ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
