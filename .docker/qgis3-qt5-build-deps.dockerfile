@@ -152,7 +152,7 @@ RUN  apt-get update \
 
 # HANA: client side
 # Install hdbsql tool
-RUN curl -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
+RUN curl -j -k -L -H "Cookie: eula_3_2_agreed=tools.hana.ondemand.com/developer-license-3_2.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
   && tar -xvf hanaclient-latest-linux-x64.tar.gz \
   && mkdir /usr/sap \
   && ./client/hdbinst -a client --sapmnt=/usr/sap \
