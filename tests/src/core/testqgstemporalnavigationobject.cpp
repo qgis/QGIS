@@ -272,13 +272,14 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   // Test if, when changing to Cumulative mode, the dateTimeRange for frame 2 (with 2 hours frames) is indeed the full range
   navigationObject->setTemporalRangeCumulative( true );
+  QCOMPARE( temporalRangeSignal.count(), 8 );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 1 ), QgsDateTimeRange(
               QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
               QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
               true,
               false
             ) );
-  QCOMPARE( temporalRangeSignal.count(), 7 );
+  QCOMPARE( temporalRangeSignal.count(), 8 );
 
   navigationObject->setTemporalRangeCumulative( false );
   // interval which doesn't fit exactly into overall range
