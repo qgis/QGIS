@@ -492,39 +492,46 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
         // a description of the features in the collection
         { "description", layer->abstract().toStdString() },
         {
-          "crs", crss
-        },
-        // TODO: "relations" ?
-        {
-          "extent",  {
-            {
-              "spatial", {
-                { "bbox", QgsServerApiUtils::layerExtent( layer ) },
-                { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+          // identifier of the collection used, for example, in URIs
+          { "id", shortName.toStdString() },
+          // human readable title of the collection
+          { "title", title },
+          // a description of the features in the collection
+          { "description", layer->serverProperties()->abstract().toStdString() },
+          {
+            "crs", crss
+          },
+          // TODO: "relations" ?
+          {
+            "extent",  {
+              {
+                "spatial", {
+                  { "bbox", QgsServerApiUtils::layerExtent( layer ) },
+                  { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+                },
               },
-            },
-            {
-              "temporal", {
-                { "interval", QgsServerApiUtils::temporalExtent( layer ) },
-                { "trs", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" },
+              {
+                "temporal", {
+                  { "interval", QgsServerApiUtils::temporalExtent( layer ) },
+                  { "trs", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" },
+                }
               }
             }
-          }
-        },
-        {
-          "links", {
-            {
-              { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
-              { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
-              { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
-              { "title", title + " as GeoJSON" }
-            },
-            {
-              { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) )  },
-              { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
-              { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML )  },
-              { "title", title + " as HTML" }
-            }/* TODO: not sure what these "concepts" are about, neither if they are mandatory
+          },
+          {
+            "links", {
+              {
+                { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
+                { "title", title + " as GeoJSON" }
+              },
+              {
+                { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) )  },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML )  },
+                { "title", title + " as HTML" }
+              }/* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context.request(), QStringLiteral( "/%1/concepts" ).arg( shortName ) )  },
               { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
@@ -532,9 +539,14 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
               { "title", "Describe " + title }
             }
             */
-          }
-        },
-      } );
+            }
+          },
+        } );
+      }
+      catch ( QgsServerApiNotFoundError & )
+      {
+        // Skip non-published layers
+      }
     }
   }
 

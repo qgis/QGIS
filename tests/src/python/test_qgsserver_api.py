@@ -45,6 +45,7 @@ from qgis.server import (
     QgsServerOgcApiHandler,
     QgsServerQueryStringParameter,
     QgsServiceRegistry,
+    QgsAccessControlFilter,
 )
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
@@ -292,6 +293,21 @@ class QgsServerAPITestBase(QgsServerTestBase):
         cls.maxDiff = None
 
 
+class RestrictedLayerAccessControl(QgsAccessControlFilter):
+    """Access control filter to exclude a list of layers by ID, used by WFS3 test"""
+
+    def __init__(self, server_iface, ecxluded_layers=[]):
+        self.excluded_layers = ecxluded_layers
+        super(QgsAccessControlFilter, self).__init__(server_iface)
+
+    def layerPermissions(self, layer):
+        """ Return the layer rights """
+
+        rights = QgsAccessControlFilter.LayerPermissions()
+        rights.canRead = layer.id() not in self.excluded_layers
+        return rights
+
+
 class QgsServerAPITest(QgsServerAPITestBase):
     """ QGIS API server tests"""
 
@@ -452,6 +468,38 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
         project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
         self.compareApi(request, project, 'test_wfs3_collections_project.json')
+
+    def test_wfs3_collections_json_excluded_layer(self):
+        """Test WFS3 API collections in json format with an excluded layer"""
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections.json')
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+
+        server = QgsServer()
+
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        self.assertEqual(response.headers()['Content-Type'], 'application/json')
+        self.assertEqual(response.statusCode(), 200)
+        result = bytes(response.body()).decode('utf8')
+        jresult = json.loads(result)
+        ids = [l['id'] for l in jresult['collections']]
+        self.assertIn('layer1_with_short_name', ids)
+
+        # Access control filter to exclude a layer
+        acfilter = RestrictedLayerAccessControl(server.serverInterface(), ['testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a'])
+        server.serverInterface().registerAccessControl(acfilter, 100)
+
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        self.assertEqual(response.headers()['Content-Type'], 'application/json')
+        self.assertEqual(response.statusCode(), 200)
+        result = bytes(response.body()).decode('utf8')
+        jresult = json.loads(result)
+        ids = [l['id'] for l in jresult['collections']]
+        self.assertNotIn('layer1_with_short_name', ids)
 
     def test_wfs3_collections_html(self):
         """Test WFS3 API collections in html format"""
