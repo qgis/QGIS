@@ -17,6 +17,8 @@
 
 ///@cond PRIVATE
 
+#include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
@@ -583,6 +585,17 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
+  // The request was made on the boundingbox of the real extent
+  // It is necessary to ensure that the features intersect
+  // with extentGeom if the scene rotation is not 0.
+  QgsGeos extentIntersectionGeos( nullptr );
+  if ( context.map().zRotation() != 0.0 )
+  {
+    QgsGeometry extentIntersection = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+    extentIntersectionGeos = QgsGeos( extentIntersection.constGet() );
+    extentIntersectionGeos.prepareGeometry();
+  }
+
   for ( int i = 0; i < count; ++i )
   {
     if ( context.isCanceled() )
@@ -595,6 +608,12 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
     double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
+
+    if ( context.map().zRotation() != 0.0 && !extentIntersectionGeos.intersects( x, y ) )
+    {
+      continue;
+    }
+
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
@@ -703,6 +722,17 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
 
+  // The request was made on the boundingbox of the real extent
+  // It is necessary to ensure that the features intersect
+  // with extentGeom if the scene rotation is not 0.
+  QgsGeos extentIntersectionGeos( nullptr );
+  if ( context.map().zRotation() != 0.0 )
+  {
+    QgsGeometry extentIntersection = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+    extentIntersectionGeos = QgsGeos( extentIntersection.constGet() );
+    extentIntersectionGeos.prepareGeometry();
+  }
+
   for ( int i = 0; i < count; ++i )
   {
     if ( context.isCanceled() )
@@ -715,6 +745,12 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
     double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
+
+    if ( context.map().zRotation() != 0.0 && !extentIntersectionGeos.intersects( x, y ) )
+    {
+      continue;
+    }
+
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
@@ -823,6 +859,18 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   int ir = 0;
   int ig = 0;
   int ib = 0;
+
+  // The request was made on the boundingbox of the real extent
+  // It is necessary to ensure that the features intersect
+  // with extentGeom if the scene rotation is not 0.
+  QgsGeos extentIntersectionGeos( nullptr );
+  if ( context.map().zRotation() != 0.0 )
+  {
+    QgsGeometry extentIntersection = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+    extentIntersectionGeos = QgsGeos( extentIntersection.constGet() );
+    extentIntersectionGeos.prepareGeometry();
+  }
+
   for ( int i = 0; i < count; ++i )
   {
     if ( context.isCanceled() )
@@ -834,6 +882,12 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
     double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
+
+    if ( context.map().zRotation() != 0.0 && !extentIntersectionGeos.intersects( x, y ) )
+    {
+      continue;
+    }
+
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
@@ -986,6 +1040,18 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   }
 
   const QSet<int> filteredOutValues = context.getFilteredOutValues();
+
+  // The request was made on the boundingbox of the real extent
+  // It is necessary to ensure that the features intersect
+  // with extentGeom if the scene rotation is not 0.
+  QgsGeos extentIntersectionGeos( nullptr );
+  if ( context.map().zRotation() != 0.0 )
+  {
+    QgsGeometry extentIntersection = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+    extentIntersectionGeos = QgsGeos( extentIntersection.constGet() );
+    extentIntersectionGeos.prepareGeometry();
+  }
+
   for ( int i = 0; i < count; ++i )
   {
     if ( context.isCanceled() )
@@ -998,6 +1064,12 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
     double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
+
+    if ( context.map().zRotation() != 0.0 && !extentIntersectionGeos.intersects( x, y ) )
+    {
+      continue;
+    }
+
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
