@@ -314,10 +314,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
           QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentPixels = transparency->transparentSingleValuePixelList();
 
-          const qint64 msecsLower = temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().begin() );
-          const qint64 msecsUpper = temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().end() );
-          const double adjustedLower = msecsLower * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
-          const double adjustedUpper = msecsUpper * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
+          const double adjustedLower = static_cast< double >( temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().begin() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
+          const double adjustedUpper = static_cast< double >( temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().end() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
           transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
           transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
 
