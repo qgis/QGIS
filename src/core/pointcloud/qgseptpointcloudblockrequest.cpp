@@ -17,6 +17,7 @@
 
 #include "qgseptpointcloudblockrequest.h"
 
+#include "qgsgeometry.h"
 #include "qgstiledownloadmanager.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
@@ -32,8 +33,8 @@
 
 QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &uri, const QString &dataType,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
-  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect ),
+    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsGeometry &filterGeometry )
+  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterGeometry ),
     mDataType( dataType )
 {
   QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
@@ -56,15 +57,15 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
       mBlock = nullptr;
       if ( mDataType == QLatin1String( "binary" ) )
       {
-        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterRect );
+        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterGeometry );
       }
       else if ( mDataType == QLatin1String( "zstandard" ) )
       {
-        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterRect );
+        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterGeometry );
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression, mFilterRect );
+        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression, mFilterGeometry );
       }
       else
       {
@@ -74,7 +75,7 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
       {
         QgsPointCloudRequest req;
         req.setAttributes( mRequestedAttributes );
-        req.setFilterRect( mFilterRect );
+        req.setFilterGeometry( mFilterGeometry );
         QgsPointCloudIndex::storeNodeDataToCacheStatic( mBlock.get(), mNode, req, mFilterExpression, mUri );
       }
     }

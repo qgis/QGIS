@@ -568,7 +568,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -692,7 +692,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -798,7 +798,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -962,7 +962,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudblockrequest.h"
+#include "qgsgeometry.h"
 
 //
 // QgsPointCloudBlockRequest
@@ -25,7 +26,7 @@
 
 QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &uri,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
+    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsGeometry &filterGeometry )
   : mNode( node )
   , mUri( uri )
   , mAttributes( attributes )
@@ -33,7 +34,7 @@ QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNod
   , mScale( scale )
   , mOffset( offset )
   , mFilterExpression( filterExpression )
-  , mFilterRect( filterRect )
+  , mFilterGeometry( filterGeometry )
 {
 }
 

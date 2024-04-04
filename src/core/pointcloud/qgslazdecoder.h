@@ -31,7 +31,7 @@
 
 class QgsPointCloudExpression;
 class QgsLazInfo;
-class QgsRectangle;
+class QgsGeometry;
 
 template <typename T>
 bool lazStoreToStream_( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
@@ -85,9 +85,9 @@ class QgsLazDecoder
       int offset; // Used in case the attribute is an extra byte attribute
     };
 
-    static std::unique_ptr<QgsPointCloudBlock> decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
-    static std::unique_ptr<QgsPointCloudBlock> decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
-    static std::unique_ptr<QgsPointCloudBlock> decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
+    static std::unique_ptr<QgsPointCloudBlock> decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry );
+    static std::unique_ptr<QgsPointCloudBlock> decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry );
+    static std::unique_ptr<QgsPointCloudBlock> decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry );
 
 #if defined(_MSC_VER)
 

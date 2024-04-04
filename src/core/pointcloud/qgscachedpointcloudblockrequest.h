@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCachedPointCloudBlockRequest : public QgsPointCloudBlockReq
      */
     QgsCachedPointCloudBlockRequest( QgsPointCloudBlock *block, const IndexedPointCloudNode &node, const QString &uri,
                                      const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                                     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
+                                     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsGeometry &filterGeometry );
 
     ~QgsCachedPointCloudBlockRequest() = default;
 };

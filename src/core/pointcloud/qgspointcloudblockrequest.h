@@ -20,6 +20,7 @@
 
 #include <QObject>
 
+#include "qgsgeometry.h"
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudindex.h"
 
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
      */
     QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri,
                                const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                               const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
+                               const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsGeometry &filterGeometry );
 
 
     virtual ~QgsPointCloudBlockRequest() = 0;
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
     QgsPointCloudExpression mFilterExpression;
-    QgsRectangle mFilterRect;
+    QgsGeometry mFilterGeometry;
 };
 
 #endif // QGSPOINTCLOUDBLOCKREQUEST_H

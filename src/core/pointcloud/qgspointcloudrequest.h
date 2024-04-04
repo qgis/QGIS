@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsgeometry.h"
 #include <QPair>
 #include <QString>
 #include <QVector>
@@ -29,7 +30,7 @@
 
 #include "qgspointcloudattribute.h"
 
-#include "qgsrectangle.h"
+#include "qgsgeometry.h"
 
 /**
  * \ingroup core
@@ -55,18 +56,18 @@ class CORE_EXPORT QgsPointCloudRequest
 
     /**
      * Returns the rectangle from which points will be taken, in point cloud's crs. If the returned rectangle is empty, then no filter rectangle is set.
-     * \since QGIS 3.30
+     * \since QGIS 3.40
      */
-    QgsRectangle filterRect() const { return mFilterRect; }
+    QgsGeometry filterGeometry() const { return mFilterGeometry; }
 
     /**
      * Sets the rectangle from which points will be taken, in point cloud's crs. An empty rectangle removes the filter.
-     * \since QGIS 3.30
+     * \since QGIS 3.40
      */
-    void setFilterRect( QgsRectangle extent ) { mFilterRect = extent; }
+    void setFilterGeometry( const QgsGeometry &geometry ) { mFilterGeometry = geometry; }
   private:
     QgsPointCloudAttributeCollection mAttributes;
-    QgsRectangle mFilterRect;
+    QgsGeometry mFilterGeometry;
 };
 
 //! Hash function for QgsPointCloudRequest

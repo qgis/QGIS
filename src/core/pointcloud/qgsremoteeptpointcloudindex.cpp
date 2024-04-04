@@ -136,7 +136,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
     return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
-           scale(), offset(), mFilterExpression, request.filterRect() );
+           scale(), offset(), mFilterExpression, request.filterGeometry() );
   }
 
   if ( !loadNodeHierarchy( n ) )
@@ -166,7 +166,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
   QgsPointCloudExpression filterExpression = mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect() );
+  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterGeometry() );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
