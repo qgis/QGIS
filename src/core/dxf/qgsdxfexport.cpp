@@ -2644,6 +2644,7 @@ void QgsDxfExport::createDDBlockInfo()
           }
 
           sctx.setFeature( &fet );
+          sctx.renderContext().expressionContext().setFeature( fet );
 
           DataDefinedBlockInfo blockInfo;
           blockInfo.blockName = QStringLiteral( "symbolLayer%1class%2" ).arg( symbolLayerNr ).arg( symbolHash );
