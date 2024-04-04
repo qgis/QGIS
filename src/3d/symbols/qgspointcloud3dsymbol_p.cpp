@@ -17,6 +17,7 @@
 
 ///@cond PRIVATE
 
+#include "qgsgeometry.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
@@ -568,7 +569,8 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
+  QgsGeometry rotatedExtent = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+  request.setFilterGeometry( rotatedExtent );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -692,7 +694,8 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
+  QgsGeometry rotatedExtent = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+  request.setFilterGeometry( rotatedExtent );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -798,7 +801,8 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
+  QgsGeometry rotatedExtent = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+  request.setFilterGeometry( rotatedExtent );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -962,7 +966,8 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterGeometry( QgsGeometry::fromRect( context.extent() ) );
+  QgsGeometry rotatedExtent = context.map().rotatedExtent().intersection( QgsGeometry::fromRect( context.extent() ) );
+  request.setFilterGeometry( rotatedExtent );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
