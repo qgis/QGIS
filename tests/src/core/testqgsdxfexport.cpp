@@ -169,6 +169,7 @@ void TestQgsDxfExport::init()
   const QString blueMarkerSvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/symbol/blue-marker.svg" ), QgsPathResolver() );
   QString expressionString = QString( "CASE WHEN \"CLASS\" = 'B52' THEN '%1' WHEN \"CLASS\" = 'Biplane' THEN '%2' WHEN \"CLASS\" = 'Jet' THEN '%3' END" ).arg( planeSvgPath ).arg( planeOrangeSvgPath ).arg( blueMarkerSvgPath );
   ddProperties.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( expressionString ) );
+  ddProperties.setProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromExpression( "Heading" ) );
   svgSymbolLayer->setDataDefinedProperties( ddProperties );
   QgsSymbolLayerList ddSymbolLayerList;
   ddSymbolLayerList << svgSymbolLayer;
@@ -276,7 +277,10 @@ void TestQgsDxfExport::testPointsDataDefinedSizeSymbol()
   dxfBuffer.close();
 
   QString dxfString = QString::fromLatin1( dxfByteArray );
+  //test if data defined blocks have been created
   QVERIFY( dxfString.contains( QStringLiteral( "symbolLayer0class" ) ) );
+  //test a rotation for a referenced block
+  QVERIFY( dxfString.contains( QStringLiteral( "50\n5.0" ) ) );
 }
 
 void TestQgsDxfExport::testLines()
