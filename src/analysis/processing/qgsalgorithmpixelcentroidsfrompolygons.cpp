@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpixelcentroidsfrompolygons.h"
-#include "qgsgeometryengine.h"
+#include "qgsgeos.h"
 #include "qgsrasteranalysisutils.h"
 
 ///@cond PRIVATE
@@ -125,7 +125,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
     QgsRasterAnalysisUtils::mapToPixel( xMin, yMax, extent, xPixel, yPixel, startRow, startColumn );
     QgsRasterAnalysisUtils::mapToPixel( xMax, yMin, extent, xPixel, yPixel, endRow, endColumn );
 
-    std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+    std::unique_ptr< QgsGeos > engine = std::make_unique< QgsGeos >( f.geometry().constGet() );
     engine->prepareGeometry();
 
     for ( int row = startRow; row <= endRow; row++ )
@@ -138,11 +138,9 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
         }
 
         QgsRasterAnalysisUtils::pixelToMap( row, col, extent, xPixel, yPixel, x, y );
-        const QgsPoint point( x, y );
-        const QgsGeometry geom( point.clone() );
-        if ( engine->contains( geom.constGet() ) )
+        if ( engine->contains( x, y ) )
         {
-          feature.setGeometry( geom );
+          feature.setGeometry( std::make_unique< QgsPoint >( x, y ) );
           feature.setAttributes( QgsAttributes() << fid << i << pointId );
           if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
