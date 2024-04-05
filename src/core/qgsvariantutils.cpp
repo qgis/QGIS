@@ -190,8 +190,6 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
     case QVariant::ModelIndex:
     case QVariant::PersistentModelIndex:
 
-    case QVariant::LastType:
-
       return false;
 
     case QVariant::Date:
@@ -596,5 +594,3 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
   // NOLINTEND(bugprone-branch-clone)
   return QVariant::Type::UserType;
 }
-
-
