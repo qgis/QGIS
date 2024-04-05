@@ -147,7 +147,6 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
     QgsVectorLayerAndAttributeModel *mModel = nullptr;
     QgsDxfExportLayerTreeView *mTreeView = nullptr;
-    QPushButton *mBtnLoadSaveSettings = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
