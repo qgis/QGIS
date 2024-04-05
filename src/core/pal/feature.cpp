@@ -2322,13 +2322,16 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
 
   GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, p2otherX, p2otherY );
-
-  geos::unique_ptr p2OtherEnd( GEOSGeom_createPoint_r( geosctxt, coord ) );
   try
   {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+    return ( GEOSPreparedIntersectsXY_r( geosctxt, preparedGeom(), p2otherX, p2otherY ) != 1 );
+#else
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 0, p2otherX, p2otherY );
+    geos::unique_ptr p2OtherEnd( GEOSGeom_createPoint_r( geosctxt, coord ) );
     return ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), p2OtherEnd.get() ) != 1 );
+#endif
   }
   catch ( GEOSException &e )
   {
