@@ -136,7 +136,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
         /**
          * \brief Overridden name of the layer to be exported to DXF
          */
-        QString mOverriddenName = QString();
+        QString mOverriddenName;
     };
 
     //! Export flags
