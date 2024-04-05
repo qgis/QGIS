@@ -625,18 +625,31 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
 
 bool QgsGeos::contains( double x, double y, QString *errorMsg ) const
 {
-  geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
-  if ( !point )
-    return false;
-
   bool result = false;
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+    // defer point creation until after prepared geometry check, we may not need it
+#else
+    geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
+    if ( !point )
+      return false;
+#endif
     if ( mGeosPrepared ) //use faster version with prepared geometry
     {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+      return GEOSPreparedContainsXY_r( context, mGeosPrepared.get(), x, y ) == 1;
+#else
       return GEOSPreparedContains_r( context, mGeosPrepared.get(), point.get() ) == 1;
+#endif
     }
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+    geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
+    if ( !point )
+      return false;
+#endif
 
     result = ( GEOSContains_r( context, mGeos.get(), point.get() ) == 1 );
   }
