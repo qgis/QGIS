@@ -1336,6 +1336,15 @@ namespace QgsWms
     settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setMargin( QgsLegendStyle::Side::Left, iconLabelSpaceAsDouble() );
 
+    // When processing a request involving an upstream WMS server, any responses from such a remote
+    // server must be awaited. This was not the case for GetLegendGraphic requests (#42063). If not,
+    // the response to the current request will never contain any data from upstream.
+    // A quick way to fix this is to force upstream `GetLegendRequest' requests to be synchronous.
+    // The problem with this approach is that if the GetLegendGraphic contains multiple layers, the
+    // remote calls are made one at a time. This increases the response time. Making concurrent
+    // asynchronous requests and waiting for them all would be a better approach.
+    settings.setSynchronousLegendRequests( true );
+
     return settings;
   }
 
