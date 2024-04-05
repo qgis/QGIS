@@ -53,6 +53,8 @@ class TestQgsPointCloud3DRendering : public QgsTest
     void testPointCloudClassification();
     void testPointCloudClassificationOverridePointSizes();
 
+    void testPointCloudFilteredClassification();
+
 
   private:
 
@@ -388,6 +390,47 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
 
   QGSVERIFYIMAGECHECK( "pointcloud_3d_classification_pointsizes", "pointcloud_3d_classification_pointsizes", img, QString(), 40, QSize( 0, 0 ), 15 );
 }
+
+void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
+{
+  mLayer->setSubsetString( "Classification = 2" );
+  const QgsRectangle fullExtent = mLayer->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayer );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
+  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
+  symbol->setCategoriesList( categories );
+  symbol->setPointSize( 10 );
+
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  mLayer->setRenderer3D( renderer );
+
+  scene->cameraController()->resetView( 90 );
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_classification", "pointcloud_3d_filtered_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
+
+  mLayer->setSubsetString( "" );
+}
+
 
 QGSTEST_MAIN( TestQgsPointCloud3DRendering )
 #include "testqgspointcloud3drendering.moc"
