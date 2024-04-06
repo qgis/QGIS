@@ -293,7 +293,7 @@ void QgsRasterLayerTemporalProperties::setBandNumber( int number )
   mBandNumber = number;
 }
 
-QDateTime QgsRasterLayerTemporalProperties::temporalRepresentationOffset() const
+const QDateTime QgsRasterLayerTemporalProperties::temporalRepresentationOffset() const
 {
   return mTemporalRepresentationOffset;
 }
@@ -306,7 +306,7 @@ void QgsRasterLayerTemporalProperties::setTemporalRepresentationOffset( const QD
   mTemporalRepresentationOffset = offset;
 }
 
-QgsInterval QgsRasterLayerTemporalProperties::temporalRepresentationScale() const
+const QgsInterval QgsRasterLayerTemporalProperties::temporalRepresentationScale() const
 {
   return mTemporalRepresentationScale;
 }
