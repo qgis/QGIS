@@ -142,28 +142,28 @@ Returns a filtered list of bands which match the specified ``range``.
 .. versionadded:: 3.38
 %End
 
-    int temporalRepresentationBandNumber() const;
+    int bandNumber() const;
 %Docstring
-Returns the band number from which the temporal values should be taken.
+Returns the band number from which temporal values should be taken.
 
 .. note::
 
    This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
 
-.. seealso:: :py:func:`setTemporalRepresentationBandNumber`
+.. seealso:: :py:func:`setBandNumber`
 
 .. versionadded:: 3.38
 %End
 
-    void setTemporalRepresentationBandNumber( int number );
+    void setBandNumber( int number );
 %Docstring
-Sets the band number from which the temporal values should be taken.
+Sets the band number from which temporal values should be taken.
 
 .. note::
 
    This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
 
-.. seealso:: :py:func:`temporalRepresentationBandNumber`
+.. seealso:: :py:func:`bandNumber`
 
 .. versionadded:: 3.38
 %End
@@ -196,9 +196,9 @@ from the layer.
 .. versionadded:: 3.38
 %End
 
-    double temporalRepresentationScale() const;
+    QgsInterval temporalRepresentationScale() const;
 %Docstring
-Returns the scale, which is a duration factor which should be applied to individual pixel
+Returns the scale, which is an interval factor which should be applied to individual pixel
 values from the layer.
 
 .. note::
@@ -207,16 +207,12 @@ values from the layer.
 
 .. seealso:: :py:func:`setTemporalRepresentationScale`
 
-.. seealso:: :py:func:`temporalRepresentationScaleUnit`
-
-.. seealso:: :py:func:`setTemporalRepresentationScaleUnit`
-
 .. versionadded:: 3.38
 %End
 
-    void setTemporalRepresentationScale( double scale );
+    void setTemporalRepresentationScale( QgsInterval scale );
 %Docstring
-Sets the scale, which is a duration factor which should be applied to individual pixel
+Sets the scale, which is an interval factor which should be applied to individual pixel
 values from the layer.
 
 .. note::
@@ -224,44 +220,6 @@ values from the layer.
    This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
 
 .. seealso:: :py:func:`temporalRepresentationScale`
-
-.. seealso:: :py:func:`temporalRepresentationScaleUnit`
-
-.. seealso:: :py:func:`setTemporalRepresentationScaleUnit`
-
-.. versionadded:: 3.38
-%End
-
-    Qgis::TemporalUnit temporalRepresentationScaleUnit() const;
-%Docstring
-Returns the scale's temporal unit type.
-
-.. note::
-
-   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
-
-.. seealso:: :py:func:`setTemporalRepresentationScaleUnit`
-
-.. seealso:: :py:func:`temporalRepresentationScale`
-
-.. seealso:: :py:func:`setTemporalRepresentationScale`
-
-.. versionadded:: 3.38
-%End
-
-    void setTemporalRepresentationScaleUnit( Qgis::TemporalUnit unit );
-%Docstring
-Sets the scale's temporal unit type.
-
-.. note::
-
-   This is only considered when :py:func:`~QgsRasterLayerTemporalProperties.mode` is :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues.
-
-.. seealso:: :py:func:`temporalRepresentationScaleUnit`
-
-.. seealso:: :py:func:`temporalRepresentationScale`
-
-.. seealso:: :py:func:`setTemporalRepresentationScale`
 
 .. versionadded:: 3.38
 %End

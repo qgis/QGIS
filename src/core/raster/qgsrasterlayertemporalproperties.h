@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgsinterval.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
 
@@ -145,22 +146,22 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     QList< int > filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
 
     /**
-     * Returns the band number from which the temporal values should be taken.
+     * Returns the band number from which temporal values should be taken.
      *
      * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
-     * \see setTemporalRepresentationBandNumber()
+     * \see setBandNumber()
      * \since QGIS 3.38
      */
-    int temporalRepresentationBandNumber() const;
+    int bandNumber() const;
 
     /**
-     * Sets the band number from which the temporal values should be taken.
+     * Sets the band number from which temporal values should be taken.
      *
      * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
-     * \see temporalRepresentationBandNumber()
+     * \see bandNumber()
      * \since QGIS 3.38
      */
-    void setTemporalRepresentationBandNumber( int number );
+    void setBandNumber( int number );
 
     /**
      * Returns the temporal offset, which is a fixed datetime which should be added to individual pixel values
@@ -183,50 +184,24 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setTemporalRepresentationOffset( const QDateTime &offset );
 
     /**
-     * Returns the scale, which is a duration factor which should be applied to individual pixel
+     * Returns the scale, which is an interval factor which should be applied to individual pixel
      * values from the layer.
      *
      * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
      * \see setTemporalRepresentationScale()
-     * \see temporalRepresentationScaleUnit()
-     * \see setTemporalRepresentationScaleUnit()
      * \since QGIS 3.38
      */
-    double temporalRepresentationScale() const;
+    QgsInterval temporalRepresentationScale() const;
 
     /**
-     * Sets the scale, which is a duration factor which should be applied to individual pixel
+     * Sets the scale, which is an interval factor which should be applied to individual pixel
      * values from the layer.
      *
      * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
      * \see temporalRepresentationScale()
-     * \see temporalRepresentationScaleUnit()
-     * \see setTemporalRepresentationScaleUnit()
      * \since QGIS 3.38
      */
-    void setTemporalRepresentationScale( double scale );
-
-    /**
-     * Returns the scale's temporal unit type.
-     *
-     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
-     * \see setTemporalRepresentationScaleUnit()
-     * \see temporalRepresentationScale()
-     * \see setTemporalRepresentationScale()
-     * \since QGIS 3.38
-     */
-    Qgis::TemporalUnit temporalRepresentationScaleUnit() const;
-
-    /**
-     * Sets the scale's temporal unit type.
-     *
-     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
-     * \see temporalRepresentationScaleUnit()
-     * \see temporalRepresentationScale()
-     * \see setTemporalRepresentationScale()
-     * \since QGIS 3.38
-     */
-    void setTemporalRepresentationScaleUnit( Qgis::TemporalUnit unit );
+    void setTemporalRepresentationScale( QgsInterval scale );
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -247,10 +222,10 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     QMap< int, QgsDateTimeRange > mRangePerBand;
 
-    int mTemporalRepresentationBandNumber = 1;
+    int mBandNumber = 1;
+
     QDateTime mTemporalRepresentationOffset;
-    double mTemporalRepresentationScale = 1.0;
-    Qgis::TemporalUnit mTemporalRepresentationScaleUnit = Qgis::TemporalUnit::Days;
+    QgsInterval mTemporalRepresentationScale;
 };
 
 #endif // QGSRASTERLAYERTEMPORALPROPERTIES_H
