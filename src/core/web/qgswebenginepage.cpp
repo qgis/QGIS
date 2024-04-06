@@ -18,11 +18,11 @@
 #include "qgswebenginepage.h"
 #include "qgsconfig.h"
 #include <QWebEnginePage>
+#include <QEventLoop>
 #include <QSizeF>
 
 #ifdef HAVE_PDF4QT
 #include "qgspdfrenderer.h"
-#include <QEventLoop>
 #include <QTemporaryFile>
 #else
 #include "qgsexception.h"
