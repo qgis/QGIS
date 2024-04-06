@@ -142,7 +142,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
       size.setHeight( ctx->patchSize.height( ) );
   }
 
-  if ( ctx && ctx->painter )
+  if ( ctx && ctx->painter && ctx->context )
   {
     const QgsScopedRenderContextScaleToPixels scopedScaleToPixels( *( ctx->context ) );
     const double scaleFactor = ctx->context ? ctx->context->scaleFactor() : 1;
