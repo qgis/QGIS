@@ -151,6 +151,7 @@ class CORE_EXPORT QgsRasterInterface
 #include <qgssinglebandcolordatarenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
+#include <qgssinglecolorrenderer.h>
 #include <qgsrastercontourrenderer.h>
 #endif
 
@@ -186,6 +187,8 @@ class CORE_EXPORT QgsRasterInterface
         sipType = sipType_QgsSingleBandGrayRenderer;
       else if ( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( sipCpp ) )
         sipType = sipType_QgsSingleBandPseudoColorRenderer;
+      else if ( dynamic_cast<QgsSingleColorRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleColorRenderer;
       else if ( dynamic_cast<QgsRasterContourRenderer *>( sipCpp ) )
         sipType = sipType_QgsRasterContourRenderer;
       else
