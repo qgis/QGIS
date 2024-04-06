@@ -10,6 +10,9 @@ set(PYQT_COMPAT_FILES
   QtPrintSupport.py
   QtWebKit.py
   QtWebKitWidgets.py
+  QtWebEngineCore.py
+  QtWebEngineQuick.py
+  QtWebEngineWidgets.py
   QtNetwork.py
   QtXml.py
   QtSql.py
