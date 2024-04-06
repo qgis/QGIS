@@ -171,7 +171,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setTemporalRepresentationOffset()
      * \since QGIS 3.38
      */
-    QDateTime temporalRepresentationOffset() const;
+    const QDateTime temporalRepresentationOffset() const;
 
     /**
      * Sets the temporal offset, which is a fixed datetime which should be added to individual pixel values
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setTemporalRepresentationScale()
      * \since QGIS 3.38
      */
-    QgsInterval temporalRepresentationScale() const;
+    const QgsInterval temporalRepresentationScale() const;
 
     /**
      * Sets the scale, which is an interval factor which should be applied to individual pixel

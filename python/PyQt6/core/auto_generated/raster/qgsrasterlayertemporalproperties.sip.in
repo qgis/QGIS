@@ -168,7 +168,7 @@ Sets the band number from which temporal values should be taken.
 .. versionadded:: 3.38
 %End
 
-    QDateTime temporalRepresentationOffset() const;
+    const QDateTime temporalRepresentationOffset() const;
 %Docstring
 Returns the temporal offset, which is a fixed datetime which should be added to individual pixel values
 from the layer.
@@ -196,7 +196,7 @@ from the layer.
 .. versionadded:: 3.38
 %End
 
-    QgsInterval temporalRepresentationScale() const;
+    const QgsInterval temporalRepresentationScale() const;
 %Docstring
 Returns the scale, which is an interval factor which should be applied to individual pixel
 values from the layer.
