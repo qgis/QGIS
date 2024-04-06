@@ -43,8 +43,8 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      * \param minimumLabel label text to render for the minimum value in the ramp
      * \param maximumLabel label text to render for the maximum value in the ramp
      * \param parent attach a parent QObject to the legend node.
-     * \param key rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.36)
-     * \param parentKey rule key of parent (since QGIS 3.36)
+     * \param key rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.38)
+     * \param parentKey rule key of parent (since QGIS 3.38)
      */
     QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp SIP_TRANSFER,
                             const QString &minimumLabel, const QString &maximumLabel, QObject *parent SIP_TRANSFERTHIS = nullptr,
@@ -58,8 +58,8 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      * \param minimumValue value associated with minimum of ramp
      * \param maximumValue value associated with maximum of ramp
      * \param parent attach a parent QObject to the legend node.
-     * \param key rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.36)
-     * \param parentKey rule key of parent (since QGIS 3.36)
+     * \param key rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.38)
+     * \param parentKey rule key of parent (since QGIS 3.38)
      */
     QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp SIP_TRANSFER,
                             const QgsColorRampLegendNodeSettings &settings, double minimumValue,

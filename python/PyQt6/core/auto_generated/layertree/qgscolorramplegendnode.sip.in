@@ -33,8 +33,8 @@ Constructor for QgsColorRampLegendNode.
 :param minimumLabel: label text to render for the minimum value in the ramp
 :param maximumLabel: label text to render for the maximum value in the ramp
 :param parent: attach a parent QObject to the legend node.
-:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.36)
-:param parentKey: rule key of parent (since QGIS 3.36)
+:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.38)
+:param parentKey: rule key of parent (since QGIS 3.38)
 %End
 
     QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/,
@@ -50,8 +50,8 @@ Constructor for QgsColorRampLegendNode.
 :param minimumValue: value associated with minimum of ramp
 :param maximumValue: value associated with maximum of ramp
 :param parent: attach a parent QObject to the legend node.
-:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.36)
-:param parentKey: rule key of parent (since QGIS 3.36)
+:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.38)
+:param parentKey: rule key of parent (since QGIS 3.38)
 %End
 
 
