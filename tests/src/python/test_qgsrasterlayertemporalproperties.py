@@ -16,6 +16,7 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
+    QgsInterval,
     QgsRasterLayerTemporalProperties,
     QgsReadWriteContext,
     QgsDateTimeRange
@@ -281,22 +282,32 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
         props.setMode(Qgis.RasterTemporalMode.RepresentsTemporalValues)
         self.assertEqual(props.mode(),
                          Qgis.RasterTemporalMode.RepresentsTemporalValues)
-        self.assertEqual(props.temporalRepresentationScale(), 1)
-        self.assertEqual(props.temporalRepresentationScaleUnit(), Qgis.TemporalUnit.Days)
+        self.assertEqual(props.bandNumber(), 1)
+        self.assertEqual(props.temporalRepresentationScale(), QgsInterval(1, Qgis.TemporalUnit.Days))
         self.assertEqual(props.temporalRepresentationOffset(), QDateTime())
-        self.assertEqual(props.temporalRepresentationBandNumber(), 1)
         self.assertFalse(props.isActive())
 
-        props.setTemporalRepresentationScale(2.5)
-        props.setTemporalRepresentationScaleUnit(Qgis.TemporalUnit.Weeks)
+        props.setBandNumber(2)
+        props.setTemporalRepresentationScale(QgsInterval(2.5, Qgis.TemporalUnit.Weeks))
         props.setTemporalRepresentationOffset(QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
-        props.setTemporalRepresentationBandNumber(2)
         props.setIsActive(True)
-        self.assertEqual(props.temporalRepresentationScale(), 2.5)
-        self.assertEqual(props.temporalRepresentationScaleUnit(), Qgis.TemporalUnit.Weeks)
+        self.assertEqual(props.bandNumber(), 2)
+        self.assertEqual(props.temporalRepresentationScale(), QgsInterval(2.5, Qgis.TemporalUnit.Weeks))
         self.assertEqual(props.temporalRepresentationOffset(), QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
-        self.assertEqual(props.temporalRepresentationBandNumber(), 2)
         self.assertTrue(props.isActive())
+
+        self.assertEqual(props.bandForTemporalRange(None, QgsDateTimeRange(
+            QDateTime(QDate(2023, 5, 3),
+                      QTime(12, 13, 14)),
+            QDateTime(QDate(2023, 5, 4),
+                      QTime(12, 13, 14))
+        )), 2)
+        self.assertEqual(props.filteredBandsForTemporalRange(None, QgsDateTimeRange(
+            QDateTime(QDate(2023, 5, 3),
+                      QTime(12, 13, 14)),
+            QDateTime(QDate(2023, 5, 4),
+                      QTime(12, 13, 14))
+        )), [2])
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -306,10 +317,9 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
         props2.readXml(elem, QgsReadWriteContext())
         self.assertEqual(props2.mode(),
                          Qgis.RasterTemporalMode.RepresentsTemporalValues)
-        self.assertEqual(props2.temporalRepresentationScale(), 2.5)
-        self.assertEqual(props2.temporalRepresentationScaleUnit(), Qgis.TemporalUnit.Weeks)
+        self.assertEqual(props.bandNumber(), 2)
+        self.assertEqual(props2.temporalRepresentationScale(), QgsInterval(2.5, Qgis.TemporalUnit.Weeks))
         self.assertEqual(props2.temporalRepresentationOffset(), QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
-        self.assertEqual(props2.temporalRepresentationBandNumber(), 2)
         self.assertTrue(props2.isActive())
 
 

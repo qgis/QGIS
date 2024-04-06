@@ -72,7 +72,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
 
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     {
-      temporalBands << temporalProperties->temporalRepresentationBandNumber();
+      temporalBands << temporalProperties->bandNumber();
       break;
     }
   }

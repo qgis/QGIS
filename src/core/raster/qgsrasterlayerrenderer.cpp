@@ -35,6 +35,7 @@
 #include "qgsapplication.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterlayerutils.h"
+#include "qgsinterval.h"
 #include "qgsunittypes.h"
 
 #include <QElapsedTimer>
@@ -303,7 +304,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
         break;
 
       case Qgis::RasterTemporalMode::RepresentsTemporalValues:
-        if ( mPipe->renderer()->usesBands().contains( temporalProperties->temporalRepresentationBandNumber() ) )
+        if ( mPipe->renderer()->usesBands().contains( temporalProperties->bandNumber() ) )
         {
           // if layer has elevation settings and we are only rendering a temporal range => we need to filter pixels by temporal values
           std::unique_ptr< QgsRasterTransparency > transparency;
@@ -314,8 +315,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
           QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentPixels = transparency->transparentSingleValuePixelList();
 
-          const double adjustedLower = static_cast< double >( temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().begin() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
-          const double adjustedUpper = static_cast< double >( temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().end() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, temporalProperties->temporalRepresentationScaleUnit() ) / temporalProperties->temporalRepresentationScale();
+          const QgsInterval scale = temporalProperties->temporalRepresentationScale();
+          const double adjustedLower = static_cast< double >( temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().begin() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
+          const double adjustedUpper = static_cast< double >( temporalProperties->temporalRepresentationOffset().msecsTo( rendererContext.temporalRange().end() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
           transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
           transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
 

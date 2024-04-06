@@ -115,6 +115,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( mLayer->temporalProperties() );
 
   temporalProperties->setMode( mModeComboBox->currentData().value< Qgis::RasterTemporalMode >() );
+  temporalProperties->setBandNumber( mBandComboBox->currentBand() );
 
   const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                        mEndTemporalDateTimeEdit->dateTime() );
@@ -124,10 +125,8 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 
   temporalProperties->setTemporalRepresentationOffset( mOffsetDateTimeEdit->dateTime() );
 
-  temporalProperties->setTemporalRepresentationScale( mScaleSpinBox->value() );
-  temporalProperties->setTemporalRepresentationScaleUnit( static_cast< Qgis::TemporalUnit >( mScaleUnitComboBox->currentData().toInt() ) );
-
-  temporalProperties->setTemporalRepresentationBandNumber( mBandComboBox->currentBand() );
+  const QgsInterval scale( mScaleSpinBox->value(), static_cast< Qgis::TemporalUnit >( mScaleUnitComboBox->currentData().toInt() ) );
+  temporalProperties->setTemporalRepresentationScale( scale );
 
   for ( QgsMapLayerConfigWidget *widget : std::as_const( mExtraWidgets ) )
   {
@@ -158,6 +157,9 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
       break;
   }
 
+  mBandComboBox->setLayer( mLayer );
+  mBandComboBox->setBand( temporalProperties->bandNumber() );
+
   mStartTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
 
@@ -168,11 +170,8 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
 
   mOffsetDateTimeEdit->setDateTime( temporalProperties->temporalRepresentationOffset() );
 
-  mScaleSpinBox->setValue( temporalProperties->temporalRepresentationScale() );
-  mScaleUnitComboBox->setCurrentIndex( mScaleUnitComboBox->findData( static_cast< int >( temporalProperties->temporalRepresentationScaleUnit() ) ) );
-
-  mBandComboBox->setLayer( mLayer );
-  mBandComboBox->setBand( temporalProperties->temporalRepresentationBandNumber() );
+  mScaleSpinBox->setValue( temporalProperties->temporalRepresentationScale().originalDuration() );
+  mScaleUnitComboBox->setCurrentIndex( mScaleUnitComboBox->findData( static_cast< int >( temporalProperties->temporalRepresentationScale().originalUnit() ) ) );
 
   mTemporalGroupBox->setChecked( temporalProperties->isActive() );
 
