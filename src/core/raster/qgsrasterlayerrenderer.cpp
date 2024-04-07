@@ -37,6 +37,7 @@
 #include "qgsrasterlayerutils.h"
 #include "qgsinterval.h"
 #include "qgsunittypes.h"
+#include "qgsrasternuller.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -354,6 +355,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
     if ( !rendererContext.zRange().isInfinite() )
     {
+      // NOLINTBEGIN(bugprone-branch-clone)
       switch ( elevationProperties->mode() )
       {
         case Qgis::RasterElevationMode::FixedElevationRange:
@@ -371,28 +373,54 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
           if ( mPipe->renderer()->usesBands().contains( mElevationBand ) )
           {
             // if layer has elevation settings and we are only rendering a slice of z values => we need to filter pixels by elevation
+            if ( mPipe->renderer()->flags() & Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels )
+            {
+              std::unique_ptr< QgsRasterNuller> nuller;
+              if ( const QgsRasterNuller *existingNuller = mPipe->nuller() )
+                nuller.reset( existingNuller->clone() );
+              else
+                nuller = std::make_unique< QgsRasterNuller >();
 
-            std::unique_ptr< QgsRasterTransparency > transparency;
-            if ( const QgsRasterTransparency *rendererTransparency = mPipe->renderer()->rasterTransparency() )
-              transparency = std::make_unique< QgsRasterTransparency >( *rendererTransparency );
+              // account for z offset/zscale by reversing these calculations, so that we get the z range in
+              // raw pixel values
+              QgsRasterRangeList nullRanges;
+              const double adjustedLower = ( rendererContext.zRange().lower() - mElevationOffset ) / mElevationScale;
+              const double adjustedUpper = ( rendererContext.zRange().upper() - mElevationOffset ) / mElevationScale;
+              nullRanges.append( QgsRasterRange( std::numeric_limits<double>::lowest(), adjustedLower, rendererContext.zRange().includeLower() ? QgsRasterRange::BoundsType::IncludeMin : QgsRasterRange::BoundsType::IncludeMinAndMax ) );
+              nullRanges.append( QgsRasterRange( adjustedUpper, std::numeric_limits<double>::max(), rendererContext.zRange().includeUpper() ? QgsRasterRange::BoundsType::IncludeMax : QgsRasterRange::BoundsType::IncludeMinAndMax ) );
+              nuller->setOutputNoDataValue( mElevationBand, static_cast< int >( adjustedLower - 1 ) );
+              nuller->setNoData( mElevationBand, nullRanges );
+
+              if ( !mPipe->insert( 1, nuller.release() ) )
+              {
+                QgsDebugError( QStringLiteral( "Cannot set pipe nuller" ) );
+              }
+            }
             else
-              transparency = std::make_unique< QgsRasterTransparency >();
+            {
+              std::unique_ptr< QgsRasterTransparency > transparency;
+              if ( const QgsRasterTransparency *rendererTransparency = mPipe->renderer()->rasterTransparency() )
+                transparency = std::make_unique< QgsRasterTransparency >( *rendererTransparency );
+              else
+                transparency = std::make_unique< QgsRasterTransparency >();
 
-            QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentPixels = transparency->transparentSingleValuePixelList();
+              QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentPixels = transparency->transparentSingleValuePixelList();
 
-            // account for z offset/zscale by reversing these calculations, so that we get the z range in
-            // raw pixel values
-            const double adjustedLower = ( rendererContext.zRange().lower() - mElevationOffset ) / mElevationScale;
-            const double adjustedUpper = ( rendererContext.zRange().upper() - mElevationOffset ) / mElevationScale;
-            transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
-            transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
+              // account for z offset/zscale by reversing these calculations, so that we get the z range in
+              // raw pixel values
+              const double adjustedLower = ( rendererContext.zRange().lower() - mElevationOffset ) / mElevationScale;
+              const double adjustedUpper = ( rendererContext.zRange().upper() - mElevationOffset ) / mElevationScale;
+              transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
+              transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
 
-            transparency->setTransparentSingleValuePixelList( transparentPixels );
-            mPipe->renderer()->setRasterTransparency( transparency.release() );
+              transparency->setTransparentSingleValuePixelList( transparentPixels );
+              mPipe->renderer()->setRasterTransparency( transparency.release() );
+            }
           }
           break;
         }
       }
+      // NOLINTEND(bugprone-branch-clone)
     }
   }
 

@@ -28,10 +28,12 @@ from qgis.core import (
     QgsRectangle,
     QgsDoubleRange,
     QgsSingleBandGrayRenderer,
+    QgsRasterContourRenderer,
     QgsContrastEnhancement,
     QgsRasterLayerElevationProperties,
     QgsProperty,
-    QgsDateTimeRange
+    QgsDateTimeRange,
+    QgsLineSymbol
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -124,6 +126,46 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
             self.render_map_settings_check(
                 'Z range filter on map settings, elevation enabled layer with offset and scale',
                 'dem_filter_offset_and_scale',
+                map_settings)
+        )
+
+    def test_contour_render_dem_with_z_range_filter(self):
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, '3d', 'dtm.tif'))
+        renderer = QgsRasterContourRenderer(raster_layer.dataProvider())
+        renderer.setContourInterval(10)
+        renderer.setContourSymbol(
+            QgsLineSymbol.createSimple({'width': 1})
+        )
+        renderer.setContourIndexInterval(0)
+
+        raster_layer.setRenderer(renderer)
+
+        self.assertTrue(raster_layer.isValid())
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+        map_settings.setZRange(QgsDoubleRange(96, 132))
+
+        # set layer as elevation enabled
+        raster_layer.elevationProperties().setEnabled(True)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, contour renderer',
+                'dem_filter_contour',
+                map_settings)
+        )
+
+        # with offset and scaling
+        raster_layer.elevationProperties().setZOffset(50)
+        raster_layer.elevationProperties().setZScale(0.75)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, contour renderer, elevation enabled layer with offset and scale',
+                'dem_filter_contour_offset_and_scale',
                 map_settings)
         )
 
