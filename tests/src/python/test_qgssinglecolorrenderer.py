@@ -29,7 +29,7 @@ class TestQgsSingleBandGrayRenderer(QgisTestCase):
 
     def testRenderer(self):
         path = os.path.join(unitTestDataPath(),
-                            'landsat.tif')
+                            'landsat-int16-b1.tif')
         info = QFileInfo(path)
         base_name = info.baseName()
         layer = QgsRasterLayer(path, base_name)
