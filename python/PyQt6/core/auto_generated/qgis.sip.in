@@ -685,6 +685,7 @@ The development version
     enum class RasterRendererFlag /BaseType=IntFlag/
     {
       InternalLayerOpacityHandling,
+      UseNoDataForOutOfRangePixels,
     };
 
     typedef QFlags<Qgis::RasterRendererFlag> RasterRendererFlags;

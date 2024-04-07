@@ -1247,7 +1247,8 @@ Qgis.RasterResamplingStage.__doc__ = "Stage at which raster resampling occurs.\n
 Qgis.RasterResamplingStage.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ = "The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied."
-Qgis.RasterRendererFlag.__doc__ = "Flags which control behavior of raster renderers.\n\n.. versionadded:: 3.28\n\n" + '* ``InternalLayerOpacityHandling``: ' + Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__
+Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values (since QGIS 3.38)"
+Qgis.RasterRendererFlag.__doc__ = "Flags which control behavior of raster renderers.\n\n.. versionadded:: 3.28\n\n" + '* ``InternalLayerOpacityHandling``: ' + Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ + '\n' + '* ``UseNoDataForOutOfRangePixels``: ' + Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__
 # --
 Qgis.RasterRendererFlag.baseClass = Qgis
 Qgis.RasterRendererFlags.baseClass = Qgis

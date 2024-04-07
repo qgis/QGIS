@@ -43,6 +43,11 @@ QgsRasterContourRenderer *QgsRasterContourRenderer::clone() const
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsRasterContourRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels;
+}
+
 QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
