@@ -7336,7 +7336,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
 
     for ( QDockWidget *dock : docks )
     {
-      if ( dock->isVisible() && dockWidgetArea( dock ) != Qt::NoDockWidgetArea )
+      if ( dock->isVisible() && !dock->isFloating() && dockWidgetArea( dock ) != Qt::NoDockWidgetArea )
       {
         // remember the active docs
         docksTitle << dock->windowTitle();
