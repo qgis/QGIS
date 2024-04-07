@@ -99,7 +99,7 @@ void TestQgsLayerDefinition::testLoadTopOfTree()
 {
   QString errorMsg;
   QgsLayerDefinition::loadLayerDefinition( TEST_DATA_DIR + QStringLiteral( "/vector_and_raster.qlr" ), QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMsg, Qgis::LayerTreeInsertionMethod::TopOfTree );
-  //todo: test if new layers are on top
+  //test if new layers are on top
   QList<QgsMapLayer *> orderedLayers = QgsProject::instance()->layerTreeRoot()->layerOrder();
   QCOMPARE( orderedLayers.length(), 3 );
   QVERIFY( orderedLayers.at( 1 )->name() == QStringLiteral( "rgb256x256" ) );
