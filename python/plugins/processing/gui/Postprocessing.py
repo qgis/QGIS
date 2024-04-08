@@ -40,6 +40,7 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsLayerTreeGroup
 )
+from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
@@ -264,9 +265,14 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
         added_layers,
         key=lambda x: x[1].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
     )
+    have_set_active_layer = False
     for group, layer_node in sorted_layer_tree_layers:
         layer_node.removeCustomProperty(SORT_ORDER_CUSTOM_PROPERTY)
         group.insertChildNode(0, layer_node)
+
+        if not have_set_active_layer and iface is not None:
+            iface.setActiveLayer(layer_node.layer())
+            have_set_active_layer = True
 
     # all layers have been added to the layer tree, so safe to call
     # postProcessors now
