@@ -134,7 +134,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
   // prepare map boundary
   geos::unique_ptr mapBoundaryGeos( QgsGeos::asGeos( mapBoundary ) );
-  geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mapBoundaryGeos.get() ) );
+  geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeosContext::get(), mapBoundaryGeos.get() ) );
 
   int obstacleCount = 0;
 

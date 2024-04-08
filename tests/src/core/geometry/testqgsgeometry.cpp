@@ -592,7 +592,7 @@ void TestQgsGeometry::geos()
   polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
   polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector< QgsPoint >() << QgsPoint( 10, 0 ) << QgsPoint( 10, 1 ) << QgsPoint( 11, 1 ) << QgsPoint( 10, 0 ) ) ) );
   asGeos = QgsGeos::asGeos( &polyWithEmptyParts );
-  QCOMPARE( GEOSGetNumGeometries_r( QgsGeos::getGEOSHandler(), asGeos.get() ), 2 );
+  QCOMPARE( GEOSGetNumGeometries_r( QgsGeosContext::get(), asGeos.get() ), 2 );
   res = QgsGeometry( QgsGeos::fromGeos( asGeos.get() ) );
   QCOMPARE( res.asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((10 0, 10 1, 11 1, 10 0)))" ) );
 

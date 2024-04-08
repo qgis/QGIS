@@ -109,7 +109,7 @@ bool QgsSnapIndex::SegmentSnapItem::withinSquaredDistance( const QgsPoint &p, co
 
 QgsSnapIndex::QgsSnapIndex()
 {
-  mSTRTree = GEOSSTRtree_create_r( QgsGeos::getGEOSHandler(), ( size_t )10 );
+  mSTRTree = GEOSSTRtree_create_r( QgsGeosContext::get(), ( size_t )10 );
 }
 
 QgsSnapIndex::~QgsSnapIndex()
@@ -117,14 +117,14 @@ QgsSnapIndex::~QgsSnapIndex()
   qDeleteAll( mCoordIdxs );
   qDeleteAll( mSnapItems );
 
-  GEOSSTRtree_destroy_r( QgsGeos::getGEOSHandler(), mSTRTree );
+  GEOSSTRtree_destroy_r( QgsGeosContext::get(), mSTRTree );
 }
 
 void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
 {
   const QgsPoint p = idx->point();
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
   geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, p.x(), p.y() ) );
 
   PointSnapItem *item = new PointSnapItem( idx, isEndPoint );
@@ -137,7 +137,7 @@ void QgsSnapIndex::addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo )
   const QgsPoint pointFrom = idxFrom->point();
   const QgsPoint pointTo = idxTo->point();
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
   GEOSCoordSeq_setXY_r( geosctxt, coord, 0, pointFrom.x(), pointFrom.y() );
@@ -191,7 +191,7 @@ void _GEOSQueryCallback( void *item, void *userdata )
 
 QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &startPoint, const QgsPoint &midPoint )
 {
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   // Look for intersections on segment from the target point to the point opposite to the point reference point
   // p2 = p1 + 2 * (q - p1)
@@ -231,7 +231,7 @@ QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &startPoint, const 
 
 QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, const double tolerance, QgsSnapIndex::PointSnapItem **pSnapPoint, QgsSnapIndex::SegmentSnapItem **pSnapSegment, bool endPointOnly ) const
 {
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
   GEOSCoordSeq_setXY_r( geosctxt, coord, 0, pos.x() - tolerance, pos.y() - tolerance );
