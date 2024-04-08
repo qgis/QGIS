@@ -28,7 +28,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * \brief Raster single color renderer pipe.
+  * \brief Raster renderer which renders all data pixels using a single color.
   * \since QGIS 3.38
   */
 class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
@@ -36,7 +36,7 @@ class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
   public:
 
     //! Creates a single \a color renderer
-    QgsRasterSingleColorRenderer( QgsRasterInterface *input, QColor color );
+    QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color );
 
     //! QgsRasterSingleColorRenderer cannot be copied. Use clone() instead.
     QgsRasterSingleColorRenderer( const QgsRasterSingleColorRenderer & ) = delete;
@@ -53,16 +53,20 @@ class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
 
     /**
      * Returns the single color used by the renderer.
+     * \see setColor()
      */
     QColor color() const;
 
     /**
-     * Sets the single color used by the renderer.
+     * Sets the single \a color used by the renderer.
+     * \see color()
      */
-    void setColor( QColor &color );
+    void setColor( const QColor &color );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
+    int inputBand() const override;
+    bool setInputBand( int band ) override;
     QList<int> usesBands() const override;
 
   private:
@@ -71,6 +75,7 @@ class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
     const QgsRasterSingleColorRenderer &operator=( const QgsRasterSingleColorRenderer & );
 #endif
 
+    int mInputBand = -1;
     QColor mColor;
 };
 

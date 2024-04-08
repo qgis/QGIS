@@ -29,14 +29,24 @@
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
+      <widget class="QLabel" name="mBandLabel">
+       <property name="text">
+        <string>Band</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="mColorLabel">
        <property name="text">
         <string>Color</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QgsColorButton" name="mColor">
+     <item row="1" column="1">
+      <widget class="QgsColorButton" name="mColorButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -79,6 +89,11 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsrasterbandcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

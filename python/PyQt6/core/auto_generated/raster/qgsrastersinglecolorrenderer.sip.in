@@ -14,7 +14,7 @@
 class QgsRasterSingleColorRenderer: QgsRasterRenderer
 {
 %Docstring(signature="appended")
-Raster single color renderer pipe.
+Raster renderer which renders all data pixels using a single color.
 
 .. versionadded:: 3.38
 %End
@@ -24,7 +24,7 @@ Raster single color renderer pipe.
 %End
   public:
 
-    QgsRasterSingleColorRenderer( QgsRasterInterface *input, QColor color );
+    QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color );
 %Docstring
 Creates a single ``color`` renderer
 %End
@@ -49,15 +49,23 @@ Creates an instance of the renderer based on definition from XML (used by the re
     QColor color() const;
 %Docstring
 Returns the single color used by the renderer.
+
+.. seealso:: :py:func:`setColor`
 %End
 
-    void setColor( QColor &color );
+    void setColor( const QColor &color );
 %Docstring
-Sets the single color used by the renderer.
+Sets the single ``color`` used by the renderer.
+
+.. seealso:: :py:func:`color`
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
+
+    virtual int inputBand() const;
+
+    virtual bool setInputBand( int band );
 
     virtual QList<int> usesBands() const;
 

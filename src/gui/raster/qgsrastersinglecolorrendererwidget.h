@@ -46,9 +46,6 @@ class GUI_EXPORT QgsRasterSingleColorRendererWidget: public QgsRasterRendererWid
      */
     void setFromRenderer( const QgsRasterRenderer *r );
 
-  private slots:
-    void colorChanged( const QColor &color );
-
 };
 
 #endif // QGSRASTERSINGLECOLORRENDERERWIDGET_H

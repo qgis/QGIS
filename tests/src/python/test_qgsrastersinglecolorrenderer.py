@@ -36,8 +36,11 @@ class TestQgsRasterSingleBandGrayRenderer(QgisTestCase):
         self.assertTrue(layer.isValid(), f'Raster not loaded: {path}')
 
         renderer = QgsRasterSingleColorRenderer(layer.dataProvider(),
-                                          QColor(255, 0, 0))
+                                                1,
+                                                QColor(255, 0, 0))
 
+        self.assertEqual(renderer.inputBand(), 1)
+        self.assertEqual(renderer.usesBands(), [1])
         self.assertEqual(renderer.color(), QColor(255, 0, 0))
         renderer.setColor(QColor(0, 255, 0))
         self.assertEqual(renderer.color(), QColor(0, 255, 0))

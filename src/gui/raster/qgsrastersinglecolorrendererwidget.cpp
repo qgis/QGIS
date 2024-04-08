@@ -33,7 +33,10 @@ QgsRasterSingleColorRendererWidget::QgsRasterSingleColorRendererWidget( QgsRaste
       return;
     }
 
-    connect( mColor, &QgsColorButton::colorChanged, this, &QgsRasterSingleColorRendererWidget::colorChanged );
+    mBandComboBox->setLayer( layer );
+
+    connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, [ = ]( int ) { emit widgetChanged(); } );
+    connect( mColorButton, &QgsColorButton::colorChanged, this, [ = ]( const QColor & ) { emit widgetChanged(); } );
 
     setFromRenderer( layer->renderer() );
   }
@@ -52,13 +55,8 @@ QgsRasterRenderer *QgsRasterSingleColorRendererWidget::renderer()
     return nullptr;
   }
 
-  QgsRasterSingleColorRenderer *renderer = new QgsRasterSingleColorRenderer( provider, mColor->color() );
+  QgsRasterSingleColorRenderer *renderer = new QgsRasterSingleColorRenderer( provider, mBandComboBox->currentBand(), mColorButton->color() );
   return renderer;
-}
-
-void QgsRasterSingleColorRendererWidget::colorChanged( const QColor & )
-{
-  emit widgetChanged();
 }
 
 void QgsRasterSingleColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
@@ -66,10 +64,12 @@ void QgsRasterSingleColorRendererWidget::setFromRenderer( const QgsRasterRendere
   const QgsRasterSingleColorRenderer *scr = dynamic_cast<const QgsRasterSingleColorRenderer *>( r );
   if ( scr )
   {
-    mColor->setColor( scr->color() );
+    mBandComboBox->setBand( scr->inputBand() );
+    mColorButton->setColor( scr->color() );
   }
   else
   {
-    mColor->setColor( QColor( 0, 0, 0 ) );
+    mBandComboBox->setBand( 1 );
+    mColorButton->setColor( QColor( 0, 0, 0 ) );
   }
 }

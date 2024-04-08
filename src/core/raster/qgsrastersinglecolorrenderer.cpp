@@ -22,15 +22,16 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsRasterSingleColorRenderer::QgsRasterSingleColorRenderer( QgsRasterInterface *input, QColor color )
+QgsRasterSingleColorRenderer::QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color )
   : QgsRasterRenderer( input, QStringLiteral( "singlecolor" ) )
+  , mInputBand( band )
   , mColor( color )
 {
 }
 
 QgsRasterSingleColorRenderer *QgsRasterSingleColorRenderer::clone() const
 {
-  QgsRasterSingleColorRenderer *renderer = new QgsRasterSingleColorRenderer( nullptr, mColor );
+  QgsRasterSingleColorRenderer *renderer = new QgsRasterSingleColorRenderer( nullptr, mInputBand, mColor );
   renderer->copyCommonProperties( this );
   return renderer;
 }
@@ -48,23 +49,24 @@ QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem
   }
 
   const QColor color = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ), QStringLiteral( "0,0,0" ) ) );
-  QgsRasterSingleColorRenderer *r = new QgsRasterSingleColorRenderer( input, color );
+  const int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
+  QgsRasterSingleColorRenderer *r = new QgsRasterSingleColorRenderer( input, band, color );
   r->readXml( elem );
 
   return r;
 }
 
-QgsRasterBlock *QgsRasterSingleColorRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
-  if ( !mInput )
+  if ( !mInput || mInputBand == -1 )
   {
     return outputBlock.release();
   }
 
-  const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, extent, width, height, feedback ) );
+  const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
@@ -82,14 +84,17 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int bandNo, const QgsRectan
     return outputBlock.release();
   }
 
-  const QRgb myDefaultColor = renderColorForNodataPixel();
+  const QRgb defaultColor = renderColorForNodataPixel();
+  const QRgb rendererColor = qRgba( mColor.red(), mColor.green(), mColor.blue(), mColor.alpha() );
+
   bool isNoData = false;
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  const qgssize blockSize = static_cast< qgssize >( width ) * height;
+  for ( qgssize i = 0; i < blockSize; i++ )
   {
     double value = inputBlock->valueAndNoData( i, isNoData );
     if ( isNoData )
     {
-      outputBlock->setColor( i, myDefaultColor );
+      outputBlock->setColor( i, defaultColor );
       continue;
     }
 
@@ -103,7 +108,7 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int bandNo, const QgsRectan
       const double alpha = alphaBlock->value( i );
       if ( alpha == 0 )
       {
-        outputBlock->setColor( i, myDefaultColor );
+        outputBlock->setColor( i, defaultColor );
         continue;
       }
       else
@@ -114,7 +119,7 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int bandNo, const QgsRectan
 
     if ( qgsDoubleNear( currentAlpha, 1.0 ) )
     {
-      outputBlock->setColor( i, qRgba( mColor.red(), mColor.green(), mColor.blue(), mColor.alpha() ) );
+      outputBlock->setColor( i, rendererColor );
     }
     else
     {
@@ -128,7 +133,7 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int bandNo, const QgsRectan
   return outputBlock.release();
 }
 
-void QgsRasterSingleColorRenderer::setColor( QColor &color )
+void QgsRasterSingleColorRenderer::setColor( const QColor &color )
 {
   mColor = color;;
 }
@@ -149,16 +154,37 @@ void QgsRasterSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &par
   _writeXml( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "band" ), QgsColorUtils::colorToString( mInputBand ) );
 
   parentElem.appendChild( rasterRendererElem );
 }
 
+int QgsRasterSingleColorRenderer::inputBand() const
+{
+  return mInputBand;
+}
+
+bool QgsRasterSingleColorRenderer::setInputBand( int band )
+{
+  if ( !mInput )
+  {
+    mInputBand = band;
+    return true;
+  }
+  else if ( band > 0 && band <= mInput->bandCount() )
+  {
+    mInputBand = band;
+    return true;
+  }
+  return false;
+}
+
 QList<int> QgsRasterSingleColorRenderer::usesBands() const
 {
-  QList<int> bandList;
-  for ( int i = 0; i <= bandCount(); i++ )
+  QList<int> bands;
+  if ( mInputBand != -1 )
   {
-    bandList << i;
+    bands << mInputBand;
   }
-  return bandList;
+  return bands;
 }
