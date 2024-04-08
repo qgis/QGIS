@@ -1059,7 +1059,9 @@ void QgsMapCanvas::clearTemporalCache()
           continue;
 
         if ( !alreadyInvalidatedThisLayer )
+        {
           mCache->invalidateCacheForLayer( layer );
+        }
       }
       else if ( QgsGroupLayer *gl = qobject_cast<QgsGroupLayer *>( layer ) )
       {

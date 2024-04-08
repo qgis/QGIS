@@ -166,12 +166,7 @@ int QgsRasterSingleColorRenderer::inputBand() const
 
 bool QgsRasterSingleColorRenderer::setInputBand( int band )
 {
-  if ( !mInput )
-  {
-    mInputBand = band;
-    return true;
-  }
-  else if ( band > 0 && band <= mInput->bandCount() )
+  if ( !mInput || ( band > 0 && band <= mInput->bandCount() ) )
   {
     mInputBand = band;
     return true;
