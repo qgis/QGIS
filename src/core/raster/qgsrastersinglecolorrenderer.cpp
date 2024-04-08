@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssinglecolorrenderer.cpp
+                         qgsrastersinglecolorrenderer.cpp
                          -----------------------------
     begin                : April 2024
     copyright            : (C) 2024 by Mathieu Pellerin
@@ -15,32 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssinglecolorrenderer.h"
+#include "qgsrastersinglecolorrenderer.h"
 #include "qgsrastertransparency.h"
 #include "qgscolorutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsSingleColorRenderer::QgsSingleColorRenderer( QgsRasterInterface *input, QColor color )
+QgsRasterSingleColorRenderer::QgsRasterSingleColorRenderer( QgsRasterInterface *input, QColor color )
   : QgsRasterRenderer( input, QStringLiteral( "singlecolor" ) )
   , mColor( color )
 {
 }
 
-QgsSingleColorRenderer *QgsSingleColorRenderer::clone() const
+QgsRasterSingleColorRenderer *QgsRasterSingleColorRenderer::clone() const
 {
-  QgsSingleColorRenderer *renderer = new QgsSingleColorRenderer( nullptr, mColor );
+  QgsRasterSingleColorRenderer *renderer = new QgsRasterSingleColorRenderer( nullptr, mColor );
   renderer->copyCommonProperties( this );
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsSingleColorRenderer::flags() const
+Qgis::RasterRendererFlags QgsRasterSingleColorRenderer::flags() const
 {
   return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
 }
 
-QgsRasterRenderer *QgsSingleColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -48,13 +48,13 @@ QgsRasterRenderer *QgsSingleColorRenderer::create( const QDomElement &elem, QgsR
   }
 
   const QColor color = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ), QStringLiteral( "0,0,0" ) ) );
-  QgsSingleColorRenderer *r = new QgsSingleColorRenderer( input, color );
+  QgsRasterSingleColorRenderer *r = new QgsRasterSingleColorRenderer( input, color );
   r->readXml( elem );
 
   return r;
 }
 
-QgsRasterBlock *QgsSingleColorRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsRasterSingleColorRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
@@ -128,17 +128,17 @@ QgsRasterBlock *QgsSingleColorRenderer::block( int bandNo, const QgsRectangle &e
   return outputBlock.release();
 }
 
-void QgsSingleColorRenderer::setColor( QColor &color )
+void QgsRasterSingleColorRenderer::setColor( QColor &color )
 {
   mColor = color;;
 }
 
-QColor QgsSingleColorRenderer::color() const
+QColor QgsRasterSingleColorRenderer::color() const
 {
   return mColor;
 }
 
-void QgsSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
+void QgsRasterSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -153,7 +153,7 @@ void QgsSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentEle
   parentElem.appendChild( rasterRendererElem );
 }
 
-QList<int> QgsSingleColorRenderer::usesBands() const
+QList<int> QgsRasterSingleColorRenderer::usesBands() const
 {
   QList<int> bandList;
   for ( int i = 0; i <= bandCount(); i++ )

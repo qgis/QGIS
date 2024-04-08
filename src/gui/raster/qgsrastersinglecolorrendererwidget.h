@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssinglecolorrendererwidget.h
+                         qgsrastersinglecolorrendererwidget.h
                          ---------------------------------
     begin                : April 2024
     copyright            : (C) 2024 by Mathieu Pellerin
@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSINGLECOLORRENDERERWIDGET_H
-#define QGSSINGLECOLORRENDERERWIDGET_H
+#ifndef QGSRASTERSINGLECOLORRENDERERWIDGET_H
+#define QGSRASTERSINGLECOLORRENDERERWIDGET_H
 
-#include "ui_qgssinglecolorrendererwidgetbase.h"
+#include "ui_qgsrastersinglecolorrendererwidgetbase.h"
 
 #include "qgsrasterrendererwidget.h"
 #include "qgis_sip.h"
@@ -29,15 +29,15 @@
  * \ingroup gui
  * \since QGIS 3.38
  */
-class GUI_EXPORT QgsSingleColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleColorRendererWidgetBase
+class GUI_EXPORT QgsRasterSingleColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsRasterSingleColorRendererWidgetBase
 {
     Q_OBJECT
   public:
     //! Constructs the widget
-    QgsSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsRasterSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     //! Widget creation function (use by the renderer registry)
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleColorRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsRasterSingleColorRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() SIP_FACTORY override;
 
@@ -51,4 +51,4 @@ class GUI_EXPORT QgsSingleColorRendererWidget: public QgsRasterRendererWidget, p
 
 };
 
-#endif // QGSSINGLECOLORRENDERERWIDGET_H
+#endif // QGSRASTERSINGLECOLORRENDERERWIDGET_H

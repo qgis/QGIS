@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/raster/qgssinglecolorrendererwidget.h                        *
+ * src/gui/raster/qgsrastersinglecolorrendererwidget.h                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,7 +10,7 @@
 
 
 
-class QgsSingleColorRendererWidget: QgsRasterRendererWidget
+class QgsRasterSingleColorRendererWidget: QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
 Renderer widget for the single color renderer.
@@ -19,10 +19,10 @@ Renderer widget for the single color renderer.
 %End
 
 %TypeHeaderCode
-#include "qgssinglecolorrendererwidget.h"
+#include "qgsrastersinglecolorrendererwidget.h"
 %End
   public:
-    QgsSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsRasterSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Constructs the widget
 %End
@@ -45,7 +45,7 @@ Sets the widget state from the specified renderer.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/raster/qgssinglecolorrendererwidget.h                        *
+ * src/gui/raster/qgsrastersinglecolorrendererwidget.h                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssinglecolorrendererwidget.cpp
+                         qgsrastersinglecolorrendererwidget.cpp
                          ---------------------------------
     begin                : April 2024
     copyright            : (C) 2024 by Mathieu Pellerin
@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssinglecolorrendererwidget.h"
-#include "qgssinglecolorrenderer.h"
+#include "qgsrastersinglecolorrendererwidget.h"
+#include "qgsrastersinglecolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 
-QgsSingleColorRendererWidget::QgsSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
+QgsRasterSingleColorRendererWidget::QgsRasterSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
@@ -33,13 +33,13 @@ QgsSingleColorRendererWidget::QgsSingleColorRendererWidget( QgsRasterLayer *laye
       return;
     }
 
-    connect( mColor, &QgsColorButton::colorChanged, this, &QgsSingleColorRendererWidget::colorChanged );
+    connect( mColor, &QgsColorButton::colorChanged, this, &QgsRasterSingleColorRendererWidget::colorChanged );
 
     setFromRenderer( layer->renderer() );
   }
 }
 
-QgsRasterRenderer *QgsSingleColorRendererWidget::renderer()
+QgsRasterRenderer *QgsRasterSingleColorRendererWidget::renderer()
 {
   if ( !mRasterLayer )
   {
@@ -52,18 +52,18 @@ QgsRasterRenderer *QgsSingleColorRendererWidget::renderer()
     return nullptr;
   }
 
-  QgsSingleColorRenderer *renderer = new QgsSingleColorRenderer( provider, mColor->color() );
+  QgsRasterSingleColorRenderer *renderer = new QgsRasterSingleColorRenderer( provider, mColor->color() );
   return renderer;
 }
 
-void QgsSingleColorRendererWidget::colorChanged( const QColor & )
+void QgsRasterSingleColorRendererWidget::colorChanged( const QColor & )
 {
   emit widgetChanged();
 }
 
-void QgsSingleColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
+void QgsRasterSingleColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsSingleColorRenderer *scr = dynamic_cast<const QgsSingleColorRenderer *>( r );
+  const QgsRasterSingleColorRenderer *scr = dynamic_cast<const QgsRasterSingleColorRenderer *>( r );
   if ( scr )
   {
     mColor->setColor( scr->color() );

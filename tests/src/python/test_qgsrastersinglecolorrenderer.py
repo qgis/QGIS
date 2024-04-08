@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsSingleColorRenderer.
+"""QGIS Unit tests for QgsRasterSingleColorRenderer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@ from qgis.PyQt.QtCore import QFileInfo
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsRasterLayer,
-    QgsSingleColorRenderer,
+    QgsRasterSingleColorRenderer,
     QgsMapSettings,
 )
 import unittest
@@ -25,7 +25,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsSingleBandGrayRenderer(QgisTestCase):
+class TestQgsRasterSingleBandGrayRenderer(QgisTestCase):
 
     def testRenderer(self):
         path = os.path.join(unitTestDataPath(),
@@ -35,7 +35,7 @@ class TestQgsSingleBandGrayRenderer(QgisTestCase):
         layer = QgsRasterLayer(path, base_name)
         self.assertTrue(layer.isValid(), f'Raster not loaded: {path}')
 
-        renderer = QgsSingleColorRenderer(layer.dataProvider(),
+        renderer = QgsRasterSingleColorRenderer(layer.dataProvider(),
                                           QColor(255, 0, 0))
 
         self.assertEqual(renderer.color(), QColor(255, 0, 0))
@@ -49,8 +49,8 @@ class TestQgsSingleBandGrayRenderer(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check(
-                'single_color_renderer',
-                'single_color_renderer',
+                'raster_single_color_renderer',
+                'raster_single_color_renderer',
                 ms)
         )
 

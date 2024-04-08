@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/raster/qgssinglecolorrenderer.h                             *
+ * src/core/raster/qgsrastersinglecolorrenderer.h                       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,7 +11,7 @@
 
 
 
-class QgsSingleColorRenderer: QgsRasterRenderer
+class QgsRasterSingleColorRenderer: QgsRasterRenderer
 {
 %Docstring(signature="appended")
 Raster single color renderer pipe.
@@ -20,20 +20,20 @@ Raster single color renderer pipe.
 %End
 
 %TypeHeaderCode
-#include "qgssinglecolorrenderer.h"
+#include "qgsrastersinglecolorrenderer.h"
 %End
   public:
 
-    QgsSingleColorRenderer( QgsRasterInterface *input, QColor color );
+    QgsRasterSingleColorRenderer( QgsRasterInterface *input, QColor color );
 %Docstring
 Creates a single ``color`` renderer
 %End
 
 
-    virtual QgsSingleColorRenderer *clone() const /Factory/;
+    virtual QgsRasterSingleColorRenderer *clone() const /Factory/;
 
 %Docstring
-QgsSingleColorRenderer cannot be copied. Use :py:func:`~QgsSingleColorRenderer.clone` instead.
+QgsRasterSingleColorRenderer cannot be copied. Use :py:func:`~QgsRasterSingleColorRenderer.clone` instead.
 %End
     virtual Qgis::RasterRendererFlags flags() const;
 
@@ -63,14 +63,14 @@ Sets the single color used by the renderer.
 
 
   private:
-    QgsSingleColorRenderer( const QgsSingleColorRenderer & );
-    const QgsSingleColorRenderer &operator=( const QgsSingleColorRenderer & );
+    QgsRasterSingleColorRenderer( const QgsRasterSingleColorRenderer & );
+    const QgsRasterSingleColorRenderer &operator=( const QgsRasterSingleColorRenderer & );
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/raster/qgssinglecolorrenderer.h                             *
+ * src/core/raster/qgsrastersinglecolorrenderer.h                       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

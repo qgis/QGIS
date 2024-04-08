@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssinglecolorrenderer.h
+                         qgsrastersinglecolorrenderer.h
                          ---------------------------
     begin                : April 2024
     copyright            : (C) 2024 by Mathieu Pellerin
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSINGLECOLORRENDERER_H
-#define QGSSINGLECOLORRENDERER_H
+#ifndef QGSRASTERSINGLECOLORRENDERER_H
+#define QGSRASTERSINGLECOLORRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -31,19 +31,19 @@ class QDomElement;
   * \brief Raster single color renderer pipe.
   * \since QGIS 3.38
   */
-class CORE_EXPORT QgsSingleColorRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
 {
   public:
 
     //! Creates a single \a color renderer
-    QgsSingleColorRenderer( QgsRasterInterface *input, QColor color );
+    QgsRasterSingleColorRenderer( QgsRasterInterface *input, QColor color );
 
-    //! QgsSingleColorRenderer cannot be copied. Use clone() instead.
-    QgsSingleColorRenderer( const QgsSingleColorRenderer & ) = delete;
-    //! QgsSingleColorRenderer cannot be copied. Use clone() instead.
-    const QgsSingleColorRenderer &operator=( const QgsSingleColorRenderer & ) = delete;
+    //! QgsRasterSingleColorRenderer cannot be copied. Use clone() instead.
+    QgsRasterSingleColorRenderer( const QgsRasterSingleColorRenderer & ) = delete;
+    //! QgsRasterSingleColorRenderer cannot be copied. Use clone() instead.
+    const QgsRasterSingleColorRenderer &operator=( const QgsRasterSingleColorRenderer & ) = delete;
 
-    QgsSingleColorRenderer *clone() const override SIP_FACTORY;
+    QgsRasterSingleColorRenderer *clone() const override SIP_FACTORY;
     Qgis::RasterRendererFlags flags() const override;
 
     //! Creates an instance of the renderer based on definition from XML (used by the renderer registry)
@@ -67,11 +67,11 @@ class CORE_EXPORT QgsSingleColorRenderer: public QgsRasterRenderer
 
   private:
 #ifdef SIP_RUN
-    QgsSingleColorRenderer( const QgsSingleColorRenderer & );
-    const QgsSingleColorRenderer &operator=( const QgsSingleColorRenderer & );
+    QgsRasterSingleColorRenderer( const QgsRasterSingleColorRenderer & );
+    const QgsRasterSingleColorRenderer &operator=( const QgsRasterSingleColorRenderer & );
 #endif
 
     QColor mColor;
 };
 
-#endif // QGSSINGLECOLORRENDERER_H
+#endif // QGSRASTERSINGLECOLORRENDERER_H
