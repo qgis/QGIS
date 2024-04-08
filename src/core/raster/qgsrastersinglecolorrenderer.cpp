@@ -154,7 +154,7 @@ void QgsRasterSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &par
   _writeXml( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "band" ), QgsColorUtils::colorToString( mInputBand ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mInputBand );
 
   parentElem.appendChild( rasterRendererElem );
 }
