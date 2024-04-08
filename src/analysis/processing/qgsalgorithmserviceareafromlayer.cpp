@@ -67,6 +67,11 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   includeBounds->setFlags( includeBounds->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( includeBounds.release() );
 
+  std::unique_ptr< QgsProcessingParameterNumber > maxPointDistanceFromNetwork = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "POINT_TOLERANCE" ), QObject::tr( "Maximum point distance from network" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 );
+  maxPointDistanceFromNetwork->setFlags( maxPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  maxPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the points to the network layer. If a point is further from the network than this distance it will be treated as non-routable." ) );
+  addParameter( maxPointDistanceFromNetwork.release() );
+
   std::unique_ptr< QgsProcessingParameterFeatureSink > outputLines = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_LINES" ),  QObject::tr( "Service area (lines)" ),
       Qgis::ProcessingSourceType::VectorLine, QVariant(), true );
   outputLines->setCreateByDefault( true );
@@ -76,6 +81,12 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
       Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   outputPoints->setCreateByDefault( false );
   addParameter( outputPoints.release() );
+
+  std::unique_ptr< QgsProcessingParameterFeatureSink > outputNonRoutable = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_NON_ROUTABLE" ),  QObject::tr( "Non-routable features" ),
+      Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
+  outputNonRoutable->setHelp( QObject::tr( "An optional output which will be used to store any input features which could not be routed (e.g. those which are too far from the network layer)." ) );
+  outputNonRoutable->setCreateByDefault( false );
+  addParameter( outputNonRoutable.release() );
 }
 
 QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -123,8 +134,13 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   std::unique_ptr< QgsFeatureSink > linesSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LINES" ), context, linesSinkId, fields,
       Qgis::WkbType::MultiLineString, mNetwork->sourceCrs() ) );
 
+  QString nonRoutableSinkId;
+  std::unique_ptr< QgsFeatureSink > nonRoutableSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_NON_ROUTABLE" ), context, nonRoutableSinkId, startPoints->fields(),
+      Qgis::WkbType::Point, mNetwork->sourceCrs() ) );
+
+  const double pointDistanceThreshold = parameters.value( QStringLiteral( "POINT_TOLERANCE" ) ).isValid() ? parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context ) : -1;
+
   int idxStart;
-  QString origPoint;
   QVector< int > tree;
   QVector< double > costs;
 
@@ -144,8 +160,32 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       break;
     }
 
-    idxStart = graph->findVertex( snappedPoints.at( i ) );
-    origPoint = points.at( i ).toString();
+    const QgsPointXY snappedPoint = snappedPoints.at( i );
+    const QgsPointXY originalPoint = points.at( i );
+
+    if ( pointDistanceThreshold >= 0 )
+    {
+      const double distancePointToNetwork = mBuilder->distanceArea()->measureLine( originalPoint, snappedPoint );
+      if ( distancePointToNetwork > pointDistanceThreshold )
+      {
+        feedback->pushWarning( QObject::tr( "Point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distancePointToNetwork ).arg( pointDistanceThreshold ) );
+        if ( nonRoutableSink )
+        {
+          feat.setGeometry( QgsGeometry::fromPointXY( originalPoint ) );
+          attributes = sourceAttributes.value( i + 1 );
+          feat.setAttributes( attributes );
+          if ( !nonRoutableSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( nonRoutableSink.get(), parameters, QStringLiteral( "OUTPUT_NON_ROUTABLE" ) ) );
+        }
+
+        feedback->setProgress( i * step );
+        continue;
+      }
+    }
+
+    const QString originalPointString = originalPoint.toString();
+
+    idxStart = graph->findVertex( snappedPoint );
 
     QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
@@ -212,7 +252,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       QgsGeometry geomPoints = QgsGeometry::fromMultiPointXY( areaPoints );
       feat.setGeometry( geomPoints );
       attributes = sourceAttributes.value( i + 1 );
-      attributes << QStringLiteral( "within" ) << origPoint;
+      attributes << QStringLiteral( "within" ) << originalPointString;
       feat.setAttributes( attributes );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -249,14 +289,14 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
 
         feat.setGeometry( geomUpper );
         attributes = sourceAttributes.value( i + 1 );
-        attributes << QStringLiteral( "upper" ) << origPoint;
+        attributes << QStringLiteral( "upper" ) << originalPointString;
         feat.setAttributes( attributes );
         if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
         feat.setGeometry( geomLower );
         attributes = sourceAttributes.value( i + 1 );
-        attributes << QStringLiteral( "lower" ) << origPoint;
+        attributes << QStringLiteral( "lower" ) << originalPointString;
         feat.setAttributes( attributes );
         if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -268,7 +308,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
       feat.setGeometry( geomLines );
       attributes = sourceAttributes.value( i + 1 );
-      attributes << QStringLiteral( "lines" ) << origPoint;
+      attributes << QStringLiteral( "lines" ) << originalPointString;
       feat.setAttributes( attributes );
       if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
@@ -285,6 +325,10 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   if ( linesSink )
   {
     outputs.insert( QStringLiteral( "OUTPUT_LINES" ), linesSinkId );
+  }
+  if ( nonRoutableSink )
+  {
+    outputs.insert( QStringLiteral( "OUTPUT_NON_ROUTABLE" ), nonRoutableSinkId );
   }
 
   return outputs;
