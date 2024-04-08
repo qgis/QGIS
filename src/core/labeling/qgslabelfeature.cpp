@@ -51,7 +51,7 @@ void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
   if ( !mPermissibleZoneGeos )
     return;
 
-  mPermissibleZoneGeosPrepared.reset( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mPermissibleZoneGeos.get() ) );
+  mPermissibleZoneGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mPermissibleZoneGeos.get() ) );
 }
 
 QgsFeature QgsLabelFeature::feature() const

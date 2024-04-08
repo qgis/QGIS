@@ -37,18 +37,18 @@
 
 QgsPointCloudLayerProfileResults::QgsPointCloudLayerProfileResults()
 {
-  mPointIndex = GEOSSTRtree_create_r( QgsGeos::getGEOSHandler(), ( size_t )10 );
+  mPointIndex = GEOSSTRtree_create_r( QgsGeosContext::get(), ( size_t )10 );
 }
 
 QgsPointCloudLayerProfileResults::~QgsPointCloudLayerProfileResults()
 {
-  GEOSSTRtree_destroy_r( QgsGeos::getGEOSHandler(), mPointIndex );
+  GEOSSTRtree_destroy_r( QgsGeosContext::get(), mPointIndex );
   mPointIndex = nullptr;
 }
 
 void QgsPointCloudLayerProfileResults::finalize( QgsFeedback *feedback )
 {
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   const std::size_t size = results.size();
   PointResult *pointData = results.data();
@@ -240,7 +240,7 @@ QgsProfileSnapResult QgsPointCloudLayerProfileResults::snapPoint( const QgsProfi
 {
   QgsProfileSnapResult result;
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   const double minDistance = point.distance() - context.maximumPointDistanceDelta;
   const double maxDistance = point.distance() + context.maximumPointDistanceDelta;
