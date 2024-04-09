@@ -136,8 +136,8 @@ namespace QgsWcs
       }
 #endif
       QString name = layer->name();
-      if ( !layer->shortName().isEmpty() )
-        name = layer->shortName();
+      if ( !layer->serverProperties()->shortName().isEmpty() )
+        name = layer->serverProperties()->shortName();
       name = name.replace( ' ', '_' );
 
       if ( coveNameList.size() == 0 || coveNameList.contains( name ) )

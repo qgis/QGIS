@@ -17,7 +17,6 @@
 
 #include "qgsmaplayermodel.h"
 #include "qgsproject.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
 #include "qgsmaplayerlistutils_p.h"
@@ -368,7 +367,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( layer )
       {
         QStringList parts;
-        QString title = layer->title().isEmpty() ? layer->shortName() : layer->title();
+        QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title() : ( layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->shortName() : layer->serverProperties()->title() );
         if ( title.isEmpty() )
           title = layer->name();
         title = "<b>" + title + "</b>";
@@ -381,8 +380,9 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
         }
         parts << title;
 
-        if ( !layer->abstract().isEmpty() )
-          parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
+        QString abstract = !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->serverProperties()->abstract();
+        if ( !abstract.isEmpty() )
+          parts << "<br/>" + abstract.replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
         parts << "<i>" + layer->publicSource() + "</i>";
         return parts.join( QLatin1String( "<br/>" ) );
       }

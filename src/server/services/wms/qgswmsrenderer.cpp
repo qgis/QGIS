@@ -1649,7 +1649,7 @@ namespace QgsWms
             }
 
             layerElement.setAttribute( QStringLiteral( "name" ), layerName );
-            const QString layerTitle = layer->title();
+            const QString layerTitle = layer->serverProperties()->title();
             if ( !layerTitle.isEmpty() )
             {
               layerElement.setAttribute( QStringLiteral( "title" ), layerTitle );
@@ -1725,7 +1725,7 @@ namespace QgsWms
               const QList<QgsMapLayer *> constLayers { mContext.layerGroups()[ql] };
               for ( const QgsMapLayer *ml : constLayers )
               {
-                if ( ( ! ml->shortName().isEmpty() &&  ml->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
+                if ( ( ! ml->serverProperties()->shortName().isEmpty() &&  ml->serverProperties()->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
                 {
                   param.mValue = ql;
                 }

@@ -141,7 +141,7 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
       attributes << QVariant() << QVariant() << QVariant() << QVariant();
     }
     attributes << layer->metadata().rights().join( ';' )
-               << layer->abstract();
+               << layer->serverProperties()->abstract();
     feature.setAttributes( attributes );
 
     QgsRectangle rect = layer->extent();

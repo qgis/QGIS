@@ -6470,9 +6470,9 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     else if ( QString::compare( layerProperty, QStringLiteral( "id" ), Qt::CaseInsensitive ) == 0 )
       return layer->id();
     else if ( QString::compare( layerProperty, QStringLiteral( "title" ), Qt::CaseInsensitive ) == 0 )
-      return !layer->metadata().title().isEmpty() ? layer->metadata().title() : layer->title();
+      return !layer->metadata().title().isEmpty() ? layer->metadata().title() : layer->serverProperties()->title();
     else if ( QString::compare( layerProperty, QStringLiteral( "abstract" ), Qt::CaseInsensitive ) == 0 )
-      return !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->abstract();
+      return !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->serverProperties()->abstract();
     else if ( QString::compare( layerProperty, QStringLiteral( "keywords" ), Qt::CaseInsensitive ) == 0 )
     {
       QStringList keywords;
@@ -6483,16 +6483,16 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
       }
       if ( !keywords.isEmpty() )
         return keywords;
-      return layer->keywordList();
+      return layer->serverProperties()->keywordList();
     }
     else if ( QString::compare( layerProperty, QStringLiteral( "data_url" ), Qt::CaseInsensitive ) == 0 )
-      return layer->dataUrl();
+      return layer->serverProperties()->dataUrl();
     else if ( QString::compare( layerProperty, QStringLiteral( "attribution" ), Qt::CaseInsensitive ) == 0 )
     {
-      return !layer->metadata().rights().isEmpty() ? QVariant( layer->metadata().rights() ) : QVariant( layer->attribution() );
+      return !layer->metadata().rights().isEmpty() ? QVariant( layer->metadata().rights() ) : QVariant( layer->serverProperties()->attribution() );
     }
     else if ( QString::compare( layerProperty, QStringLiteral( "attribution_url" ), Qt::CaseInsensitive ) == 0 )
-      return layer->attributionUrl();
+      return layer->serverProperties()->attributionUrl();
     else if ( QString::compare( layerProperty, QStringLiteral( "source" ), Qt::CaseInsensitive ) == 0 )
       return layer->publicSource();
     else if ( QString::compare( layerProperty, QStringLiteral( "min_scale" ), Qt::CaseInsensitive ) == 0 )

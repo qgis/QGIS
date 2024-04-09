@@ -175,7 +175,7 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
       res.reserve( layers.size() );
       for ( const QgsMapLayer *layer : std::as_const( layers ) )
       {
-        const QStringList credits = !layer->metadata().rights().isEmpty() ? layer->metadata().rights() : QStringList() << layer->attribution();
+        const QStringList credits = !layer->metadata().rights().isEmpty() ? layer->metadata().rights() : QStringList() << layer->serverProperties()->attribution();
         for ( const QString &credit : credits )
         {
           if ( credit.trimmed().isEmpty() )

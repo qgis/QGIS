@@ -4422,9 +4422,9 @@ QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName 
   const auto constMapLayers { mLayerStore->mapLayers() };
   for ( const auto &l : constMapLayers )
   {
-    if ( ! l->shortName().isEmpty() )
+    if ( ! l->serverProperties()->shortName().isEmpty() )
     {
-      if ( l->shortName() == shortName )
+      if ( l->serverProperties()->shortName() == shortName )
         layers << l;
     }
     else if ( l->name() == shortName )

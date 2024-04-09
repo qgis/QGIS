@@ -339,8 +339,8 @@ namespace QgsWms
       lt->setUseLayerName( false ); // do not modify underlying layer
 
       // name
-      if ( !ml->title().isEmpty() )
-        lt->setName( ml->title() );
+      if ( !ml->serverProperties()->title().isEmpty() )
+        lt->setName( ml->serverProperties()->title() );
 
       // show feature count
       const bool showFeatureCount = context.parameters().showFeatureCountAsBool();

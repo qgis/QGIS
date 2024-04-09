@@ -1250,9 +1250,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       const auto constMapLayers { mLayerStore->layers<T>() };
       for ( const auto l : constMapLayers )
       {
-        if ( ! l->shortName().isEmpty() )
+        if ( ! l->serverProperties()->shortName().isEmpty() )
         {
-          if ( l->shortName() == shortName )
+          if ( l->serverProperties()->shortName() == shortName )
             layers << l;
         }
         else if ( l->name() == shortName )

@@ -133,8 +133,8 @@ namespace QgsWms
       QString name = layer->name();
       if ( useLayerIds )
         name = layer->id();
-      else if ( !layer->shortName().isEmpty() )
-        name = layer->shortName();
+      else if ( !layer->serverProperties()->shortName().isEmpty() )
+        name = layer->serverProperties()->shortName();
 
       if ( !layersList.contains( name ) )
       {

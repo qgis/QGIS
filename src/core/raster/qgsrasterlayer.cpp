@@ -1849,17 +1849,19 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       userStyleElem.appendChild( nameElem );
     }
 
-    if ( !abstract().isEmpty() )
+    const QString abstract = !metadata().abstract().isEmpty() ? metadata().abstract() : serverProperties()->abstract();
+    if ( !abstract.isEmpty() )
     {
       QDomElement abstractElem = doc.createElement( QStringLiteral( "sld:Abstract" ) );
-      abstractElem.appendChild( doc.createTextNode( abstract() ) );
+      abstractElem.appendChild( doc.createTextNode( abstract ) );
       userStyleElem.appendChild( abstractElem );
     }
 
-    if ( !title().isEmpty() )
+    const QString title = !metadata().title().isEmpty() ? metadata().title() : serverProperties()->title();
+    if ( !title.isEmpty() )
     {
       QDomElement titleElem = doc.createElement( QStringLiteral( "sld:Title" ) );
-      titleElem.appendChild( doc.createTextNode( title() ) );
+      titleElem.appendChild( doc.createTextNode( title ) );
       userStyleElem.appendChild( titleElem );
     }
 
