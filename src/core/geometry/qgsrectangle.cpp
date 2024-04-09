@@ -119,10 +119,10 @@ QString QgsRectangle::asWktPolygon() const
 {
   if ( isNull() )
   {
-    return QStringLiteral( "POLYGON EMPTY" );
+    return QStringLiteral( "Polygon EMPTY" );
   }
 
-  return QStringLiteral( "POLYGON((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))" ).arg(
+  return QStringLiteral( "Polygon ((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))" ).arg(
            qgsDoubleToString( mXmin ),
            qgsDoubleToString( mYmin ),
            qgsDoubleToString( mXmax ),

@@ -197,7 +197,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('test', QgsRectangle()))
         self.assertFalse(QgsSensorThingsUtils.filterForExtent('', QgsRectangle(1, 2, 3, 4)))
         self.assertEqual(QgsSensorThingsUtils.filterForExtent('test', QgsRectangle(1, 2, 3, 4)),
-                         "geo.intersects(test, geography'POLYGON((1 2, 3 2, 3 4, 1 4, 1 2))')")
+                         "geo.intersects(test, geography'Polygon ((1 2, 3 2, 3 4, 1 4, 1 2))')")
 
     def test_combine_filters(self):
         """
@@ -1020,7 +1020,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
                 with open(
                     sanitize(endpoint,
-                             "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
+                             "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
                     "wt",
                     encoding="utf8",
                 ) as f:
@@ -1074,7 +1074,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((10 0, 20 0, 20 80, 10 80, 10 0))'))"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((10 0, 20 0, 20 80, 10 80, 10 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1225,7 +1225,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=0&$count=true&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
+                         "/Locations?$top=0&$count=true&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1233,7 +1233,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 10 0, 10 80, 1 80, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1288,7 +1288,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 3 0, 3 50, 1 50, 1 0))'))"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 3 0, 3 50, 1 50, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1447,7 +1447,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 3 0, 3 50, 1 50, 1 0))')) and (name eq 'Location 1')"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 3 0, 3 50, 1 50, 1 0))')) and (name eq 'Location 1')"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1483,7 +1483,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 3 0, 3 50, 1 50, 1 0))'))"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 3 0, 3 50, 1 50, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1646,7 +1646,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((1 0, 3 0, 3 50, 1 50, 1 0))'))"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 3 0, 3 50, 1 50, 1 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1681,7 +1681,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((0 0, 100 0, 100 150, 0 150, 0 0))'))"),
+                         "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((0 0, 100 0, 100 150, 0 150, 0 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -1728,7 +1728,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
       "HistoricalLocations@iot.navigationLink": "endpoint/Locations(2)/HistoricalLocations"
     }
   ],
-  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((0 0, 100 0, 100 150, 0 150, 0 0))'))"
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((0 0, 100 0, 100 150, 0 150, 0 0))'))"
 }
                 """.replace(
                         "endpoint", "http://" + endpoint
@@ -1738,7 +1738,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # Note -- top param here should be replaced by "top=1", NOT be the "top=2" parameter from the previous page's iot.nextLink url!
             with open(
                 sanitize(endpoint,
-                         "/Locations?$top=1&$skip=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'POLYGON((0 0, 100 0, 100 150, 0 150, 0 0))'))"),
+                         "/Locations?$top=1&$skip=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((0 0, 100 0, 100 150, 0 150, 0 0))'))"),
                 "wt",
                 encoding="utf8",
             ) as f:
