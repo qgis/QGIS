@@ -1108,7 +1108,7 @@ void QgsDxfExportDialog::saveSettingsToXML( QDomDocument &doc ) const
   QgsVectorLayerRef vlRef;
   const QgsReadWriteContext rwContext = QgsReadWriteContext();
 
-  for ( const auto dxfLayer : layers() )
+  for ( const auto &dxfLayer : layers() )
   {
     QDomElement layerElement = domDocument.createElement( QStringLiteral( "layer" ) );
     vlRef.setLayer( dxfLayer.layer() );
