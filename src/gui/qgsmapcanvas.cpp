@@ -763,6 +763,17 @@ void QgsMapCanvas::refreshMap()
   stopRendering(); // if any...
   stopPreviewJobs();
 
+  if ( mCacheInvalidations.testFlag( CacheInvalidationType::Temporal ) )
+  {
+    clearTemporalCache();
+    mCacheInvalidations &= ~( static_cast< int >( CacheInvalidationType::Temporal ) );
+  }
+  if ( mCacheInvalidations.testFlag( CacheInvalidationType::Elevation ) )
+  {
+    clearElevationCache();
+    mCacheInvalidations &= ~( static_cast< int >( CacheInvalidationType::Elevation ) );
+  }
+
   mSettings.setExpressionContext( createExpressionContext() );
 
   // if using the temporal controller in animation mode, get the frame settings from that
@@ -966,8 +977,6 @@ void QgsMapCanvas::rendererJobFinished()
   if ( mRefreshAfterJob )
   {
     mRefreshAfterJob = false;
-    clearTemporalCache();
-    clearElevationCache();
     refresh();
   }
 }
@@ -1338,8 +1347,7 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 
   // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
   // the canvas is redrawn
-  if ( !mJob )
-    clearTemporalCache();
+  mCacheInvalidations |= CacheInvalidationType::Temporal;
 
   autoRefreshTriggered();
 }
@@ -1920,8 +1928,7 @@ void QgsMapCanvas::setZRange( const QgsDoubleRange &range )
 
   // we need to discard any previously cached images which are elevation aware, so that these will be updated when
   // the canvas is redrawn
-  if ( !mJob )
-    clearElevationCache();
+  mCacheInvalidations |= CacheInvalidationType::Elevation;
 
   autoRefreshTriggered();
 }
