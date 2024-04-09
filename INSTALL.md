@@ -546,7 +546,7 @@ If you're going to be developing QGIS on a Fedora system, the following extra pa
 are required for the various QGIS source formatting and preparation scripts.
 
 ```bash
-dnf install ccache ninja-build astyle python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
+dnf install ag ccache expect ninja-build astyle python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
 ```
 
 ### 3.11.4. QT6 experimental builds with Fedora Rawhide
