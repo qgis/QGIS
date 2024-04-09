@@ -68,8 +68,8 @@ namespace QgsWfs
   QString layerTypeName( const QgsMapLayer *layer )
   {
     QString name = layer->name();
-    if ( !layer->shortName().isEmpty() )
-      name = layer->shortName();
+    if ( !layer->serverProperties()->shortName().isEmpty() )
+      name = layer->serverProperties()->shortName();
     name = name.replace( ' ', '_' ).replace( ':', '-' );
     return name;
   }

@@ -41,7 +41,8 @@ struct DxfLayerJob
       , crs( vl->crs() )
       , layerName( vl->name() )
       , splitLayerAttribute( splitLayerAttribute )
-      , layerTitle( vl->title().isEmpty() ? vl->name() : vl->title() )
+      , layerTitle( !vl->metadata().title().isEmpty() ? vl->metadata().title()
+                    : vl->serverProperties()->title().isEmpty() ? vl->name() : vl->serverProperties()->title() )
     {
       if ( !layerStyleOverride.isNull() )
       {

@@ -2384,7 +2384,9 @@ QStringList QgsDxfExport::encodings()
 QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 {
   Q_ASSERT( vl );
-  return mLayerTitleAsName && !vl->title().isEmpty() ? vl->title() : vl->name();
+  return mLayerTitleAsName && ( !vl->metadata().title().isEmpty() ||  !vl->serverProperties()->title().isEmpty() )
+         ? ( !vl->metadata().title().isEmpty() ? vl->metadata().title() : vl->serverProperties()->title() )
+         : vl->name();
 }
 
 void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )

@@ -63,7 +63,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
       QgsMapLayer *layer = treeLayer->layer();
       if ( layer )
       {
-        const QString shortName = layer->shortName();
+        const QString shortName = layer->serverProperties()->shortName();
         if ( shortName.isEmpty() )
           owsNames << layer->name();
         else

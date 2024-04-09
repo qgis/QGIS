@@ -267,7 +267,7 @@ bool QgsWmsRenderContext::updateExtent() const
 
 QString QgsWmsRenderContext::layerNickname( const QgsMapLayer &layer ) const
 {
-  QString name = layer.shortName();
+  QString name = layer.serverProperties()->shortName();
   // For external layers we cannot use the layer id because it's not known to the client, use layer name instead.
   if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) &&
        std::find_if( mExternalLayers.cbegin(), mExternalLayers.cend(),

@@ -481,8 +481,8 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       // Check if the layer is published, raise not found if it is not
       checkLayerIsAccessible( layer, context );
 
-      const std::string title { layer->title().isEmpty() ? layer->name().toStdString() : layer->title().toStdString() };
-      const QString shortName { layer->shortName().isEmpty() ? layer->name() : layer->shortName() };
+      const std::string title { layer->serverProperties()->title().isEmpty() ? layer->name().toStdString() : layer->serverProperties()->title().toStdString() };
+      const QString shortName { layer->serverProperties()->shortName().isEmpty() ? layer->name() : layer->serverProperties()->shortName() };
       data["collections"].push_back(
       {
         // identifier of the collection used, for example, in URIs
@@ -490,7 +490,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
         // human readable title of the collection
         { "title", title },
         // a description of the features in the collection
-        { "description", layer->abstract().toStdString() },
+        { "description", layer->serverProperties()->abstract().toStdString() },
         {
           "crs", crss
         },
@@ -626,9 +626,9 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   // Check if the layer is published, raise not found if it is not
   checkLayerIsAccessible( mapLayer, context );
 
-  const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+  const std::string title { mapLayer->serverProperties()->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->title().toStdString() };
   const std::string itemsTitle { title + " items" };
-  const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+  const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
   json linksList = links( context );
   linksList.push_back(
   {
@@ -709,10 +709,10 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
   // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
-    const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
     // Use layer id for operationId
     const QString layerId { mapLayer->id() };
-    const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    const std::string title { mapLayer->serverProperties()->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->title().toStdString() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[ path ] =
@@ -969,8 +969,8 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
   // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
-    const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
-    const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
+    const std::string title { mapLayer->serverProperties()->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->title().toStdString() };
     // Use layer id for operationId
     const QString layerId { mapLayer->id() };
     const QString path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ) };
@@ -1134,7 +1134,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
   // Check if the layer is published, raise not found if it is not
   checkLayerIsAccessible( mapLayer, context );
 
-  const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+  const std::string title { mapLayer->serverProperties()->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->title().toStdString() };
 
   // Get parameters
   QVariantMap params = values( context );
@@ -1732,7 +1732,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   // Check if the layer is published, raise not found if it is not
   checkLayerIsAccessible( mapLayer, context );
 
-  const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+  const std::string title { mapLayer->serverProperties()->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->title().toStdString() };
 
   // Retrieve feature from storage
   const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
@@ -2134,10 +2134,10 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
   // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
-    const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
     // Use layer id for operationId
     const QString layerId { mapLayer->id() };
-    const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    const std::string title { mapLayer->serverProperties()->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->title().toStdString() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items/{featureId}" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[ path ] =

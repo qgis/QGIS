@@ -676,7 +676,7 @@ namespace QgsWms
         QgsVectorLayer *cLayer = atlas->coverageLayer();
         if ( cLayer )
         {
-          QString layerName = cLayer->shortName();
+          QString layerName = cLayer->serverProperties()->shortName();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
           {
             layerName = cLayer->id();
@@ -1123,7 +1123,7 @@ namespace QgsWms
           {
             QDomElement dataUrlElem = doc.createElement( QStringLiteral( "DataURL" ) );
             QDomElement dataUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-            QString dataUrlFormat = l->dataUrlFormat();
+            QString dataUrlFormat = l->serverProperties()->dataUrlFormat();
             QDomText dataUrlFormatText = doc.createTextNode( dataUrlFormat );
             dataUrlFormatElem.appendChild( dataUrlFormatText );
             dataUrlElem.appendChild( dataUrlFormatElem );
@@ -1641,9 +1641,9 @@ namespace QgsWms
         {
           wmsName = l->id();
         }
-        else if ( !l->shortName().isEmpty() )
+        else if ( !l->serverProperties()->shortName().isEmpty() )
         {
-          wmsName = l->shortName();
+          wmsName = l->serverProperties()->shortName();
         }
 
         layerList <<  wmsName;

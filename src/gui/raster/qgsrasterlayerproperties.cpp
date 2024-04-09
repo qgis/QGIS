@@ -844,25 +844,25 @@ void QgsRasterLayerProperties::sync()
   updateInformationContent();
 
   // WMS Name as layer short name
-  mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
+  mLayerShortNameLineEdit->setText( mRasterLayer->serverProperties()->shortName() );
   // WMS Name validator
   QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
-  mLayerTitleLineEdit->setText( mRasterLayer->title() );
-  mLayerAbstractTextEdit->setPlainText( mRasterLayer->abstract() );
-  mLayerKeywordListLineEdit->setText( mRasterLayer->keywordList() );
-  mLayerDataUrlLineEdit->setText( mRasterLayer->dataUrl() );
+  mLayerTitleLineEdit->setText( mRasterLayer->serverProperties()->title() );
+  mLayerAbstractTextEdit->setPlainText( mRasterLayer->serverProperties()->abstract() );
+  mLayerKeywordListLineEdit->setText( mRasterLayer->serverProperties()->keywordList() );
+  mLayerDataUrlLineEdit->setText( mRasterLayer->serverProperties()->dataUrl() );
   mLayerDataUrlFormatComboBox->setCurrentIndex(
     mLayerDataUrlFormatComboBox->findText(
-      mRasterLayer->dataUrlFormat()
+      mRasterLayer->serverProperties()->dataUrlFormat()
     )
   );
 
   //layer attribution
-  mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
-  mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
+  mLayerAttributionLineEdit->setText( mRasterLayer->serverProperties()->attribution() );
+  mLayerAttributionUrlLineEdit->setText( mRasterLayer->serverProperties()->attributionUrl() );
 
   // layer metadata url
   const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mRasterLayer->serverProperties()->metadataUrls();
@@ -1075,38 +1075,38 @@ void QgsRasterLayerProperties::apply()
 
   mRasterLayer->setCrs( mCrsSelector->crs() );
 
-  if ( mRasterLayer->shortName() != mLayerShortNameLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->shortName() != mLayerShortNameLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setShortName( mLayerShortNameLineEdit->text() );
+  mRasterLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
 
-  if ( mRasterLayer->title() != mLayerTitleLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->title() != mLayerTitleLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
+  mRasterLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
 
-  if ( mRasterLayer->abstract() != mLayerAbstractTextEdit->toPlainText() )
+  if ( mRasterLayer->serverProperties()->abstract() != mLayerAbstractTextEdit->toPlainText() )
     mMetadataFilled = false;
-  mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+  mRasterLayer->serverProperties()->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
-  if ( mRasterLayer->keywordList() != mLayerKeywordListLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->keywordList() != mLayerKeywordListLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  mRasterLayer->serverProperties()->setKeywordList( mLayerKeywordListLineEdit->text() );
 
-  if ( mRasterLayer->dataUrl() != mLayerDataUrlLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->dataUrl() != mLayerDataUrlLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+  mRasterLayer->serverProperties()->setDataUrl( mLayerDataUrlLineEdit->text() );
 
-  if ( mRasterLayer->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
+  if ( mRasterLayer->serverProperties()->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
-  mRasterLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+  mRasterLayer->serverProperties()->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
 
   //layer attribution
-  if ( mRasterLayer->attribution() != mLayerAttributionLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->attribution() != mLayerAttributionLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setAttribution( mLayerAttributionLineEdit->text() );
+  mRasterLayer->serverProperties()->setAttribution( mLayerAttributionLineEdit->text() );
 
-  if ( mRasterLayer->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+  mRasterLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
   // Metadata URL
   QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;

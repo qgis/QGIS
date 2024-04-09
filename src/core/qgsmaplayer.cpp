@@ -138,7 +138,6 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   }
 
   layer->setName( name() );
-  layer->setShortName( shortName() );
 
   if ( layer->dataProvider() && layer->dataProvider()->elevationProperties() )
   {
@@ -151,13 +150,6 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setMaximumScale( maximumScale() );
   layer->setMinimumScale( minimumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
-  layer->setTitle( title() );
-  layer->setAbstract( abstract() );
-  layer->setKeywordList( keywordList() );
-  layer->setDataUrl( dataUrl() );
-  layer->setDataUrlFormat( dataUrlFormat() );
-  layer->setAttribution( attribution() );
-  layer->setAttributionUrl( attributionUrl() );
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
@@ -245,11 +237,117 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
   return nullptr;
 }
 
+void QgsMapLayer::setShortName( const QString &shortName )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setShortName( shortName );
+}
+
 QString QgsMapLayer::shortName() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShortName;
+  return mServerProperties->shortName();
+}
+
+void QgsMapLayer::setTitle( const QString &title )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setTitle( title );
+}
+
+QString QgsMapLayer::title() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->title();
+}
+
+void QgsMapLayer::setAbstract( const QString &abstract )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setAbstract( abstract );
+}
+
+QString QgsMapLayer::abstract() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->abstract();
+}
+
+void QgsMapLayer::setKeywordList( const QString &keywords )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setKeywordList( keywords );
+}
+
+QString QgsMapLayer::keywordList() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->keywordList();
+}
+
+void QgsMapLayer::setDataUrl( const QString &dataUrl )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setDataUrl( dataUrl );
+}
+
+QString QgsMapLayer::dataUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->dataUrl();
+}
+
+void QgsMapLayer::setDataUrlFormat( const QString &dataUrlFormat )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setDataUrlFormat( dataUrlFormat );
+}
+
+QString QgsMapLayer::dataUrlFormat() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->dataUrlFormat();
+}
+
+void QgsMapLayer::setAttribution( const QString &attrib )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setAttribution( attrib );
+}
+
+QString QgsMapLayer::attribution() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->attribution();
+}
+
+void QgsMapLayer::setAttributionUrl( const QString &attribUrl )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mServerProperties->setAttributionUrl( attribUrl );
+}
+
+QString QgsMapLayer::attributionUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->attributionUrl();
+
 }
 
 void QgsMapLayer::setMetadataUrl( const QString &metaUrl )
@@ -510,61 +608,12 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
   mCRS = savedCRS;
 
-  //short name
-  const QDomElement shortNameElem = layerElement.firstChildElement( QStringLiteral( "shortname" ) );
-  if ( !shortNameElem.isNull() )
-  {
-    mShortName = shortNameElem.text();
-  }
-
-  //title
-  const QDomElement titleElem = layerElement.firstChildElement( QStringLiteral( "title" ) );
-  if ( !titleElem.isNull() )
-  {
-    mTitle = titleElem.text();
-  }
-
-  //abstract
-  const QDomElement abstractElem = layerElement.firstChildElement( QStringLiteral( "abstract" ) );
-  if ( !abstractElem.isNull() )
-  {
-    mAbstract = abstractElem.text();
-  }
-
-  //keywordList
-  const QDomElement keywordListElem = layerElement.firstChildElement( QStringLiteral( "keywordList" ) );
-  if ( !keywordListElem.isNull() )
-  {
-    QStringList kwdList;
-    for ( QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling() )
-    {
-      kwdList << n.toElement().text();
-    }
-    mKeywordList = kwdList.join( QLatin1String( ", " ) );
-  }
-
-  //dataUrl
-  const QDomElement dataUrlElem = layerElement.firstChildElement( QStringLiteral( "dataUrl" ) );
-  if ( !dataUrlElem.isNull() )
-  {
-    mDataUrl = dataUrlElem.text();
-    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QString() );
-  }
-
   //legendUrl
   const QDomElement legendUrlElem = layerElement.firstChildElement( QStringLiteral( "legendUrl" ) );
   if ( !legendUrlElem.isNull() )
   {
     mLegendUrl = legendUrlElem.text();
     mLegendUrlFormat = legendUrlElem.attribute( QStringLiteral( "format" ), QString() );
-  }
-
-  //attribution
-  const QDomElement attribElem = layerElement.firstChildElement( QStringLiteral( "attribution" ) );
-  if ( !attribElem.isNull() )
-  {
-    mAttribution = attribElem.text();
-    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
   }
 
   serverProperties()->readXml( layerElement );
@@ -687,34 +736,37 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.appendChild( layerName );
 
   // layer short name
-  if ( !mShortName.isEmpty() )
+
+  // TODO -- ideally this would be in QgsMapLayerServerProperties::writeXml, but that's currently
+  // only called for SOME map layer subclasses!
+  if ( !mServerProperties->shortName().isEmpty() )
   {
     QDomElement layerShortName = document.createElement( QStringLiteral( "shortname" ) );
-    const QDomText layerShortNameText = document.createTextNode( mShortName );
+    const QDomText layerShortNameText = document.createTextNode( mServerProperties->shortName() );
     layerShortName.appendChild( layerShortNameText );
     layerElement.appendChild( layerShortName );
   }
 
   // layer title
-  if ( !mTitle.isEmpty() )
+  if ( !mServerProperties->title().isEmpty() )
   {
     QDomElement layerTitle = document.createElement( QStringLiteral( "title" ) );
-    const QDomText layerTitleText = document.createTextNode( mTitle );
+    const QDomText layerTitleText = document.createTextNode( mServerProperties->title() );
     layerTitle.appendChild( layerTitleText );
     layerElement.appendChild( layerTitle );
   }
 
   // layer abstract
-  if ( !mAbstract.isEmpty() )
+  if ( !mServerProperties->abstract().isEmpty() )
   {
     QDomElement layerAbstract = document.createElement( QStringLiteral( "abstract" ) );
-    const QDomText layerAbstractText = document.createTextNode( mAbstract );
+    const QDomText layerAbstractText = document.createTextNode( mServerProperties->abstract() );
     layerAbstract.appendChild( layerAbstractText );
     layerElement.appendChild( layerAbstract );
   }
 
   // layer keyword list
-  const QStringList keywordStringList = keywordList().split( ',' );
+  const QStringList keywordStringList = mServerProperties->keywordList().split( ',' );
   if ( !keywordStringList.isEmpty() )
   {
     QDomElement layerKeywordList = document.createElement( QStringLiteral( "keywordList" ) );
@@ -729,13 +781,13 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   }
 
   // layer dataUrl
-  const QString aDataUrl = dataUrl();
+  const QString aDataUrl = mServerProperties->dataUrl();
   if ( !aDataUrl.isEmpty() )
   {
     QDomElement layerDataUrl = document.createElement( QStringLiteral( "dataUrl" ) );
     const QDomText layerDataUrlText = document.createTextNode( aDataUrl );
     layerDataUrl.appendChild( layerDataUrlText );
-    layerDataUrl.setAttribute( QStringLiteral( "format" ), dataUrlFormat() );
+    layerDataUrl.setAttribute( QStringLiteral( "format" ), mServerProperties->dataUrlFormat() );
     layerElement.appendChild( layerDataUrl );
   }
 
@@ -751,13 +803,13 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   }
 
   // layer attribution
-  const QString aAttribution = attribution();
+  const QString aAttribution = mServerProperties->attribution();
   if ( !aAttribution.isEmpty() )
   {
     QDomElement layerAttribution = document.createElement( QStringLiteral( "attribution" ) );
     const QDomText layerAttributionText = document.createTextNode( aAttribution );
     layerAttribution.appendChild( layerAttributionText );
-    layerAttribution.setAttribute( QStringLiteral( "href" ), attributionUrl() );
+    layerAttribution.setAttribute( QStringLiteral( "href" ), mServerProperties->attributionUrl() );
     layerElement.appendChild( layerAttribution );
   }
 
