@@ -760,6 +760,34 @@ double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double 
 
 bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
+  if ( !mGeos || !geom )
+  {
+    return false;
+  }
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+  // special optimised case for point intersects
+  if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
+  {
+    if ( mGeosPrepared )
+    {
+      try
+      {
+        return GEOSPreparedIntersectsXY_r( QgsGeosContext::get(), mGeosPrepared.get(), point->x(), point->y() ) == 1;
+      }
+      catch ( GEOSException &e )
+      {
+        logError( QStringLiteral( "GEOS" ), e.what() );
+        if ( errorMsg )
+        {
+          *errorMsg = e.what();
+        }
+        return false;
+      }
+    }
+  }
+#endif
+
   return relation( geom, RelationIntersects, errorMsg );
 }
 
@@ -785,6 +813,34 @@ bool QgsGeos::overlaps( const QgsAbstractGeometry *geom, QString *errorMsg ) con
 
 bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
+  if ( !mGeos || !geom )
+  {
+    return false;
+  }
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+  // special optimised case for point containment
+  if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
+  {
+    if ( mGeosPrepared )
+    {
+      try
+      {
+        return GEOSPreparedContainsXY_r( QgsGeosContext::get(), mGeosPrepared.get(), point->x(), point->y() ) == 1;
+      }
+      catch ( GEOSException &e )
+      {
+        logError( QStringLiteral( "GEOS" ), e.what() );
+        if ( errorMsg )
+        {
+          *errorMsg = e.what();
+        }
+        return false;
+      }
+    }
+  }
+#endif
+
   return relation( geom, RelationContains, errorMsg );
 }
 
