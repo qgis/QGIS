@@ -85,6 +85,24 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
   if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
   {
+    if ( !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+    {
+      // add a refresh action, but ONLY if the collection item isn't representing a file
+      // (if so, then QgsAppFileItemGuiProvider will add the Refresh item)
+      QAction *actionRefresh = new QAction( QObject::tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, collectionItem, [collectionItem] { collectionItem->refresh(); } );
+      if ( !menu->actions().empty() )
+      {
+        QAction *firstAction = menu->actions().at( 0 );
+        menu->insertAction( firstAction, actionRefresh );
+        menu->insertSeparator( firstAction );
+      }
+      else
+      {
+        menu->addAction( actionRefresh );
+      }
+    }
+
     menu->addSeparator();
 
     if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( collectionItem->name() ) )
