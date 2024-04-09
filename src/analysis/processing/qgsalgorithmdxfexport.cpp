@@ -71,7 +71,9 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
   addParameter( extentParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Use only selected features" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false ) );
+  std::unique_ptr<QgsProcessingParameterBoolean> useTitleParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false );
+  useTitleParam->setHelp( QObject::tr( "If no attribute is chosen, prefer layer title (set in layer properties) to layer name" ) );
+  addParameter( useTitleParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
