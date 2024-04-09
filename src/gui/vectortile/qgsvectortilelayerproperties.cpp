@@ -234,7 +234,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
    * Server
    */
   //layer title and abstract
-  mLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
+  mLayerShortNameLineEdit->setText( mLayer->serverProperties()->shortName() );
   mLayerTitleLineEdit->setText( mLayer->serverProperties()->title() );
   mLayerAbstractTextEdit->setPlainText( mLayer->serverProperties()->abstract() );
   mLayerKeywordListLineEdit->setText( mLayer->serverProperties()->keywordList() );
