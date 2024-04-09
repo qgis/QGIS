@@ -54,7 +54,7 @@ QString QgsAlignRastersAlgorithm::groupId() const
 
 QString QgsAlignRastersAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Aligns rasters by resampling them to the same cell size and reprojecting to the same CRS." );
+  return QObject::tr( "Aligns rasters by resampling them to the same cell size and reprojecting to the same CRS. \n For each input raster the output file and resampling method has to be defined: go to Input layers (Click on the three dots) and select one (or more) layer(s) with the ckeckboxes. Click on the layer and go to \'Configure Raster...\' in order to define the location for the output file." );
 }
 
 QgsAlignRastersAlgorithm *QgsAlignRastersAlgorithm::createInstance() const
