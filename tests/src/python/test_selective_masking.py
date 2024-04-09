@@ -1326,6 +1326,8 @@ class TestSelectiveMasking(QgisTestCase):
 
         sl = QgsSvgMarkerSymbolLayer(svgPath, 5)
         sl.setFillColor(QColor("blue"))
+        sl.setStrokeColor(QColor("white"))
+        sl.setStrokeWidth(0)
 
         p = QgsMarkerSymbol()
         p.changeSymbolLayer(0, sl)
