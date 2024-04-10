@@ -103,7 +103,6 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     Q_OBJECT
   public:
     static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "dxf" ) );
-    static const inline QgsSettingsEntryBool *settingsDxfEnableDDBlocks = new QgsSettingsEntryBool( QStringLiteral( "enable-datadefined-blocks" ), sTreeAppDdxf,  false );
     static const inline QgsSettingsEntryString *settingsDxfLastSettingsDir = new QgsSettingsEntryString( QStringLiteral( "last-settings-dir" ), sTreeAppDdxf,  QDir::homePath() );
 
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );

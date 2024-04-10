@@ -150,7 +150,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
     const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vLayer )
     {
-      mCreateDDBlockInfo[vLayer] = QgsDxfExportDialog::settingsDxfEnableDDBlocks->value();
+      mCreateDDBlockInfo[vLayer] = true;
       mDDBlocksMaxNumberOfClasses[vLayer] = -1;
     }
   }
@@ -287,7 +287,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       return QVariant();
     }
 
-    bool checked = mCreateDDBlockInfo.contains( vl ) ? mCreateDDBlockInfo[vl] : false;
+    bool checked = mCreateDDBlockInfo.contains( vl ) ? mCreateDDBlockInfo[vl] : true;
     if ( role == Qt::CheckStateRole )
     {
       return checked ? Qt::Checked : Qt::Unchecked;
@@ -423,7 +423,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
         if ( !layerIdx.contains( vl->id() ) )
         {
           layerIdx.insert( vl->id(), layers.size() );
-          layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, false ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
+          layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, true ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
         }
       }
     }
@@ -434,7 +434,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
       if ( !layerIdx.contains( vl->id() ) )
       {
         layerIdx.insert( vl->id(), layers.size() );
-        layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, false ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
+        layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, true ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
       }
     }
   }
