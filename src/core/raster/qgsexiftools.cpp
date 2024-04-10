@@ -489,7 +489,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
       actualValueIsUShort = true;
       actualValue = value;
     }
-    else if ( value.type() == QVariant::DateTime )
+    else if ( value.userType() == QMetaType::Type::QDateTime )
     {
       const QDateTime dateTime = value.toDateTime();
       if ( tag == QLatin1String( "Exif.Image.DateTime" ) ||
@@ -504,7 +504,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         actualValue = dateTime.toString( Qt::ISODate );
       }
     }
-    else if ( value.type() == QVariant::Date )
+    else if ( value.userType() == QMetaType::Type::QDate )
     {
       const QDate date = value.toDate();
       if ( tag == QLatin1String( "Exif.GPSInfo.GPSDateStamp" ) )
@@ -516,7 +516,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         actualValue = date.toString( QStringLiteral( "yyyy-MM-dd" ) );
       }
     }
-    else if ( value.type() == QVariant::Time )
+    else if ( value.userType() == QMetaType::Type::QTime )
     {
       const QTime time = value.toTime();
       if ( tag == QLatin1String( "Exif.GPSInfo.GPSTimeStamp" ) )
@@ -548,8 +548,8 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<ushort>( actualValue.toLongLong() );
       }
     }
-    else if ( actualValue.type() == QVariant::Int ||
-              actualValue.type() == QVariant::LongLong )
+    else if ( actualValue.userType() == QMetaType::Type::Int ||
+              actualValue.userType() == QMetaType::Type::LongLong )
     {
       if ( isXmp )
       {
@@ -562,8 +562,8 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<uint32_t>( actualValue.toLongLong() );
       }
     }
-    else if ( actualValue.type() == QVariant::UInt ||
-              actualValue.type() ==  QVariant::ULongLong )
+    else if ( actualValue.userType() == QMetaType::Type::UInt ||
+              actualValue.userType() ==  QMetaType::Type::ULongLong )
     {
       if ( isXmp )
       {
@@ -576,7 +576,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<int32_t>( actualValue.toULongLong() );
       }
     }
-    else if ( actualValue.type() == QVariant::Double )
+    else if ( actualValue.userType() == QMetaType::Type::Double )
     {
       if ( isXmp )
       {

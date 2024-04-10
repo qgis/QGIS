@@ -43,7 +43,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
     return true;
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -54,7 +54,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
     QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
     return mapLayer && ( mapLayer->type() == Qgis::LayerType::Raster );
   }
-  else if ( input.type() == QVariant::List )
+  else if ( input.userType() == QMetaType::Type::QVariantList )
   {
     if ( input.toList().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;;
@@ -65,7 +65,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
       if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( variantLayer ) ) )
         continue;
 
-      if ( variantLayer.type() == QVariant::String )
+      if ( variantLayer.userType() == QMetaType::Type::QString )
       {
         if ( !context )
           return true;
@@ -74,7 +74,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
         if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Raster )
           return false;
       }
-      else if ( variantLayer.type() == QVariant::Map )
+      else if ( variantLayer.userType() == QMetaType::Type::QVariantMap )
       {
         const QVariantMap layerMap = variantLayer.toMap();
 
@@ -100,7 +100,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
     }
     return true;
   }
-  else if ( input.type() == QVariant::StringList )
+  else if ( input.userType() == QMetaType::Type::QStringList )
   {
     const auto constToStringList = input.toStringList();
     if ( constToStringList.isEmpty() )
@@ -173,23 +173,23 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
     items << variantMapAsItem( vm, context );
   }
 
-  if ( layersVariant.type() == QVariant::String )
+  if ( layersVariant.userType() == QMetaType::Type::QString )
   {
     QVariantMap vm;
     vm["inputFile"] = layersVariant;
     items << variantMapAsItem( vm, context );
   }
-  else if ( layersVariant.type() == QVariant::List )
+  else if ( layersVariant.userType() == QMetaType::Type::QVariantList )
   {
     const QVariantList layersVariantList = layersVariant.toList();
     for ( const QVariant &layerItem : layersVariantList )
     {
-      if ( layerItem.type() == QVariant::Map )
+      if ( layerItem.userType() == QMetaType::Type::QVariantMap )
       {
         const QVariantMap layerVariantMap = layerItem.toMap();
         items << variantMapAsItem( layerVariantMap, context );
       }
-      else if ( layerItem.type() == QVariant::String )
+      else if ( layerItem.userType() == QMetaType::Type::QString )
       {
         QVariantMap vm;
         vm["inputFile"] = layerItem;
@@ -197,7 +197,7 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
       }
     }
   }
-  else if ( layersVariant.type() == QVariant::StringList )
+  else if ( layersVariant.userType() == QMetaType::Type::QStringList )
   {
     const auto layersStringList = layersVariant.toStringList();
     for ( const QString &layerItem : layersStringList )
@@ -207,7 +207,7 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
       items << variantMapAsItem( vm, context );
     }
   }
-  else if ( layersVariant.type() == QVariant::Map )
+  else if ( layersVariant.userType() == QMetaType::Type::QVariantMap )
   {
     const QVariantMap layerVariantMap = layersVariant.toMap();
     items << variantMapAsItem( layerVariantMap, context );

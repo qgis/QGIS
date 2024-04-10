@@ -111,20 +111,20 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
     return true;
 
   bool ok;
-  const QVariant::Type type = static_cast<QVariant::Type>( typeVar.toInt( &ok ) );
+  const QMetaType::Type type = static_cast<QMetaType::Type>( typeVar.toInt( &ok ) );
   if ( !ok )
     return true;
 
-  if ( ( mFilters.testFlag( String ) && type == QVariant::String ) ||
-       ( mFilters.testFlag( LongLong ) && type == QVariant::LongLong ) ||
-       ( mFilters.testFlag( Int ) && type == QVariant::Int ) ||
-       ( mFilters.testFlag( Double ) && type == QVariant::Double ) ||
-       ( mFilters.testFlag( Date ) && type == QVariant::Date ) ||
-       ( mFilters.testFlag( Date ) && type == QVariant::DateTime ) ||
-       ( mFilters.testFlag( DateTime ) && type == QVariant::DateTime ) ||
-       ( mFilters.testFlag( Time ) && type == QVariant::Time ) ||
-       ( mFilters.testFlag( Binary ) && type == QVariant::ByteArray ) ||
-       ( mFilters.testFlag( Boolean ) && type == QVariant::Bool ) )
+  if ( ( mFilters.testFlag( String ) && type == QMetaType::Type::QString ) ||
+       ( mFilters.testFlag( LongLong ) && type == QMetaType::Type::LongLong ) ||
+       ( mFilters.testFlag( Int ) && type == QMetaType::Type::Int ) ||
+       ( mFilters.testFlag( Double ) && type == QMetaType::Type::Double ) ||
+       ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDate ) ||
+       ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDateTime ) ||
+       ( mFilters.testFlag( DateTime ) && type == QMetaType::Type::QDateTime ) ||
+       ( mFilters.testFlag( Time ) && type == QMetaType::Type::QTime ) ||
+       ( mFilters.testFlag( Binary ) && type == QMetaType::Type::QByteArray ) ||
+       ( mFilters.testFlag( Boolean ) && type == QMetaType::Type::Bool ) )
     return true;
 
   return false;

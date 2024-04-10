@@ -452,7 +452,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
   {
     if ( context.layer()
          && context.layer()->fields().lookupField( fieldName ) >= 0
-         && context.layer()->fields().at( context.layer()->fields().lookupField( fieldName ) ).type() != QVariant::DateTime )
+         && context.layer()->fields().at( context.layer()->fields().lookupField( fieldName ) ).type() != QMetaType::Type::QDateTime )
     {
       return QStringLiteral( "to_datetime( %1 )" ) .arg( QgsExpression::quotedColumnRef( fieldName ) );
     }
@@ -643,7 +643,7 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
 
   for ( const QgsField &field : fields )
   {
-    if ( field.type() != QVariant::Date && field.type() != QVariant::DateTime )
+    if ( field.type() != QMetaType::Type::QDate && field.type() != QMetaType::Type::QDateTime )
       continue;
 
     if ( !foundStart )
@@ -681,7 +681,7 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
     // loop again, looking for likely "single field" candidates
     for ( const QgsField &field : fields )
     {
-      if ( field.type() != QVariant::Date && field.type() != QVariant::DateTime )
+      if ( field.type() != QMetaType::Type::QDate && field.type() != QMetaType::Type::QDateTime )
         continue;
 
       for ( const QString &candidate : sSingleFieldCandidates )

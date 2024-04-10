@@ -61,7 +61,7 @@ class CORE_EXPORT QgsFieldDomain
      */
     QgsFieldDomain( const QString &name,
                     const QString &description,
-                    QVariant::Type fieldType );
+                    QMetaType::Type fieldType );
 
     virtual ~QgsFieldDomain();
 
@@ -113,14 +113,14 @@ class CORE_EXPORT QgsFieldDomain
      *
      * \see setFieldType()
      */
-    QVariant::Type fieldType() const { return mFieldType; }
+    QMetaType::Type fieldType() const { return mFieldType; }
 
     /**
      * Sets the associated field \a type.
      *
      * \see fieldType()
      */
-    void setFieldType( QVariant::Type type ) { mFieldType = type; }
+    void setFieldType( QMetaType::Type type ) { mFieldType = type; }
 
     /**
      * Returns the split policy.
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsFieldDomain
     QString mName;
     QString mDescription;
 
-    QVariant::Type mFieldType = QVariant::Type::String;
+    QMetaType::Type mFieldType = QMetaType::Type::QString;
     Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::DefaultValue;
     Qgis::FieldDomainMergePolicy mMergePolicy = Qgis::FieldDomainMergePolicy::DefaultValue;
 
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
      */
     QgsCodedFieldDomain( const QString &name,
                          const QString &description,
-                         QVariant::Type fieldType,
+                         QMetaType::Type fieldType,
                          const QList<QgsCodedValue> &values );
 
 #ifndef SIP_RUN
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      */
     QgsRangeFieldDomain( const QString &name,
                          const QString &description,
-                         QVariant::Type fieldType,
+                         QMetaType::Type fieldType,
                          const QVariant &minimum,
                          bool minimumIsInclusive,
                          const QVariant &maximum,
@@ -431,7 +431,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
      */
     QgsGlobFieldDomain( const QString &name,
                         const QString &description,
-                        QVariant::Type fieldType,
+                        QMetaType::Type fieldType,
                         const QString &glob );
 
 #ifndef SIP_RUN

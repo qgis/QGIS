@@ -154,7 +154,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
           childIndex = 3;
 
         const QVariant childNode = node.at( childIndex );
-        if ( childNode.type() == QVariant::List )
+        if ( childNode.userType() == QMetaType::Type::QVariantList )
         {
           node = childNode.toList();
           column = tile.column() * 2;

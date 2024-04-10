@@ -271,7 +271,7 @@ QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParame
   {
     if ( val.userType() == QMetaType::type( "QgsProperty" ) )
       resultList << val.value< QgsProperty >().valueAsInt( context.expressionContext(), definition->defaultValue().toInt() );
-    else if ( val.type() == QVariant::List )
+    else if ( val.userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList list = val.toList();
       for ( auto it = list.constBegin(); it != list.constEnd(); ++it )
@@ -290,7 +290,7 @@ QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParame
     // check default
     if ( definition->defaultValue().isValid() )
     {
-      if ( definition->defaultValue().type() == QVariant::List )
+      if ( definition->defaultValue().userType() == QMetaType::Type::QVariantList )
       {
         const QVariantList list = definition->defaultValue().toList();
         for ( auto it = list.constBegin(); it != list.constEnd(); ++it )
@@ -326,7 +326,7 @@ QDateTime QgsProcessingParameters::parameterAsDateTime( const QgsProcessingParam
     val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
 
   QDateTime d = val.toDateTime();
-  if ( !d.isValid() && val.type() == QVariant::String )
+  if ( !d.isValid() && val.userType() == QMetaType::Type::QString )
   {
     d = QDateTime::fromString( val.toString() );
   }
@@ -337,7 +337,7 @@ QDateTime QgsProcessingParameters::parameterAsDateTime( const QgsProcessingParam
     val = definition->defaultValue();
     d = val.toDateTime();
   }
-  if ( !d.isValid() && val.type() == QVariant::String )
+  if ( !d.isValid() && val.userType() == QMetaType::Type::QString )
   {
     d = QDateTime::fromString( val.toString() );
   }
@@ -363,7 +363,7 @@ QDate QgsProcessingParameters::parameterAsDate( const QgsProcessingParameterDefi
     val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
 
   QDate d = val.toDate();
-  if ( !d.isValid() && val.type() == QVariant::String )
+  if ( !d.isValid() && val.userType() == QMetaType::Type::QString )
   {
     d = QDate::fromString( val.toString() );
   }
@@ -374,7 +374,7 @@ QDate QgsProcessingParameters::parameterAsDate( const QgsProcessingParameterDefi
     val = definition->defaultValue();
     d = val.toDate();
   }
-  if ( !d.isValid() && val.type() == QVariant::String )
+  if ( !d.isValid() && val.userType() == QMetaType::Type::QString )
   {
     d = QDate::fromString( val.toString() );
   }
@@ -401,12 +401,12 @@ QTime QgsProcessingParameters::parameterAsTime( const QgsProcessingParameterDefi
 
   QTime d;
 
-  if ( val.type() == QVariant::DateTime )
+  if ( val.userType() == QMetaType::Type::QDateTime )
     d = val.toDateTime().time();
   else
     d = val.toTime();
 
-  if ( !d.isValid() && val.type() == QVariant::String )
+  if ( !d.isValid() && val.userType() == QMetaType::Type::QString )
   {
     d = QTime::fromString( val.toString() );
   }
@@ -417,7 +417,7 @@ QTime QgsProcessingParameters::parameterAsTime( const QgsProcessingParameterDefi
     val = definition->defaultValue();
     d = val.toTime();
   }
-  if ( !d.isValid() && val.type() == QVariant::String )
+  if ( !d.isValid() && val.userType() == QMetaType::Type::QString )
   {
     d = QTime::fromString( val.toString() );
   }
@@ -464,13 +464,13 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   const QVariant val = value;
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )
     resultList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  else if ( val.type() == QVariant::List )
+  else if ( val.userType() == QMetaType::Type::QVariantList )
   {
     const auto constToList = val.toList();
     for ( const QVariant &var : constToList )
       resultList << var;
   }
-  else if ( val.type() == QVariant::String )
+  else if ( val.userType() == QMetaType::Type::QString )
   {
     const auto constSplit = val.toString().split( ',' );
     for ( const QString &var : constSplit )
@@ -486,13 +486,13 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   {
     resultList.clear();
     // check default
-    if ( definition->defaultValue().type() == QVariant::List )
+    if ( definition->defaultValue().userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = definition->defaultValue().toList();
       for ( const QVariant &var : constToList )
         resultList << var;
     }
-    else if ( definition->defaultValue().type() == QVariant::String )
+    else if ( definition->defaultValue().userType() == QMetaType::Type::QString )
     {
       const auto constSplit = definition->defaultValue().toString().split( ',' );
       for ( const QString &var : constSplit )
@@ -557,7 +557,7 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
   std::function< void( const QVariant &var ) > processVariant;
   processVariant = [ &enumValues, &context, &definition, &processVariant ]( const QVariant & var )
   {
-    if ( var.type() == QVariant::List )
+    if ( var.userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = var.toList();
       for ( const QVariant &listVar : constToList )
@@ -565,7 +565,7 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
         processVariant( listVar );
       }
     }
-    else if ( var.type() == QVariant::StringList )
+    else if ( var.userType() == QMetaType::Type::QStringList )
     {
       const auto constToStringList = var.toStringList();
       for ( const QString &s : constToStringList )
@@ -1730,7 +1730,7 @@ QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingPara
   const QVariant val = value;
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )
     resultString = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  else if ( val.type() == QVariant::List )
+  else if ( val.userType() == QMetaType::Type::QVariantList )
     return val.toList();
   else
     resultString = val.toString();
@@ -1738,7 +1738,7 @@ QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingPara
   if ( resultString.isEmpty() )
   {
     // check default
-    if ( definition->defaultValue().type() == QVariant::List )
+    if ( definition->defaultValue().userType() == QMetaType::Type::QVariantList )
       return definition->defaultValue().toList();
     else
       resultString = definition->defaultValue().toString();
@@ -1781,7 +1781,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   std::function< void( const QVariant &var ) > processVariant;
   processVariant = [ &layers, &context, &definition, flags, &processVariant]( const QVariant & var )
   {
-    if ( var.type() == QVariant::List )
+    if ( var.userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = var.toList();
       for ( const QVariant &listVar : constToList )
@@ -1789,7 +1789,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
         processVariant( listVar );
       }
     }
-    else if ( var.type() == QVariant::StringList )
+    else if ( var.userType() == QMetaType::Type::QStringList )
     {
       const auto constToStringList = var.toStringList();
       for ( const QString &s : constToStringList )
@@ -1830,7 +1830,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     {
       layers << layer;
     }
-    else if ( definition->defaultValue().type() == QVariant::List )
+    else if ( definition->defaultValue().userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = definition->defaultValue().toList();
       for ( const QVariant &var : constToList )
@@ -1864,7 +1864,7 @@ QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingPar
   std::function< void( const QVariant &var ) > processVariant;
   processVariant = [ &files, &context, &definition, &processVariant ]( const QVariant & var )
   {
-    if ( var.type() == QVariant::List )
+    if ( var.userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = var.toList();
       for ( const QVariant &listVar : constToList )
@@ -1872,7 +1872,7 @@ QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingPar
         processVariant( listVar );
       }
     }
-    else if ( var.type() == QVariant::StringList )
+    else if ( var.userType() == QMetaType::Type::QStringList )
     {
       const auto constToStringList = var.toStringList();
       for ( const QString &s : constToStringList )
@@ -1924,7 +1924,7 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
 
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )
     resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  else if ( val.type() == QVariant::List )
+  else if ( val.userType() == QMetaType::Type::QVariantList )
   {
     const auto constToList = val.toList();
     for ( const QVariant &var : constToList )
@@ -1937,7 +1937,7 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
   {
     resultStringList.clear();
     // check default
-    if ( definition->defaultValue().type() == QVariant::List )
+    if ( definition->defaultValue().userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = definition->defaultValue().toList();
       for ( const QVariant &var : constToList )
@@ -2004,13 +2004,13 @@ QStringList QgsProcessingParameters::parameterAsStrings( const QgsProcessingPara
   {
     if ( val.userType() == QMetaType::type( "QgsProperty" ) )
       resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-    else if ( val.type() == QVariant::List )
+    else if ( val.userType() == QMetaType::Type::QVariantList )
     {
       const auto constToList = val.toList();
       for ( const QVariant &var : constToList )
         resultStringList << var.toString();
     }
-    else if ( val.type() == QVariant::StringList )
+    else if ( val.userType() == QMetaType::Type::QStringList )
     {
       resultStringList = val.toStringList();
     }
@@ -2024,13 +2024,13 @@ QStringList QgsProcessingParameters::parameterAsStrings( const QgsProcessingPara
     // check default
     if ( definition->defaultValue().isValid() )
     {
-      if ( definition->defaultValue().type() == QVariant::List )
+      if ( definition->defaultValue().userType() == QMetaType::Type::QVariantList )
       {
         const auto constToList = definition->defaultValue().toList();
         for ( const QVariant &var : constToList )
           resultStringList << var.toString();
       }
-      else if ( definition->defaultValue().type() == QVariant::StringList )
+      else if ( definition->defaultValue().userType() == QMetaType::Type::QStringList )
       {
         resultStringList = definition->defaultValue().toStringList();
       }
@@ -2110,7 +2110,7 @@ QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDe
   {
     val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
   }
-  if ( val.type() == QVariant::Color )
+  if ( val.userType() == QMetaType::Type::QColor )
   {
     QColor c = val.value< QColor >();
     if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
@@ -2122,7 +2122,7 @@ QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDe
   QString colorText = parameterAsString( definition, value, context );
   if ( colorText.isEmpty() && !( definition->flags() & Qgis::ProcessingParameterFlag::Optional ) )
   {
-    if ( definition->defaultValue().type() == QVariant::Color )
+    if ( definition->defaultValue().userType() == QMetaType::Type::QColor )
       return definition->defaultValue().value< QColor >();
     else
       colorText = definition->defaultValue().toString();
@@ -2492,8 +2492,8 @@ bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &i
   if ( !input.isValid() && !mDefault.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
-       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+  if ( ( input.userType() == QMetaType::Type::QString && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.userType() == QMetaType::Type::QString && mDefault.toString().isEmpty() ) )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   return true;
@@ -2521,7 +2521,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
     return value;
 
   // dive into map and list types and convert each value
-  if ( value.type() == QVariant::Type::Map )
+  if ( value.userType() == QMetaType::Type::QVariantMap )
   {
     const QVariantMap sourceMap = value.toMap();
     QVariantMap resultMap;
@@ -2531,7 +2531,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
     }
     return resultMap;
   }
-  else if ( value.type() == QVariant::Type::List || value.type() == QVariant::Type::StringList )
+  else if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
   {
     const QVariantList sourceList = value.toList();
     QVariantList resultList;
@@ -2897,7 +2897,7 @@ QStringList QgsProcessingParameterDefinition::valueAsStringList( const QVariant 
   if ( !value.isValid( ) )
     return QStringList();
 
-  if ( value.type() == QVariant::Type::List || value.type() == QVariant::Type::StringList )
+  if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
   {
     const QVariantList sourceList = value.toList();
     QStringList resultList;
@@ -3092,7 +3092,7 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &v, QgsPr
   if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
     return true;
 
-  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+  if ( input.userType() != QMetaType::Type::QString || input.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   return true;
@@ -3205,7 +3205,7 @@ bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &v, 
     return true;
   }
 
-  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+  if ( input.userType() != QMetaType::Type::QString || input.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -3512,7 +3512,7 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &v, Qg
   if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
     return true;
 
-  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+  if ( input.userType() != QMetaType::Type::QString || input.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -3639,7 +3639,7 @@ bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &v, Qgs
     return true;
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -3763,7 +3763,7 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &v, 
     return anyTypeAllowed || mGeomTypes.contains( static_cast< int >( Qgis::GeometryType::Polygon ) );
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -4002,7 +4002,7 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &v, QgsP
 
   const QString string = input.toString().trimmed();
 
-  if ( input.type() != QVariant::String || string.isEmpty() )
+  if ( input.userType() != QMetaType::Type::QString || string.isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   switch ( mBehavior )
@@ -4148,19 +4148,19 @@ bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &v, Qg
     input = defaultValue();
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
     return true;
   }
-  else if ( input.type() == QVariant::List )
+  else if ( input.userType() == QMetaType::Type::QVariantList )
   {
     if ( input.toList().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
     return true;
   }
-  else if ( input.type() == QVariant::Double || input.type() == QVariant::Int )
+  else if ( input.userType() == QMetaType::Type::Double || input.userType() == QMetaType::Type::Int )
   {
     return true;
   }
@@ -4294,7 +4294,7 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     }
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -4310,7 +4310,7 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     else
       return true;
   }
-  else if ( input.type() == QVariant::List )
+  else if ( input.userType() == QMetaType::Type::QVariantList )
   {
     if ( input.toList().count() < mMinimumNumberInputs )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -4335,7 +4335,7 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     }
     return true;
   }
-  else if ( input.type() == QVariant::StringList )
+  else if ( input.userType() == QMetaType::Type::QStringList )
   {
     if ( input.toStringList().count() < mMinimumNumberInputs )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -4371,14 +4371,14 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   if ( mLayerType == Qgis::ProcessingSourceType::File )
   {
     QStringList parts;
-    if ( value.type() == QVariant::StringList )
+    if ( value.userType() == QMetaType::Type::QStringList )
     {
       const QStringList list = value.toStringList();
       parts.reserve( list.count() );
       for ( const QString &v : list )
         parts <<  QgsProcessingUtils::stringToPythonLiteral( v );
     }
-    else if ( value.type() == QVariant::List )
+    else if ( value.userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList list = value.toList();
       parts.reserve( list.count() );
@@ -4438,7 +4438,7 @@ QString QgsProcessingParameterMultipleLayers::asScriptCode() const
       break;
   }
   code += ' ';
-  if ( mDefault.type() == QVariant::List )
+  if ( mDefault.userType() == QMetaType::Type::QVariantList )
   {
     QStringList parts;
     const auto constToList = mDefault.toList();
@@ -4448,7 +4448,7 @@ QString QgsProcessingParameterMultipleLayers::asScriptCode() const
     }
     code += parts.join( ',' );
   }
-  else if ( mDefault.type() == QVariant::StringList )
+  else if ( mDefault.userType() == QMetaType::Type::QStringList )
   {
     code += mDefault.toStringList().join( ',' );
   }
@@ -4746,7 +4746,7 @@ bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &v, Qgs
     return true;
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     const QStringList list = input.toString().split( ',' );
     if ( list.count() != 2 )
@@ -4759,7 +4759,7 @@ bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &v, Qgs
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
     return true;
   }
-  else if ( input.type() == QVariant::List )
+  else if ( input.userType() == QMetaType::Type::QVariantList )
   {
     if ( input.toList().count() != 2 )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -4878,7 +4878,7 @@ bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &
   if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( input ) ) )
     return true;
 
-  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+  if ( input.userType() != QMetaType::Type::QString || input.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -4961,7 +4961,7 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
 
   if ( mUsesStaticStrings )
   {
-    if ( input.type() == QVariant::List )
+    if ( input.userType() == QMetaType::Type::QVariantList )
     {
       if ( !mAllowMultiple )
         return false;
@@ -4978,7 +4978,7 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
 
       return true;
     }
-    else if ( input.type() == QVariant::StringList )
+    else if ( input.userType() == QMetaType::Type::QStringList )
     {
       if ( !mAllowMultiple )
         return false;
@@ -4998,7 +4998,7 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
       }
       return true;
     }
-    else if ( input.type() == QVariant::String )
+    else if ( input.userType() == QMetaType::Type::QString )
     {
       const QStringList parts = input.toString().split( ',' );
       if ( parts.count() > 1 && !mAllowMultiple )
@@ -5015,7 +5015,7 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
   }
   else
   {
-    if ( input.type() == QVariant::List )
+    if ( input.userType() == QMetaType::Type::QVariantList )
     {
       if ( !mAllowMultiple )
         return false;
@@ -5036,7 +5036,7 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
 
       return true;
     }
-    else if ( input.type() == QVariant::String )
+    else if ( input.userType() == QMetaType::Type::QString )
     {
       const QStringList parts = input.toString().split( ',' );
       if ( parts.count() > 1 && !mAllowMultiple )
@@ -5054,7 +5054,7 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
       }
       return true;
     }
-    else if ( input.type() == QVariant::Int || input.type() == QVariant::Double )
+    else if ( input.userType() == QMetaType::Type::Int || input.userType() == QMetaType::Type::Double )
     {
       bool ok = false;
       const int res = input.toInt( &ok );
@@ -5078,7 +5078,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
 
   if ( mUsesStaticStrings )
   {
-    if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+    if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
     {
       QStringList parts;
       const QStringList constList = value.toStringList();
@@ -5088,7 +5088,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
       }
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
-    else if ( value.type() == QVariant::String )
+    else if ( value.userType() == QMetaType::Type::QString )
     {
       QStringList parts;
       const QStringList constList = value.toString().split( ',' );
@@ -5106,7 +5106,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
   }
   else
   {
-    if ( value.type() == QVariant::List )
+    if ( value.userType() == QMetaType::Type::QVariantList )
     {
       QStringList parts;
       const auto constToList = value.toList();
@@ -5116,7 +5116,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
       }
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
-    else if ( value.type() == QVariant::String )
+    else if ( value.userType() == QMetaType::Type::QString )
     {
       const QStringList parts = value.toString().split( ',' );
       if ( parts.count() > 1 )
@@ -5143,7 +5143,7 @@ QString QgsProcessingParameterEnum::valueAsPythonComment( const QVariant &value,
   }
   else
   {
-    if ( value.type() == QVariant::List )
+    if ( value.userType() == QMetaType::Type::QVariantList )
     {
       QStringList parts;
       const QVariantList toList = value.toList();
@@ -5154,7 +5154,7 @@ QString QgsProcessingParameterEnum::valueAsPythonComment( const QVariant &value,
       }
       return parts.join( ',' );
     }
-    else if ( value.type() == QVariant::String )
+    else if ( value.userType() == QMetaType::Type::QString )
     {
       const QStringList parts = value.toString().split( ',' );
       QStringList comments;
@@ -5612,7 +5612,7 @@ bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &
   if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( var ) ) )
     return true;
 
-  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+  if ( var.userType() != QMetaType::Type::QString || var.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -5764,7 +5764,7 @@ bool QgsProcessingParameterMeshLayer::checkValueIsAcceptable( const QVariant &v,
   if ( qobject_cast< QgsMeshLayer * >( qvariant_cast<QObject *>( var ) ) )
     return true;
 
-  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+  if ( var.userType() != QMetaType::Type::QString || var.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -5847,7 +5847,7 @@ bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &v, Qgs
     return true;
   }
 
-  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  if ( input.userType() == QMetaType::Type::QVariantList || input.userType() == QMetaType::Type::QStringList )
   {
     if ( !mAllowMultiple )
       return false;
@@ -5855,7 +5855,7 @@ bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &v, Qgs
     if ( input.toList().isEmpty() && !( mFlags & Qgis::ProcessingParameterFlag::Optional ) )
       return false;
   }
-  else if ( input.type() == QVariant::String )
+  else if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -5880,7 +5880,7 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  if ( value.type() == QVariant::List )
+  if ( value.userType() == QMetaType::Type::QVariantList )
   {
     QStringList parts;
     const auto constToList = value.toList();
@@ -5890,7 +5890,7 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
-  else if ( value.type() == QVariant::StringList )
+  else if ( value.userType() == QMetaType::Type::QStringList )
   {
     QStringList parts;
     const auto constToStringList = value.toStringList();
@@ -6187,7 +6187,7 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
     return true;
   }
 
-  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+  if ( var.userType() != QMetaType::Type::QString || var.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -6469,7 +6469,7 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )
@@ -6758,7 +6758,7 @@ bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVar
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )
@@ -6887,7 +6887,7 @@ bool QgsProcessingParameterFileDestination::checkValueIsAcceptable( const QVaria
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )
@@ -7039,7 +7039,7 @@ bool QgsProcessingParameterFolderDestination::checkValueIsAcceptable( const QVar
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )
@@ -7198,7 +7198,7 @@ bool QgsProcessingParameterVectorDestination::checkValueIsAcceptable( const QVar
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )
@@ -7444,7 +7444,7 @@ bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &value, 
     return true;
   }
 
-  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  if ( input.userType() == QMetaType::Type::QVariantList || input.userType() == QMetaType::Type::QStringList )
   {
     if ( !mAllowMultiple )
       return false;
@@ -7481,7 +7481,7 @@ QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, 
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  if ( value.type() == QVariant::List )
+  if ( value.userType() == QMetaType::Type::QVariantList )
   {
     QStringList parts;
     const QVariantList values = value.toList();
@@ -7491,7 +7491,7 @@ QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, 
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
-  else if ( value.type() == QVariant::StringList )
+  else if ( value.userType() == QMetaType::Type::QStringList )
   {
     QStringList parts;
     const QStringList values = value.toStringList();
@@ -8076,7 +8076,7 @@ bool QgsProcessingParameterColor::checkValueIsAcceptable( const QVariant &input,
   if ( !input.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( input.type() == QVariant::Color )
+  if ( input.userType() == QMetaType::Type::QColor )
   {
     return true;
   }
@@ -8085,7 +8085,7 @@ bool QgsProcessingParameterColor::checkValueIsAcceptable( const QVariant &input,
     return true;
   }
 
-  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+  if ( input.userType() != QMetaType::Type::QString || input.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   bool containsAlpha = false;
@@ -8290,8 +8290,8 @@ bool QgsProcessingParameterMapTheme::checkValueIsAcceptable( const QVariant &inp
   if ( !input.isValid() && !mDefault.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
-       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+  if ( ( input.userType() == QMetaType::Type::QString && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.userType() == QMetaType::Type::QString && mDefault.toString().isEmpty() ) )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   return true;
@@ -8405,13 +8405,13 @@ bool QgsProcessingParameterDateTime::checkValueIsAcceptable( const QVariant &val
     return true;
   }
 
-  if ( input.type() != QVariant::DateTime && input.type() != QVariant::Date && input.type() != QVariant::Time && input.type() != QVariant::String )
+  if ( input.userType() != QMetaType::Type::QDateTime && input.userType() != QMetaType::Type::QDate && input.userType() != QMetaType::Type::QTime && input.userType() != QMetaType::Type::QString )
     return false;
 
-  if ( ( input.type() == QVariant::DateTime || input.type() == QVariant::Date ) && mDataType == Qgis::ProcessingDateTimeParameterDataType::Time )
+  if ( ( input.userType() == QMetaType::Type::QDateTime || input.userType() == QMetaType::Type::QDate ) && mDataType == Qgis::ProcessingDateTimeParameterDataType::Time )
     return false;
 
-  if ( input.type() == QVariant::String )
+  if ( input.userType() == QMetaType::Type::QString )
   {
     const QString s = input.toString();
     if ( s.isEmpty() )
@@ -8447,7 +8447,7 @@ QString QgsProcessingParameterDateTime::valueAsPythonString( const QVariant &val
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  if ( value.type() == QVariant::DateTime )
+  if ( value.userType() == QMetaType::Type::QDateTime )
   {
     const QDateTime dt = value.toDateTime();
     if ( !dt.isValid() )
@@ -8460,7 +8460,7 @@ QString QgsProcessingParameterDateTime::valueAsPythonString( const QVariant &val
              .arg( dt.time().minute() )
              .arg( dt.time().second() );
   }
-  else if ( value.type() == QVariant::Date )
+  else if ( value.userType() == QMetaType::Type::QDate )
   {
     const QDate dt = value.toDate();
     if ( !dt.isValid() )
@@ -8470,7 +8470,7 @@ QString QgsProcessingParameterDateTime::valueAsPythonString( const QVariant &val
              .arg( dt.month() )
              .arg( dt.day() );
   }
-  else if ( value.type() == QVariant::Time )
+  else if ( value.userType() == QMetaType::Type::QTime )
   {
     const QTime dt = value.toTime();
     if ( !dt.isValid() )
@@ -8606,8 +8606,8 @@ bool QgsProcessingParameterProviderConnection::checkValueIsAcceptable( const QVa
   if ( !input.isValid() && !mDefault.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
-       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+  if ( ( input.userType() == QMetaType::Type::QString && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.userType() == QMetaType::Type::QString && mDefault.toString().isEmpty() ) )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   return true;
@@ -8721,8 +8721,8 @@ bool QgsProcessingParameterDatabaseSchema::checkValueIsAcceptable( const QVarian
   if ( !input.isValid() && !mDefault.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
-       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+  if ( ( input.userType() == QMetaType::Type::QString && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.userType() == QMetaType::Type::QString && mDefault.toString().isEmpty() ) )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   return true;
@@ -8855,8 +8855,8 @@ bool QgsProcessingParameterDatabaseTable::checkValueIsAcceptable( const QVariant
   if ( !input.isValid() && !mDefault.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
-       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+  if ( ( input.userType() == QMetaType::Type::QString && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.userType() == QMetaType::Type::QString && mDefault.toString().isEmpty() ) )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   return true;
@@ -9037,7 +9037,7 @@ bool QgsProcessingParameterPointCloudLayer::checkValueIsAcceptable( const QVaria
   if ( qobject_cast< QgsPointCloudLayer * >( qvariant_cast<QObject *>( var ) ) )
     return true;
 
-  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+  if ( var.userType() != QMetaType::Type::QString || var.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -9130,7 +9130,7 @@ bool QgsProcessingParameterAnnotationLayer::checkValueIsAcceptable( const QVaria
   if ( qobject_cast< QgsAnnotationLayer * >( qvariant_cast<QObject *>( var ) ) )
     return true;
 
-  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+  if ( var.userType() != QMetaType::Type::QString || var.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( !context )
@@ -9216,7 +9216,7 @@ bool QgsProcessingParameterPointCloudDestination::checkValueIsAcceptable( const 
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )
@@ -9336,7 +9336,7 @@ bool QgsProcessingParameterPointCloudAttribute::checkValueIsAcceptable( const QV
     return true;
   }
 
-  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  if ( input.userType() == QMetaType::Type::QVariantList || input.userType() == QMetaType::Type::QStringList )
   {
     if ( !mAllowMultiple )
       return false;
@@ -9344,7 +9344,7 @@ bool QgsProcessingParameterPointCloudAttribute::checkValueIsAcceptable( const QV
     if ( input.toList().isEmpty() && !( mFlags & Qgis::ProcessingParameterFlag::Optional ) )
       return false;
   }
-  else if ( input.type() == QVariant::String )
+  else if ( input.userType() == QMetaType::Type::QString )
   {
     if ( input.toString().isEmpty() )
       return mFlags & Qgis::ProcessingParameterFlag::Optional;
@@ -9369,7 +9369,7 @@ QString QgsProcessingParameterPointCloudAttribute::valueAsPythonString( const QV
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  if ( value.type() == QVariant::List )
+  if ( value.userType() == QMetaType::Type::QVariantList )
   {
     QStringList parts;
     const auto constToList = value.toList();
@@ -9379,7 +9379,7 @@ QString QgsProcessingParameterPointCloudAttribute::valueAsPythonString( const QV
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
-  else if ( value.type() == QVariant::StringList )
+  else if ( value.userType() == QMetaType::Type::QStringList )
   {
     QStringList parts;
     const auto constToStringList = value.toStringList();
@@ -9574,7 +9574,7 @@ bool QgsProcessingParameterVectorTileDestination::checkValueIsAcceptable( const 
     }
   }
 
-  if ( var.type() != QVariant::String )
+  if ( var.userType() != QMetaType::Type::QString )
     return false;
 
   if ( var.toString().isEmpty() )

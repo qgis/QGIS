@@ -295,10 +295,10 @@ QVariant QgsVectorLayerGpsLogger::timestamp( QgsVectorLayer *vlayer, int idx, co
     // Only string and datetime fields are supported
     switch ( vlayer->fields().at( idx ).type() )
     {
-      case QVariant::String:
+      case QMetaType::Type::QString:
         value = time.toString( Qt::DateFormat::ISODate );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         value = time;
         break;
       default:
