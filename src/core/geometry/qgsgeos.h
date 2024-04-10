@@ -50,12 +50,6 @@ class CORE_EXPORT QgsGeosContext
 
   private:
     GEOSContextHandle_t mContext = nullptr;
-
-    /**
-     * Thread local GEOS context storage. A new GEOS context will be created
-     * for every thread.
-     */
-    static thread_local QgsGeosContext sGeosContext;
 };
 
 /**

@@ -98,7 +98,7 @@ static void printGEOSNotice( const char *fmt, ... )
 // QgsGeosContext
 //
 
-thread_local QgsGeosContext QgsGeosContext::sGeosContext;
+thread_local QgsGeosContext *sGeosContext = nullptr;
 
 QgsGeosContext::QgsGeosContext()
 {
@@ -118,11 +118,16 @@ QgsGeosContext::~QgsGeosContext()
 #else
   finishGEOS_r( mContext );
 #endif
+  delete sGeosContext;
+  sGeosContext = nullptr;
 }
 
 GEOSContextHandle_t QgsGeosContext::get()
 {
-  return sGeosContext.mContext;
+  if ( !sGeosContext )
+    sGeosContext = new QgsGeosContext();
+
+  return sGeosContext->mContext;
 }
 
 //
