@@ -104,6 +104,17 @@ void QgsQuickMapCanvasMap::refreshMap()
 {
   stopRendering(); // if any...
 
+  if ( mCacheInvalidations.testFlag( CacheInvalidationType::Temporal ) )
+  {
+    clearTemporalCache();
+    mCacheInvalidations &= ~( static_cast< int >( CacheInvalidationType::Temporal ) );
+  }
+  if ( mCacheInvalidations.testFlag( CacheInvalidationType::Elevation ) )
+  {
+    clearElevationCache();
+    mCacheInvalidations &= ~( static_cast< int >( CacheInvalidationType::Elevation ) );
+  }
+
   QgsMapSettings mapSettings = mMapSettings->mapSettings();
   if ( !mapSettings.hasValidSettings() )
     return;
@@ -284,7 +295,7 @@ void QgsQuickMapCanvasMap::onExtentChanged()
 
 void QgsQuickMapCanvasMap::onTemporalStateChanged()
 {
-  clearTemporalCache();
+  mCacheInvalidations |= CacheInvalidationType::Temporal;
 
   // And trigger a new rendering job
   refresh();
@@ -292,7 +303,7 @@ void QgsQuickMapCanvasMap::onTemporalStateChanged()
 
 void QgsQuickMapCanvasMap::onzRangeChanged()
 {
-  clearElevationCache();
+  mCacheInvalidations |= CacheInvalidationType::Elevation;
 
   // And trigger a new rendering job
   refresh();
