@@ -1053,15 +1053,17 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
 
   std::vector< std::unique_ptr<QgsLineString > > linesToProcess;
 
-  const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
-  if ( multiCurve )
+  if ( const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry ) )
   {
     for ( int i = 0; i < multiCurve->partCount(); ++i )
     {
-      if ( static_cast< const QgsCurve * >( multiCurve->geometryN( i ) )->nCoordinates() == 0 )
-        continue; // skip 0 length lines
+      if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( multiCurve->geometryN( i ) ) )
+      {
+        if ( curve->nCoordinates() == 0 )
+          continue; // skip 0 length lines
 
-      linesToProcess.emplace_back( static_cast<QgsLineString *>( multiCurve->geometryN( i )->clone() ) );
+        linesToProcess.emplace_back( qgis::down_cast<QgsLineString *>( curve->segmentize() ) );
+      }
     }
   }
 
@@ -1069,7 +1071,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   if ( curve )
   {
     if ( curve->nCoordinates() > 0 )
-      linesToProcess.emplace_back( static_cast<QgsLineString *>( curve->segmentize() ) );
+      linesToProcess.emplace_back( qgis::down_cast<QgsLineString *>( curve->segmentize() ) );
   }
 
   if ( linesToProcess.empty() )
