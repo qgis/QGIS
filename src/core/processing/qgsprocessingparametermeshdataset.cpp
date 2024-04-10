@@ -118,7 +118,7 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
 
   if ( value.isValid() )
   {
-    if ( value.type() == QVariant::List )
+    if ( value.userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList varList = value.toList();
       for ( const QVariant &v : varList )
@@ -160,7 +160,7 @@ bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant 
   if ( !input.isValid() )
     return allowEmpty;
 
-  if ( input.type() != QVariant::List )
+  if ( input.userType() != QMetaType::Type::QVariantList )
   {
     bool ok = false;
     input.toInt( &ok );
@@ -343,7 +343,7 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( input.toDateTime().isValid() )
     return true;
 
-  if ( input.type() != QVariant::Map )
+  if ( input.userType() != QMetaType::Type::QVariantMap )
     return false;
 
   const QVariantMap map = input.toMap();
@@ -362,17 +362,17 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
 
   if ( type == QLatin1String( "dataset-time-step" ) )
   {
-    if ( value.type() != QVariant::List )
+    if ( value.userType() != QMetaType::Type::QVariantList )
       return false;
     const QVariantList list = value.toList();
     if ( value.toList().count() != 2 )
       return false;
-    if ( list.at( 0 ).type() != QVariant::Int || list.at( 1 ).type() != QVariant::Int )
+    if ( list.at( 0 ).userType() != QMetaType::Type::Int || list.at( 1 ).userType() != QMetaType::Type::Int )
       return false;
   }
   else if ( type == QLatin1String( "defined-date-time" ) )
   {
-    if ( value.type() != QVariant::DateTime )
+    if ( value.userType() != QMetaType::Type::QDateTime )
       return false;
   }
   else

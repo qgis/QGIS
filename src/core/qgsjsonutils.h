@@ -363,7 +363,7 @@ class CORE_EXPORT QgsJsonUtils
      *        the array items will be converted to the type, and discarded if
      *        the conversion is not possible.
      */
-    Q_INVOKABLE static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
+    Q_INVOKABLE static QVariantList parseArray( const QString &json, QMetaType::Type type = QMetaType::Type::UnknownType );
 
     /**
      * Parses a GeoJSON "geometry" value to a QgsGeometry object.

@@ -476,7 +476,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     struct NativeType
     {
-      NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid )
+      NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType )
         : mTypeDesc( typeDesc )
         , mTypeName( typeName )
         , mType( type )
@@ -489,12 +489,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
       QString mTypeDesc;
       QString mTypeName;
-      QVariant::Type mType;
+      QMetaType::Type mType;
       int mMinLen;
       int mMaxLen;
       int mMinPrec;
       int mMaxPrec;
-      QVariant::Type mSubType;
+      QMetaType::Type mSubType;
     };
 
     /**
@@ -560,7 +560,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
-    static QVariant convertValue( QVariant::Type type, const QString &value );
+    static QVariant convertValue( QMetaType::Type type, const QString &value );
 
     /**
      * Returns the transaction this data provider is included in, if any.

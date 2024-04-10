@@ -485,17 +485,17 @@ QString QgsSQLStatement::NodeLiteral::dump() const
   if ( QgsVariantUtils::isNull( mValue ) )
     return QStringLiteral( "NULL" );
 
-  switch ( mValue.type() )
+  switch ( mValue.userType() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       return QString::number( mValue.toInt() );
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       return QString::number( mValue.toLongLong() );
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return QString::number( mValue.toDouble() );
-    case QVariant::String:
+    case QMetaType::Type::QString:
       return quotedString( mValue.toString() );
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return mValue.toBool() ? "TRUE" : "FALSE";
     default:
       return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );

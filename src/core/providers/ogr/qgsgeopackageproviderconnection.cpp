@@ -538,7 +538,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
 
   if ( ! pkname.isEmpty() )
   {
-    fieldList.append( QgsField{ pkname, QVariant::LongLong } );
+    fieldList.append( QgsField{ pkname, QMetaType::Type::LongLong } );
   }
 
   QgsVectorLayer::LayerOptions options { false, true };
@@ -560,7 +560,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
       const auto results = executeSql( sql );
       if ( ! results.isEmpty() )
       {
-        fieldList.append( QgsField{ results.first().first().toString(), QVariant::String, QStringLiteral( "geometry" ) } );
+        fieldList.append( QgsField{ results.first().first().toString(), QMetaType::Type::QString, QStringLiteral( "geometry" ) } );
       }
     }
     catch ( QgsProviderConnectionException &ex )

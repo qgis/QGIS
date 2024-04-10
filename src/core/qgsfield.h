@@ -57,7 +57,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( bool isDateOrTime READ isDateOrTime )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
-    Q_PROPERTY( QVariant::Type type READ type WRITE setType )
+    Q_PROPERTY( QMetaType::Type type READ type WRITE setType )
     Q_PROPERTY( QString comment READ comment WRITE setComment )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
@@ -84,12 +84,12 @@ class CORE_EXPORT QgsField
      *                this to QVariant::Invalid.
      */
     QgsField( const QString &name = QString(),
-              QVariant::Type type = QVariant::Invalid,
+              QMetaType::Type type = QMetaType::Type::UnknownType,
               const QString &typeName = QString(),
               int len = 0,
               int prec = 0,
               const QString &comment = QString(),
-              QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL;
+              QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
 
     /**
      * Copy constructor
@@ -159,14 +159,14 @@ class CORE_EXPORT QgsField
     QString friendlyTypeString() const SIP_HOLDGIL;
 
     //! Gets variant type of the field as it will be retrieved from data source
-    QVariant::Type type() const SIP_HOLDGIL;
+    QMetaType::Type type() const SIP_HOLDGIL;
 
     /**
      * If the field is a collection, gets its element's type.
      * When all the elements don't need to have the same type, this returns
      * QVariant::Invalid.
      */
-    QVariant::Type subType() const SIP_HOLDGIL;
+    QMetaType::Type subType() const SIP_HOLDGIL;
 
     /**
      * Gets the field type. Field types vary depending on the data source. Examples
@@ -267,14 +267,14 @@ class CORE_EXPORT QgsField
     /**
      * Set variant type.
      */
-    void setType( QVariant::Type type ) SIP_HOLDGIL;
+    void setType( QMetaType::Type type ) SIP_HOLDGIL;
 
     /**
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
      */
-    void setSubType( QVariant::Type subType ) SIP_HOLDGIL;
+    void setSubType( QMetaType::Type subType ) SIP_HOLDGIL;
 
     /**
      * Set the field type.

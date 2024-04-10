@@ -1044,7 +1044,7 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
 {
   QgsColorRampShader colorRampShader;
 
-  if ( properties.type() != QVariant::Map )
+  if ( properties.userType() != QMetaType::Type::QVariantMap )
     return colorRampShader;
 
   QVariantMap shaderVariantMap = properties.toMap();
@@ -1061,14 +1061,14 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
   if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_items_list" ) ) )
   {
     QVariant colorRampItemsVar = shaderVariantMap.value( QStringLiteral( "color_ramp_shader_items_list" ) );
-    if ( colorRampItemsVar.type() == QVariant::List )
+    if ( colorRampItemsVar.userType() == QMetaType::Type::QVariantList )
     {
       QVariantList itemVariantList = colorRampItemsVar.toList();
       QList<QgsColorRampShader::ColorRampItem> colorRampItemList;
       for ( const QVariant &itemVar : std::as_const( itemVariantList ) )
       {
         QgsColorRampShader::ColorRampItem item;
-        if ( itemVar.type() != QVariant::Map )
+        if ( itemVar.userType() != QMetaType::Type::QVariantMap )
           continue;
         QVariantMap itemVarMap = itemVar.toMap();
         if ( !itemVarMap.contains( QStringLiteral( "label" ) ) || !itemVarMap.contains( QStringLiteral( "color" ) ) || !itemVarMap.contains( QStringLiteral( "value" ) ) )

@@ -824,8 +824,8 @@ QString QgsGraduatedSymbolRenderer::legendKeyToExpression( const QString &key, Q
   const QString attributeComponent = QgsExpression::quoteFieldExpression( mAttrName, layer );
   const QgsRendererRange &range = mRanges[i];
 
-  return QStringLiteral( "(%1 >= %2) AND (%1 <= %3)" ).arg( attributeComponent, QgsExpression::quotedValue( range.lowerValue(), QVariant::Double ),
-         QgsExpression::quotedValue( range.upperValue(), QVariant::Double ) );
+  return QStringLiteral( "(%1 >= %2) AND (%1 <= %3)" ).arg( attributeComponent, QgsExpression::quotedValue( range.lowerValue(), QMetaType::Type::Double ),
+         QgsExpression::quotedValue( range.upperValue(), QMetaType::Type::Double ) );
 }
 
 QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol()

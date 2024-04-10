@@ -1239,7 +1239,7 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
     const QVariant value = dataDefinedProperties().value( QgsCallout::Property::Margins, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( value ) )
     {
-      if ( value.type() == QVariant::List )
+      if ( value.userType() == QMetaType::Type::QVariantList )
       {
         const QVariantList list = value.toList();
         if ( list.size() == 4 )

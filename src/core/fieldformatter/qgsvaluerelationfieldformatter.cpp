@@ -68,7 +68,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
   {
     QStringList keyList;
 
-    if ( layer->fields().at( fieldIndex ).type() == QVariant::Map )
+    if ( layer->fields().at( fieldIndex ).type() == QMetaType::Type::QVariantMap )
     {
       //because of json it's stored as QVariantList
       keyList = value.toStringList();
@@ -236,14 +236,14 @@ QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap 
 QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &value )
 {
   QStringList checkList;
-  if ( value.type() == QVariant::StringList )
+  if ( value.userType() == QMetaType::Type::QStringList )
   {
     checkList = value.toStringList();
   }
   else
   {
     QVariantList valuesList;
-    if ( value.type() == QVariant::String )
+    if ( value.userType() == QMetaType::Type::QString )
     {
       // This must be an array representation
       auto newVal { value };
@@ -279,7 +279,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
         }
       }
     }
-    else if ( value.type() == QVariant::List )
+    else if ( value.userType() == QMetaType::Type::QVariantList )
     {
       valuesList = value.toList( );
     }

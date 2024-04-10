@@ -662,7 +662,7 @@ class CORE_EXPORT QgsExpression
      * \see quotedString()
      * \see quotedColumnRef()
      */
-    static QString quotedValue( const QVariant &value, QVariant::Type type );
+    static QString quotedValue( const QVariant &value, QMetaType::Type type );
 
     //////
 
@@ -743,7 +743,7 @@ class CORE_EXPORT QgsExpression
      * \param fieldType the type of the field on the left side used to quote the value. If not given, the value type is used instead
      * \returns the expression to evaluate field equality
      */
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QMetaType::Type fieldType = QMetaType::Type::UnknownType );
 
     /**
      * Returns TRUE if the given \a expression is a simple "field=value" type expression.

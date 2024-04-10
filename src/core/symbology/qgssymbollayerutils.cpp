@@ -557,7 +557,7 @@ QPointF QgsSymbolLayerUtils::toPoint( const QVariant &value, bool *ok )
   if ( QgsVariantUtils::isNull( value ) )
     return QPoint();
 
-  if ( value.type() == QVariant::List )
+  if ( value.userType() == QMetaType::Type::QVariantList )
   {
     const QVariantList list = value.toList();
     if ( list.size() != 2 )
@@ -621,7 +621,7 @@ QSizeF QgsSymbolLayerUtils::toSize( const QVariant &value, bool *ok )
   if ( QgsVariantUtils::isNull( value ) )
     return QSizeF();
 
-  if ( value.type() == QVariant::List )
+  if ( value.userType() == QMetaType::Type::QVariantList )
   {
     const QVariantList list = value.toList();
     if ( list.size() != 2 )
@@ -3215,7 +3215,7 @@ QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
 QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 {
   const QVariant newSymbols = QgsXmlUtils::readVariant( element.firstChildElement( QStringLiteral( "Option" ) ) );
-  if ( newSymbols.type() == QVariant::Map )
+  if ( newSymbols.userType() == QMetaType::Type::QVariantMap )
   {
     return newSymbols.toMap();
   }

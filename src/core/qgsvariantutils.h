@@ -37,7 +37,7 @@ class CORE_EXPORT QgsVariantUtils
      *
      * The optional \a subType can be used to specify the type of variant list or map values.
      */
-    static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+    static QString typeToDisplayString( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType );
 
     /**
      * Returns TRUE if the specified \a variant should be considered a NULL value.
