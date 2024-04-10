@@ -145,12 +145,12 @@ double QgsEllipse::focusDistance() const
 
 QVector<QgsPoint> QgsEllipse::foci() const
 {
-  QVector<QgsPoint> f;
   const double dist_focus = focusDistance();
-  f.append( mCenter.project( dist_focus, mAzimuth ) );
-  f.append( mCenter.project( -dist_focus, mAzimuth ) );
-
-  return f;
+  return
+  {
+    mCenter.project( dist_focus, mAzimuth ),
+    mCenter.project( -dist_focus, mAzimuth ),
+  };
 }
 
 double QgsEllipse::eccentricity() const
@@ -176,49 +176,85 @@ double QgsEllipse::perimeter() const
 
 QVector<QgsPoint> QgsEllipse::quadrant() const
 {
-  QVector<QgsPoint> quad;
-  quad.append( mCenter.project( mSemiMajorAxis, mAzimuth ) );
-  quad.append( mCenter.project( mSemiMinorAxis, mAzimuth + 90 ) );
-  quad.append( mCenter.project( -mSemiMajorAxis, mAzimuth ) );
-  quad.append( mCenter.project( -mSemiMinorAxis, mAzimuth + 90 ) );
-
-  return quad;
+  return
+  {
+    mCenter.project( mSemiMajorAxis, mAzimuth ),
+    mCenter.project( mSemiMinorAxis, mAzimuth + 90 ),
+    mCenter.project( -mSemiMajorAxis, mAzimuth ),
+    mCenter.project( -mSemiMinorAxis, mAzimuth + 90 )
+  };
 }
 
 QgsPointSequence QgsEllipse::points( unsigned int segments ) const
 {
   QgsPointSequence pts;
 
+  QVector<double> x;
+  QVector<double> y;
+  QVector<double> z;
+  QVector<double> m;
+
+  pointsInternal( segments, x, y, z, m );
+  const bool hasZ = !z.empty();
+  const bool hasM = !m.empty();
+  pts.reserve( x.size() );
+  for ( int i = 0; i < x.size(); ++i )
+  {
+    pts.append( QgsPoint( x[i], y[i],
+                          hasZ ? z[i] : std::numeric_limits< double >::quiet_NaN(),
+                          hasM ? m[i] : std::numeric_limits< double >::quiet_NaN() ) );
+  }
+  return pts;
+}
+
+void QgsEllipse::pointsInternal( unsigned int segments, QVector<double> &x, QVector<double> &y, QVector<double> &z, QVector<double> &m ) const
+{
   if ( segments < 3 )
   {
-    return pts;
+    return;
   }
 
+  const double centerX = mCenter.x();
+  const double centerY = mCenter.y();
+  const double centerZ = mCenter.z();
+  const double centerM = mCenter.m();
+  const bool hasZ = mCenter.is3D();
+  const bool hasM = mCenter.isMeasure();
 
-  const Qgis::WkbType pType( mCenter.wkbType() );
-  const double z = mCenter.z();
-  const double m = mCenter.m();
-
-  QVector<double> t;
-  t.reserve( segments );
-  const double azimuth = std::atan2( quadrant().at( 0 ).y() - mCenter.y(), quadrant().at( 0 ).x() - mCenter.x() );
+  std::vector<double> t( segments );
+  const QgsPoint p1 = mCenter.project( mSemiMajorAxis, mAzimuth );
+  const double azimuth = std::atan2( p1.y() - mCenter.y(), p1.x() - mCenter.x() );
   for ( unsigned int i = 0; i < segments; ++i )
   {
-    t.append( 2 * M_PI - ( ( 2 * M_PI ) / segments * i ) ); // Since the algorithm used rotates in the trigonometric direction (counterclockwise)
+    t[i] = 2 * M_PI - ( ( 2 * M_PI ) / segments * i ); // Since the algorithm used rotates in the trigonometric direction (counterclockwise)
   }
 
-  for ( QVector<double>::const_iterator it = t.constBegin(); it != t.constEnd(); ++it )
+  x.resize( segments );
+  y.resize( segments );
+  if ( hasZ )
+    z.resize( segments );
+  if ( hasM )
+    m.resize( segments );
+  double *xOut = x.data();
+  double *yOut = y.data();
+  double *zOut = hasZ ? z.data() : nullptr;
+  double *mOut = hasM ? m.data() : nullptr;
+
+  const double cosAzimuth = std::cos( azimuth );
+  const double sinAzimuth = std::sin( azimuth );
+  for ( double it : t )
   {
-    const double x = mCenter.x() +
-                     mSemiMajorAxis * std::cos( *it ) * std::cos( azimuth ) -
-                     mSemiMinorAxis * std::sin( *it ) * std::sin( azimuth );
-    const double y = mCenter.y() +
-                     mSemiMajorAxis * std::cos( *it ) * std::sin( azimuth ) +
-                     mSemiMinorAxis * std::sin( *it ) * std::cos( azimuth );
-    pts.push_back( QgsPoint( pType, x, y, z, m ) );
+    *xOut++ = centerX +
+              mSemiMajorAxis * std::cos( it ) * cosAzimuth -
+              mSemiMinorAxis * std::sin( it ) * sinAzimuth;
+    *yOut++ = centerY +
+              mSemiMajorAxis * std::cos( it ) * sinAzimuth +
+              mSemiMinorAxis * std::sin( it ) * cosAzimuth;
+    if ( zOut )
+      *zOut++ = centerZ;
+    if ( mOut )
+      *mOut++ = centerM;
   }
-
-  return pts;
 }
 
 QgsPolygon *QgsEllipse::toPolygon( unsigned int segments ) const
@@ -236,19 +272,29 @@ QgsPolygon *QgsEllipse::toPolygon( unsigned int segments ) const
 
 QgsLineString *QgsEllipse::toLineString( unsigned int segments ) const
 {
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
   if ( segments < 3 )
   {
-    return ext.release();
+    return new QgsLineString();
   }
 
-  QgsPointSequence pts;
-  pts = points( segments );
-  pts.append( pts.at( 0 ) ); // close linestring
+  QVector<double> x;
+  QVector<double> y;
+  QVector<double> z;
+  QVector<double> m;
 
-  ext->setPoints( pts );
+  pointsInternal( segments, x, y, z, m );
+  if ( x.empty() )
+    return new QgsLineString();
 
-  return ext.release();
+  // close linestring
+  x.append( x.at( 0 ) );
+  y.append( y.at( 0 ) );
+  if ( !z.empty() )
+    z.append( z.at( 0 ) );
+  if ( !m.empty() )
+    m.append( m.at( 0 ) );
+
+  return new QgsLineString( x, y, z, m );
 }
 
 QgsRectangle QgsEllipse::boundingBox() const
