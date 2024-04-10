@@ -594,3 +594,13 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
   // NOLINTEND(bugprone-branch-clone)
   return QVariant::Type::UserType;
 }
+
+QVariant QgsVariantUtils::createVariant( QMetaType::Type metaType )
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  return QgsVariantUtils::metaTypeToVariantType( metaType );
+#else
+  return QVariant( QMetaType( metaType ) );
+#endif
+
+}
