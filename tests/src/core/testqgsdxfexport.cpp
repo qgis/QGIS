@@ -1822,7 +1822,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
 
   // A) All layer name options are set
   QgsDxfExport d;
-  mPointLayer->setTitle( layerTitle );
+  mPointLayer->serverProperties()->setTitle( layerTitle );
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer,
                0, // Class attribute, 3 unique values
                false,
@@ -1929,7 +1929,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QCOMPARE( feature.attribute( "Layer" ), mPointLayer->name() );
   QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
 
-  mPointLayer->setTitle( QString() ); // Leave the original empty title
+  mPointLayer->serverProperties()->setTitle( QString() ); // Leave the original empty title
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const
