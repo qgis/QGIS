@@ -111,7 +111,7 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
     return true;
 
   bool ok;
-  const QVariant::Type type = ( QVariant::Type )typeVar.toInt( &ok );
+  const QVariant::Type type = static_cast<QVariant::Type>( typeVar.toInt( &ok ) );
   if ( !ok )
     return true;
 
