@@ -71,7 +71,11 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
   mValue.clear();
 
   // get the type associated with the value first
-  QVariant::Type type = QVariant::nameToType( typeString.toLocal8Bit().constData() );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QMetaType::Type type = static_cast<QMetaType::Type>( QMetaType::type( typeString.toLocal8Bit().constData() ) );
+#else
+  QMetaType::Type type = static_cast<QMetaType::Type>( QMetaType::fromName( typeString.toLocal8Bit().constData() ).id() );
+#endif
 
   // This huge switch is left-over from an earlier incarnation of
   // QgsProject where there was a fine level of granularity for value
