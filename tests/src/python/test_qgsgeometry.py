@@ -6047,6 +6047,21 @@ class TestQgsGeometry(QgisTestCase):
             self.assertTrue(compareWkt(result, exp.asWkt(), 0.02),
                             f"tapered buffer: mismatch Expected:\n{exp.asWkt()}\nGot:\n{result}\n")
 
+        curved_tests = [['CompoundCurve (CircularString (6 2, 9 2, 9 3))', 2, 7, 3,
+                         'MultiPolygon (((4.97 1.7, 4.97 1.72, 4.97 1.74, 4.'],
+                        ['MultiCurve (CompoundCurve (CircularString (6 2, 9 2, 9 3)))', 2, 7, 3,
+                         'MultiPolygon (((4.97 1.7, 4.97 1.72, 4.97 1.74, 4.']]
+
+        for t in curved_tests:
+            input = QgsGeometry.fromWkt(t[0])
+            start = t[1]
+            end = t[2]
+            segments = t[3]
+            o = QgsGeometry.taperedBuffer(input, start, end, segments)
+            o.normalize()
+            result = o.asWkt(2)
+            self.assertEqual(result[:50], t[4])
+
     def testVariableWidthBufferByM(self):
         tests = [['LineString (6 2, 9 2, 9 3, 11 5)', 3, 'GeometryCollection EMPTY'],
                  ['LineStringM (6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2)', 3,
