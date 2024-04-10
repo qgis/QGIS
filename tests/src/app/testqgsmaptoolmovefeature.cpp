@@ -46,6 +46,7 @@ class TestQgsMapToolMoveFeature: public QObject
 
     void testMoveFeature();
     void testTopologicalMoveFeature();
+    void testAvoidIntersectionAndTopoEdit();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -161,6 +162,30 @@ void TestQgsMapToolMoveFeature::testTopologicalMoveFeature()
   mLayerBase->undoStack()->undo();
 
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+}
+
+void TestQgsMapToolMoveFeature::testAvoidIntersectionAndTopoEdit()
+{
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
+
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2.5, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  const QString wkt1 = "Polygon ((1.5 1, 2 1, 2 0, 1.5 0, 1.5 1))";
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );
+  const QString wkt2 = "Polygon ((2 0, 2 1, 2 5, 3 5, 3 0, 2 0))";
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
+
+  mLayerBase->undoStack()->undo();
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
 
 QGSTEST_MAIN( TestQgsMapToolMoveFeature )
