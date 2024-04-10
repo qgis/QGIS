@@ -191,7 +191,6 @@ class TestQgsProject(QgisTestCase):
                       project_scope.variable('project_vertical_crs_wkt'), '')
 
         # check that vertical crs is saved/restored
-        # Tests whether the home paths of a GPKG stored project returns the GPKG folder.
         with TemporaryDirectory() as d:
             self.assertTrue(project.write(os.path.join(d, 'test_vertcrs.qgs')))
             project2 = QgsProject()
@@ -256,6 +255,94 @@ class TestQgsProject(QgisTestCase):
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
         self.assertEqual(len(spy), 1)
+
+    def test_crs_3d(self):
+        project = QgsProject()
+        self.assertFalse(project.crs3D().isValid())
+
+        spy = QSignalSpy(project.crs3DChanged)
+
+        # set project crs to a 2d crs
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        # don't change, no new signals
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        # change 2d crs, should be new signals
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3113')
+        self.assertEqual(len(spy), 2)
+
+        # change vertical crs:
+
+        # not a vertical crs, no change
+        ok, err = project.setVerticalCrs(
+            QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(ok)
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3113')
+        self.assertEqual(len(spy), 2)
+
+        # valid vertical crs
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(project.crs3D().type(), Qgis.CrsType.Compound)
+        # crs3D should be a compound crs
+        self.assertEqual(project.crs3D().horizontalCrs().authid(), 'EPSG:3113')
+        self.assertEqual(project.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 3)
+        # try overwriting with same crs, should be no new signal
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(len(spy), 3)
+
+        # set 2d crs to a compound crs
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(project.crs().authid(), 'EPSG:5500')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(project.crs().authid(), 'EPSG:5500')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        # remove vertical crs, should be no change because compound crs is causing vertical crs to be ignored
+        project.setVerticalCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        # set crs back to 2d crs, should be new signal
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(project.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+        self.assertEqual(project.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 5)
+
+        # check that crs3D is handled correctly during save/restore
+        with TemporaryDirectory() as d:
+            self.assertTrue(project.write(os.path.join(d, 'test_crs3d.qgs')))
+            project2 = QgsProject()
+            spy2 = QSignalSpy(project2.crs3DChanged)
+            project2.read(os.path.join(d, 'test_crs3d.qgs'))
+            self.assertEqual(project2.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+            self.assertEqual(project2.crs3D().verticalCrs().authid(), 'EPSG:5703')
+            self.assertEqual(len(spy2), 1)
+            project2.read(os.path.join(d, 'test_crs3d.qgs'))
+            self.assertEqual(project2.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+            self.assertEqual(project2.crs3D().verticalCrs().authid(), 'EPSG:5703')
+            self.assertEqual(len(spy2), 1)
+
+        project.clear()
+        self.assertEqual(len(spy), 6)
+        self.assertFalse(project.crs3D().isValid())
 
     def testEllipsoid(self):
         prj = QgsProject.instance()
