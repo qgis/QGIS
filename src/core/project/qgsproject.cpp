@@ -25,7 +25,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayerfactory.h"
-#include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
 #include "qgssnappingconfig.h"
@@ -74,6 +73,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsrunnableprovidercreator.h"
 #include "qgssettingsregistrycore.h"
+#include "qgspluginlayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -941,6 +941,13 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
   return mCrs;
 }
 
+QgsCoordinateReferenceSystem QgsProject::crs3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs3D.isValid() ? mCrs3D : mCrs;
+}
+
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -948,6 +955,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
   if ( crs != mCrs )
   {
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+    const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
     mCrs = crs;
     writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -957,11 +965,15 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
     if ( !mMainAnnotationLayer->crs().isValid() || mMainAnnotationLayer->isEmpty() )
       mMainAnnotationLayer->setCrs( crs );
 
+    rebuildCrs3D();
+
     setDirty( true );
     emit crsChanged();
     // Did vertical crs also change as a result of this? If so, emit signal
     if ( oldVerticalCrs != verticalCrs() )
       emit verticalCrsChanged();
+    if ( oldCrs3D != mCrs3D )
+      emit crs3DChanged();
   }
 
   if ( adjustEllipsoid )
@@ -1054,6 +1066,7 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
   if ( crs != mVerticalCrs )
   {
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+    const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
 
     switch ( mCrs.type() )
     {
@@ -1082,6 +1095,7 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
     }
 
     mVerticalCrs = crs;
+    rebuildCrs3D();
     mProjectScope.reset();
 
     setDirty( true );
@@ -1089,6 +1103,8 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
     // then we haven't actually changed the vertical crs by this call!
     if ( verticalCrs() != oldVerticalCrs )
       emit verticalCrsChanged();
+    if ( mCrs3D != oldCrs3D )
+      emit crs3DChanged();
   }
   return true;
 }
@@ -1142,6 +1158,7 @@ void QgsProject::clear()
   mCustomVariables.clear();
   mCrs = QgsCoordinateReferenceSystem();
   mVerticalCrs = QgsCoordinateReferenceSystem();
+  mCrs3D = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   mElevationShadingRenderer = QgsElevationShadingRenderer();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
@@ -1239,6 +1256,7 @@ void QgsProject::clear()
   if ( !mBlockChangeSignalsDuringClear )
   {
     emit verticalCrsChanged();
+    emit crs3DChanged();
   }
   emit cleared();
 }
@@ -1561,6 +1579,46 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
 void QgsProject::releaseHandlesToProjectArchive()
 {
   mStyleSettings->removeProjectStyle();
+}
+
+void QgsProject::rebuildCrs3D()
+{
+  if ( !mCrs.isValid() )
+  {
+    mCrs3D = QgsCoordinateReferenceSystem();
+  }
+  else if ( !mVerticalCrs.isValid() )
+  {
+    mCrs3D = mCrs;
+  }
+  else
+  {
+    switch ( mCrs.type() )
+    {
+      case Qgis::CrsType::Compound:
+        mCrs3D = mCrs;
+        break;
+
+      case Qgis::CrsType::Vertical:
+        // nonsense situation
+        mCrs3D = QgsCoordinateReferenceSystem();
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geocentric:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+        mCrs3D = QgsCoordinateReferenceSystem::createCompoundCrs( mCrs, mVerticalCrs );
+        break;
+    }
+  }
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
@@ -2013,7 +2071,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const QString fileName = mFile.fileName();
 
   const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
-
+  const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
 
   // NOTE [ND] -- I suspect this is wrong, as the archive may contain any number of non-auxiliary
   // storage related files from the previously loaded project.
@@ -2147,6 +2205,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     }
     mVerticalCrs = verticalCrs;
   }
+  rebuildCrs3D();
 
   QStringList datumErrors;
   if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) && !datumErrors.empty() )
@@ -2492,6 +2551,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   emit crsChanged();
   if ( verticalCrs() != oldVerticalCrs )
     emit verticalCrsChanged();
+  if ( mCrs3D != oldCrs3D )
+    emit crs3DChanged();
   emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend

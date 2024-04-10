@@ -305,13 +305,44 @@ Sets the ``type`` of paths used when storing file paths in a QGS/QGZ project fil
 %Docstring
 Returns the project's native coordinate reference system.
 
+.. warning::
+
+   Since QGIS 3.38, consider using :py:func:`~QgsProject.crs3D` whenever transforming 3D data or whenever
+   z/elevation value handling is important.
+
 .. seealso:: :py:func:`setCrs`
+
+.. seealso:: :py:func:`crs3D`
 
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`ellipsoid`
 
 .. seealso:: :py:func:`crsChanged`
+%End
+
+    QgsCoordinateReferenceSystem crs3D() const;
+%Docstring
+Returns the CRS to use for the project when transforming 3D data, or when z/elevation
+value handling is important.
+
+The returned CRS will take into account :py:func:`~QgsProject.verticalCrs`, e.g. by returning a compound
+CRS consisting of :py:func:`~QgsProject.crs` + :py:func:`~QgsProject.verticalCrs`. This method may still return a 2D CRS, e.g in the
+case that :py:func:`~QgsProject.crs` is a 2D CRS and no :py:func:`~QgsProject.verticalCrs` has been set for the project.
+
+.. warning::
+
+   It is NOT guaranteed that the returned CRS will actually be a 3D CRS, but rather
+   it is guaranteed that the returned CRS is ALWAYS the most appropriate CRS to use when handling 3D data.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. seealso:: :py:func:`crs3DChanged`
+
+
+.. versionadded:: 3.38
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
@@ -365,9 +396,17 @@ explicitly set by a call to :py:func:`~QgsProject.setVerticalCrs`.
 
 The returned CRS will be invalid if the project has no vertical CRS.
 
+.. note::
+
+   Consider also using :py:func:`~QgsProject.crs3D`, which will return a CRS which takes into account
+   both :py:func:`~QgsProject.crs` and :py:func:`~QgsProject.verticalCrs`.
+
 .. seealso:: :py:func:`crs`
 
+.. seealso:: :py:func:`crs3D`
+
 .. seealso:: :py:func:`setVerticalCrs`
+
 
 .. versionadded:: 3.38
 %End
@@ -1781,7 +1820,7 @@ Emitted whenever the expression variables stored in the project have been change
 
     void crsChanged();
 %Docstring
-Emitted when the CRS of the project has changed.
+Emitted when the :py:func:`~QgsProject.crs` of the project has changed.
 
 .. seealso:: :py:func:`crs`
 
@@ -1792,15 +1831,32 @@ Emitted when the CRS of the project has changed.
 .. seealso:: :py:func:`ellipsoidChanged`
 %End
 
+    void crs3DChanged();
+%Docstring
+Emitted when the :py:func:`~QgsProject.crs3D` of the project has changed.
+
+.. seealso:: :py:func:`crs3D`
+
+.. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`verticalCrsChanged`
+
+.. seealso:: :py:func:`ellipsoidChanged`
+
+.. versionadded:: 3.38
+%End
+
     void verticalCrsChanged();
 %Docstring
-Emitted when the vertical CRS of the project has changed.
+Emitted when the :py:func:`~QgsProject.verticalCrs` of the project has changed.
 
 This signal will be emitted whenever the vertical CRS of the project is changed, either
 as a direct result of a call to :py:func:`~QgsProject.setVerticalCrs` or when :py:func:`~QgsProject.setCrs` is called with a compound
 CRS.
 
 .. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`crs3DChanged`
 
 .. seealso:: :py:func:`setCrs`
 
