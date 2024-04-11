@@ -346,7 +346,7 @@ Returns an icon corresponding to a field index, based on the field's type and so
     }
 %End
 
-    static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid, const QString &typeString = QString() );
+    static QIcon iconForFieldType( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType, const QString &typeString = QString() );
 %Docstring
 Returns an icon corresponding to a field ``type``
 

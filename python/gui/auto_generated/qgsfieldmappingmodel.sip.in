@@ -68,7 +68,7 @@ Returns ``True`` if the destination fields are editable
 Sets the destination fields editable state to ``editable``
 %End
 
- static const QMap<QVariant::Type, QString> dataTypes();
+ static const QMap<QMetaType::Type, QString> dataTypes();
 %Docstring
 Returns a static map of supported data types
 

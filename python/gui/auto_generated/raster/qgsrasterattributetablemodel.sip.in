@@ -67,7 +67,7 @@ Returns ``True`` if the Raster Attribute Table was modified since it was last sa
 %End
 
 
-    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Inserts a field at the given position.
 

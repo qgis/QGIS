@@ -488,16 +488,16 @@ check if provider supports type of field
 
     struct NativeType
     {
-      NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid );
+      NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType );
 
       QString mTypeDesc;
       QString mTypeName;
-      QVariant::Type mType;
+      QMetaType::Type mType;
       int mMinLen;
       int mMaxLen;
       int mMinPrec;
       int mMaxPrec;
-      QVariant::Type mSubType;
+      QMetaType::Type mSubType;
     };
 
     QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
@@ -565,7 +565,7 @@ providers will return ``None``.
 .. versionadded:: 3.6
 %End
 
-    static QVariant convertValue( QVariant::Type type, const QString &value );
+    static QVariant convertValue( QMetaType::Type type, const QString &value );
 
     virtual QgsTransaction *transaction() const;
 %Docstring

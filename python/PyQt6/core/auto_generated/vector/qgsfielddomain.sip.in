@@ -44,7 +44,7 @@ A field domain is a set of constraints that apply to one or several fields.
 
     QgsFieldDomain( const QString &name,
                     const QString &description,
-                    QVariant::Type fieldType );
+                    QMetaType::Type fieldType );
 %Docstring
 Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 %End
@@ -94,14 +94,14 @@ Sets the ``description`` of the field domain.
 .. seealso:: :py:func:`description`
 %End
 
-    QVariant::Type fieldType() const;
+    QMetaType::Type fieldType() const;
 %Docstring
 Returns the associated field type.
 
 .. seealso:: :py:func:`setFieldType`
 %End
 
-    void setFieldType( QVariant::Type type );
+    void setFieldType( QMetaType::Type type );
 %Docstring
 Sets the associated field ``type``.
 
@@ -206,7 +206,7 @@ The type of the code should be the one of the field domain.
 
     QgsCodedFieldDomain( const QString &name,
                          const QString &description,
-                         QVariant::Type fieldType,
+                         QMetaType::Type fieldType,
                          const QList<QgsCodedValue> &values );
 %Docstring
 Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
@@ -263,7 +263,7 @@ Definition of a numeric field domain with a range of validity for values.
 
     QgsRangeFieldDomain( const QString &name,
                          const QString &description,
-                         QVariant::Type fieldType,
+                         QMetaType::Type fieldType,
                          const QVariant &minimum,
                          bool minimumIsInclusive,
                          const QVariant &maximum,
@@ -394,7 +394,7 @@ Globs are matching expression like "*[a-z][0-1]?"
 
     QgsGlobFieldDomain( const QString &name,
                         const QString &description,
-                        QVariant::Type fieldType,
+                        QMetaType::Type fieldType,
                         const QString &glob );
 %Docstring
 Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.

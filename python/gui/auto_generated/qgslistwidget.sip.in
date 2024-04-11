@@ -22,7 +22,7 @@ Widget allowing to edit a QVariantList, using a table.
 %End
   public:
 
-    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
+    explicit QgsListWidget( QMetaType::Type subType, QWidget *parent = 0 );
 %Docstring
 Constructor.
 %End
