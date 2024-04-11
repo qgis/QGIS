@@ -52,18 +52,18 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
 
   QString text;
 
-  const QVariant::Type fieldType( vl->fields().at( fieldIdx ).type() );
+  const QMetaType::Type fieldType( vl->fields().at( fieldIdx ).type() );
 
   switch ( fieldType )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Double:
     {
       // we use the double spin boxes for double OR long long field types, as QSpinBox does not have sufficient
       // available range for long long values
-      rangeStackedWidget->setCurrentIndex( fieldType == QVariant::Int ? 0 : 1 );
-      if ( fieldType == QVariant::LongLong )
+      rangeStackedWidget->setCurrentIndex( fieldType == QMetaType::Type::Int ? 0 : 1 );
+      if ( fieldType == QMetaType::Type::LongLong )
       {
         minimumDoubleSpinBox->setDecimals( 0 );
         maximumDoubleSpinBox->setDecimals( 0 );
@@ -89,7 +89,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
   }
 
   // Hide precision for integer types
-  if ( fieldType != QVariant::Double )
+  if ( fieldType != QMetaType::Type::Double )
   {
     precisionSpinBox->hide();
     precisionLabel->hide();
@@ -116,7 +116,7 @@ QVariantMap QgsRangeConfigDlg::config()
 
   switch ( layer()->fields().at( field() ).type() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       cfg.insert( QStringLiteral( "Min" ), minimumSpinBox->value() );
       cfg.insert( QStringLiteral( "Max" ), maximumSpinBox->value() );
       cfg.insert( QStringLiteral( "Step" ), stepSpinBox->value() );
@@ -124,8 +124,8 @@ QVariantMap QgsRangeConfigDlg::config()
 
     // we use the double spin boxes for double OR long long field types, as QSpinBox does not have sufficient
     // available range for long long values
-    case QVariant::Double:
-    case QVariant::LongLong:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::LongLong:
       cfg.insert( QStringLiteral( "Min" ), minimumDoubleSpinBox->value() );
       cfg.insert( QStringLiteral( "Max" ), maximumDoubleSpinBox->value() );
       cfg.insert( QStringLiteral( "Step" ), stepDoubleSpinBox->value() );

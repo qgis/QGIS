@@ -37,7 +37,7 @@ QVariant QgsValueMapWidgetWrapper::value() const
   }
 
   if ( v == QgsValueMapFieldFormatter::NULL_VALUE )
-    v = QVariant( field().type() );
+    v = QgsVariantUtils::createVariant( field().type() );
 
   return v;
 }

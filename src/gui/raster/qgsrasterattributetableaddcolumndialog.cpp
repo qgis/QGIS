@@ -34,10 +34,10 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
   connect( mColor, &QRadioButton::toggled, this, [ = ]( bool ) { updateDialog(); } );
   connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateDialog(); } );
 
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::String ), tr( "String" ), static_cast<int>( QVariant::Type::String ) );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Int ), tr( "Integer" ), static_cast<int>( QVariant::Type::Int ) );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::LongLong ), tr( "Long Integer" ), static_cast<int>( QVariant::Type::LongLong ) );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Double ), tr( "Double" ), static_cast<int>( QVariant::Type::Double ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), tr( "String" ), static_cast<int>( QMetaType::Type::QString ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), static_cast<int>( QMetaType::Type::Int ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::LongLong ), tr( "Long Integer" ), static_cast<int>( QMetaType::Type::LongLong ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), tr( "Double" ), static_cast<int>( QMetaType::Type::Double ) );
   mStandardColumn->setChecked( true );
 
   updateDialog();
@@ -77,9 +77,9 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTableAddColumnDialog::usa
   return static_cast<Qgis::RasterAttributeTableFieldUsage>( mUsage->currentData( ).toInt( ) );
 }
 
-QVariant::Type QgsRasterAttributeTableAddColumnDialog::type() const
+QMetaType::Type QgsRasterAttributeTableAddColumnDialog::type() const
 {
-  return static_cast<QVariant::Type>( mDataType->currentData( ).toInt( ) );
+  return static_cast<QMetaType::Type>( mDataType->currentData( ).toInt( ) );
 }
 
 void QgsRasterAttributeTableAddColumnDialog::updateDialog()

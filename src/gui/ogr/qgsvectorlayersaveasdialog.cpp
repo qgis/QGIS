@@ -264,10 +264,10 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
             cb->addItem( val, val );
           }
           if ( opt->allowNone )
-            cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+            cb->addItem( tr( "<Default>" ), QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
           int idx = cb->findText( opt->defaultValue );
           if ( idx == -1 )
-            idx = cb->findData( QVariant( QVariant::String ) );
+            idx = cb->findData( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
           cb->setCurrentIndex( idx );
           control = cb;
         }

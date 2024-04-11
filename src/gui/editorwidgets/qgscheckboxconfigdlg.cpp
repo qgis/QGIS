@@ -30,7 +30,7 @@ QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   connect( leUncheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
   connect( mDisplayAsTextComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
 
-  if ( vl->fields().at( fieldIdx ).type() == QVariant::Bool )
+  if ( vl->fields().at( fieldIdx ).type() == QMetaType::Type::Bool )
   {
     leCheckedState->setEnabled( false );
     leUncheckedState->setEnabled( false );
@@ -54,7 +54,7 @@ QVariantMap QgsCheckBoxConfigDlg::config()
 
 void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
 {
-  if ( layer()->fields().at( field() ).type() != QVariant::Bool )
+  if ( layer()->fields().at( field() ).type() != QMetaType::Type::Bool )
   {
     leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
     leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );

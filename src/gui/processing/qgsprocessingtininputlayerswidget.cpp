@@ -56,14 +56,14 @@ QVariant QgsProcessingTinInputLayersWidget::value() const
 void QgsProcessingTinInputLayersWidget::setValue( const QVariant &value )
 {
   mInputLayersModel.clear();
-  if ( !value.isValid() || value.type() != QVariant::List )
+  if ( !value.isValid() || value.userType() != QMetaType::Type::QVariantList )
     return;
 
   const QVariantList list = value.toList();
 
   for ( const QVariant &layerValue : list )
   {
-    if ( layerValue.type() != QVariant::Map )
+    if ( layerValue.userType() != QMetaType::Type::QVariantMap )
       continue;
     const QVariantMap layerMap = layerValue.toMap();
     QgsProcessingParameterTinInputLayers::InputLayer layer;

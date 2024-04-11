@@ -326,7 +326,7 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
   {
     const QModelIndex index = indexAt( event->pos() );
     const QVariant data = model()->data( index, Qt::DisplayRole );
-    if ( data.type() == QVariant::String )
+    if ( data.userType() == QMetaType::Type::QString )
     {
       const QString textVal = data.toString();
       if ( QgsStringUtils::isUrl( textVal ) )

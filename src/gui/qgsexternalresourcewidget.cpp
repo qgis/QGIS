@@ -81,12 +81,12 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
 }
 
-QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
+QVariant QgsExternalResourceWidget::documentPath( QMetaType::Type type ) const
 {
   const QString path = mFileWidget->filePath();
   if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
-    return QVariant( type );
+    return QgsVariantUtils::createVariant( type );
   }
   else
   {

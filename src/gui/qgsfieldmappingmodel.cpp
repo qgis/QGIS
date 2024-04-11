@@ -413,19 +413,19 @@ void QgsFieldMappingModel::setDestinationEditable( bool destinationEditable )
   mDestinationEditable = destinationEditable;
 }
 
-const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
+const QMap<QMetaType::Type, QString> QgsFieldMappingModel::dataTypes()
 {
-  static const QMap<QVariant::Type, QString> sDataTypes
+  static const QMap<QMetaType::Type, QString> sDataTypes
   {
-    { QVariant::Type::Int, QgsVariantUtils::typeToDisplayString( QVariant::Type::Int ) },
-    { QVariant::Type::LongLong, QgsVariantUtils::typeToDisplayString( QVariant::Type::LongLong ) },
-    { QVariant::Type::Double, QgsVariantUtils::typeToDisplayString( QVariant::Type::Double ) },
-    { QVariant::Type::String, QgsVariantUtils::typeToDisplayString( QVariant::Type::String ) },
-    { QVariant::Type::Date, QgsVariantUtils::typeToDisplayString( QVariant::Type::Date ) },
-    { QVariant::Type::Time, QgsVariantUtils::typeToDisplayString( QVariant::Type::Time ) },
-    { QVariant::Type::DateTime, QgsVariantUtils::typeToDisplayString( QVariant::Type::DateTime ) },
-    { QVariant::Type::Bool, QgsVariantUtils::typeToDisplayString( QVariant::Type::Bool ) },
-    { QVariant::Type::ByteArray, QgsVariantUtils::typeToDisplayString( QVariant::Type::ByteArray ) },
+    { QMetaType::Type::Int, QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ) },
+    { QMetaType::Type::LongLong, QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ) },
+    { QMetaType::Type::Double, QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ) },
+    { QMetaType::Type::QString, QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ) },
+    { QMetaType::Type::QDate, QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ) },
+    { QMetaType::Type::QTime, QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ) },
+    { QMetaType::Type::QDateTime, QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ) },
+    { QMetaType::Type::Bool, QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ) },
+    { QMetaType::Type::QByteArray, QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ) },
   };
   return sDataTypes;
 }
@@ -433,19 +433,19 @@ const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
 const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::supportedDataTypes()
 {
   static const QList<QgsVectorDataProvider::NativeType> sDataTypes =
-    QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Int ), QStringLiteral( "integer" ), QVariant::Int )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::LongLong ), QStringLiteral( "int8" ), QVariant::LongLong )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Double ), QStringLiteral( "double precision" ), QVariant::Double )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::String ), QStringLiteral( "text" ), QVariant::String )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Date ), QStringLiteral( "date" ), QVariant::Date )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Time ), QStringLiteral( "time" ), QVariant::Time )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Bool ), QStringLiteral( "boolean" ), QVariant::Bool )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::StringList ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::List, QVariant::Type::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::List, QVariant::Type::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::List, QVariant::Type::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+    QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "integer" ), QMetaType::Type::Int )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "int8" ), QMetaType::Type::LongLong )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "double precision" ), QMetaType::Type::Double )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QStringLiteral( "text" ), QMetaType::Type::QString )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), QStringLiteral( "boolean" ), QMetaType::Type::Bool )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), QStringLiteral( "binary" ), QMetaType::Type::QByteArray )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), QStringLiteral( "stringlist" ), QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), QStringLiteral( "integerlist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Int )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), QStringLiteral( "doublelist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), QStringLiteral( "integer64list" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong );
   return sDataTypes;
 }
 

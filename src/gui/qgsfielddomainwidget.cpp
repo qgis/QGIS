@@ -77,7 +77,7 @@ void QgsRangeDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
   mMaxInclusiveCheckBox->setChecked( rangeDomain->maximumIsInclusive() );
 }
 
-QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const
+QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsRangeFieldDomain( name, description, fieldType,
                                   mMinSpinBox->value(), mMinInclusiveCheckBox->isChecked(),
@@ -110,7 +110,7 @@ void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
   mEditGlob->setText( globDomain->glob() );
 }
 
-QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const
+QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsGlobFieldDomain( name, description, fieldType, mEditGlob->text() );
 }
@@ -160,7 +160,7 @@ void QgsCodedFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
   mModel->setValues( codedDomain->values() );
 }
 
-QgsFieldDomain *QgsCodedFieldDomainWidget::createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const
+QgsFieldDomain *QgsCodedFieldDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsCodedFieldDomain( name, description, fieldType, mModel->values() );
 }
@@ -356,11 +356,11 @@ QgsFieldDomainWidget::QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget 
   mComboMergePolicy->addItem( tr( "Sum" ), static_cast< int >( Qgis::FieldDomainMergePolicy::Sum ) );
   mComboMergePolicy->addItem( tr( "Geometry Weighted Average" ), static_cast< int >( Qgis::FieldDomainMergePolicy::GeometryWeighted ) );
 
-  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), static_cast< int >( QVariant::Bool ) );
-  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::String ), static_cast< int >( QVariant::String ) );
-  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::Int ), static_cast< int >( QVariant::Int ) );
-  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), static_cast< int >( QVariant::LongLong ) );
-  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::Double ), static_cast< int >( QVariant::Double ) );
+  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), static_cast< int >( QMetaType::Type::Bool ) );
+  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), static_cast< int >( QMetaType::Type::QString ) );
+  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), static_cast< int >( QMetaType::Type::Int ) );
+  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), static_cast< int >( QMetaType::Type::LongLong ) );
+  mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), static_cast< int >( QMetaType::Type::Double ) );
 #if 0 // not supported by any formats yet...
   mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::Date ), static_cast< int >( QVariant::Date ) );
   mFieldTypeCombo->addItem( QgsVariantUtils::typeToDisplayString( QVariant::Time ), static_cast< int >( QVariant::Time ) );
@@ -371,17 +371,17 @@ QgsFieldDomainWidget::QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget 
   {
     case Qgis::FieldDomainType::Coded:
       mDomainWidget = new QgsCodedFieldDomainWidget();
-      mFieldTypeCombo->setCurrentIndex( mFieldTypeCombo->findData( static_cast< int >( QVariant::String ) ) );
+      mFieldTypeCombo->setCurrentIndex( mFieldTypeCombo->findData( static_cast< int >( QMetaType::Type::QString ) ) );
       break;
 
     case Qgis::FieldDomainType::Range:
       mDomainWidget = new QgsRangeDomainWidget();
-      mFieldTypeCombo->setCurrentIndex( mFieldTypeCombo->findData( static_cast< int >( QVariant::Double ) ) );
+      mFieldTypeCombo->setCurrentIndex( mFieldTypeCombo->findData( static_cast< int >( QMetaType::Type::Double ) ) );
       break;
 
     case Qgis::FieldDomainType::Glob:
       mDomainWidget = new QgsGlobDomainWidget();
-      mFieldTypeCombo->setCurrentIndex( mFieldTypeCombo->findData( static_cast< int >( QVariant::String ) ) );
+      mFieldTypeCombo->setCurrentIndex( mFieldTypeCombo->findData( static_cast< int >( QMetaType::Type::QString ) ) );
       break;
   }
 
@@ -421,7 +421,7 @@ QgsFieldDomain *QgsFieldDomainWidget::createFieldDomain() const
 
   std::unique_ptr< QgsFieldDomain > res( mDomainWidget->createFieldDomain( mNameEdit->text(),
                                          mDescriptionEdit->text(),
-                                         static_cast< QVariant::Type >( mFieldTypeCombo->currentData().toInt() ) ) );
+                                         static_cast< QMetaType::Type >( mFieldTypeCombo->currentData().toInt() ) ) );
 
   res->setMergePolicy( static_cast< Qgis::FieldDomainMergePolicy >( mComboMergePolicy->currentData().toInt() ) );
   res->setSplitPolicy( static_cast< Qgis::FieldDomainSplitPolicy >( mComboSplitPolicy->currentData().toInt() ) );

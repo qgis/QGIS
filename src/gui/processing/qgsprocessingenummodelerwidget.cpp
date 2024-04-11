@@ -146,18 +146,18 @@ void QgsProcessingEnumModelerWidget::setDefaultOptions( const QVariant &defaultV
 
   QVariant val = defaultValue;
   QList< int > values;
-  if ( val.type() == QVariant::List || val.type() == QVariant::StringList )
+  if ( val.userType() == QMetaType::Type::QVariantList || val.userType() == QMetaType::Type::QStringList )
   {
     for ( const QVariant &var : val.toList() )
       values << var.toInt();
   }
-  else if ( val.type() == QVariant::String )
+  else if ( val.userType() == QMetaType::Type::QString )
   {
     QStringList split = val.toString().split( ',' );
     for ( const QString &var : split )
       values << var.toInt();
   }
-  else if ( val.type() == QVariant::Int )
+  else if ( val.userType() == QMetaType::Type::Int )
   {
     values << val.toInt();
   }

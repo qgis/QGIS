@@ -1368,7 +1368,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    attrs.insert( idx, QVariant( layer()->fields().at( idx ).type() ) );
+    attrs.insert( idx, QgsVariantUtils::createVariant( layer()->fields().at( idx ).type() ) );
     mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
@@ -1407,14 +1407,14 @@ void QgsAttributeForm::onUpdatedFields()
       if ( idx != -1 )
       {
         attrs[i] = mFeature.attributes().at( idx );
-        if ( mFeature.attributes().at( idx ).type() != layer()->fields().at( i ).type() )
+        if ( mFeature.attributes().at( idx ).userType() != layer()->fields().at( i ).type() )
         {
           attrs[i].convert( layer()->fields().at( i ).type() );
         }
       }
       else
       {
-        attrs[i] = QVariant( layer()->fields().at( i ).type() );
+        attrs[i] = QgsVariantUtils::createVariant( layer()->fields().at( i ).type() );
       }
     }
     mFeature.setFields( layer()->fields() );

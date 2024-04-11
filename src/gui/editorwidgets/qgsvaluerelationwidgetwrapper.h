@@ -204,7 +204,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     int columnCount() const;
 
     //! Returns the variant type of the fk
-    QVariant::Type fkType() const;
+    QMetaType::Type fkType() const;
 
     //! Sets the values for the widgets, re-creates the cache when required
     void populate( );

@@ -92,13 +92,13 @@ QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidg
   if ( !v.isValid() )
     return QString();
 
-  switch ( v.type() )
+  switch ( v.userType() )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
     {
       if ( flags & EqualTo )
       {

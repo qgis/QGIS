@@ -200,7 +200,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   } );
 
   // Get a default type for new fields
-  const QVariant::Type defaultFieldType { mFieldModel->nativeTypes().first().mType };
+  const QMetaType::Type defaultFieldType { mFieldModel->nativeTypes().first().mType };
   const QString defaultFieldTypeName { mFieldModel->nativeTypes().first().mTypeName };
 
   // Actions
@@ -753,7 +753,7 @@ QString QgsNewVectorTableFieldModel::typeDesc( const QString &typeName ) const
   return typeName;
 }
 
-QVariant::Type QgsNewVectorTableFieldModel::type( const QString &typeName ) const
+QMetaType::Type QgsNewVectorTableFieldModel::type( const QString &typeName ) const
 {
   return nativeType( typeName ).mType;
 }

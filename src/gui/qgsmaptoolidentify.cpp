@@ -1174,7 +1174,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           // The cast is legit. Quoting QT doc :
           // "Although this function is declared as returning QVariant::Type,
           // the return value should be interpreted as QMetaType::Type"
-          if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::Float )
+          if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::Float )
           {
             valueString = QgsRasterBlock::printValue( value.toFloat() );
           }
@@ -1208,14 +1208,14 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
                 QString ratValue;
                 switch ( ratField.type )
                 {
-                  case QVariant::Type::Char:
-                  case QVariant::Type::Int:
-                  case QVariant::Type::UInt:
-                  case QVariant::Type::LongLong:
-                  case QVariant::Type::ULongLong:
+                  case QMetaType::Type::QChar:
+                  case QMetaType::Type::Int:
+                  case QMetaType::Type::UInt:
+                  case QMetaType::Type::LongLong:
+                  case QMetaType::Type::ULongLong:
                     ratValue = QLocale().toString( row.at( colIdx ).toLongLong() );
                     break;
-                  case QVariant::Type::Double:
+                  case QMetaType::Type::Double:
                     ratValue = QLocale().toString( row.at( colIdx ).toDouble( ) );
                     break;
                   default:
@@ -1245,13 +1245,13 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QVariant value = it.value();
-        if ( value.type() == QVariant::Bool && !value.toBool() )
+        if ( value.userType() == QMetaType::Type::Bool && !value.toBool() )
         {
           // sublayer not visible or not queryable
           continue;
         }
 
-        if ( value.type() == QVariant::String )
+        if ( value.userType() == QMetaType::Type::QString )
         {
           // error
           // TODO: better error reporting

@@ -38,7 +38,7 @@ QgsEditorConfigWidget *QgsGeometryWidgetFactory::configWidget( QgsVectorLayer *v
 unsigned int QgsGeometryWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  const QVariant::Type type = field.type();
+  const QMetaType::Type type = field.type();
   // Geometry fields only
-  return ( type == QVariant::UserType && field.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 ) ? 20 : 0;
+  return ( type == QMetaType::Type::User && field.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 ) ? 20 : 0;
 }

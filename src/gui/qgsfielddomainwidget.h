@@ -66,7 +66,7 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      *
      * \see setFieldDomain()
      */
-    virtual QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const = 0 SIP_FACTORY;
+    virtual QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const = 0 SIP_FACTORY;
 
     /**
      * Returns TRUE if the widget currently represents a valid field domain configuration.
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsRangeDomainWidget : public QgsAbstractFieldDomainWidget, pri
     QgsRangeDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
-    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const override SIP_FACTORY;
+    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
     bool isValid() const override;
 
 };
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsGlobDomainWidget : public QgsAbstractFieldDomainWidget, priv
     QgsGlobDomainWidget( QWidget *parent SIP_TRANSFERTHIS  = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
-    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const override SIP_FACTORY;
+    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
     bool isValid() const override;
 };
 
@@ -201,7 +201,7 @@ class GUI_EXPORT QgsCodedFieldDomainWidget : public QgsAbstractFieldDomainWidget
     QgsCodedFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS  = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
-    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const override SIP_FACTORY;
+    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
     bool isValid() const override;
 
   private:
