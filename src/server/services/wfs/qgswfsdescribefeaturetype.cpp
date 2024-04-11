@@ -107,44 +107,44 @@ namespace QgsWfs
     const thread_local QRegularExpression sCleanTagNameRegExp( QStringLiteral( "[^\\w\\.-_]" ), QRegularExpression::PatternOption::UseUnicodePropertiesOption );
     fieldName.replace( ' ', '_' ).replace( sCleanTagNameRegExp, QString() );
 
-    const QVariant::Type attributeType = field.type();
+    const QMetaType::Type attributeType = field.type();
 
-    if ( attributeType == QVariant::Int )
+    if ( attributeType == QMetaType::Type::Int )
     {
       fieldType = QStringLiteral( "int" );
     }
-    else if ( attributeType == QVariant::UInt )
+    else if ( attributeType == QMetaType::Type::UInt )
     {
       fieldType = QStringLiteral( "unsignedInt" );
     }
-    else if ( attributeType == QVariant::LongLong )
+    else if ( attributeType == QMetaType::Type::LongLong )
     {
       fieldType = QStringLiteral( "long" );
     }
-    else if ( attributeType == QVariant::ULongLong )
+    else if ( attributeType == QMetaType::Type::ULongLong )
     {
       fieldType = QStringLiteral( "unsignedLong" );
     }
-    else if ( attributeType == QVariant::Double )
+    else if ( attributeType == QMetaType::Type::Double )
     {
       if ( field.length() > 0 && field.precision() == 0 )
         fieldType = QStringLiteral( "integer" );
       else
         fieldType = QStringLiteral( "decimal" );
     }
-    else if ( attributeType == QVariant::Bool )
+    else if ( attributeType == QMetaType::Type::Bool )
     {
       fieldType = QStringLiteral( "boolean" );
     }
-    else if ( attributeType == QVariant::Date )
+    else if ( attributeType == QMetaType::Type::QDate )
     {
       fieldType = QStringLiteral( "date" );
     }
-    else if ( attributeType == QVariant::Time )
+    else if ( attributeType == QMetaType::Type::QTime )
     {
       fieldType = QStringLiteral( "time" );
     }
-    else if ( attributeType == QVariant::DateTime )
+    else if ( attributeType == QMetaType::Type::QDateTime )
     {
       fieldType = QStringLiteral( "dateTime" );
     }

@@ -441,7 +441,7 @@ namespace QgsWfs
           }
           else  // Not NULL
           {
-            if ( field.type() == QVariant::Type::Int )
+            if ( field.type() == QMetaType::Type::Int )
             {
               value = it.value().toInt( &conversionSuccess );
               if ( !conversionSuccess )
@@ -452,7 +452,7 @@ namespace QgsWfs
                 break;
               }
             }
-            else if ( field.type() == QVariant::Type::Double )
+            else if ( field.type() == QMetaType::Type::Double )
             {
               value = it.value().toDouble( &conversionSuccess );
               if ( !conversionSuccess )
@@ -463,7 +463,7 @@ namespace QgsWfs
                 break;
               }
             }
-            else if ( field.type() == QVariant::Type::LongLong )
+            else if ( field.type() == QMetaType::Type::LongLong )
             {
               value = it.value().toLongLong( &conversionSuccess );
               if ( !conversionSuccess )
@@ -827,9 +827,9 @@ namespace QgsWfs
 
             QgsMessageLog::logMessage( QStringLiteral( "attr: name=%1 idx=%2 value=%3" ).arg( attrName ).arg( fieldMapIt.value() ).arg( attrValue ) );
 
-            if ( attrType == QVariant::Int )
+            if ( attrType == QMetaType::Type::Int )
               feat.setAttribute( fieldMapIt.value(), attrValue.toInt( &conversionSuccess ) );
-            else if ( attrType == QVariant::Double )
+            else if ( attrType == QMetaType::Type::Double )
               feat.setAttribute( fieldMapIt.value(), attrValue.toDouble( &conversionSuccess ) );
             else
               feat.setAttribute( fieldMapIt.value(), attrValue );

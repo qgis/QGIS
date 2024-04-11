@@ -37,7 +37,7 @@ void QgsServerSettings::initSettings()
                              QgsServerSettingsEnv::DEFAULT_VALUE,
                              QStringLiteral( "Override the default path for user configuration" ),
                              QString(),
-                             QVariant::String,
+                             QMetaType::Type::QString,
                              QVariant( "" ),
                              QVariant()
                            };
@@ -48,7 +48,7 @@ void QgsServerSettings::initSettings()
                              QgsServerSettingsEnv::DEFAULT_VALUE,
                              QStringLiteral( "Activate/Deactivate parallel rendering for WMS getMap request" ),
                              QStringLiteral( "/qgis/parallel_rendering" ),
-                             QVariant::Bool,
+                             QMetaType::Type::Bool,
                              QVariant( false ),
                              QVariant()
                            };
@@ -59,7 +59,7 @@ void QgsServerSettings::initSettings()
                                 QgsServerSettingsEnv::DEFAULT_VALUE,
                                 QStringLiteral( "Number of threads to use when parallel rendering is activated" ),
                                 QStringLiteral( "/qgis/max_threads" ),
-                                QVariant::Int,
+                                QMetaType::Type::Int,
                                 QVariant( -1 ),
                                 QVariant()
                               };
@@ -70,7 +70,7 @@ void QgsServerSettings::initSettings()
                               QgsServerSettingsEnv::DEFAULT_VALUE,
                               QStringLiteral( "Log level" ),
                               QString(),
-                              QVariant::Int,
+                              QMetaType::Type::Int,
                               QVariant::fromValue( Qgis::MessageLevel::NoLevel ),
                               QVariant()
                             };
@@ -81,7 +81,7 @@ void QgsServerSettings::initSettings()
                              QgsServerSettingsEnv::DEFAULT_VALUE,
                              QStringLiteral( "Log file" ),
                              QString(),
-                             QVariant::String,
+                             QMetaType::Type::QString,
                              QVariant( "" ),
                              QVariant()
                            };
@@ -92,7 +92,7 @@ void QgsServerSettings::initSettings()
                                QgsServerSettingsEnv::DEFAULT_VALUE,
                                QStringLiteral( "Activate/Deactivate logging to stderr" ),
                                QString(),
-                               QVariant::Bool,
+                               QMetaType::Type::Bool,
                                QVariant( false ),
                                QVariant()
                              };
@@ -103,7 +103,7 @@ void QgsServerSettings::initSettings()
                              QgsServerSettingsEnv::DEFAULT_VALUE,
                              QStringLiteral( "QGIS project file" ),
                              QString(),
-                             QVariant::String,
+                             QMetaType::Type::QString,
                              QVariant( "" ),
                              QVariant()
                            };
@@ -114,7 +114,7 @@ void QgsServerSettings::initSettings()
                               QgsServerSettingsEnv::DEFAULT_VALUE,
                               QStringLiteral( "Specify the cache directory" ),
                               QStringLiteral( "/cache/directory" ),
-                              QVariant::String,
+                              QMetaType::Type::QString,
                               QVariant( QgsApplication::qgisSettingsDirPath() + "cache" ),
                               QVariant()
                             };
@@ -125,7 +125,7 @@ void QgsServerSettings::initSettings()
                                QgsServerSettingsEnv::DEFAULT_VALUE,
                                QStringLiteral( "Specify the cache size" ),
                                QStringLiteral( "/cache/size" ),
-                               QVariant::LongLong,
+                               QMetaType::Type::LongLong,
                                QVariant( 256 * 1024 * 1024 ),
                                QVariant()
                              };
@@ -136,7 +136,7 @@ void QgsServerSettings::initSettings()
                                           QgsServerSettingsEnv::DEFAULT_VALUE,
                                           QStringLiteral( "Override system locale" ),
                                           QStringLiteral( "/locale/userLocale" ),
-                                          QVariant::String,
+                                          QMetaType::Type::QString,
                                           QVariant( "" ),
                                           QVariant()
                                         };
@@ -147,7 +147,7 @@ void QgsServerSettings::initSettings()
                                      QgsServerSettingsEnv::DEFAULT_VALUE,
                                      QStringLiteral( "Ignore bad layers" ),
                                      QString(),
-                                     QVariant::Bool,
+                                     QMetaType::Type::Bool,
                                      QVariant( false ),
                                      QVariant()
                                    };
@@ -158,7 +158,7 @@ void QgsServerSettings::initSettings()
                                         QgsServerSettingsEnv::DEFAULT_VALUE,
                                         QStringLiteral( "Trust layer metadata" ),
                                         QString(),
-                                        QVariant::Bool,
+                                        QMetaType::Type::Bool,
                                         QVariant( false ),
                                         QVariant()
                                       };
@@ -170,7 +170,7 @@ void QgsServerSettings::initSettings()
                                          QgsServerSettingsEnv::DEFAULT_VALUE,
                                          QStringLiteral( "Force to open layers in read-only mode" ),
                                          QString(),
-                                         QVariant::Bool,
+                                         QMetaType::Type::Bool,
                                          QVariant( false ),
                                          QVariant()
                                        };
@@ -181,7 +181,7 @@ void QgsServerSettings::initSettings()
                                      QgsServerSettingsEnv::DEFAULT_VALUE,
                                      QStringLiteral( "Don't load layouts" ),
                                      QString(),
-                                     QVariant::Bool,
+                                     QMetaType::Type::Bool,
                                      QVariant( false ),
                                      QVariant()
                                    };
@@ -192,7 +192,7 @@ void QgsServerSettings::initSettings()
                                         QgsServerSettingsEnv::DEFAULT_VALUE,
                                         QStringLiteral( "Show group (thousands) separator" ),
                                         QStringLiteral( "/locale/showGroupSeparator" ),
-                                        QVariant::String,
+                                        QMetaType::Type::QString,
                                         QVariant( false ),
                                         QVariant()
                                       };
@@ -203,7 +203,7 @@ void QgsServerSettings::initSettings()
                                QgsServerSettingsEnv::DEFAULT_VALUE,
                                QStringLiteral( "Maximum height for a WMS request. The lower one of this and the project configuration is used." ),
                                QStringLiteral( "/qgis/max_wms_height" ),
-                               QVariant::LongLong,
+                               QMetaType::Type::LongLong,
                                QVariant( -1 ),
                                QVariant()
                              };
@@ -214,7 +214,7 @@ void QgsServerSettings::initSettings()
                               QgsServerSettingsEnv::DEFAULT_VALUE,
                               QStringLiteral( "Maximum width for a WMS request. The most conservative between this and the project one is used" ),
                               QStringLiteral( "/qgis/max_wms_width" ),
-                              QVariant::LongLong,
+                              QMetaType::Type::LongLong,
                               QVariant( -1 ),
                               QVariant()
                             };
@@ -225,7 +225,7 @@ void QgsServerSettings::initSettings()
                                            QgsServerSettingsEnv::DEFAULT_VALUE,
                                            QStringLiteral( "Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for" ),
                                            QStringLiteral( "/qgis/server_api_resources_directory" ),
-                                           QVariant::String,
+                                           QMetaType::Type::QString,
                                            QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api" ) ),
                                            QString()
                                          };
@@ -237,7 +237,7 @@ void QgsServerSettings::initSettings()
                                      QgsServerSettingsEnv::DEFAULT_VALUE,
                                      QStringLiteral( "Maximum value for \"limit\" in a features request, defaults to 10000" ),
                                      QStringLiteral( "/qgis/server_api_wfs3_max_limit" ),
-                                     QVariant::LongLong,
+                                     QMetaType::Type::LongLong,
                                      QVariant( 10000 ),
                                      QVariant()
                                    };
@@ -249,7 +249,7 @@ void QgsServerSettings::initSettings()
                                          QgsServerSettingsEnv::DEFAULT_VALUE,
                                          QStringLiteral( "Directories used by the landing page service to find .qgs and .qgz projects" ),
                                          QStringLiteral( "/qgis/server_projects_directories" ),
-                                         QVariant::String,
+                                         QMetaType::Type::QString,
                                          QVariant( "" ),
                                          QVariant()
                                        };
@@ -261,7 +261,7 @@ void QgsServerSettings::initSettings()
                                            QgsServerSettingsEnv::DEFAULT_VALUE,
                                            QStringLiteral( "PostgreSQL connection strings used by the landing page service to find projects" ),
                                            QStringLiteral( "/qgis/server_projects_pg_connections" ),
-                                           QVariant::String,
+                                           QMetaType::Type::QString,
                                            QVariant( "" ),
                                            QVariant()
                                          };
@@ -273,7 +273,7 @@ void QgsServerSettings::initSettings()
                                               QgsServerSettingsEnv::DEFAULT_VALUE,
                                               QStringLiteral( "Landing page base URL path prefix" ),
                                               QStringLiteral( "/qgis/server_landing_page_base_url_prefix" ),
-                                              QVariant::String,
+                                              QMetaType::Type::QString,
                                               QVariant( "" ),
                                               QVariant()
                                             };
@@ -285,7 +285,7 @@ void QgsServerSettings::initSettings()
                                 QgsServerSettingsEnv::DEFAULT_VALUE,
                                 QStringLiteral( "Add detailed profile information to the logs, only effective when QGIS_SERVER_LOG_LEVEL=0" ),
                                 QStringLiteral( "/qgis/server_log_profile" ),
-                                QVariant::Bool,
+                                QMetaType::Type::Bool,
                                 QVariant( false ),
                                 QVariant()
                               };
@@ -297,7 +297,7 @@ void QgsServerSettings::initSettings()
                                 QgsServerSettingsEnv::DEFAULT_VALUE,
                                 QStringLiteral( "The default service URL" ),
                                 QStringLiteral( "/qgis/server_service_url" ),
-                                QVariant::String,
+                                QMetaType::Type::QString,
                                 QVariant( "" ),
                                 QVariant()
                               };
@@ -308,7 +308,7 @@ void QgsServerSettings::initSettings()
                                    QgsServerSettingsEnv::DEFAULT_VALUE,
                                    QStringLiteral( "The default WMS service URL" ),
                                    QStringLiteral( "/qgis/server_wms_service_url" ),
-                                   QVariant::String,
+                                   QMetaType::Type::QString,
                                    QVariant( "" ),
                                    QVariant()
                                  };
@@ -319,7 +319,7 @@ void QgsServerSettings::initSettings()
                                    QgsServerSettingsEnv::DEFAULT_VALUE,
                                    QStringLiteral( "The default WFS service URL" ),
                                    QStringLiteral( "/qgis/server_wfs_service_url" ),
-                                   QVariant::String,
+                                   QMetaType::Type::QString,
                                    QVariant( "" ),
                                    QVariant()
                                  };
@@ -330,7 +330,7 @@ void QgsServerSettings::initSettings()
                                    QgsServerSettingsEnv::DEFAULT_VALUE,
                                    QStringLiteral( "The default WcS service URL" ),
                                    QStringLiteral( "/qgis/server_wcs_service_url" ),
-                                   QVariant::String,
+                                   QMetaType::Type::QString,
                                    QVariant( "" ),
                                    QVariant()
                                  };
@@ -341,7 +341,7 @@ void QgsServerSettings::initSettings()
                                     QgsServerSettingsEnv::DEFAULT_VALUE,
                                     QStringLiteral( "The default WMTS service URL" ),
                                     QStringLiteral( "/qgis/server_wmts_service_url" ),
-                                    QVariant::String,
+                                    QMetaType::Type::QString,
                                     QVariant( "" ),
                                     QVariant()
                                   };
@@ -352,7 +352,7 @@ void QgsServerSettings::initSettings()
                                               QgsServerSettingsEnv::DEFAULT_VALUE,
                                               QStringLiteral( "The default project cache check interval (in ms)" ),
                                               QStringLiteral( "/qgis/server_project_cache_check_interval" ),
-                                              QVariant::Int,
+                                              QMetaType::Type::Int,
                                               QVariant( 0 ),
                                               QVariant()
                                             };
@@ -363,7 +363,7 @@ void QgsServerSettings::initSettings()
                                           QgsServerSettingsEnv::DEFAULT_VALUE,
                                           QStringLiteral( "Project's cache strategy. Possible values are 'off','filesystem' or 'periodic'" ),
                                           QStringLiteral( "/qgis/server_project_cache_strategy" ),
-                                          QVariant::String,
+                                          QMetaType::Type::QString,
                                           QVariant( "" ),
                                           QVariant()
                                         };
@@ -373,7 +373,7 @@ void QgsServerSettings::initSettings()
                                            QgsServerSettingsEnv::DEFAULT_VALUE,
                                            QStringLiteral( "List of comma separated SQL tokens to be added to the list of allowed tokens that the services accepts when filtering features" ),
                                            QStringLiteral( "/qgis/server_allowed_extra_sql_tokens" ),
-                                           QVariant::String,
+                                           QMetaType::Type::QString,
                                            QVariant( "" ),
                                            QVariant()
                                          };
@@ -383,7 +383,7 @@ void QgsServerSettings::initSettings()
                                      QgsServerSettingsEnv::DEFAULT_VALUE,
                                      QStringLiteral( "The QGIS Server application name" ),
                                      QStringLiteral( "/qgis/application_full_name" ),
-                                     QVariant::String,
+                                     QMetaType::Type::QString,
                                      QVariant( QgsApplication::applicationFullName() ),
                                      QVariant()
                                    };
@@ -393,7 +393,7 @@ void QgsServerSettings::initSettings()
                                            QgsServerSettingsEnv::DEFAULT_VALUE,
                                            QStringLiteral( "The QGIS Server capabilities cache size" ),
                                            QStringLiteral( "/qgis/capabilities_cache_size" ),
-                                           QVariant::Int,
+                                           QMetaType::Type::Int,
                                            QVariant( 40 ),
                                            QVariant()
                                          };
@@ -505,7 +505,7 @@ void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QSt
 
     // an empty string can be returned from QSettings. In this case, we want
     // to use the default value
-    if ( s.type == QVariant::String && s.val.toString().isEmpty() )
+    if ( s.type == QMetaType::Type::QString && s.val.toString().isEmpty() )
     {
       s.val = QVariant();
       s.src  = QgsServerSettingsEnv::DEFAULT_VALUE;

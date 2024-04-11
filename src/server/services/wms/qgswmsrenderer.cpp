@@ -2230,7 +2230,7 @@ namespace QgsWms
         int index = 0;
         for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
         {
-          fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
+          fields.append( QgsField( layer->bandName( it.key() ), QMetaType::Type::Double ) );
           feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
         }
         feature.setFields( fields );
@@ -2244,13 +2244,13 @@ namespace QgsWms
         for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
         {
           QVariant value = it.value();
-          if ( value.type() == QVariant::Bool && !value.toBool() )
+          if ( value.userType() == QMetaType::Type::Bool && !value.toBool() )
           {
             // sublayer not visible or not queryable
             continue;
           }
 
-          if ( value.type() == QVariant::String )
+          if ( value.userType() == QMetaType::Type::QString )
           {
             continue;
           }
@@ -2296,13 +2296,13 @@ namespace QgsWms
         for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
         {
           QVariant value = it.value();
-          if ( value.type() == QVariant::Bool && !value.toBool() )
+          if ( value.userType() == QMetaType::Type::Bool && !value.toBool() )
           {
             // sublayer not visible or not queryable
             continue;
           }
 
-          if ( value.type() == QVariant::String )
+          if ( value.userType() == QMetaType::Type::QString )
           {
             continue;
           }

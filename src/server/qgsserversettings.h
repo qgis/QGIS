@@ -100,7 +100,7 @@ class SERVER_EXPORT QgsServerSettings
       QgsServerSettingsEnv::Source src;
       QString descr;
       QString iniKey;
-      QVariant::Type type;
+      QMetaType::Type type;
       QVariant defaultVal;
       QVariant val;
     };

@@ -59,11 +59,11 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      */
     enum class Type
     {
-      String = QVariant::String,    //! parameter is a string
-      Integer = QVariant::LongLong, //! parameter is an integer
-      Double = QVariant::Double,    //! parameter is a double
-      Boolean = QVariant::Bool,     //! parameter is a boolean
-      List = QVariant::StringList,  //! parameter is a (comma separated) list of strings, the handler will perform any further required conversion of the list values
+      String = QMetaType::Type::QString,    //! parameter is a string
+      Integer = QMetaType::Type::LongLong, //! parameter is an integer
+      Double = QMetaType::Type::Double,    //! parameter is a double
+      Boolean = QMetaType::Type::Bool,     //! parameter is a boolean
+      List = QMetaType::Type::QStringList,  //! parameter is a (comma separated) list of strings, the handler will perform any further required conversion of the list values
     };
     Q_ENUM( Type )
 

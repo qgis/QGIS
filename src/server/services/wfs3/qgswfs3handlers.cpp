@@ -1101,11 +1101,11 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
       QgsServerQueryStringParameter::Type t;
       switch ( f.type() )
       {
-        case QVariant::Int:
-        case QVariant::LongLong:
+        case QMetaType::Type::Int:
+        case QMetaType::Type::LongLong:
           t = QgsServerQueryStringParameter::Type::Integer;
           break;
-        case QVariant::Double:
+        case QMetaType::Type::Double:
           t = QgsServerQueryStringParameter::Type::Double;
           break;
         // TODO: date & time
