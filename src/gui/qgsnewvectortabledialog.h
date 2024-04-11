@@ -203,7 +203,7 @@ class QgsNewVectorTableFieldModel: public QgsFieldModel
 
     const QList< QgsVectorDataProvider::NativeType> mNativeTypes;
     QString typeDesc( const QString &typeName ) const;
-    QVariant::Type type( const QString &typeName ) const;
+    QMetaType::Type type( const QString &typeName ) const;
 
 };
 

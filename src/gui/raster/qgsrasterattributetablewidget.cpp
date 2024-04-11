@@ -427,7 +427,7 @@ void QgsRasterAttributeTableWidget::addRow()
     QList<QgsRasterAttributeTable::Field> fields { mAttributeTableBuffer->fields() };
     for ( const QgsRasterAttributeTable::Field &field : std::as_const( fields ) )
     {
-      rowData.push_back( QVariant( field.type ) );
+      rowData.push_back( QgsVariantUtils::createVariant( field.type ) );
     }
 
     result = mModel->insertRow( position, rowData, &errorMessage );
@@ -523,7 +523,7 @@ void QgsRasterAttributeTableWidget::setDelegates()
       }
 
       // Set delegates for doubles
-      if ( ( ! f.isColor() && ! f.isRamp() ) && f.type == QVariant::Type::Double )
+      if ( ( ! f.isColor() && ! f.isRamp() ) && f.type == QMetaType::Type::Double )
       {
         mRATView->setItemDelegateForColumn( fieldIdx, new LocalizedDoubleDelegate( mRATView ) );
       }

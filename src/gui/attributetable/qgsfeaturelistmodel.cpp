@@ -68,7 +68,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
-      return QVariant( QVariant::Invalid );
+      return QgsVariantUtils::createVariant( QMetaType::Type::UnknownType );
     }
   }
 

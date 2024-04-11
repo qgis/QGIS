@@ -562,9 +562,9 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
     bool forceRepresentedValue = false;
     if ( QgsVariantUtils::isNull( value ) )
       strValue = QStringLiteral( "NULL" );
-    else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong || value.type() == QVariant::Bool )
+    else if ( value.userType() == QMetaType::Type::Int || value.userType() == QMetaType::Type::Double || value.userType() == QMetaType::Type::LongLong || value.userType() == QMetaType::Type::Bool )
       strValue = value.toString();
-    else if ( value.type() == QVariant::StringList )
+    else if ( value.userType() == QMetaType::Type::QStringList )
     {
       QString result;
       const QStringList strList = value.toStringList();
@@ -578,7 +578,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
       strValue = QStringLiteral( "array(%1)" ).arg( result );
       forceRepresentedValue = true;
     }
-    else if ( value.type() == QVariant::List )
+    else if ( value.userType() == QMetaType::Type::QVariantList )
     {
       QString result;
       const QList list = value.toList();

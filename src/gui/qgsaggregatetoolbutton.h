@@ -43,12 +43,12 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     /**
      * Based on the \a type of underlying data, some aggregates will be available or not.
      */
-    void setType( QVariant::Type type );
+    void setType( QMetaType::Type type );
 
     /**
      * Based on the \a type of underlying data, some aggregates will be available or not.
      */
-    QVariant::Type type() const;
+    QMetaType::Type type() const;
 
     /**
      * When this flag is FALSE, the aggregate will be deactivated. I.e. no aggregate is chosen.
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
   private:
     void updateAvailableAggregates();
     QMenu *mMenu = nullptr;
-    QVariant::Type mType = QVariant::Invalid;
+    QMetaType::Type mType = QMetaType::Type::UnknownType;
     bool mActive = false;
     QString mAggregate;
     QList<QgsAggregateCalculator::AggregateInfo> mAvailableAggregates;

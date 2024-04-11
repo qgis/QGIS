@@ -31,7 +31,7 @@ QgsAggregateToolButton::QgsAggregateToolButton()
   setText( tr( "Exclude" ) );
 }
 
-void QgsAggregateToolButton::setType( QVariant::Type type )
+void QgsAggregateToolButton::setType( QMetaType::Type type )
 {
   if ( mType == type )
     return;
@@ -118,7 +118,7 @@ bool QgsAggregateToolButton::active() const
   return mActive;
 }
 
-QVariant::Type QgsAggregateToolButton::type() const
+QMetaType::Type QgsAggregateToolButton::type() const
 {
   return mType;
 }

@@ -802,8 +802,8 @@ void QgsOgrSourceSelect::fillOpenOptions()
       QComboBox *cb = new QComboBox();
       cb->addItem( tr( "Yes" ), "YES" );
       cb->addItem( tr( "No" ), "NO" );
-      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
-      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
+      int idx = cb->findData( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
       cb->setCurrentIndex( idx );
       control = cb;
     }
@@ -814,8 +814,8 @@ void QgsOgrSourceSelect::fillOpenOptions()
       {
         cb->addItem( val, val );
       }
-      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
-      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
+      int idx = cb->findData( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
       cb->setCurrentIndex( idx );
       control = cb;
     }

@@ -748,7 +748,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       const WidgetData &widgetData = getWidgetData( index.column() );
       QString tooltip = widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
-      if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
+      if ( val.userType() == QMetaType::Type::QString && QgsStringUtils::isUrl( val.toString() ) )
       {
         tooltip = tr( "%1 (Ctrl+click to open)" ).arg( tooltip );
       }
@@ -818,7 +818,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
         if ( role == Qt::FontRole )
           return style.font();
       }
-      else if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
+      else if ( val.userType() == QMetaType::Type::QString && QgsStringUtils::isUrl( val.toString() ) )
       {
         if ( role == Qt::ForegroundRole )
         {

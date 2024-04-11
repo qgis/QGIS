@@ -269,7 +269,7 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
 
     if ( f.isNumeric() )
       aggregate.aggregate = QStringLiteral( "sum" );
-    else if ( f.type() == QVariant::String || ( f.type() == QVariant::List && f.subType() == QVariant::String ) )
+    else if ( f.type() == QMetaType::Type::QString || ( f.type() == QMetaType::Type::QVariantList && f.subType() == QMetaType::Type::QString ) )
       aggregate.aggregate = QStringLiteral( "concatenate" );
 
     aggregate.delimiter = ',';

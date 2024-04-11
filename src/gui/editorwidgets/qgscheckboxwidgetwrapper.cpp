@@ -29,7 +29,7 @@ QVariant QgsCheckboxWidgetWrapper::value() const
     return QVariant();
   }
 
-  if ( field().type() == QVariant::Bool )
+  if ( field().type() == QMetaType::Type::Bool )
   {
     if ( mGroupBox )
     {
@@ -111,7 +111,7 @@ void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVaria
   }
   else
   {
-    if ( field().type() == QVariant::Bool )
+    if ( field().type() == QMetaType::Type::Bool )
     {
       state = value.toBool() ? Qt::Checked : Qt::Unchecked;
     }

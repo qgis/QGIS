@@ -662,7 +662,7 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
   }
 
   const QVariant unitData = mUnitsComboBox->itemData( index );
-  if ( unitData.type() == QVariant::Invalid )
+  if ( unitData.userType() == QMetaType::Type::UnknownType )
   {
     return;
   }

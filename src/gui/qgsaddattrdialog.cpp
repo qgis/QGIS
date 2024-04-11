@@ -171,12 +171,12 @@ QgsField QgsAddAttrDialog::field() const
 
   QgsField res = QgsField(
                    mNameEdit->text(),
-                   ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
+                   ( QMetaType::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
                    mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
                    mLength->value(),
                    mPrec->isEnabled() ? mPrec->value() : 0,
                    mCommentEdit->text(),
-                   static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
+                   static_cast<QMetaType::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QMetaType::Type::QVariantMap ? QMetaType::Type::QString : QMetaType::Type::UnknownType
                  );
 
   if ( !mAliasEdit->text().isEmpty() )

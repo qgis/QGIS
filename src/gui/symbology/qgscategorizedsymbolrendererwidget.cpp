@@ -115,7 +115,7 @@ Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex &index
   if ( index.column() == 1 )
   {
     const QgsRendererCategory category = mRenderer->categories().value( index.row() );
-    if ( category.value().type() != QVariant::List )
+    if ( category.value().userType() != QMetaType::Type::QVariantList )
     {
       flags |= Qt::ItemIsEditable;
     }
@@ -157,7 +157,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       {
         case 1:
         {
-          if ( category.value().type() == QVariant::List )
+          if ( category.value().userType() == QMetaType::Type::QVariantList )
           {
             QStringList res;
             const QVariantList list = category.value().toList();
@@ -187,7 +187,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
 
     case Qt::FontRole:
     {
-      if ( index.column() == 1 && category.value().type() != QVariant::List && ( QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
+      if ( index.column() == 1 && category.value().userType() != QMetaType::Type::QVariantList && ( QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
       {
         QFont italicFont;
         italicFont.setItalic( true );
@@ -209,7 +209,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
     case Qt::ForegroundRole:
     {
       QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
-      if ( index.column() == 1 && ( category.value().type() == QVariant::List
+      if ( index.column() == 1 && ( category.value().userType() == QMetaType::Type::QVariantList
                                     || QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
       {
         QColor fadedTextColor = brush.color();
@@ -230,7 +230,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       {
         case 1:
         {
-          if ( category.value().type() == QVariant::List )
+          if ( category.value().userType() == QMetaType::Type::QVariantList )
           {
             QStringList res;
             const QVariantList list = category.value().toList();
@@ -284,17 +284,17 @@ bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex &index, const
       // try to preserve variant type for this value, unless it was an empty string (other values)
       QVariant val = value;
       const QVariant previousValue = mRenderer->categories().value( index.row() ).value();
-      if ( previousValue.type() != QVariant::String && ! previousValue.toString().isEmpty() )
+      if ( previousValue.userType() != QMetaType::Type::QString && ! previousValue.toString().isEmpty() )
       {
-        switch ( previousValue.type() )
+        switch ( previousValue.userType() )
         {
-          case QVariant::Int:
+          case QMetaType::Type::Int:
             val = value.toInt();
             break;
-          case QVariant::Double:
+          case QMetaType::Type::Double:
             val = value.toDouble();
             break;
-          case QVariant::List:
+          case QMetaType::Type::QVariantList:
           {
             const QStringList parts = value.toString().split( ';' );
             QVariantList list;
@@ -507,10 +507,10 @@ QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( 
 
 QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  QVariant::Type userType { index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) ).type() };
+  QMetaType::Type userType { static_cast<QMetaType::Type>( index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) ).userType() ) };
 
   // In case of new values the type is not known
-  if ( userType == QVariant::String && QgsVariantUtils::isNull( index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) ) ) )
+  if ( userType == QMetaType::Type::QString && QgsVariantUtils::isNull( index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) ) ) )
   {
     bool isExpression;
     bool isValid;
@@ -534,7 +534,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
         const QVariant value = exp.evaluate( &expressionContext );
         if ( !exp.hasEvalError() )
         {
-          userType = value.type();
+          userType = static_cast<QMetaType::Type>( value.userType() );
         }
       }
     }
@@ -543,7 +543,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
   QgsDoubleSpinBox *editor = nullptr;
   switch ( userType )
   {
-    case QVariant::Type::Double:
+    case QMetaType::Type::Double:
     {
       editor = new QgsDoubleSpinBox( parent );
       bool ok;
@@ -564,7 +564,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
       editor->setMinimum( std::numeric_limits<double>::lowest() );
       break;
     }
-    case QVariant::Type::Int:
+    case QMetaType::Type::Int:
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
@@ -573,7 +573,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
       editor->setMinimum( std::numeric_limits<int>::min() );
       break;
     }
-    case QVariant::Type::Char:
+    case QMetaType::Type::QChar:
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
@@ -582,7 +582,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
       editor->setMinimum( std::numeric_limits<char>::min() );
       break;
     }
-    case QVariant::Type::UInt:
+    case QMetaType::Type::UInt:
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
@@ -591,7 +591,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
       editor->setMinimum( 0 );
       break;
     }
-    case QVariant::Type::LongLong:
+    case QMetaType::Type::LongLong:
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
@@ -600,7 +600,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
       editor->setMinimum( std::numeric_limits<qlonglong>::min() );
       break;
     }
-    case QVariant::Type::ULongLong:
+    case QMetaType::Type::ULongLong:
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
@@ -979,7 +979,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
       for ( int j = 0; j < prevCats.size() && !contains; ++j )
       {
         const QVariant prevCatValue = prevCats.at( j ).value();
-        if ( prevCatValue.type() == QVariant::List )
+        if ( prevCatValue.userType() == QMetaType::Type::QVariantList )
         {
           const QVariantList list = prevCatValue.toList();
           for ( const QVariant &v : list )
@@ -1420,7 +1420,7 @@ void QgsCategorizedSymbolRendererWidget::mergeSelectedCategories()
   {
     const QVariant v = categories.at( i ).value();
 
-    if ( v.type() == QVariant::List )
+    if ( v.userType() == QMetaType::Type::QVariantList )
     {
       values.append( v.toList() );
     }
@@ -1450,7 +1450,7 @@ void QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories()
   for ( const int i : categoryIndexes )
   {
     const QVariant v = categories.at( i ).value();
-    if ( v.type() != QVariant::List )
+    if ( v.userType() != QMetaType::Type::QVariantList )
       continue;
 
     const QVariantList list = v.toList();
@@ -1485,7 +1485,7 @@ void QgsCategorizedSymbolRendererWidget::showContextMenu( QPoint )
     const QList<int> categoryIndexes = selectedCategories();
     const QgsCategoryList &categories = mRenderer->categories();
     const QVariant v = categories.at( categoryIndexes.at( 0 ) ).value();
-    if ( v.type() == QVariant::List )
+    if ( v.userType() == QMetaType::Type::QVariantList )
       mContextMenu->addAction( mUnmergeCategoriesAction );
   }
   else if ( viewCategories->selectionModel()->selectedRows().count() > 1 )

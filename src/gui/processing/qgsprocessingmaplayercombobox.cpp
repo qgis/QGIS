@@ -281,7 +281,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   }
 
   QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( val.value< QObject * >() );
-  if ( !layer && val.type() == QVariant::String )
+  if ( !layer && val.userType() == QMetaType::Type::QString )
   {
     layer = QgsProcessingUtils::mapLayerFromString( val.toString(), context, false );
   }

@@ -90,7 +90,7 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
      * \param errorMessage optional error message
      * \returns true on success
      */
-    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
+    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Remove the field at given \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
