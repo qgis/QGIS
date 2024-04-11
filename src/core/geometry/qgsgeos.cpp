@@ -98,7 +98,12 @@ static void printGEOSNotice( const char *fmt, ... )
 // QgsGeosContext
 //
 
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsGeosContext QgsGeosContext::sGeosContext;
+#else
+QThreadStorage< QgsGeosContext * > QgsGeosContext::sGeosContext;
+#endif
+
 
 QgsGeosContext::QgsGeosContext()
 {
@@ -122,7 +127,21 @@ QgsGeosContext::~QgsGeosContext()
 
 GEOSContextHandle_t QgsGeosContext::get()
 {
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
   return sGeosContext.mContext;
+#else
+  GEOSContextHandle_t gContext = nullptr;
+  if ( sGeosContext.hasLocalData() )
+  {
+    gContext = sGeosContext.localData()->mContext;
+  }
+  else
+  {
+    sGeosContext.setLocalData( new QgsGeosContext() );
+    gContext = sGeosContext.localData()->mContext;
+  }
+  return gContext;
+#endif
 }
 
 //
