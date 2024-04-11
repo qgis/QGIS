@@ -59,10 +59,10 @@ class QgsVariantDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model,
                        const QModelIndex &index ) const override;
 
-    static bool isSupportedType( QVariant::Type type );
+    static bool isSupportedType( QMetaType::Type type );
     static QString displayText( const QVariant &value );
 
-    static QVariant::Type type( const QVariant &value );
+    static QMetaType::Type type( const QVariant &value );
 
   private:
     QRegularExpression mBoolExp;

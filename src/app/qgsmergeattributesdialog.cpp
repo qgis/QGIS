@@ -278,7 +278,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   }
 }
 
-QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType, int column )
+QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QMetaType::Type columnType, int column )
 {
   QComboBox *newComboBox = new QComboBox();
   //add items for feature
@@ -290,9 +290,9 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
 
   switch ( columnType )
   {
-    case QVariant::Double:
-    case QVariant::Int:
-    case QVariant::LongLong:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
     {
       for ( Qgis::Statistic stat : std::as_const( DISPLAY_STATS ) )
       {
@@ -300,7 +300,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
       }
       break;
     }
-    case QVariant::String:
+    case QMetaType::Type::QString:
       newComboBox->addItem( tr( "Concatenation" ), QStringLiteral( "concat" ) );
       break;
 
@@ -449,7 +449,7 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
     return f.attributes().at( fieldIdx );
   }
 
-  return QVariant( mVectorLayer->fields().at( fieldIdx ).type() );
+  return QgsVariantUtils::createVariant( mVectorLayer->fields().at( fieldIdx ).type() );
 }
 
 void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId featureId )
@@ -493,13 +493,13 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, Qgis::Statistic stat 
 
   if ( values.isEmpty() )
   {
-    return QVariant( mVectorLayer->fields().at( col ).type() );
+    return QgsVariantUtils::createVariant( mVectorLayer->fields().at( col ).type() );
   }
 
   summary.calculate( values );
 
   double val = summary.statistic( stat );
-  return std::isnan( val ) ? QVariant( QVariant::Double ) : val;
+  return std::isnan( val ) ? QgsVariantUtils::createVariant( QMetaType::Type::Double ) : val;
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )

@@ -1025,7 +1025,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       bool isString = false;
       if ( value.isValid( ) )
       {
-        if ( value.type() == QVariant::Double )
+        if ( value.userType() == QMetaType::Type::Double )
         {
           bool ok;
           const double val( value.toDouble( &ok ) );
@@ -1047,7 +1047,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
             formattedValue = QLocale().toString( val, 'f', precision );
           }
         }
-        else if ( value.type() == QVariant::Int )
+        else if ( value.userType() == QMetaType::Type::Int )
         {
           bool ok;
           const double val( value.toInt( &ok ) );
@@ -1056,7 +1056,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
             formattedValue =  QLocale().toString( val, 'f', 0 );
           }
         }
-        else if ( value.type() == QVariant::LongLong )
+        else if ( value.userType() == QMetaType::Type::LongLong )
         {
           bool ok;
           const double val( value.toLongLong( &ok ) );

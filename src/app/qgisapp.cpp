@@ -8518,7 +8518,7 @@ QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
 
   if ( mAttributesAsDisplayedValues.contains( idx ) )
   {
-    return QgsField( field.name(), QVariant::String );
+    return QgsField( field.name(), QMetaType::Type::QString );
   }
   return field;
 }
@@ -10656,7 +10656,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
 
       // Fallback to string
       QgsField strField { f };
-      strField.setType( QVariant::String );
+      strField.setType( QMetaType::Type::QString );
       if ( !layer->addAttribute( strField ) )
       {
         visibleMessageBar()->pushMessage( tr( "Paste features" ),
