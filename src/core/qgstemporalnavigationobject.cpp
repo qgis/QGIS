@@ -256,7 +256,7 @@ void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
 
   mCumulativeTemporalRange = state;
 
-  if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode == Qgis::TemporalNavigationMode::Animated )
+  if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode == Animated )
   {
     emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
   }
