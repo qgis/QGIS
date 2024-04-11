@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometry.h"
+#include "qgsconfig.h"
 #include <geos_c.h>
 
 class QgsLineString;
@@ -28,6 +29,9 @@ class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
 
+#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#include <QThreadStorage>
+#endif
 
 /**
    * \class QgsGeosContext
@@ -55,7 +59,12 @@ class CORE_EXPORT QgsGeosContext
      * Thread local GEOS context storage. A new GEOS context will be created
      * for every thread.
      */
+
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
     static thread_local QgsGeosContext sGeosContext;
+#else
+    static QThreadStorage< QgsGeosContext * > sGeosContext;
+#endif
 };
 
 /**
