@@ -1423,7 +1423,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
           const auto dstFieldType = dstFields.at( j ).type();
           if ( QgsVariantUtils::isNull( v ) )
             dstFeat.setAttribute( j, QgsVariantUtils::createVariant( dstFieldType ) );
-          else if ( QgsWFSUtils::isCompatibleType( v.userType(), dstFieldType ) )
+          else if ( QgsWFSUtils::isCompatibleType( static_cast<QMetaType::Type>( v.userType() ), dstFieldType ) )
             dstFeat.setAttribute( j, v );
           else
             dstFeat.setAttribute( j, QgsVectorDataProvider::convertValue( dstFieldType, v.toString() ) );
