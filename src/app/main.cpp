@@ -408,6 +408,7 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "OpenType support missing for" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "Wayland does not support" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "This plugin supports grabbing the mouse only for popup windows" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) )
         break;
 
