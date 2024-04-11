@@ -27,6 +27,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudlayer.h"
 #include "qgsprocessingmodelchildparametersource.h"
+#include "qobjectuniqueptr.h"
 
 #include <QAbstractButton>
 
@@ -72,6 +73,7 @@ class QgsCheckableComboBox;
 class QgsMapLayerComboBox;
 class QgsProcessingPointCloudExpressionLineEdit;
 class QgsProcessingRasterCalculatorExpressionLineEdit;
+class QgsRubberBand;
 
 ///@cond PRIVATE
 
@@ -1005,6 +1007,7 @@ class GUI_EXPORT QgsProcessingPointPanel : public QWidget
     QgsProcessingPointPanel( QWidget *parent );
     void setMapCanvas( QgsMapCanvas *canvas );
     void setAllowNull( bool allowNull );
+    void setShowPointOnCanvas( bool show );
 
     QVariant value() const;
     void clear();
@@ -1020,15 +1023,20 @@ class GUI_EXPORT QgsProcessingPointPanel : public QWidget
     void selectOnCanvas();
     void updatePoint( const QgsPointXY &point );
     void pointPicked();
+    void textChanged( const QString &text );
 
   private:
+    void updateRubberBand();
 
     QgsFilterLineEdit *mLineEdit = nullptr;
+    bool mShowPointOnCanvas = false;
     QToolButton *mButton = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsCoordinateReferenceSystem mCrs;
     QPointer< QgsMapTool > mPrevTool;
     std::unique_ptr< QgsProcessingPointMapTool > mTool;
+    QgsPointXY mPoint;
+    QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
     friend class TestProcessingGui;
 };
 
