@@ -139,7 +139,7 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
   {
     QgsFields outFields;
     outFields.append( QgsField( QStringLiteral( "volume" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QQMetaType::Type::Double QString(), 20, 8 ) );
+    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QMetaType::Type::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "pixel_count" ), QMetaType::Type::LongLong ) );
     sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )
@@ -252,6 +252,3 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
 
 
 ///@endcond
-
-
-

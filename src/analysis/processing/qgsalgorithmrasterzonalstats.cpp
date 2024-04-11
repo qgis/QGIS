@@ -178,7 +178,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   {
     QgsFields outFields;
     outFields.append( QgsField( QStringLiteral( "zone" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( areaUnit.isEmpty() ? "area" : areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QQMetaType::Type::Double QString(), 20, 8 ) );
+    outFields.append( QgsField( areaUnit.isEmpty() ? "area" : areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QMetaType::Type::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "sum" ), QMetaType::Type::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "count" ), QMetaType::Type::LongLong, QString(), 20 ) );
     outFields.append( QgsField( QStringLiteral( "min" ), QMetaType::Type::Double, QString(), 20, 8 ) );
