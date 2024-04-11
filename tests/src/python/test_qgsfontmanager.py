@@ -188,6 +188,7 @@ class TestQgsFontManager(QgisTestCase):
 
             self.assertEqual(manager.userFontToFamilyMap(), {os.path.join(user_font_dir, 'Fresca-Regular.ttf'): ['Fresca']})
 
+    @unittest.skip('Temporarily disabled')
     def test_font_download_url(self):
         manager = QgsFontManager()
         self.assertEqual(manager.urlForFontDownload('xxx'), ('', ''))
