@@ -675,7 +675,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
 
           mRelation.referencingLayer()->changeAttributeValue( fid,
               referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
-              referencingLayer->fields().field( polyRel.referencedLayerField() ).type() );
+              QgsVariantUtils::createVariant( referencingLayer->fields().field( polyRel.referencedLayerField() ).type() ) );
           break;
         }
         case Qgis::RelationshipType::Normal:
