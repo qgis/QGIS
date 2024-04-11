@@ -82,8 +82,8 @@ class APP_EXPORT QgsAppGpsLogging: public QObject
     std::unique_ptr< QgsVectorLayer > mGpkgPointsLayer;
     std::unique_ptr< QgsVectorLayer > mGpkgTracksLayer;
 
-    static const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> sPointFields;
-    static const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> sTrackFields;
+    static const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QMetaType::Type, QString >>> sPointFields;
+    static const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QMetaType::Type, QString >>> sTrackFields;
 
 };
 

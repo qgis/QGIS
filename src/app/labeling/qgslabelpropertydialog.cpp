@@ -152,12 +152,12 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
         const QgsFields &layerFields = vlayer->fields();
         switch ( layerFields.at( mCurLabelField ).type() )
         {
-          case QVariant::Double:
+          case QMetaType::Type::Double:
             mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
             break;
-          case QVariant::Int:
-          case QVariant::UInt:
-          case QVariant::LongLong:
+          case QMetaType::Type::Int:
+          case QMetaType::Type::UInt:
+          case QMetaType::Type::LongLong:
             mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
             break;
           default:

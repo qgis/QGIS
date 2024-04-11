@@ -309,7 +309,7 @@ QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *p
 
 QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
-  if ( value.userType() == QVariant::Double )
+  if ( value.userType() == QMetaType::Type::Double )
   {
     return locale.toString( value.toDouble(), 'f', mDecimals );
   }

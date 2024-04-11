@@ -476,10 +476,10 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx ) const
     // Only string and datetime fields are supported
     switch ( vlayer->fields().at( idx ).type() )
     {
-      case QVariant::String:
+      case QMetaType::Type::QString:
         value = timestamp.toString( Qt::DateFormat::ISODate );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         value = timestamp;
         break;
       default:

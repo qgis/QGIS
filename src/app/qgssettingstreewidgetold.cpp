@@ -267,7 +267,7 @@ void QgsSettingsTreeWidgetOld::updateChildItems( QTreeWidgetItem *parent )
     }
 
     const QVariant value = mSettings.value( key );
-    if ( value.type() == QVariant::Invalid )
+    if ( value.userType() == QMetaType::Type::UnknownType )
     {
       child->setText( ColumnType, QStringLiteral( "Invalid" ) );
     }
