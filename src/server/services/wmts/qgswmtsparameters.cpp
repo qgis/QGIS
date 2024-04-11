@@ -39,7 +39,7 @@ namespace QgsWmts
   // QgsWmtsParameter
   //
   QgsWmtsParameter::QgsWmtsParameter( const QgsWmtsParameter::Name name,
-                                      const QVariant::Type type,
+                                      const QMetaType::Type type,
                                       const QVariant defaultValue )
     : QgsServerParameterDefinition( type, defaultValue )
     , mName( name )
@@ -93,17 +93,17 @@ namespace QgsWmts
     save( pFormat );
 
     const QgsWmtsParameter pTileMatrix = QgsWmtsParameter( QgsWmtsParameter::TILEMATRIX,
-                                         QVariant::Int,
+                                         QMetaType::Type::Int,
                                          QVariant( -1 ) );
     save( pTileMatrix );
 
     const QgsWmtsParameter pTileRow = QgsWmtsParameter( QgsWmtsParameter::TILEROW,
-                                      QVariant::Int,
+                                      QMetaType::Type::Int,
                                       QVariant( -1 ) );
     save( pTileRow );
 
     const QgsWmtsParameter pTileCol = QgsWmtsParameter( QgsWmtsParameter::TILECOL,
-                                      QVariant::Int,
+                                      QMetaType::Type::Int,
                                       QVariant( -1 ) );
     save( pTileCol );
 
@@ -111,12 +111,12 @@ namespace QgsWmts
     save( pInfoFormat );
 
     const QgsWmtsParameter pI( QgsWmtsParameter::I,
-                               QVariant::Int,
+                               QMetaType::Type::Int,
                                QVariant( -1 ) );
     save( pI );
 
     const QgsWmtsParameter pJ( QgsWmtsParameter::J,
-                               QVariant::Int,
+                               QMetaType::Type::Int,
                                QVariant( -1 ) );
     save( pJ );
   }

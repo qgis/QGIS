@@ -26,7 +26,7 @@ namespace QgsWfs
   // QgsWfsParameter
   //
   QgsWfsParameter::QgsWfsParameter( const QgsWfsParameter::Name name,
-                                    const QVariant::Type type,
+                                    const QMetaType::Type type,
                                     const QVariant defaultValue )
     : QgsServerParameterDefinition( type, defaultValue )
     , mName( name )
@@ -144,12 +144,12 @@ namespace QgsWfs
     save( pPropertyName );
 
     const QgsWfsParameter pMaxFeatures = QgsWfsParameter( QgsWfsParameter::MAXFEATURES,
-                                         QVariant::Int,
+                                         QMetaType::Type::Int,
                                          QVariant( -1 ) );
     save( pMaxFeatures );
 
     const QgsWfsParameter pStartIndex = QgsWfsParameter( QgsWfsParameter::STARTINDEX,
-                                        QVariant::Int,
+                                        QMetaType::Type::Int,
                                         QVariant( 0 ) );
     save( pStartIndex );
 

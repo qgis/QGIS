@@ -1650,7 +1650,7 @@ namespace QgsWfs
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
         // For time fields use const TIME_FORMAT
-        if ( value.type() == QVariant::Time )
+        if ( value.userType() == QMetaType::Type::QTime )
         {
           return value.toTime().toString( QgsDateTimeFieldFormatter::TIME_FORMAT );
         }
@@ -1662,7 +1662,7 @@ namespace QgsWfs
         const QString fieldFormat =
           config.value( QStringLiteral( "field_iso_format" ), false ).toBool() ?
           QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT :
-          config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( value.type() ) ).toString();
+          config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( static_cast<QMetaType::Type>( value.userType() ) ) ).toString();
 
         // Convert value to date time
         QDateTime date = value.toDateTime();
@@ -1692,25 +1692,25 @@ namespace QgsWfs
         }
       }
 
-      switch ( value.type() )
+      switch ( value.userType() )
       {
-        case QVariant::Int:
-        case QVariant::UInt:
-        case QVariant::LongLong:
-        case QVariant::ULongLong:
-        case QVariant::Double:
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULongLong:
+        case QMetaType::Type::Double:
           return value.toString();
 
-        case QVariant::Bool:
+        case QMetaType::Type::Bool:
           return value.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" );
 
-        case QVariant::StringList:
-        case QVariant::List:
-        case QVariant::Map:
+        case QMetaType::Type::QStringList:
+        case QMetaType::Type::QVariantList:
+        case QMetaType::Type::QVariantMap:
           return QgsJsonUtils::encodeValue( value );
 
         default:
-        case QVariant::String:
+        case QMetaType::Type::QString:
           return value.toString();
       }
     }

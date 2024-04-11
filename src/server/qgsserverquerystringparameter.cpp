@@ -61,13 +61,13 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
   {
 
     // 3: check type
-    const QVariant::Type targetType { static_cast< QVariant::Type  >( mType )};
+    const QMetaType::Type targetType { static_cast< QMetaType::Type  >( mType )};
     // Handle csv list type
     if ( mType == Type::List )
     {
       value = value.toString().split( ',' );
     }
-    if ( value.type() != targetType )
+    if ( value.userType() != targetType )
     {
       bool ok = false;
       if ( value.canConvert( static_cast<int>( targetType ) ) )

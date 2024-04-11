@@ -40,7 +40,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * \param type The type of the parameter
      * \param defaultValue The default value of the parameter
      */
-    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
                                   const QVariant defaultValue = QVariant( "" ) );
 
     /**
@@ -175,7 +175,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      */
     static void raiseError( const QString &msg );
 
-    QVariant::Type mType;
+    QMetaType::Type mType;
     QVariant mValue;
     QVariant mDefaultValue;
 };
@@ -210,7 +210,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
      * \param defaultValue The default value to use if not defined
      */
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
-                        const QVariant::Type type = QVariant::String,
+                        const QMetaType::Type type = QMetaType::Type::QString,
                         const QVariant defaultValue = QVariant( "" ) );
 
     /**

@@ -66,7 +66,7 @@ namespace QgsWfs
       * \param defaultValue Default value of the parameter
        */
       QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN,
-                       const QVariant::Type type = QVariant::String,
+                       const QMetaType::Type type = QMetaType::Type::QString,
                        const QVariant defaultValue = QVariant( "" ) );
 
       /**
