@@ -757,11 +757,7 @@ sub processDoxygenLine {
         $PREV_INDENT = $INDENT;
         $INDENT = '';
         $FOUND_SINCE = 1;
-        my $versionadded = $1;
-        if ( $line =~ m/pyqgis *= *([\d\.]+)/i ) {
-          $versionadded = $1;
-        }
-        return "\n.. versionadded:: $versionadded\n";
+        return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\deprecated(?:\s+since\s+(?:QGIS\s+)(?<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?<DEPR_MESSAGE>.*)?/i ) {
         $PREV_INDENT = $INDENT;
