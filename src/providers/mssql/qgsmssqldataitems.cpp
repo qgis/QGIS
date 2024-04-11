@@ -79,7 +79,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   if ( mSchemasFilteringEnabled )
   {
     QVariant schemasSettingsVariant = settings.value( key + "/excludedSchemas" );
-    if ( schemasSettingsVariant.isValid() && schemasSettingsVariant.type() == QVariant::Map )
+    if ( schemasSettingsVariant.isValid() && schemasSettingsVariant.userType() == QMetaType::Type::QVariantMap )
       mSchemaSettings = schemasSettingsVariant.toMap();
   }
 

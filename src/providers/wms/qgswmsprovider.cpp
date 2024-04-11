@@ -3866,7 +3866,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
 
             for ( ; fieldIterator != properties.constEnd(); ++fieldIterator )
             {
-              fields.append( QgsField( fieldIterator.key(), QVariant::String ) );
+              fields.append( QgsField( fieldIterator.key(), QMetaType::Type::QString ) );
             }
 
             QgsFeature feature( fields );
@@ -5258,7 +5258,7 @@ QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
     {
       if ( decoded.contains( item.first ) )
       {
-        if ( decoded[ item.first ].type() == QVariant::String )
+        if ( decoded[ item.first ].userType() == QMetaType::Type::QString )
         {
           decoded[ item.first ] = QStringList() << decoded[ item.first ].toString();
         }
@@ -5295,7 +5295,7 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
     }
     else
     {
-      if ( it.value().type() == QVariant::StringList )
+      if ( it.value().userType() == QMetaType::Type::QStringList )
       {
         listItems.push_back( { it.key(), it.value().toStringList() } );
       }

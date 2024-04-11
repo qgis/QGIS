@@ -121,9 +121,9 @@ namespace Sqlite
 
   Query &Query::bind( const QVariant &value, int idx )
   {
-    switch ( value.type() )
+    switch ( value.userType() )
     {
-      case QVariant::String:
+      case QMetaType::Type::QString:
       {
         const QByteArray ba( value.toString().toUtf8() );
         const int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
@@ -134,7 +134,7 @@ namespace Sqlite
         return *this;
       }
 
-      case QVariant::Double:
+      case QMetaType::Type::Double:
       {
         bool ok; // no reason to fail double conversion
         const double dbl = value.toDouble( &ok );

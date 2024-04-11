@@ -24,7 +24,7 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
       : mResolveTypes( resolveTypes )
     {}
 
-    QMap<int, QVariant::Type> typeMap;
+    QMap<int, QMetaType::Type> typeMap;
     std::unique_ptr<QgsPostgresResult> result;
 
   private:

@@ -68,7 +68,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     listDatabase->addItem( settings.value( key + "/database" ).toString() );
     groupBoxSchemasFilter->setChecked( settings.value( key + "/schemasFiltering" ).toBool() );
     const QVariant schemasVariant = settings.value( key + "/excludedSchemas" );
-    if ( schemasVariant.isValid() && schemasVariant.type() == QVariant::Map )
+    if ( schemasVariant.isValid() && schemasVariant.userType() == QMetaType::Type::QVariantMap )
       mSchemaSettings = schemasVariant.toMap();
 
     listDatabase->setCurrentRow( 0 );

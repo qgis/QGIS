@@ -58,35 +58,35 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 
   switch ( field.type() )
   {
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       fieldType = QStringLiteral( "BIGINT" );
       fieldSize = -1;
       fieldPrec = 0;
       break;
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       fieldType = QStringLiteral( "TIMESTAMP" );
       fieldSize = -1;
       break;
 
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       fieldType = QStringLiteral( "DATE" );
       fieldSize = -1;
       break;
 
-    case QVariant::Time:
-    case QVariant::String:
+    case QMetaType::Type::QTime:
+    case QMetaType::Type::QString:
       fieldType = QStringLiteral( "TEXT" );
       fieldPrec = 0;
       break;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       fieldType = QStringLiteral( "INTEGER" );
       fieldSize = -1;
       fieldPrec = 0;
       break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       if ( fieldSize <= 0 || fieldPrec <= 0 )
       {
         fieldType = QStringLiteral( "REAL" );
@@ -99,12 +99,12 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       }
       break;
 
-    case QVariant::List:
-    case QVariant::StringList:
+    case QMetaType::Type::QVariantList:
+    case QMetaType::Type::QStringList:
     {
       QgsField subField = field;
       subField.setType( field.subType() );
-      subField.setSubType( QVariant::Invalid );
+      subField.setSubType( QMetaType::Type::UnknownType );
       if ( !convertField( subField ) ) return false;
       fieldType = QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX + subField.typeName() + QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX;
       fieldSize = subField.length();
@@ -112,7 +112,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       break;
     }
 
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
       fieldType = QStringLiteral( "BLOB" );
       fieldSize = -1;
       fieldPrec = 0;
@@ -679,7 +679,7 @@ void QgsSpatiaLiteProvider::updatePrimaryKeyCapabilities()
   }
 }
 
-typedef QPair<QVariant::Type, QVariant::Type> TypeSubType;
+typedef QPair<QMetaType::Type, QMetaType::Type> TypeSubType;
 
 static TypeSubType getVariantType( const QString &type )
 {
@@ -691,12 +691,12 @@ static TypeSubType getVariantType( const QString &type )
        type == QLatin1String( "smallint" ) ||
        type == QLatin1String( "tinyint" ) ||
        type == QLatin1String( "boolean" ) )
-    return TypeSubType( QVariant::LongLong, QVariant::Invalid );
+    return TypeSubType( QMetaType::Type::LongLong, QMetaType::Type::UnknownType );
   else if ( type == QLatin1String( "real" ) ||
             type == QLatin1String( "double" ) ||
             type == QLatin1String( "double precision" ) ||
             type == QLatin1String( "float" ) )
-    return TypeSubType( QVariant::Double, QVariant::Invalid );
+    return TypeSubType( QMetaType::Type::Double, QMetaType::Type::UnknownType );
   else if ( type.startsWith( QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX ) && type.endsWith( QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX ) )
   {
     // New versions of OGR convert list types (StringList, IntegerList, Integer64List and RealList)
@@ -704,28 +704,28 @@ static TypeSubType getVariantType( const QString &type )
     // JSONINTEGERLIST, JSONINTEGER64LIST or JSONREALLIST
     TypeSubType subType = getVariantType( type.mid( QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX.length(),
                                           type.length() - QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX.length() - QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX.length() ) );
-    return TypeSubType( subType.first == QVariant::String ? QVariant::StringList : QVariant::List, subType.first );
+    return TypeSubType( subType.first == QMetaType::Type::QString ? QMetaType::Type::QStringList : QMetaType::Type::QVariantList, subType.first );
   }
   else if ( type == QLatin1String( "jsonarray" ) )
   {
-    return TypeSubType( QVariant::List, QVariant::Invalid );
+    return TypeSubType( QMetaType::Type::QVariantList, QMetaType::Type::UnknownType );
   }
   else if ( type == QLatin1String( "blob" ) )
   {
-    return TypeSubType( QVariant::ByteArray, QVariant::Invalid );
+    return TypeSubType( QMetaType::Type::QByteArray, QMetaType::Type::UnknownType );
   }
   else if ( type == QLatin1String( "timestamp" ) ||
             type == QLatin1String( "datetime" ) )
   {
-    return  TypeSubType( QVariant::DateTime, QVariant::Invalid );
+    return  TypeSubType( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType );
   }
   else if ( type == QLatin1String( "date" ) )
   {
-    return  TypeSubType( QVariant::Date, QVariant::Invalid );
+    return  TypeSubType( QMetaType::Type::QDate, QMetaType::Type::UnknownType );
   }
   else
     // for sure any SQLite value can be represented as SQLITE_TEXT
-    return TypeSubType( QVariant::String, QVariant::Invalid );
+    return TypeSubType( QMetaType::Type::QString, QMetaType::Type::UnknownType );
 }
 
 void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr )
@@ -752,22 +752,22 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     if ( name.toLower() != mGeometryColumn )
     {
       const char *type = "TEXT";
-      QVariant::Type fieldType = QVariant::String; // default: SQLITE_TEXT
+      QMetaType::Type fieldType = QMetaType::Type::QString; // default: SQLITE_TEXT
       if ( fld->IntegerValuesCount != 0 && fld->DoubleValuesCount == 0 &&
            fld->TextValuesCount == 0 && fld->BlobValuesCount == 0 )
       {
-        fieldType = QVariant::LongLong;
+        fieldType = QMetaType::Type::LongLong;
         type = "INTEGER";
       }
       if ( fld->DoubleValuesCount != 0 && fld->TextValuesCount == 0 &&
            fld->BlobValuesCount == 0 )
       {
-        fieldType = QVariant::Double;
+        fieldType = QMetaType::Type::Double;
         type = "DOUBLE";
       }
       if ( fld->BlobValuesCount != 0 )
       {
-        fieldType = QVariant::ByteArray;
+        fieldType = QMetaType::Type::QByteArray;
         type = "BLOB";
       }
       mAttributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
@@ -809,7 +809,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
         QgsField &field = mAttributeFields[fieldIndex];
         field.setTypeName( type );
         // TODO: column 4 tells us if the field is nullable. Should use that info...
-        if ( field.type() == QVariant::String )
+        if ( field.type() == QMetaType::Type::QString )
         {
           // if the type seems unknown, fix it with what we actually have
           TypeSubType typeSubType = getVariantType( type );
@@ -1035,11 +1035,11 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
       bool ok;
       switch ( mAttributeFields.at( fieldIndex ).type() )
       {
-        case QVariant::LongLong:
+        case QMetaType::Type::LongLong:
           defaultVariant = defaultVal.toLongLong( &ok );
           break;
 
-        case QVariant::Double:
+        case QMetaType::Type::Double:
           defaultVariant = defaultVal.toDouble( &ok );
           break;
 
@@ -3884,7 +3884,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
   }
   catch ( SLFieldNotFound )
   {
-    return QVariant( QVariant::Int );
+    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
   }
 }
 
@@ -3948,7 +3948,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
   }
   catch ( SLFieldNotFound )
   {
-    return QVariant( QVariant::Int );
+    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
   }
 }
 
@@ -4014,7 +4014,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
           case SQLITE_TEXT:
           {
             const QString txt = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) );
-            if ( mAttributeFields.at( index ).type() == QVariant::DateTime )
+            if ( mAttributeFields.at( index ).type() == QMetaType::Type::QDateTime )
             {
               QDateTime dt = QDateTime::fromString( txt, Qt::ISODate );
               if ( !dt.isValid() )
@@ -4024,7 +4024,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
               }
               uniqueValues.insert( QVariant( dt ) );
             }
-            else if ( mAttributeFields.at( index ).type() == QVariant::Date )
+            else if ( mAttributeFields.at( index ).type() == QMetaType::Type::QDate )
             {
               uniqueValues.insert( QVariant( QDate::fromString( txt, QStringLiteral( "yyyy-MM-dd" ) ) ) );
             }
@@ -4035,7 +4035,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
             break;
           }
           default:
-            uniqueValues.insert( QVariant( mAttributeFields.at( index ).type() ) );
+            uniqueValues.insert( QgsVariantUtils::createVariant( mAttributeFields.at( index ).type() ) );
             break;
         }
       }
@@ -4279,7 +4279,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
             continue;
 
-          QVariant::Type type = mAttributeFields.at( i ).type();
+          QMetaType::Type type = mAttributeFields.at( i ).type();
 
           if ( !v.isValid() )
           {
@@ -4295,22 +4295,22 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             // binding a NULL value
             sqlite3_bind_null( stmt, ++ia );
           }
-          else if ( type == QVariant::Int )
+          else if ( type == QMetaType::Type::Int )
           {
             // binding an INTEGER value
             sqlite3_bind_int( stmt, ++ia, v.toInt() );
           }
-          else if ( type == QVariant::LongLong )
+          else if ( type == QMetaType::Type::LongLong )
           {
             // binding a LONGLONG value
             sqlite3_bind_int64( stmt, ++ia, v.toLongLong() );
           }
-          else if ( type == QVariant::Double )
+          else if ( type == QMetaType::Type::Double )
           {
             // binding a DOUBLE value
             sqlite3_bind_double( stmt, ++ia, v.toDouble() );
           }
-          else if ( type == QVariant::String )
+          else if ( type == QMetaType::Type::QString )
           {
             QString stringVal = v.toString();
 
@@ -4318,24 +4318,24 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             QByteArray ba = stringVal.toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
-          else if ( type == QVariant::ByteArray )
+          else if ( type == QMetaType::Type::QByteArray )
           {
             // binding a BLOB value
             const QByteArray ba = v.toByteArray();
             sqlite3_bind_blob( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
-          else if ( type == QVariant::StringList || type == QVariant::List )
+          else if ( type == QMetaType::Type::QStringList || type == QMetaType::Type::QVariantList )
           {
             const QByteArray ba = QgsJsonUtils::encodeValue( v ).toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
-          else if ( type == QVariant::DateTime )
+          else if ( type == QMetaType::Type::QDateTime )
           {
             QDateTime dt = v.toDateTime();
             QByteArray ba = dt.toString( Qt::ISODate ).toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
-          else if ( type == QVariant::Date )
+          else if ( type == QMetaType::Type::QDate )
           {
             QDate d = v.toDate();
             QByteArray ba = d.toString( QStringLiteral( "yyyy-MM-dd" ) ).toUtf8();
@@ -4687,19 +4687,19 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         else
           first = false;
 
-        QVariant::Type type = fld.type();
+        QMetaType::Type type = fld.type();
 
         if ( QgsVariantUtils::isNull( val ) )
         {
           // binding a NULL value
           sql += QStringLiteral( "%1=NULL" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ) );
         }
-        else if ( type == QVariant::Int || type == QVariant::LongLong || type == QVariant::Double )
+        else if ( type == QMetaType::Type::Int || type == QMetaType::Type::LongLong || type == QMetaType::Type::Double )
         {
           // binding a NUMERIC value
           sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), val.toString() );
         }
-        else if ( type == QVariant::StringList || type == QVariant::List )
+        else if ( type == QMetaType::Type::QStringList || type == QMetaType::Type::QVariantList )
         {
           // binding an array value, parse JSON
           QString jRepr;
@@ -4723,17 +4723,17 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             return false;
           }
         }
-        else if ( type == QVariant::ByteArray )
+        else if ( type == QMetaType::Type::QByteArray )
         {
           // binding a BLOB value
           sql += QStringLiteral( "%1=?" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ) );
           bindings[ bind_parameter_idx++ ] = val;
         }
-        else if ( type == QVariant::DateTime )
+        else if ( type == QMetaType::Type::QDateTime )
         {
           sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( Qt::ISODate ) ) );
         }
-        else if ( type == QVariant::Date )
+        else if ( type == QMetaType::Type::QDate )
         {
           sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( QStringLiteral( "yyyy-MM-dd" ) ) ) );
         }
@@ -4768,9 +4768,9 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     {
       int parameter_idx = i.key();
       const QVariant val = i.value();
-      switch ( val.type() )
+      switch ( val.userType() )
       {
-        case QVariant::ByteArray:
+        case QMetaType::Type::QByteArray:
         {
           const QByteArray ba = val.toByteArray();
           sqlite3_bind_blob( stmt, parameter_idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );

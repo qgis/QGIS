@@ -936,7 +936,7 @@ QString QgsPostgresRasterProvider::defaultTimeSubsetString( const QDateTime &def
        mAttributeFields.exists( mTemporalFieldIndex ) )
   {
     const QgsField temporalField { mAttributeFields.field( mTemporalFieldIndex ) };
-    const QString typeCast { temporalField.type() != QVariant::DateTime ? QStringLiteral( "::timestamp" ) : QString() };
+    const QString typeCast { temporalField.type() != QMetaType::Type::QDateTime ? QStringLiteral( "::timestamp" ) : QString() };
     const QString temporalFieldName { temporalField.name() };
     return  { QStringLiteral( "%1%2 = %3" )
               .arg( quotedIdentifier( temporalFieldName ),
@@ -981,7 +981,7 @@ QString QgsPostgresRasterProvider::subsetStringWithTemporalRange() const
   if ( mTemporalFieldIndex >= 0 && mAttributeFields.exists( mTemporalFieldIndex ) )
   {
     const QgsField temporalField { mAttributeFields.field( mTemporalFieldIndex ) };
-    const QString typeCast { temporalField.type() != QVariant::DateTime ? QStringLiteral( "::timestamp" ) : QString() };
+    const QString typeCast { temporalField.type() != QMetaType::Type::QDateTime ? QStringLiteral( "::timestamp" ) : QString() };
     const QString temporalFieldName { temporalField.name() };
 
     if ( temporalCapabilities()->hasTemporalCapabilities() )
@@ -1756,8 +1756,8 @@ bool QgsPostgresRasterProvider::loadFields()
 
     QString fieldComment = descrMap[tableoid][attnum];
 
-    QVariant::Type fieldType;
-    QVariant::Type fieldSubType = QVariant::Invalid;
+    QMetaType::Type fieldType;
+    QMetaType::Type fieldSubType = QMetaType::Type::UnknownType;
 
     if ( fieldTType == QLatin1String( "b" ) )
     {
@@ -1768,27 +1768,27 @@ bool QgsPostgresRasterProvider::loadFields()
 
       if ( fieldTypeName == QLatin1String( "int8" ) || fieldTypeName == QLatin1String( "serial8" ) )
       {
-        fieldType = QVariant::LongLong;
+        fieldType = QMetaType::Type::LongLong;
         fieldSize = -1;
         fieldPrec = 0;
       }
       else if ( fieldTypeName == QLatin1String( "int2" ) || fieldTypeName == QLatin1String( "int4" ) ||
                 fieldTypeName == QLatin1String( "oid" ) || fieldTypeName == QLatin1String( "serial" ) )
       {
-        fieldType = QVariant::Int;
+        fieldType = QMetaType::Type::Int;
         fieldSize = -1;
         fieldPrec = 0;
       }
       else if ( fieldTypeName == QLatin1String( "real" ) || fieldTypeName == QLatin1String( "double precision" ) ||
                 fieldTypeName == QLatin1String( "float4" ) || fieldTypeName == QLatin1String( "float8" ) )
       {
-        fieldType = QVariant::Double;
+        fieldType = QMetaType::Type::Double;
         fieldSize = -1;
         fieldPrec = 0;
       }
       else if ( fieldTypeName == QLatin1String( "numeric" ) )
       {
-        fieldType = QVariant::Double;
+        fieldType = QMetaType::Type::Double;
 
         if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType.isEmpty() )
         {
@@ -1817,7 +1817,7 @@ bool QgsPostgresRasterProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "varchar" ) )
       {
-        fieldType = QVariant::String;
+        fieldType = QMetaType::Type::QString;
 
         const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "character varying\\((\\d+)\\)" ) ) );
         const QRegularExpressionMatch match = re.match( formattedFieldType );
@@ -1832,22 +1832,22 @@ bool QgsPostgresRasterProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "date" ) )
       {
-        fieldType = QVariant::Date;
+        fieldType = QMetaType::Type::QDate;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "time" ) )
       {
-        fieldType = QVariant::Time;
+        fieldType = QMetaType::Type::QTime;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "timestamp" ) )
       {
-        fieldType = QVariant::DateTime;
+        fieldType = QMetaType::Type::QDateTime;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "bytea" ) )
       {
-        fieldType = QVariant::ByteArray;
+        fieldType = QMetaType::Type::QByteArray;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
@@ -1861,7 +1861,7 @@ bool QgsPostgresRasterProvider::loadFields()
                 fieldTypeName.startsWith( QLatin1String( "time" ) ) ||
                 fieldTypeName.startsWith( QLatin1String( "date" ) ) )
       {
-        fieldType = QVariant::String;
+        fieldType = QMetaType::Type::QString;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "bpchar" ) )
@@ -1869,7 +1869,7 @@ bool QgsPostgresRasterProvider::loadFields()
         // although postgres internally uses "bpchar", this is exposed to users as character in postgres
         fieldTypeName = QStringLiteral( "character" );
 
-        fieldType = QVariant::String;
+        fieldType = QMetaType::Type::QString;
 
         const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "character\\((\\d+)\\)" ) ) );
         const QRegularExpressionMatch match = re.match( formattedFieldType );
@@ -1888,7 +1888,7 @@ bool QgsPostgresRasterProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "char" ) )
       {
-        fieldType = QVariant::String;
+        fieldType = QMetaType::Type::QString;
 
         const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "char\\((\\d+)\\)" ) ) );
         const QRegularExpressionMatch match = re.match( formattedFieldType );
@@ -1907,14 +1907,14 @@ bool QgsPostgresRasterProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "hstore" ) ||  fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )
       {
-        fieldType = QVariant::Map;
-        fieldSubType = QVariant::String;
+        fieldType = QMetaType::Type::QVariantMap;
+        fieldSubType = QMetaType::Type::QString;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "bool" ) )
       {
         // enum
-        fieldType = QVariant::Bool;
+        fieldType = QMetaType::Type::Bool;
         fieldSize = -1;
       }
       else
@@ -1925,7 +1925,7 @@ bool QgsPostgresRasterProvider::loadFields()
              && parseUriKey( mUri.keyColumn( ) ).contains( fieldName ) )
         {
           // Assume it is convertible to text
-          fieldType = QVariant::String;
+          fieldType = QMetaType::Type::QString;
           fieldSize = -1;
         }
         else
@@ -1939,14 +1939,14 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldTypeName = '_' + fieldTypeName;
         fieldSubType = fieldType;
-        fieldType = ( fieldType == QVariant::String ? QVariant::StringList : QVariant::List );
+        fieldType = ( fieldType == QMetaType::Type::QString ? QMetaType::Type::QStringList : QMetaType::Type::QVariantList );
         fieldSize = -1;
       }
     }
     else if ( fieldTType == QLatin1String( "e" ) )
     {
       // enum
-      fieldType = QVariant::String;
+      fieldType = QMetaType::Type::QString;
       fieldSize = -1;
     }
     else
@@ -2405,7 +2405,7 @@ QgsPostgresPrimaryKeyType QgsPostgresRasterProvider::pkType( const QgsField &fld
 {
   switch ( fld.type() )
   {
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       // PostgreSQL doesn't have native "unsigned" types.
       // Unsigned primary keys are emulated by the serial/bigserial
       // pseudo-types, in which autogenerated values are always > 0;
@@ -2413,7 +2413,7 @@ QgsPostgresPrimaryKeyType QgsPostgresRasterProvider::pkType( const QgsField &fld
       // in these fields.
       return PktInt64;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       return PktInt;
 
     default:

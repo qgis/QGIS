@@ -273,11 +273,11 @@ void QgsWFSProvider::issueInitialGetFeature()
     const auto addGMLFields = [ = ]( bool forceAdd )
     {
       if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+        mShared->mFields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
       if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+        mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
       if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+        mShared->mFields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
     };
 
     const QgsFields fieldsBackup = mShared->mFields;
@@ -1336,7 +1336,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 QString QgsWFSProvider::convertToXML( const QVariant &value )
 {
   QString valueStr( value.toString() );
-  if ( value.type() == QVariant::DateTime )
+  if ( value.userType() == QMetaType::Type::QDateTime )
   {
     QDateTime dt = value.toDateTime().toUTC();
     if ( !dt.isNull() )
@@ -1593,9 +1593,9 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
   return ret;
 }
 
-static QVariant::Type getVariantTypeFromXML( const QString &xmlType )
+static QMetaType::Type getVariantTypeFromXML( const QString &xmlType )
 {
-  QVariant::Type attributeType = QVariant::Invalid;
+  QMetaType::Type attributeType = QMetaType::Type::UnknownType;
 
   const QString type = QString( xmlType )
                        .replace( QLatin1String( "xs:" ), QString() )
@@ -1611,17 +1611,17 @@ static QVariant::Type getVariantTypeFromXML( const QString &xmlType )
        type.compare( QLatin1String( "anyURI" ), Qt::CaseInsensitive ) == 0 ||
        type.compare( QLatin1String( "anySimpleType" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::String;
+    attributeType = QMetaType::Type::QString;
   }
   else if ( type.compare( QLatin1String( "boolean" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::Bool;
+    attributeType = QMetaType::Type::Bool;
   }
   else if ( type.compare( QLatin1String( "double" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "float" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "decimal" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::Double;
+    attributeType = QMetaType::Type::Double;
   }
   else if ( type.compare( QLatin1String( "byte" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "unsignedByte" ), Qt::CaseInsensitive ) == 0 ||
@@ -1629,7 +1629,7 @@ static QVariant::Type getVariantTypeFromXML( const QString &xmlType )
             type.compare( QLatin1String( "short" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "unsignedShort" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::Int;
+    attributeType = QMetaType::Type::Int;
   }
   else if ( type.compare( QLatin1String( "long" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "unsignedLong" ), Qt::CaseInsensitive ) == 0 ||
@@ -1638,21 +1638,21 @@ static QVariant::Type getVariantTypeFromXML( const QString &xmlType )
             type.compare( QLatin1String( "nonNegativeInteger" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "positiveInteger" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::LongLong;
+    attributeType = QMetaType::Type::LongLong;
   }
   else if ( type.compare( QLatin1String( "date" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "gYear" ), Qt::CaseInsensitive ) == 0 ||
             type.compare( QLatin1String( "gYearMonth" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::Date;
+    attributeType = QMetaType::Type::QDate;
   }
   else if ( type.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::Time;
+    attributeType = QMetaType::Type::QTime;
   }
   else if ( type.compare( QLatin1String( "dateTime" ), Qt::CaseInsensitive ) == 0 )
   {
-    attributeType = QVariant::DateTime;
+    attributeType = QMetaType::Type::QDateTime;
   }
   return attributeType;
 }
@@ -2123,8 +2123,8 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     }
     else if ( EQUAL( fieldCategory, "REGULAR" ) && !fieldIsList )
     {
-      QVariant::Type type = getVariantTypeFromXML( QString::fromUtf8( fieldType ) );
-      if ( type != QVariant::Invalid )
+      QMetaType::Type type = getVariantTypeFromXML( QString::fromUtf8( fieldType ) );
+      if ( type != QMetaType::Type::UnknownType )
       {
         fields.append( QgsField( fieldName, type, fieldType ) );
       }
@@ -2134,14 +2134,14 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
         QgsDebugMsgLevel(
           QStringLiteral( "unhandled type for field %1: xpath=%2 is_list=%3 type=%4 category=%5" ).
           arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 3 );
-        fields.append( QgsField( fieldName, QVariant::String, fieldType ) );
+        fields.append( QgsField( fieldName, QMetaType::Type::QString, fieldType ) );
       }
       mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
         QPair<QString, bool>( fieldXPath, false );
     }
     else
     {
-      QgsField field( fieldName, QVariant::String );
+      QgsField field( fieldName, QMetaType::Type::QString );
       field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "JsonEdit" ), QVariantMap() ) );
       fields.append( field );
       mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
@@ -2404,15 +2404,15 @@ bool QgsWFSProvider::readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaD
     }
     else if ( !name.isEmpty() )
     {
-      const QVariant::Type attributeType = getVariantTypeFromXML( type );
-      if ( attributeType != QVariant::Invalid )
+      const QMetaType::Type attributeType = getVariantTypeFromXML( type );
+      if ( attributeType != QMetaType::Type::UnknownType )
       {
         fields.append( QgsField( name, attributeType, type ) );
       }
       else
       {
         mayTryWithGMLAS = true;
-        fields.append( QgsField( name, QVariant::String, type ) );
+        fields.append( QgsField( name, QMetaType::Type::QString, type ) );
       }
     }
   }

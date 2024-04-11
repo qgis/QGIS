@@ -361,9 +361,9 @@ bool QgsVirtualLayerProvider::createIt()
         gFields << g;
       }
       // default type: string
-      else if ( c.scalarType() == QVariant::Invalid )
+      else if ( c.scalarType() == QMetaType::Type::UnknownType )
       {
-        c.setScalarType( QVariant::String );
+        c.setScalarType( QMetaType::Type::QString );
       }
       else
       {

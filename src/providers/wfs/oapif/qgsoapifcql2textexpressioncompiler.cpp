@@ -49,23 +49,23 @@ QString QgsOapifCql2TextExpressionCompiler::literalValue( const QVariant &value 
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return value.toDateTime().toOffsetFromUtc( 0 ).toString( Qt::ISODateWithMs ).prepend( "TIMESTAMP('" ).append( "')" );
 
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       return value.toDate().toString( Qt::ISODate ).prepend( "DATE('" ).append( "')" );
 
-    case QVariant::String:
+    case QMetaType::Type::QString:
     default:
       QString v = value.toString();
       v.replace( '\'', QLatin1String( "''" ) );
@@ -221,7 +221,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
         if ( argNodes[i]->nodeType() != QgsExpressionNode::ntLiteral )
           return Fail;
         const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( argNodes[i] );
-        if ( n->value().type() != QVariant::Int )
+        if ( n->value().userType() != QMetaType::Type::Int )
           return Fail;
         values.push_back( n->value().toInt() );
       }
@@ -243,7 +243,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
         if ( argNodes[i]->nodeType() != QgsExpressionNode::ntLiteral )
           return Fail;
         const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( argNodes[i] );
-        if ( n->value().type() != QVariant::Int )
+        if ( n->value().userType() != QMetaType::Type::Int )
           return Fail;
         values.push_back( n->value().toInt() );
       }
@@ -422,7 +422,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       {
         const QgsExpressionNodeColumnRef *nLeft = static_cast<const QgsExpressionNodeColumnRef *>( n->opLeft() );
         const QgsExpressionNodeLiteral *nRight = static_cast<const QgsExpressionNodeLiteral *>( n->opRight() );
-        if ( nRight->value().type() == QVariant::String )
+        if ( nRight->value().userType() == QMetaType::Type::QString )
         {
           QString columnFormat;
           for ( const auto &kv : mQueryables.toStdMap() )

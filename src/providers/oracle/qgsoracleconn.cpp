@@ -241,7 +241,7 @@ QString QgsOracleConn::getLastExecutedQuery( const QSqlQuery &query )
   for ( QVariant value : query.boundValues() )
   {
     const QVariant &var { value.toString() };
-    QSqlField field( QString( ), var.type() );
+    QSqlField field( QString( ), static_cast<QMetaType::Type>( var.userType() ) );
     if ( var.isNull() )
     {
       field.clear();
@@ -440,24 +440,24 @@ QString QgsOracleConn::quotedIdentifier( QString ident )
   return ident;
 }
 
-QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
+QString QgsOracleConn::quotedValue( const QVariant &value, QMetaType::Type type )
 {
   if ( value.isNull() )
     return QStringLiteral( "NULL" );
 
-  if ( type == QVariant::Invalid )
-    type = value.type();
+  if ( type == QMetaType::Type::UnknownType )
+    type = static_cast<QMetaType::Type>( value.userType() );
 
   if ( value.canConvert( type ) )
   {
     switch ( type )
     {
-      case QVariant::Int:
-      case QVariant::LongLong:
-      case QVariant::Double:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::Double:
         return value.toString();
 
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
       {
         QDateTime datetime( value.toDateTime() );
         if ( datetime.isValid() )
@@ -465,7 +465,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
         break;
       }
 
-      case QVariant::Date:
+      case QMetaType::Type::QDate:
       {
         QDate date( value.toDate() );
         if ( date.isValid() )
@@ -473,7 +473,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
         break;
       }
 
-      case QVariant::Time:
+      case QMetaType::Type::QTime:
       {
         QDateTime datetime( value.toDateTime() );
         if ( datetime.isValid() )
@@ -1115,23 +1115,23 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleConn::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( tr( "Whole Number" ), "number(10,0)", QVariant::Int )
-         << QgsVectorDataProvider::NativeType( tr( "Whole Big Number" ), "number(20,0)", QVariant::LongLong )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), "number", QVariant::Double, 1, 38, 0, 38 )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), "double precision", QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Whole Number" ), "number(10,0)", QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( tr( "Whole Big Number" ), "number(20,0)", QMetaType::Type::LongLong )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), "number", QMetaType::Type::Double, 1, 38, 0, 38 )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), "double precision", QMetaType::Type::Double )
 
          // floating point
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), "binary_float", QVariant::Double )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), "binary_double", QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), "binary_float", QMetaType::Type::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), "binary_double", QMetaType::Type::Double )
 
          // string types
-         << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "CHAR", QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar2)" ), "VARCHAR2", QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (long)" ), "LONG", QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "CHAR", QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar2)" ), "VARCHAR2", QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (long)" ), "LONG", QMetaType::Type::QString )
 
          // date type
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), "DATE", QVariant::Date, 38, 38, 0, 0 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 );
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "DATE", QMetaType::Type::QDate, 38, 38, 0, 0 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), "TIMESTAMP(6)", QMetaType::Type::QDateTime, 38, 38, 6, 6 );
 }
 
 QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QString &tableName, const QString &geometryColumn, bool &isValid )
