@@ -94,15 +94,15 @@ bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFields outFields;
-  outFields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "source" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "crs" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "provider" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "file_path" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "layer_name" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "subset" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "abstract" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "attribution" ), QVariant::String ) );
+  outFields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "source" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "crs" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "provider" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "file_path" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "layer_name" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "subset" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "abstract" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "attribution" ), QMetaType::Type::QString ) );
 
   QString outputDest;
   std::unique_ptr< QgsFeatureSink > outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields,

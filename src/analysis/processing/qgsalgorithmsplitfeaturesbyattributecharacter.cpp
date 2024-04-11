@@ -101,7 +101,7 @@ QgsFields QgsSplitFeaturesByAttributeCharacterAlgorithm::outputFields( const Qgs
     else
     {
       // we need to convert the split field to a string field
-      outputFields.append( QgsField( inputFields.at( i ).name(), QVariant::String ) );
+      outputFields.append( QgsField( inputFields.at( i ).name(), QMetaType::Type::QString ) );
     }
   }
   return outputFields;

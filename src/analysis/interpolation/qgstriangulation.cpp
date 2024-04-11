@@ -18,6 +18,6 @@
 QgsFields QgsTriangulation::triangulationFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
+  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString, QStringLiteral( "String" ) ) );
   return fields;
 }

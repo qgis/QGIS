@@ -437,13 +437,13 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   options.attributes = fields.allAttributesList();
   if ( fidIndex >= 0 )
   {
-    const QVariant::Type fidType { layer->fields().field( fidIndex ).type() };
+    const QMetaType::Type fidType { layer->fields().field( fidIndex ).type() };
     if ( ! layer->fieldConstraints( fidIndex ).testFlag( QgsFieldConstraints::Constraint::ConstraintUnique )
          && ! layer->fieldConstraints( fidIndex ).testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull )
-         && fidType != QVariant::Int
-         && fidType != QVariant::UInt
-         && fidType != QVariant::LongLong
-         && fidType != QVariant::ULongLong )
+         && fidType != QMetaType::Type::Int
+         && fidType != QMetaType::Type::UInt
+         && fidType != QMetaType::Type::LongLong
+         && fidType != QMetaType::Type::ULongLong )
     {
       options.attributes.removeAll( fidIndex );
     }

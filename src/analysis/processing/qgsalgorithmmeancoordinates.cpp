@@ -98,8 +98,8 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "MEAN_X" ), QVariant::Double, QString(), 24, 15 ) );
-  fields.append( QgsField( QStringLiteral( "MEAN_Y" ), QVariant::Double, QString(), 24, 15 ) );
+  fields.append( QgsField( QStringLiteral( "MEAN_X" ), QMetaType::Type::Double, QString(), 24, 15 ) );
+  fields.append( QgsField( QStringLiteral( "MEAN_Y" ), QMetaType::Type::Double, QString(), 24, 15 ) );
   if ( uniqueFieldIndex >= 0 )
   {
     const QgsField uniqueField = source->fields().at( uniqueFieldIndex );

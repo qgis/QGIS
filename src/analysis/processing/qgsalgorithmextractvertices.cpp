@@ -72,15 +72,15 @@ Qgis::ProcessingSourceType QgsExtractVerticesAlgorithm::outputLayerType() const
 QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int, QString(), 10, 0 ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QMetaType::Type::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QMetaType::Type::Int, QString(), 10, 0 ) );
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
-    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
+    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QMetaType::Type::Int, QString(), 10, 0 ) );
   }
-  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QVariant::Int, QString(), 10, 0 ) );
-  outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double, QString(), 20, 14 ) );
-  outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 14 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QMetaType::Type::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double, QString(), 20, 14 ) );
+  outputFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double, QString(), 20, 14 ) );
 
   return outputFields;
 }

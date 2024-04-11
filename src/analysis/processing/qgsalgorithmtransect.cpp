@@ -116,12 +116,12 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   QgsFields fields = source->fields();
 
-  fields.append( QgsField( QStringLiteral( "TR_FID" ), QVariant::Int, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "TR_ID" ), QVariant::Int, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "TR_SEGMENT" ), QVariant::Int, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "TR_ANGLE" ), QVariant::Double, QString(), 5, 2 ) );
-  fields.append( QgsField( QStringLiteral( "TR_LENGTH" ), QVariant::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "TR_ORIENT" ), QVariant::Int, QString(), 1 ) );
+  fields.append( QgsField( QStringLiteral( "TR_FID" ), QMetaType::Type::Int, QString(), 20 ) );
+  fields.append( QgsField( QStringLiteral( "TR_ID" ), QMetaType::Type::Int, QString(), 20 ) );
+  fields.append( QgsField( QStringLiteral( "TR_SEGMENT" ), QMetaType::Type::Int, QString(), 20 ) );
+  fields.append( QgsField( QStringLiteral( "TR_ANGLE" ), QMetaType::Type::Double, QString(), 5, 2 ) );
+  fields.append( QgsField( QStringLiteral( "TR_LENGTH" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "TR_ORIENT" ), QMetaType::Type::Int, QString(), 1 ) );
 
   Qgis::WkbType outputWkb = Qgis::WkbType::LineString;
   if ( QgsWkbTypes::hasZ( source->wkbType() ) )

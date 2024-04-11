@@ -114,19 +114,19 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'" ).arg( mHOverlay ).arg( mVOverlay ) );
 
   QgsFields fields = QgsFields();
-  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
-  fields.append( QgsField( QStringLiteral( "left" ), QVariant::Double ) );
-  fields.append( QgsField( QStringLiteral( "top" ), QVariant::Double ) );
-  fields.append( QgsField( QStringLiteral( "right" ), QVariant::Double ) );
-  fields.append( QgsField( QStringLiteral( "bottom" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "left" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "top" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "right" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "bottom" ), QMetaType::Type::Double ) );
 
   switch ( mIdx )
   {
     case 0: //point
     case 2: //rectangle
     case 4: //hexagon
-      fields.append( QgsField( QStringLiteral( "row_index" ), QVariant::LongLong ) );
-      fields.append( QgsField( QStringLiteral( "col_index" ), QVariant::LongLong ) );
+      fields.append( QgsField( QStringLiteral( "row_index" ), QMetaType::Type::LongLong ) );
+      fields.append( QgsField( QStringLiteral( "col_index" ), QMetaType::Type::LongLong ) );
       break;
     default:
       break;

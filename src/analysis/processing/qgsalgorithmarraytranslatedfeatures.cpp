@@ -212,7 +212,7 @@ Qgis::WkbType QgsArrayTranslatedFeaturesAlgorithm::outputWkbType( Qgis::WkbType 
 QgsFields QgsArrayTranslatedFeaturesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output;
-  output.append( QgsField( QStringLiteral( "instance" ), QVariant::Int ) );
+  output.append( QgsField( QStringLiteral( "instance" ), QMetaType::Type::Int ) );
   return QgsProcessingUtils::combineFields( inputFields, output );
 }
 

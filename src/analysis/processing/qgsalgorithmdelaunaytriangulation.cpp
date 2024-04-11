@@ -82,13 +82,13 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
   QgsFields fields;
   if ( addAttributes )
   {
-    fields.append( QgsField( QStringLiteral( "POINTA" ), QVariant::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "POINTB" ), QVariant::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "POINTC" ), QVariant::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "POINTA" ), QMetaType::Type::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "POINTB" ), QMetaType::Type::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "POINTC" ), QMetaType::Type::LongLong ) );
   }
   else
   {
-    fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
   }
 
   QString dest;

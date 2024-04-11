@@ -148,7 +148,7 @@ QVariant QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( const QVariantMa
   {
     double alt = metadata.value( QStringLiteral( "EXIF_GPSAltitude" ) ).toDouble();
     if ( metadata.contains( QStringLiteral( "EXIF_GPSAltitudeRef" ) ) &&
-         ( ( metadata.value( QStringLiteral( "EXIF_GPSAltitudeRef" ) ).type() == QVariant::String && metadata.value( QStringLiteral( "EXIF_GPSAltitudeRef" ) ).toString().right( 1 ) == QLatin1String( "1" ) )
+         ( ( metadata.value( QStringLiteral( "EXIF_GPSAltitudeRef" ) ).userType() == QMetaType::Type::QString && metadata.value( QStringLiteral( "EXIF_GPSAltitudeRef" ) ).toString().right( 1 ) == QLatin1String( "1" ) )
            || metadata.value( QStringLiteral( "EXIF_GPSAltitudeRef" ) ).toDouble() < 0 ) )
       alt = -alt;
     altitude = alt;
@@ -317,24 +317,24 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   const bool recurse = parameterAsBoolean( parameters, QStringLiteral( "RECURSIVE" ), context );
 
   QgsFields outFields;
-  outFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "filename" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "directory" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "altitude" ), QVariant::Double ) );
-  outFields.append( QgsField( QStringLiteral( "direction" ), QVariant::Double ) );
-  outFields.append( QgsField( QStringLiteral( "rotation" ), QVariant::Int ) );
-  outFields.append( QgsField( QStringLiteral( "longitude" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "latitude" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "timestamp" ), QVariant::DateTime ) );
+  outFields.append( QgsField( QStringLiteral( "photo" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "filename" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "directory" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "altitude" ), QMetaType::Type::Double ) );
+  outFields.append( QgsField( QStringLiteral( "direction" ), QMetaType::Type::Double ) );
+  outFields.append( QgsField( QStringLiteral( "rotation" ), QMetaType::Type::Int ) );
+  outFields.append( QgsField( QStringLiteral( "longitude" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "latitude" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "timestamp" ), QMetaType::Type::QDateTime ) );
   QString outputDest;
   std::unique_ptr< QgsFeatureSink > outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields,
       Qgis::WkbType::PointZ, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
 
   QgsFields invalidFields;
-  invalidFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );
-  invalidFields.append( QgsField( QStringLiteral( "filename" ), QVariant::String ) );
-  invalidFields.append( QgsField( QStringLiteral( "directory" ), QVariant::String ) );
-  invalidFields.append( QgsField( QStringLiteral( "readable" ), QVariant::Bool ) );
+  invalidFields.append( QgsField( QStringLiteral( "photo" ), QMetaType::Type::QString ) );
+  invalidFields.append( QgsField( QStringLiteral( "filename" ), QMetaType::Type::QString ) );
+  invalidFields.append( QgsField( QStringLiteral( "directory" ), QMetaType::Type::QString ) );
+  invalidFields.append( QgsField( QStringLiteral( "readable" ), QMetaType::Type::Bool ) );
   QString invalidDest;
   std::unique_ptr< QgsFeatureSink > invalidSink( parameterAsSink( parameters, QStringLiteral( "INVALID" ), context, invalidDest, invalidFields ) );
 

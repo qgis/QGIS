@@ -107,7 +107,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     mKNeighbors = mDestination->featureCount();
 
   QgsFields fields = QgsProcessingUtils::combineFields( mSource->fields(), mDestination->fields() );
-  fields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::MultiLineString, mSource->sourceCrs() ) );

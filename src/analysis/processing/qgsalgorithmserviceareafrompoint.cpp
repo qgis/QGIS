@@ -195,8 +195,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   QVariantMap outputs;
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "start" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
 
   QgsFeature feat;
   feat.setFields( fields );

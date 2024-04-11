@@ -123,8 +123,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
 
   QgsFields fields = startPoints->fields();
-  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "start" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
 
   QString pointsSinkId;
   std::unique_ptr< QgsFeatureSink > pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, pointsSinkId, fields,

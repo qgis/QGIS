@@ -92,9 +92,9 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
     if ( name.isEmpty() )
       throw QgsProcessingException( QObject::tr( "Field name cannot be empty" ) );
 
-    const QVariant::Type type = static_cast< QVariant::Type >( aggregateDef.value( QStringLiteral( "type" ) ).toInt() );
+    const QMetaType::Type type = static_cast< QMetaType::Type >( aggregateDef.value( QStringLiteral( "type" ) ).toInt() );
     const QString typeName = aggregateDef.value( QStringLiteral( "type_name" ) ).toString();
-    const QVariant::Type subType = static_cast< QVariant::Type >( aggregateDef.value( QStringLiteral( "sub_type" ) ).toInt() );
+    const QMetaType::Type subType = static_cast< QMetaType::Type >( aggregateDef.value( QStringLiteral( "sub_type" ) ).toInt() );
 
     const int length = aggregateDef.value( QStringLiteral( "length" ), 0 ).toInt();
     const int precision = aggregateDef.value( QStringLiteral( "precision" ), 0 ).toInt();
@@ -163,7 +163,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
 
     // upgrade group by value to a list, so that we get correct behavior with the QHash
-    const QVariantList key = groupByValue.type() == QVariant::List ? groupByValue.toList() : ( QVariantList() << groupByValue );
+    const QVariantList key = groupByValue.userType() == QMetaType::Type::QVariantList ? groupByValue.toList() : ( QVariantList() << groupByValue );
 
     const auto groupIt = groups.find( key );
     if ( groupIt == groups.end() )

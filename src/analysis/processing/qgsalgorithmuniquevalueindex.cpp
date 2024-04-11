@@ -84,7 +84,7 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
 
   const QString newFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   QgsFields fields = source->fields();
-  const QgsField newField = QgsField( newFieldName, QVariant::Int );
+  const QgsField newField = QgsField( newFieldName, QMetaType::Type::Int );
   fields.append( newField );
 
   QString dest;

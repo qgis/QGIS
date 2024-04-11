@@ -159,11 +159,11 @@ QgsFields QgsSumLineLengthAlgorithm::outputFields( const QgsFields &inputFields 
     QgsFields outFields = inputFields;
     mLengthFieldIndex = inputFields.lookupField( mLengthFieldName );
     if ( mLengthFieldIndex < 0 )
-      outFields.append( QgsField( mLengthFieldName, QVariant::Double ) );
+      outFields.append( QgsField( mLengthFieldName, QMetaType::Type::Double ) );
 
     mCountFieldIndex = inputFields.lookupField( mCountFieldName );
     if ( mCountFieldIndex < 0 )
-      outFields.append( QgsField( mCountFieldName, QVariant::Double ) );
+      outFields.append( QgsField( mCountFieldName, QMetaType::Type::Double ) );
 
     mFields = outFields;
     return outFields;

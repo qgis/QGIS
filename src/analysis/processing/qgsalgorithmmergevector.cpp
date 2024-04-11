@@ -165,8 +165,8 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
             feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different data type than the destination layer (%3 instead of %4). "
                                                 "%1 field will be converted to string type." )
                                    .arg( sourceField.name(), layerName, sourceField.typeName(), destField.typeName() ) );
-            destField.setType( QVariant::String );
-            destField.setSubType( QVariant::Invalid );
+            destField.setType( QMetaType::Type::QString );
+            destField.setSubType( QMetaType::Type::UnknownType );
             destField.setLength( 0 );
             destField.setPrecision( 0 );
           }
@@ -182,13 +182,13 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   bool addLayerField = false;
   if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString() ) );
+    outputFields.append( QgsField( QStringLiteral( "layer" ), QMetaType::Type::QString, QString() ) );
     addLayerField = true;
   }
   bool addPathField = false;
   if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString() ) );
+    outputFields.append( QgsField( QStringLiteral( "path" ), QMetaType::Type::QString, QString() ) );
     addPathField = true;
   }
 

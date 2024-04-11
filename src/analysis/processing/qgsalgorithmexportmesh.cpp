@@ -41,18 +41,18 @@ static QgsFields createFields( const QList<QgsMeshDatasetGroupMetadata> &groupMe
     {
       if ( vectorOption == 0 || vectorOption == 2 )
       {
-        fields.append( QgsField( QStringLiteral( "%1_x" ).arg( meta.name() ), QVariant::Double ) );
-        fields.append( QgsField( QStringLiteral( "%1_y" ).arg( meta.name() ), QVariant::Double ) );
+        fields.append( QgsField( QStringLiteral( "%1_x" ).arg( meta.name() ), QMetaType::Type::Double ) );
+        fields.append( QgsField( QStringLiteral( "%1_y" ).arg( meta.name() ), QMetaType::Type::Double ) );
       }
 
       if ( vectorOption == 1 || vectorOption == 2 )
       {
-        fields.append( QgsField( QStringLiteral( "%1_mag" ).arg( meta.name() ), QVariant::Double ) );
-        fields.append( QgsField( QStringLiteral( "%1_dir" ).arg( meta.name() ), QVariant::Double ) );
+        fields.append( QgsField( QStringLiteral( "%1_mag" ).arg( meta.name() ), QMetaType::Type::Double ) );
+        fields.append( QgsField( QStringLiteral( "%1_dir" ).arg( meta.name() ), QMetaType::Type::Double ) );
       }
     }
     else
-      fields.append( QgsField( meta.name(), QVariant::Double ) );
+      fields.append( QgsField( meta.name(), QMetaType::Type::Double ) );
   }
   return fields;
 }
@@ -1083,13 +1083,13 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
   // Create vector layers
   QgsFields polygonFields;
   QgsFields lineFields;
-  polygonFields.append( QgsField( QObject::tr( "group" ), QVariant::String ) );
-  polygonFields.append( QgsField( QObject::tr( "time" ), QVariant::String ) );
-  polygonFields.append( QgsField( QObject::tr( "min_value" ), QVariant::Double ) );
-  polygonFields.append( QgsField( QObject::tr( "max_value" ), QVariant::Double ) );
-  lineFields.append( QgsField( QObject::tr( "group" ), QVariant::String ) );
-  lineFields.append( QgsField( QObject::tr( "time" ), QVariant::String ) );
-  lineFields.append( QgsField( QObject::tr( "value" ), QVariant::Double ) );
+  polygonFields.append( QgsField( QObject::tr( "group" ), QMetaType::Type::QString ) );
+  polygonFields.append( QgsField( QObject::tr( "time" ), QMetaType::Type::QString ) );
+  polygonFields.append( QgsField( QObject::tr( "min_value" ), QMetaType::Type::Double ) );
+  polygonFields.append( QgsField( QObject::tr( "max_value" ), QMetaType::Type::Double ) );
+  lineFields.append( QgsField( QObject::tr( "group" ), QMetaType::Type::QString ) );
+  lineFields.append( QgsField( QObject::tr( "time" ), QMetaType::Type::QString ) );
+  lineFields.append( QgsField( QObject::tr( "value" ), QMetaType::Type::Double ) );
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
 
