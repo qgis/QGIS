@@ -39,12 +39,12 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
 
   // don't use the default QgsPostgresConn::quotedValue handling for double values -- for
   // various reasons it returns them as string values!
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::UserType:
+    case QMetaType::Type::User:
       if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
       {
         const QgsGeometry geom = value.value<QgsGeometry>();

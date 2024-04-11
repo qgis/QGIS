@@ -66,16 +66,16 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   // Add supported types to enable creating expression fields in field calculator
   setNativeTypes( QList< NativeType >()
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "longlong" ), QVariant::LongLong )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Double ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "integer" ), QMetaType::Type::Int, 0, 10 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "longlong" ), QMetaType::Type::LongLong )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "double" ), QMetaType::Type::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), QStringLiteral( "bool" ), QMetaType::Type::Bool, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QMetaType::Type::QString, -1, -1, -1, -1 )
 
                   // date type
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime, -1, -1, -1, -1 )
                 );
 
   QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
@@ -778,7 +778,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
     // Add the field index lookup for the column
     attributeColumns.append( fieldIdx );
-    QVariant::Type fieldType = QVariant::String;
+    QMetaType::Type fieldType = QMetaType::Type::QString;
     QString typeName = QStringLiteral( "text" );
 
     // User-defined types take precedence over all
@@ -845,32 +845,32 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
     if ( typeName == QLatin1String( "bool" ) )
     {
-      fieldType = QVariant::Bool;
+      fieldType = QMetaType::Type::Bool;
       mFieldBooleanLiterals.insert( fieldIdx - fieldIdxOffset, boolCandidates[fieldIdx] );
     }
     else if ( typeName == QLatin1String( "integer" ) )
     {
-      fieldType = QVariant::Int;
+      fieldType = QMetaType::Type::Int;
     }
     else if ( typeName == QLatin1String( "longlong" ) )
     {
-      fieldType = QVariant::LongLong;
+      fieldType = QMetaType::Type::LongLong;
     }
     else if ( typeName == QLatin1String( "double" ) )
     {
-      fieldType = QVariant::Double;
+      fieldType = QMetaType::Type::Double;
     }
     else if ( typeName == QLatin1String( "datetime" ) )
     {
-      fieldType = QVariant::DateTime;
+      fieldType = QMetaType::Type::QDateTime;
     }
     else if ( typeName == QLatin1String( "date" ) )
     {
-      fieldType = QVariant::Date;
+      fieldType = QMetaType::Type::QDate;
     }
     else if ( typeName == QLatin1String( "time" ) )
     {
-      fieldType = QVariant::Time;
+      fieldType = QMetaType::Type::QTime;
     }
     else
     {

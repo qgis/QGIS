@@ -206,8 +206,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * \param value the value to convert
      * \returns a QVariant of the given type or a null QVariant
      */
-    QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName ) const;
-    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
+    QVariant convertValue( QMetaType::Type type, QMetaType::Type subType, const QString &value, const QString &typeName ) const;
+    static QVariant convertValue( QMetaType::Type type, QMetaType::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
@@ -262,10 +262,10 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QString getNextString( const QString &txt, int &i, const QString &sep );
     static QVariant parseHstore( const QString &txt );
     static QVariant parseJson( const QString &txt );
-    static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn );
+    static QVariant parseOtherArray( const QString &txt, QMetaType::Type subType, const QString &typeName, QgsPostgresConn *conn );
     static QVariant parseStringArray( const QString &txt );
     static QVariant parseMultidimensionalArray( const QString &txt );
-    static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn );
+    static QVariant parseArray( const QString &txt, QMetaType::Type type, QMetaType::Type subType, const QString &typeName, QgsPostgresConn *conn );
 
 
     /**

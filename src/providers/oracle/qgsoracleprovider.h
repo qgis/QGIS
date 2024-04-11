@@ -232,7 +232,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     /**
      * Evaluates the given expression string server-side and convert the result to the given type
      */
-    QVariant evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const;
+    QVariant evaluateDefaultExpression( const QString &value, const QMetaType::Type &fieldType ) const;
     void appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const;
     void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
 
@@ -375,7 +375,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     void disconnectDb();
 
     static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
-    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
+    static QString quotedValue( const QVariant &value, QMetaType::Type type = QMetaType::Type::UnknownType ) { return QgsOracleConn::quotedValue( value, type ); }
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //!< Map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //!< Map feature back to feature id

@@ -508,14 +508,14 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
     QComboBox *typeCombo = new QComboBox( tblSample );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::String ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "text" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), "longlong" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "double" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Bool ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Date ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Time ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), "time" );
-    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::DateTime ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), "text" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), "integer" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::LongLong ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), "longlong" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), "double" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::Bool ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), "bool" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "date" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QTime ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), "time" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDateTime ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), "datetime" );
     connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
     {
       mOverriddenFields.insert( column, typeCombo->currentData().toString() );

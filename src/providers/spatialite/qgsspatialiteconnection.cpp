@@ -102,16 +102,16 @@ bool QgsSpatiaLiteConnection::updateStatistics()
 QList<QgsVectorDataProvider::NativeType> QgsSpatiaLiteConnection::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "TEXT" ), QVariant::String )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Double ), QStringLiteral( "FLOAT" ), QVariant::Double )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "DATE" ), QVariant::Date )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), QStringLiteral( "BLOB" ), QMetaType::Type::QByteArray )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QStringLiteral( "TEXT" ), QMetaType::Type::QString )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "FLOAT" ), QMetaType::Type::Double )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "INTEGER" ), QMetaType::Type::LongLong )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "DATE" ), QMetaType::Type::QDate )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "TIMESTAMP" ), QMetaType::Type::QDateTime )
 
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::StringList ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong );
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )

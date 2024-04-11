@@ -545,34 +545,34 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
                                                 };
 
           const QString typName { oidTypeMap[ oids.at( rowIdx )] };
-          QVariant::Type vType { QVariant::Type::String };
+          QMetaType::Type vType { QMetaType::Type::QString };
           if ( floatTypes.contains( typName ) )
           {
-            vType = QVariant::Double;
+            vType = QMetaType::Type::Double;
           }
           else if ( intTypes.contains( typName ) )
           {
-            vType = QVariant::LongLong;
+            vType = QMetaType::Type::LongLong;
           }
           else if ( typName == QLatin1String( "date" ) )
           {
-            vType = QVariant::Date;
+            vType = QMetaType::Type::QDate;
           }
           else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
           {
-            vType = QVariant::DateTime;
+            vType = QMetaType::Type::QDateTime;
           }
           else if ( typName == QLatin1String( "time" ) )
           {
-            vType = QVariant::Time;
+            vType = QMetaType::Type::QTime;
           }
           else if ( typName == QLatin1String( "bool" ) )
           {
-            vType = QVariant::Bool;
+            vType = QMetaType::Type::Bool;
           }
           else if ( typName == QLatin1String( "char" ) )
           {
-            vType = QVariant::Char;
+            vType = QMetaType::Type::QChar;
           }
           else
           {
@@ -609,10 +609,10 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
   {
     if ( mResolveTypes )
     {
-      const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
+      const QMetaType::Type vType { typeMap.value( colIdx, QMetaType::Type::QString ) };
       QVariant val = result->PQgetvalue( mRowIndex, colIdx );
       // Special case for bools: 'f' and 't'
-      if ( vType == QVariant::Bool )
+      if ( vType == QMetaType::Type::Bool )
       {
         const QString boolStrVal { val.toString() };
         if ( ! boolStrVal.isEmpty() )

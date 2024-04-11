@@ -890,7 +890,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, Qgis:
       QgsAttributes featureAttributes;
       for ( auto it = attributesMap.constBegin(); it != attributesMap.constEnd(); ++it )
       {
-        fields.append( QgsField( it.key(), QVariant::String, QStringLiteral( "string" ) ) );
+        fields.append( QgsField( it.key(), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
         featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;

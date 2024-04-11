@@ -167,7 +167,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
     const QString fieldAlias = fieldDataMap[QStringLiteral( "alias" )].toString();
     const QString fieldTypeString = fieldDataMap[QStringLiteral( "type" )].toString();
-    const QVariant::Type type = QgsArcGisRestUtils::convertFieldType( fieldTypeString );
+    const QMetaType::Type type = QgsArcGisRestUtils::convertFieldType( fieldTypeString );
     if ( fieldName == QLatin1String( "geometry" ) || fieldTypeString == QLatin1String( "esriFieldTypeGeometry" ) )
     {
       // skip geometry field
@@ -177,7 +177,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     {
       objectIdFieldName = fieldName;
     }
-    if ( type == QVariant::Invalid )
+    if ( type == QMetaType::Type::UnknownType )
     {
       QgsDebugError( QStringLiteral( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldTypeString ) );
       continue;
@@ -271,12 +271,12 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   QList<QgsVectorDataProvider::NativeType> types
   {
-    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "esriFieldTypeSmallInteger" ), QVariant::Int, -1, -1, 0, 0 ),
-    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "esriFieldTypeInteger" ), QVariant::LongLong, -1, -1, 0, 0 ),
-    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Double ), QStringLiteral( "esriFieldTypeDouble" ), QVariant::Double, 1, 20, 0, 20 ),
-    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "esriFieldTypeString" ), QVariant::String, -1, -1, -1, -1 ),
-    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "esriFieldTypeDate" ), QVariant::DateTime, -1, -1, -1, -1 ),
-    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "esriFieldTypeBlob" ), QVariant::ByteArray, -1, -1, -1, -1 )
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "esriFieldTypeSmallInteger" ), QMetaType::Type::Int, -1, -1, 0, 0 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "esriFieldTypeInteger" ), QMetaType::Type::LongLong, -1, -1, 0, 0 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "esriFieldTypeDouble" ), QMetaType::Type::Double, 1, 20, 0, 20 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QStringLiteral( "esriFieldTypeString" ), QMetaType::Type::QString, -1, -1, -1, -1 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "esriFieldTypeDate" ), QMetaType::Type::QDateTime, -1, -1, -1, -1 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), QStringLiteral( "esriFieldTypeBlob" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
   };
   setNativeTypes( types );
 
