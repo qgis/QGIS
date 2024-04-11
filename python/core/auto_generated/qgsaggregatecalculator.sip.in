@@ -29,7 +29,7 @@ to a data provider for remote calculation.
     {
       QString function;
       QString name;
-      QSet<QVariant::Type> supportedTypes;
+      QSet<QMetaType::Type> supportedTypes;
     };
 
     struct AggregateParameters

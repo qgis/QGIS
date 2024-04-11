@@ -55,7 +55,7 @@ Both part of the widget are optional.
 .. seealso:: :py:class:`QgsFileWidget`
 %End
 
-    QVariant documentPath( QVariant::Type type = QVariant::String ) const;
+    QVariant documentPath( QMetaType::Type type = QMetaType::Type::QString ) const;
 %Docstring
 documentPath returns the path of the current document in the widget
 

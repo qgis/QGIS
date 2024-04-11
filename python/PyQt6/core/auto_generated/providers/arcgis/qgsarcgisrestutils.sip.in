@@ -74,7 +74,7 @@ Utility functions for working with ArcGIS REST services.
 
   public:
 
-    static QVariant::Type convertFieldType( const QString &type );
+    static QMetaType::Type convertFieldType( const QString &type );
 %Docstring
 Converts an ESRI REST field ``type`` to a QVariant type.
 %End
@@ -196,7 +196,7 @@ Converts a ``feature`` to an ArcGIS REST JSON representation.
 .. versionadded:: 3.28
 %End
 
-    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context );
+    static QVariant variantToAttributeValue( const QVariant &variant, QMetaType::Type expectedType, const QgsArcGisRestContext &context );
 %Docstring
 Converts a variant to a REST attribute value.
 

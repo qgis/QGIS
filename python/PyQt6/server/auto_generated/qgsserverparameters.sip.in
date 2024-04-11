@@ -22,7 +22,7 @@ Definition of a parameter with basic conversion methods
 %End
   public:
 
-    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
                                   const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameterDefinition.
@@ -191,7 +191,7 @@ Raises an exception in case of an invalid parameters.
 :raises QgsBadRequestException: Invalid parameter exception
 %End
 
-    QVariant::Type mType;
+    QMetaType::Type mType;
     QVariant mValue;
     QVariant mDefaultValue;
 };
@@ -222,7 +222,7 @@ Parameter common to all services (WMS, WFS, ...)
     };
 
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
-                        const QVariant::Type type = QVariant::String,
+                        const QMetaType::Type type = QMetaType::Type::QString,
                         const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameter.

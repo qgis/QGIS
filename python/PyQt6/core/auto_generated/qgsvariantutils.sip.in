@@ -22,7 +22,7 @@ Contains utility functions for working with QVariants and QVariant types.
 %End
   public:
 
-    static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+    static QString typeToDisplayString( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType );
 %Docstring
 Returns a user-friendly translated string representing a QVariant ``type``.
 
@@ -38,6 +38,8 @@ This method is more rigorous vs QVariant.isNull(), which will return
 
 .. versionadded:: 3.28
 %End
+
+
 
 
 
