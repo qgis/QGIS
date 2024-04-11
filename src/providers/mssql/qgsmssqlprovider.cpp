@@ -1353,7 +1353,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         if ( type == QMetaType::Type::QDate || type == QMetaType::Type::QDateTime )
           query.addBindValue( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
         else
-          query.addBindValue( QVariant( type ) );
+          query.addBindValue( QgsVariantUtils::createVariant( type ) );
       }
       else if ( type == QMetaType::Type::Int )
       {
@@ -1644,7 +1644,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
         if ( type == QMetaType::Type::QDate || type == QMetaType::Type::QDateTime )
           query.addBindValue( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
         else
-          query.addBindValue( QVariant( type ) );
+          query.addBindValue( QgsVariantUtils::createVariant( type ) );
       }
       else if ( type == QMetaType::Type::Int )
       {
