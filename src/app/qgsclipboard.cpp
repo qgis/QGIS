@@ -131,18 +131,22 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
   {
     case AttributesOnly:
     case AttributesWithWKT:
+    case AttributesWithWKB:
     {
       QStringList textLines, htmlLines;
       QStringList textFields, htmlFields;
 
       // first do the field names
-      if ( format == AttributesWithWKT )
+      if ( ( format == AttributesWithWKB ) || ( format == AttributesWithWKT ) )
       {
-        // only include the "wkt_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT text directly
+        const QLatin1String geometryHeading = format == AttributesWithWKB  ? QLatin1String( "wkb_geom" ) : QLatin1String( "wkt_geom" );
+        // only include the "wkx_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT/WKB text directly
         if ( !mFeatureFields.isEmpty() )
-          textFields += QLatin1String( "wkt_geom" );
+        {
+          textFields += geometryHeading;
+        }
 
-        htmlFields += QLatin1String( "<td>wkt_geom</td>" );
+        htmlFields += QLatin1String( "<td>" ) + geometryHeading + QLatin1String( "</td>" );
       }
 
       textFields.reserve( mFeatureFields.size() );
@@ -164,13 +168,22 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
         const QgsAttributes attributes = it->attributes();
 
         // TODO: Set up Paste Transformations to specify the order in which fields are added.
-        if ( format == AttributesWithWKT )
+        if ( ( format == AttributesWithWKB ) || ( format == AttributesWithWKT ) )
         {
           if ( it->hasGeometry() )
           {
-            const QString wkt = it->geometry().asWkt();
-            textFields += wkt;
-            htmlFields += QStringLiteral( "<td>%1</td>" ).arg( wkt );
+            if ( format == AttributesWithWKT )
+            {
+              const QString wkt = it->geometry().asWkt();
+              textFields += wkt;
+              htmlFields += QStringLiteral( "<td>%1</td>" ).arg( wkt );
+            }
+            else if ( format == AttributesWithWKB )
+            {
+              const QString wkb = it->geometry().asWkb().toHex();
+              textFields += wkb;
+              htmlFields += QStringLiteral( "<td>%1</td>" ).arg( wkb );
+            }
           }
           else
           {

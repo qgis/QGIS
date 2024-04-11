@@ -158,10 +158,15 @@ void TestQgisAppClipboard::copyToText()
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t9\tval\nPoint (7 8)\t19\tval2" ) );
 
+  // attributes with WKB
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKB );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QCOMPARE( result, QString( "wkb_geom\tint_field\tstring_field\n010100000000000000000014400000000000001840\t9\tval\n01010000000000000000001c400000000000002040\t19\tval2" ) );
+
   // HTML test
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
   result = mQgisApp->clipboard()->data( "text/html" );
-  QCOMPARE( result, QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkt_geom</td><td>int_field</td><td>string_field</td></tr><tr><td>Point (5 6)</td><td>9</td><td>val</td></tr><tr><td>Point (7 8)</td><td>19</td><td>val2</td></tr></table></body></html>" ) );
+  QCOMPARE( result, QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkb_geom</td><td>int_field</td><td>string_field</td></tr><tr><td>010100000000000000000014400000000000001840</td><td>9</td><td>val</td></tr><tr><td>01010000000000000000001c400000000000002040</td><td>19</td><td>val2</td></tr></table></body></html>" ) );
 
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
@@ -229,6 +234,11 @@ void TestQgisAppClipboard::copyToText()
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
 
+  // attributes with WKB
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKB );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QCOMPARE( result, QString( "wkb_geom\tint_field\tstring_field\n010100000000000000000014400000000000001840\t1\tSingle line text\n01010000000000000000001c400000000000002040\t2\t\"Unix Multiline \nText\"\n010100000000000000000022400000000000002440\t3\t\"Windows Multiline \r\nText\"" ) );
+
 }
 
 void TestQgisAppClipboard::copyToTextNoFields()
@@ -253,10 +263,15 @@ void TestQgisAppClipboard::copyToTextNoFields()
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QStringLiteral( "Point (5 6)\nPoint (7 8)" ) );
 
+  // attributes with WKB
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKB );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QCOMPARE( result, QStringLiteral( "010100000000000000000014400000000000001840\n01010000000000000000001c400000000000002040" ) );
+
   // HTML test
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
   result = mQgisApp->clipboard()->data( "text/html" );
-  QCOMPARE( result, QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkt_geom</td></tr><tr><td>Point (5 6)</td></tr><tr><td>Point (7 8)</td></tr></table></body></html>" ) );
+  QCOMPARE( result, QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkb_geom</td></tr><tr><td>010100000000000000000014400000000000001840</td></tr><tr><td>01010000000000000000001c400000000000002040</td></tr></table></body></html>" ) );
 
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );

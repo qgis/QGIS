@@ -56,6 +56,7 @@ class APP_EXPORT QgsClipboard : public QObject
     {
       AttributesOnly, //!< Tab delimited text, attributes only
       AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
+      AttributesWithWKB, //!< Tab delimited text, with geometry in WKB format
       GeoJSON, //!< GeoJSON FeatureCollection format
     };
     Q_ENUM( CopyFormat )
@@ -165,7 +166,7 @@ class APP_EXPORT QgsClipboard : public QObject
     void generateClipboardText( QString &textContent, QString &htmlContent ) const;
 
     /**
-     * Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON
+     * Attempts to convert a string to a list of features, by parsing the string as WKT/WKB and GeoJSON
      * \param string string to convert
      * \param fields fields for resultant features
      * \returns list of features if conversion was successful
