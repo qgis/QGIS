@@ -2142,20 +2142,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Sets the configuration flags of the field at given index
      * \see QgsField::configurationFlags()
-     * \since QGIS 3.16
+     * \since QGIS 3.34 (in C++ since 3.16)
      */
     void setFieldConfigurationFlags( int index, Qgis::FieldConfigurationFlags flags );
 
     /**
      * Sets the given configuration \a flag for the field at given \a index to be \a active or not.
-     * \since QGIS 3.16
+     * \since QGIS 3.34 (in C++ since 3.16)
      */
     void setFieldConfigurationFlag( int index, Qgis::FieldConfigurationFlag flag, bool active );
 
     /**
      * Returns the configuration flags of the field at given index
      * \see QgsField::setConfigurationFlags()
-     * \since QGIS 3.16
+     * \since QGIS 3.34 (in C++ since 3.16)
      */
     Qgis::FieldConfigurationFlags fieldConfigurationFlags( int index ) const;
 
