@@ -47,6 +47,7 @@
 #include "qgisplugin.h"
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
+#include "qgsvariantutils.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
 #ifdef WITH_BINDINGS
