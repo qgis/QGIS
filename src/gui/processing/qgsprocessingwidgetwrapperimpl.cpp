@@ -3474,6 +3474,7 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
   setLayout( l );
 
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsProcessingPointPanel::changed );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsProcessingPointPanel::textChanged );
   connect( mButton, &QToolButton::clicked, this, &QgsProcessingPointPanel::selectOnCanvas );
   mButton->setVisible( false );
 }
@@ -3494,6 +3495,22 @@ void QgsProcessingPointPanel::setAllowNull( bool allowNull )
   mLineEdit->setShowClearButton( allowNull );
 }
 
+void QgsProcessingPointPanel::setShowPointOnCanvas( bool show )
+{
+  if ( mShowPointOnCanvas == show )
+    return;
+
+  mShowPointOnCanvas = show;
+  if ( mShowPointOnCanvas )
+  {
+    updateRubberBand();
+  }
+  else
+  {
+    mMapPointRubberBand.reset();
+  }
+}
+
 QVariant QgsProcessingPointPanel::value() const
 {
   return mLineEdit->showClearButton() && mLineEdit->text().trimmed().isEmpty() ? QVariant() : QVariant( mLineEdit->text() );
@@ -3506,6 +3523,7 @@ void QgsProcessingPointPanel::clear()
 
 void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
 {
+  mPoint = point;
   QString newText = QStringLiteral( "%1,%2" )
                     .arg( QString::number( point.x(), 'f' ),
                           QString::number( point.y(), 'f' ) );
@@ -3516,6 +3534,7 @@ void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordi
     newText += QStringLiteral( " [%1]" ).arg( mCrs.authid() );
   }
   mLineEdit->setText( newText );
+  updateRubberBand();
 }
 
 void QgsProcessingPointPanel::selectOnCanvas()
@@ -3544,6 +3563,68 @@ void QgsProcessingPointPanel::pointPicked()
   emit toggleDialogVisibility( true );
 }
 
+void QgsProcessingPointPanel::textChanged( const QString &text )
+{
+  const thread_local QRegularExpression rx( QStringLiteral( "^\\s*\\(?\\s*(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*\\)?\\s*$" ) );
+
+  const QRegularExpressionMatch match = rx.match( text );
+  if ( match.hasMatch() )
+  {
+    bool xOk = false;
+    const double x = match.captured( 1 ).toDouble( &xOk );
+    bool yOk = false;
+    const double y = match.captured( 2 ).toDouble( &yOk );
+
+    if ( xOk && yOk )
+    {
+      mPoint = QgsPointXY( x, y );
+
+      const QgsCoordinateReferenceSystem pointCrs( match.captured( 3 ) );
+      if ( pointCrs.isValid() )
+      {
+        mCrs = pointCrs;
+      }
+    }
+    else
+    {
+      mPoint = QgsPointXY();
+    }
+  }
+  else
+  {
+    mPoint = QgsPointXY();
+  }
+
+  updateRubberBand();
+}
+
+void QgsProcessingPointPanel::updateRubberBand()
+{
+  if ( !mShowPointOnCanvas || !mCanvas )
+    return;
+
+  if ( mPoint.isEmpty() )
+  {
+    mMapPointRubberBand.reset();
+    return;
+  }
+
+  if ( !mMapPointRubberBand )
+  {
+    mMapPointRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Point ) );
+    mMapPointRubberBand->setZValue( 1000 );
+    mMapPointRubberBand->setIcon( QgsRubberBand::ICON_X );
+
+    const double scaleFactor = mCanvas->fontMetrics().xHeight() * .4;
+    mMapPointRubberBand->setWidth( scaleFactor );
+    mMapPointRubberBand->setIconSize( scaleFactor * 5 );
+
+    mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+    mMapPointRubberBand->setColor( QColor( 200, 0, 200 ) );
+  }
+
+  mMapPointRubberBand->setToGeometry( QgsGeometry::fromPointXY( mPoint ), mCrs );
+}
 
 
 //
@@ -3598,6 +3679,9 @@ QWidget *QgsProcessingPointWidgetWrapper::createWidget()
 
       if ( pointParam->flags() & Qgis::ProcessingParameterFlag::Optional )
         mPanel->setAllowNull( true );
+
+      if ( type() == QgsProcessingGui::Standard )
+        mPanel->setShowPointOnCanvas( true );
 
       mPanel->setToolTip( parameterDefinition()->toolTip() );
 
