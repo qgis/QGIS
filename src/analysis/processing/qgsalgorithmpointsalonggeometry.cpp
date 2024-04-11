@@ -89,8 +89,8 @@ Qgis::WkbType QgsPointsAlongGeometryAlgorithm::outputWkbType( Qgis::WkbType inpu
 QgsFields QgsPointsAlongGeometryAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output = inputFields;
-  output.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
-  output.append( QgsField( QStringLiteral( "angle" ), QVariant::Double ) );
+  output.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
+  output.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double ) );
   return output;
 }
 

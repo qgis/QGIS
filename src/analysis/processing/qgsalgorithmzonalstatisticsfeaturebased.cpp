@@ -144,7 +144,7 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
   {
     if ( mStats & stat )
     {
-      const QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QVariant::Double, QStringLiteral( "double precision" ) );
+      const QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QMetaType::Type::Double, QStringLiteral( "double precision" ) );
       if ( mOutputFields.names().contains( field.name() ) )
       {
         throw QgsProcessingException( QObject::tr( "Field %1 already exists" ).arg( field.name() ) );

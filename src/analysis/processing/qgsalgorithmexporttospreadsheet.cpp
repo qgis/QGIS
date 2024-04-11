@@ -56,7 +56,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
       const int idx = mLayer->fields().indexFromName( field.name() );
       if ( mFormatters.contains( idx ) )
       {
-        return QgsField( field.name(), QVariant::String );
+        return QgsField( field.name(), QMetaType::Type::QString );
       }
       return field;
     }

@@ -120,9 +120,9 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   QgsFields outputFields = source->fields();
   QgsFields newFields;
   const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
-  newFields.append( QgsField( clusterFieldName, QVariant::Int ) );
+  newFields.append( QgsField( clusterFieldName, QMetaType::Type::Int ) );
   const QString clusterSizeFieldName = parameterAsString( parameters, QStringLiteral( "SIZE_FIELD_NAME" ), context );
-  newFields.append( QgsField( clusterSizeFieldName, QVariant::Int ) );
+  newFields.append( QgsField( clusterSizeFieldName, QMetaType::Type::Int ) );
   outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
 
   QString dest;

@@ -192,7 +192,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "rand_point_id" ), QVariant::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "rand_point_id" ), QMetaType::Type::LongLong ) );
   if ( mIncludeLineAttr )
     fields.extend( lineSource->fields() );
 

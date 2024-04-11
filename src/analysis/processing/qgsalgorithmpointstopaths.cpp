@@ -166,7 +166,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QStringList requiredFields = QStringList( orderExpression.referencedColumns().values() );
   orderExpression.prepare( &expressionContext );
 
-  QVariant::Type orderFieldType = QVariant::String;
+  QMetaType::Type orderFieldType = QMetaType::Type::QString;
   if ( orderExpression.isField() )
   {
     const int orderFieldIndex = source->fields().indexFromName( orderExpression.referencedColumns().values().first() );

@@ -79,9 +79,9 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
 
   QgsFields fields = startPoints->fields();
-  fields.append( QgsField( QStringLiteral( "start" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "end" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "cost" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs() ) );

@@ -172,8 +172,8 @@ QgsFeatureList QgsCreateArrayOffsetLinesAlgorithm::processFeature( const QgsFeat
 QgsFields QgsCreateArrayOffsetLinesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output = inputFields;
-  output.append( QgsField( QStringLiteral( "instance" ), QVariant::Int ) );
-  output.append( QgsField( QStringLiteral( "offset" ), QVariant::Double ) );
+  output.append( QgsField( QStringLiteral( "instance" ), QMetaType::Type::Int ) );
+  output.append( QgsField( QStringLiteral( "offset" ), QMetaType::Type::Double ) );
   return output;
 }
 

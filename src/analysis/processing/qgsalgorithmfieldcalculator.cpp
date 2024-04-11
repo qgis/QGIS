@@ -71,19 +71,19 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
   fieldTypes.reserve( 11 );
   icons.reserve( 11 );
   for ( const auto &type :
-        std::vector < std::pair< QVariant::Type, QVariant::Type > >
+        std::vector < std::pair< QMetaType::Type, QMetaType::Type > >
 {
-  {QVariant::Double, QVariant::Invalid },
-  {QVariant::Int, QVariant::Invalid },
-  {QVariant::String, QVariant::Invalid },
-  {QVariant::Date, QVariant::Invalid },
-  {QVariant::Time, QVariant::Invalid },
-  {QVariant::DateTime, QVariant::Invalid },
-  {QVariant::Bool, QVariant::Invalid },
-  {QVariant::ByteArray, QVariant::Invalid },
-  {QVariant::StringList, QVariant::Invalid },
-  {QVariant::List, QVariant::Int },
-  {QVariant::List, QVariant::Double }
+  {QMetaType::Type::Double, QMetaType::Type::UnknownType },
+  {QMetaType::Type::Int, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QString, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QDate, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QTime, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QDateTime, QMetaType::Type::UnknownType },
+  {QMetaType::Type::Bool, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QByteArray, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QStringList, QMetaType::Type::UnknownType },
+  {QMetaType::Type::QVariantList, QMetaType::Type::Int },
+  {QMetaType::Type::QVariantList, QMetaType::Type::Double }
 } )
   {
     fieldTypes << QgsVariantUtils::typeToDisplayString( type.first, type.second );
@@ -149,45 +149,45 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
-  QVariant::Type fieldType = QVariant::Type::String;
-  QVariant::Type fieldSubType = QVariant::Type::Invalid;
+  QMetaType::Type fieldType = QMetaType::Type::QString;
+  QMetaType::Type fieldSubType = QMetaType::Type::UnknownType;
   switch ( fieldTypeIdx )
   {
     case 0: // Float
-      fieldType = QVariant::Double;
+      fieldType = QMetaType::Type::Double;
       break;
     case 1: // Integer
-      fieldType = QVariant::Int;
+      fieldType = QMetaType::Type::Int;
       break;
     case 2: // String
-      fieldType = QVariant::String;
+      fieldType = QMetaType::Type::QString;
       break;
     case 3: // Date
-      fieldType = QVariant::Date;
+      fieldType = QMetaType::Type::QDate;
       break;
     case 4: // Time
-      fieldType = QVariant::Time;
+      fieldType = QMetaType::Type::QTime;
       break;
     case 5: // DateTime
-      fieldType = QVariant::DateTime;
+      fieldType = QMetaType::Type::QDateTime;
       break;
     case 6: // Boolean
-      fieldType = QVariant::Bool;
+      fieldType = QMetaType::Type::Bool;
       break;
     case 7: // Binary
-      fieldType = QVariant::ByteArray;
+      fieldType = QMetaType::Type::QByteArray;
       break;
     case 8: // StringList
-      fieldType = QVariant::StringList;
-      fieldSubType = QVariant::String;
+      fieldType = QMetaType::Type::QStringList;
+      fieldSubType = QMetaType::Type::QString;
       break;
     case 9: // IntegerList
-      fieldType = QVariant::List;
-      fieldSubType = QVariant::Int;
+      fieldType = QMetaType::Type::QVariantList;
+      fieldSubType = QMetaType::Type::Int;
       break;
     case 10: // DoubleList
-      fieldType = QVariant::List;
-      fieldSubType = QVariant::Double;
+      fieldType = QMetaType::Type::QVariantList;
+      fieldSubType = QMetaType::Type::Double;
       break;
   }
 

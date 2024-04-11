@@ -179,12 +179,12 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
   };
 
   // Adds a field to the output, with a specified type
-  auto addFieldWithType = [&fieldsToJoin]( const QgsField & original, const QString & statistic, QVariant::Type type )
+  auto addFieldWithType = [&fieldsToJoin]( const QgsField & original, const QString & statistic, QMetaType::Type type )
   {
     QgsField field = QgsField( original );
     field.setName( field.name() + '_' + statistic );
     field.setType( type );
-    if ( type == QVariant::Double )
+    if ( type == QMetaType::Type::Double )
     {
       field.setLength( 20 );
       field.setPrecision( 6 );
@@ -202,7 +202,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
   struct FieldStatistic
   {
-    FieldStatistic( int enumIndex, const QString &name, QVariant::Type type )
+    FieldStatistic( int enumIndex, const QString &name, QMetaType::Type type )
       : enumIndex( enumIndex )
       , name( name )
       , type( type )
@@ -210,45 +210,45 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
     int enumIndex = 0;
     QString name;
-    QVariant::Type type;
+    QMetaType::Type type;
   };
   static const QVector< FieldStatistic > sNumericStats
   {
-    FieldStatistic( 0, QStringLiteral( "count" ), QVariant::LongLong ),
-    FieldStatistic( 1, QStringLiteral( "unique" ), QVariant::LongLong ),
-    FieldStatistic( 2, QStringLiteral( "min" ), QVariant::Double ),
-    FieldStatistic( 3, QStringLiteral( "max" ), QVariant::Double ),
-    FieldStatistic( 4, QStringLiteral( "range" ), QVariant::Double ),
-    FieldStatistic( 5, QStringLiteral( "sum" ), QVariant::Double ),
-    FieldStatistic( 6, QStringLiteral( "mean" ), QVariant::Double ),
-    FieldStatistic( 7, QStringLiteral( "median" ), QVariant::Double ),
-    FieldStatistic( 8, QStringLiteral( "stddev" ), QVariant::Double ),
-    FieldStatistic( 9, QStringLiteral( "minority" ), QVariant::Double ),
-    FieldStatistic( 10, QStringLiteral( "majority" ), QVariant::Double ),
-    FieldStatistic( 11, QStringLiteral( "q1" ), QVariant::Double ),
-    FieldStatistic( 12, QStringLiteral( "q3" ), QVariant::Double ),
-    FieldStatistic( 13, QStringLiteral( "iqr" ), QVariant::Double ),
+    FieldStatistic( 0, QStringLiteral( "count" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 1, QStringLiteral( "unique" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 2, QStringLiteral( "min" ), QMetaType::Type::Double ),
+    FieldStatistic( 3, QStringLiteral( "max" ), QMetaType::Type::Double ),
+    FieldStatistic( 4, QStringLiteral( "range" ), QMetaType::Type::Double ),
+    FieldStatistic( 5, QStringLiteral( "sum" ), QMetaType::Type::Double ),
+    FieldStatistic( 6, QStringLiteral( "mean" ), QMetaType::Type::Double ),
+    FieldStatistic( 7, QStringLiteral( "median" ), QMetaType::Type::Double ),
+    FieldStatistic( 8, QStringLiteral( "stddev" ), QMetaType::Type::Double ),
+    FieldStatistic( 9, QStringLiteral( "minority" ), QMetaType::Type::Double ),
+    FieldStatistic( 10, QStringLiteral( "majority" ), QMetaType::Type::Double ),
+    FieldStatistic( 11, QStringLiteral( "q1" ), QMetaType::Type::Double ),
+    FieldStatistic( 12, QStringLiteral( "q3" ), QMetaType::Type::Double ),
+    FieldStatistic( 13, QStringLiteral( "iqr" ), QMetaType::Type::Double ),
   };
   static const QVector< FieldStatistic > sDateTimeStats
   {
-    FieldStatistic( 0, QStringLiteral( "count" ), QVariant::LongLong ),
-    FieldStatistic( 1, QStringLiteral( "unique" ), QVariant::LongLong ),
-    FieldStatistic( 14, QStringLiteral( "empty" ), QVariant::LongLong ),
-    FieldStatistic( 15, QStringLiteral( "filled" ), QVariant::LongLong ),
-    FieldStatistic( 2, QStringLiteral( "min" ), QVariant::Invalid ),
-    FieldStatistic( 3, QStringLiteral( "max" ), QVariant::Invalid ),
+    FieldStatistic( 0, QStringLiteral( "count" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 1, QStringLiteral( "unique" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 14, QStringLiteral( "empty" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 15, QStringLiteral( "filled" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 2, QStringLiteral( "min" ), QMetaType::Type::UnknownType ),
+    FieldStatistic( 3, QStringLiteral( "max" ), QMetaType::Type::UnknownType ),
   };
   static const QVector< FieldStatistic > sStringStats
   {
-    FieldStatistic( 0, QStringLiteral( "count" ), QVariant::LongLong ),
-    FieldStatistic( 1, QStringLiteral( "unique" ), QVariant::LongLong ),
-    FieldStatistic( 14, QStringLiteral( "empty" ), QVariant::LongLong ),
-    FieldStatistic( 15, QStringLiteral( "filled" ), QVariant::LongLong ),
-    FieldStatistic( 2, QStringLiteral( "min" ), QVariant::Invalid ),
-    FieldStatistic( 3, QStringLiteral( "max" ), QVariant::Invalid ),
-    FieldStatistic( 16, QStringLiteral( "min_length" ), QVariant::Int ),
-    FieldStatistic( 17, QStringLiteral( "max_length" ), QVariant::Int ),
-    FieldStatistic( 18, QStringLiteral( "mean_length" ), QVariant::Double ),
+    FieldStatistic( 0, QStringLiteral( "count" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 1, QStringLiteral( "unique" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 14, QStringLiteral( "empty" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 15, QStringLiteral( "filled" ), QMetaType::Type::LongLong ),
+    FieldStatistic( 2, QStringLiteral( "min" ), QMetaType::Type::UnknownType ),
+    FieldStatistic( 3, QStringLiteral( "max" ), QMetaType::Type::UnknownType ),
+    FieldStatistic( 16, QStringLiteral( "min_length" ), QMetaType::Type::Int ),
+    FieldStatistic( 17, QStringLiteral( "max_length" ), QMetaType::Type::Int ),
+    FieldStatistic( 18, QStringLiteral( "mean_length" ), QMetaType::Type::Double ),
   };
 
   for ( const QString &field : std::as_const( joinedFieldNames ) )
@@ -265,9 +265,9 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
         fieldTypes.append( FieldType::Numeric );
         statisticList = sNumericStats;
       }
-      else if ( joinField.type() == QVariant::Date
-                || joinField.type() == QVariant::Time
-                || joinField.type() == QVariant::DateTime )
+      else if ( joinField.type() == QMetaType::Type::QDate
+                || joinField.type() == QMetaType::Type::QTime
+                || joinField.type() == QMetaType::Type::QDateTime )
       {
         fieldTypes.append( FieldType::DateTime );
         statisticList = sDateTimeStats;
@@ -282,7 +282,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
       {
         if ( summaries.contains( statistic.enumIndex ) )
         {
-          if ( statistic.type != QVariant::Invalid )
+          if ( statistic.type != QMetaType::Type::UnknownType )
             addFieldWithType( joinField, statistic.name, statistic.type );
           else
             addFieldKeepType( joinField, statistic.name );

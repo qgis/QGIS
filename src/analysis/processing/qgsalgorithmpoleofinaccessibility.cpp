@@ -92,7 +92,7 @@ Qgis::WkbType QgsPoleOfInaccessibilityAlgorithm::outputWkbType( Qgis::WkbType in
 QgsFields QgsPoleOfInaccessibilityAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "dist_pole" ), QVariant::Double ) );
+  outputFields.append( QgsField( QStringLiteral( "dist_pole" ), QMetaType::Type::Double ) );
 
   return outputFields;
 }

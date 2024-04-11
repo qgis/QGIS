@@ -100,8 +100,8 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
     {
       mLayerNames << layer->name();
       mOverlayerSources.emplace_back( std::make_unique< QgsVectorLayerFeatureSource >( vl ) );
-      mOutputFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QVariant::Double ) );
-      mOutputFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QVariant::Double ) );
+      mOutputFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QMetaType::Type::Double ) );
+      mOutputFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QMetaType::Type::Double ) );
     }
   }
 

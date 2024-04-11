@@ -108,8 +108,8 @@ bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &p
 QgsFields QgsMultiRingConstantBufferAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "ringId" ), QVariant::Int, QString(), 10, 0 ) );
-  fields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "ringId" ), QMetaType::Type::Int, QString(), 10, 0 ) );
+  fields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double, QString(), 20, 6 ) );
   return fields;
 }
 

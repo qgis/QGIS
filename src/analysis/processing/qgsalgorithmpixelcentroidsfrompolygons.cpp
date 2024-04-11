@@ -77,9 +77,9 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
-  fields.append( QgsField( QStringLiteral( "poly_id" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "point_id" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "poly_id" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "point_id" ), QMetaType::Type::Int ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, rasterLayer->crs(), QgsFeatureSink::RegeneratePrimaryKey ) );

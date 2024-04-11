@@ -197,7 +197,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
 QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
