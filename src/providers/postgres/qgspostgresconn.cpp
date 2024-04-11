@@ -1915,7 +1915,7 @@ QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVa
   {
     out = expr.arg( quotedIdentifier( fld.name() ) );
     // if field and value havev incompatible types, rollback to text cast
-    if ( valueType !=  QVariant::LastType && valueType != QVariant::DateTime && valueType != QVariant::Date && valueType != QVariant::Time )
+    if ( valueType !=  QVariant::Invalid && valueType != QVariant::DateTime && valueType != QVariant::Date && valueType != QVariant::Time )
     {
       out = out + "::text";
     }
@@ -1928,7 +1928,7 @@ QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVa
   {
     out = expr.arg( quotedIdentifier( fld.name() ) );
     // if field and value havev incompatible types, rollback to text cast
-    if ( valueType !=  QVariant::LastType && valueType != QVariant::Int && valueType != QVariant::LongLong && valueType != QVariant::Double )
+    if ( valueType !=  QVariant::Invalid && valueType != QVariant::Int && valueType != QVariant::LongLong && valueType != QVariant::Double )
     {
       out = out + "::text";
     }
