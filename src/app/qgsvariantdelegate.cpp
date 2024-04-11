@@ -381,5 +381,5 @@ QMetaType::Type QgsVariantDelegate::type( const QVariant &value )
   }
 
   // fallback to QVariant::type()
-  return value.userType();
+  return static_cast<QMetaType::Type>( value.userType() );
 }
