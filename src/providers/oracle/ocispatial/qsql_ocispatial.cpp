@@ -825,7 +825,11 @@ void QOCISpatialResultPrivate::outValues( QVector<QVariant> &values, IndicatorAr
     QMetaType typ = values.at( i ).metaType();
 #endif
     if ( indicators[i] == -1 ) // NULL
-      values[i] = QgsVariantUtils::createVariant( typ );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      values[i] = static_cast< QVariant::Type >( typ );
+#else
+      values[i] = QVariant( QMetaType( typ ) );
+#endif
   }
 }
 
@@ -1061,7 +1065,12 @@ QMetaType::Type qDecodeOCIType( int ocitype, QSql::NumericalPrecisionPolicy prec
 static QSqlField qFromOraInf( const OraFieldInfo &ofi )
 {
   ENTER
-  QSqlField f( ofi.name, ofi.type );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QSqlField f( ofi.name, static_cast<QVariant::Type>( ofi.type ) );
+#else
+  QSqlField f( ofi.name, static_cast<QVariant::Type>( QMetaType( metaType ) ) );
+#endif
+
   f.setRequired( ofi.oraIsNull == 0 );
 
   if ( ofi.type == QMetaType::Type::QString && ofi.oraType != SQLT_NUM && ofi.oraType != SQLT_VNU )
@@ -2124,7 +2133,11 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
     {
       qOraOutValue( boundValues[i], tmpStorage, d->err );
       if ( columns[i].indicators[0] == -1 )
-        boundValues[i] = QgsVariantUtils::createVariant( tp );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        boundValues[i] = static_cast< QVariant::Type >( tp );
+#else
+        boundValues[i] = QVariant( QMetaType( tp ) );
+#endif
       continue;
     }
 
@@ -2442,7 +2455,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
   if ( sdoind )
     qDebug() << "sdoind->_atomic =" << sdoind->_atomic;
 
-  v = QgsVariantUtils::createVariant( QMetaType::Type::QByteArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  v = QVariant( QVariant::ByteArray );
+#else
+  v = QVariant( QMetaType( QMetaType::Type::QByteArray ) );
+#endif
 
   if ( !sdoobj || !sdoind )
   {
@@ -3202,7 +3219,11 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
     {
       // got a NULL value
       qDebug() << "NULL";
-      v[index + i] = QgsVariantUtils::createVariant( fld.typ );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      v[index + i] = static_cast< QVariant::Type >( fld.typ );
+#else
+      v[index + i] = QVariant( QMetaType( fld.typ ) );
+#endif
       continue;
     }
 
@@ -3277,7 +3298,11 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
           if ( fld.len > 0 )
             v[index + i] = QByteArray( fld.data, fld.len );
           else
-            v[index + i] = QgsVariantUtils::createVariant( QMetaType::Type::QByteArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            v[index + i] = QVariant( QVariant::ByteArray );
+#else
+            v[index + i] = QVariant( QMetaType( QMetaType::Type::QByteArray ) );
+#endif
         }
         break;
       default:
@@ -4214,7 +4239,11 @@ QSqlRecord QOCISpatialDriver::record( const QString &tablename ) const
     do
     {
       QMetaType::Type ty = qDecodeOCIType( t.value( 1 ).toString(), t.numericalPrecisionPolicy() );
-      QSqlField f( t.value( 0 ).toString(), ty );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( ty ) );
+#else
+      QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( QMetaType( ty ) ) );
+#endif
       f.setRequired( t.value( 5 ).toString() == QLatin1String( "N" ) );
       f.setPrecision( t.value( 4 ).toInt() );
       if ( d->serverVersion >= 9 && ( ty == QMetaType::Type::QString ) && !t.isNull( 3 ) && !keywords.contains( t.value( 1 ).toString() ) )
@@ -4302,7 +4331,12 @@ QSqlIndex QOCISpatialDriver::primaryIndex( const QString &tablename ) const
       {
         return QSqlIndex();
       }
-      QSqlField f( t.value( 0 ).toString(), qDecodeOCIType( tt.value( 0 ).toString(), t.numericalPrecisionPolicy() ) );
+      QMetaType::Type ty = qDecodeOCIType( tt.value( 0 ).toString(), t.numericalPrecisionPolicy() );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( ty ) );
+#else
+      QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( QMetaType( ty ) ) );
+#endif
       idx.append( f );
     }
     while ( t.next() );
@@ -4314,7 +4348,11 @@ QSqlIndex QOCISpatialDriver::primaryIndex( const QString &tablename ) const
 QString QOCISpatialDriver::formatValue( const QSqlField &field, bool trimStrings ) const
 {
   ENTER
-  switch ( field.type() )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  switch ( static_cast<QMetaType::Type>( field.type() ) )
+#else
+  switch ( field.metaType().id() )
+#endif
   {
     case QMetaType::Type::QDateTime:
     {
