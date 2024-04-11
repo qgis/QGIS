@@ -1795,6 +1795,8 @@ QString QgsFontManager::urlForFontDownload( const QString &family, QString &matc
     QStringLiteral( "Zilla Slab Highlight" ),
   };
 
+// temporarily unavailable -- see https://github.com/google/fonts/issues/7481
+#if 0
   auto cleanFontFamily = []( const QString & family ) -> QString
   {
     const thread_local QRegularExpression charsToRemove( QStringLiteral( "[^a-z]" ) );
@@ -1807,6 +1809,7 @@ QString QgsFontManager::urlForFontDownload( const QString &family, QString &matc
 
   matchedFamily.clear();
   const QString cleanedFamily = cleanFontFamily( family );
+
   for ( const QString &candidate : sGoogleFonts )
   {
     if ( cleanFontFamily( candidate ) == cleanedFamily )
@@ -1817,6 +1820,11 @@ QString QgsFontManager::urlForFontDownload( const QString &family, QString &matc
       return QStringLiteral( "https://fonts.google.com/download?family=%1" ).arg( paramName );
     }
   }
+#else
+  ( void )family;
+  matchedFamily.clear();
+#endif
+
   return QString();
 }
 
