@@ -1836,28 +1836,28 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         else
         {
 
-	  // Check if layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
-	  GDALDatasetH myDatasetHandle = GDALOpen( name, GA_ReadOnly );
-	  QString myTIFFDocumentName = GDALGetMetadataItem( myDatasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
-	  if ( myTIFFDocumentName != nullptr )
-	  {
-		layerName = myTIFFDocumentName;
-	  }
+          // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
+          GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
+          QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
+          if ( tagTIFFDocumentName != nullptr )
+          {
+            layerName = tagTIFFDocumentName;
+          }
 
-	  QString myTIFFImageDescription = GDALGetMetadataItem( myDatasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
-	  if ( myTIFFImageDescription != nullptr )
-	  {
-		layerDesc = myTIFFImageDescription;
-	  }
+          QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
+          if ( tagTIFFImageDescription != nullptr )
+          {
+            layerDesc = tagTIFFImageDescription;
+          }
 
-	  GDALClose( myDatasetHandle );
+          GDALClose( datasetHandle );
 
-	  // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
-	  sepIdx = layerName.indexOf( datasetPath + "\":" );
-	  if ( sepIdx >= 0 )
-	  {
-	    layerName = layerName.mid( layerName.indexOf( datasetPath + "\":" ) + datasetPath.length() + 2 );
-	  }
+          // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
+          sepIdx = layerName.indexOf( datasetPath + "\":" );
+          if ( sepIdx >= 0 )
+          {
+            layerName = layerName.mid( layerName.indexOf( datasetPath + "\":" ) + datasetPath.length() + 2 );
+          }
 
         }
 
