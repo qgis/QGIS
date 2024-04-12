@@ -386,7 +386,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mSplitPolicy = mAttributeTypeDialog->splitPolicy();
   const int fieldIndex = mAttributeTypeDialog->fieldIdx();
 
-  mLayer->setDefaultValueDefinition( mAttributeTypeDialog->fieldIdx(), QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
+  mLayer->setDefaultValueDefinition( fieldIdx, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   const QString fieldName = mLayer->fields().at( fieldIndex ).name();
 
