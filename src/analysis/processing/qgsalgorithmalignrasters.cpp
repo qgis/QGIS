@@ -54,7 +54,9 @@ QString QgsAlignRastersAlgorithm::groupId() const
 
 QString QgsAlignRastersAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Aligns rasters by resampling them to the same cell size and reprojecting to the same CRS." );
+  return QObject::tr( "Aligns rasters by resampling them to the same cell size and reprojecting to the same CRS.\n\n"
+                      "A specific output file and resampling method has to be defined for each input raster."
+                    );
 }
 
 QgsAlignRastersAlgorithm *QgsAlignRastersAlgorithm::createInstance() const
@@ -64,8 +66,13 @@ QgsAlignRastersAlgorithm *QgsAlignRastersAlgorithm::createInstance() const
 
 void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterAlignRasterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
+  std::unique_ptr<QgsProcessingParameterAlignRasterLayers> inputLayersParam = std::make_unique<QgsProcessingParameterAlignRasterLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) );
+  inputLayersParam->setHelp( QObject::tr( "Select layers to align and configure their resampling options" ) );
+  addParameter( inputLayersParam.release() );
+
+  std::unique_ptr<QgsProcessingParameterRasterLayer> refLayerParam = std::make_unique<QgsProcessingParameterRasterLayer>( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) );
+  refLayerParam->setHelp( QObject::tr( "Raster layer used to fetch the default extent, cell size and CRS applied to input layers" ) );
+  addParameter( refLayerParam.release() );
 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Override reference CRS" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_X" ), QObject::tr( "Override reference cell size X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );

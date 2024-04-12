@@ -99,6 +99,7 @@ QgsProcessingAlignRasterLayersPanelWidget::QgsProcessingAlignRasterLayersPanelWi
   connect( listView(), &QListView::doubleClicked, this, &QgsProcessingAlignRasterLayersPanelWidget::configureRaster );
 
   QPushButton *configureLayerButton = new QPushButton( tr( "Configure Raster…" ) );
+  configureLayerButton->setToolTip( tr( "Set resampling options for the selected input layer" ) );
   connect( configureLayerButton, &QPushButton::clicked, this, &QgsProcessingAlignRasterLayersPanelWidget::configureRaster );
   buttonBox()->addButton( configureLayerButton, QDialogButtonBox::ActionRole );
 
