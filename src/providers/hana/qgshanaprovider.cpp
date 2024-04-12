@@ -23,6 +23,7 @@
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgshanaconnectionpool.h"
+#include "qgshanadatatypes.h"
 #include "qgshanaexception.h"
 #include "qgshanadriver.h"
 #include "qgshanafeatureiterator.h"
@@ -185,36 +186,36 @@ namespace
 
     switch ( field.type )
     {
-      case SQLDataTypes::Bit:
-      case SQLDataTypes::Boolean:
+      case QgsHanaDataTypes::Bit:
+      case QgsHanaDataTypes::Boolean:
         stmt->setBoolean( paramIndex, isNull ? Boolean() : Boolean( value.toBool() ) );
         break;
-      case SQLDataTypes::TinyInt:
+      case QgsHanaDataTypes::TinyInt:
         if ( field.isSigned )
           stmt->setByte( paramIndex, isNull ? Byte() : Byte( static_cast<int8_t>( value.toInt() ) ) );
         else
           stmt->setUByte( paramIndex, isNull ? UByte() : UByte( static_cast<uint8_t>( value.toUInt() ) ) );
         break;
-      case SQLDataTypes::SmallInt:
+      case QgsHanaDataTypes::SmallInt:
         if ( field.isSigned )
           stmt->setShort( paramIndex, isNull ? Short() : Short( static_cast<int16_t>( value.toInt() ) ) );
         else
           stmt->setUShort( paramIndex, isNull ? UShort() : UShort( static_cast<uint16_t>( value.toUInt() ) ) );
         break;
-      case SQLDataTypes::Integer:
+      case QgsHanaDataTypes::Integer:
         if ( field.isSigned )
           stmt->setInt( paramIndex, isNull ? Int() : Int( value.toInt() ) );
         else
           stmt->setUInt( paramIndex, isNull ? UInt() : UInt( value.toUInt() ) );
         break;
-      case SQLDataTypes::BigInt:
+      case QgsHanaDataTypes::BigInt:
         if ( field.isSigned )
           stmt->setLong( paramIndex, isNull ? Long() : Long( value.toLongLong() ) );
         else
           stmt->setULong( paramIndex, isNull ? ULong() : ULong( value.toULongLong() ) );
         break;
-      case SQLDataTypes::Numeric:
-      case SQLDataTypes::Decimal:
+      case QgsHanaDataTypes::Numeric:
+      case QgsHanaDataTypes::Decimal:
         if ( isNull )
           stmt->setDouble( paramIndex, Double() );
         else
@@ -223,15 +224,15 @@ namespace
           stmt->setDouble( paramIndex, Double( dvalue ) );
         }
         break;
-      case SQLDataTypes::Real:
+      case QgsHanaDataTypes::Real:
         stmt->setFloat( paramIndex, isNull ? Float() : Float( value.toFloat() ) );
         break;
-      case SQLDataTypes::Float:
-      case SQLDataTypes::Double:
+      case QgsHanaDataTypes::Float:
+      case QgsHanaDataTypes::Double:
         stmt->setDouble( paramIndex, isNull ? Double() : Double( value.toDouble() ) );
         break;
-      case SQLDataTypes::Date:
-      case SQLDataTypes::TypeDate:
+      case QgsHanaDataTypes::Date:
+      case QgsHanaDataTypes::TypeDate:
         if ( isNull )
           stmt->setDate( paramIndex, Date() );
         else
@@ -240,8 +241,8 @@ namespace
           stmt->setDate( paramIndex, makeNullable<date>( d.year(), d.month(), d.day() ) );
         }
         break;
-      case SQLDataTypes::Time:
-      case SQLDataTypes::TypeTime:
+      case QgsHanaDataTypes::Time:
+      case QgsHanaDataTypes::TypeTime:
         if ( isNull )
           stmt->setTime( paramIndex, Time() );
         else
@@ -250,8 +251,8 @@ namespace
           stmt->setTime( paramIndex, makeNullable<NS_ODBC::time>( t.hour(), t.minute(), t.second() ) );
         }
         break;
-      case SQLDataTypes::Timestamp:
-      case SQLDataTypes::TypeTimestamp:
+      case QgsHanaDataTypes::Timestamp:
+      case QgsHanaDataTypes::TypeTimestamp:
         if ( isNull )
           stmt->setTimestamp( paramIndex, Timestamp() );
         else
@@ -263,19 +264,19 @@ namespace
                               d.month(), d.day(), t.hour(), t.minute(), t.second(), t.msec() ) );
         }
         break;
-      case SQLDataTypes::Char:
-      case SQLDataTypes::VarChar:
-      case SQLDataTypes::LongVarChar:
+      case QgsHanaDataTypes::Char:
+      case QgsHanaDataTypes::VarChar:
+      case QgsHanaDataTypes::LongVarChar:
         stmt->setString( paramIndex, isNull ? String() : String( value.toString().toStdString() ) );
         break;
-      case SQLDataTypes::WChar:
-      case SQLDataTypes::WVarChar:
-      case SQLDataTypes::WLongVarChar:
+      case QgsHanaDataTypes::WChar:
+      case QgsHanaDataTypes::WVarChar:
+      case QgsHanaDataTypes::WLongVarChar:
         stmt->setNString( paramIndex, isNull ? NString() : NString( value.toString().toStdU16String() ) );
         break;
-      case SQLDataTypes::Binary:
-      case SQLDataTypes::VarBinary:
-      case SQLDataTypes::LongVarBinary:
+      case QgsHanaDataTypes::Binary:
+      case QgsHanaDataTypes::VarBinary:
+      case QgsHanaDataTypes::LongVarBinary:
         if ( isNull )
           stmt->setBinary( paramIndex, Binary() );
         else
@@ -284,20 +285,24 @@ namespace
           stmt->setBinary( paramIndex, Binary( vector<char>( arr.begin(), arr.end() ) ) );
         }
         break;
-      default:
-        if ( field.isGeometry() )
+      case QgsHanaDataTypes::Geometry:
+      case QgsHanaDataTypes::RealVector:
+        if ( isNull )
+          stmt->setString( paramIndex, String() );
+        else
         {
           if ( value.userType() == QMetaType::Type::QString )
-            stmt->setString( paramIndex, isNull ? String() : String( value.toString().toStdString() ) );
+            stmt->setString( paramIndex, String( value.toString().toStdString() ) );
           else if ( value.userType() == QMetaType::Type::QByteArray )
           {
             QByteArray arr = value.toByteArray();
-            stmt->setBinary( paramIndex, isNull ? Binary() :  Binary( vector<char>( arr.begin(), arr.end() ) ) );
+            stmt->setBinary( paramIndex, Binary( vector<char>( arr.begin(), arr.end() ) ) );
           }
         }
-        else
-          QgsDebugError( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
-                         .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
+        break;
+      default:
+        QgsDebugError( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
+                       .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
         break;
     }
   }
@@ -674,8 +679,11 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     }
 
     columnNames << QgsHanaUtils::quotedIdentifier( field.name );
-    if ( field.isGeometry() && mFields.at( idx ).type() == QMetaType::Type::QString )
+    auto qType = mFields.at( idx ).type();
+    if ( field.type == QgsHanaDataTypes::Geometry && qType == QMetaType::Type::QString )
       values << QStringLiteral( "ST_GeomFromWKT(?, %1)" ).arg( QString::number( field.srid ) );
+    else if ( field.type == QgsHanaDataTypes::RealVector && qType == QMetaType::Type::QString )
+      values << QStringLiteral( "TO_REAL_VECTOR(?)" );
     else
       values << QStringLiteral( "?" );
     fieldIds << idx;
@@ -1170,9 +1178,12 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
           continue;
 
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
-        if ( field.isGeometry() && mFields.at( fieldIndex ).type() == QMetaType::Type::QString )
+        auto qType = mFields.at( fieldIndex ).type();
+        if ( field.type == QgsHanaDataTypes::Geometry && qType == QMetaType::Type::QString )
           attrs << QStringLiteral( "%1=ST_GeomFromWKT(?, %2)" ).arg(
                   QgsHanaUtils::quotedIdentifier( field.name ), QString::number( field.srid ) );
+        else if ( field.type == QgsHanaDataTypes::RealVector && qType == QMetaType::Type::QString )
+          attrs << QStringLiteral( "%1=TO_REAL_VECTOR(?)" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
         else
           attrs << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
       }

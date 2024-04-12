@@ -487,16 +487,34 @@ bool QgsHanaUtils::convertField( QgsField &field )
       fieldPrec = 0;
       break;
     case QMetaType::Type::QString:
-      if ( fieldSize > 0 )
+      if ( field.typeName() == QLatin1String( "REAL_VECTOR" ) )
       {
-        if ( fieldSize <= 5000 )
-          fieldType = QStringLiteral( "NVARCHAR(%1)" ).arg( QString::number( fieldSize ) );
+        if ( fieldSize > 0 )
+          fieldType = QStringLiteral( "REAL_VECTOR(%1)" ).arg( QString::number( fieldSize ) );
         else
-          fieldType = QStringLiteral( "NCLOB" );
+          fieldType = QStringLiteral( "REAL_VECTOR" );
+      }
+      else if ( field.typeName() == QLatin1String( "ST_GEOMETRY" ) )
+      {
+        QVariant srid = field.metadata( Qgis::FieldMetadataProperty::CustomProperty );
+        if ( srid.isValid() && srid.toInt() >= 0 )
+          fieldType = QStringLiteral( "ST_GEOMETRY(%1)" ).arg( QString::number( srid.toInt() ) );
+        else
+          fieldType = QStringLiteral( "ST_GEOMETRY" );
       }
       else
-        fieldType = QStringLiteral( "NVARCHAR(5000)" );
-      fieldPrec = -1;
+      {
+        if ( fieldSize > 0 )
+        {
+          if ( fieldSize <= 5000 )
+            fieldType = QStringLiteral( "NVARCHAR(%1)" ).arg( QString::number( fieldSize ) );
+          else
+            fieldType = QStringLiteral( "NCLOB" );
+        }
+        else
+          fieldType = QStringLiteral( "NVARCHAR(5000)" );
+        fieldPrec = -1;
+      }
       break;
     case QMetaType::Type::QByteArray:
       if ( fieldSize >= 1 && fieldSize <= 5000 )

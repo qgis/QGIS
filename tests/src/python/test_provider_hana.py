@@ -424,6 +424,56 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'dddd')}
         self.assertEqual(values, expected)
 
+    def testRealVectorType(self):
+        table_name = "real_vector_type"
+        create_sql = f'CREATE TABLE "{self.schemaName}"."{table_name}" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"emb" REAL_VECTOR(3))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."{table_name}" ("id", "emb") VALUES (?, TO_REAL_VECTOR(?))'
+        insert_args = [[1, '[0.1,0.2,0.1]'], [2, None]]
+        self.prepareTestTable('real_vector_type', create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."{table_name}" sql=', 'testrealvector')
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('emb')).type(), QVariant.String)
+        self.assertEqual(fields.at(fields.indexFromName('emb')).length(), 3)
+
+        values = {feat['id']: feat['emb'] for feat in vl.getFeatures()}
+        expected = {1: '[0.1,0.2,0.1]', 2: QVariant()}
+        self.assertEqual(values, expected)
+
+    def testRealVectorTypeEdit(self):
+        table_name = "real_vector_type_edit"
+        create_sql = f'CREATE TABLE "{self.schemaName}"."{table_name}" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"emb" REAL_VECTOR)'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."{table_name}" ("id", "emb") VALUES (?, TO_REAL_VECTOR(?))'
+        insert_args = [[1, '[0.1,0.2,0.3]']]
+        self.prepareTestTable(table_name, create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(f'key=\'id\' table="{self.schemaName}"."{table_name}" sql=', 'testrealvectoredit')
+
+        def check_values(expected):
+            actual = {feat['id']: feat['emb'] for feat in vl.getFeatures()}
+            self.assertEqual(actual, expected)
+
+        check_values({1: '[0.1,0.2,0.3]'})
+
+        # change attribute value
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: '[0.82,0.5,1]'}}))
+        check_values({1: '[0.82,0.5,1]'})
+
+        # add feature
+        f = QgsFeature()
+        f.setAttributes([2, '[1,1,1]'])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        check_values({1: '[0.82,0.5,1]', 2: '[1,1,1]'})
+
+        # change feature
+        self.assertTrue(vl.dataProvider().changeFeatures({2: {1: '[2,2,2]'}}, {}))
+        check_values({1: '[0.82,0.5,1]', 2: '[2,2,2]'})
+
     def testGeometryAttributes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."geometry_attribute" ( ' \
             'ID INTEGER NOT NULL PRIMARY KEY,' \
@@ -487,12 +537,11 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
             layer.commitChanges()
 
             QgsHanaProviderUtils.dropTableIfExists(self.conn, self.schemaName, 'import_data')
-            uri = self.uri + f' key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql='
-            error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'hana', crs)
+            params = f' key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql='
+            error, message = QgsVectorLayerExporter.exportLayer(layer, self.uri + params, 'hana', crs)
             self.assertEqual(error, QgsVectorLayerExporter.ExportError.NoError)
 
-            import_layer = self.createVectorLayer(
-                f'key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql=', 'testimportedlayer')
+            import_layer = self.createVectorLayer(params, 'testimportedlayer')
             self.assertEqual(import_layer.wkbType(), QgsWkbTypes.Type.Point)
             self.assertEqual([f.name() for f in import_layer.fields()], attributeNames)
 
@@ -530,6 +579,51 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
             self.assertTrue(is_crs_installed(unknown_srid))
             QgsHanaProviderUtils.executeSQL(self.conn, f'DROP SPATIAL REFERENCE SYSTEM "{crs.description()}"')
             # QgsHanaProviderUtils.executeSQL(self.conn, 'DROP SPATIAL UNIT OF MEASURE degree_qgis')
+
+    def testCreateLayerViaExportWithSpecialTypesHandledAsString(self):
+        table_name = 'binary_types_as_string'
+        create_sql = f'''CREATE COLUMN TABLE "{self.schemaName}"."{table_name}" (
+            "pk" INTEGER NOT NULL PRIMARY KEY,
+            "vec" REAL_VECTOR(3),
+            "geom1" ST_GEOMETRY(4326),
+            "geom2" ST_GEOMETRY(4326))'''
+
+        insert_sql = f'INSERT INTO "{self.schemaName}"."{table_name}" ("pk", "vec", "geom1", "geom2") ' \
+                     'VALUES (?, TO_REAL_VECTOR(?), ST_GeomFromWKT(?, 4326), ST_GeomFromWKT(?, 4326)) '
+        insert_args = [
+            [1, '[0.1,0.3,0.2]', None, 'POINT (-71.123 78.23)'],
+            [2, None, None, None],
+            [3, '[0.5,0.8,0.4]', 'POINT (-70.332 66.33)', 'POINT (-71.123 78.23)']]
+
+        self.prepareTestTable(table_name, create_sql, insert_sql, insert_args)
+
+        layer = self.createVectorLayer(f'table="{self.schemaName}"."{table_name}" (geom1) sql=',
+                                       'testbinaryattributes')
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
+        params = f' key=\'pk\' table="{self.schemaName}"."import_data_binaries" (geom1) sql='
+        error, message = QgsVectorLayerExporter.exportLayer(layer, self.uri + params, 'hana', crs)
+        self.assertEqual(error, QgsVectorLayerExporter.ExportError.NoError)
+
+        import_layer = self.createVectorLayer(params, 'testimportedlayer')
+        fields = import_layer.dataProvider().fields()
+        self.assertEqual(fields.size(), 3)
+        pk_field = fields.at(fields.indexFromName('pk'))
+        self.assertEqual(pk_field.type(), QVariant.Int)
+        self.assertEqual(pk_field.typeName(), 'INTEGER')
+        vec_field = fields.at(fields.indexFromName('vec'))
+        self.assertEqual(vec_field.type(), QVariant.String)
+        self.assertEqual(vec_field.typeName(), 'REAL_VECTOR')
+        self.assertEqual(vec_field.length(), 3)
+        geom2_field = fields.at(fields.indexFromName('geom2'))
+        self.assertEqual(geom2_field.type(), QVariant.String)
+        self.assertEqual(geom2_field.typeName(), 'ST_GEOMETRY')
+
+        i = 0
+        for feat in import_layer.getFeatures():
+            self.assertEqual(feat['pk'], insert_args[i][0])
+            self.assertEqual(feat['vec'], insert_args[i][1])
+            self.assertEqual(feat['geom2'], insert_args[i][3])
+            i += 1
 
     def testFilterRectOutsideSrsExtent(self):
         """Test filterRect which partially lies outside of the srs extent"""

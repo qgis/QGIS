@@ -34,6 +34,7 @@ set(HANA_HDRS
   qgshanaconnection.h
   qgshanaconnectionpool.h
   qgshanaconnectionstringbuilder.h
+  qgshanadatatypes.h
   qgshanadriver.h
   qgshanaexception.h
   qgshanaexpressioncompiler.h
