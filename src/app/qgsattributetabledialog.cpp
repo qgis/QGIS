@@ -833,7 +833,7 @@ void QgsAttributeTableDialog::mActionRemoveSelection_triggered()
 
 void QgsAttributeTableDialog::mActionSelectAll_triggered()
 {
-  mLayer->selectAll();
+  mLayer->selectByIds( mMainView->filteredFeatures(), Qgis::SelectBehavior::SetSelection );
 }
 
 void QgsAttributeTableDialog::mActionDeleteSelected_triggered()

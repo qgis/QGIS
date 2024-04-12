@@ -74,6 +74,7 @@ class TestQgsAttributeTable : public QObject
     void testEnsureEditSelection();
   private slots:
     void testFetchAllAttributes();
+    void testSelectAll();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -915,6 +916,40 @@ void TestQgsAttributeTable::testFetchAllAttributes()
   QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 0 ), Qt::DisplayRole ).toString(), "Jet" );
   QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 1 ), Qt::DisplayRole ).toString(), "90" );
   QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 2 ), Qt::DisplayRole ).toString(), "3.000" );
+
+}
+
+void TestQgsAttributeTable::testSelectAll()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature ft1( layer->dataProvider()->fields(), 1 );
+  ft1.setAttributes( QgsAttributes() << 1 << 2 );
+  layer->dataProvider()->addFeature( ft1 );
+  QgsFeature ft2( layer->dataProvider()->fields(), 2 );
+  ft2.setAttributes( QgsAttributes() << 3 << 4 );
+  layer->dataProvider()->addFeature( ft2 );
+
+  layer->removeSelection();
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  // select all
+  dlg->mActionSelectAll->trigger();
+  QCOMPARE( layer->selectedFeatures().size(), 2 );
+
+  // select all with expression matching single feature
+  const QString filterExpression = QStringLiteral( "col1 > 3" );
+  dlg->setFilterExpression( filterExpression, QgsAttributeForm::FilterType::ReplaceFilter );
+  dlg->mActionSelectAll->trigger();
+  const QList< QgsFeature > features = layer->selectedFeatures();
+  QCOMPARE( features.size(), 1 );
+  QCOMPARE( features[0].id(), 2 );
+
+  // select all with expression without matching features
+  dlg->setFilterExpression( QStringLiteral( "false" ), QgsAttributeForm::FilterType::ReplaceFilter );
+  dlg->mActionSelectAll->trigger();
+  QCOMPARE( layer->selectedFeatures().size(), 0 );
 
 }
 
