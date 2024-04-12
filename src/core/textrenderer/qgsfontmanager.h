@@ -19,10 +19,109 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssettingsentryimpl.h"
+#include "qgstaskmanager.h"
 #include <QObject>
 #include <QMap>
 #include <QReadWriteLock>
 #include <QSet>
+
+/**
+ * \ingroup core
+ * \class QgsFontDownloadDetails
+ *
+ * \brief Encapsulates details required for downloading a font.
+ *
+ * \since QGIS 3.38
+ */
+class CORE_EXPORT QgsFontDownloadDetails
+{
+  public:
+
+    /**
+     * Constructor for an invalid QgsFontDownloadDetails.
+     */
+    QgsFontDownloadDetails();
+
+    /**
+     * Constructor for QgsFontDownloadDetails.
+     *
+     * \param family Font family name
+     * \param fontUrls List of URLS to download for complete set of the font family resources
+     * \param licenseUrl optional URL to download the font license
+     */
+    QgsFontDownloadDetails( const QString &family, const QStringList &fontUrls, const QString &licenseUrl = QString() );
+
+    /**
+     * Returns a cleaned, standardized version of a font \a family name.
+     */
+    static QString standardizeFamily( const QString &family );
+
+    /**
+     * Returns TRUE if the details represent a valid downloadable font.
+     */
+    bool isValid() const { return !mFontUrls.empty(); }
+
+    /**
+     * Returns the font family.
+     *
+     * \see standardizedFamily()
+     */
+    QString family() const { return mFamily; }
+
+    /**
+     * Returns the cleaned, standardized font family name.
+     */
+    QString standardizedFamily() const { return mStandardizedFamily; }
+
+    /**
+     * Returns a list of download URLs for all files associated with the font family.
+     */
+    QStringList fontUrls() const { return mFontUrls; }
+
+    /**
+     * Returns the optional URL for downloading the font license details.
+     */
+    QString licenseUrl() const { return mLicenseUrl; }
+
+  private:
+
+    QString mFamily;
+    QString mStandardizedFamily;
+    QStringList mFontUrls;
+    QString mLicenseUrl;
+};
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class CORE_EXPORT QgsFontDownloadTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFontDownloadTask( const QString &description, const QgsFontDownloadDetails &details );
+
+    bool run() override;
+    void cancel() override;
+    QString errorMessage() const { return mErrorMessage; }
+    QString failedUrl() const { return mFailedUrl; }
+    QList< QByteArray > fontData() const { return mFontData; }
+    QByteArray licenseData() const { return mLicenseData; }
+    QStringList contentDispositionFilenames() const { return mContentDispositionFilenames; }
+  private:
+
+    QgsFontDownloadDetails mDetails;
+    std::unique_ptr< QgsFeedback > mFeedback;
+    bool mResult = false;
+    QString mErrorMessage;
+    QString mFailedUrl;
+    QList< QByteArray > mFontData;
+    QStringList mContentDispositionFilenames;
+    QByteArray mLicenseData;
+
+};
+///@endcond PRIVATE
+#endif
 
 /**
  * \ingroup core
@@ -164,11 +263,31 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \param family input font family name to try to match to known fonts
      * \param matchedFamily will be set to found font family if a match was successful
      * \returns URL to download font, or an empty string if no URL is available
+     *
+     * \deprecated Since QGIS 3.38, use detailsForFontDownload() instead
      */
-    QString urlForFontDownload( const QString &family, QString &matchedFamily SIP_OUT ) const;
+    Q_DECL_DEPRECATED QString urlForFontDownload( const QString &family, QString &matchedFamily SIP_OUT ) const SIP_DEPRECATED;
 
     /**
-     * Downloads a font and installs in the user's profile/fonts directory as an application font.
+     * Returns a the details for downloading the specified font \a family.
+     *
+     * The returned object will contain all URLs which must be fetched to retrieve the
+     * entire font family (eg it may contain one URL per font style).
+     *
+     * This method relies on a hardcoded list of available freely licensed fonts, and will
+     * return an invalid QgsFontDownloadDetails for any font families not present in this list.
+     *
+     * \param family input font family name to try to match to known fonts
+     * \param matchedFamily will be set to found font family if a match was successful
+     * \returns details required for downloading font, or an invalid QgsFontDownloadDetails if no URL is available
+     *
+     * \since QGIS 3.38
+     */
+    QgsFontDownloadDetails detailsForFontDownload( const QString &family, QString &matchedFamily SIP_OUT ) const;
+
+    /**
+     * Downloads a font and installs in the user's profile/fonts directory as an application font,
+     * where the font family can be downloaded via a single \a url.
      *
      * The download will proceed in a background task.
      *
@@ -177,8 +296,26 @@ class CORE_EXPORT QgsFontManager : public QObject
      *
      * \see fontDownloaded()
      * \see fontDownloadErrorOccurred()
+     *
+     * \deprecated Since QGIS 3.38 use the version which takes a QgsFontDownloadDetails argument instead
      */
-    void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() );
+    Q_DECL_DEPRECATED void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() ) SIP_DEPRECATED;
+
+    /**
+     * Downloads a font and installs in the user's profile/fonts directory as an application font, where the
+     * font family is split over multiple download URLs.
+     *
+     * The download will proceed in a background task.
+     *
+     * The optional \a identifier string can be used to specify a user-friendly name for the download
+     * tasks, e.g. the font family name if known.
+     *
+     * \see fontDownloaded()
+     * \see fontDownloadErrorOccurred()
+     *
+     * \since QGIS 3.38
+     */
+    void downloadAndInstallFont( const QgsFontDownloadDetails &details, const QString &identifier = QString() );
 
     /**
      * Installs local user fonts from the specified raw \a data.
@@ -252,7 +389,7 @@ class CORE_EXPORT QgsFontManager : public QObject
 
     bool mEnableFontDownloads = false;
     QMap< QString, QString > mPendingFontDownloads;
-    QMap< QString, QString > mDeferredFontDownloads;
+    QMap< QString, QgsFontDownloadDetails > mDeferredFontDownloads;
 
     void storeFamilyReplacements();
     void installFontsFromDirectory( const QString &dir );
