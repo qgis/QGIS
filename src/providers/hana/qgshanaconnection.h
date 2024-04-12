@@ -41,8 +41,6 @@ struct AttributeField
   bool isUnique = false;
   QString comment;
 
-  bool isGeometry() const { return type == 29812; /* ST_GEOMETRY, ST_POINT */ }
-
   QgsField toQgsField() const;
 };
 
