@@ -950,15 +950,32 @@ if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
 def processing_algorithm_from_script(filepath: str):
     """
     Tries to import a Python processing algorithm from given file, and returns an instance
-    of the algorithm
+    of the algorithm.
+
+    Warning -- this ALSO execs the file as a script, so treat with caution!
     """
     import sys
     import inspect
     from qgis.processing import alg
+
+    filename = filepath.replace("\\\\", "/")
+    dirname = os.path.dirname(filename)
+
+    # Append the directory of the file to the path and set __file__ to the filename
+    added_script_dir_to_path = False
+    if dirname not in sys.path:
+        sys.path.append(dirname)
+        added_script_dir_to_path = True
+
+    alg_instance = None
+
     try:
         from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
-        _locals = {}
-        with open(filepath.replace("\\\\", "/").encode(sys.getfilesystemencoding())) as input_file:
+        _locals = {
+            '__file__': filename
+        }
+
+        with open(filename.encode(sys.getfilesystemencoding())) as input_file:
             exec(input_file.read(), _locals)
         alg_instance = None
         try:
@@ -968,21 +985,32 @@ def processing_algorithm_from_script(filepath: str):
                 if inspect.isclass(attr) and issubclass(attr, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and attr.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
                     alg_instance = attr()
                     break
-        if alg_instance:
-            script_provider = QgsApplication.processingRegistry().providerById("script")
-            alg_instance.setProvider(script_provider)
-            alg_instance.initAlgorithm()
-            return alg_instance
+
     except ImportError:
         pass
 
-    return None
+    if alg_instance:
+        script_provider = QgsApplication.processingRegistry().providerById("script")
+        alg_instance.setProvider(script_provider)
+        alg_instance.initAlgorithm()
+
+    # gracefully clean up, restore previous system paths
+
+    if added_script_dir_to_path:
+        try:
+            sys.path.remove(dirname)
+        except ValueError:
+            pass
+
+    return alg_instance
 
 
 def import_script_algorithm(filepath: str) -> Optional[str]:
     """
     Imports a script algorithm from given file to the processing script provider, and returns the
-    ID of the imported algorithm
+    ID of the imported algorithm.
+
+    Warning -- this ALSO execs the file as a script, so treat with caution!
     """
     alg_instance = processing_algorithm_from_script(filepath)
     if alg_instance:
@@ -1004,6 +1032,8 @@ def run_script_from_file(filepath: str):
     except ImportError:
         return
 
+    # Despite the misleading name, processing_algorithm_from_script will ALWAYS
+    # execute the script from the file!
     alg_instance = processing_algorithm_from_script(filepath)
     if alg_instance:
         execAlgorithmDialog(alg_instance)
