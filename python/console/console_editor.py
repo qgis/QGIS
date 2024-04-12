@@ -361,6 +361,7 @@ class Editor(QgsCodeEditorPython):
         autoSave = QgsSettings().value("pythonConsole/autoSaveScript", False, type=bool)
         tabWidget = self.tabwidget.currentWidget()
         filename = tabWidget.path
+        filename_override = None
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
                                                     'Hey, type something to run!')
         if filename is None:
@@ -375,9 +376,12 @@ class Editor(QgsCodeEditorPython):
             elif not filename or self.isModified():
                 # Create a new temp file if the file isn't already saved.
                 filename = self.createTempFile()
+                filename_override = self.tabwidget.tabText(self.tabwidget.currentIndex())
+                if filename_override.startswith('*'):
+                    filename_override = filename_override[1:]
                 deleteTempFile = True
 
-            self.pythonconsole.shell.runFile(filename)
+            self.pythonconsole.shell.runFile(filename, filename_override)
 
             if deleteTempFile:
                 Path(filename).unlink()

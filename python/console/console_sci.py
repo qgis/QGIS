@@ -24,6 +24,7 @@ import os
 import re
 import sys
 import traceback
+from typing import Optional
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -427,7 +428,7 @@ class ShellScintilla(QgsCodeEditorPython):
         if sys.stderr:
             sys.stderr.write(txt)
 
-    def runFile(self, filename):
+    def runFile(self, filename, override_file_name: Optional[str] = None):
         filename = filename.replace("\\", "/")
         dirname = os.path.dirname(filename)
 
@@ -437,7 +438,7 @@ class ShellScintilla(QgsCodeEditorPython):
 
         try:
             # Run the file
-            self.runCommand("exec(Path('{0}').read_text())".format(filename), skipHistory=True)
+            self.runCommand("exec(compile(Path('{0}').read_text(), '{1}', 'exec'))".format(filename, override_file_name or filename), skipHistory=True)
         finally:
             # Remove the directory from the path and delete the __file__ variable
             self._interpreter.execCommandImpl("del __file__", False)
