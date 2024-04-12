@@ -379,14 +379,14 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
                                      QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
 
   // The call to mLayer->setDefaultValueDefinition will possibly emit updatedFields
-  // which will destroy mAttributeTypeDialog so we need to store any value before calling it
+  // which will set mAttributeTypeDialog to nullptr so we need to store any value before calling it
   cfg.mFieldConstraints = constraints;
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
   cfg.mEditorWidgetConfig = mAttributeTypeDialog->editorWidgetConfig();
   cfg.mSplitPolicy = mAttributeTypeDialog->splitPolicy();
   const int fieldIndex = mAttributeTypeDialog->fieldIdx();
 
-  mLayer->setDefaultValueDefinition( fieldIdx, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
+  mLayer->setDefaultValueDefinition( fieldIndex, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   const QString fieldName = mLayer->fields().at( fieldIndex ).name();
 
