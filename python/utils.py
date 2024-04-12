@@ -976,7 +976,8 @@ def processing_algorithm_from_script(filepath: str):
         }
 
         with open(filename.encode(sys.getfilesystemencoding())) as input_file:
-            exec(input_file.read(), _locals)
+            code_object = compile(input_file.read(), filename, 'exec')
+            exec(code_object, _locals)
         alg_instance = None
         try:
             alg_instance = alg.instances.pop().createInstance()
