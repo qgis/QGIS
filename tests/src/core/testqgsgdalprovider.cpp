@@ -72,6 +72,7 @@ class TestQgsGdalProvider : public QgsTest
     void scale0(); //test when data has scale 0 (#20493)
     void transformCoordinates();
     void testGdalProviderQuerySublayers();
+    void testGdalProviderQuerySublayers_TIFFTags();
     void testGdalProviderQuerySublayers_NetCDF();
     void testGdalProviderQuerySublayersFastScan();
     void testGdalProviderQuerySublayersFastScan_NetCDF();
@@ -667,6 +668,29 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "SENTINEL2" ) );
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
+
+  // tiff with two raster layers and TIFF Tags describing sublayers
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/gtiff_subdataset_tags.tif" );
+  QCOMPARE( res.count(), 2 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "Test Image Name 1" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "Test Image Description 1" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "GTIFF_DIR:1:%1/gtiff_subdataset_tags.tif:band1" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "gdal" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "Test Image Name 2" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "Test Image Description 2" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "GTIFF_DIR:2:%1/gtiff_subdataset_tags.tiff:band2" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "gdal" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
