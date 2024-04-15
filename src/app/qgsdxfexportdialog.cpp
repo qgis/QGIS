@@ -733,8 +733,8 @@ QgsDxfExportLayerTreeView::QgsDxfExportLayerTreeView( QWidget *parent )
 
 void QgsDxfExportLayerTreeView::resizeEvent( QResizeEvent *event )
 {
-  header()->setMinimumSectionSize( viewport()->width() / 2 );
-  header()->setMaximumSectionSize( viewport()->width() / 2 );
+  header()->setMinimumSectionSize( viewport()->width() / 4 );
+  header()->setMaximumSectionSize( viewport()->width() / 4 );
   QTreeView::resizeEvent( event ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
 }
 
