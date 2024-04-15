@@ -112,6 +112,16 @@ Returns ``True`` if the combobox can be set to a NULL value.
 .. versionadded:: 3.8
 %End
 
+    void setPredefinedScales( const QVector< double > &scales );
+%Docstring
+Sets the list of predefined ``scales`` to show in the combobox. List elements
+are expected to be scale denominators, e.g. 1000.0 for a 1:1000 map.
+
+If ``scales`` is empty then the default user scale options will be used instead.
+
+.. versionadded:: 3.38
+%End
+
   signals:
 
     void scaleChanged( double scale );

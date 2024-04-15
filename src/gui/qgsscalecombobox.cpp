@@ -39,27 +39,22 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
 
 void QgsScaleComboBox::updateScales( const QStringList &scales )
 {
-  QStringList myScalesList;
+  QStringList scalesList;
   const QString oldScale = currentText();
 
   if ( scales.isEmpty() )
   {
-    myScalesList = QgsSettingsRegistryCore::settingsMapScales->value();
+    scalesList = QgsSettingsRegistryCore::settingsMapScales->value();
   }
   else
   {
-    QStringList::const_iterator scaleIt = scales.constBegin();
-    for ( ; scaleIt != scales.constEnd(); ++scaleIt )
-    {
-      myScalesList.append( *scaleIt );
-    }
+    scalesList = scales;
   }
 
-  QStringList  myCleanedScalesList;
-
-  for ( int i = 0; i < myScalesList.size(); ++i )
+  QStringList cleanedScalesList;
+  for ( const QString &scale : std::as_const( scalesList ) )
   {
-    const QStringList parts = myScalesList[ i ] .split( ':' );
+    const QStringList parts = scale.split( ':' );
     if ( parts.size() < 2 )
       continue;
 
@@ -67,21 +62,45 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     const double denominator = QLocale().toDouble( parts[1], &ok );
     if ( ok )
     {
-      myCleanedScalesList.push_back( toString( denominator ) );
+      cleanedScalesList.push_back( toString( denominator ) );
     }
     else
     {
       const double denominator = parts[1].toDouble( &ok );
       if ( ok )
       {
-        myCleanedScalesList.push_back( toString( denominator ) );
+        cleanedScalesList.push_back( toString( denominator ) );
       }
     }
   }
 
   blockSignals( true );
   clear();
-  addItems( myCleanedScalesList );
+  addItems( cleanedScalesList );
+  setScaleString( oldScale );
+  blockSignals( false );
+}
+
+void QgsScaleComboBox::setPredefinedScales( const QVector<double> &scales )
+{
+  if ( scales.isEmpty() )
+  {
+    updateScales();
+    return;
+  }
+
+  const QString oldScale = currentText();
+
+  QStringList scalesStringList;
+  scalesStringList.reserve( scales.size() );
+  for ( double denominator : scales )
+  {
+    scalesStringList.push_back( toString( denominator ) );
+  }
+
+  blockSignals( true );
+  clear();
+  addItems( scalesStringList );
   setScaleString( oldScale );
   blockSignals( false );
 }

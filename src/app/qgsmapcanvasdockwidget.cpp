@@ -601,12 +601,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   // use either global scales or project scales
   if ( QgsProject::instance()->viewSettings()->useProjectScales() )
   {
-    const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
-    QStringList textScales;
-    textScales.reserve( scales.size() );
-    for ( const double scale : scales )
-      textScales << QStringLiteral( "1:%1" ).arg( QLocale().toString( scale, 'f', 0 ) );
-    mScaleCombo->updateScales( textScales );
+    mScaleCombo->setPredefinedScales( QgsProject::instance()->viewSettings()->mapScales() );
   }
   else
   {

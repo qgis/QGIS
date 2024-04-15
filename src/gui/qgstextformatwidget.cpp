@@ -854,12 +854,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   if ( QgsProject::instance()->viewSettings()->useProjectScales() )
   {
     const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
-    QStringList textScales;
-    textScales.reserve( scales.size() );
-    for ( const double scale : scales )
-      textScales << QStringLiteral( "1:%1" ).arg( QLocale().toString( scale, 'f', 0 ) );
-    mMinScaleWidget->updateScales( textScales );
-    mMaxScaleWidget->updateScales( textScales );
+    mMinScaleWidget->setPredefinedScales( scales );
+    mMaxScaleWidget->setPredefinedScales( scales );
   }
   else
   {
