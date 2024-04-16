@@ -19,6 +19,8 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgis.h"
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset )
   : mGroupIndex( group ), mDatasetIndex( dataset )
@@ -142,6 +144,13 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mReferenceTime( referenceTime )
   , mIsTemporal( isTemporal )
 {
+  const thread_local QRegularExpression parentGroupNameRegex( QStringLiteral( "^(.*):.*?$" ) );
+
+  const QRegularExpressionMatch parentGroupMatch = parentGroupNameRegex.match( mName );
+  if ( parentGroupMatch.hasMatch() )
+  {
+    mParentGroupName = parentGroupMatch.captured( 1 );
+  }
 }
 
 QMap<QString, QString> QgsMeshDatasetGroupMetadata::extraOptions() const
@@ -169,7 +178,13 @@ QString QgsMeshDatasetGroupMetadata::name() const
   return mName;
 }
 
-QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
+QString QgsMeshDatasetGroupMetadata::parentGroup() const
+{
+  return mParentGroupName;
+}
+
+QgsMeshDatasetGroupMetadata::DataType
+QgsMeshDatasetGroupMetadata::dataType() const
 {
   return mDataType;
 }

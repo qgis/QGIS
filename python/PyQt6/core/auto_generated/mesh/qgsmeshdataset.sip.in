@@ -433,6 +433,13 @@ Constructs a valid metadata object
 Returns name of the dataset group
 %End
 
+    QString parentGroup() const;
+%Docstring
+Returns the name of the dataset's parent group.
+
+.. versionadded:: 3.38
+%End
+
     QString uri() const;
 %Docstring
 Returns the uri of the source

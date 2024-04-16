@@ -99,28 +99,47 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 
         case Qgis::MeshElevationMode::FixedRangePerGroup:
         {
-          // find the top-most group which matches the map range
-          int currentMatchingGroup = -1;
-          QgsDoubleRange currentMatchingRange;
+          // find the top-most group which matches the map range and parent group
+          int currentMatchingVectorGroup = -1;
+          int currentMatchingScalarGroup = -1;
+          QgsDoubleRange currentMatchingVectorRange;
+          QgsDoubleRange currentMatchingScalarRange;
+
           const QMap<int, QgsDoubleRange > rangePerGroup = elevProp->fixedRangePerGroup();
+
+          const int activeVectorDatasetGroup = mRendererSettings.activeVectorDatasetGroup();
+          const int activeScalarDatasetGroup = mRendererSettings.activeScalarDatasetGroup();
+
           for ( auto it = rangePerGroup.constBegin(); it != rangePerGroup.constEnd(); ++it )
           {
             if ( it.value().overlaps( context.zRange() ) )
             {
-              if ( currentMatchingRange.isInfinite()
-                   || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
-                   || ( !currentMatchingRange.includeUpper() && it.value().upper() >= currentMatchingRange.upper() ) )
+              const bool matchesVectorParentGroup = QgsMeshLayerUtils::haveSameParentGroup( layer, QgsMeshDatasetIndex( activeVectorDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
+              const bool matchesScalarParentGroup = QgsMeshLayerUtils::haveSameParentGroup( layer, QgsMeshDatasetIndex( activeScalarDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
+
+              if ( matchesVectorParentGroup && (
+                     currentMatchingVectorRange.isInfinite()
+                     || ( it.value().includeUpper() && it.value().upper() >= currentMatchingVectorRange.upper() )
+                     || ( !currentMatchingVectorRange.includeUpper() && it.value().upper() >= currentMatchingVectorRange.upper() ) ) )
               {
-                currentMatchingGroup = it.key();
-                currentMatchingRange = it.value();
+                currentMatchingVectorGroup = it.key();
+                currentMatchingVectorRange = it.value();
+              }
+
+              if ( matchesScalarParentGroup && (
+                     currentMatchingScalarRange.isInfinite()
+                     || ( it.value().includeUpper() && it.value().upper() >= currentMatchingScalarRange.upper() )
+                     || ( !currentMatchingScalarRange.includeUpper() && it.value().upper() >= currentMatchingScalarRange.upper() ) ) )
+              {
+                currentMatchingScalarGroup = it.key();
+                currentMatchingScalarRange = it.value();
               }
             }
           }
-          if ( currentMatchingGroup >= 0 )
-          {
-            mRendererSettings.setActiveScalarDatasetGroup( currentMatchingGroup );
-            mRendererSettings.setActiveVectorDatasetGroup( currentMatchingGroup );
-          }
+          if ( currentMatchingVectorGroup >= 0 )
+            mRendererSettings.setActiveVectorDatasetGroup( currentMatchingVectorGroup );
+          if ( currentMatchingScalarGroup >= 0 )
+            mRendererSettings.setActiveScalarDatasetGroup( currentMatchingScalarGroup );
         }
       }
     }
