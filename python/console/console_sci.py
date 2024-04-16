@@ -32,7 +32,12 @@ from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QClipboard
 from qgis.PyQt.QtWidgets import QShortcut, QApplication
-from qgis.core import QgsApplication, QgsSettings, Qgis
+from qgis.core import (
+    QgsApplication,
+    QgsSettings,
+    Qgis,
+    QgsProcessingUtils
+)
 from qgis.gui import (
     QgsCodeEditorPython,
     QgsCodeEditorColorScheme,
@@ -433,13 +438,20 @@ class ShellScintilla(QgsCodeEditorPython):
         dirname = os.path.dirname(filename)
 
         # Append the directory of the file to the path and set __file__ to the filename
-        self._interpreter.execCommandImpl("sys.path.append('{0}')".format(dirname), False)
-        self._interpreter.execCommandImpl("__file__ = '{0}'".format(filename), False)
+        self._interpreter.execCommandImpl("sys.path.append({0})".format(
+            QgsProcessingUtils.stringToPythonLiteral(dirname)), False)
+        self._interpreter.execCommandImpl("__file__ = {0}".format(
+            QgsProcessingUtils.stringToPythonLiteral(filename)), False)
 
         try:
             # Run the file
-            self.runCommand("exec(compile(Path('{0}').read_text(), '{1}', 'exec'))".format(filename, override_file_name or filename), skipHistory=True)
+
+            self.runCommand("exec(compile(Path({0}).read_text(), {1}, 'exec'))".format(
+                QgsProcessingUtils.stringToPythonLiteral(filename),
+                QgsProcessingUtils.stringToPythonLiteral(override_file_name or filename)),
+                skipHistory=True)
         finally:
             # Remove the directory from the path and delete the __file__ variable
             self._interpreter.execCommandImpl("del __file__", False)
-            self._interpreter.execCommandImpl("sys.path.remove('{0}')".format(dirname), False)
+            self._interpreter.execCommandImpl("sys.path.remove({0})".format(
+                QgsProcessingUtils.stringToPythonLiteral(dirname)), False)
