@@ -383,22 +383,27 @@ void TestQgsCoordinateReferenceSystem::coordinateEpoch()
 void TestQgsCoordinateReferenceSystem::createCompound()
 {
   //horizontal invalid / vertical invalid
-  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem() ).isValid() );
+  QString error;
+  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), error ).isValid() );
   // horizontal valid / vertical invalid
-  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem() ).isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem(), error ).isValid() );
   // horizontal invalid / vertical valid
-  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ) ).isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ), error ).isValid() );
   // horizontal valid / vertical valid
-  const QgsCoordinateReferenceSystem compound = QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ) );
+  const QgsCoordinateReferenceSystem compound = QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ), error );
   QVERIFY( compound.isValid() );
   QCOMPARE( compound.description(), QStringLiteral( "unnamed" ) );
   QCOMPARE( compound.type(), Qgis::CrsType::Compound );
+  QVERIFY( error.isEmpty() );
   // horizontal / vertical flipped
-  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), error ).isValid() );
+  QCOMPARE( error, QStringLiteral( "components of the compound CRS do not belong to one of the allowed combinations of http://docs.opengeospatial.org/as/18-005r5/18-005r5.html#34" ) );
   // horizontal valid / not vertical
-  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ) ).isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), error ).isValid() );
+  QCOMPARE( error, QStringLiteral( "components of the compound CRS do not belong to one of the allowed combinations of http://docs.opengeospatial.org/as/18-005r5/18-005r5.html#34" ) );
   // horizontal already a compound
-  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ) ).isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem::createCompoundCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ), error ).isValid() );
+  QCOMPARE( error, QStringLiteral( "components of the compound CRS do not belong to one of the allowed combinations of http://docs.opengeospatial.org/as/18-005r5/18-005r5.html#34" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::createFromId()
