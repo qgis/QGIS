@@ -256,12 +256,18 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
         self.assertEqual(len(spy), 1)
 
-        # invalid combination
+        # invalid combinations
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:4979'))
         ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
         self.assertFalse(ok)
-        self.assertEqual(err, 'components of the compound CRS do not belong to one of the allowed combinations of http://docs.opengeospatial.org/as/18-005r5/18-005r5.html#34')
+        self.assertEqual(err, 'Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored')
         self.assertEqual(project.crs3D().authid(), 'EPSG:4979')
+
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:4978'))
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:4978')
 
     def test_crs_3d(self):
         project = QgsProject()
