@@ -301,6 +301,7 @@ static void proj_collecting_logger( void *user_data, int /*level*/, const char *
 
 static void proj_logger( void *, int level, const char *message )
 {
+#ifdef QGISDEBUG
   if ( level == PJ_LOG_ERROR )
   {
     QgsDebugError( QString( message ) );
@@ -309,6 +310,10 @@ static void proj_logger( void *, int level, const char *message )
   {
     QgsDebugMsgLevel( QString( message ), 3 );
   }
+#else
+  ( void )level;
+  ( void )message;
+#endif
 }
 
 QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *horizontalCrs, const PJ *verticalCrs, QStringList *errors )
