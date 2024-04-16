@@ -1049,7 +1049,7 @@ Queries the layer for features specified in request.
 Queries the layer for features matching a given expression.
 %End
 
-    QgsFeature getFeature( QgsFeatureId fid ) const;
+    inline QgsFeature getFeature( QgsFeatureId fid ) const;
 %Docstring
 Queries the layer for the feature with the given id.
 If there is no such feature, the returned feature will be invalid.
@@ -1711,7 +1711,7 @@ This also includes fields which have not yet been saved to the provider.
 :return: A list of fields
 %End
 
-    QgsAttributeList attributeList() const;
+    inline QgsAttributeList attributeList() const;
 %Docstring
 Returns list of attribute indexes. i.e. a list from 0 ... :py:func:`~QgsVectorLayer.fieldCount`
 %End
@@ -1991,7 +1991,7 @@ Deletes a list of attribute fields (but does not commit it)
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) ${SIP_FINAL};
 
 
-    bool deleteFeature( QgsFeatureId fid, DeleteContext *context = 0 );
+    bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes a feature from the layer (but does not commit it).
 
@@ -2006,7 +2006,7 @@ Deletes a feature from the layer (but does not commit it).
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
-    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = 0 );
+    bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes a set of features from the layer (but does not commit it)
 
