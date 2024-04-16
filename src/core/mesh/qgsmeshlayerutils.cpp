@@ -18,6 +18,8 @@
 #include <limits>
 #include <QTime>
 #include <QDateTime>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
@@ -700,6 +702,19 @@ QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh 
   }
 
   return normals;
+}
+
+bool QgsMeshLayerUtils::haveSameParentGroup( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 )
+{
+  const QgsMeshDatasetGroupMetadata metadata1 = layer->datasetGroupMetadata( index1 );
+  if ( metadata1.parentGroup().isEmpty() )
+    return false;
+
+  const QgsMeshDatasetGroupMetadata metadata2 = layer->datasetGroupMetadata( index2 );
+  if ( metadata2.parentGroup().isEmpty() )
+    return false;
+
+  return metadata1.parentGroup().compare( metadata2.parentGroup(), Qt::CaseInsensitive ) == 0;
 }
 
 ///@endcond

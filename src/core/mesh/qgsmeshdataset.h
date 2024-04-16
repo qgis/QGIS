@@ -398,6 +398,13 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     QString name() const;
 
     /**
+     * Returns the name of the dataset's parent group.
+     *
+     * \since QGIS 3.38
+     */
+    QString parentGroup() const;
+
+    /**
      * Returns the uri of the source
      *
      * \since QGIS 3.16
@@ -457,6 +464,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 
   private:
     QString mName;
+    QString mParentGroupName;
     QString mUri;
     bool mIsScalar = false;
     DataType mDataType = DataType::DataOnFaces;
