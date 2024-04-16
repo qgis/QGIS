@@ -1049,7 +1049,7 @@ Queries the layer for features specified in request.
 Queries the layer for features matching a given expression.
 %End
 
-    inline QgsFeature getFeature( QgsFeatureId fid ) const;
+    QgsFeature getFeature( QgsFeatureId fid ) const;
 %Docstring
 Queries the layer for the feature with the given id.
 If there is no such feature, the returned feature will be invalid.
@@ -1711,7 +1711,7 @@ This also includes fields which have not yet been saved to the provider.
 :return: A list of fields
 %End
 
-    inline QgsAttributeList attributeList() const;
+    QgsAttributeList attributeList() const;
 %Docstring
 Returns list of attribute indexes. i.e. a list from 0 ... :py:func:`~QgsVectorLayer.fieldCount`
 %End
