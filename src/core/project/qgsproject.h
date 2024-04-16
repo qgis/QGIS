@@ -385,9 +385,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the CRS to use for the project when transforming 3D data, or when z/elevation
      * value handling is important.
      *
-     * The returned CRS will take into account verticalCrs(), e.g. by returning a compound
+     * The returned CRS will take into account verticalCrs() when appropriate, e.g. it may return a compound
      * CRS consisting of crs() + verticalCrs(). This method may still return a 2D CRS, e.g in the
-     * case that crs() is a 2D CRS and no verticalCrs() has been set for the project.
+     * case that crs() is a 2D CRS and no verticalCrs() has been set for the project. Check QgsCoordinateReferenceSystem::type()
+     * on the returned value to determine the type of CRS returned by this method.
      *
      * \warning It is NOT guaranteed that the returned CRS will actually be a 3D CRS, but rather
      * it is guaranteed that the returned CRS is ALWAYS the most appropriate CRS to use when handling 3D data.
