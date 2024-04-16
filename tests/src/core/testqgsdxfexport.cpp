@@ -1813,8 +1813,8 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
 {
   // Test that output layer name precedence is:
   // 1) Attribute (if any)
-  // 2) Layer title (if any)
-  // 3) Overridden name (if any)
+  // 2) Overridden name (if any)
+  // 3) Layer title (if any)
   // 4) Layer name
 
   const QString layerTitle = QStringLiteral( "Point Layer Title" );
@@ -1871,8 +1871,8 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   dxfFile2.close();
 
   QVERIFY( !fileContainsText( file2, QStringLiteral( "nan.0" ) ) );
-  QVERIFY( fileContainsText( file2, layerTitle ) );
-  QVERIFY( !fileContainsText( file2, layerOverriddenName ) );
+  QVERIFY( !fileContainsText( file2, layerTitle ) );
+  QVERIFY( fileContainsText( file2, layerOverriddenName ) );
   QVERIFY( !fileContainsText( file2, mPointLayer->name() ) );
 
   // reload and compare
@@ -1882,20 +1882,20 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
   QgsFeature feature;
   result->getFeatures().nextFeature( feature );
-  QCOMPARE( feature.attribute( "Layer" ), layerTitle );
+  QCOMPARE( feature.attribute( "Layer" ), layerOverriddenName );
   QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
 
-  // C) No attribute given, choose no title
-  d.setLayerTitleAsName( false );
+  // C) No attribute given, no override
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1 ) ); // this replaces layers
 
-  const QString file3 = getTempFileName( "name_precedence_c_no_attr_no_title_dxf" );
+  const QString file3 = getTempFileName( "name_precedence_c_no_attr_no_override_dxf" );
   QFile dxfFile3( file3 );
   QCOMPARE( d.writeToFile( &dxfFile3, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile3.close();
 
   QVERIFY( !fileContainsText( file3, QStringLiteral( "nan.0" ) ) );
-  QVERIFY( !fileContainsText( file3, layerTitle ) );
-  QVERIFY( fileContainsText( file3, layerOverriddenName ) );
+  QVERIFY( fileContainsText( file3, layerTitle ) );
+  QVERIFY( !fileContainsText( file3, layerOverriddenName ) );
   QVERIFY( !fileContainsText( file3, mPointLayer->name() ) );
 
   // reload and compare
@@ -1904,11 +1904,12 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
   result->getFeatures().nextFeature( feature );
-  QCOMPARE( feature.attribute( "Layer" ), layerOverriddenName );
+  QCOMPARE( feature.attribute( "Layer" ), layerTitle );
   QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
 
   // D) No name options given, use default layer name
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) ); // This replaces layers
+  d.setLayerTitleAsName( false );
 
   const QString file4 = getTempFileName( "name_precedence_d_no_anything_dxf" );
   QFile dxfFile4( file4 );

@@ -105,7 +105,7 @@ struct DxfLayerJob
     QgsLabelSinkProvider *labelProvider = nullptr;
     QgsRuleBasedLabelSinkProvider *ruleBasedLabelProvider = nullptr;
     QString splitLayerAttribute;
-    QString layerDerivedName;  // Obtained from layer title, name or overridden name
+    QString layerDerivedName;  // Obtained from overridden name, title or layer name
     QSet<QString> attributes;
 
   private:

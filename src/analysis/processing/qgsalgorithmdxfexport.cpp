@@ -48,7 +48,7 @@ QString QgsDxfExportAlgorithm::groupId() const
 QString QgsDxfExportAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Exports layers to DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
-                      "If no field is chosen, you can still override the output layer name by preferring layer title (set in layer properties) or by directly entering a new output layer name in the Configure Layer panel." );
+                      "If no field is chosen, you can still override the output layer name by directly entering a new output layer name in the Configure Layer panel or by preferring layer title (set in layer properties) to layer name." );
 }
 
 QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
@@ -72,7 +72,7 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( extentParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Use only selected features" ), false ) );
   std::unique_ptr<QgsProcessingParameterBoolean> useTitleParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false );
-  useTitleParam->setHelp( QObject::tr( "If no attribute is chosen, prefer layer title (set in layer properties) to layer name" ) );
+  useTitleParam->setHelp( QObject::tr( "If no attribute is chosen and layer name is not being overridden, prefer layer title (set in layer properties) to layer name" ) );
   addParameter( useTitleParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
