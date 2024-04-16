@@ -1036,7 +1036,7 @@ QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
 bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
+  bool res = true;
   if ( crs.isValid() )
   {
     // validate that passed crs is a vertical crs
@@ -1095,7 +1095,7 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
     }
 
     mVerticalCrs = crs;
-    rebuildCrs3D();
+    res = rebuildCrs3D( errorMessage );
     mProjectScope.reset();
 
     setDirty( true );
@@ -1106,7 +1106,7 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
     if ( mCrs3D != oldCrs3D )
       emit crs3DChanged();
   }
-  return true;
+  return res;
 }
 
 QgsCoordinateTransformContext QgsProject::transformContext() const
@@ -1581,8 +1581,9 @@ void QgsProject::releaseHandlesToProjectArchive()
   mStyleSettings->removeProjectStyle();
 }
 
-void QgsProject::rebuildCrs3D()
+bool QgsProject::rebuildCrs3D( QString *error )
 {
+  bool res = true;
   if ( !mCrs.isValid() )
   {
     mCrs3D = QgsCoordinateReferenceSystem();
@@ -1602,6 +1603,7 @@ void QgsProject::rebuildCrs3D()
       case Qgis::CrsType::Vertical:
         // nonsense situation
         mCrs3D = QgsCoordinateReferenceSystem();
+        res = false;
         break;
 
       case Qgis::CrsType::Unknown:
@@ -1615,10 +1617,15 @@ void QgsProject::rebuildCrs3D()
       case Qgis::CrsType::Bound:
       case Qgis::CrsType::Other:
       case Qgis::CrsType::DerivedProjected:
-        mCrs3D = QgsCoordinateReferenceSystem::createCompoundCrs( mCrs, mVerticalCrs );
+      {
+        QString tempError;
+        mCrs3D = QgsCoordinateReferenceSystem::createCompoundCrs( mCrs, mVerticalCrs, error ? *error : tempError );
+        res = mCrs3D.isValid();
         break;
+      }
     }
   }
+  return res;
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
