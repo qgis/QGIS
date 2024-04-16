@@ -1079,11 +1079,27 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
         }
         break;
 
+      case Qgis::CrsType::Geographic3d:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Geocentric:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
       case Qgis::CrsType::Unknown:
       case Qgis::CrsType::Geodetic:
-      case Qgis::CrsType::Geocentric:
       case Qgis::CrsType::Geographic2d:
-      case Qgis::CrsType::Geographic3d:
       case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
@@ -1597,6 +1613,8 @@ bool QgsProject::rebuildCrs3D( QString *error )
     switch ( mCrs.type() )
     {
       case Qgis::CrsType::Compound:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Geocentric:
         mCrs3D = mCrs;
         break;
 
@@ -1608,9 +1626,7 @@ bool QgsProject::rebuildCrs3D( QString *error )
 
       case Qgis::CrsType::Unknown:
       case Qgis::CrsType::Geodetic:
-      case Qgis::CrsType::Geocentric:
       case Qgis::CrsType::Geographic2d:
-      case Qgis::CrsType::Geographic3d:
       case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
