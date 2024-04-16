@@ -94,6 +94,8 @@ Raise, unminimize and activate this window.
 
     virtual bool saveModel( bool saveAs = false ) = 0;
 
+    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 /TransferBack/;
+
     QToolBar *toolbar();
     QAction *actionOpen();
     QAction *actionSaveInProject();
