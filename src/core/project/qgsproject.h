@@ -2356,7 +2356,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void releaseHandlesToProjectArchive();
 
-    void rebuildCrs3D();
+    bool rebuildCrs3D( QString *error = nullptr );
 
     Qgis::ProjectCapabilities mCapabilities;
 
