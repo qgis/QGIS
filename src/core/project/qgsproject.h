@@ -1185,7 +1185,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapLayer()
      * \see mapLayers()
      */
-    QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
+    Q_INVOKABLE QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /**
      * Retrieves a list of matching registered layers by layer \a shortName.
