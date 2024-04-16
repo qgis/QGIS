@@ -55,7 +55,8 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
   if ( index.column() == LAYER_COL )
   {
-    QLineEdit *le = new QLineEdit( parent );
+    QgsFilterLineEdit *le = new QgsFilterLineEdit( parent, vl->name() );
+
     return le;
   }
   else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
@@ -87,7 +88,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
   if ( index.column() == LAYER_COL )
   {
-    QLineEdit *le = qobject_cast< QLineEdit * >( editor );
+    QgsFilterLineEdit *le = qobject_cast< QgsFilterLineEdit * >( editor );
     if ( le )
     {
       le->setText( index.data().toString() );
@@ -123,7 +124,7 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
 
   if ( index.column() == LAYER_COL )
   {
-    QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+    QgsFilterLineEdit *le = qobject_cast<QgsFilterLineEdit *>( editor );
     if ( le )
     {
       model->setData( index, le->text() );
