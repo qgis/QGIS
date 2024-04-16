@@ -326,9 +326,10 @@ Returns the project's native coordinate reference system.
 Returns the CRS to use for the project when transforming 3D data, or when z/elevation
 value handling is important.
 
-The returned CRS will take into account :py:func:`~QgsProject.verticalCrs`, e.g. by returning a compound
+The returned CRS will take into account :py:func:`~QgsProject.verticalCrs` when appropriate, e.g. it may return a compound
 CRS consisting of :py:func:`~QgsProject.crs` + :py:func:`~QgsProject.verticalCrs`. This method may still return a 2D CRS, e.g in the
-case that :py:func:`~QgsProject.crs` is a 2D CRS and no :py:func:`~QgsProject.verticalCrs` has been set for the project.
+case that :py:func:`~QgsProject.crs` is a 2D CRS and no :py:func:`~QgsProject.verticalCrs` has been set for the project. Check :py:func:`QgsCoordinateReferenceSystem.type()`
+on the returned value to determine the type of CRS returned by this method.
 
 .. warning::
 
