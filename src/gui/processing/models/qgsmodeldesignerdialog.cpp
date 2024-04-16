@@ -38,7 +38,7 @@
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsscreenhelper.h"
 #include "qgsmessagelog.h"
-
+#include "qgsprocessingalgorithmdialogbase.h"
 #include <QShortcut>
 #include <QKeySequence>
 #include <QFileDialog>
@@ -157,6 +157,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionReorderOutputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderOutputs );
   connect( mActionEditHelp, &QAction::triggered, this, &QgsModelDesignerDialog::editHelp );
   connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mActionRun, &QAction::triggered, this, &QgsModelDesignerDialog::run );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -992,6 +993,52 @@ void QgsModelDesignerDialog::editHelp()
     mModel->setHelpContent( dialog.helpContent() );
     endUndoCommand();
   }
+}
+
+void QgsModelDesignerDialog::run()
+{
+  QStringList errors;
+  const bool isValid = model()->validate( errors );
+  if ( !isValid )
+  {
+    QMessageBox messageBox;
+    messageBox.setWindowTitle( tr( "Model is Invalid" ) );
+    messageBox.setIcon( QMessageBox::Icon::Warning );
+    messageBox.setText( tr( "This model is not valid and contains one or more issues. Are you sure you want to run it in this state?" ) );
+    messageBox.setStandardButtons( QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::Cancel );
+    messageBox.setDefaultButton( QMessageBox::StandardButton::Cancel );
+
+    QString errorString;
+    for ( const QString &error : std::as_const( errors ) )
+    {
+      QString cleanedError = error;
+      const thread_local QRegularExpression re( QStringLiteral( "<[^>]*>" ) );
+      cleanedError.replace( re, QString() );
+      errorString += QStringLiteral( "• %1\n" ).arg( cleanedError );
+    }
+
+    messageBox.setDetailedText( errorString );
+    if ( messageBox.exec() == QMessageBox::StandardButton::Cancel )
+      return;
+  }
+
+  std::unique_ptr< QgsProcessingAlgorithmDialogBase > dialog( createExecutionDialog() );
+  if ( !dialog )
+    return;
+
+  dialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+  dialog->setParameters( mModel->designerParameterValues() );
+
+  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & )
+  {
+    const QVariantMap dialogResults = dialog->results();
+    setLastRunChildAlgorithmResults( dialogResults.value( QStringLiteral( "CHILD_RESULTS" ), QVariantMap() ).toMap() );
+    setLastRunChildAlgorithmInputs( dialogResults.value( QStringLiteral( "CHILD_INPUTS" ), QVariantMap() ).toMap() );
+
+    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+  } );
+
+  dialog->exec();
 }
 
 void QgsModelDesignerDialog::validate()

@@ -30,6 +30,7 @@ class QUndoView;
 class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
+class QgsProcessingAlgorithmDialogBase;
 
 ///@cond NOT_STABLE
 
@@ -126,6 +127,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
     virtual bool saveModel( bool saveAs = false ) = 0;
+    // cppcheck-suppress pureVirtualCall
+    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
@@ -186,6 +189,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void reorderOutputs();
     void setPanelVisibility( bool hidden );
     void editHelp();
+    void run();
 
   private:
 
