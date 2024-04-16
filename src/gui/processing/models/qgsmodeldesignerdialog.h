@@ -251,6 +251,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
       bool isActive;
     };
     QMap< QString, PanelStatus > mPanelStatus;
+
+    QgsProcessingContext mLayerStore;
 };
 
 

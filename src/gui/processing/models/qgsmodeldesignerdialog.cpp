@@ -86,6 +86,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 {
   setupUi( this );
 
+  mLayerStore.setProject( QgsProject::instance() );
+
   mScreenHelper = new QgsScreenHelper( this );
 
   setAttribute( Qt::WA_DeleteOnClose );
@@ -1036,6 +1038,11 @@ void QgsModelDesignerDialog::run()
     setLastRunChildAlgorithmInputs( dialogResults.value( QStringLiteral( "CHILD_INPUTS" ), QVariantMap() ).toMap() );
 
     mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+
+    // take child output layers
+    mLayerStore.temporaryLayerStore()->removeAllMapLayers();
+    QgsProcessingContext *context = dialog->processingContext();
+    mLayerStore.takeResultsFrom( *context );
   } );
 
   dialog->exec();
