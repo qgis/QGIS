@@ -5722,30 +5722,7 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
       sqlite3_free_table( results );
     }
 
-    if ( fType == QLatin1String( "POINT" ) )
-    {
-      mGeomType = Qgis::WkbType::Point;
-    }
-    else if ( fType == QLatin1String( "MULTIPOINT" ) )
-    {
-      mGeomType = Qgis::WkbType::MultiPoint;
-    }
-    else if ( fType == QLatin1String( "LINESTRING" ) )
-    {
-      mGeomType = Qgis::WkbType::LineString;
-    }
-    else if ( fType == QLatin1String( "MULTILINESTRING" ) )
-    {
-      mGeomType = Qgis::WkbType::MultiLineString;
-    }
-    else if ( fType == QLatin1String( "POLYGON" ) )
-    {
-      mGeomType = Qgis::WkbType::Polygon;
-    }
-    else if ( fType == QLatin1String( "MULTIPOLYGON" ) )
-    {
-      mGeomType = Qgis::WkbType::MultiPolygon;
-    }
+    mGeomType = QgsWkbTypes::parseType( fType );
     mSrid = xSrid.toInt();
   }
 
