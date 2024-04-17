@@ -45,6 +45,10 @@ class CORE_EXPORT  QgsFields
 {
     Q_GADGET
 
+    Q_PROPERTY( bool isEmpty READ isEmpty )
+    Q_PROPERTY( int count READ count )
+    Q_PROPERTY( QStringList names READ names )
+
   public:
 
     enum FieldOrigin
@@ -144,10 +148,10 @@ class CORE_EXPORT  QgsFields
     void extend( const QgsFields &other );
 
     //! Checks whether the container is empty
-    Q_INVOKABLE bool isEmpty() const;
+    bool isEmpty() const;
 
     //! Returns number of items
-    Q_INVOKABLE int count() const;
+    int count() const;
 
 #ifdef SIP_RUN
     int __len__() const;
@@ -163,12 +167,12 @@ class CORE_EXPORT  QgsFields
 #endif
 
     //! Returns number of items
-    Q_INVOKABLE int size() const;
+    int size() const;
 
     /**
      * Returns a list with field names
      */
-    Q_INVOKABLE QStringList names() const;
+    QStringList names() const;
 
     /**
      * Returns if a field index is valid

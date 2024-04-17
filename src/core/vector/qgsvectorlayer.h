@@ -405,6 +405,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
+    Q_PROPERTY( QgsFields fields READ fields NOTIFY updatedFields )
 
   public:
 
@@ -1660,7 +1661,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns A list of fields
      */
-    Q_INVOKABLE QgsFields fields() const FINAL;
+    QgsFields fields() const FINAL;
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
