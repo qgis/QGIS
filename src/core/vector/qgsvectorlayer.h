@@ -1660,7 +1660,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns A list of fields
      */
-    QgsFields fields() const FINAL;
+    Q_INVOKABLE QgsFields fields() const FINAL;
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
