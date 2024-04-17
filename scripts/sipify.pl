@@ -1755,6 +1755,9 @@ while ($LINE_IDX < $LINE_COUNT){
     $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_VIRTUAL if ( $LINE =~ m/\bFINAL\b/);
     $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_MAKE_PRIVATE if ( $LINE =~ m/\bSIP_MAKE_PRIVATE\b/);
 
+    # remove Q_INVOKABLE
+    $LINE =~ s/^(\s*)Q_INVOKABLE /$1/;
+
     # keyword fixes
     do {no warnings 'uninitialized';
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
@@ -1860,9 +1863,6 @@ while ($LINE_IDX < $LINE_COUNT){
            }
         }
     }
-
-    # remove Q_INVOKABLE
-    $LINE =~ s/^(\s*)Q_INVOKABLE /$1/;
 
     do {no warnings 'uninitialized';
         # remove keywords

@@ -337,7 +337,7 @@ class CORE_EXPORT QgsFeature
      * \returns FALSE, if the field index does not exist
      * \see setAttributes()
      */
-    bool setAttribute( int field, const QVariant &attr );
+    Q_INVOKABLE bool setAttribute( int field, const QVariant &attr );
 #else
 
     /**
@@ -589,7 +589,7 @@ class CORE_EXPORT QgsFeature
      * \returns FALSE if attribute name could not be converted to index
      * \see setFields()
      */
-    bool setAttribute( const QString &name, const QVariant &value );
+    Q_INVOKABLE bool setAttribute( const QString &name, const QVariant &value );
 #else
 
     /**
@@ -711,7 +711,7 @@ class CORE_EXPORT QgsFeature
      * \returns The value of the attribute, or an invalid/null variant if no such name exists
      * \see setFields
      */
-    QVariant attribute( const QString &name ) const;
+    Q_INVOKABLE QVariant attribute( const QString &name ) const;
 #else
 
     /**
@@ -739,7 +739,7 @@ class CORE_EXPORT QgsFeature
      * \throws KeyError if the field is not found
      * \see setFields
      */
-    SIP_PYOBJECT attribute( const QString &name ) const;
+    Q_INVOKABLE SIP_PYOBJECT attribute( const QString &name ) const;
     % MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
