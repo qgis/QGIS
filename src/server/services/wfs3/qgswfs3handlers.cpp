@@ -483,8 +483,8 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
         // Check if the layer is published, raise not found if it is not
         checkLayerIsAccessible( layer, context );
 
-        const std::string title{layer->serverProperties()->title().isEmpty() ? layer->name().toStdString() : layer->serverProperties()->title().toStdString()};
-        const QString shortName{layer->serverProperties()->shortName().isEmpty() ? layer->name() : layer->serverProperties()->shortName()};
+        const std::string title{layer->title().isEmpty() ? layer->name().toStdString() : layer->title().toStdString()};
+        const QString shortName{layer->->shortName().isEmpty() ? layer->name() : layer->shortName()};
         data["collections"].push_back(
         {
           // identifier of the collection used, for example, in URIs
@@ -492,7 +492,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
           // human readable title of the collection
           { "title", title },
           // a description of the features in the collection
-          { "description", layer->serverProperties()->abstract().toStdString() },
+          { "description", layer->abstract().toStdString() },
           {
             "crs", crss
           },
