@@ -134,7 +134,11 @@ class BasicStatisticsForField(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
 
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        field = source.fields().at(source.fields().lookupField(field_name))
+        field_idx = source.fields().lookupField(field_name)
+        if field_idx < 0:
+            raise QgsProcessingException(self.tr("Invalid field for statistics: “{}” does not exist").format(field_name))
+
+        field = source.fields().at(field_idx)
 
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
