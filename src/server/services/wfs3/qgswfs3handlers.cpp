@@ -484,7 +484,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
         checkLayerIsAccessible( layer, context );
 
         const std::string title{layer->title().isEmpty() ? layer->name().toStdString() : layer->title().toStdString()};
-        const QString shortName{layer->->shortName().isEmpty() ? layer->name() : layer->shortName()};
+        const QString shortName{layer->shortName().isEmpty() ? layer->name() : layer->shortName()};
         data["collections"].push_back(
         {
           // identifier of the collection used, for example, in URIs
