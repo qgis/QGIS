@@ -51,6 +51,44 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
 
 };
 
+class DummyRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+
+    DummyRaiseExceptionAlgorithm( const QString &name ) : mName( name ) { mFlags = QgsProcessingAlgorithm::flags(); hasPostProcessed = false; }
+    static bool hasPostProcessed;
+    ~DummyRaiseExceptionAlgorithm()
+    {
+      hasPostProcessed |= mHasPostProcessed;
+    }
+
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override
+    {
+    }
+    QString name() const override { return mName; }
+    QString displayName() const override { return mName; }
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override
+    {
+      throw QgsProcessingException( QString() );
+    }
+    static bool postProcessAlgorithmCalled;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) final
+    {
+      postProcessAlgorithmCalled = true;
+      return QVariantMap();
+    }
+
+    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
+    DummyRaiseExceptionAlgorithm *createInstance() const override { return new DummyRaiseExceptionAlgorithm( name() ); }
+
+    QString mName;
+
+    Qgis::ProcessingAlgorithmFlags mFlags;
+
+};
+bool DummyRaiseExceptionAlgorithm::hasPostProcessed = false;
+bool DummyRaiseExceptionAlgorithm::postProcessAlgorithmCalled = false;
+
 class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qobject-macro
 {
   public:
@@ -77,6 +115,7 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
     void loadAlgorithms() override
     {
       QVERIFY( addAlgorithm( new DummyAlgorithm2( QStringLiteral( "alg1" ) ) ) );
+      QVERIFY( addAlgorithm( new DummyRaiseExceptionAlgorithm( QStringLiteral( "raise" ) ) ) );
     }
 
 };
@@ -108,6 +147,7 @@ class TestQgsProcessingModelAlgorithm: public QgsTest
     void modelValidate();
     void modelInputs();
     void modelOutputs();
+    void modelWithChildException();
     void modelDependencies();
     void modelSource();
     void modelNameMatchesFileName();
@@ -133,6 +173,7 @@ void TestQgsProcessingModelAlgorithm::initTestCase()
   settings.clear();
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
+  QgsApplication::processingRegistry()->addProvider( new DummyProvider4() );
 }
 
 void TestQgsProcessingModelAlgorithm::cleanupTestCase()
@@ -1684,8 +1725,6 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
 
 void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
 {
-  QgsApplication::processingRegistry()->addProvider( new DummyProvider4() );
-
   QgsProcessingModelAlgorithm alg( "test", "testGroup" );
   QgsProcessingModelChildAlgorithm algc1;
   algc1.setChildId( QStringLiteral( "cx1" ) );
@@ -2272,6 +2311,49 @@ void TestQgsProcessingModelAlgorithm::modelOutputs()
   QVERIFY( !destC.isEmpty() );
   QCOMPARE( context.layerToLoadOnCompletionDetails( destC ).groupName, QStringLiteral( "output group" ) );
   QCOMPARE( context.layerToLoadOnCompletionDetails( destC ).layerSortKey, 1 );
+}
+
+
+void TestQgsProcessingModelAlgorithm::modelWithChildException()
+{
+  QgsProcessingModelAlgorithm m;
+
+  const QgsProcessingModelParameter sourceParam( "INPUT" );
+  m.addModelParameter( new QgsProcessingParameterFeatureSource( "INPUT" ), sourceParam );
+
+  QgsProcessingModelChildAlgorithm algWhichCreatesLayer;
+  algWhichCreatesLayer.setChildId( QStringLiteral( "buffer" ) );
+  algWhichCreatesLayer.setAlgorithmId( "native:buffer" );
+  algWhichCreatesLayer.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromModelParameter( "INPUT" ) } );
+
+  m.addChildAlgorithm( algWhichCreatesLayer );
+
+  QgsProcessingModelChildAlgorithm algWhichRaisesException;
+  algWhichRaisesException.setChildId( QStringLiteral( "raise" ) );
+  algWhichRaisesException.setAlgorithmId( "dummy4:raise" );
+  algWhichRaisesException.setDependencies( {QgsProcessingModelChildDependency( QStringLiteral( "buffer" ) )} );
+  m.addChildAlgorithm( algWhichRaisesException );
+
+  // run and check context details
+  QgsProcessingContext context;
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+  QgsProject p;
+  p.addMapLayer( layer3111 );
+  context.setProject( &p );
+  params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "v1" ) );
+
+  bool ok = false;
+  QVariantMap results = m.run( params, context, &feedback, &ok );
+  // model should fail, exception was raised
+  QVERIFY( !ok );
+  // but result from successful buffer step should still be available in the context
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  // confirm that QgsProcessingAlgorithm::postProcess was called for failing DummyRaiseExceptionAlgorithm step
+  QVERIFY( DummyRaiseExceptionAlgorithm::hasPostProcessed );
+  // but not DummyRaiseExceptionAlgorithm::postProcessAlgorithm
+  QVERIFY( !DummyRaiseExceptionAlgorithm::postProcessAlgorithmCalled );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()

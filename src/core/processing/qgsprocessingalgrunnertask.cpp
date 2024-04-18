@@ -80,10 +80,6 @@ bool QgsProcessingAlgRunnerTask::run()
 void QgsProcessingAlgRunnerTask::finished( bool result )
 {
   Q_UNUSED( result )
-  QVariantMap ppResults;
-  if ( result )
-  {
-    ppResults = mAlgorithm->postProcess( mContext, mFeedback );
-  }
+  const QVariantMap ppResults = mAlgorithm->postProcess( mContext, mFeedback, result );
   emit executed( result, !ppResults.isEmpty() ? ppResults : mResults );
 }
