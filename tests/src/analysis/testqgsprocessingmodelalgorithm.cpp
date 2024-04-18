@@ -2345,7 +2345,7 @@ void TestQgsProcessingModelAlgorithm::modelWithChildException()
   params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "v1" ) );
 
   bool ok = false;
-  QVariantMap results = m.run( params, context, &feedback, &ok );
+  m.run( params, context, &feedback, &ok );
   // model should fail, exception was raised
   QVERIFY( !ok );
   // but result from successful buffer step should still be available in the context
