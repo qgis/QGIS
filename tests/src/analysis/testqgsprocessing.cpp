@@ -2744,6 +2744,7 @@ void TestQgsProcessing::parameters()
   QVERIFY( sink.get() );
   QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( dynamic_cast< QgsProcessingFeatureSink * >( sink.get() )->destinationSink() );
   QVERIFY( writer );
+  sink.reset();
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
   QVERIFY( layer->isValid() );
