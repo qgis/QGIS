@@ -152,14 +152,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     bool checkForUnsavedChanges();
 
     /**
-     * Sets the results of child algorithms for the last run of the model through the designer window.
+     * Sets the \a results of child algorithms for the last run of the model through the designer window.
      */
-    void setLastRunChildAlgorithmResults( const QVariantMap &results );
-
-    /**
-     * Sets the inputs for child algorithms for the last run of the model through the designer window.
-     */
-    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+    void setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results );
 
     /**
      * Sets the model \a name.
@@ -234,8 +229,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     int mBlockRepaints = 0;
 
-    QVariantMap mChildResults;
-    QVariantMap mChildInputs;
+    QMap< QString, QgsProcessingModelChildAlgorithmResult > mChildResults;
 
     bool isDirty() const;
 

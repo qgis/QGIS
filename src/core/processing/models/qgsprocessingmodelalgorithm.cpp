@@ -320,6 +320,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
+  QVariantMap childResults;
+  QVariantMap childInputs;
+
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
@@ -377,18 +380,23 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       QgsExpressionContext expContext = baseContext;
       expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
-                 << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, context.modelChildResults() );
+                 << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
       context.setExpressionContext( expContext );
 
       QString error;
-      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, context.modelChildResults(), expContext, error, &context );
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext, error, &context );
       if ( !error.isEmpty() )
         throw QgsProcessingException( error );
 
       if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
-      context.modelChildInputs().insert( childId, QgsProcessingUtils::removePointerValuesFromMap( childParams ) );
+      QgsProcessingModelChildAlgorithmResult childResult;
+
+      const QVariantMap thisChildParams = QgsProcessingUtils::removePointerValuesFromMap( childParams );
+      childInputs.insert( childId, thisChildParams );
+      childResult.setInputs( thisChildParams );
+
       QStringList params;
       for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
       {
@@ -508,7 +516,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( formattedOutputs.join( QLatin1String( ", " ) ) ) );
       }
 
-      context.modelChildResults().insert( childId, results );
+      childResults.insert( childId, results );
+      childResult.setOutputs( results );
+
+      context.modelChildResults().insert( childId, childResult );
 
       // look through child alg's outputs to determine whether any of these should be copied
       // to the final model outputs
@@ -617,8 +628,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
     feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %n algorithm(s) total in %1 s.", nullptr, executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
-  mResults.insert( QStringLiteral( "CHILD_RESULTS" ), context.modelChildResults() );
-  mResults.insert( QStringLiteral( "CHILD_INPUTS" ), context.modelChildInputs() );
+  mResults.insert( QStringLiteral( "CHILD_RESULTS" ), childResults );
+  mResults.insert( QStringLiteral( "CHILD_INPUTS" ), childInputs );
   return mResults;
 }
 

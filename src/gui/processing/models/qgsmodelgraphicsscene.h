@@ -138,14 +138,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void setSelectedItem( QgsModelComponentGraphicItem *item );
 
     /**
-     * Sets the results for child algorithms for the last model execution.
+     * Sets the \a results of child algorithms for the last run of the model through the designer window.
      */
-    void setChildAlgorithmResults( const QVariantMap &results );
-
-    /**
-     * Sets the inputs for child algorithms for the last model execution.
-     */
-    void setChildAlgorithmInputs( const QVariantMap &inputs );
+    void setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results );
 
     /**
      * Returns the message bar associated with the scene.
@@ -247,8 +242,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
     QMap< QString, QgsModelComponentGraphicItem * > mGroupBoxItems;
-    QVariantMap mChildResults;
-    QVariantMap mChildInputs;
+    QMap< QString, QgsProcessingModelChildAlgorithmResult > mChildResults;
 
     QgsMessageBar *mMessageBar = nullptr;
 
