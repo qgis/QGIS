@@ -369,7 +369,7 @@ to allow the algorithm to perform any required cleanup tasks and return its fina
    of the algorithm should be created with :py:func:`~QgsProcessingAlgorithm.clone` and :py:func:`~QgsProcessingAlgorithm.prepare`/:py:func:`~QgsProcessingAlgorithm.runPrepared` called on the copy.
 %End
 
-    QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool runResult = true );
 %Docstring
 Should be called in the main thread following the completion of :py:func:`~QgsProcessingAlgorithm.runPrepared`. This method
 allows the algorithm to perform any required cleanup tasks. The returned variant map
@@ -380,6 +380,10 @@ includes the results evaluated by the algorithm.
    This method modifies the algorithm instance, so it is not safe to call
    on algorithms directly retrieved from :py:class:`QgsProcessingRegistry` and :py:class:`QgsProcessingProvider`. Instead, a copy
    of the algorithm should be created with :py:func:`~QgsProcessingAlgorithm.clone` and :py:func:`~QgsProcessingAlgorithm.prepare`/:py:func:`~QgsProcessingAlgorithm.runPrepared` called on the copy.
+
+Since QGIS 3.38, :py:func:`~QgsProcessingAlgorithm.postProcess` will always be called even for unsuccessful run executions, to allow
+the algorithm to gracefully clean up. The ``runResult`` argument is used to indicate whether the run
+was successful. The algorithm's :py:func:`~QgsProcessingAlgorithm.postProcessAlgorithm` method will only be called when ``runResult`` is ``True``.
 %End
 
     virtual QWidget *createCustomParametersWidget( QWidget *parent = 0 ) const /Factory/;

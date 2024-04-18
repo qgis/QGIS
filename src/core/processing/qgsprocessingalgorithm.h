@@ -391,8 +391,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \note This method modifies the algorithm instance, so it is not safe to call
      * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
      * of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+     *
+     * Since QGIS 3.38, postProcess() will always be called even for unsuccessful run executions, to allow
+     * the algorithm to gracefully clean up. The \a runResult argument is used to indicate whether the run
+     * was successful. The algorithm's postProcessAlgorithm() method will only be called when \a runResult is TRUE.
      */
-    QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool runResult = true );
 
     /**
      * If an algorithm subclass implements a custom parameters widget, a copy of this widget
@@ -1104,6 +1108,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     friend class TestQgsProcessing;
     friend class QgsProcessingModelAlgorithm;
     friend class QgsProcessingToolboxProxyModel;
+    friend class DummyRaiseExceptionAlgorithm;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );

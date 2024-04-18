@@ -65,12 +65,44 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 {
   public:
 
-    DummyAlgorithm( const QString &name ) : mName( name ) { mFlags = Qgis::ProcessingAlgorithmFlags(); }
+    DummyAlgorithm( const QString &name )
+      : mName( name )
+    {
+      mFlags = Qgis::ProcessingAlgorithmFlags();
+    }
 
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
+
+    // we use static members here as the algorithm instance will be internally privately cloned before executing
+    static bool mRaiseProcessException;
+    static bool mPrepared;
+
+    bool prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) final
+    {
+      mPrepared = true;
+      return true;
+    }
+    static bool mProcessed;
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &context, QgsProcessingFeedback * ) final
+    {
+      mProcessed = true;
+
+      QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+      context.temporaryLayerStore()->addMapLayer( layer3111 );
+
+      if ( mRaiseProcessException )
+        throw QgsProcessingException( QString() );
+
+      return QVariantMap();
+    }
+    static bool mPostProcessed;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) final
+    {
+      mPostProcessed = true;
+      return QVariantMap();
+    }
 
     Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
     DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
@@ -515,6 +547,10 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
 
     friend class TestQgsProcessing;
 };
+bool DummyAlgorithm::mPrepared = false;
+bool DummyAlgorithm::mRaiseProcessException = false;
+bool DummyAlgorithm::mProcessed = false;
+bool DummyAlgorithm::mPostProcessed = false;
 
 class DummyProviderNoLoad : public DummyProvider // clazy:exclude=missing-qobject-macro
 {
@@ -789,6 +825,7 @@ class TestQgsProcessing: public QgsTest
     void parameterAnnotationLayer();
     void parameterVectorTileOut();
     void checkParamValues();
+    void runAlgorithm();
     void combineLayerExtent();
     void processingFeatureSource();
     void processingFeatureSink();
@@ -11755,6 +11792,69 @@ void TestQgsProcessing::checkParamValues()
 {
   DummyAlgorithm a( "asd" );
   a.checkParameterVals();
+}
+
+void TestQgsProcessing::runAlgorithm()
+{
+  std::unique_ptr< DummyAlgorithm > a = std::make_unique< DummyAlgorithm >( "asd" );
+  a->mRaiseProcessException = false;
+  a->mPrepared = false;
+  a->mProcessed = false;
+  a->mPostProcessed = false;
+  QgsProcessingContext context;
+  QgsProcessingFeedback feedback;
+  bool ok = false;
+  QVariantMap res = a->run( QVariantMap(), context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( a->mPrepared );
+  QVERIFY( a->mProcessed );
+  QVERIFY( a->mPostProcessed );
+  // ensure layer added by the algorithm in processAlgorithm is present in context
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  context.temporaryLayerStore()->removeAllMapLayers();
+
+  // try with an algorithm which raises an exception, postProcessAlgorithm should not be called
+  a = std::make_unique< DummyAlgorithm >( "asd" );
+  a->mRaiseProcessException = true;
+  a->mPrepared = false;
+  a->mProcessed = false;
+  a->mPostProcessed = false;
+  ok = false;
+  res = a->run( QVariantMap(), context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( a->mPrepared );
+  QVERIFY( a->mProcessed );
+  QVERIFY( !a->mPostProcessed );
+  // ensure layer added by the algorithm in processAlgorithm is present in context, this should
+  // always be the case even if an exception occurs
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  context.temporaryLayerStore()->removeAllMapLayers();
+
+  // try without internally catching exceptions in run, postProcessAlgorithm should not be called
+  a = std::make_unique< DummyAlgorithm >( "asd" );
+  a->mRaiseProcessException = true;
+  a->mPrepared = false;
+  a->mProcessed = false;
+  a->mPostProcessed = false;
+  ok = false;
+  bool caught = false;
+  try
+  {
+    res = a->run( QVariantMap(), context, &feedback, &ok, QVariantMap(), false );
+  }
+  catch ( QgsProcessingException & )
+  {
+    caught = true;
+  }
+  QVERIFY( caught );
+  QVERIFY( !ok );
+  QVERIFY( a->mPrepared );
+  QVERIFY( a->mProcessed );
+  QVERIFY( !a->mPostProcessed );
+  // ensure layer added by the algorithm in processAlgorithm is present in context, this should
+  // always be the case even if an exception occurs
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  context.temporaryLayerStore()->removeAllMapLayers();
 }
 
 void TestQgsProcessing::combineLayerExtent()

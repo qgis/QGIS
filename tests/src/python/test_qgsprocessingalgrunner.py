@@ -21,6 +21,8 @@ from qgis.core import (
     QgsProject,
     QgsSettings,
     QgsTask,
+    QgsProcessingException,
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -72,6 +74,68 @@ class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         return {self.OUTPUT: 'an_id'}
+
+
+class TestAlgorithm(QgsProcessingAlgorithm):
+
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+
+    def createInstance(self):
+        return TestAlgorithm()
+
+    def name(self):
+        return 'test'
+
+    def displayName(self):
+        return 'test'
+
+    def group(self):
+        return 'test'
+
+    def groupId(self):
+        return 'test'
+
+    def shortHelpString(self):
+        return 'test'
+
+    def initAlgorithm(self, config=None):
+        pass
+
+    def processAlgorithm(self, parameters, context, feedback):
+        context.temporaryLayerStore().addMapLayer(QgsVectorLayer("Point?crs=epsg:3111", "v1", "memory"))
+        return {self.OUTPUT: 'an_id'}
+
+
+class ExceptionAlgorithm(QgsProcessingAlgorithm):
+
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+
+    def createInstance(self):
+        return ExceptionAlgorithm()
+
+    def name(self):
+        return 'test'
+
+    def displayName(self):
+        return 'test'
+
+    def group(self):
+        return 'test'
+
+    def groupId(self):
+        return 'test'
+
+    def shortHelpString(self):
+        return 'test'
+
+    def initAlgorithm(self, config=None):
+        pass
+
+    def processAlgorithm(self, parameters, context, feedback):
+        context.temporaryLayerStore().addMapLayer(QgsVectorLayer("Point?crs=epsg:3111", "v1", "memory"))
+        raise QgsProcessingException('error')
 
 
 class TestQgsProcessingAlgRunner(QgisTestCase):
@@ -140,6 +204,60 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         task = QgsProcessingAlgRunnerTask(CrashingProcessingAlgorithm(), {}, context=context, feedback=feedback)
         self.assertTrue(task.isCanceled())
         self.assertIn('name \'ExampleProcessingAlgorithm\' is not defined', feedback._error)
+
+    def test_good(self):
+        """
+        Test a good algorithm
+        """
+
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = ConsoleFeedBack()
+
+        task = QgsProcessingAlgRunnerTask(TestAlgorithm(), {}, context=context, feedback=feedback)
+        self.assertFalse(task.isCanceled())
+        TestQgsProcessingAlgRunner.finished = False
+        TestQgsProcessingAlgRunner.success = None
+
+        def on_executed(success, results):
+            TestQgsProcessingAlgRunner.finished = True
+            TestQgsProcessingAlgRunner.success = success
+
+        task.executed.connect(on_executed)
+        QgsApplication.taskManager().addTask(task)
+        task.waitForFinished()
+
+        self.assertTrue(TestQgsProcessingAlgRunner.finished)
+        self.assertTrue(TestQgsProcessingAlgRunner.success)
+        self.assertEqual(context.temporaryLayerStore().count(), 1)
+
+    def test_raises_exception(self):
+        """
+        Test an algorithm which raises an exception
+        """
+
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = ConsoleFeedBack()
+
+        task = QgsProcessingAlgRunnerTask(ExceptionAlgorithm(), {}, context=context, feedback=feedback)
+        self.assertFalse(task.isCanceled())
+        TestQgsProcessingAlgRunner.finished = False
+        TestQgsProcessingAlgRunner.success = None
+
+        def on_executed(success, results):
+            TestQgsProcessingAlgRunner.finished = True
+            TestQgsProcessingAlgRunner.success = success
+
+        task.executed.connect(on_executed)
+        QgsApplication.taskManager().addTask(task)
+        task.waitForFinished()
+
+        self.assertTrue(TestQgsProcessingAlgRunner.finished)
+        self.assertFalse(TestQgsProcessingAlgRunner.success)
+        # layer added by algorithm should have been transferred to the context, even when an
+        # exception was raised
+        self.assertEqual(context.temporaryLayerStore().count(), 1)
 
 
 if __name__ == '__main__':

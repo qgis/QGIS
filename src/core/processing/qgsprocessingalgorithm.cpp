@@ -536,24 +536,28 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
     return QVariantMap();
 
   QVariantMap runRes;
+  bool success = false;
   try
   {
     runRes = alg->runPrepared( parameters, context, feedback );
+    success = true;
   }
   catch ( QgsProcessingException &e )
   {
     if ( !catchExceptions )
+    {
+      alg->postProcess( context, feedback, false );
       throw e;
+    }
 
     QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     feedback->reportError( e.what() );
-    return QVariantMap();
   }
 
   if ( ok )
-    *ok = true;
+    *ok = success;
 
-  QVariantMap ppRes = alg->postProcess( context, feedback );
+  QVariantMap ppRes = alg->postProcess( context, feedback, success );
   if ( !ppRes.isEmpty() )
     return ppRes;
   else
@@ -608,11 +612,11 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
     runContext = mLocalContext.get();
   }
 
+  mHasExecuted = true;
   try
   {
     QVariantMap runResults = processAlgorithm( parameters, *runContext, feedback );
 
-    mHasExecuted = true;
     if ( mLocalContext )
     {
       // ok, time to clean things up. We need to push the temporary context back into
@@ -634,7 +638,7 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
   }
 }
 
-QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool runResult )
 {
   // cppcheck-suppress assertWithSideEffect
   Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the same thread the context was created in" );
@@ -652,14 +656,21 @@ QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, 
   }
 
   mHasPostProcessed = true;
-  try
+  if ( runResult )
   {
-    return postProcessAlgorithm( context, feedback );
+    try
+    {
+      return postProcessAlgorithm( context, feedback );
+    }
+    catch ( QgsProcessingException &e )
+    {
+      QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
+      feedback->reportError( e.what() );
+      return QVariantMap();
+    }
   }
-  catch ( QgsProcessingException &e )
+  else
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
-    feedback->reportError( e.what() );
     return QVariantMap();
   }
 }
