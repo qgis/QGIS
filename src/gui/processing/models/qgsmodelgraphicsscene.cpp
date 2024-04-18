@@ -140,8 +140,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     item->setPos( it.value().position().x(), it.value().position().y() );
 
     const QString childId = it.value().childId();
-    item->setResults( mChildResults.value( childId ).toMap() );
-    item->setInputs( mChildInputs.value( childId ).toMap() );
+    item->setResults( mChildResults.value( childId ) );
     mChildAlgorithmItems.insert( childId, item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -360,7 +359,7 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
   emit selectedItemChanged( item );
 }
 
-void QgsModelGraphicsScene::setChildAlgorithmResults( const QVariantMap &results )
+void QgsModelGraphicsScene::setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results )
 {
   mChildResults = results;
 
@@ -368,20 +367,7 @@ void QgsModelGraphicsScene::setChildAlgorithmResults( const QVariantMap &results
   {
     if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
     {
-      item->setResults( it.value().toMap() );
-    }
-  }
-}
-
-void QgsModelGraphicsScene::setChildAlgorithmInputs( const QVariantMap &inputs )
-{
-  mChildInputs = inputs;
-
-  for ( auto it = mChildInputs.constBegin(); it != mChildInputs.constEnd(); ++it )
-  {
-    if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
-    {
-      item->setInputs( it.value().toMap() );
+      item->setResults( it.value() );
     }
   }
 }

@@ -493,7 +493,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
-  mScene->setChildAlgorithmResults( mChildResults );
+  mScene->setLastRunChildAlgorithmResults( mChildResults );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
 
@@ -595,18 +595,11 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
   }
 }
 
-void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QVariantMap &results )
+void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results )
 {
   mChildResults = results;
   if ( mScene )
-    mScene->setChildAlgorithmResults( mChildResults );
-}
-
-void QgsModelDesignerDialog::setLastRunChildAlgorithmInputs( const QVariantMap &inputs )
-{
-  mChildInputs = inputs;
-  if ( mScene )
-    mScene->setChildAlgorithmInputs( mChildInputs );
+    mScene->setLastRunChildAlgorithmResults( mChildResults );
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -1038,7 +1031,6 @@ void QgsModelDesignerDialog::run()
     QgsProcessingContext *context = dialog->processingContext();
 
     setLastRunChildAlgorithmResults( context->modelChildResults() );
-    setLastRunChildAlgorithmInputs( context->modelChildInputs() );
 
     mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
 
@@ -1054,8 +1046,9 @@ void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
-  const QVariantMap childAlgorithmResults = mChildResults.value( childId ).toMap();
-  if ( childAlgorithmResults.isEmpty() )
+  const QgsProcessingModelChildAlgorithmResult result = mChildResults.value( childId );
+  const QVariantMap childAlgorithmOutputs = result.outputs();
+  if ( childAlgorithmOutputs.isEmpty() )
   {
     mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
     return;
@@ -1079,7 +1072,7 @@ void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
   bool foundResults = false;
   for ( const QgsProcessingParameterDefinition *outputParam : outputParams )
   {
-    const QVariant output = childAlgorithmResults.value( outputParam->name() );
+    const QVariant output = childAlgorithmOutputs.value( outputParam->name() );
     if ( !output.isValid() )
       continue;
 

@@ -2356,9 +2356,9 @@ void TestQgsProcessingModelAlgorithm::modelWithChildException()
   QVERIFY( !DummyRaiseExceptionAlgorithm::postProcessAlgorithmCalled );
 
   // results and inputs from buffer child should be available through the context
-  QCOMPARE( context.modelChildInputs().value( "buffer" ).toMap().value( "INPUT" ).toString(), QStringLiteral( "v1" ) );
-  QCOMPARE( context.modelChildInputs().value( "buffer" ).toMap().value( "OUTPUT" ).toString(), QStringLiteral( "memory:Buffered" ) );
-  QVERIFY( context.temporaryLayerStore()->mapLayer( context.modelChildResults().value( "buffer" ).toMap().value( "OUTPUT" ).toString() ) );
+  QCOMPARE( context.modelChildResults().value( "buffer" ).inputs().value( "INPUT" ).toString(), QStringLiteral( "v1" ) );
+  QCOMPARE( context.modelChildResults().value( "buffer" ).inputs().value( "OUTPUT" ).toString(), QStringLiteral( "memory:Buffered" ) );
+  QVERIFY( context.temporaryLayerStore()->mapLayer( context.modelChildResults().value( "buffer" ).outputs().value( "OUTPUT" ).toString() ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()

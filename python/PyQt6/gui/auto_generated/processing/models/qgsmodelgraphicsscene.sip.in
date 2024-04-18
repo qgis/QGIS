@@ -124,14 +124,9 @@ not correctly emit signals to allow the scene's model to update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
-    void setChildAlgorithmResults( const QVariantMap &results );
+    void setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results );
 %Docstring
-Sets the results for child algorithms for the last model execution.
-%End
-
-    void setChildAlgorithmInputs( const QVariantMap &inputs );
-%Docstring
-Sets the inputs for child algorithms for the last model execution.
+Sets the ``results`` of child algorithms for the last run of the model through the designer window.
 %End
 
     QgsMessageBar *messageBar() const;
