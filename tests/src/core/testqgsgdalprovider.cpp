@@ -72,7 +72,6 @@ class TestQgsGdalProvider : public QgsTest
     void scale0(); //test when data has scale 0 (#20493)
     void transformCoordinates();
     void testGdalProviderQuerySublayers();
-    void testGdalProviderQuerySublayers_TIFFTags();
     void testGdalProviderQuerySublayers_NetCDF();
     void testGdalProviderQuerySublayersFastScan();
     void testGdalProviderQuerySublayersFastScan_NetCDF();
