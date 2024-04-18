@@ -462,6 +462,21 @@ QString QgsWMSItemBase::createUri( bool withStyle )
     crs = mLayerProperty.crs[0];
   }
   mDataSourceUri.setParam( QStringLiteral( "crs" ), crs );
+
+  // Set featureCount if the connection has a valid default value
+  if ( mDataSourceUri.hasParam( QStringLiteral( "defaultFeatureCount" ) ) )
+  {
+    bool ok;
+    mDataSourceUri.param( QStringLiteral( "defaultFeatureCount" ) ).toInt( &ok );
+    if ( ok )
+    {
+      // Used by the provider
+      mDataSourceUri.setParam( QStringLiteral( "featureCount" ), mDataSourceUri.param( QStringLiteral( "defaultFeatureCount" ) ) );
+    }
+    // Not used by the provider: remove it
+    mDataSourceUri.removeParam( QStringLiteral( "defaultFeatureCount" ) );
+  }
+
   //uri = rasterLayerPath + "|layers=" + layers.join( "," ) + "|styles=" + styles.join( "," ) + "|format=" + format + "|crs=" + crs;
 
   return mDataSourceUri.encodedUri();

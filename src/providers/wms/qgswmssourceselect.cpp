@@ -469,6 +469,20 @@ void QgsWMSSourceSelect::btnConnect_clicked()
   QgsWMSConnection connection( cmbConnections->currentText() );
   mUri = connection.uri();
 
+  bool defaultFeatureCountSet { };
+  if ( connection.uri().hasParam( QStringLiteral( "defaultFeatureCount" ) ) && !connection.uri().param( QStringLiteral( "defaultFeatureCount" ) ).isEmpty() )
+  {
+    connection.uri().param( QStringLiteral( "defaultFeatureCount" ) ).toInt( &defaultFeatureCountSet );
+    if ( defaultFeatureCountSet )
+      mFeatureCount->setText( connection.uri().param( QStringLiteral( "defaultFeatureCount" ) ) );
+  }
+
+  // Original default for old connections that didn't allow to specify the default feature count
+  if ( ! defaultFeatureCountSet )
+  {
+    mFeatureCount->setText( QStringLiteral( "10" ) );
+  }
+
   QgsWmsSettings wmsSettings;
   if ( !wmsSettings.parseUri( mUri.encodedUri() ) )
   {
