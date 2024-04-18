@@ -192,6 +192,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void selectedItemChanged( QgsModelComponentGraphicItem *selected );
 
+    /**
+     * Emitted when the user opts to view previous results from the child algorithm with matching ID.
+     *
+     * \since QGIS 3.38
+     */
+    void showPreviousResults( const QString &childId );
+
   protected:
 
     /**

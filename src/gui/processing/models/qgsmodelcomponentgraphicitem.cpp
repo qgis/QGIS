@@ -890,6 +890,21 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
       QAction *deactivateAction = popupmenu->addAction( QObject::tr( "Deactivate" ) );
       connect( deactivateAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deactivateAlgorithm );
     }
+
+    // only show the "View Output Layers" action for algorithms which create layers
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      const QList< const QgsProcessingParameterDefinition * > outputParams = algorithm->destinationParameterDefinitions();
+      if ( !outputParams.isEmpty() )
+      {
+        popupmenu->addSeparator();
+        QAction *viewOutputLayersAction = popupmenu->addAction( QObject::tr( "View Output Layers" ) );
+        viewOutputLayersAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionShowSelectedLayers.svg" ) ) );
+        connect( viewOutputLayersAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::showPreviousResults );
+        if ( mResults.empty() )
+          viewOutputLayersAction->setEnabled( false );
+      }
+    }
   }
 
   popupmenu->exec( event->screenPos() );

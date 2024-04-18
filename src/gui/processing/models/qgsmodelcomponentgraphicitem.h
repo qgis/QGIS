@@ -470,6 +470,15 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     void setInputs( const QVariantMap &inputs );
 
+  signals:
+
+    /**
+     * Emitted when the user opts to view previous results from this child algorithm.
+     *
+     * \since QGIS 3.38
+     */
+    void showPreviousResults();
+
   protected:
 
     QColor fillColor( State state ) const override;

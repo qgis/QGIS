@@ -39,6 +39,7 @@
 #include "qgsscreenhelper.h"
 #include "qgsmessagelog.h"
 #include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsproject.h"
 #include <QShortcut>
 #include <QKeySequence>
 #include <QFileDialog>
@@ -511,6 +512,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
+  connect( mScene, &QgsModelGraphicsScene::showPreviousResults, this, &QgsModelDesignerDialog::showPreviousResults );
 
   mView->centerOn( center );
 
@@ -1046,6 +1048,83 @@ void QgsModelDesignerDialog::run()
   } );
 
   dialog->exec();
+}
+
+void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
+{
+  const QString childDescription = mModel->childAlgorithm( childId ).description();
+
+  const QVariantMap childAlgorithmResults = mChildResults.value( childId ).toMap();
+  if ( childAlgorithmResults.isEmpty() )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
+    return;
+  }
+
+  const QgsProcessingAlgorithm *algorithm = mModel->childAlgorithm( childId ).algorithm();
+  if ( !algorithm )
+  {
+    mMessageBar->pushCritical( QString(), tr( "Results cannot be shown for an invalid model component" ) );
+    return;
+  }
+
+  const QList< const QgsProcessingParameterDefinition * > outputParams = algorithm->destinationParameterDefinitions();
+  if ( outputParams.isEmpty() )
+  {
+    // this situation should not arise in normal use, we don't show the action in this case
+    QgsDebugError( "Cannot show results for algorithms with no outputs" );
+    return;
+  }
+
+  bool foundResults = false;
+  for ( const QgsProcessingParameterDefinition *outputParam : outputParams )
+  {
+    const QVariant output = childAlgorithmResults.value( outputParam->name() );
+    if ( !output.isValid() )
+      continue;
+
+    if ( output.type() == QVariant::String )
+    {
+      if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( output.toString(), mLayerStore ) )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Loading previous result for %1: %2" ).arg( outputParam->name(), output.toString() ), 2 );
+
+        std::unique_ptr< QgsMapLayer > layer( resultLayer->clone() );
+
+        QString baseName;
+        if ( outputParams.size() > 1 )
+          baseName = tr( "%1 — %2" ).arg( childDescription, outputParam->name() );
+        else
+          baseName = childDescription;
+
+        // make name unique, so that's it's easy to see which is the most recent result.
+        // (this helps when running the model multiple times.)
+        QString name = baseName;
+        int counter = 1;
+        while ( !QgsProject::instance()->mapLayersByName( name ).empty() )
+        {
+          counter += 1;
+          name = tr( "%1 (%2)" ).arg( baseName ).arg( counter );
+        }
+
+        layer->setName( name );
+
+        QgsProject::instance()->addMapLayer( layer.release() );
+        foundResults = true;
+      }
+      else
+      {
+        // should not happen in normal operation
+        QgsDebugError( QStringLiteral( "Could not load previous result for %1: %2" ).arg( outputParam->name(), output.toString() ) );
+      }
+    }
+  }
+
+  if ( !foundResults )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
+    return;
+  }
 }
 
 void QgsModelDesignerDialog::validate()

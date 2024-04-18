@@ -190,6 +190,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void setPanelVisibility( bool hidden );
     void editHelp();
     void run();
+    void showPreviousResults( const QString &childId );
 
   private:
 
