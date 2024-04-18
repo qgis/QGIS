@@ -1033,15 +1033,15 @@ void QgsModelDesignerDialog::run()
 
   connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & )
   {
-    const QVariantMap dialogResults = dialog->results();
-    setLastRunChildAlgorithmResults( dialogResults.value( QStringLiteral( "CHILD_RESULTS" ), QVariantMap() ).toMap() );
-    setLastRunChildAlgorithmInputs( dialogResults.value( QStringLiteral( "CHILD_INPUTS" ), QVariantMap() ).toMap() );
+    QgsProcessingContext *context = dialog->processingContext();
+
+    setLastRunChildAlgorithmResults( context->modelChildResults() );
+    setLastRunChildAlgorithmInputs( context->modelChildInputs() );
 
     mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
 
     // take child output layers
     mLayerStore.temporaryLayerStore()->removeAllMapLayers();
-    QgsProcessingContext *context = dialog->processingContext();
     mLayerStore.takeResultsFrom( *context );
   } );
 

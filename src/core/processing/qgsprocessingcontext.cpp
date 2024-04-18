@@ -123,6 +123,8 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
 void QgsProcessingContext::takeResultsFrom( QgsProcessingContext &context )
 {
   setLayersToLoadOnCompletion( context.mLayersToLoadOnCompletion );
+  mModelChildInputs = context.mModelChildInputs;
+  mModelChildResults = context.mModelChildResults;
   context.mLayersToLoadOnCompletion.clear();
   tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
 }

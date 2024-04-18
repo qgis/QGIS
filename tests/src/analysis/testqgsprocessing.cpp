@@ -1309,12 +1309,23 @@ void TestQgsProcessing::context()
   context.temporaryLayerStore()->addMapLayer( vector );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( vector->id() ), vector );
 
+  context.modelChildInputs().insert( QStringLiteral( "CHILD1" ), 1 );
+  context.modelChildInputs().insert( QStringLiteral( "CHILD2" ), 2 );
+  context.modelChildResults().insert( QStringLiteral( "RESULT1" ), 1 );
+  context.modelChildResults().insert( QStringLiteral( "RESULT2" ), 2 );
+
   QgsProcessingContext context2;
   context2.copyThreadSafeSettings( context );
   QCOMPARE( context2.defaultEncoding(), context.defaultEncoding() );
   QCOMPARE( context2.invalidGeometryCheck(), context.invalidGeometryCheck() );
   QCOMPARE( context2.flags(), context.flags() );
   QCOMPARE( context2.project(), context.project() );
+  QCOMPARE( context2.modelChildInputs().count(), 2 );
+  QCOMPARE( context2.modelChildInputs().value( QStringLiteral( "CHILD1" ) ).toInt(), 1 );
+  QCOMPARE( context2.modelChildInputs().value( QStringLiteral( "CHILD2" ) ).toInt(), 2 );
+  QCOMPARE( context2.modelChildResults().count(), 2 );
+  QCOMPARE( context2.modelChildResults().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
+  QCOMPARE( context2.modelChildResults().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
   QCOMPARE( static_cast< int >( context2.logLevel() ), static_cast< int >( Qgis::ProcessingLogLevel::Verbose ) );
   // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
   QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
@@ -1391,6 +1402,15 @@ void TestQgsProcessing::context()
   QCOMPARE( context2.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+
+  QgsProcessingContext context3;
+  context3.takeResultsFrom( context );
+  QCOMPARE( context3.modelChildInputs().count(), 2 );
+  QCOMPARE( context3.modelChildInputs().value( QStringLiteral( "CHILD1" ) ).toInt(), 1 );
+  QCOMPARE( context3.modelChildInputs().value( QStringLiteral( "CHILD2" ) ).toInt(), 2 );
+  QCOMPARE( context3.modelChildResults().count(), 2 );
+  QCOMPARE( context3.modelChildResults().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
+  QCOMPARE( context3.modelChildResults().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
 
   // make sure postprocessor is correctly deleted
   ppDeleted = false;
