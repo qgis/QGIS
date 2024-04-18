@@ -179,6 +179,13 @@ Emitted whenever the selected item changes.
 If ``None``, no item is selected.
 %End
 
+    void showPreviousResults( const QString &childId );
+%Docstring
+Emitted when the user opts to view previous results from the child algorithm with matching ID.
+
+.. versionadded:: 3.38
+%End
+
   protected:
 
     virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;

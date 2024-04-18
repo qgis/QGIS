@@ -406,6 +406,15 @@ Sets the results obtained for this child algorithm for the last model execution 
 Sets the inputs used for this child algorithm for the last model execution through the dialog.
 %End
 
+  signals:
+
+    void showPreviousResults();
+%Docstring
+Emitted when the user opts to view previous results from this child algorithm.
+
+.. versionadded:: 3.38
+%End
+
   protected:
 
     virtual QColor fillColor( State state ) const;

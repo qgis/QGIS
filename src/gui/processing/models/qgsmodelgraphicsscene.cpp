@@ -138,12 +138,18 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     QgsModelChildAlgorithmGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
-    item->setResults( mChildResults.value( it.value().childId() ).toMap() );
-    item->setInputs( mChildInputs.value( it.value().childId() ).toMap() );
-    mChildAlgorithmItems.insert( it.value().childId(), item );
+
+    const QString childId = it.value().childId();
+    item->setResults( mChildResults.value( childId ).toMap() );
+    item->setInputs( mChildInputs.value( childId ).toMap() );
+    mChildAlgorithmItems.insert( childId, item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId]
+    {
+      emit showPreviousResults( childId );
+    } );
 
     addCommentItemForComponent( model, it.value(), item );
   }
