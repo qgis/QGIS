@@ -477,7 +477,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
       mFeatureCount->setText( connection.uri().param( QStringLiteral( "defaultFeatureCount" ) ) );
   }
 
-  // Original default for old connections that didn't allow to specify the default feature count
+  // Original default for old connections with no default feature count
   if ( ! defaultFeatureCountSet )
   {
     mFeatureCount->setText( QStringLiteral( "10" ) );
