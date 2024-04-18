@@ -89,6 +89,8 @@ class CORE_EXPORT QgsProcessingContext
       mLogLevel = other.mLogLevel;
       mTemporaryFolderOverride = other.mTemporaryFolderOverride;
       mMaximumThreads = other.mMaximumThreads;
+      mModelChildInputs = other.mModelChildInputs;
+      mModelChildResults = other.mModelChildResults;
     }
 
     /**
@@ -734,6 +736,44 @@ class CORE_EXPORT QgsProcessingContext
      */
     QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
 
+    /**
+     * Returns the map of child algorithm results, populated when the context is used
+     * to run a model algorithm.
+     *
+     * \see modelChildInputs()
+     * \since QGIS 3.38
+     */
+    QVariantMap modelChildResults() const { return mModelChildResults; }
+
+    /**
+     * Returns a reference to the map of child algorithm results, populated when the context is used
+     * to run a model algorithm.
+     *
+     * \note Not available in Python bindings
+     * \see modelChildInputs()
+     * \since QGIS 3.38
+     */
+    QVariantMap &modelChildResults() SIP_SKIP { return mModelChildResults; }
+
+    /**
+     * Returns the map of child algorithm inputs, populated when the context is used
+     * to run a model algorithm.
+     *
+     * \see modelChildResults()
+     * \since QGIS 3.38
+     */
+    QVariantMap modelChildInputs() const { return mModelChildInputs; }
+
+    /**
+     * Returns a reference to the map of child algorithm inputs, populated when the context is used
+     * to run a model algorithm.
+     *
+     * \note Not available in Python bindings
+     * \see modelChildResults()
+     * \since QGIS 3.38
+     */
+    QVariantMap &modelChildInputs() SIP_SKIP { return mModelChildInputs; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
@@ -767,6 +807,9 @@ class CORE_EXPORT QgsProcessingContext
 
     QString mTemporaryFolderOverride;
     int mMaximumThreads = QThread::idealThreadCount();
+
+    QVariantMap mModelChildResults;
+    QVariantMap mModelChildInputs;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
