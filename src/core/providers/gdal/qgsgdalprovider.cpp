@@ -1838,19 +1838,24 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
 
           // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
           GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
-          QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
-          if ( tagTIFFDocumentName != nullptr )
-          {
-            layerName = tagTIFFDocumentName;
-          }
 
-          QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
-          if ( tagTIFFImageDescription != nullptr )
+          if ( datasetHandle )
           {
-            layerDesc = tagTIFFImageDescription;
-          }
 
-          GDALClose( datasetHandle );
+            QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
+            if ( ! tagTIFFDocumentName.isEmpty() )
+            {
+              layerName = tagTIFFDocumentName;
+            }
+
+            QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
+            if ( ! tagTIFFImageDescription.isEmpty() )
+            {
+              layerDesc = tagTIFFImageDescription;
+            }
+
+            GDALClose( datasetHandle );
+          }
 
           // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
           sepIdx = layerName.indexOf( datasetPath + "\":" );
