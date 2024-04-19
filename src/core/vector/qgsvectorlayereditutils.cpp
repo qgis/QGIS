@@ -521,8 +521,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
           switch ( field.splitPolicy() )
           {
             case Qgis::FieldDomainSplitPolicy::DefaultValue:
-              // TODO!!!
-
+              //do nothing - default values ​​are determined
               break;
 
             case Qgis::FieldDomainSplitPolicy::Duplicate:

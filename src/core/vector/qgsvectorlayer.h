@@ -1840,6 +1840,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.30
      */
     void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+
+    /**
+     * Sets a duplicate \a policy for the field with the specified index.
+     *
+     * \since QGIS 3.38
+     */
+    void setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy );
 #else
 
     /**
@@ -1859,6 +1866,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     else
     {
       sipCpp->setFieldSplitPolicy( a0, a1 );
+    }
+    % End
+
+    /**
+     * Sets a duplicate \a policy for the field with the specified index.
+     *
+     * \throws KeyError if no field with the specified index exists
+     * \since QGIS 3.38
+     */
+    void setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy );
+
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldDuplicatePolicy( a0, a1 );
     }
     % End
 #endif
@@ -2866,6 +2893,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map that stores the split policy for attributes
     QMap< QString, Qgis::FieldDomainSplitPolicy > mAttributeSplitPolicy;
+
+    //! Map that stores the duplicate policy for attributes
+    QMap< QString, Qgis::FieldDomainDuplicatePolicy > mAttributeDuplicatePolicy;
 
     //! An internal structure to keep track of fields that have a defaultValueOnUpdate
     QSet<int> mDefaultValueOnUpdateFields;

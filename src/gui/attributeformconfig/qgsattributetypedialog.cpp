@@ -124,6 +124,12 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   connect( mSplitPolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateSplitPolicyLabel );
   updateSplitPolicyLabel();
+
+  mDuplicatePolicyComboBox->addItem( tr( "Duplicate Value" ), QVariant::fromValue( Qgis::FieldDomainDuplicatePolicy::Duplicate ) );
+  mDuplicatePolicyComboBox->addItem( tr( "Use Default Value" ), QVariant::fromValue( Qgis::FieldDomainDuplicatePolicy::DefaultValue ) );
+  mDuplicatePolicyComboBox->addItem( tr( "Remove Value" ), QVariant::fromValue( Qgis::FieldDomainDuplicatePolicy::UnsetField ) );
+  connect( mDuplicatePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateDuplicatePolicyLabel );
+  updateDuplicatePolicyLabel();
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -381,6 +387,17 @@ void QgsAttributeTypeDialog::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy
   updateSplitPolicyLabel();
 }
 
+Qgis::FieldDomainDuplicatePolicy QgsAttributeTypeDialog::duplicatePolicy() const
+{
+  return mDuplicatePolicyComboBox->currentData().value< Qgis::FieldDomainDuplicatePolicy >();
+}
+
+void QgsAttributeTypeDialog::setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy )
+{
+  mDuplicatePolicyComboBox->setCurrentIndex( mDuplicatePolicyComboBox->findData( QVariant::fromValue( policy ) ) );
+  updateSplitPolicyLabel();
+}
+
 QString QgsAttributeTypeDialog::constraintExpression() const
 {
   return constraintExpressionWidget->asExpression();
@@ -496,6 +513,26 @@ void QgsAttributeTypeDialog::updateSplitPolicyLabel()
       break;
   }
   mSplitPolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
+}
+
+void QgsAttributeTypeDialog::updateDuplicatePolicyLabel()
+{
+  QString helperText;
+  switch ( mDuplicatePolicyComboBox->currentData().value< Qgis::FieldDomainDuplicatePolicy >() )
+  {
+    case Qgis::FieldDomainDuplicatePolicy::DefaultValue:
+      helperText = tr( "Resets the field by recalculating its default value." );
+      break;
+
+    case Qgis::FieldDomainDuplicatePolicy::Duplicate:
+      helperText = tr( "Copies the current field value without change." );
+      break;
+
+    case Qgis::FieldDomainDuplicatePolicy::UnsetField:
+      helperText = tr( "Clears the field to an unset state." );
+      break;
+  }
+  mDuplicatePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
 }
 
 QStandardItem *QgsAttributeTypeDialog::currentItem() const

@@ -2243,6 +2243,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     {
       mAttributeSplitPolicy[ field.name() ] = field.splitPolicy();
     }
+    if ( !mAttributeDuplicatePolicy.contains( field.name() ) )
+    {
+      mAttributeDuplicatePolicy[ field.name() ] = field.duplicatePolicy();
+    }
   }
 
   if ( profile )
@@ -2570,6 +2574,21 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QString field = splitPolicyElem.attribute( QStringLiteral( "field" ) );
         const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainSplitPolicy::Duplicate );
         mAttributeSplitPolicy.insert( field, policy );
+      }
+    }
+
+    // The duplicate policy is - unlike alias and split policy - never defined by the data provider, so we clear the map
+    mAttributeDuplicatePolicy.clear();
+    const QDomNode duplicatePoliciesNode = layerNode.namedItem( QStringLiteral( "duplicatePolicies" ) );
+    if ( !duplicatePoliciesNode.isNull() )
+    {
+      const QDomNodeList duplicatePolicyNodeList = duplicatePoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      for ( int i = 0; i < duplicatePolicyNodeList.size(); ++i )
+      {
+        const QDomElement duplicatePolicyElem = duplicatePolicyNodeList.at( i ).toElement();
+        const QString field = duplicatePolicyElem.attribute( QStringLiteral( "field" ) );
+        const Qgis::FieldDomainDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainDuplicatePolicy::Duplicate );
+        mAttributeDuplicatePolicy.insert( field, policy );
       }
     }
 
@@ -3085,6 +3104,19 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       node.appendChild( splitPoliciesElement );
     }
 
+    //duplicate policies
+    {
+      QDomElement duplicatePoliciesElement = doc.createElement( QStringLiteral( "duplicatePolicies" ) );
+      for ( const QgsField &field : std::as_const( mFields ) )
+      {
+        QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+        duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+        duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+        duplicatePoliciesElement.appendChild( duplicatePolicyElem );
+      }
+      node.appendChild( duplicatePoliciesElement );
+    }
+
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
     for ( const QgsField &field : std::as_const( mFields ) )
@@ -3587,6 +3619,22 @@ void QgsVectorLayer::setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolic
   mEditFormConfig.setFields( mFields );
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
+
+void QgsVectorLayer::setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return;
+
+  const QString name = fields().at( index ).name();
+
+  mAttributeDuplicatePolicy.insert( name, policy );
+  mFields[ index ].setDuplicatePolicy( policy );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified(); // TODO[MD]: should have a different signal?
+}
+
 
 QSet<QString> QgsVectorLayer::excludeAttributesWms() const
 {
@@ -4461,6 +4509,15 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[ index ].setSplitPolicy( splitPolicyIt.value() );
+  }
+
+  for ( auto duplicatePolicyIt = mAttributeDuplicatePolicy.constBegin(); duplicatePolicyIt != mAttributeDuplicatePolicy.constEnd(); ++duplicatePolicyIt )
+  {
+    int index = mFields.lookupField( duplicatePolicyIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[ index ].setDuplicatePolicy( duplicatePolicyIt.value() );
   }
 
   // Update configuration flags

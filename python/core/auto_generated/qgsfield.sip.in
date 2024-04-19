@@ -468,6 +468,26 @@ be handled during a split operation.
 .. versionadded:: 3.30
 %End
 
+    Qgis::FieldDomainDuplicatePolicy duplicatePolicy() const;
+%Docstring
+Returns the field's duplicate policy, which indicates how field values should
+be handled during a duplicate operation.
+
+.. seealso:: :py:func:`setDuplicatePolicy`
+
+.. versionadded:: 3.38
+%End
+
+    void setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy );
+%Docstring
+Sets the field's duplicate ``policy``, which indicates how field values should
+be handled during a duplicate operation.
+
+.. seealso:: :py:func:`duplicatePolicy`
+
+.. versionadded:: 3.38
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );

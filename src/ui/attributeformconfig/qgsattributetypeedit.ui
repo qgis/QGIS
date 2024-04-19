@@ -149,7 +149,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsFieldExpressionWidget" name="constraintExpressionWidget" native="true">
+       <widget class="QgsFieldExpressionWidget" name="constraintExpressionWidget">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -283,9 +283,19 @@
      <property name="title">
       <string>Policies</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
-      <item row="0" column="1">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="1" colspan="3">
        <widget class="QComboBox" name="mSplitPolicyComboBox"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="mDuplicatePolicyLabel">
+        <property name="text">
+         <string>When duplicating features</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="3">
+       <widget class="QComboBox" name="mDuplicatePolicyComboBox"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mSplitPolicyLabel">
@@ -294,7 +304,17 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="5" column="0" colspan="4">
+       <widget class="QLabel" name="mDuplicatePolicyDescriptionLabel">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
        <widget class="QLabel" name="mSplitPolicyDescriptionLabel">
         <property name="text">
          <string>TextLabel</string>

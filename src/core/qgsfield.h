@@ -441,10 +441,7 @@ class CORE_EXPORT QgsField
 #endif
 
     //! Allows direct construction of QVariants from fields.
-    operator QVariant() const
-    {
-      return QVariant::fromValue( *this );
-    }
+    operator QVariant() const;
 
     /**
      * Set the editor widget setup for the field.
@@ -496,6 +493,26 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.30
      */
     void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
+
+    /**
+     * Returns the field's duplicate policy, which indicates how field values should
+     * be handled during a duplicate operation.
+     *
+     * \see setDuplicatePolicy()
+     *
+     * \since QGIS 3.38
+     */
+    Qgis::FieldDomainDuplicatePolicy duplicatePolicy() const;
+
+    /**
+     * Sets the field's duplicate \a policy, which indicates how field values should
+     * be handled during a duplicate operation.
+     *
+     * \see duplicatePolicy()
+     *
+     * \since QGIS 3.38
+     */
+    void setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
