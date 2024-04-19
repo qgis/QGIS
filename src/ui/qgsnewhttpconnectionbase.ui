@@ -158,9 +158,9 @@
           <widget class="QComboBox" name="cmbTilePixelRatio"/>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="lblDefaultFeatureCount">
+          <widget class="QLabel" name="lblFeatureCount">
            <property name="text">
-            <string>Default maximum number of GetFeatureInfo results</string>
+            <string>Maximum number of GetFeatureInfo results</string>
            </property>
           </widget>
          </item>
@@ -216,7 +216,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QSpinBox" name="sbDefaultFeatureCount">
+          <widget class="QSpinBox" name="sbFeatureCount">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Specify a default value for FEATURE_COUNT when a new layer is created from this connection. &lt;/p&gt;&lt;p&gt;FEATURE_COUNT defines the maximum number of results returned by a GetFeatureInfo request, if not specified the server default value (usually 1) will be used.&lt;/p&gt;&lt;p&gt;Set to 0 to use server default: no FEATURE_COUNT parameter will be added to the request.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -388,7 +388,7 @@
   <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>
   <tabstop>cmbDpiMode</tabstop>
   <tabstop>cmbTilePixelRatio</tabstop>
-  <tabstop>sbDefaultFeatureCount</tabstop>
+  <tabstop>sbFeatureCount</tabstop>
   <tabstop>cbxIgnoreGetMapURI</tabstop>
   <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
   <tabstop>cbxWmsIgnoreReportedLayerExtents</tabstop>

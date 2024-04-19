@@ -141,10 +141,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
       mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
 
-      sbDefaultFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( sbDefaultFeatureCount );
-      lblDefaultFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblDefaultFeatureCount );
+      sbFeatureCount->setVisible( false );
+      mGroupBox->layout()->removeWidget( sbFeatureCount );
+      lblFeatureCount->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblFeatureCount );
 
       cmbDpiMode->setVisible( false );
       mGroupBox->layout()->removeWidget( cmbDpiMode );
@@ -325,7 +325,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   Qgis::TilePixelRatio tilePixelRatio = QgsOwsConnection::settingsTilePixelRatio->value( detailsParameters );
   cmbTilePixelRatio->setCurrentIndex( cmbTilePixelRatio->findData( static_cast<int>( tilePixelRatio ) ) );
 
-  sbDefaultFeatureCount->setValue( QgsOwsConnection::settingsDefaultFeatureCount->value( detailsParameters ) );
+  sbFeatureCount->setValue( QgsOwsConnection::settingsFeatureCount->value( detailsParameters ) );
 
   const QString version = QgsOwsConnection::settingsVersion->value( detailsParameters );
   int versionIdx = WFS_VERSION_MAX; // AUTO
@@ -433,7 +433,7 @@ void QgsNewHttpConnection::accept()
   if ( mTypes & ConnectionWms )
   {
     QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( cbxIgnoreGetFeatureInfoURI->isChecked(), detailsParameters );
-    QgsOwsConnection::settingsDefaultFeatureCount->setValue( sbDefaultFeatureCount->value(), detailsParameters );
+    QgsOwsConnection::settingsFeatureCount->setValue( sbFeatureCount->value(), detailsParameters );
   }
   if ( mTypes & ConnectionWfs )
   {
