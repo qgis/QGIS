@@ -3146,6 +3146,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( ProcessingModelChildParameterSource )
 
     /**
+     * Reflects the status of a child algorithm in a Processing model.
+     *
+     * \since QGIS 3.38
+     */
+    enum class ProcessingModelChildAlgorithmExecutionStatus : int
+    {
+      NotExecuted, //!< Child has not been executed
+      Success, //!< Child was successfully executed
+      Failed, //!< Child encountered an error while executing
+    };
+    Q_ENUM( ProcessingModelChildAlgorithmExecutionStatus )
+
+    /**
      * Defines the type of input layer for a Processing TIN input.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessingParameterTinInputLayers::Type

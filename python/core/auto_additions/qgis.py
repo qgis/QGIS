@@ -3110,6 +3110,13 @@ Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__ = "Parameter value 
 Qgis.ProcessingModelChildParameterSource.__doc__ = "Processing model child parameter sources.\n\n.. versionadded:: 3.34\n\n" + '* ``ModelParameter``: ' + Qgis.ProcessingModelChildParameterSource.ModelParameter.__doc__ + '\n' + '* ``ChildOutput``: ' + Qgis.ProcessingModelChildParameterSource.ChildOutput.__doc__ + '\n' + '* ``StaticValue``: ' + Qgis.ProcessingModelChildParameterSource.StaticValue.__doc__ + '\n' + '* ``Expression``: ' + Qgis.ProcessingModelChildParameterSource.Expression.__doc__ + '\n' + '* ``ExpressionText``: ' + Qgis.ProcessingModelChildParameterSource.ExpressionText.__doc__ + '\n' + '* ``ModelOutput``: ' + Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__
 # --
 Qgis.ProcessingModelChildParameterSource.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.NotExecuted.__doc__ = "Child has not been executed"
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.Success.__doc__ = "Child was successfully executed"
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.Failed.__doc__ = "Child encountered an error while executing"
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.__doc__ = "Reflects the status of a child algorithm in a Processing model.\n\n.. versionadded:: 3.38\n\n" + '* ``NotExecuted``: ' + Qgis.ProcessingModelChildAlgorithmExecutionStatus.NotExecuted.__doc__ + '\n' + '* ``Success``: ' + Qgis.ProcessingModelChildAlgorithmExecutionStatus.Success.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ProcessingModelChildAlgorithmExecutionStatus.Failed.__doc__
+# --
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.baseClass = Qgis
 QgsProcessingParameterTinInputLayers.Type = Qgis.ProcessingTinInputLayerType
 # monkey patching scoped based enum
 QgsProcessingParameterTinInputLayers.Vertices = Qgis.ProcessingTinInputLayerType.Vertices

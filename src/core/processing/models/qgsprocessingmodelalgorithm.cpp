@@ -468,10 +468,12 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           results = childAlg->runPrepared( childParams, context, &modelFeedback );
         }
         runResult = true;
+        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
       }
       catch ( QgsProcessingException &e )
       {
         error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
+        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
       }
 
       Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
@@ -498,6 +500,11 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !ppRes.isEmpty() )
         results = ppRes;
 
+      childResults.insert( childId, results );
+      childResult.setOutputs( results );
+
+      context.modelChildResults().insert( childId, childResult );
+
       if ( !runResult )
       {
         throw QgsProcessingException( error );
@@ -515,11 +522,6 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         feedback->pushInfo( QObject::tr( "Results:" ) );
         feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( formattedOutputs.join( QLatin1String( ", " ) ) ) );
       }
-
-      childResults.insert( childId, results );
-      childResult.setOutputs( results );
-
-      context.modelChildResults().insert( childId, childResult );
 
       // look through child alg's outputs to determine whether any of these should be copied
       // to the final model outputs
