@@ -585,14 +585,34 @@ void QgsVectorLayerAndAttributeModel::loadLayersOutputAttribute( QgsLayerTreeNod
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsLayerTree::toLayer( child )->layer() );
       if ( vl )
       {
+        QModelIndex idx = node2index( child );
+
         const int attributeIndex = vl->fields().lookupField( vl->customProperty( QStringLiteral( "lastDxfOutputAttribute" ), -1 ).toString() );
         if ( attributeIndex > -1 )
         {
           mAttributeIdx[vl] = attributeIndex;
-
-          QModelIndex idx = node2index( child );
-          idx = index( idx.row(), 1, idx.parent() );
+          idx = index( idx.row(), OUTPUT_LAYER_ATTRIBUTE_COL, idx.parent() );
           emit dataChanged( idx, idx, QVector<int>() << Qt::EditRole );
+        }
+
+        if ( vl->geometryType() == Qgis::GeometryType::Point )
+        {
+          const bool allowDataDefinedBlocks = vl->customProperty( QStringLiteral( "lastAllowDataDefinedBlocks" ), false ).toBool();
+
+          if ( allowDataDefinedBlocks )  // Since False is the default value
+          {
+            mCreateDDBlockInfo[vl] = allowDataDefinedBlocks;
+            idx = index( idx.row(), ALLOW_DD_SYMBOL_BLOCKS_COL, idx.parent() );
+            emit dataChanged( idx, idx, QVector<int>() << Qt::CheckStateRole );
+          }
+
+          const int maximumNumberOfBlocks = vl->customProperty( QStringLiteral( "lastMaximumNumberOfBlocks" ), -1 ).toInt();
+          if ( maximumNumberOfBlocks > -1 )
+          {
+            mDDBlocksMaxNumberOfClasses[vl] = maximumNumberOfBlocks;
+            idx = index( idx.row(), MAXIMUM_DD_SYMBOL_BLOCKS_COL, idx.parent() );
+            emit dataChanged( idx, idx, QVector<int>() << Qt::EditRole );
+          }
         }
       }
     }
@@ -614,7 +634,7 @@ void QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute( QgsLayerTreeNod
       if ( vl )
       {
         QModelIndex idx = node2index( child );
-        const int attributeIndex = data( index( idx.row(), 1, idx.parent() ), Qt::EditRole ).toInt();
+        const int attributeIndex = data( index( idx.row(), OUTPUT_LAYER_ATTRIBUTE_COL, idx.parent() ), Qt::EditRole ).toInt();
         const QgsFields fields = vl->fields();
         if ( attributeIndex > -1 && attributeIndex < fields.count() )
         {
@@ -623,6 +643,22 @@ void QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute( QgsLayerTreeNod
         else
         {
           vl->removeCustomProperty( QStringLiteral( "lastDxfOutputAttribute" ) );
+        }
+
+        if ( vl->geometryType() == Qgis::GeometryType::Point )
+        {
+          const bool allowDataDefinedBlocks = data( index( idx.row(), ALLOW_DD_SYMBOL_BLOCKS_COL, idx.parent() ), Qt::CheckStateRole ).toBool();
+          vl->setCustomProperty( QStringLiteral( "lastAllowDataDefinedBlocks" ), allowDataDefinedBlocks );
+
+          const int maximumNumberOfBlocks = data( index( idx.row(), MAXIMUM_DD_SYMBOL_BLOCKS_COL, idx.parent() ), Qt::DisplayRole ).toInt();
+          if ( maximumNumberOfBlocks > -1 )
+          {
+            vl->setCustomProperty( QStringLiteral( "lastMaximumNumberOfBlocks" ), maximumNumberOfBlocks );
+          }
+          else
+          {
+            vl->removeCustomProperty( QStringLiteral( "lastMaximumNumberOfBlocks" ) );
+          }
         }
       }
     }
