@@ -513,6 +513,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
   connect( mScene, &QgsModelGraphicsScene::showPreviousResults, this, &QgsModelDesignerDialog::showPreviousResults );
+  connect( mScene, &QgsModelGraphicsScene::showLog, this, &QgsModelDesignerDialog::showLog );
 
   mView->centerOn( center );
 
@@ -1118,6 +1119,24 @@ void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
     mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
     return;
   }
+}
+
+void QgsModelDesignerDialog::showLog( const QString &childId )
+{
+  const QString childDescription = mModel->childAlgorithm( childId ).description();
+
+  const QgsProcessingModelChildAlgorithmResult result = mChildResults.value( childId );
+  if ( result.htmlLog().isEmpty() )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No log is available for %1" ).arg( childDescription ) );
+    return;
+  }
+
+  QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
+  m.setWindowTitle( childDescription );
+  m.setCheckBoxVisible( false );
+  m.setMessageAsHtml( result.htmlLog() );
+  m.exec();
 }
 
 void QgsModelDesignerDialog::validate()

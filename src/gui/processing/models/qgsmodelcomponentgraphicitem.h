@@ -475,6 +475,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     void showPreviousResults();
 
+    /**
+    * Emitted when the user opts to view the previous log from this child algorithm.
+    *
+    * \since QGIS 3.38
+    */
+    void showLog();
+
   protected:
 
     QColor fillColor( State state ) const override;
