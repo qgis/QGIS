@@ -45,6 +45,20 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
     QgsProcessingModelChildAlgorithmResult();
 
     /**
+     * Returns the status of executing the child algorithm.
+     *
+     * \see setExecutionStatus()
+     */
+    Qgis::ProcessingModelChildAlgorithmExecutionStatus executionStatus() const { return mExecutionStatus; }
+
+    /**
+     * Sets the \a status of executing the child algorithm.
+     *
+     * \see executionStatus()
+     */
+    void setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus status ) { mExecutionStatus = status; }
+
+    /**
      * Returns the inputs used for the child algorithm.
      *
      * \see setInputs()
@@ -74,7 +88,9 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 
     bool operator==( const QgsProcessingModelChildAlgorithmResult &other ) const
     {
-      return mInputs == other.mInputs && mOutputs == other.mOutputs;
+      return mExecutionStatus == other.mExecutionStatus
+             && mInputs == other.mInputs
+             && mOutputs == other.mOutputs;
     }
     bool operator!=( const QgsProcessingModelChildAlgorithmResult &other ) const
     {
@@ -83,6 +99,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 
   private:
 
+    Qgis::ProcessingModelChildAlgorithmExecutionStatus mExecutionStatus = Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted;
     QVariantMap mInputs;
     QVariantMap mOutputs;
 

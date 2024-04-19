@@ -317,4 +317,3 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
   }
 }
 
-

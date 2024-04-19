@@ -1791,6 +1791,13 @@ The development version
       ModelOutput,
     };
 
+    enum class ProcessingModelChildAlgorithmExecutionStatus
+    {
+      NotExecuted,
+      Success,
+      Failed,
+    };
+
     enum class ProcessingTinInputLayerType
       {
       Vertices,

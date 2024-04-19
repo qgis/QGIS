@@ -27,6 +27,20 @@ Encapsulates the results of running a child algorithm within a model
 
     QgsProcessingModelChildAlgorithmResult();
 
+    Qgis::ProcessingModelChildAlgorithmExecutionStatus executionStatus() const;
+%Docstring
+Returns the status of executing the child algorithm.
+
+.. seealso:: :py:func:`setExecutionStatus`
+%End
+
+    void setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus status );
+%Docstring
+Sets the ``status`` of executing the child algorithm.
+
+.. seealso:: :py:func:`executionStatus`
+%End
+
     QVariantMap inputs() const;
 %Docstring
 Returns the inputs used for the child algorithm.
