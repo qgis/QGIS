@@ -202,6 +202,13 @@ QString QgsMapLayer::id() const
   return mID;
 }
 
+void QgsMapLayer::setId( const QString &id )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mID = id;
+}
+
 void QgsMapLayer::setName( const QString &name )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
