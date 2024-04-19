@@ -614,6 +614,9 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "crs" ), crs );
   QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
 
+  // Remove in case the default value from the connection settings
+  // is being overridden here
+  uri.removeParam( QStringLiteral( "featureCount" ) );
   if ( mFeatureCount->text().toInt() > 0 )
   {
     uri.setParam( QStringLiteral( "featureCount" ), mFeatureCount->text() );
