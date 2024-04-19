@@ -59,7 +59,7 @@ class TestQgsOwsConnection(QgisTestCase):
         self.assertEqual(uri.param('dpiMode'), '4')
         self.assertEqual(uri.param('IgnoreAxisOrientation'), '1')
         self.assertEqual(uri.param('InvertAxisOrientation'), '1')
-        self.assertEqual(uri.param('defaultFeatureCount'), '9')
+        self.assertEqual(uri.param('featureCount'), '9')
 
     def testWmsSettings(self):
         uri = QgsDataSourceUri()
