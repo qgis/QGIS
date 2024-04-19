@@ -140,7 +140,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     item->setPos( it.value().position().x(), it.value().position().y() );
 
     const QString childId = it.value().childId();
-    item->setResults( mChildResults.value( childId ) );
+    item->setResults( mLastResult.childResults().value( childId ) );
     mChildAlgorithmItems.insert( childId, item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -173,7 +173,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
         QList< QgsProcessingModelChildParameterSource > sources;
         if ( it.value().parameterSources().contains( parameter->name() ) )
           sources = it.value().parameterSources()[parameter->name()];
-        for ( const QgsProcessingModelChildParameterSource &source : sources )
+        for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
         {
           const QList< LinkSource > sourceItems = linkSourcesForParameterValue( model, QVariant::fromValue( source ), it.value().childId(), context );
           for ( const LinkSource &link : sourceItems )
@@ -363,11 +363,12 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
   emit selectedItemChanged( item );
 }
 
-void QgsModelGraphicsScene::setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results )
+void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &result )
 {
-  mChildResults = results;
+  mLastResult = result;
 
-  for ( auto it = mChildResults.constBegin(); it != mChildResults.constEnd(); ++it )
+  const auto childResults = mLastResult.childResults();
+  for ( auto it = childResults.constBegin(); it != childResults.constEnd(); ++it )
   {
     if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
     {

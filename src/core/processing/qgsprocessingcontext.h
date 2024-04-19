@@ -89,7 +89,7 @@ class CORE_EXPORT QgsProcessingContext
       mLogLevel = other.mLogLevel;
       mTemporaryFolderOverride = other.mTemporaryFolderOverride;
       mMaximumThreads = other.mMaximumThreads;
-      mModelChildResults = other.mModelChildResults;
+      mModelResult = other.mModelResult;
     }
 
     /**
@@ -736,27 +736,21 @@ class CORE_EXPORT QgsProcessingContext
     QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
 
     /**
-     * Returns the map of child algorithm results, populated when the context is used
-     * to run a model algorithm.
+     * Returns the model results, populated when the context is used to run a model algorithm.
      *
-     * Map keys refer to the child algorithm IDs.
-     *
-     * \see modelChildInputs()
      * \since QGIS 3.38
      */
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > modelChildResults() const { return mModelChildResults; }
+    QgsProcessingModelResult modelResult() const { return mModelResult; }
 
     /**
-     * Returns a reference to the map of child algorithm results, populated when the context is used
+     * Returns a reference to the model results, populated when the context is used
      * to run a model algorithm.
      *
-     * Map keys refer to the child algorithm IDs.
-     *
      * \note Not available in Python bindings
-     * \see modelChildInputs()
+
      * \since QGIS 3.38
      */
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > &modelChildResults() SIP_SKIP { return mModelChildResults; }
+    QgsProcessingModelResult &modelResult() SIP_SKIP { return mModelResult; }
 
   private:
 
@@ -792,7 +786,7 @@ class CORE_EXPORT QgsProcessingContext
     QString mTemporaryFolderOverride;
     int mMaximumThreads = QThread::idealThreadCount();
 
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > mModelChildResults;
+    QgsProcessingModelResult mModelResult;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

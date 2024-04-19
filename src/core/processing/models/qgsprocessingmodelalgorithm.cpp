@@ -631,14 +631,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         const QString formattedRunTime = QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( QObject::tr( "Failed after %1 s." ).arg( childTime.elapsed() / 1000.0 ).toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) );
 
         childResult.setHtmlLog( thisAlgorithmHtmlLog + formattedException + formattedRunTime );
-        context.modelChildResults().insert( childId, childResult );
+        context.modelResult().childResults().insert( childId, childResult );
 
         throw QgsProcessingException( error );
       }
       else
       {
         childResult.setHtmlLog( thisAlgorithmHtmlLog );
-        context.modelChildResults().insert( childId, childResult );
+        context.modelResult().childResults().insert( childId, childResult );
       }
     }
 

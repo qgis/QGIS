@@ -85,6 +85,34 @@ Sets the HTML formatted contents of logged messages which occurred while running
 
 };
 
+class QgsProcessingModelResult
+{
+%Docstring(signature="appended")
+Encapsulates the results of running a Processing model
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodelresult.h"
+%End
+  public:
+
+    QgsProcessingModelResult();
+
+
+    QMap< QString, QgsProcessingModelChildAlgorithmResult > childResults() const;
+%Docstring
+Returns the map of child algorithm results.
+
+Map keys refer to the child algorithm IDs.
+
+.. versionadded:: 3.38
+%End
+
+
+};
+
 
 
 
