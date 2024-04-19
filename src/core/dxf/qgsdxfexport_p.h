@@ -33,7 +33,7 @@
  */
 struct DxfLayerJob
 {
-    DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute )
+    DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute, const QString &layerDerivedName )
       : renderContext( renderContext )
       , styleOverride( vl )
       , featureSource( vl )
@@ -41,8 +41,7 @@ struct DxfLayerJob
       , crs( vl->crs() )
       , layerName( vl->name() )
       , splitLayerAttribute( splitLayerAttribute )
-      , layerTitle( !vl->metadata().title().isEmpty() ? vl->metadata().title()
-                    : vl->serverProperties()->title().isEmpty() ? vl->name() : vl->serverProperties()->title() )
+      , layerDerivedName( layerDerivedName )
     {
       if ( !layerStyleOverride.isNull() )
       {
@@ -106,7 +105,7 @@ struct DxfLayerJob
     QgsLabelSinkProvider *labelProvider = nullptr;
     QgsRuleBasedLabelSinkProvider *ruleBasedLabelProvider = nullptr;
     QString splitLayerAttribute;
-    QString layerTitle;
+    QString layerDerivedName;  // Obtained from overridden name, title or layer name
     QSet<QString> attributes;
 
   private:

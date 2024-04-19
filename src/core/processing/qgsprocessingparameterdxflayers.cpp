@@ -85,7 +85,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
       {
         const QVariantMap layerMap = variantLayer.toMap();
 
-        if ( !layerMap.contains( QStringLiteral( "layer" ) ) && !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
+        if ( !layerMap.contains( QStringLiteral( "layer" ) ) && !layerMap.contains( QStringLiteral( "attributeIndex" ) ) && !layerMap.contains( QStringLiteral( "overriddenLayerName" ) ) )
           return false;
 
         if ( !context )
@@ -144,8 +144,11 @@ QString QgsProcessingParameterDxfLayers::valueAsPythonString( const QVariant &va
   {
     QStringList layerDefParts;
     layerDefParts << QStringLiteral( "'layer': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer.layer()->source() ) );
+
     if ( layer.layerOutputAttributeIndex() >= -1 )
       layerDefParts << QStringLiteral( "'attributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.layerOutputAttributeIndex() );
+
+    layerDefParts << QStringLiteral( "'overriddenLayerName': " ) + QgsProcessingUtils::stringToPythonLiteral( layer.overriddenName() );
 
     const QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
     parts << layerDef;
@@ -239,7 +242,11 @@ QgsDxfExport::DxfLayer QgsProcessingParameterDxfLayers::variantMapAsLayer( const
     // bad
   }
 
-  QgsDxfExport::DxfLayer dxfLayer( inputLayer, layerVariantMap[ QStringLiteral( "attributeIndex" ) ].toInt() );
+  QgsDxfExport::DxfLayer dxfLayer( inputLayer,
+                                   layerVariantMap[ QStringLiteral( "attributeIndex" ) ].toInt(),
+                                   false,
+                                   -1,
+                                   layerVariantMap[ QStringLiteral( "overriddenLayerName" ) ].toString() );
   return dxfLayer;
 }
 
@@ -251,5 +258,6 @@ QVariantMap QgsProcessingParameterDxfLayers::layerAsVariantMap( const QgsDxfExpo
 
   vm[ QStringLiteral( "layer" )] = layer.layer()->id();
   vm[ QStringLiteral( "attributeIndex" ) ] = layer.layerOutputAttributeIndex();
+  vm[ QStringLiteral( "overriddenLayerName" ) ] = layer.overriddenName();
   return vm;
 }

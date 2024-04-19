@@ -171,6 +171,9 @@
      </item>
      <item row="0" column="0">
       <widget class="QCheckBox" name="mLayerTitleAsName">
+       <property name="toolTip">
+        <string>If no attribute is chosen and layer name is not being overridden, prefer layer title (set in layer properties) to layer name.</string>
+       </property>
        <property name="text">
         <string>Use layer title as name if set</string>
        </property>
