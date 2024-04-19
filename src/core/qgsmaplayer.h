@@ -75,6 +75,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString id READ id WRITE setId NOTIFY idChanged )
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
@@ -260,6 +261,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the layer's unique ID, which is used to access this layer from QgsProject.
      *
      * \see setId()
+     * \see idChanged()
      */
     QString id() const;
 
@@ -272,6 +274,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \warning This method should not be called on layers which already belong to a QgsProject or QgsMapLayerStore.
      *
      * \see id()
+     * \see idChanged()
      * \since QGIS 3.38
      */
     void setId( const QString &id );
@@ -1809,8 +1812,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void statusChanged( const QString &status );
 
     /**
-     * Emitted when the name has been changed
+     * Emitted when the layer's ID has been changed.
      *
+     * \see id()
+     * \see setId()
+     *
+     * \since QGIS 3.38
+     */
+    void idChanged( const QString &id );
+
+    /**
+     * Emitted when the name has been changed
      */
     void nameChanged();
 
