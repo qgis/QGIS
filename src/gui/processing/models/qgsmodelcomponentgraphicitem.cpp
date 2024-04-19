@@ -901,9 +901,32 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
         QAction *viewOutputLayersAction = popupmenu->addAction( QObject::tr( "View Output Layers" ) );
         viewOutputLayersAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionShowSelectedLayers.svg" ) ) );
         connect( viewOutputLayersAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::showPreviousResults );
-        if ( mResults.outputs().empty() )
-          viewOutputLayersAction->setEnabled( false );
+        // enable this action only when the child succeeded
+        switch ( mResults.executionStatus() )
+        {
+          case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
+          case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed:
+            viewOutputLayersAction->setEnabled( false );
+            break;
+
+          case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success:
+            break;
+        }
       }
+    }
+
+    QAction *viewLogAction = popupmenu->addAction( QObject::tr( "View Log…" ) );
+    connect( viewLogAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::showLog );
+    // enable this action even when the child failed
+    switch ( mResults.executionStatus() )
+    {
+      case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
+        viewLogAction->setEnabled( false );
+        break;
+
+      case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success:
+      case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed:
+        break;
     }
   }
 

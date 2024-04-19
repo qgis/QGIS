@@ -149,6 +149,10 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     {
       emit showPreviousResults( childId );
     } );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::showLog, this, [this, childId]
+    {
+      emit showLog( childId );
+    } );
 
     addCommentItemForComponent( model, it.value(), item );
   }

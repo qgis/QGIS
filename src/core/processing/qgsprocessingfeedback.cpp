@@ -33,8 +33,10 @@ QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
 
 }
 
-void QgsProcessingFeedback::setProgressText( const QString & )
+void QgsProcessingFeedback::setProgressText( const QString &text )
 {
+  mHtmlLog.append( text.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mTextLog.append( text + '\n' );
 }
 
 void QgsProcessingFeedback::log( const QString &htmlMessage, const QString &textMessage )

@@ -186,6 +186,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void editHelp();
     void run();
     void showPreviousResults( const QString &childId );
+    void showLog( const QString &childId );
 
   private:
 

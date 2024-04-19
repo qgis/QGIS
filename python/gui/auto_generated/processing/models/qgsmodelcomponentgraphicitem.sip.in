@@ -410,6 +410,13 @@ Emitted when the user opts to view previous results from this child algorithm.
 .. versionadded:: 3.38
 %End
 
+    void showLog();
+%Docstring
+Emitted when the user opts to view the previous log from this child algorithm.
+
+.. versionadded:: 3.38
+%End
+
   protected:
 
     virtual QColor fillColor( State state ) const;
