@@ -551,6 +551,7 @@
 %Include auto_generated/processing/models/qgsprocessingmodelgroupbox.sip
 %Include auto_generated/processing/models/qgsprocessingmodeloutput.sip
 %Include auto_generated/processing/models/qgsprocessingmodelparameter.sip
+%Include auto_generated/processing/models/qgsprocessingmodelresult.sip
 %Include auto_generated/processing/qgsprocessing.sip
 %Include auto_generated/processing/qgsprocessingalgorithm.sip
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
