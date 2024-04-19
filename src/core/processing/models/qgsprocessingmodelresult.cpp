@@ -23,3 +23,9 @@
 
 QgsProcessingModelChildAlgorithmResult::QgsProcessingModelChildAlgorithmResult() = default;
 
+
+//
+// QgsProcessingModelResult
+//
+
+QgsProcessingModelResult::QgsProcessingModelResult() = default;

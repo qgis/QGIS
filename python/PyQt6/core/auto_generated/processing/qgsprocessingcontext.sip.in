@@ -657,14 +657,9 @@ Returns list of the equivalent qgis_process arguments representing the settings 
 .. versionadded:: 3.24
 %End
 
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > modelChildResults() const;
+    QgsProcessingModelResult modelResult() const;
 %Docstring
-Returns the map of child algorithm results, populated when the context is used
-to run a model algorithm.
-
-Map keys refer to the child algorithm IDs.
-
-.. seealso:: :py:func:`modelChildInputs`
+Returns the model results, populated when the context is used to run a model algorithm.
 
 .. versionadded:: 3.38
 %End

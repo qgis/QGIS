@@ -22,7 +22,6 @@
 #include "qgis.h"
 
 /**
- * \class QgsProcessingModelChildResult
  * \ingroup core
  * \brief Encapsulates the results of running a child algorithm within a model
  *
@@ -108,6 +107,45 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
     QVariantMap mInputs;
     QVariantMap mOutputs;
     QString mHtmlLog;
+
+};
+
+/**
+ * \ingroup core
+ * \brief Encapsulates the results of running a Processing model
+ *
+ * \since QGIS 3.38
+*/
+class CORE_EXPORT QgsProcessingModelResult
+{
+  public:
+
+    QgsProcessingModelResult();
+
+
+    /**
+     * Returns the map of child algorithm results.
+     *
+     * Map keys refer to the child algorithm IDs.
+     *
+     * \since QGIS 3.38
+     */
+    QMap< QString, QgsProcessingModelChildAlgorithmResult > childResults() const { return mChildResults; }
+
+    /**
+     * Returns a reference to the map of child algorithm results.
+     *
+     * Map keys refer to the child algorithm IDs.
+     *
+     * \note Not available in Python bindings
+
+     * \since QGIS 3.38
+     */
+    QMap< QString, QgsProcessingModelChildAlgorithmResult > &childResults() SIP_SKIP { return mChildResults; }
+
+  private:
+
+    QMap< QString, QgsProcessingModelChildAlgorithmResult > mChildResults;
 
 };
 

@@ -1317,8 +1317,8 @@ void TestQgsProcessing::context()
   res2.setInputs( {{ QStringLiteral( "INPUT2" ), 2 }} );
   res2.setOutputs( {{ QStringLiteral( "RESULT2" ), 2 }} );
 
-  context.modelChildResults().insert( QStringLiteral( "CHILD1" ), res1 );
-  context.modelChildResults().insert( QStringLiteral( "CHILD2" ), res2 );
+  context.modelResult().childResults().insert( QStringLiteral( "CHILD1" ), res1 );
+  context.modelResult().childResults().insert( QStringLiteral( "CHILD2" ), res2 );
 
   QgsProcessingContext context2;
   context2.copyThreadSafeSettings( context );
@@ -1326,11 +1326,11 @@ void TestQgsProcessing::context()
   QCOMPARE( context2.invalidGeometryCheck(), context.invalidGeometryCheck() );
   QCOMPARE( context2.flags(), context.flags() );
   QCOMPARE( context2.project(), context.project() );
-  QCOMPARE( context2.modelChildResults().count(), 2 );
-  QCOMPARE( context2.modelChildResults().value( QStringLiteral( "CHILD1" ) ).inputs().value( QStringLiteral( "INPUT1" ) ).toInt(), 1 );
-  QCOMPARE( context2.modelChildResults().value( QStringLiteral( "CHILD2" ) ).inputs().value( QStringLiteral( "INPUT2" ) ).toInt(), 2 );
-  QCOMPARE( context2.modelChildResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
-  QCOMPARE( context2.modelChildResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
+  QCOMPARE( context2.modelResult().childResults().count(), 2 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).inputs().value( QStringLiteral( "INPUT1" ) ).toInt(), 1 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).inputs().value( QStringLiteral( "INPUT2" ) ).toInt(), 2 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
   QCOMPARE( static_cast< int >( context2.logLevel() ), static_cast< int >( Qgis::ProcessingLogLevel::Verbose ) );
   // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
   QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
@@ -1410,11 +1410,11 @@ void TestQgsProcessing::context()
 
   QgsProcessingContext context3;
   context3.takeResultsFrom( context );
-  QCOMPARE( context3.modelChildResults().count(), 2 );
-  QCOMPARE( context3.modelChildResults().value( QStringLiteral( "CHILD1" ) ).inputs().value( QStringLiteral( "INPUT1" ) ).toInt(), 1 );
-  QCOMPARE( context3.modelChildResults().value( QStringLiteral( "CHILD2" ) ).inputs().value( QStringLiteral( "INPUT2" ) ).toInt(), 2 );
-  QCOMPARE( context3.modelChildResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
-  QCOMPARE( context3.modelChildResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
+  QCOMPARE( context3.modelResult().childResults().count(), 2 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).inputs().value( QStringLiteral( "INPUT1" ) ).toInt(), 1 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).inputs().value( QStringLiteral( "INPUT2" ) ).toInt(), 2 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
 
   // make sure postprocessor is correctly deleted
   ppDeleted = false;

@@ -493,7 +493,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
-  mScene->setLastRunChildAlgorithmResults( mChildResults );
+  mScene->setLastRunResult( mLastResult );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
 
@@ -596,11 +596,11 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
   }
 }
 
-void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QMap< QString, QgsProcessingModelChildAlgorithmResult > &results )
+void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &result )
 {
-  mChildResults = results;
+  mLastResult = result;
   if ( mScene )
-    mScene->setLastRunChildAlgorithmResults( mChildResults );
+    mScene->setLastRunResult( mLastResult );
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -1031,7 +1031,7 @@ void QgsModelDesignerDialog::run()
   {
     QgsProcessingContext *context = dialog->processingContext();
 
-    setLastRunChildAlgorithmResults( context->modelChildResults() );
+    setLastRunResult( context->modelResult() );
 
     mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
 
@@ -1047,7 +1047,7 @@ void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
-  const QgsProcessingModelChildAlgorithmResult result = mChildResults.value( childId );
+  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
   const QVariantMap childAlgorithmOutputs = result.outputs();
   if ( childAlgorithmOutputs.isEmpty() )
   {
@@ -1125,7 +1125,7 @@ void QgsModelDesignerDialog::showLog( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
-  const QgsProcessingModelChildAlgorithmResult result = mChildResults.value( childId );
+  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
   if ( result.htmlLog().isEmpty() )
   {
     mMessageBar->pushWarning( QString(), tr( "No log is available for %1" ).arg( childDescription ) );

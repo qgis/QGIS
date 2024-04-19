@@ -2358,16 +2358,16 @@ void TestQgsProcessingModelAlgorithm::modelWithChildException()
   QVERIFY( !DummyRaiseExceptionAlgorithm::postProcessAlgorithmCalled );
 
   // results and inputs from buffer child should be available through the context
-  QCOMPARE( context.modelChildResults().value( "buffer" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
-  QCOMPARE( context.modelChildResults().value( "buffer" ).inputs().value( "INPUT" ).toString(), QStringLiteral( "v1" ) );
-  QCOMPARE( context.modelChildResults().value( "buffer" ).inputs().value( "OUTPUT" ).toString(), QStringLiteral( "memory:Buffered" ) );
-  QCOMPARE( context.modelChildResults().value( "buffer" ).htmlLog().left( 50 ), QStringLiteral( "<span style=\"color:#777\">Prepare algorithm: buffer" ) );
-  QCOMPARE( context.modelChildResults().value( "buffer" ).htmlLog().right( 21 ), QStringLiteral( "s (1 output(s)).<br/>" ) );
-  QVERIFY( context.temporaryLayerStore()->mapLayer( context.modelChildResults().value( "buffer" ).outputs().value( "OUTPUT" ).toString() ) );
+  QCOMPARE( context.modelResult().childResults().value( "buffer" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+  QCOMPARE( context.modelResult().childResults().value( "buffer" ).inputs().value( "INPUT" ).toString(), QStringLiteral( "v1" ) );
+  QCOMPARE( context.modelResult().childResults().value( "buffer" ).inputs().value( "OUTPUT" ).toString(), QStringLiteral( "memory:Buffered" ) );
+  QCOMPARE( context.modelResult().childResults().value( "buffer" ).htmlLog().left( 50 ), QStringLiteral( "<span style=\"color:#777\">Prepare algorithm: buffer" ) );
+  QCOMPARE( context.modelResult().childResults().value( "buffer" ).htmlLog().right( 21 ), QStringLiteral( "s (1 output(s)).<br/>" ) );
+  QVERIFY( context.temporaryLayerStore()->mapLayer( context.modelResult().childResults().value( "buffer" ).outputs().value( "OUTPUT" ).toString() ) );
 
-  QCOMPARE( context.modelChildResults().value( "raise" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
-  QCOMPARE( context.modelChildResults().value( "raise" ).htmlLog().left( 49 ), QStringLiteral( "<span style=\"color:#777\">Prepare algorithm: raise" ) );
-  QVERIFY( context.modelChildResults().value( "raise" ).htmlLog().contains( QStringLiteral( "Error encountered while running my second step: something bad happened" ) ) );
+  QCOMPARE( context.modelResult().childResults().value( "raise" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
+  QCOMPARE( context.modelResult().childResults().value( "raise" ).htmlLog().left( 49 ), QStringLiteral( "<span style=\"color:#777\">Prepare algorithm: raise" ) );
+  QVERIFY( context.modelResult().childResults().value( "raise" ).htmlLog().contains( QStringLiteral( "Error encountered while running my second step: something bad happened" ) ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()
