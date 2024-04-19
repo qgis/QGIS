@@ -326,7 +326,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
-  int previousHtmlLogLength = 0;
+  int previousHtmlLogLength = feedback->htmlLog().length();
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
