@@ -189,6 +189,8 @@ Returns the extension of a Property.
 Returns the layer's unique ID, which is used to access this layer from :py:class:`QgsProject`.
 
 .. seealso:: :py:func:`setId`
+
+.. seealso:: :py:func:`idChanged`
 %End
 
     void setId( const QString &id );
@@ -206,6 +208,8 @@ Sets the layer's ``id``.
 
 
 .. seealso:: :py:func:`id`
+
+.. seealso:: :py:func:`idChanged`
 
 .. versionadded:: 3.38
 %End
@@ -1796,6 +1800,17 @@ just before the references of this layer are resolved.
     void statusChanged( const QString &status );
 %Docstring
 Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
+%End
+
+    void idChanged( const QString &id );
+%Docstring
+Emitted when the layer's ID has been changed.
+
+.. seealso:: :py:func:`id`
+
+.. seealso:: :py:func:`setId`
+
+.. versionadded:: 3.38
 %End
 
     void nameChanged();

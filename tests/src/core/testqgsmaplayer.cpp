@@ -117,8 +117,15 @@ void TestQgsMapLayer::isValid()
 void TestQgsMapLayer::testId()
 {
   std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QSignalSpy spy( layer.get(), &QgsMapLayer::idChanged );
   layer->setId( QStringLiteral( "my forced id" ) );
   QCOMPARE( layer->id(), QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "my forced id " ) );
+
+  // same id, should not emit signal
+  layer->setId( QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy.count(), 1 );
 }
 
 void TestQgsMapLayer::formatName()
