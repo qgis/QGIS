@@ -38,7 +38,7 @@ class TestQgsOwsConnection(QgisTestCase):
         settings.setValue(key + 'dpi-mode', 4)
         settings.setValue(key + 'ignore-axis-orientation', True)
         settings.setValue(key + 'invert-axis-orientation', True)
-        settings.setValue(key + 'default-feature-count', 9)
+        settings.setValue(key + 'feature-count', 9)
 
         key = '/connections/ows/items/wfs/connections/items/test/'
         settings.setValue(key + 'url', 'ccc.ddd.com')
@@ -72,7 +72,7 @@ class TestQgsOwsConnection(QgisTestCase):
         self.assertEqual(uri.param('dpiMode'), '4')
         self.assertEqual(uri.param('IgnoreAxisOrientation'), '1')
         self.assertEqual(uri.param('InvertAxisOrientation'), '1')
-        self.assertEqual(uri.param('defaultFeatureCount'), '9')
+        self.assertEqual(uri.param('featureCount'), '9')
 
     def testWfsConnection(self):
         c = QgsOwsConnection('WFS', 'test')
