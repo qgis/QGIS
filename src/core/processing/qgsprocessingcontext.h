@@ -86,9 +86,24 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
      */
     void setOutputs( const QVariantMap &outputs ) { mOutputs = outputs; }
 
+    /**
+     * Returns the HTML formatted contents of logged messages which occurred while running the child.
+     *
+     * \see setHtmlLog()
+     */
+    QString htmlLog() const { return mHtmlLog; }
+
+    /**
+     * Sets the HTML formatted contents of logged messages which occurred while running the child.
+     *
+     * \see htmlLog()
+     */
+    void setHtmlLog( const QString &log ) { mHtmlLog = log; }
+
     bool operator==( const QgsProcessingModelChildAlgorithmResult &other ) const
     {
       return mExecutionStatus == other.mExecutionStatus
+             && mHtmlLog == other.mHtmlLog
              && mInputs == other.mInputs
              && mOutputs == other.mOutputs;
     }
@@ -102,6 +117,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
     Qgis::ProcessingModelChildAlgorithmExecutionStatus mExecutionStatus = Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted;
     QVariantMap mInputs;
     QVariantMap mOutputs;
+    QString mHtmlLog;
 
 };
 

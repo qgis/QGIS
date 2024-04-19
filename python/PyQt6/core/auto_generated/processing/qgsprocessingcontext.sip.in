@@ -69,6 +69,20 @@ Sets the ``outputs`` used for the child algorithm.
 .. seealso:: :py:func:`outputs`
 %End
 
+    QString htmlLog() const;
+%Docstring
+Returns the HTML formatted contents of logged messages which occurred while running the child.
+
+.. seealso:: :py:func:`setHtmlLog`
+%End
+
+    void setHtmlLog( const QString &log );
+%Docstring
+Sets the HTML formatted contents of logged messages which occurred while running the child.
+
+.. seealso:: :py:func:`htmlLog`
+%End
+
     bool operator==( const QgsProcessingModelChildAlgorithmResult &other ) const;
     bool operator!=( const QgsProcessingModelChildAlgorithmResult &other ) const;
 
