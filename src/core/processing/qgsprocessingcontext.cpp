@@ -22,13 +22,6 @@
 #include "qgsprocessing.h"
 
 //
-// QgsProcessingModelChildResult
-//
-
-QgsProcessingModelChildAlgorithmResult::QgsProcessingModelChildAlgorithmResult() = default;
-
-
-//
 // QgsProcessingContext
 //
 
