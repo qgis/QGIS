@@ -49,6 +49,7 @@ class TestQgsMapLayer : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void isValid();
+    void testId();
     void formatName();
 
     void setBlendMode();
@@ -111,6 +112,13 @@ void TestQgsMapLayer::cleanupTestCase()
 void TestQgsMapLayer::isValid()
 {
   QVERIFY( mpLayer->isValid() );
+}
+
+void TestQgsMapLayer::testId()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  layer->setId( QStringLiteral( "my forced id" ) );
+  QCOMPARE( layer->id(), QStringLiteral( "my forced id" ) );
 }
 
 void TestQgsMapLayer::formatName()

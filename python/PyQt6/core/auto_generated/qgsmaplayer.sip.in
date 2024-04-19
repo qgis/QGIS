@@ -187,6 +187,27 @@ Returns the extension of a Property.
     QString id() const;
 %Docstring
 Returns the layer's unique ID, which is used to access this layer from :py:class:`QgsProject`.
+
+.. seealso:: :py:func:`setId`
+%End
+
+    void setId( const QString &id );
+%Docstring
+Sets the layer's ``id``.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
+   Generally this method should not be called, and the auto generated ID should be used instead.
+
+.. warning::
+
+   This method should not be called on layers which already belong to a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`.
+
+
+.. seealso:: :py:func:`id`
+
+.. versionadded:: 3.38
 %End
 
     void setName( const QString &name );

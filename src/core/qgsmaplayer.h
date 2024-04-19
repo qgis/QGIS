@@ -256,8 +256,25 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QString extensionPropertyType( PropertyType type );
 
-    //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
+    /**
+     * Returns the layer's unique ID, which is used to access this layer from QgsProject.
+     *
+     * \see setId()
+     */
     QString id() const;
+
+    /**
+     * Sets the layer's \a id.
+     *
+     * \warning It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
+     * Generally this method should not be called, and the auto generated ID should be used instead.
+     *
+     * \warning This method should not be called on layers which already belong to a QgsProject or QgsMapLayerStore.
+     *
+     * \see id()
+     * \since QGIS 3.38
+     */
+    void setId( const QString &id );
 
     /**
      * Set the display \a name of the layer.
