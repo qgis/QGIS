@@ -202,14 +202,21 @@ QString QgsMapLayer::id() const
   return mID;
 }
 
-void QgsMapLayer::setId( const QString &id )
+bool QgsMapLayer::setId( const QString &id )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( qobject_cast< QgsMapLayerStore * >( parent() ) )
+  {
+    // layer is already registered, cannot change id
+    return false;
+  }
+
   if ( id == mID )
-    return;
+    return false;
 
   mID = id;
   emit idChanged( id );
+  return true;
 }
 
 void QgsMapLayer::setName( const QString &name )
