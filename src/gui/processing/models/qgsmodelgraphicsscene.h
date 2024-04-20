@@ -192,14 +192,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      *
      * \since QGIS 3.38
      */
-    void showPreviousResults( const QString &childId );
+    void showChildAlgorithmOutputs( const QString &childId );
 
     /**
     * Emitted when the user opts to view the previous log from the child algorithm with matching ID.
     *
     * \since QGIS 3.38
     */
-    void showLog( const QString &childId );
+    void showChildAlgorithmLog( const QString &childId );
 
   protected:
 

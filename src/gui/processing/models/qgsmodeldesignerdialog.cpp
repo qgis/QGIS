@@ -512,8 +512,8 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
-  connect( mScene, &QgsModelGraphicsScene::showPreviousResults, this, &QgsModelDesignerDialog::showPreviousResults );
-  connect( mScene, &QgsModelGraphicsScene::showLog, this, &QgsModelDesignerDialog::showLog );
+  connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmOutputs, this, &QgsModelDesignerDialog::showChildAlgorithmOutputs );
+  connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmLog, this, &QgsModelDesignerDialog::showChildAlgorithmLog );
 
   mView->centerOn( center );
 
@@ -1043,7 +1043,7 @@ void QgsModelDesignerDialog::run()
   dialog->exec();
 }
 
-void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
+void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
@@ -1121,7 +1121,7 @@ void QgsModelDesignerDialog::showPreviousResults( const QString &childId )
   }
 }
 
-void QgsModelDesignerDialog::showLog( const QString &childId )
+void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
