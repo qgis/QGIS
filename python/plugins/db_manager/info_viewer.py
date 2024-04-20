@@ -158,5 +158,5 @@ class InfoViewer(QTextBrowser):
 </html>
 """ % html
 
-        print(">>>>>\n", html, "\n<<<<<<")
+        # print(">>>>>\n", html, "\n<<<<<<")
         return QTextBrowser.setHtml(self, html)
