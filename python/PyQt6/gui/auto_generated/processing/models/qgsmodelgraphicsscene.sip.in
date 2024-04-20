@@ -174,14 +174,14 @@ Emitted whenever the selected item changes.
 If ``None``, no item is selected.
 %End
 
-    void showPreviousResults( const QString &childId );
+    void showChildAlgorithmOutputs( const QString &childId );
 %Docstring
 Emitted when the user opts to view previous results from the child algorithm with matching ID.
 
 .. versionadded:: 3.38
 %End
 
-    void showLog( const QString &childId );
+    void showChildAlgorithmLog( const QString &childId );
 %Docstring
 Emitted when the user opts to view the previous log from the child algorithm with matching ID.
 
