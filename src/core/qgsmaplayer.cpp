@@ -598,7 +598,12 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     mne = mnl.toElement();
     if ( ! mne.isNull() && mne.text().length() > 10 ) // should be at least 17 (yyyyMMddhhmmsszzz)
     {
-      mID = mne.text();
+      const QString newId = mne.text();
+      if ( newId != mID )
+      {
+        mID = mne.text();
+        emit idChanged( mID );
+      }
     }
   }
 
