@@ -1479,6 +1479,7 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
 
   QgsLegendSettings settings;
 
+  _setStandardTestFont( settings );
   QImage res = _renderLegend( legendModel.get(), settings );
 
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ), 30, QSize( 8, 12 ) ) );
