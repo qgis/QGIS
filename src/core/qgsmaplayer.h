@@ -268,6 +268,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the layer's \a id.
      *
+     * Returns TRUE if the layer ID was successfully changed, or FALSE if it could not be changed (e.g. because
+     * the layer is owned by a QgsProject or QgsMapLayerStore).
+     *
      * \warning It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
      * Generally this method should not be called, and the auto generated ID should be used instead.
      *
@@ -277,7 +280,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see idChanged()
      * \since QGIS 3.38
      */
-    void setId( const QString &id );
+    bool setId( const QString &id );
 
     /**
      * Set the display \a name of the layer.

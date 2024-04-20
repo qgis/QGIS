@@ -193,9 +193,12 @@ Returns the layer's unique ID, which is used to access this layer from :py:class
 .. seealso:: :py:func:`idChanged`
 %End
 
-    void setId( const QString &id );
+    bool setId( const QString &id );
 %Docstring
 Sets the layer's ``id``.
+
+Returns ``True`` if the layer ID was successfully changed, or ``False`` if it could not be changed (e.g. because
+the layer is owned by a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`).
 
 .. warning::
 
