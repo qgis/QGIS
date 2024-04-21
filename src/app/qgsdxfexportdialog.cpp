@@ -181,7 +181,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
     const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vLayer )
     {
-      mCreateDDBlockInfo[vLayer] = true;
+      mCreateDDBlockInfo[vLayer] = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
       mDDBlocksMaxNumberOfClasses[vLayer] = -1;
     }
   }
@@ -344,7 +344,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       return QVariant();
     }
 
-    bool checked = mCreateDDBlockInfo.contains( vl ) ? mCreateDDBlockInfo[vl] : true;
+    bool checked = mCreateDDBlockInfo.contains( vl ) ? mCreateDDBlockInfo[vl] : DEFAULT_DXF_DATA_DEFINED_BLOCKS;
     if ( role == Qt::CheckStateRole )
     {
       return checked ? Qt::Checked : Qt::Unchecked;
@@ -474,7 +474,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
           layerIdx.insert( vl->id(), layers.size() );
           layers << QgsDxfExport::DxfLayer( vl,
                                             mAttributeIdx.value( vl, -1 ),
-                                            mCreateDDBlockInfo.value( vl, true ),
+                                            mCreateDDBlockInfo.value( vl, DEFAULT_DXF_DATA_DEFINED_BLOCKS ),
                                             mDDBlocksMaxNumberOfClasses.value( vl,  -1 ),
                                             mOverriddenName.value( vl, QString() ) );
         }
@@ -489,7 +489,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
         layerIdx.insert( vl->id(), layers.size() );
         layers << QgsDxfExport::DxfLayer( vl,
                                           mAttributeIdx.value( vl, -1 ),
-                                          mCreateDDBlockInfo.value( vl, true ),
+                                          mCreateDDBlockInfo.value( vl, DEFAULT_DXF_DATA_DEFINED_BLOCKS ),
                                           mDDBlocksMaxNumberOfClasses.value( vl,  -1 ),
                                           mOverriddenName.value( vl, QString() ) );
       }

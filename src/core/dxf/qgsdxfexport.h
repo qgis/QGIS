@@ -62,6 +62,9 @@ namespace pal // SIP_SKIP
 class CORE_EXPORT QgsDxfExport
 {
 #else
+
+static const bool DEFAULT_DXF_DATA_DEFINED_BLOCKS = true;
+
 class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 {
 #endif
@@ -73,7 +76,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      */
     struct CORE_EXPORT DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() )
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() )
           : mLayer( vl )
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
           , mBuildDDBlocks( buildDDBlocks )

@@ -27,7 +27,7 @@ Exports QGIS layers to the DXF format.
 
     struct DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() );
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() );
 
         QgsVectorLayer *layer() const;
 %Docstring
