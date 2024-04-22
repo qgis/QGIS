@@ -160,7 +160,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionReorderOutputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderOutputs );
   connect( mActionEditHelp, &QAction::triggered, this, &QgsModelDesignerDialog::editHelp );
   connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
-  connect( mActionRun, &QAction::triggered, this, &QgsModelDesignerDialog::run );
+  connect( mActionRun, &QAction::triggered, this, [this] { run(); } );
+  connect( mActionRunSelectedSteps, &QAction::triggered, this, &QgsModelDesignerDialog::runSelectedSteps );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -991,6 +992,27 @@ void QgsModelDesignerDialog::editHelp()
     mModel->setHelpContent( dialog.helpContent() );
     endUndoCommand();
   }
+}
+
+void QgsModelDesignerDialog::runSelectedSteps()
+{
+  QSet<QString> children;
+  const QList< QgsModelComponentGraphicItem * > items = mScene->selectedComponentItems();
+  for ( QgsModelComponentGraphicItem *item : items )
+  {
+    if ( QgsProcessingModelChildAlgorithm *childAlgorithm = dynamic_cast< QgsProcessingModelChildAlgorithm *>( item->component() ) )
+    {
+      children.insert( childAlgorithm->childId() );
+    }
+  }
+
+  if ( children.isEmpty() )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No steps are selected" ) );
+    return;
+  }
+
+  run( children );
 }
 
 void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
