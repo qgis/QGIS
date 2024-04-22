@@ -874,7 +874,7 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   if ( isSelected() )
   {
     QAction *runSelectedStepsAction = popupmenu->addAction( QObject::tr( "Run Selected Steps…" ) );
-    runSelectedStepsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
+    runSelectedStepsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRunSelected.svg" ) ) );
     connect( runSelectedStepsAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::runSelected );
   }
 
