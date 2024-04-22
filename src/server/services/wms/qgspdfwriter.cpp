@@ -29,6 +29,14 @@ namespace QgsWms
                    QgsServerResponse &response )
   {
     QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UpdateExtent );
+    context.setFlag( QgsWmsRenderContext::UseOpacity );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseSelection );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
+    context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::UseTileBuffer );
     context.setParameters( request.wmsParameters() );
     QTemporaryFile tmpFile;
     tmpFile.open();
