@@ -426,7 +426,7 @@ void TestQgsVectorFileWriter::regression1141()
 
   //create some objects that will be used in all tests...
   const QString encoding = QStringLiteral( "UTF-8" );
-  const QgsField myField( QStringLiteral( "ąęćń" ), QVarQMetaType::Type::InttringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
+  const QgsField myField( QStringLiteral( "ąęćń" ), QMetaType::Type::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   QgsFields fields;
   fields.append( myField );
   QgsCoordinateReferenceSystem crs;
