@@ -450,7 +450,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       else
       {
         context.pushToThread( qApp->thread() );
+// silence false positive leak warning
+#ifndef __clang_analyzer__
         QMetaObject::invokeMethod( qApp, prepareOnMainThread, Qt::BlockingQueuedConnection );
+#endif
       }
 
       Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
@@ -480,7 +483,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
             feedback->pushWarning( QObject::tr( "Algorithm “%1” cannot be run in a background thread, switching to main thread for this step" ).arg( childAlg->displayName() ) );
 
           context.pushToThread( qApp->thread() );
+// silence false positive leak warning
+#ifndef __clang_analyzer__
           QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
+#endif
         }
         else
         {
@@ -512,7 +518,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       else
       {
         context.pushToThread( qApp->thread() );
+// silence false positive leak warning
+#ifndef __clang_analyzer__
         QMetaObject::invokeMethod( qApp, postProcessOnMainThread, Qt::BlockingQueuedConnection );
+#endif
       }
 
       Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
