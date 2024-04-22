@@ -469,6 +469,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   signals:
 
     /**
+     * Emitted when the user opts to run the model from this child algorithm.
+     *
+     * \since QGIS 3.38
+    */
+    void runFromHere();
+
+    /**
      * Emitted when the user opts to view previous results from this child algorithm.
      *
      * \since QGIS 3.38

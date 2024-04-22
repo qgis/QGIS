@@ -188,6 +188,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void selectedItemChanged( QgsModelComponentGraphicItem *selected );
 
     /**
+     * Emitted when the user opts to run the part of the model starting from the specified child algorithm.
+     *
+     * \since QGIS 3.38
+     */
+    void runFromChild( const QString &childId );
+
+    /**
      * Emitted when the user opts to view previous results from the child algorithm with matching ID.
      *
      * \since QGIS 3.38
