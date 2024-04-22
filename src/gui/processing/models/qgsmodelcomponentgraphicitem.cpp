@@ -870,9 +870,18 @@ QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcess
 void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
   QMenu *popupmenu = new QMenu( event->widget() );
+
+  if ( isSelected() )
+  {
+    QAction *runSelectedStepsAction = popupmenu->addAction( QObject::tr( "Run Selected Steps…" ) );
+    runSelectedStepsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
+    connect( runSelectedStepsAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::runSelected );
+  }
+
   QAction *runFromHereAction = popupmenu->addAction( QObject::tr( "Run from Here…" ) );
   runFromHereAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
   connect( runFromHereAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::runFromHere );
+
   popupmenu->addSeparator();
 
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );

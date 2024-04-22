@@ -476,6 +476,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void runFromHere();
 
     /**
+     * Emitted when the user opts to run selected steps from the model.
+     *
+     * \since QGIS 3.38
+    */
+    void runSelected();
+
+    /**
      * Emitted when the user opts to view previous results from this child algorithm.
      *
      * \since QGIS 3.38

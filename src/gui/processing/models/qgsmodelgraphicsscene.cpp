@@ -149,6 +149,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     {
       emit runFromChild( childId );
     } );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::runSelected, this, &QgsModelGraphicsScene::runSelected );
     connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId]
     {
       emit showChildAlgorithmOutputs( childId );
