@@ -828,7 +828,7 @@ void QOCISpatialResultPrivate::outValues( QVector<QVariant> &values, IndicatorAr
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       values[i] = static_cast< QVariant::Type >( typ );
 #else
-      values[i] = QVariant( QMetaType( typ ) );
+      values[i] = QVariant( typ );
 #endif
   }
 }
@@ -1068,7 +1068,7 @@ static QSqlField qFromOraInf( const OraFieldInfo &ofi )
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QSqlField f( ofi.name, static_cast<QVariant::Type>( ofi.type ) );
 #else
-  QSqlField f( ofi.name, static_cast<QVariant::Type>( QMetaType( metaType ) ) );
+  QSqlField f( ofi.name, QMetaType( ofi.type ) );
 #endif
 
   f.setRequired( ofi.oraIsNull == 0 );
@@ -4242,7 +4242,7 @@ QSqlRecord QOCISpatialDriver::record( const QString &tablename ) const
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( ty ) );
 #else
-      QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( QMetaType( ty ) ) );
+      QSqlField f( t.value( 0 ).toString(), QMetaType( ty ) );
 #endif
       f.setRequired( t.value( 5 ).toString() == QLatin1String( "N" ) );
       f.setPrecision( t.value( 4 ).toInt() );
@@ -4335,7 +4335,7 @@ QSqlIndex QOCISpatialDriver::primaryIndex( const QString &tablename ) const
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( ty ) );
 #else
-      QSqlField f( t.value( 0 ).toString(), static_cast<QVariant::Type>( QMetaType( ty ) ) );
+      QSqlField f( t.value( 0 ).toString(), QMetaType( ty ) );
 #endif
       idx.append( f );
     }
