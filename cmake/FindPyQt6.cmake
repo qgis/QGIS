@@ -34,8 +34,8 @@ ELSE(EXISTS PYQT6_VERSION_STR)
     ENDIF(_pyqt6_metadata)
 
     IF(PYQT6_VERSION_STR)
-      SET(PYQT6_MOD_DIR "${Python_SITEARCH}/PyQt6")
-      SET(PYQT6_SIP_DIR "${Python_SITEARCH}/PyQt6/bindings")
+      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "import os; import PyQt6; print(os.path.dirname(PyQt6.__file__), end='')" OUTPUT_VARIABLE PYQT6_MOD_DIR)
+      SET(PYQT6_SIP_DIR "${PYQT6_MOD_DIR}/bindings")
       FIND_PROGRAM(__pyuic6 "pyuic6")
       GET_FILENAME_COMPONENT(PYQT6_BIN_DIR ${__pyuic6} DIRECTORY)
 
