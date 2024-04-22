@@ -2424,6 +2424,7 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
 
   QSet<QString> expected{ QStringLiteral( "calculate" ), QStringLiteral( "calculate2" ) };
   QCOMPARE( context.modelResult().executedChildIds(), expected );
+  QgsProcessingModelResult firstResult = context.modelResult();
 
   context.modelResult().clear();
   // start with an initial state
@@ -2446,6 +2447,8 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
   QVERIFY( ok );
   // "calculate" should not be re-executed
   QCOMPARE( context.modelResult().childResults().value( "calculate" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted );
+  QVERIFY( context.modelResult().childResults().value( "calculate" ).inputs().isEmpty() );
+  QVERIFY( context.modelResult().childResults().value( "calculate" ).outputs().isEmpty() );
 
   // the second child algorithm should be re-run
   QCOMPARE( context.modelResult().childResults().value( "calculate2" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
@@ -2459,6 +2462,19 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
 
   // config should be discarded, it should never be re-used or passed on to non top-level models
   QVERIFY( !context.modelInitialRunConfig() );
+
+  // merge with first result, to get complete set of results across both executions
+  firstResult.mergeWith( context.modelResult() );
+  QCOMPARE( firstResult.childResults().value( "calculate" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+  QCOMPARE( firstResult.childResults().value( "calculate" ).inputs().value( "INPUT" ).toString(), QStringLiteral( "my string_1" ) );
+  QCOMPARE( firstResult.childResults().value( "calculate" ).outputs().value( "OUTPUT" ).toString(), QStringLiteral( "my string_1" ) );
+  QCOMPARE( firstResult.rawChildInputs().value( "calculate" ).toMap().value( "INPUT" ).toString(), QStringLiteral( "a different string" ) );
+  QCOMPARE( firstResult.rawChildOutputs().value( "calculate" ).toMap().value( "OUTPUT" ).toString(), QStringLiteral( "a different string" ) );
+  QCOMPARE( firstResult.childResults().value( "calculate2" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+  QCOMPARE( firstResult.childResults().value( "calculate2" ).inputs().value( "INPUT" ).toString(), QStringLiteral( "a different string_2" ) );
+  QCOMPARE( firstResult.childResults().value( "calculate2" ).outputs().value( "OUTPUT" ).toString(), QStringLiteral( "a different string_2" ) );
+  QCOMPARE( firstResult.rawChildInputs().value( "calculate2" ).toMap().value( "INPUT" ).toString(), QStringLiteral( "a different string_2" ) );
+  QCOMPARE( firstResult.rawChildOutputs().value( "calculate2" ).toMap().value( "OUTPUT" ).toString(), QStringLiteral( "a different string_2" ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()

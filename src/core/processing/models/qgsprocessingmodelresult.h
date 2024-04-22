@@ -129,6 +129,13 @@ class CORE_EXPORT QgsProcessingModelResult
     void clear();
 
     /**
+     * Merges this set of results with an \a other set of results.
+     *
+     * Conflicting results from \a other will replace results in this object.
+     */
+    void mergeWith( const QgsProcessingModelResult &other );
+
+    /**
      * Returns the map of child algorithm results.
      *
      * Map keys refer to the child algorithm IDs.

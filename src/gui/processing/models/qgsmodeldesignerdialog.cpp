@@ -598,7 +598,7 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
 
 void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &result )
 {
-  mLastResult = result;
+  mLastResult.mergeWith( result );
   if ( mScene )
     mScene->setLastRunResult( mLastResult );
 }
