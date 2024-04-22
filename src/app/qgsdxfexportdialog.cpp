@@ -597,9 +597,9 @@ void QgsVectorLayerAndAttributeModel::loadLayersOutputAttribute( QgsLayerTreeNod
 
         if ( vl->geometryType() == Qgis::GeometryType::Point )
         {
-          const bool allowDataDefinedBlocks = vl->customProperty( QStringLiteral( "lastAllowDataDefinedBlocks" ), false ).toBool();
+          const bool allowDataDefinedBlocks = vl->customProperty( QStringLiteral( "lastAllowDataDefinedBlocks" ), DEFAULT_DXF_DATA_DEFINED_BLOCKS ).toBool();
 
-          if ( allowDataDefinedBlocks )  // Since False is the default value
+          if ( allowDataDefinedBlocks != DEFAULT_DXF_DATA_DEFINED_BLOCKS )
           {
             mCreateDDBlockInfo[vl] = allowDataDefinedBlocks;
             idx = index( idx.row(), ALLOW_DD_SYMBOL_BLOCKS_COL, idx.parent() );

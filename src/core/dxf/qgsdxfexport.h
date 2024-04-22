@@ -129,7 +129,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
         /**
          * \brief try to build data defined symbol blocks if necessary
          */
-        bool mBuildDDBlocks = false;
+        bool mBuildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
 
         /**
          * \brief Limit for the number of data defined symbol block classes (keep only the most used ones). -1 means no limit

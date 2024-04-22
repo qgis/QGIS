@@ -11042,7 +11042,7 @@ void TestQgsProcessing::parameterDxfLayers()
   layerMap["layer"] = "layerName";
   layerMap["attributeIndex"] = -1;
   layerMap["overriddenLayerName"] = QString();
-  layerMap["buildDataDefinedBlocks"] = false;
+  layerMap["buildDataDefinedBlocks"] = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
   layerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList ) );
@@ -11060,7 +11060,7 @@ void TestQgsProcessing::parameterDxfLayers()
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
-  layerMap["buildDataDefinedBlocks"] = true;
+  layerMap["buildDataDefinedBlocks"] = false;
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
@@ -11090,7 +11090,7 @@ void TestQgsProcessing::parameterDxfLayers()
   wrongLayerMap["layer"] = "NonSpatialLayer";
   wrongLayerMap["attributeIndex"] = -1;
   wrongLayerMap["overriddenLayerName"] = QString();
-  wrongLayerMap["buildDataDefinedBlocks"] = false;
+  wrongLayerMap["buildDataDefinedBlocks"] = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
   wrongLayerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   QVariantList wrongLayerMapList;
   wrongLayerMapList.append( wrongLayerMap );
@@ -11098,9 +11098,9 @@ void TestQgsProcessing::parameterDxfLayers()
 
   // Check values
   const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
-  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': 'My Point Layer','buildDataDefinedBlocks': True,'dataDefinedBlocksMaximumNumberOfClasses': 8}]" ).arg( vectorLayer->source() ) );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': 'My Point Layer','buildDataDefinedBlocks': False,'dataDefinedBlocksMaximumNumberOfClasses': 8}]" ).arg( vectorLayer->source() ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
-            QStringLiteral( "[{\"attributeIndex\":-1,\"buildDataDefinedBlocks\":true,\"dataDefinedBlocksMaximumNumberOfClasses\":8,\"layer\":\"memory://%1\",\"overriddenLayerName\":\"My Point Layer\"}]" ).arg( vectorLayer->source() ) );
+            QStringLiteral( "[{\"attributeIndex\":-1,\"buildDataDefinedBlocks\":false,\"dataDefinedBlocksMaximumNumberOfClasses\":8,\"layer\":\"memory://%1\",\"overriddenLayerName\":\"My Point Layer\"}]" ).arg( vectorLayer->source() ) );
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
   QVERIFY( !ok );
@@ -11113,7 +11113,7 @@ void TestQgsProcessing::parameterDxfLayers()
 
   // Default values for parameters other than the vector layer
   layerMap["overriddenLayerName"] = QString();
-  layerMap["buildDataDefinedBlocks"] = false;
+  layerMap["buildDataDefinedBlocks"] = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
   layerMap["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
   layerList[0] = layerMap;
 

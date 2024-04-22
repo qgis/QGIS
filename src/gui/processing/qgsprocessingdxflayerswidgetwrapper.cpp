@@ -122,7 +122,7 @@ QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
     vm["layer"] = layer->id();
     vm["attributeIndex"] = -1;
     vm["overriddenLayerName"] = QString();
-    vm["buildDataDefinedBlocks"] = false;
+    vm["buildDataDefinedBlocks"] = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
     vm["dataDefinedBlocksMaximumNumberOfClasses"] = -1;
 
     const QString title = layer->name();
