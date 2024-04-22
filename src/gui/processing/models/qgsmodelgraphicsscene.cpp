@@ -138,12 +138,21 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     QgsModelChildAlgorithmGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
-    item->setResults( mChildResults.value( it.value().childId() ).toMap() );
-    item->setInputs( mChildInputs.value( it.value().childId() ).toMap() );
-    mChildAlgorithmItems.insert( it.value().childId(), item );
+
+    const QString childId = it.value().childId();
+    item->setResults( mLastResult.childResults().value( childId ) );
+    mChildAlgorithmItems.insert( childId, item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId]
+    {
+      emit showChildAlgorithmOutputs( childId );
+    } );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::showLog, this, [this, childId]
+    {
+      emit showChildAlgorithmLog( childId );
+    } );
 
     addCommentItemForComponent( model, it.value(), item );
   }
@@ -164,7 +173,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
         QList< QgsProcessingModelChildParameterSource > sources;
         if ( it.value().parameterSources().contains( parameter->name() ) )
           sources = it.value().parameterSources()[parameter->name()];
-        for ( const QgsProcessingModelChildParameterSource &source : sources )
+        for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
         {
           const QList< LinkSource > sourceItems = linkSourcesForParameterValue( model, QVariant::fromValue( source ), it.value().childId(), context );
           for ( const LinkSource &link : sourceItems )
@@ -354,28 +363,16 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
   emit selectedItemChanged( item );
 }
 
-void QgsModelGraphicsScene::setChildAlgorithmResults( const QVariantMap &results )
+void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &result )
 {
-  mChildResults = results;
+  mLastResult = result;
 
-  for ( auto it = mChildResults.constBegin(); it != mChildResults.constEnd(); ++it )
+  const auto childResults = mLastResult.childResults();
+  for ( auto it = childResults.constBegin(); it != childResults.constEnd(); ++it )
   {
     if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
     {
-      item->setResults( it.value().toMap() );
-    }
-  }
-}
-
-void QgsModelGraphicsScene::setChildAlgorithmInputs( const QVariantMap &inputs )
-{
-  mChildInputs = inputs;
-
-  for ( auto it = mChildInputs.constBegin(); it != mChildInputs.constEnd(); ++it )
-  {
-    if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
-    {
-      item->setInputs( it.value().toMap() );
+      item->setResults( it.value() );
     }
   }
 }

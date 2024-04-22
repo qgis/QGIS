@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgsinterval.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
 
@@ -144,6 +145,64 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      */
     QList< int > filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
 
+    /**
+     * Returns the band number from which temporal values should be taken.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setBandNumber()
+     * \since QGIS 3.38
+     */
+    int bandNumber() const;
+
+    /**
+     * Sets the band number from which temporal values should be taken.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see bandNumber()
+     * \since QGIS 3.38
+     */
+    void setBandNumber( int number );
+
+    /**
+     * Returns the temporal offset, which is a fixed datetime which should be added to individual pixel values
+     * from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setTemporalRepresentationOffset()
+     * \since QGIS 3.38
+     */
+    QDateTime temporalRepresentationOffset() const;
+
+    /**
+     * Sets the temporal offset, which is a fixed datetime which should be added to individual pixel values
+     * from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see temporalRepresentationOffset()
+     * \since QGIS 3.38
+     */
+    void setTemporalRepresentationOffset( const QDateTime &offset );
+
+    /**
+     * Returns the scale, which is an interval factor which should be applied to individual pixel
+     * values from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see setTemporalRepresentationScale()
+     * \since QGIS 3.38
+     */
+    const QgsInterval &temporalRepresentationScale() const;
+
+    /**
+     * Sets the scale, which is an interval factor which should be applied to individual pixel
+     * values from the layer.
+     *
+     * \note This is only considered when mode() is Qgis::RasterTemporalMode::RepresentsTemporalValues.
+     * \see temporalRepresentationScale()
+     * \since QGIS 3.38
+     */
+    void setTemporalRepresentationScale( const QgsInterval &scale );
+
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -162,6 +221,11 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsDateTimeRange mFixedRange;
 
     QMap< int, QgsDateTimeRange > mRangePerBand;
+
+    int mBandNumber = 1;
+
+    QDateTime mTemporalRepresentationOffset;
+    QgsInterval mTemporalRepresentationScale;
 };
 
 #endif // QGSRASTERLAYERTEMPORALPROPERTIES_H

@@ -20,7 +20,7 @@
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
 #include "qgspointcloudrequest.h"
-#include "qgsgeometryengine.h"
+#include "qgsgeos.h"
 #include "qgspointcloudstatscalculator.h"
 #include "qgsthreadingutils.h"
 
@@ -261,15 +261,14 @@ struct MapIndexedPointCloudNode
     const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
     const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
     const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
-    std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( mExtentGeometry.constGet() ) );
+    std::unique_ptr< QgsGeos > extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
     extentEngine->prepareGeometry();
     for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
       double x, y, z;
       QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, block->scale(), block->offset(), x, y, z );
-      QgsPoint point( x, y );
 
-      if ( mZRange.contains( z ) && extentEngine->contains( &point ) )
+      if ( mZRange.contains( z ) && extentEngine->contains( x, y ) )
       {
         QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;

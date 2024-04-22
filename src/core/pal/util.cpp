@@ -44,7 +44,7 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
   int nGeom;
   int i;
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   while ( !queue->isEmpty() )
   {

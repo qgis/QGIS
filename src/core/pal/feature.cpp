@@ -93,7 +93,7 @@ FeaturePart::~FeaturePart()
 void FeaturePart::extractCoords( const GEOSGeometry *geom )
 {
   const GEOSCoordSequence *coordSeq = nullptr;
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   type = GEOSGeomTypeId_r( geosctxt, geom );
 
@@ -410,7 +410,7 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
   double px, py;
   try
   {
-    GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+    GEOSContextHandle_t geosctxt = QgsGeosContext::get();
     geos::unique_ptr pointGeom( GEOSPointOnSurface_r( geosctxt, mapShape->geos() ) );
     if ( pointGeom )
     {
@@ -1995,7 +1995,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
   double cx, cy;
   getCentroid( cx, cy, false );
 
-  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t ctxt = QgsGeosContext::get();
 
   // be a bit sneaky and only buffer out 50% here, and then do the remaining 50% when we make the label candidate itself.
   // this avoids candidates being created immediately over the buffered ring and always intersecting with it...
@@ -2253,7 +2253,7 @@ void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > 
   if ( !mGeos )
     createGeosGeom();
 
-  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t ctxt = QgsGeosContext::get();
   int geomType = GEOSGeomTypeId_r( ctxt, mGeos );
 
   double sizeCost = 0;
@@ -2320,15 +2320,18 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
   const double p2otherX = p2startTouches ? x2last : x2first;
   const double p2otherY = p2startTouches ? y2last : y2first;
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, p2otherX, p2otherY );
-
-  geos::unique_ptr p2OtherEnd( GEOSGeom_createPoint_r( geosctxt, coord ) );
   try
   {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+    return ( GEOSPreparedIntersectsXY_r( geosctxt, preparedGeom(), p2otherX, p2otherY ) != 1 );
+#else
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 0, p2otherX, p2otherY );
+    geos::unique_ptr p2OtherEnd( GEOSGeom_createPoint_r( geosctxt, coord ) );
     return ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), p2OtherEnd.get() ) != 1 );
+#endif
   }
   catch ( GEOSException &e )
   {
@@ -2345,7 +2348,7 @@ bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
   if ( !other->mGeos )
     other->createGeosGeom();
 
-  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
+  GEOSContextHandle_t ctxt = QgsGeosContext::get();
   try
   {
     GEOSGeometry *g1 = GEOSGeom_clone_r( ctxt, mGeos );

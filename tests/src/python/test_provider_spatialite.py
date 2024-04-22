@@ -302,6 +302,13 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         sql = "INSERT INTO \"test_transactions2\" VALUES (NULL)"
         cur.execute(sql)
 
+        # table to test getQueryGeometryDetails() for geometries with Z, M and ZM
+        sql = "CREATE TABLE test_querygeometry (id INTEGER PRIMARY KEY, x DECIMAL, y DECIMAL, z DECIMAL, m DECIMAL, srid INTEGER)"
+        cur.execute(sql)
+        sql = "INSERT INTO test_querygeometry (id, x, y, z, m, srid) "
+        sql += "VALUES (1, 16, 41, 100, 10, 4326)"
+        cur.execute(sql)
+
         # Commit all test data
         cur.execute("COMMIT")
         con.close()
@@ -1818,6 +1825,61 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
         self.assertEqual(vl.dataProvider().defaultValueClause(0), '')
         self.assertEqual(vl.dataProvider().defaultValue(0), 1)
+
+    def testGetQueryGeometryDetails(self):
+        """Test getQueryGeometryDetails() for geometries with Z, M and ZM"""
+
+        query = "SELECT id, srid, x, y, MakePoint(x,y,srid) as geom FROM test_querygeometry"
+        vl = QgsVectorLayer(f"dbname={self.dbname} table='({query})' (geom) key='id'",
+                            "QueryGeometryXY", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(vl.featureCount(), 1)
+        feature = vl.getFeature(1)
+        self.assertEqual(vl.crs().postgisSrid(), feature.attributes()[1])
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.x(), feature.attributes()[2])
+        self.assertEqual(geom.y(), feature.attributes()[3])
+
+        query = "SELECT id, srid, x, y, z, MakePointZ(x,y,z,srid) as geom FROM test_querygeometry"
+        vl = QgsVectorLayer(f"dbname={self.dbname} table='({query})' (geom) key='id'",
+                            "QueryGeometryXYZ", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(vl.featureCount(), 1)
+        feature = vl.getFeature(1)
+        self.assertEqual(vl.crs().postgisSrid(), feature.attributes()[1])
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.x(), feature.attributes()[2])
+        self.assertEqual(geom.y(), feature.attributes()[3])
+        self.assertEqual(geom.z(), feature.attributes()[4])
+
+        query = "SELECT id, srid, x, y, m, MakePointM(x,y,m,srid) as geom FROM test_querygeometry"
+        vl = QgsVectorLayer(f"dbname={self.dbname} table='({query})' (geom) key='id'",
+                            "QueryGeometryXYM", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.PointM)
+        self.assertEqual(vl.featureCount(), 1)
+        feature = vl.getFeature(1)
+        self.assertEqual(vl.crs().postgisSrid(), feature.attributes()[1])
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.x(), feature.attributes()[2])
+        self.assertEqual(geom.y(), feature.attributes()[3])
+        self.assertEqual(geom.m(), feature.attributes()[4])
+
+        query = "SELECT id, srid, x, y, z, m, MakePointZM(x,y,z,m,srid) as geom FROM test_querygeometry"
+        vl = QgsVectorLayer(f"dbname={self.dbname} table='({query})' (geom) key='id'",
+                            "QueryGeometryXYZM", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(vl.featureCount(), 1)
+        feature = vl.getFeature(1)
+        self.assertEqual(vl.crs().postgisSrid(), feature.attributes()[1])
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.x(), feature.attributes()[2])
+        self.assertEqual(geom.y(), feature.attributes()[3])
+        self.assertEqual(geom.z(), feature.attributes()[4])
+        self.assertEqual(geom.m(), feature.attributes()[5])
 
     def testViewsExtentFilter(self):
         """Test extent filtering of a views-based spatialite layer"""

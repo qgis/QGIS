@@ -58,8 +58,25 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   // both elevation and temporal properties enabled
 
   // first find bands matching the temporal range
-  const QList< int > temporalBands = temporalProperties->filteredBandsForTemporalRange(
-                                       layer, temporalRange );
+  QList< int > temporalBands;
+  switch ( temporalProperties->mode() )
+  {
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    {
+      temporalBands << temporalProperties->filteredBandsForTemporalRange( layer, temporalRange );
+      break;
+    }
+
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+    {
+      temporalBands << temporalProperties->bandNumber();
+      break;
+    }
+  }
+
   if ( temporalBands.empty() )
   {
     matched = false;

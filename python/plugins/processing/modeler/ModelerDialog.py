@@ -100,7 +100,6 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
-        self.actionRun().triggered.connect(self.runModel)
 
         if model is not None:
             _model = model.create()
@@ -122,37 +121,9 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.context_generator = ContextGenerator(self.processing_context)
 
-    def runModel(self):
-        valid, errors = self.model().validate()
-        if not valid:
-            message_box = QMessageBox()
-            message_box.setWindowTitle(self.tr('Model is Invalid'))
-            message_box.setIcon(QMessageBox.Icon.Warning)
-            message_box.setText(self.tr('This model is not valid and contains one or more issues. Are you sure you want to run it in this state?'))
-            message_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel)
-            message_box.setDefaultButton(QMessageBox.StandardButton.Cancel)
-
-            error_string = ''
-            for e in errors:
-                e = re.sub(r'<[^>]*>', '', e)
-                error_string += f'• {e}\n'
-
-            message_box.setDetailedText(error_string)
-            if message_box.exec() == QMessageBox.StandardButton.Cancel:
-                return
-
-        def on_finished(successful, results):
-            self.setLastRunChildAlgorithmResults(dlg.results().get('CHILD_RESULTS', {}))
-            self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
-
+    def createExecutionDialog(self):
         dlg = AlgorithmDialog(self.model().create(), parent=self)
-        dlg.setLogLevel(QgsProcessingContext.LogLevel.ModelDebug)
-        dlg.setParameters(self.model().designerParameterValues())
-        dlg.algorithmFinished.connect(on_finished)
-        dlg.exec()
-
-        if dlg.wasExecuted():
-            self.model().setDesignerParameterValues(dlg.createProcessingParameters(flags=QgsProcessingParametersGenerator.Flags(QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters)))
+        return dlg
 
     def saveInProject(self):
         if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveInProject):

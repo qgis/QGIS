@@ -65,12 +65,44 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 {
   public:
 
-    DummyAlgorithm( const QString &name ) : mName( name ) { mFlags = Qgis::ProcessingAlgorithmFlags(); }
+    DummyAlgorithm( const QString &name )
+      : mName( name )
+    {
+      mFlags = Qgis::ProcessingAlgorithmFlags();
+    }
 
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
+
+    // we use static members here as the algorithm instance will be internally privately cloned before executing
+    static bool mRaiseProcessException;
+    static bool mPrepared;
+
+    bool prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) final
+    {
+      mPrepared = true;
+      return true;
+    }
+    static bool mProcessed;
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &context, QgsProcessingFeedback * ) final
+    {
+      mProcessed = true;
+
+      QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+      context.temporaryLayerStore()->addMapLayer( layer3111 );
+
+      if ( mRaiseProcessException )
+        throw QgsProcessingException( QString() );
+
+      return QVariantMap();
+    }
+    static bool mPostProcessed;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) final
+    {
+      mPostProcessed = true;
+      return QVariantMap();
+    }
 
     Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
     DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
@@ -515,6 +547,10 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
 
     friend class TestQgsProcessing;
 };
+bool DummyAlgorithm::mPrepared = false;
+bool DummyAlgorithm::mRaiseProcessException = false;
+bool DummyAlgorithm::mProcessed = false;
+bool DummyAlgorithm::mPostProcessed = false;
 
 class DummyProviderNoLoad : public DummyProvider // clazy:exclude=missing-qobject-macro
 {
@@ -789,6 +825,7 @@ class TestQgsProcessing: public QgsTest
     void parameterAnnotationLayer();
     void parameterVectorTileOut();
     void checkParamValues();
+    void runAlgorithm();
     void combineLayerExtent();
     void processingFeatureSource();
     void processingFeatureSink();
@@ -1272,12 +1309,28 @@ void TestQgsProcessing::context()
   context.temporaryLayerStore()->addMapLayer( vector );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( vector->id() ), vector );
 
+  QgsProcessingModelChildAlgorithmResult res1;
+  res1.setInputs( {{ QStringLiteral( "INPUT1" ), 1 }} );
+  res1.setOutputs( {{ QStringLiteral( "RESULT1" ), 1 }} );
+
+  QgsProcessingModelChildAlgorithmResult res2;
+  res2.setInputs( {{ QStringLiteral( "INPUT2" ), 2 }} );
+  res2.setOutputs( {{ QStringLiteral( "RESULT2" ), 2 }} );
+
+  context.modelResult().childResults().insert( QStringLiteral( "CHILD1" ), res1 );
+  context.modelResult().childResults().insert( QStringLiteral( "CHILD2" ), res2 );
+
   QgsProcessingContext context2;
   context2.copyThreadSafeSettings( context );
   QCOMPARE( context2.defaultEncoding(), context.defaultEncoding() );
   QCOMPARE( context2.invalidGeometryCheck(), context.invalidGeometryCheck() );
   QCOMPARE( context2.flags(), context.flags() );
   QCOMPARE( context2.project(), context.project() );
+  QCOMPARE( context2.modelResult().childResults().count(), 2 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).inputs().value( QStringLiteral( "INPUT1" ) ).toInt(), 1 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).inputs().value( QStringLiteral( "INPUT2" ) ).toInt(), 2 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
+  QCOMPARE( context2.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
   QCOMPARE( static_cast< int >( context2.logLevel() ), static_cast< int >( Qgis::ProcessingLogLevel::Verbose ) );
   // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
   QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
@@ -1354,6 +1407,14 @@ void TestQgsProcessing::context()
   QCOMPARE( context2.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+
+  QgsProcessingContext context3;
+  context3.takeResultsFrom( context );
+  QCOMPARE( context3.modelResult().childResults().count(), 2 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).inputs().value( QStringLiteral( "INPUT1" ) ).toInt(), 1 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).inputs().value( QStringLiteral( "INPUT2" ) ).toInt(), 2 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
+  QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
 
   // make sure postprocessor is correctly deleted
   ppDeleted = false;
@@ -2744,6 +2805,7 @@ void TestQgsProcessing::parameters()
   QVERIFY( sink.get() );
   QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( dynamic_cast< QgsProcessingFeatureSink * >( sink.get() )->destinationSink() );
   QVERIFY( writer );
+  sink.reset();
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
   QVERIFY( layer->isValid() );
@@ -11040,6 +11102,7 @@ void TestQgsProcessing::parameterDxfLayers()
   QVERIFY( !def->checkValueIsAcceptable( layerList ) );
   layerMap["layer"] = "layerName";
   layerMap["attributeIndex"] = -1;
+  layerMap["overriddenLayerName"] = QString();
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList ) );
   QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) ); //no corresponding layer in the context's project
@@ -11049,6 +11112,10 @@ void TestQgsProcessing::parameterDxfLayers()
   QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) );
 
   layerMap["attributeIndex"] = -1;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  layerMap["overriddenLayerName"] = QStringLiteral( "My Point Layer" );
   layerList[0] = layerMap;
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
@@ -11073,15 +11140,16 @@ void TestQgsProcessing::parameterDxfLayers()
   QVariantMap wrongLayerMap;
   wrongLayerMap["layer"] = "NonSpatialLayer";
   wrongLayerMap["attributeIndex"] = -1;
+  wrongLayerMap["overriddenLayerName"] = QString();
   QVariantList wrongLayerMapList;
   wrongLayerMapList.append( wrongLayerMap );
   QVERIFY( !def->checkValueIsAcceptable( wrongLayerMapList, &context ) );
 
   // Check values
   const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
-  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1,'overriddenLayerName': 'My Point Layer'}]" ).arg( vectorLayer->source() ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
-            QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"memory://%1\"}]" ).arg( vectorLayer->source() ) );
+            QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"memory://%1\",\"overriddenLayerName\":\"My Point Layer\"}]" ).arg( vectorLayer->source() ) );
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
   QVERIFY( !ok );
@@ -11092,16 +11160,23 @@ void TestQgsProcessing::parameterDxfLayers()
   const QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDxfLayers('dxf input layer', '')" ) );
 
+  // Default values for parameters other than the vector layer
+  layerMap["overriddenLayerName"] = QString();
+  layerList[0] = layerMap;
+
   const QgsDxfExport::DxfLayer dxfLayer( vectorLayer );
   QList<QgsDxfExport::DxfLayer> dxfList = def->parameterAsLayers( QVariant( vectorLayer->source() ), context );
   QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  QCOMPARE( dxfList.at( 0 ).overriddenName(), dxfLayer.overriddenName() );
   dxfList = def->parameterAsLayers( QVariant( QStringList() << vectorLayer->source() ), context );
   QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  QCOMPARE( dxfList.at( 0 ).overriddenName(), dxfLayer.overriddenName() );
   dxfList = def->parameterAsLayers( layerList, context );
   QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  QCOMPARE( dxfList.at( 0 ).overriddenName(), dxfLayer.overriddenName() );
 }
 
 void TestQgsProcessing::parameterAnnotationLayer()
@@ -11754,6 +11829,69 @@ void TestQgsProcessing::checkParamValues()
 {
   DummyAlgorithm a( "asd" );
   a.checkParameterVals();
+}
+
+void TestQgsProcessing::runAlgorithm()
+{
+  std::unique_ptr< DummyAlgorithm > a = std::make_unique< DummyAlgorithm >( "asd" );
+  a->mRaiseProcessException = false;
+  a->mPrepared = false;
+  a->mProcessed = false;
+  a->mPostProcessed = false;
+  QgsProcessingContext context;
+  QgsProcessingFeedback feedback;
+  bool ok = false;
+  QVariantMap res = a->run( QVariantMap(), context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( a->mPrepared );
+  QVERIFY( a->mProcessed );
+  QVERIFY( a->mPostProcessed );
+  // ensure layer added by the algorithm in processAlgorithm is present in context
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  context.temporaryLayerStore()->removeAllMapLayers();
+
+  // try with an algorithm which raises an exception, postProcessAlgorithm should not be called
+  a = std::make_unique< DummyAlgorithm >( "asd" );
+  a->mRaiseProcessException = true;
+  a->mPrepared = false;
+  a->mProcessed = false;
+  a->mPostProcessed = false;
+  ok = false;
+  res = a->run( QVariantMap(), context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( a->mPrepared );
+  QVERIFY( a->mProcessed );
+  QVERIFY( !a->mPostProcessed );
+  // ensure layer added by the algorithm in processAlgorithm is present in context, this should
+  // always be the case even if an exception occurs
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  context.temporaryLayerStore()->removeAllMapLayers();
+
+  // try without internally catching exceptions in run, postProcessAlgorithm should not be called
+  a = std::make_unique< DummyAlgorithm >( "asd" );
+  a->mRaiseProcessException = true;
+  a->mPrepared = false;
+  a->mProcessed = false;
+  a->mPostProcessed = false;
+  ok = false;
+  bool caught = false;
+  try
+  {
+    res = a->run( QVariantMap(), context, &feedback, &ok, QVariantMap(), false );
+  }
+  catch ( QgsProcessingException & )
+  {
+    caught = true;
+  }
+  QVERIFY( caught );
+  QVERIFY( !ok );
+  QVERIFY( a->mPrepared );
+  QVERIFY( a->mProcessed );
+  QVERIFY( !a->mPostProcessed );
+  // ensure layer added by the algorithm in processAlgorithm is present in context, this should
+  // always be the case even if an exception occurs
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  context.temporaryLayerStore()->removeAllMapLayers();
 }
 
 void TestQgsProcessing::combineLayerExtent()

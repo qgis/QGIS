@@ -40,6 +40,7 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
     const QgsRasterContourRenderer &operator=( const QgsRasterContourRenderer & ) = delete;
 
     QgsRasterContourRenderer *clone() const override SIP_FACTORY;
+    Qgis::RasterRendererFlags flags() const override;
 
     //! Creates an instance of the renderer based on definition from XML (used by renderer registry)
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;

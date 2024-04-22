@@ -99,7 +99,7 @@ QMap<int, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayLa
 
 bool QgsServerWmsDimensionProperties::addWmsDimension( const QgsServerWmsDimensionProperties::WmsDimensionInfo &wmsDimInfo )
 {
-  for ( const QgsServerWmsDimensionProperties::WmsDimensionInfo &dim : mWmsDimensions )
+  for ( const QgsServerWmsDimensionProperties::WmsDimensionInfo &dim : std::as_const( mWmsDimensions ) )
   {
     if ( dim.name == wmsDimInfo.name )
     {
@@ -217,6 +217,15 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
 {
   QgsServerMetadataUrlProperties::copyTo( properties );
   QgsServerWmsDimensionProperties::copyTo( properties );
+
+  properties->setShortName( mShortName );
+  properties->setTitle( mTitle );
+  properties->setAbstract( mAbstract );
+  properties->setKeywordList( mKeywordList );
+  properties->setDataUrl( mDataUrl );
+  properties->setDataUrlFormat( mDataUrlFormat );
+  properties->setAttribution( mAttribution );
+  properties->setAttributionUrl( mAttributionUrl );
 }
 
 void QgsMapLayerServerProperties::reset()
@@ -229,11 +238,64 @@ void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
 {
   QgsServerMetadataUrlProperties::readXml( layer_node );
   QgsServerWmsDimensionProperties::readXml( layer_node );
+
+  //short name
+  const QDomElement shortNameElem = layer_node.firstChildElement( QStringLiteral( "shortname" ) );
+  if ( !shortNameElem.isNull() )
+  {
+    mShortName = shortNameElem.text();
+  }
+
+  //title
+  const QDomElement titleElem = layer_node.firstChildElement( QStringLiteral( "title" ) );
+  if ( !titleElem.isNull() )
+  {
+    mTitle = titleElem.text();
+  }
+
+  //abstract
+  const QDomElement abstractElem = layer_node.firstChildElement( QStringLiteral( "abstract" ) );
+  if ( !abstractElem.isNull() )
+  {
+    mAbstract = abstractElem.text();
+  }
+
+  //keywordList
+  const QDomElement keywordListElem = layer_node.firstChildElement( QStringLiteral( "keywordList" ) );
+  if ( !keywordListElem.isNull() )
+  {
+    QStringList kwdList;
+    for ( QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling() )
+    {
+      kwdList << n.toElement().text();
+    }
+    mKeywordList = kwdList.join( QLatin1String( ", " ) );
+  }
+
+  //dataUrl
+  const QDomElement dataUrlElem = layer_node.firstChildElement( QStringLiteral( "dataUrl" ) );
+  if ( !dataUrlElem.isNull() )
+  {
+    mDataUrl = dataUrlElem.text();
+    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QString() );
+  }
+
+  //attribution
+  const QDomElement attribElem = layer_node.firstChildElement( QStringLiteral( "attribution" ) );
+  if ( !attribElem.isNull() )
+  {
+    mAttribution = attribElem.text();
+    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
+  }
 }
 
 void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
   QgsServerMetadataUrlProperties::writeXml( layer_node, document );
   QgsServerWmsDimensionProperties::writeXml( layer_node, document );
+
+  // TODO -- ideally we should also be writing mTitle, mAbstract etc, but this method is currently
+  // only called for SOME map layer subclasses!
+  // Accordingly that logic is currently left in QgsMapLayer::writeLayerXml
 }
 

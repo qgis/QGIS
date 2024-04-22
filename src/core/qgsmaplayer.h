@@ -75,6 +75,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString id READ id WRITE setId NOTIFY idChanged )
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
@@ -256,8 +257,30 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QString extensionPropertyType( PropertyType type );
 
-    //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
+    /**
+     * Returns the layer's unique ID, which is used to access this layer from QgsProject.
+     *
+     * \see setId()
+     * \see idChanged()
+     */
     QString id() const;
+
+    /**
+     * Sets the layer's \a id.
+     *
+     * Returns TRUE if the layer ID was successfully changed, or FALSE if it could not be changed (e.g. because
+     * the layer is owned by a QgsProject or QgsMapLayerStore).
+     *
+     * \warning It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
+     * Generally this method should not be called, and the auto generated ID should be used instead.
+     *
+     * \warning This method should not be called on layers which already belong to a QgsProject or QgsMapLayerStore.
+     *
+     * \see id()
+     * \see idChanged()
+     * \since QGIS 3.38
+     */
+    bool setId( const QString &id );
 
     /**
      * Set the display \a name of the layer.
@@ -283,135 +306,116 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
 
     /**
-     * Sets the short name of the layer
-     *  used by QGIS Server to identify the layer.
-     * \see shortName()
+     * Sets the short name of the layer used by QGIS Server to identify the layer.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setShortName() instead.
      */
-    void setShortName( const QString &shortName ) { mShortName = shortName; }
+    Q_DECL_DEPRECATED void setShortName( const QString &shortName ) SIP_DEPRECATED;
 
     /**
-     * Returns the short name of the layer
-     *  used by QGIS Server to identify the layer.
-     * \see setShortName()
+     * Returns the short name of the layer used by QGIS Server to identify the layer.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->shortName() instead.
      */
-    QString shortName() const;
+    Q_DECL_DEPRECATED QString shortName() const SIP_DEPRECATED;
 
     /**
-     * Sets the title of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     * \see title()
+     * Sets the title of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setTitle() instead.
      */
-    void setTitle( const QString &title ) { mTitle = title; }
+    Q_DECL_DEPRECATED void setTitle( const QString &title ) SIP_DEPRECATED;
 
     /**
-     * Returns the title of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer title
-     * \see setTitle()
+     * Returns the title of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->title() instead.
      */
-    QString title() const { return mTitle; }
+    Q_DECL_DEPRECATED QString title() const SIP_DEPRECATED;
 
     /**
-     * Sets the abstract of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     * \see abstract()
+     * Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setAbstract() instead.
      */
-    void setAbstract( const QString &abstract ) { mAbstract = abstract; }
+    Q_DECL_DEPRECATED void setAbstract( const QString &abstract ) SIP_DEPRECATED;
 
     /**
-     * Returns the abstract of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer abstract
-     * \see setAbstract()
+     * Returns the abstract of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->abstract() instead.
      */
-    QString abstract() const { return mAbstract; }
+    Q_DECL_DEPRECATED QString abstract() const SIP_DEPRECATED;
 
     /**
-     * Sets the keyword list of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     * \see keywordList()
+     * Sets the keyword list of the layerused by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setKeywordList() instead.
      */
-    void setKeywordList( const QString &keywords ) { mKeywordList = keywords; }
+    Q_DECL_DEPRECATED void setKeywordList( const QString &keywords ) SIP_DEPRECATED;
 
     /**
-     * Returns the keyword list of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer keyword list
-     * \see setKeywordList()
+     * Returns the keyword list of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->keywordList() instead.
      */
-    QString keywordList() const { return mKeywordList; }
-
-    /* Layer dataUrl information */
+    Q_DECL_DEPRECATED QString keywordList() const SIP_DEPRECATED;
 
     /**
-     * Sets the DataUrl of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \see dataUrl()
+     * Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setDataUrl() instead.
      */
-    void setDataUrl( const QString &dataUrl ) { mDataUrl = dataUrl; }
+    Q_DECL_DEPRECATED void setDataUrl( const QString &dataUrl ) SIP_DEPRECATED;
 
     /**
-     * Returns the DataUrl of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \returns the layer DataUrl
-     * \see setDataUrl()
+     * Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->dataUrl() instead.
      */
-    QString dataUrl() const { return mDataUrl; }
+    Q_DECL_DEPRECATED QString dataUrl() const SIP_DEPRECATED;
 
     /**
-     * Sets the DataUrl format of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \see dataUrlFormat()
+     * Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setDataUrlFormat() instead.
      */
-    void setDataUrlFormat( const QString &dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
+    Q_DECL_DEPRECATED void setDataUrlFormat( const QString &dataUrlFormat ) SIP_DEPRECATED;
 
     /**
-     * Returns the DataUrl format of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \returns the layer DataUrl format
-     * \see setDataUrlFormat()
+     * Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->dataUrlFormat() instead.
      */
-    QString dataUrlFormat() const { return mDataUrlFormat; }
-
-    /* Layer attribution information */
+    Q_DECL_DEPRECATED QString dataUrlFormat() const SIP_DEPRECATED;
 
     /**
-     * Sets the attribution of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  Attribution indicates the provider of a layer or collection of layers.
-     * \see attribution()
+     * Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setAttribution() instead.
      */
-    void setAttribution( const QString &attrib ) { mAttribution = attrib; }
+    Q_DECL_DEPRECATED void setAttribution( const QString &attrib ) SIP_DEPRECATED;
 
     /**
-     * Returns the attribution of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  Attribution indicates the provider of a layer or collection of layers.
-     * \returns the layer attribution
-     * \see setAttribution()
+     * Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->attribution() instead.
      */
-    QString attribution() const { return mAttribution; }
+    Q_DECL_DEPRECATED QString attribution() const SIP_DEPRECATED;
 
     /**
-     * Sets the attribution URL of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  Attribution indicates the provider of a layer or collection of layers.
-     * \see attributionUrl()
+     * Sets the attribution URL of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->setAttributionUrl() instead.
      */
-    void setAttributionUrl( const QString &attribUrl ) { mAttributionUrl = attribUrl; }
+    Q_DECL_DEPRECATED void setAttributionUrl( const QString &attribUrl ) SIP_DEPRECATED;
 
     /**
-     * Returns the attribution URL of the layer
-     *  used by QGIS Server in GetCapabilities request.
-     *  Attribution indicates the provider of a layer or collection of layers.
-     * \returns the layer attribution URL
-     * \see setAttributionUrl()
+     * Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
+     *
+     * \deprecated since QGIS 3.38 use serverProperties()->attributionUrl() instead.
      */
-    QString attributionUrl() const { return mAttributionUrl; }
+    Q_DECL_DEPRECATED QString attributionUrl() const SIP_DEPRECATED;
 
     /* Layer metadataUrl information */
 
@@ -1811,8 +1815,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void statusChanged( const QString &status );
 
     /**
-     * Emitted when the name has been changed
+     * Emitted when the layer's ID has been changed.
      *
+     * \see id()
+     * \see setId()
+     *
+     * \since QGIS 3.38
+     */
+    void idChanged( const QString &id );
+
+    /**
+     * Emitted when the name has been changed
      */
     void nameChanged();
 
@@ -2122,21 +2135,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Name of the layer - used for display
     QString mLayerName;
-
-    QString mShortName;
-    QString mTitle;
-
-    //! Description of the layer
-    QString mAbstract;
-    QString mKeywordList;
-
-    //! DataUrl of the layer
-    QString mDataUrl;
-    QString mDataUrlFormat;
-
-    //! Attribution of the layer
-    QString mAttribution;
-    QString mAttributionUrl;
 
     //! WMS legend
     QString mLegendUrl;

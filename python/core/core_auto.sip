@@ -551,6 +551,7 @@
 %Include auto_generated/processing/models/qgsprocessingmodelgroupbox.sip
 %Include auto_generated/processing/models/qgsprocessingmodeloutput.sip
 %Include auto_generated/processing/models/qgsprocessingmodelparameter.sip
+%Include auto_generated/processing/models/qgsprocessingmodelresult.sip
 %Include auto_generated/processing/qgsprocessing.sip
 %Include auto_generated/processing/qgsprocessingalgorithm.sip
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
@@ -654,6 +655,7 @@
 %Include auto_generated/raster/qgssinglebandcolordatarenderer.sip
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrenderer.sip
+%Include auto_generated/raster/qgsrastersinglecolorrenderer.sip
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgshollowscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip

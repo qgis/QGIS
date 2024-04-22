@@ -113,7 +113,7 @@ class TestQgsRectangle(QgisTestCase):
     def testAsWktPolygon(self):
         """Test that we can get a proper rect wkt polygon representation for rect"""
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = ('POLYGON((0 0, '
+        myExpectedWkt = ('Polygon ((0 0, '
                          '5 0, '
                          '5 5, '
                          '0 5, '

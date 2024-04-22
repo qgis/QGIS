@@ -1884,6 +1884,52 @@ tests:
             end: skip
             fid: skip
 
+  - algorithm: native:shortestpathpointtopoint
+    name: Shortest path (point to point, start point too far from network)
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1003712.4162500285,6222484.5571899945 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1000997.5971978485,6220343.83965781 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+      POINT_TOLERANCE: 4
+    results:
+      OUTPUT:
+        name: none
+        type: vector
+    expectedException: true
+
+  - algorithm: native:shortestpathpointtopoint
+    name: Shortest path (point to point, end point too far from network)
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1003842.4162500285,6222484.5571899945 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1000997.5971978485,6220343.83965781 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+      POINT_TOLERANCE: 14
+    results:
+      OUTPUT:
+        name: none
+        type: vector
+    expectedException: true
+
   - algorithm: native:shortestpathlayertopoint
     name: Shortest path layer to point
     ellipsoid: WGS84
@@ -1945,6 +1991,132 @@ tests:
               precision: 2
             start: skip
             end: skip
+
+  - algorithm: native:shortestpathpointtolayer
+    name: Shortest path point to layer, start point too far
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1001348.035822,6220968.188367 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+      POINT_TOLERANCE: 5
+    results:
+      OUTPUT:
+        name: name
+        type: vector
+    expectedException: true
+
+  - algorithm: native:shortestpathpointtolayer
+    name: Shortest path point to layer, point tolerance
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      END_POINTS:
+        name: custom/route_points.gml|layername=route_points
+        type: vector
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      POINT_TOLERANCE: 5.0
+      START_POINT: 1002012.240911,6221530.729412 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest_path_point_to_layer.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+      OUTPUT_NON_ROUTABLE:
+        name: expected/shortest_path_point_to_layer_non_routable.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 2
+
+  - algorithm: native:shortestpathlayertopoint
+    name: Shortest path layer to point, end point too far
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1004434.104368,6223344.867804 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+      POINT_TOLERANCE: 10
+    results:
+      OUTPUT:
+        name: name
+        type: vector
+    expectedException: true
+
+  - algorithm: native:shortestpathlayertopoint
+    name: Shortest path layer to point, with point tolerance
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 3.0
+      END_POINT: 1004160.8843928401,6223198.426763908 [EPSG:32733]
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      POINT_TOLERANCE: 4.5
+      START_POINTS:
+        name: custom/route_points.gml|layername=route_points
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest_path_layer_to_point_max_point_tolerance.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+      OUTPUT_NON_ROUTABLE:
+        name: expected/shortest_path_layer_to_point_non_routable.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 2
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, nodes)
@@ -2107,6 +2279,30 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (point too far from network)
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1002865.0089601517,6221875.432489508 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+      POINT_TOLERANCE: 5
+    results:
+      OUTPUT:
+        name: name
+        type: vector
+    expectedException: true
+
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)
     ellipsoid: WGS84
@@ -2206,6 +2402,57 @@ tests:
         pk:
           - d
           - type
+
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, nodes, max distance from network)
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      POINT_TOLERANCE: 1.0
+      START_POINTS:
+        name: custom/route_points.gml|layername=route_points
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST2: 100.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_from_layer_lines_tolerance.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+          - d
+          - type
+      OUTPUT_NON_ROUTABLE:
+        name: expected/service_area_from_layer_non_routable_tolerance.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+          - d
 
   - algorithm: native:createattributeindex
     name: Create attribute index

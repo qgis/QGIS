@@ -348,24 +348,24 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
 
   // WMS Name as layer short name
-  mLayerShortNameLineEdit->setText( mLayer->shortName() );
+  mLayerShortNameLineEdit->setText( mLayer->serverProperties()->shortName() );
   // WMS Name validator
   QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
-  mLayerTitleLineEdit->setText( mLayer->title() );
-  mLayerAbstractTextEdit->setPlainText( mLayer->abstract() );
-  mLayerKeywordListLineEdit->setText( mLayer->keywordList() );
-  mLayerDataUrlLineEdit->setText( mLayer->dataUrl() );
+  mLayerTitleLineEdit->setText( mLayer->serverProperties()->title() );
+  mLayerAbstractTextEdit->setPlainText( mLayer->serverProperties()->abstract() );
+  mLayerKeywordListLineEdit->setText( mLayer->serverProperties()->keywordList() );
+  mLayerDataUrlLineEdit->setText( mLayer->serverProperties()->dataUrl() );
   mLayerDataUrlFormatComboBox->setCurrentIndex(
     mLayerDataUrlFormatComboBox->findText(
-      mLayer->dataUrlFormat()
+      mLayer->serverProperties()->dataUrlFormat()
     )
   );
   //layer attribution
-  mLayerAttributionLineEdit->setText( mLayer->attribution() );
-  mLayerAttributionUrlLineEdit->setText( mLayer->attributionUrl() );
+  mLayerAttributionLineEdit->setText( mLayer->serverProperties()->attribution() );
+  mLayerAttributionUrlLineEdit->setText( mLayer->serverProperties()->attributionUrl() );
 
   // Setup the layer metadata URL
   tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -827,38 +827,38 @@ void QgsVectorLayerProperties::apply()
   }
 
   //layer title and abstract
-  if ( mLayer->shortName() != mLayerShortNameLineEdit->text() )
+  if ( mLayer->serverProperties()->shortName() != mLayerShortNameLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setShortName( mLayerShortNameLineEdit->text() );
+  mLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
 
-  if ( mLayer->title() != mLayerTitleLineEdit->text() )
+  if ( mLayer->serverProperties()->title() != mLayerTitleLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setTitle( mLayerTitleLineEdit->text() );
+  mLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
 
-  if ( mLayer->abstract() != mLayerAbstractTextEdit->toPlainText() )
+  if ( mLayer->serverProperties()->abstract() != mLayerAbstractTextEdit->toPlainText() )
     mMetadataFilled = false;
-  mLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+  mLayer->serverProperties()->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
-  if ( mLayer->keywordList() != mLayerKeywordListLineEdit->text() )
+  if ( mLayer->serverProperties()->keywordList() != mLayerKeywordListLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  mLayer->serverProperties()->setKeywordList( mLayerKeywordListLineEdit->text() );
 
-  if ( mLayer->dataUrl() != mLayerDataUrlLineEdit->text() )
+  if ( mLayer->serverProperties()->dataUrl() != mLayerDataUrlLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+  mLayer->serverProperties()->setDataUrl( mLayerDataUrlLineEdit->text() );
 
-  if ( mLayer->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
+  if ( mLayer->serverProperties()->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
-  mLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+  mLayer->serverProperties()->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
 
   //layer attribution
-  if ( mLayer->attribution() != mLayerAttributionLineEdit->text() )
+  if ( mLayer->serverProperties()->attribution() != mLayerAttributionLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setAttribution( mLayerAttributionLineEdit->text() );
+  mLayer->serverProperties()->setAttribution( mLayerAttributionLineEdit->text() );
 
-  if ( mLayer->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
+  if ( mLayer->serverProperties()->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+  mLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
   // Metadata URL
   QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;

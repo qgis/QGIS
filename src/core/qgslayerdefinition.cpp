@@ -38,7 +38,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 
-bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
+bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
 {
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -62,10 +62,10 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
   context.setPathResolver( QgsPathResolver( path ) );
   context.setProjectTranslator( project );
 
-  return loadLayerDefinition( doc, project, rootGroup, errorMessage, context );
+  return loadLayerDefinition( doc, project, rootGroup, errorMessage, context, insertMethod, insertPoint );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
 {
   errorMessage.clear();
 
@@ -195,7 +195,24 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   root->abandonChildren();
   delete root;
 
-  rootGroup->insertChildNodes( -1, nodes );
+  switch ( insertMethod )
+  {
+    case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+      if ( insertPoint )
+      {
+        insertPoint->group->insertChildNodes( insertPoint->position, nodes );
+      }
+      else
+      {
+        rootGroup->insertChildNodes( -1, nodes );
+      }
+      break;
+    case Qgis::LayerTreeInsertionMethod::TopOfTree:
+      rootGroup->insertChildNodes( 0, nodes );
+      break;
+    default: //Keep current behavior for Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup
+      rootGroup->insertChildNodes( -1, nodes );
+  }
 
   return true;
 }

@@ -43,6 +43,7 @@
 #include "qgssymbollayerreference.h"
 #include "qgsconfig.h"
 #include "qgsprojectstylesettings.h"
+#include "qgsprojectviewsettings.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -848,6 +849,20 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   mScaleBasedVisibilityMinDDBtn->setUsageInfo( ddScaleVisInfo );
   registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::Property::MaximumScale );
   mScaleBasedVisibilityMaxDDBtn->setUsageInfo( ddScaleVisInfo );
+
+  // use either global scales or project scales
+  if ( QgsProject::instance()->viewSettings()->useProjectScales() )
+  {
+    const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
+    mMinScaleWidget->setPredefinedScales( scales );
+    mMaxScaleWidget->setPredefinedScales( scales );
+  }
+  else
+  {
+    // use global scales
+    mMinScaleWidget->updateScales();
+    mMaxScaleWidget->updateScales();
+  }
 
   registerDataDefinedButton( mFontLimitPixelDDBtn, QgsPalLayerSettings::Property::FontLimitPixel );
   mFontLimitPixelDDBtn->registerCheckedWidget( mFontLimitPixelChkBox );

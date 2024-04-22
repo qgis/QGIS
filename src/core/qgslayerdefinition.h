@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgslayertreeregistrybridge.h"
 
 #include <QString>
 #include <QVector>
@@ -44,10 +45,31 @@ class QgsProject;
 class CORE_EXPORT QgsLayerDefinition
 {
   public:
-    //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT );
-    //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context );
+
+    /**
+     * Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
+     * \param path file path to the qlr
+     * \param project the current project
+     * \param rootGroup the layer tree group to insert the qlr content
+     * \param errorMessage the returned error message
+     * \param insertMethod method for layer tree (since QGIS 3.38)
+     * \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
+     * \return true in case of success
+    */
+    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
+
+    /**
+     * Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
+     *  \param doc the xml document
+     *  \param project the current project
+     *  \param rootGroup the layer tree group to insert the qlr content
+     *  \param errorMessage the returned error message
+     *  \param context the read write context
+     *  \param insertMethod method for layer tree (since QGIS 3.38)
+     *  \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
+     *  \return true in case of success
+     */
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
 
     /**
      * Exports the selected layer tree nodes to a QLR file.

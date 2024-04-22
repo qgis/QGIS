@@ -26,6 +26,7 @@
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsrastersinglecolorrenderer.h"
 #include "qgshillshaderenderer.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -62,6 +63,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsSingleBandPseudoColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandcolordata" ), QObject::tr( "Singleband color data" ),
                                           QgsSingleBandColorDataRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlecolor" ), QObject::tr( "Single color" ),
+                                          QgsRasterSingleColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "hillshade" ), QObject::tr( "Hillshade" ),
                                           QgsHillshadeRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "contour" ), QObject::tr( "Contours" ),

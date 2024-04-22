@@ -155,16 +155,16 @@ void QgsVectorTileLayerProperties::apply()
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
   //layer title and abstract
-  mLayer->setShortName( mLayerShortNameLineEdit->text() );
-  mLayer->setTitle( mLayerTitleLineEdit->text() );
-  mLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
-  mLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
-  mLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
-  mLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+  mLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
+  mLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
+  mLayer->serverProperties()->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+  mLayer->serverProperties()->setKeywordList( mLayerKeywordListLineEdit->text() );
+  mLayer->serverProperties()->setDataUrl( mLayerDataUrlLineEdit->text() );
+  mLayer->serverProperties()->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
 
   //layer attribution
-  mLayer->setAttribution( mLayerAttributionLineEdit->text() );
-  mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+  mLayer->serverProperties()->setAttribution( mLayerAttributionLineEdit->text() );
+  mLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
   // LegendURL
   mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
@@ -234,19 +234,19 @@ void QgsVectorTileLayerProperties::syncToLayer()
    * Server
    */
   //layer title and abstract
-  mLayer->setShortName( mLayerShortNameLineEdit->text() );
-  mLayerTitleLineEdit->setText( mLayer->title() );
-  mLayerAbstractTextEdit->setPlainText( mLayer->abstract() );
-  mLayerKeywordListLineEdit->setText( mLayer->keywordList() );
-  mLayerDataUrlLineEdit->setText( mLayer->dataUrl() );
+  mLayerShortNameLineEdit->setText( mLayer->serverProperties()->shortName() );
+  mLayerTitleLineEdit->setText( mLayer->serverProperties()->title() );
+  mLayerAbstractTextEdit->setPlainText( mLayer->serverProperties()->abstract() );
+  mLayerKeywordListLineEdit->setText( mLayer->serverProperties()->keywordList() );
+  mLayerDataUrlLineEdit->setText( mLayer->serverProperties()->dataUrl() );
   mLayerDataUrlFormatComboBox->setCurrentIndex(
     mLayerDataUrlFormatComboBox->findText(
-      mLayer->dataUrlFormat()
+      mLayer->serverProperties()->dataUrlFormat()
     )
   );
   //layer attribution
-  mLayerAttributionLineEdit->setText( mLayer->attribution() );
-  mLayerAttributionUrlLineEdit->setText( mLayer->attributionUrl() );
+  mLayerAttributionLineEdit->setText( mLayer->serverProperties()->attribution() );
+  mLayerAttributionUrlLineEdit->setText( mLayer->serverProperties()->attributionUrl() );
 
   // layer legend url
   mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );

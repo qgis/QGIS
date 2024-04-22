@@ -23,6 +23,8 @@
 #include "qgsdatetimeedit.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsunittypes.h"
+
 #include <QMenu>
 #include <QAction>
 
@@ -48,7 +50,26 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   }
   mModeComboBox->addItem( tr( "Fixed Time Range" ), QVariant::fromValue( Qgis::RasterTemporalMode::FixedTemporalRange ) );
   mModeComboBox->addItem( tr( "Fixed Time Range Per Band" ), QVariant::fromValue( Qgis::RasterTemporalMode::FixedRangePerBand ) );
+  mModeComboBox->addItem( tr( "Represents Temporal Values" ), QVariant::fromValue( Qgis::RasterTemporalMode::RepresentsTemporalValues ) );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QVariant::fromValue( Qgis::RasterTemporalMode::RedrawLayerOnly ) );
+
+  for ( const Qgis::TemporalUnit unit :
+        {
+          Qgis::TemporalUnit::Milliseconds,
+          Qgis::TemporalUnit::Seconds,
+          Qgis::TemporalUnit::Minutes,
+          Qgis::TemporalUnit::Hours,
+          Qgis::TemporalUnit::Days,
+          Qgis::TemporalUnit::Weeks,
+          Qgis::TemporalUnit::Months,
+          Qgis::TemporalUnit::Years,
+          Qgis::TemporalUnit::Decades,
+          Qgis::TemporalUnit::Centuries,
+        } )
+  {
+    mScaleUnitComboBox->addItem( QgsUnitTypes::toString( unit ), static_cast< int >( unit ) );
+  }
+  mScaleUnitComboBox->setCurrentIndex( mScaleUnitComboBox->findData( static_cast< int >( Qgis::TemporalUnit::Days ) ) );
 
   mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
@@ -65,6 +86,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
 
   mStartTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
   mEndTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
+  mOffsetDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
 
   QMenu *calculateFixedRangePerBandMenu = new QMenu( mCalculateFixedRangePerBandButton );
   mCalculateFixedRangePerBandButton->setMenu( calculateFixedRangePerBandMenu );
@@ -93,12 +115,18 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( mLayer->temporalProperties() );
 
   temporalProperties->setMode( mModeComboBox->currentData().value< Qgis::RasterTemporalMode >() );
+  temporalProperties->setBandNumber( mBandComboBox->currentBand() );
 
   const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                        mEndTemporalDateTimeEdit->dateTime() );
   temporalProperties->setFixedTemporalRange( normalRange );
 
   temporalProperties->setFixedRangePerBand( mFixedRangePerBandModel->rangeData() );
+
+  temporalProperties->setTemporalRepresentationOffset( mOffsetDateTimeEdit->dateTime() );
+
+  const QgsInterval scale( mScaleSpinBox->value(), static_cast< Qgis::TemporalUnit >( mScaleUnitComboBox->currentData().toInt() ) );
+  temporalProperties->setTemporalRepresentationScale( scale );
 
   for ( QgsMapLayerConfigWidget *widget : std::as_const( mExtraWidgets ) )
   {
@@ -124,7 +152,13 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
     case Qgis::RasterTemporalMode::FixedRangePerBand:
       mStackedWidget->setCurrentWidget( mPageFixedRangePerBand );
       break;
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+      mStackedWidget->setCurrentWidget( mPageRepresentsTemporalValues );
+      break;
   }
+
+  mBandComboBox->setLayer( mLayer );
+  mBandComboBox->setBand( temporalProperties->bandNumber() );
 
   mStartTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
@@ -133,6 +167,11 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
+
+  mOffsetDateTimeEdit->setDateTime( temporalProperties->temporalRepresentationOffset() );
+
+  mScaleSpinBox->setValue( temporalProperties->temporalRepresentationScale().originalDuration() );
+  mScaleUnitComboBox->setCurrentIndex( mScaleUnitComboBox->findData( static_cast< int >( temporalProperties->temporalRepresentationScale().originalUnit() ) ) );
 
   mTemporalGroupBox->setChecked( temporalProperties->isActive() );
 
@@ -173,6 +212,9 @@ void QgsRasterLayerTemporalPropertiesWidget::modeChanged()
         break;
       case Qgis::RasterTemporalMode::FixedRangePerBand:
         mStackedWidget->setCurrentWidget( mPageFixedRangePerBand );
+        break;
+      case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+        mStackedWidget->setCurrentWidget( mPageRepresentsTemporalValues );
         break;
     }
   }

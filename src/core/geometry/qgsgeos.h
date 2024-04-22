@@ -21,12 +21,51 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometry.h"
+#include "qgsconfig.h"
 #include <geos_c.h>
 
 class QgsLineString;
 class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
+
+#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#include <QThreadStorage>
+#endif
+
+/**
+   * \class QgsGeosContext
+   * \ingroup core
+   * \brief Used to create and store a proj context object, correctly freeing the context upon destruction.
+   * \note Not available in Python bindings
+   * \since QGIS 3.38
+   */
+class CORE_EXPORT QgsGeosContext
+{
+  public:
+
+    QgsGeosContext();
+    ~QgsGeosContext();
+
+    /**
+     * Returns a thread local instance of a GEOS context, safe for use in the current thread.
+     */
+    static GEOSContextHandle_t get();
+
+  private:
+    GEOSContextHandle_t mContext = nullptr;
+
+    /**
+     * Thread local GEOS context storage. A new GEOS context will be created
+     * for every thread.
+     */
+
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+    static thread_local QgsGeosContext sGeosContext;
+#else
+    static QThreadStorage< QgsGeosContext * > sGeosContext;
+#endif
+};
 
 /**
  * Contains geos related utilities and functions.
@@ -659,9 +698,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     static geos::unique_ptr asGeos( const QgsAbstractGeometry *geometry, double precision = 0, bool allowInvalidSubGeom = true );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
-
-    static GEOSContextHandle_t getGEOSHandler();
-
 
   private:
     mutable geos::unique_ptr mGeos;

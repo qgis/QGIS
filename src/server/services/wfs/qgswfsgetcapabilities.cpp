@@ -475,7 +475,7 @@ namespace QgsWfs
 
       //create Title
       QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-      QString title = layer->title();
+      QString title = layer->serverProperties()->title();
       if ( title.isEmpty() )
       {
         title = layer->name();
@@ -485,7 +485,7 @@ namespace QgsWfs
       layerElem.appendChild( titleElem );
 
       //create Abstract
-      const QString abstract = layer->abstract();
+      const QString abstract = layer->serverProperties()->abstract();
       if ( !abstract.isEmpty() )
       {
         QDomElement abstractElem = doc.createElement( QStringLiteral( "Abstract" ) );
@@ -495,7 +495,7 @@ namespace QgsWfs
       }
 
       //create keywords
-      const QString keywords = layer->keywordList();
+      const QString keywords = layer->serverProperties()->keywordList();
       if ( !keywords.isEmpty() )
       {
         QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );

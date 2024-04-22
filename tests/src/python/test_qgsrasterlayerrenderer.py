@@ -21,16 +21,19 @@ from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsGeometry,
+    QgsInterval,
     QgsMapClippingRegion,
     QgsMapSettings,
     QgsRasterLayer,
     QgsRectangle,
     QgsDoubleRange,
     QgsSingleBandGrayRenderer,
+    QgsRasterContourRenderer,
     QgsContrastEnhancement,
     QgsRasterLayerElevationProperties,
     QgsProperty,
-    QgsDateTimeRange
+    QgsDateTimeRange,
+    QgsLineSymbol
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -123,6 +126,46 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
             self.render_map_settings_check(
                 'Z range filter on map settings, elevation enabled layer with offset and scale',
                 'dem_filter_offset_and_scale',
+                map_settings)
+        )
+
+    def test_contour_render_dem_with_z_range_filter(self):
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, '3d', 'dtm.tif'))
+        renderer = QgsRasterContourRenderer(raster_layer.dataProvider())
+        renderer.setContourInterval(10)
+        renderer.setContourSymbol(
+            QgsLineSymbol.createSimple({'width': 1})
+        )
+        renderer.setContourIndexInterval(0)
+
+        raster_layer.setRenderer(renderer)
+
+        self.assertTrue(raster_layer.isValid())
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+        map_settings.setZRange(QgsDoubleRange(96, 132))
+
+        # set layer as elevation enabled
+        raster_layer.elevationProperties().setEnabled(True)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, contour renderer',
+                'dem_filter_contour',
+                map_settings)
+        )
+
+        # with offset and scaling
+        raster_layer.elevationProperties().setZOffset(50)
+        raster_layer.elevationProperties().setZScale(0.75)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Z range filter on map settings, contour renderer, elevation enabled layer with offset and scale',
+                'dem_filter_contour_offset_and_scale',
                 map_settings)
         )
 
@@ -514,6 +557,57 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
             self.render_map_settings_check(
                 'Temporal range filter on map settings outside of layer band ranges',
                 'fixed_elevation_range_excluded',
+                map_settings)
+        )
+
+    def test_render_represents_temporal_values(self):
+        """
+        Test rendering a raster with its temporal properties' mode set
+        to represents temporal values
+        """
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, 'scaleoffset.tif'))
+        self.assertTrue(raster_layer.isValid())
+
+        renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
+        raster_layer.setRenderer(renderer)
+
+        # set layer as temporal enabled
+        raster_layer.temporalProperties().setIsActive(True)
+        raster_layer.temporalProperties().setMode(
+            Qgis.RasterTemporalMode.RepresentsTemporalValues
+        )
+        raster_layer.temporalProperties().setBandNumber(1)
+        raster_layer.temporalProperties().setTemporalRepresentationOffset(QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
+        raster_layer.temporalProperties().setTemporalRepresentationScale(QgsInterval(1, Qgis.TemporalUnit.Days))
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+
+        # no filter on map settings
+        map_settings.setIsTemporal(False)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'No temporal range filter on map settings on represents temporal values mode',
+                'represents_temporal_values_no_filter',
+                map_settings)
+        )
+
+        # map settings matches part of the overall range
+        map_settings.setIsTemporal(True)
+        map_settings.setTemporalRange(QgsDateTimeRange(
+            QDateTime(QDate(2024, 1, 1),
+                      QTime(0, 0, 0)),
+            QDateTime(QDate(2024, 1, 5),
+                      QTime(23, 59, 59))
+        ))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'Temporal range filter on map settings on represents temporal values mode',
+                'represents_temporal_values_filter',
                 map_settings)
         )
 

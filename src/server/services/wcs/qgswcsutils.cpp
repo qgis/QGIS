@@ -43,8 +43,8 @@ namespace QgsWcs
     // create name
     QDomElement nameElem = doc.createElement( QStringLiteral( "name" ) );
     QString name = layer->name();
-    if ( !layer->shortName().isEmpty() )
-      name = layer->shortName();
+    if ( !layer->serverProperties()->shortName().isEmpty() )
+      name = layer->serverProperties()->shortName();
     name = name.replace( ' ', '_' );
     const QDomText nameText = doc.createTextNode( name );
     nameElem.appendChild( nameText );
@@ -52,7 +52,7 @@ namespace QgsWcs
 
     // create label
     QDomElement labelElem = doc.createElement( QStringLiteral( "label" ) );
-    QString title = layer->title();
+    QString title = layer->serverProperties()->title();
     if ( title.isEmpty() )
     {
       title = layer->name();
@@ -62,7 +62,7 @@ namespace QgsWcs
     layerElem.appendChild( labelElem );
 
     //create description
-    const QString abstract = layer->abstract();
+    const QString abstract = layer->serverProperties()->abstract();
     if ( !abstract.isEmpty() )
     {
       QDomElement descriptionElem = doc.createElement( QStringLiteral( "description" ) );

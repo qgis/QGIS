@@ -30,6 +30,7 @@ class QUndoView;
 class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
+class QgsProcessingAlgorithmDialogBase;
 
 ///@cond NOT_STABLE
 
@@ -126,6 +127,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
     virtual bool saveModel( bool saveAs = false ) = 0;
+    // cppcheck-suppress pureVirtualCall
+    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
@@ -149,14 +152,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     bool checkForUnsavedChanges();
 
     /**
-     * Sets the results of child algorithms for the last run of the model through the designer window.
+     * Sets the \a result of the last run of the model through the designer window.
      */
-    void setLastRunChildAlgorithmResults( const QVariantMap &results );
-
-    /**
-     * Sets the inputs for child algorithms for the last run of the model through the designer window.
-     */
-    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+    void setLastRunResult( const QgsProcessingModelResult &result );
 
     /**
      * Sets the model \a name.
@@ -186,6 +184,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void reorderOutputs();
     void setPanelVisibility( bool hidden );
     void editHelp();
+    void run();
+    void showChildAlgorithmOutputs( const QString &childId );
+    void showChildAlgorithmLog( const QString &childId );
 
   private:
 
@@ -229,8 +230,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     int mBlockRepaints = 0;
 
-    QVariantMap mChildResults;
-    QVariantMap mChildInputs;
+    QgsProcessingModelResult mLastResult;
 
     bool isDirty() const;
 
@@ -247,6 +247,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
       bool isActive;
     };
     QMap< QString, PanelStatus > mPanelStatus;
+
+    QgsProcessingContext mLayerStore;
 };
 
 

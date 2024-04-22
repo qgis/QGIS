@@ -23,6 +23,7 @@
 #include <cmath>
 
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolrotatefeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
@@ -414,11 +415,37 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   request.setFilterFids( mRotatedFeatures ).setNoAttributes();
   QgsFeatureIterator fi = vlayer->getFeatures( request );
   QgsFeature f;
+
+  QgsAvoidIntersectionsOperation avoidIntersections;
+  connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
+
+  // when removing intersections don't check for intersections with selected features
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{vlayer, mRotatedFeatures}};
+
   while ( fi.nextFeature( f ) )
   {
     const QgsFeatureId id = f.id();
     QgsGeometry geom = f.geometry();
     geom.rotate( mRotation, anchorPoint );
+
+    if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
+    {
+      const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, id, geom, ignoreFeatures );
+
+      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
+      {
+        const QString errorMessage = ( geom.isEmpty() ) ?
+                                     tr( "The feature cannot be rotated because the resulting geometry would be empty" ) :
+                                     tr( "An error was reported during intersection removal" );
+
+        emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
+        vlayer->destroyEditCommand();
+        deleteRotationWidget();
+        deleteRubberband();
+        return;
+      }
+    }
+
     vlayer->changeGeometry( id, geom );
   }
 

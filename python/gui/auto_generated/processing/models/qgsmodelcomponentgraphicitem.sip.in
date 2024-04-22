@@ -396,14 +396,25 @@ Ownership of ``child`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-    void setResults( const QVariantMap &results );
+    void setResults( const QgsProcessingModelChildAlgorithmResult &results );
 %Docstring
-Sets the results obtained for this child algorithm for the last model execution through the dialog.
+Sets the ``results`` obtained for this child algorithm for the last model execution through the dialog.
 %End
 
-    void setInputs( const QVariantMap &inputs );
+  signals:
+
+    void showPreviousResults();
 %Docstring
-Sets the inputs used for this child algorithm for the last model execution through the dialog.
+Emitted when the user opts to view previous results from this child algorithm.
+
+.. versionadded:: 3.38
+%End
+
+    void showLog();
+%Docstring
+Emitted when the user opts to view the previous log from this child algorithm.
+
+.. versionadded:: 3.38
 %End
 
   protected:

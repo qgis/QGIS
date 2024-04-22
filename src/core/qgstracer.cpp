@@ -558,7 +558,7 @@ bool QgsTracer::initGraph()
     t2a.start();
     // GEOSNode_r may throw an exception
     geos::unique_ptr allGeomGeos( QgsGeos::asGeos( allGeom ) );
-    geos::unique_ptr allNoded( GEOSNode_r( QgsGeos::getGEOSHandler(), allGeomGeos.get() ) );
+    geos::unique_ptr allNoded( GEOSNode_r( QgsGeosContext::get(), allGeomGeos.get() ) );
     timeNodingCall = t2a.elapsed();
 
     QgsGeometry noded = QgsGeos::geometryFromGeos( allNoded.release() );

@@ -2012,7 +2012,7 @@ Deletes a list of attribute fields (but does not commit it)
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) ${SIP_FINAL};
 
 
-    bool deleteFeature( QgsFeatureId fid, DeleteContext *context = 0 );
+    bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes a feature from the layer (but does not commit it).
 
@@ -2027,7 +2027,7 @@ Deletes a feature from the layer (but does not commit it).
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
-    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = 0 );
+    bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes a set of features from the layer (but does not commit it)
 
@@ -2271,14 +2271,14 @@ Sets the configuration flags of the field at given index
 
 .. seealso:: :py:func:`QgsField.configurationFlags`
 
-.. versionadded:: 3.16
+.. versionadded:: 3.34
 %End
 
     void setFieldConfigurationFlag( int index, Qgis::FieldConfigurationFlag flag, bool active );
 %Docstring
 Sets the given configuration ``flag`` for the field at given ``index`` to be ``active`` or not.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.34
 %End
 
     Qgis::FieldConfigurationFlags fieldConfigurationFlags( int index ) const;
@@ -2287,7 +2287,7 @@ Returns the configuration flags of the field at given index
 
 .. seealso:: :py:func:`QgsField.setConfigurationFlags`
 
-.. versionadded:: 3.16
+.. versionadded:: 3.34
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );

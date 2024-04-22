@@ -24,7 +24,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
-
+#include "qgsprocessingmodelresult.h"
 
 #include <QThread>
 #include <QPointer>
@@ -89,6 +89,7 @@ class CORE_EXPORT QgsProcessingContext
       mLogLevel = other.mLogLevel;
       mTemporaryFolderOverride = other.mTemporaryFolderOverride;
       mMaximumThreads = other.mMaximumThreads;
+      mModelResult = other.mModelResult;
     }
 
     /**
@@ -734,6 +735,23 @@ class CORE_EXPORT QgsProcessingContext
      */
     QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
 
+    /**
+     * Returns the model results, populated when the context is used to run a model algorithm.
+     *
+     * \since QGIS 3.38
+     */
+    QgsProcessingModelResult modelResult() const { return mModelResult; }
+
+    /**
+     * Returns a reference to the model results, populated when the context is used
+     * to run a model algorithm.
+     *
+     * \note Not available in Python bindings
+
+     * \since QGIS 3.38
+     */
+    QgsProcessingModelResult &modelResult() SIP_SKIP { return mModelResult; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
@@ -767,6 +785,8 @@ class CORE_EXPORT QgsProcessingContext
 
     QString mTemporaryFolderOverride;
     int mMaximumThreads = QThread::idealThreadCount();
+
+    QgsProcessingModelResult mModelResult;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

@@ -34,6 +34,8 @@ Creates a contour renderer
 %Docstring
 QgsRasterContourRenderer cannot be copied. Use :py:func:`~QgsRasterContourRenderer.clone` instead.
 %End
+    virtual Qgis::RasterRendererFlags flags() const;
+
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 %Docstring

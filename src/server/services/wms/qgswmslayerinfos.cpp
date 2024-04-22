@@ -192,24 +192,24 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
     {
       pLayer.name = ml->id();
     }
-    else if ( !ml->shortName().isEmpty() )
+    else if ( !ml->serverProperties()->shortName().isEmpty() )
     {
-      pLayer.name = ml->shortName();
+      pLayer.name = ml->serverProperties()->shortName();
     }
     // layer title
-    pLayer.title = ml->title();
+    pLayer.title = ml->serverProperties()->title();
     if ( pLayer.title.isEmpty() )
     {
       pLayer.title = ml->name();
     }
     // layer abstract
-    pLayer.abstract = ml->abstract();
+    pLayer.abstract = ml->serverProperties()->abstract();
     // layer is queryable
     pLayer.queryable = ml->flags().testFlag( QgsMapLayer::Identifiable );
     // layer keywords
-    if ( !ml->keywordList().isEmpty() )
+    if ( !ml->serverProperties()->keywordList().isEmpty() )
     {
-      pLayer.keywords = ml->keywordList().split( ',' );
+      pLayer.keywords = ml->serverProperties()->keywordList().split( ',' );
     }
     // layer styles
     pLayer.styles = ml->styleManager()->styles();
@@ -225,10 +225,10 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
       pLayer.minScale = ml->minimumScale();
     }
     // layer data URL
-    pLayer.dataUrl = ml->dataUrl();
+    pLayer.dataUrl = ml->serverProperties()->dataUrl();
     // layer attribution
-    pLayer.attribution = ml->attribution();
-    pLayer.attributionUrl = ml->attributionUrl();
+    pLayer.attribution = ml->serverProperties()->attribution();
+    pLayer.attributionUrl = ml->serverProperties()->attributionUrl();
     // layer metadata URLs
     pLayer.metadataUrls = ml->serverProperties()->metadataUrls();
 

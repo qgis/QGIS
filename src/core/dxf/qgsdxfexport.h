@@ -73,11 +73,12 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      */
     struct CORE_EXPORT DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = false, int ddBlocksMaxNumberOfClasses = -1 )
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() )
           : mLayer( vl )
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
           , mBuildDDBlocks( buildDDBlocks )
           , mDDBlocksMaxNumberOfClasses( ddBlocksMaxNumberOfClasses )
+          , mOverriddenName( overriddenName )
         {}
 
         //! Returns the layer
@@ -112,6 +113,12 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
          */
         int dataDefinedBlocksMaximumNumberOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
 
+        /**
+        * \brief Returns the overridden layer name to be used in the exported DXF.
+        * \since QGIS 3.38
+        */
+        QString overriddenName() const { return mOverriddenName; }
+
       private:
         QgsVectorLayer *mLayer = nullptr;
         int mLayerOutputAttributeIndex = -1;
@@ -125,6 +132,11 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
          * \brief Limit for the number of data defined symbol block classes (keep only the most used ones). -1 means no limit
          */
         int mDDBlocksMaxNumberOfClasses = -1;
+
+        /**
+         * \brief Overridden name of the layer to be exported to DXF
+         */
+        QString mOverriddenName;
     };
 
     //! Export flags
@@ -667,6 +679,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QList<QgsMapLayer *> mLayerList;
     QHash<QString, int> mLayerNameAttribute;
     QHash<QString, int> mLayerDDBlockMaxNumberOfClasses;
+    QHash<QString, QString> mLayerOverriddenName;
     double mFactor = 1.0;
     bool mForce2d = false;
 

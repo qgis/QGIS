@@ -1151,6 +1151,7 @@ class CORE_EXPORT Qgis
     enum class RasterRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       InternalLayerOpacityHandling = 1 << 0, //!< The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied.
+      UseNoDataForOutOfRangePixels = 1 << 1, //!< Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values (since QGIS 3.38)
     };
 
     /**
@@ -2145,6 +2146,7 @@ class CORE_EXPORT Qgis
       TemporalRangeFromDataProvider SIP_MONKEYPATCH_COMPAT_NAME( ModeTemporalRangeFromDataProvider ) = 1, //!< Mode when raster layer delegates temporal range handling to the dataprovider.
       RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ) = 2, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. (since QGIS 3.22)
       FixedRangePerBand = 3, //!< Layer has a fixed temporal range per band (since QGIS 3.38)
+      RepresentsTemporalValues = 4, //!< Pixel values represent an datetime
     };
     Q_ENUM( RasterTemporalMode )
 
@@ -3142,6 +3144,19 @@ class CORE_EXPORT Qgis
       ModelOutput, //!< Parameter value is linked to an output parameter for the model
     };
     Q_ENUM( ProcessingModelChildParameterSource )
+
+    /**
+     * Reflects the status of a child algorithm in a Processing model.
+     *
+     * \since QGIS 3.38
+     */
+    enum class ProcessingModelChildAlgorithmExecutionStatus : int
+    {
+      NotExecuted, //!< Child has not been executed
+      Success, //!< Child was successfully executed
+      Failed, //!< Child encountered an error while executing
+    };
+    Q_ENUM( ProcessingModelChildAlgorithmExecutionStatus )
 
     /**
      * Defines the type of input layer for a Processing TIN input.

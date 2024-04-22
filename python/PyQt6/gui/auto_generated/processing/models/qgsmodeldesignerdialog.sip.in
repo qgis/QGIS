@@ -94,6 +94,8 @@ Raise, unminimize and activate this window.
 
     virtual bool saveModel( bool saveAs = false ) = 0;
 
+    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 /TransferBack/;
+
     QToolBar *toolbar();
     QAction *actionOpen();
     QAction *actionSaveInProject();
@@ -115,14 +117,9 @@ Checks if there are unsaved changes in the model, and if so, prompts the user to
 Returns ``False`` if the cancel option was selected
 %End
 
-    void setLastRunChildAlgorithmResults( const QVariantMap &results );
+    void setLastRunResult( const QgsProcessingModelResult &result );
 %Docstring
-Sets the results of child algorithms for the last run of the model through the designer window.
-%End
-
-    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
-%Docstring
-Sets the inputs for child algorithms for the last run of the model through the designer window.
+Sets the ``result`` of the last run of the model through the designer window.
 %End
 
     void setModelName( const QString &name );

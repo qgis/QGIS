@@ -2117,6 +2117,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void annotationItemTypeAdded( int id );
 
+    /**
+     * Open a qlr file
+    */
+    void addLayerDefinition();
+
   signals:
 
     /**

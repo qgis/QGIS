@@ -369,35 +369,84 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns the project's native coordinate reference system.
+     *
      * \see setCrs()
+     * \see verticalCrs()
      * \see ellipsoid()
+     * \see crsChanged()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the project's native coordinate reference system.
-     * If \a adjustEllipsoid is set to TRUE, the ellpsoid of this project will be set to
+     *
+     * If \a adjustEllipsoid is set to TRUE, the ellipsoid of this project will be set to
      * the ellipsoid imposed by the CRS.
      *
+     * Changing the CRS will trigger a crsChanged() signal. Additionally, if \a crs is a compound
+     * CRS, then the verticalCrsChanged() signal will also be emitted.
+     *
      * \see crs()
+     * \see crsChanged()
+     * \see setVerticalCrs()
      * \see setEllipsoid()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 
     /**
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
+     *
      * \see setEllipsoid()
      * \see crs()
+     * \see verticalCrs()
      */
     QString ellipsoid() const;
 
     /**
-     * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
+     * Sets the project's \a ellipsoid from a proj string representation, e.g., "WGS84".
+     *
      * \see ellipsoid()
      * \see setCrs()
+     * \see setVerticalCrs()
      */
     void setEllipsoid( const QString &ellipsoid );
 
+    /**
+     * Returns the project's vertical coordinate reference system.
+     *
+     * If the project crs() is a compound CRS, then the CRS returned will
+     * be the vertical component of crs(). Otherwise it will be the value
+     * explicitly set by a call to setVerticalCrs().
+     *
+     * The returned CRS will be invalid if the project has no vertical CRS.
+     *
+     * \see crs()
+     * \see setVerticalCrs()
+     *
+     * \since QGIS 3.38
+     */
+    QgsCoordinateReferenceSystem verticalCrs() const;
+
+    /**
+     * Sets the project's vertical coordinate reference system.
+     *
+     * The verticalCrsChanged() signal will be raised if the vertical CRS is changed.
+     *
+     * \note If the project crs() is a compound CRS, then the CRS returned for
+     * verticalCrs() will be the vertical component of crs(). Otherwise it will be the value
+     * explicitly set by this call.
+     *
+     * \param crs the vertical CRS
+     * \param errorMessage will be set to a descriptive message if the vertical CRS could not be set
+     *
+     * \returns TRUE if vertical CRS was successfully set
+     *
+     * \see verticalCrs()
+     * \see setCrs()
+     *
+     * \since QGIS 3.38
+     */
+    bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Returns a copy of the project's coordinate transform context, which stores various
@@ -1136,7 +1185,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapLayer()
      * \see mapLayers()
      */
-    QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
+    Q_INVOKABLE QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /**
      * Retrieves a list of matching registered layers by layer \a shortName.
@@ -1201,9 +1250,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       const auto constMapLayers { mLayerStore->layers<T>() };
       for ( const auto l : constMapLayers )
       {
-        if ( ! l->shortName().isEmpty() )
+        if ( ! l->serverProperties()->shortName().isEmpty() )
         {
-          if ( l->shortName() == shortName )
+          if ( l->serverProperties()->shortName() == shortName )
             layers << l;
         }
         else if ( l->name() == shortName )
@@ -1772,8 +1821,28 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the CRS of the project has changed.
      *
+     * \see crs()
+     * \see setCrs()
+     * \see verticalCrsChanged()
+     * \see ellipsoidChanged()
      */
     void crsChanged();
+
+    /**
+     * Emitted when the vertical CRS of the project has changed.
+     *
+     * This signal will be emitted whenever the vertical CRS of the project is changed, either
+     * as a direct result of a call to setVerticalCrs() or when setCrs() is called with a compound
+     * CRS.
+     *
+     * \see crsChanged()
+     * \see setCrs()
+     * \see setVerticalCrs()
+     * \see verticalCrs()
+     *
+     * \since QGIS 3.38
+     */
+    void verticalCrsChanged();
 
     /**
      * Emitted when the project \a ellipsoid is changed.
@@ -2334,6 +2403,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     Qgis::ProjectFlags mFlags;
     QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateReferenceSystem mVerticalCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
 
@@ -2351,6 +2421,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
+    bool mBlockChangeSignalsDuringClear = false;
     int mBlockSnappingUpdates = 0;
 
     QgsElevationShadingRenderer mElevationShadingRenderer;

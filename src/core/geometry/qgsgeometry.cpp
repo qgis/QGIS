@@ -1486,10 +1486,9 @@ bool QgsGeometry::contains( const QgsPointXY *p ) const
     return false;
   }
 
-  QgsPoint pt( p->x(), p->y() );
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  return geos.contains( &pt, &mLastError );
+  return geos.contains( p->x(), p->y(), &mLastError );
 }
 
 bool QgsGeometry::contains( double x, double y ) const
@@ -1499,10 +1498,9 @@ bool QgsGeometry::contains( double x, double y ) const
     return false;
   }
 
-  QgsPoint pt( x, y );
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  return geos.contains( &pt, &mLastError );
+  return geos.contains( x, y, &mLastError );
 }
 
 bool QgsGeometry::contains( const QgsGeometry &geometry ) const

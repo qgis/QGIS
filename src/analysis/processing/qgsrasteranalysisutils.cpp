@@ -61,7 +61,7 @@ void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, co
 
 void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox,  const std::function<void( double )> &addValue, bool skipNodata )
 {
-  std::unique_ptr< QgsGeometryEngine > polyEngine( QgsGeometry::createGeometryEngine( poly.constGet( ) ) );
+  std::unique_ptr< QgsGeos > polyEngine = std::make_unique< QgsGeos >( poly.constGet( ) );
   if ( !polyEngine )
   {
     return;
@@ -90,8 +90,7 @@ void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *
         const double pixelValue = block->valueAndNoData( row, col, isNoData );
         if ( validPixel( pixelValue ) && ( !skipNodata || !isNoData ) )
         {
-          QgsPoint cellCenter( cellCenterX, cellCenterY );
-          if ( polyEngine->contains( &cellCenter ) )
+          if ( polyEngine->contains( cellCenterX, cellCenterY ) )
           {
             addValue( pixelValue );
           }

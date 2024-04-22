@@ -499,8 +499,8 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         wmsLayer[ "extent" ] = { l->extent().xMinimum(), l->extent().yMinimum(), l->extent().xMaximum(), l->extent().yMaximum() };
 
         // Fill maps
-        const QString layerTitle { l->title().isEmpty() ? l->name() : l->title() };
-        const QString shortName { ! l->shortName().isEmpty() ? l->shortName() : l->name() };
+        const QString layerTitle { l->serverProperties()->title().isEmpty() ? l->name() : l->serverProperties()->title() };
+        const QString shortName { ! l->serverProperties()->shortName().isEmpty() ? l->serverProperties()->shortName() : l->name() };
         const std::string layerIdentifier { useIds ? l->id().toStdString() : shortName.toStdString() };
         wmsLayersTypenameIdMap[ layerIdentifier ] = l->id().toStdString();
         wmsLayersTitleIdMap[ layerTitle.toStdString() ] = layerIdentifier;
@@ -601,12 +601,12 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
         rec[ "queryable" ] = wmsLayersQueryable.contains( l->layerId() );
         rec[ "searchable" ] = wmsLayersSearchable.contains( l->layerId() );
         rec[ "wfs_enabled" ] = wfsLayerIds.contains( l->layerId() );
-        const QString layerName { l->layer()->shortName().isEmpty() ? l->layer()->name() : l->layer()->shortName()};
+        const QString layerName { l->layer()->serverProperties()->shortName().isEmpty() ? l->layer()->name() : l->layer()->serverProperties()->shortName()};
         rec[ "typename" ] = useIds ? l->layer()->id().toStdString() : layerName.toStdString();
         // Override title
-        if ( ! l->layer()->title().isEmpty() )
+        if ( ! l->layer()->serverProperties()->title().isEmpty() )
         {
-          title = l->layer()->title();
+          title = l->layer()->serverProperties()->title();
         }
       }
       else

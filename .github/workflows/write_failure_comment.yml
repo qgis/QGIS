@@ -1,9 +1,5 @@
 name: Write test failure comment
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 on:
   workflow_run:
     workflows: [🧪 QGIS tests]

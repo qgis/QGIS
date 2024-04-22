@@ -281,6 +281,7 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelgroupbox.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
+  processing/models/qgsprocessingmodelresult.cpp
 
   providers/qgsabstractproviderconnection.cpp
   providers/qgsabstractdatabaseproviderconnection.cpp
@@ -784,6 +785,7 @@ set(QGIS_CORE_SRCS
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
+  raster/qgsrastersinglecolorrenderer.cpp
   raster/qgshillshaderenderer.cpp
 
   mesh/qgsmesh3daveraging.cpp
@@ -1743,6 +1745,7 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelgroupbox.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h
+  processing/models/qgsprocessingmodelresult.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingalgrunnertask.h
@@ -1881,6 +1884,7 @@ set(QGIS_CORE_HDRS
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
+  raster/qgsrastersinglecolorrenderer.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgshollowscalebarrenderer.h

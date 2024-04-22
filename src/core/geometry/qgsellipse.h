@@ -256,6 +256,8 @@ class CORE_EXPORT QgsEllipse
   private:
     //! The semi-minor axis is always smaller than the semi-major axis. If it is set larger, it will be swapped and the azimuth will increase by 90 degrees.
     void normalizeAxis();
+
+    void pointsInternal( unsigned int segments, QVector< double> &x, QVector< double> &y, QVector<double> &z, QVector< double> &m ) const;
 };
 
 #endif // QGSELLIPSE_H

@@ -42,6 +42,11 @@ class TestQgsLayerDefinition: public QObject
     void testFindLayers();
 
     /**
+     * Tests loading a qlr placing the content at the top of the layer tree
+     */
+    void testLoadTopOfTree();
+
+    /**
      * test that export does not crash: regression #18981
      * https://github.com/qgis/QGIS/issues/26812 - Save QLR crashes QGIS 3
      */
@@ -88,6 +93,17 @@ void TestQgsLayerDefinition::testFindLayers()
   QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().count(), 2 );
   QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().at( 0 )->name(), QStringLiteral( "DTK/D850" ) );
   QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().at( 1 )->name(), QStringLiteral( "NewMemory" ) );
+}
+
+void TestQgsLayerDefinition::testLoadTopOfTree()
+{
+  QString errorMsg;
+  QgsLayerDefinition::loadLayerDefinition( TEST_DATA_DIR + QStringLiteral( "/vector_and_raster.qlr" ), QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMsg, Qgis::LayerTreeInsertionMethod::TopOfTree );
+  //test if new layers are on top
+  QList<QgsMapLayer *> orderedLayers = QgsProject::instance()->layerTreeRoot()->layerOrder();
+  QCOMPARE( orderedLayers.length(), 3 );
+  QVERIFY( orderedLayers.at( 1 )->name() == QStringLiteral( "rgb256x256" ) );
+  QVERIFY( orderedLayers.at( 0 )->name() == QStringLiteral( "memoryLayer" ) );
 }
 
 void TestQgsLayerDefinition::testExportDoesNotCrash()

@@ -1611,15 +1611,15 @@ double QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit fromUnit, Qgis::Te
         case Qgis::TemporalUnit::Days:
           return 1 / 86400000.0;
         case Qgis::TemporalUnit::Weeks:
-          return 1 / 60480000.0;
+          return 1 / 604800000.0;
         case Qgis::TemporalUnit::Months:
-          return 1 / 259200000.0;
+          return 1 / 2592000000.0;
         case Qgis::TemporalUnit::Years:
-          return 1 / 3155760000.0;
-        case Qgis::TemporalUnit::Decades:
           return 1 / 31557600000.0;
-        case Qgis::TemporalUnit::Centuries:
+        case Qgis::TemporalUnit::Decades:
           return 1 / 315576000000.0;
+        case Qgis::TemporalUnit::Centuries:
+          return 1 / 3155760000000.0;
         case Qgis::TemporalUnit::Unknown:
         case Qgis::TemporalUnit::IrregularStep:
           return 1.0;

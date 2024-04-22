@@ -78,6 +78,11 @@ bool QgsScaleWidget::allowNull() const
   return mScaleComboBox->allowNull();
 }
 
+void QgsScaleWidget::setPredefinedScales( const QVector<double> &scales )
+{
+  mScaleComboBox->setPredefinedScales( scales );
+}
+
 void QgsScaleWidget::setScaleFromCanvas()
 {
   if ( !mCanvas )

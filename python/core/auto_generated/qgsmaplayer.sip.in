@@ -187,6 +187,34 @@ Returns the extension of a Property.
     QString id() const;
 %Docstring
 Returns the layer's unique ID, which is used to access this layer from :py:class:`QgsProject`.
+
+.. seealso:: :py:func:`setId`
+
+.. seealso:: :py:func:`idChanged`
+%End
+
+    bool setId( const QString &id );
+%Docstring
+Sets the layer's ``id``.
+
+Returns ``True`` if the layer ID was successfully changed, or ``False`` if it could not be changed (e.g. because
+the layer is owned by a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`).
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
+   Generally this method should not be called, and the auto generated ID should be used instead.
+
+.. warning::
+
+   This method should not be called on layers which already belong to a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`.
+
+
+.. seealso:: :py:func:`id`
+
+.. seealso:: :py:func:`idChanged`
+
+.. versionadded:: 3.38
 %End
 
     void setName( const QString &name );
@@ -209,156 +237,132 @@ Returns the layer's data provider, it may be ``None``.
 %End
 
 
-    void setShortName( const QString &shortName );
+ void setShortName( const QString &shortName ) /Deprecated/;
 %Docstring
-Sets the short name of the layer
-used by QGIS Server to identify the layer.
+Sets the short name of the layer used by QGIS Server to identify the layer.
 
-.. seealso:: :py:func:`shortName`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setShortName` instead.
 %End
 
-    QString shortName() const;
+ QString shortName() const /Deprecated/;
 %Docstring
-Returns the short name of the layer
-used by QGIS Server to identify the layer.
+Returns the short name of the layer used by QGIS Server to identify the layer.
 
-.. seealso:: :py:func:`setShortName`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.shortName` instead.
 %End
 
-    void setTitle( const QString &title );
+ void setTitle( const QString &title ) /Deprecated/;
 %Docstring
-Sets the title of the layer
-used by QGIS Server in GetCapabilities request.
+Sets the title of the layer used by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`title`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setTitle` instead.
 %End
 
-    QString title() const;
+ QString title() const /Deprecated/;
 %Docstring
-Returns the title of the layer
-used by QGIS Server in GetCapabilities request.
+Returns the title of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer title
-
-.. seealso:: :py:func:`setTitle`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.title` instead.
 %End
 
-    void setAbstract( const QString &abstract );
+ void setAbstract( const QString &abstract ) /Deprecated/;
 %Docstring
-Sets the abstract of the layer
-used by QGIS Server in GetCapabilities request.
+Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`abstract`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAbstract` instead.
 %End
 
-    QString abstract() const;
+ QString abstract() const /Deprecated/;
 %Docstring
-Returns the abstract of the layer
-used by QGIS Server in GetCapabilities request.
+Returns the abstract of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer abstract
-
-.. seealso:: :py:func:`setAbstract`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.abstract` instead.
 %End
 
-    void setKeywordList( const QString &keywords );
+ void setKeywordList( const QString &keywords ) /Deprecated/;
 %Docstring
-Sets the keyword list of the layer
-used by QGIS Server in GetCapabilities request.
+Sets the keyword list of the layerused by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`keywordList`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setKeywordList` instead.
 %End
 
-    QString keywordList() const;
+ QString keywordList() const /Deprecated/;
 %Docstring
-Returns the keyword list of the layer
-used by QGIS Server in GetCapabilities request.
+Returns the keyword list of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer keyword list
-
-.. seealso:: :py:func:`setKeywordList`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.keywordList` instead.
 %End
 
-
-    void setDataUrl( const QString &dataUrl );
+ void setDataUrl( const QString &dataUrl ) /Deprecated/;
 %Docstring
-Sets the DataUrl of the layer
-used by QGIS Server in GetCapabilities request.
-DataUrl is a a link to the underlying data represented by a particular layer.
+Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`dataUrl`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrl` instead.
 %End
 
-    QString dataUrl() const;
+ QString dataUrl() const /Deprecated/;
 %Docstring
-Returns the DataUrl of the layer
-used by QGIS Server in GetCapabilities request.
-DataUrl is a a link to the underlying data represented by a particular layer.
+Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer DataUrl
-
-.. seealso:: :py:func:`setDataUrl`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrl` instead.
 %End
 
-    void setDataUrlFormat( const QString &dataUrlFormat );
+ void setDataUrlFormat( const QString &dataUrlFormat ) /Deprecated/;
 %Docstring
-Sets the DataUrl format of the layer
-used by QGIS Server in GetCapabilities request.
-DataUrl is a a link to the underlying data represented by a particular layer.
+Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`dataUrlFormat`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrlFormat` instead.
 %End
 
-    QString dataUrlFormat() const;
+ QString dataUrlFormat() const /Deprecated/;
 %Docstring
-Returns the DataUrl format of the layer
-used by QGIS Server in GetCapabilities request.
-DataUrl is a a link to the underlying data represented by a particular layer.
+Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer DataUrl format
-
-.. seealso:: :py:func:`setDataUrlFormat`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrlFormat` instead.
 %End
 
-
-    void setAttribution( const QString &attrib );
+ void setAttribution( const QString &attrib ) /Deprecated/;
 %Docstring
-Sets the attribution of the layer
-used by QGIS Server in GetCapabilities request.
-Attribution indicates the provider of a layer or collection of layers.
+Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`attribution`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttribution` instead.
 %End
 
-    QString attribution() const;
+ QString attribution() const /Deprecated/;
 %Docstring
-Returns the attribution of the layer
-used by QGIS Server in GetCapabilities request.
-Attribution indicates the provider of a layer or collection of layers.
+Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer attribution
-
-.. seealso:: :py:func:`setAttribution`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attribution` instead.
 %End
 
-    void setAttributionUrl( const QString &attribUrl );
+ void setAttributionUrl( const QString &attribUrl ) /Deprecated/;
 %Docstring
-Sets the attribution URL of the layer
-used by QGIS Server in GetCapabilities request.
-Attribution indicates the provider of a layer or collection of layers.
+Sets the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`attributionUrl`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttributionUrl` instead.
 %End
 
-    QString attributionUrl() const;
+ QString attributionUrl() const /Deprecated/;
 %Docstring
-Returns the attribution URL of the layer
-used by QGIS Server in GetCapabilities request.
-Attribution indicates the provider of a layer or collection of layers.
+Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
-:return: the layer attribution URL
-
-.. seealso:: :py:func:`setAttributionUrl`
+.. deprecated:: QGIS 3.38
+   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attributionUrl` instead.
 %End
 
 
@@ -1801,6 +1805,17 @@ just before the references of this layer are resolved.
 Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
 %End
 
+    void idChanged( const QString &id );
+%Docstring
+Emitted when the layer's ID has been changed.
+
+.. seealso:: :py:func:`id`
+
+.. seealso:: :py:func:`setId`
+
+.. versionadded:: 3.38
+%End
+
     void nameChanged();
 %Docstring
 Emitted when the name has been changed
@@ -2127,10 +2142,6 @@ happens.
 
 .. versionadded:: 3.20
 %End
-
-
-
-
 
 
 

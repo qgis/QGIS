@@ -630,7 +630,7 @@ void QgsGrassToolsTreeFilterProxyModel::setFilter( const QString &filter )
     return;
   }
   mFilter = filter;
-  mRegExp = QRegularExpression( QRegularExpression::wildcardToRegularExpression( mFilter ), QRegularExpression::CaseInsensitiveOption );
+  mRegExp = QRegularExpression( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( mFilter.trimmed() ) ), QRegularExpression::CaseInsensitiveOption );
 
   invalidateFilter();
 }

@@ -13,91 +13,119 @@
   <property name="windowTitle">
    <string>DXF Export</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="1" column="0">
-    <widget class="QLabel" name="mSymbologyModeLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Symbology mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mSaveAsLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Save as</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mSymbologyModeComboBox"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mSymbologyScaleLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Symbology scale</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="mEncoding"/>
-   </item>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="mSaveAsLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Save as</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsFileWidget" name="mFileName"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mSymbologyModeLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Symbology mode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="mSymbologyModeComboBox"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mSymbologyScaleLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Symbology scale</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsScaleWidget" name="mScaleWidget">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="showCurrentScaleButton">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Encoding</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="mEncoding"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="mSymbologyScaleLabel_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Map themes</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="mVisibilityPresets"/>
+     </item>
    <item row="7" column="0" colspan="2">
      <widget class="QWidget" name="mTreeViewContainer">
     <layout class="QHBoxLayout" name="mTreeViewLayout"/>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QgsScaleWidget" name="mScaleWidget">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-     <property name="showCurrentScaleButton">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QComboBox" name="mVisibilityPresets"/>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsFileWidget" name="mFileName"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CRS</string>
-     </property>
     </widget>
    </item>
    <item row="9" column="0" colspan="2">
@@ -119,44 +147,18 @@
      <item row="0" column="2">
       <widget class="QPushButton" name="mSelectDataDefinedBlocks">
        <property name="text">
-        <string>Select Data DefinedBlocks</string>
+        <string>Select Data Defined Blocks</string>
        </property>
       </widget>
      </item>
      <item row="0" column="3">
       <widget class="QPushButton" name="mDeselectDataDefinedBlocks">
        <property name="text">
-        <string>Deselect Data DefinedBlocks</string>
+        <string>Deselect Data Defined Blocks</string>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Encoding</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mSymbologyScaleLabel_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Map themes</string>
-     </property>
-    </widget>
    </item>
    <item row="11" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout">
@@ -169,6 +171,9 @@
      </item>
      <item row="0" column="0">
       <widget class="QCheckBox" name="mLayerTitleAsName">
+       <property name="toolTip">
+        <string>If no attribute is chosen and layer name is not being overridden, prefer layer title (set in layer properties) to layer name.</string>
+       </property>
        <property name="text">
         <string>Use layer title as name if set</string>
        </property>
@@ -224,6 +229,8 @@
     </widget>
    </item>
   </layout>
+  </item>
+ </layout>
  </widget>
  <customwidgets>
   <customwidget>
@@ -253,9 +260,12 @@
   <tabstop>mVisibilityPresets</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mDeselectAllButton</tabstop>
+  <tabstop>mSelectDataDefinedBlocks</tabstop>
+  <tabstop>mDeselectDataDefinedBlocks</tabstop>
   <tabstop>mLayerTitleAsName</tabstop>
   <tabstop>mMTextCheckBox</tabstop>
   <tabstop>mMapExtentCheckBox</tabstop>
+  <tabstop>mSelectedFeaturesOnly</tabstop>
   <tabstop>mForce2d</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

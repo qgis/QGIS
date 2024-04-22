@@ -113,12 +113,12 @@ class TestQgsExpression: public QObject
       mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                          pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
       QgsProject::instance()->addMapLayer( mPointsLayer );
-      mPointsLayer->setTitle( QStringLiteral( "layer title" ) );
-      mPointsLayer->setAbstract( QStringLiteral( "layer abstract" ) );
-      mPointsLayer->setKeywordList( QStringLiteral( "layer,keywords" ) );
-      mPointsLayer->setDataUrl( QStringLiteral( "data url" ) );
-      mPointsLayer->setAttribution( QStringLiteral( "layer attribution" ) );
-      mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
+      mPointsLayer->serverProperties()->setTitle( QStringLiteral( "layer title" ) );
+      mPointsLayer->serverProperties()->setAbstract( QStringLiteral( "layer abstract" ) );
+      mPointsLayer->serverProperties()->setKeywordList( QStringLiteral( "layer,keywords" ) );
+      mPointsLayer->serverProperties()->setDataUrl( QStringLiteral( "data url" ) );
+      mPointsLayer->serverProperties()->setAttribution( QStringLiteral( "layer attribution" ) );
+      mPointsLayer->serverProperties()->setAttributionUrl( QStringLiteral( "attribution url" ) );
       mPointsLayer->setMinimumScale( 500 );
       mPointsLayer->setMaximumScale( 1000 );
       mPointsLayer->setMapTipTemplate( QStringLiteral( "Maptip with class = [% \"Class\" %]" ) );
@@ -136,12 +136,12 @@ class TestQgsExpression: public QObject
       metadata.setKeywords( keywords );
       metadata.setRights( QStringList() << QStringLiteral( "right1" ) << QStringLiteral( "right2" ) );
       mPointsLayerMetadata->setMetadata( metadata );
-      mPointsLayerMetadata->setTitle( QStringLiteral( "layer title" ) );
-      mPointsLayerMetadata->setAbstract( QStringLiteral( "layer abstract" ) );
-      mPointsLayerMetadata->setKeywordList( QStringLiteral( "layer,keywords" ) );
-      mPointsLayerMetadata->setDataUrl( QStringLiteral( "data url" ) );
-      mPointsLayerMetadata->setAttribution( QStringLiteral( "layer attribution" ) );
-      mPointsLayerMetadata->setAttributionUrl( QStringLiteral( "attribution url" ) );
+      mPointsLayerMetadata->serverProperties()->setTitle( QStringLiteral( "layer title" ) );
+      mPointsLayerMetadata->serverProperties()->setAbstract( QStringLiteral( "layer abstract" ) );
+      mPointsLayerMetadata->serverProperties()->setKeywordList( QStringLiteral( "layer,keywords" ) );
+      mPointsLayerMetadata->serverProperties()->setDataUrl( QStringLiteral( "data url" ) );
+      mPointsLayerMetadata->serverProperties()->setAttribution( QStringLiteral( "layer attribution" ) );
+      mPointsLayerMetadata->serverProperties()->setAttributionUrl( QStringLiteral( "attribution url" ) );
 
       QString rasterFileName = testDataDir + "tenbytenraster.asc";
       QFileInfo rasterFileInfo( rasterFileName );
@@ -1954,12 +1954,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property by id" ) << QStringLiteral( "layer_property('%1','name')" ).arg( mPointsLayer->id() ) << false << QVariant( mPointsLayer->name() );
       QTest::newRow( "layer_property name" ) << QStringLiteral( "layer_property('%1','name')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->name() );
       QTest::newRow( "layer_property id" ) << QStringLiteral( "layer_property('%1','id')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->id() );
-      QTest::newRow( "layer_property title" ) << QStringLiteral( "layer_property('%1','title')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->title() );
-      QTest::newRow( "layer_property abstract" ) << QStringLiteral( "layer_property('%1','abstract')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->abstract() );
-      QTest::newRow( "layer_property keywords" ) << QStringLiteral( "layer_property('%1','keywords')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->keywordList() );
-      QTest::newRow( "layer_property data_url" ) << QStringLiteral( "layer_property('%1','data_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->dataUrl() );
-      QTest::newRow( "layer_property attribution" ) << QStringLiteral( "layer_property('%1','attribution')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attribution() );
-      QTest::newRow( "layer_property attribution_url" ) << QStringLiteral( "layer_property('%1','attribution_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attributionUrl() );
+      QTest::newRow( "layer_property title" ) << QStringLiteral( "layer_property('%1','title')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->serverProperties()->title() );
+      QTest::newRow( "layer_property abstract" ) << QStringLiteral( "layer_property('%1','abstract')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->serverProperties()->abstract() );
+      QTest::newRow( "layer_property keywords" ) << QStringLiteral( "layer_property('%1','keywords')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->serverProperties()->keywordList() );
+      QTest::newRow( "layer_property data_url" ) << QStringLiteral( "layer_property('%1','data_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->serverProperties()->dataUrl() );
+      QTest::newRow( "layer_property attribution" ) << QStringLiteral( "layer_property('%1','attribution')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->serverProperties()->attribution() );
+      QTest::newRow( "layer_property attribution_url" ) << QStringLiteral( "layer_property('%1','attribution_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->serverProperties()->attributionUrl() );
       QTest::newRow( "layer_property source" ) << QStringLiteral( "layer_property('%1','source')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->publicSource() );
       QTest::newRow( "layer_property min_scale" ) << QStringLiteral( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->minimumScale() );
       QTest::newRow( "layer_property max_scale" ) << QStringLiteral( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->maximumScale() );

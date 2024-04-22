@@ -529,12 +529,12 @@ namespace QgsWmts
 
       layerDef pLayer;
       pLayer.id = l->name();
-      if ( !l->shortName().isEmpty() )
-        pLayer.id = l->shortName();
+      if ( !l->serverProperties()->shortName().isEmpty() )
+        pLayer.id = l->serverProperties()->shortName();
       pLayer.id = pLayer.id.replace( ' ', '_' );
 
-      pLayer.title = l->title();
-      pLayer.abstract = l->abstract();
+      pLayer.title = l->serverProperties()->title();
+      pLayer.abstract = l->serverProperties()->abstract();
 
       //transform the layer native CRS into WGS84
       const QgsCoordinateReferenceSystem layerCrs = l->crs();
@@ -693,7 +693,7 @@ namespace QgsWmts
           continue;
         }
 #endif
-        QString layerLayerId = l->shortName();
+        QString layerLayerId = l->serverProperties()->shortName();
         if ( layerLayerId.isEmpty() )
         {
           layerLayerId = l->name();

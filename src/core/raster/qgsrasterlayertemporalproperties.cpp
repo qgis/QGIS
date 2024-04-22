@@ -22,6 +22,7 @@
 QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
 {
+  mTemporalRepresentationScale.setDays( 1.0 );
 }
 
 bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange &range ) const
@@ -44,6 +45,7 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
       return false;
     }
 
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
       return true;
@@ -95,6 +97,7 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
       return QgsDateTimeRange( begin, end, includeBeginning, includeEnd );
     }
 
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
       break;
   }
@@ -131,6 +134,7 @@ QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( Qgs
       return ranges.empty() ? QList< QgsDateTimeRange > { rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange() } : ranges;
     }
 
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
       break;
   }
@@ -160,6 +164,7 @@ QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
     case Qgis::RasterTemporalMode::FixedRangePerBand:
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
       return QgsTemporalProperty::Flags();
   }
   BUILTIN_UNREACHABLE
@@ -230,6 +235,9 @@ int QgsRasterLayerTemporalProperties::bandForTemporalRange( QgsRasterLayer *, co
       }
       return currentMatchingBand;
     }
+
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+      return mBandNumber;
   }
   BUILTIN_UNREACHABLE
 }
@@ -265,8 +273,50 @@ QList<int> QgsRasterLayerTemporalProperties::filteredBandsForTemporalRange( QgsR
       }
       return res;
     }
+
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+      return QList<int>() << mBandNumber;
   }
   BUILTIN_UNREACHABLE
+}
+
+int QgsRasterLayerTemporalProperties::bandNumber() const
+{
+  return mBandNumber;
+}
+
+void QgsRasterLayerTemporalProperties::setBandNumber( int number )
+{
+  if ( mBandNumber == number )
+    return;
+
+  mBandNumber = number;
+}
+
+QDateTime QgsRasterLayerTemporalProperties::temporalRepresentationOffset() const
+{
+  return mTemporalRepresentationOffset;
+}
+
+void QgsRasterLayerTemporalProperties::setTemporalRepresentationOffset( const QDateTime &offset )
+{
+  if ( mTemporalRepresentationOffset == offset )
+    return;
+
+  mTemporalRepresentationOffset = offset;
+}
+
+const QgsInterval &QgsRasterLayerTemporalProperties::temporalRepresentationScale() const
+{
+  return mTemporalRepresentationScale;
+}
+
+void QgsRasterLayerTemporalProperties::setTemporalRepresentationScale( const QgsInterval &scale )
+{
+  if ( mTemporalRepresentationScale == scale )
+    return;
+
+  mTemporalRepresentationScale = scale;
 }
 
 bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -279,6 +329,7 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
 
   mMode = static_cast< Qgis::RasterTemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
+  mBandNumber = temporalNode.attribute( QStringLiteral( "bandNumber" ), QStringLiteral( "1" ) ).toInt();
   mIntervalHandlingMethod = static_cast< Qgis::TemporalIntervalMatchMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
 
   switch ( mMode )
@@ -316,6 +367,14 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
       break;
     }
 
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+    {
+      mTemporalRepresentationOffset = QDateTime::fromString( temporalNode.attribute( QStringLiteral( "temporalRepresentationOffset" ) ), Qt::ISODate );
+      mTemporalRepresentationScale = QgsInterval( temporalNode.attribute( QStringLiteral( "temporalRepresentationScale" ), QStringLiteral( "1" ) ).toDouble(),
+                                     static_cast< Qgis::TemporalUnit >( temporalNode.attribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QStringLiteral( "4" ) ).toInt() ) );
+      break;
+    }
+
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
       break;
@@ -333,6 +392,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "enabled" ), isActive() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( static_cast< int >( mMode ) ) );
+  temporalElement.setAttribute( QStringLiteral( "bandNumber" ), QString::number( mBandNumber ) );
   temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( static_cast< int >( mIntervalHandlingMethod ) ) );
 
   switch ( mMode )
@@ -370,6 +430,14 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
         ranges.appendChild( range );
       }
       temporalElement.appendChild( ranges );
+      break;
+    }
+
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+    {
+      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationOffset" ), mTemporalRepresentationOffset.toString( Qt::ISODate ) );
+      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScale" ), QString::number( mTemporalRepresentationScale.originalDuration() ) );
+      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QString::number( static_cast< int >( mTemporalRepresentationScale.originalUnit() ) ) );
       break;
     }
 

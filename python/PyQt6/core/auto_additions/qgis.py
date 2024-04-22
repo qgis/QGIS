@@ -1272,7 +1272,8 @@ Qgis.RasterResamplingStage.__doc__ = "Stage at which raster resampling occurs.\n
 Qgis.RasterResamplingStage.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ = "The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied."
-Qgis.RasterRendererFlag.__doc__ = "Flags which control behavior of raster renderers.\n\n.. versionadded:: 3.28\n\n" + '* ``InternalLayerOpacityHandling``: ' + Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__
+Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values (since QGIS 3.38)"
+Qgis.RasterRendererFlag.__doc__ = "Flags which control behavior of raster renderers.\n\n.. versionadded:: 3.28\n\n" + '* ``InternalLayerOpacityHandling``: ' + Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ + '\n' + '* ``UseNoDataForOutOfRangePixels``: ' + Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__
 # --
 Qgis.RasterRendererFlags = lambda flags=0: Qgis.RasterRendererFlag(flags)
 Qgis.RasterRendererFlag.baseClass = Qgis
@@ -2116,7 +2117,10 @@ QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = "Redraw the layer
 QgsRasterLayerTemporalProperties.FixedRangePerBand = Qgis.RasterTemporalMode.FixedRangePerBand
 QgsRasterLayerTemporalProperties.FixedRangePerBand.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed temporal range per band (since QGIS 3.38)"
-Qgis.RasterTemporalMode.__doc__ = "Raster layer temporal modes\n\n.. versionadded:: 3.22\n\n" + '* ``ModeFixedTemporalRange``: ' + Qgis.RasterTemporalMode.FixedTemporalRange.__doc__ + '\n' + '* ``ModeTemporalRangeFromDataProvider``: ' + Qgis.RasterTemporalMode.TemporalRangeFromDataProvider.__doc__ + '\n' + '* ``ModeRedrawLayerOnly``: ' + Qgis.RasterTemporalMode.RedrawLayerOnly.__doc__ + '\n' + '* ``FixedRangePerBand``: ' + Qgis.RasterTemporalMode.FixedRangePerBand.__doc__
+QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
+QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
+QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
+Qgis.RasterTemporalMode.__doc__ = "Raster layer temporal modes\n\n.. versionadded:: 3.22\n\n" + '* ``ModeFixedTemporalRange``: ' + Qgis.RasterTemporalMode.FixedTemporalRange.__doc__ + '\n' + '* ``ModeTemporalRangeFromDataProvider``: ' + Qgis.RasterTemporalMode.TemporalRangeFromDataProvider.__doc__ + '\n' + '* ``ModeRedrawLayerOnly``: ' + Qgis.RasterTemporalMode.RedrawLayerOnly.__doc__ + '\n' + '* ``FixedRangePerBand``: ' + Qgis.RasterTemporalMode.FixedRangePerBand.__doc__ + '\n' + '* ``RepresentsTemporalValues``: ' + Qgis.RasterTemporalMode.RepresentsTemporalValues.__doc__
 # --
 Qgis.RasterTemporalMode.baseClass = Qgis
 QgsRasterDataProviderTemporalCapabilities.IntervalHandlingMethod = Qgis.TemporalIntervalMatchMethod
@@ -3161,6 +3165,13 @@ Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__ = "Parameter value 
 Qgis.ProcessingModelChildParameterSource.__doc__ = "Processing model child parameter sources.\n\n.. versionadded:: 3.34\n\n" + '* ``ModelParameter``: ' + Qgis.ProcessingModelChildParameterSource.ModelParameter.__doc__ + '\n' + '* ``ChildOutput``: ' + Qgis.ProcessingModelChildParameterSource.ChildOutput.__doc__ + '\n' + '* ``StaticValue``: ' + Qgis.ProcessingModelChildParameterSource.StaticValue.__doc__ + '\n' + '* ``Expression``: ' + Qgis.ProcessingModelChildParameterSource.Expression.__doc__ + '\n' + '* ``ExpressionText``: ' + Qgis.ProcessingModelChildParameterSource.ExpressionText.__doc__ + '\n' + '* ``ModelOutput``: ' + Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__
 # --
 Qgis.ProcessingModelChildParameterSource.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.NotExecuted.__doc__ = "Child has not been executed"
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.Success.__doc__ = "Child was successfully executed"
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.Failed.__doc__ = "Child encountered an error while executing"
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.__doc__ = "Reflects the status of a child algorithm in a Processing model.\n\n.. versionadded:: 3.38\n\n" + '* ``NotExecuted``: ' + Qgis.ProcessingModelChildAlgorithmExecutionStatus.NotExecuted.__doc__ + '\n' + '* ``Success``: ' + Qgis.ProcessingModelChildAlgorithmExecutionStatus.Success.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ProcessingModelChildAlgorithmExecutionStatus.Failed.__doc__
+# --
+Qgis.ProcessingModelChildAlgorithmExecutionStatus.baseClass = Qgis
 QgsProcessingParameterTinInputLayers.Type = Qgis.ProcessingTinInputLayerType
 # monkey patching scoped based enum
 QgsProcessingParameterTinInputLayers.Vertices = Qgis.ProcessingTinInputLayerType.Vertices

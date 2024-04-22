@@ -270,7 +270,15 @@ double QgsTemporalNavigationObject::framesPerSecond() const
 
 void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
 {
+  if ( mCumulativeTemporalRange == state )
+    return;
+
   mCumulativeTemporalRange = state;
+
+  if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode == Qgis::TemporalNavigationMode::Animated )
+  {
+    emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
+  }
 }
 
 bool QgsTemporalNavigationObject::temporalRangeCumulative() const

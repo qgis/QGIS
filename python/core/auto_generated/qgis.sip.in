@@ -685,6 +685,7 @@ The development version
     enum class RasterRendererFlag
     {
       InternalLayerOpacityHandling,
+      UseNoDataForOutOfRangePixels,
     };
 
     typedef QFlags<Qgis::RasterRendererFlag> RasterRendererFlags;
@@ -1258,6 +1259,7 @@ The development version
       TemporalRangeFromDataProvider,
       RedrawLayerOnly,
       FixedRangePerBand,
+      RepresentsTemporalValues,
     };
 
     enum class TemporalIntervalMatchMethod
@@ -1787,6 +1789,13 @@ The development version
       Expression,
       ExpressionText,
       ModelOutput,
+    };
+
+    enum class ProcessingModelChildAlgorithmExecutionStatus
+    {
+      NotExecuted,
+      Success,
+      Failed,
     };
 
     enum class ProcessingTinInputLayerType

@@ -138,14 +138,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void setSelectedItem( QgsModelComponentGraphicItem *item );
 
     /**
-     * Sets the results for child algorithms for the last model execution.
+     * Sets the \a result of the last run of the model through the designer window.
      */
-    void setChildAlgorithmResults( const QVariantMap &results );
-
-    /**
-     * Sets the inputs for child algorithms for the last model execution.
-     */
-    void setChildAlgorithmInputs( const QVariantMap &inputs );
+    void setLastRunResult( const QgsProcessingModelResult &result );
 
     /**
      * Returns the message bar associated with the scene.
@@ -191,6 +186,20 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * If NULLPTR, no item is selected.
      */
     void selectedItemChanged( QgsModelComponentGraphicItem *selected );
+
+    /**
+     * Emitted when the user opts to view previous results from the child algorithm with matching ID.
+     *
+     * \since QGIS 3.38
+     */
+    void showChildAlgorithmOutputs( const QString &childId );
+
+    /**
+    * Emitted when the user opts to view the previous log from the child algorithm with matching ID.
+    *
+    * \since QGIS 3.38
+    */
+    void showChildAlgorithmLog( const QString &childId );
 
   protected:
 
@@ -240,8 +249,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
     QMap< QString, QgsModelComponentGraphicItem * > mGroupBoxItems;
-    QVariantMap mChildResults;
-    QVariantMap mChildInputs;
+    QgsProcessingModelResult mLastResult;
 
     QgsMessageBar *mMessageBar = nullptr;
 

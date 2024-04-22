@@ -733,7 +733,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_basename" ), QCoreApplication::translate( "variable_help", "Base name of current project's filename (without path and extension)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_home" ), QCoreApplication::translate( "variable_help", "Home path of current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the coordinate reference system of project (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_units" ), QCoreApplication::translate( "variable_help", "Unit of the project's CRS." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the project." ) );
@@ -741,6 +741,12 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the project." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the project." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the project." ) );
+
+  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the project (e.g., 'EPSG:5703')." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs_definition" ), QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the project." ) );
+
   sVariableHelpTexts()->insert( QStringLiteral( "project_author" ), QCoreApplication::translate( "variable_help", "Project author, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_abstract" ), QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );

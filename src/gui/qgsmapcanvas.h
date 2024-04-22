@@ -1287,6 +1287,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
         double mLockedScale;
     };
 
+    enum class CacheInvalidationType
+    {
+      Temporal = 1 << 0,
+      Elevation = 1 << 1,
+    };
+
     QgsOverlayWidgetLayout *mLayout = nullptr;
 
     //! encompases all map settings necessary for map rendering
@@ -1314,6 +1320,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag = true;
+
+    QFlags<CacheInvalidationType> mCacheInvalidations;
 
     //! current layer in legend
     QPointer< QgsMapLayer > mCurrentLayer;
