@@ -3163,7 +3163,7 @@ Qgis.FieldDomainMergePolicy.baseClass = Qgis
 Qgis.FieldDomainDuplicatePolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDomainDuplicatePolicy.Duplicate.__doc__ = "Duplicate original value"
 Qgis.FieldDomainDuplicatePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)"
-Qgis.FieldDomainDuplicatePolicy.__doc__ = "Duplicate policy for field domains.\n\nWhen a feature is duplicated, defines how the value of attributes\nfollowing the domain are computed.\n\n.. versionadded:: 3.38\n\n" + '* ``DefaultValue``: ' + Qgis.FieldDomainDuplicatePolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDomainDuplicatePolicy.Duplicate.__doc__ + '\n' + '* ``UnsetField``: ' + Qgis.FieldDomainDuplicatePolicy.UnsetField.__doc__
+Qgis.FieldDomainDuplicatePolicy.__doc__ = "Duplicate policy for fields.\n\nWhen a feature is duplicated, defines how the value of attributes\nfollowing the domain are computed.\n\n.. versionadded:: 3.38\n\n" + '* ``DefaultValue``: ' + Qgis.FieldDomainDuplicatePolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDomainDuplicatePolicy.Duplicate.__doc__ + '\n' + '* ``UnsetField``: ' + Qgis.FieldDomainDuplicatePolicy.UnsetField.__doc__
 # --
 Qgis.FieldDomainDuplicatePolicy.baseClass = Qgis
 # monkey patching scoped based enum

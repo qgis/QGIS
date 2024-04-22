@@ -779,6 +779,7 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.constraints().constraintDescription();
   out << static_cast< quint32 >( field.subType() );
   out << static_cast< int >( field.splitPolicy() );
+  out << static_cast< int >( field.duplicatePolicy() );
   out << field.metadata();
   return out;
 }

@@ -646,9 +646,9 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         # > and duplicate policy is concerned
         result_feature = results[0]
         self.assertEqual(result_feature.attribute('fldtxt'), l1f1orig.attribute('fldtxt'))
-        self.assertEqual(result_feature.attribute('policycheck1value'), 'Orig Blabla L1') # duplicated
-        self.assertEqual(result_feature.attribute('policycheck2value'), 'Def Blabla L1') # default Value
-        self.assertEqual(result_feature.attribute('policycheck3value'), None) # unset
+        self.assertEqual(result_feature.attribute('policycheck1value'), 'Orig Blabla L1')  # duplicated
+        self.assertEqual(result_feature.attribute('policycheck2value'), 'Def Blabla L1')  # default Value
+        self.assertEqual(result_feature.attribute('policycheck3value'), None)  # unset
         # > check duplicated children occurred on both layers
         self.assertEqual(len(results[1].layers()), 2)
         idx = results[1].layers().index(layer2)
@@ -656,17 +656,17 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertTrue(results[1].duplicatedFeatures(layer2))
         for child_fid in results[1].duplicatedFeatures(layer2):
             child_feature = layer2.getFeature(child_fid)
-            self.assertEqual(child_feature.attribute('policycheck1value'), 'Orig Blabla L2') # duplicated
-            self.assertEqual(child_feature.attribute('policycheck2value'), 'Def Blabla L2') # default Value
-            self.assertEqual(child_feature.attribute('policycheck3value'), None) # unset
+            self.assertEqual(child_feature.attribute('policycheck1value'), 'Orig Blabla L2')  # duplicated
+            self.assertEqual(child_feature.attribute('policycheck2value'), 'Def Blabla L2')  # default Value
+            self.assertEqual(child_feature.attribute('policycheck3value'), None)  # unset
         idx = results[1].layers().index(layer3)
         self.assertEqual(results[1].layers()[idx], layer3)
         self.assertTrue(results[1].duplicatedFeatures(layer3))
         for child_fid in results[1].duplicatedFeatures(layer3):
             child_feature = layer3.getFeature(child_fid)
-            self.assertEqual(child_feature.attribute('policycheck1value'), 'Orig Blabla L3') # duplicated
-            self.assertEqual(child_feature.attribute('policycheck2value'), 'Def Blabla L3') # default Value
-            self.assertEqual(child_feature.attribute('policycheck3value'), None) # unset
+            self.assertEqual(child_feature.attribute('policycheck1value'), 'Orig Blabla L3')  # duplicated
+            self.assertEqual(child_feature.attribute('policycheck2value'), 'Def Blabla L3')  # default Value
+            self.assertEqual(child_feature.attribute('policycheck3value'), None)  # unset
 
         '''
         # testoutput 2

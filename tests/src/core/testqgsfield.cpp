@@ -934,6 +934,7 @@ void TestQgsField::dataStream()
   original.setAlias( QStringLiteral( "alias" ) );
   original.setDefaultValueDefinition( QgsDefaultValue( QStringLiteral( "default" ) ) );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy::DefaultValue );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );

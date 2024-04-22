@@ -3219,7 +3219,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( FieldDomainMergePolicy )
 
     /**
-     * Duplicate policy for field domains.
+     * Duplicate policy for fields.
      *
      * When a feature is duplicated, defines how the value of attributes
      * following the domain are computed.
