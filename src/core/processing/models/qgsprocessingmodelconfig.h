@@ -66,7 +66,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setInitialChildInputs()
      */
-    QVariantMap initialChildInputs() { return mInitialChildInputs; }
+    QVariantMap initialChildInputs() const { return mInitialChildInputs; }
 
     /**
      * Sets the map of child algorithm \a inputs to use as the initial state when running the model.
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setInitialChildOutputs()
      */
-    QVariantMap initialChildOutputs() { return mInitialChildOutputs; }
+    QVariantMap initialChildOutputs() const { return mInitialChildOutputs; }
 
     /**
      * Sets the map of child algorithm \a outputs to use as the initial state when running the model.
