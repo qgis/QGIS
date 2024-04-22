@@ -25,6 +25,7 @@
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
 #include "qgsprocessingmodelresult.h"
+#include "qgsprocessingmodelconfig.h"
 
 #include <QThread>
 #include <QPointer>
@@ -736,6 +737,53 @@ class CORE_EXPORT QgsProcessingContext
     QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
 
     /**
+     * Returns a reference to the model initial run configuration, used
+     * to run a model algorithm.
+     *
+     * This may be NULLPTR, e.g. when the context is not being used to run a model.
+     *
+     * \note This configuration will only be used when running a "top-level" model algorithm, and
+     * will not be passed on to child models used within that initial top-level model.
+     *
+     * \note Not available in Python bindings
+     *
+     * \see setModelInitialRunConfig()
+     * \see takeModelInitialRunConfig()
+     *
+     * \since QGIS 3.38
+     */
+    QgsProcessingModelInitialRunConfig *modelInitialRunConfig() SIP_SKIP;
+
+    /**
+     * Takes the model initial run configuration from the context.
+     *
+     * May return NULLPTR, e.g. when the context is not being used to run a model.
+     *
+     * \note Not available in Python bindings
+     *
+     * \see modelInitialRunConfig()
+     * \see setModelInitialRunConfig()
+     *
+     * \since QGIS 3.38
+     */
+    std::unique_ptr< QgsProcessingModelInitialRunConfig > takeModelInitialRunConfig() SIP_SKIP;
+
+    /**
+     * Sets the model initial run configuration, used to run a model algorithm.
+     *
+     * \note This configuration will only be used when running a "top-level" model algorithm, and
+     * will not be passed on to child models used within that initial top-level model.
+     *
+     * \note Not available in Python bindings
+     *
+     * \see modelInitialRunConfig()
+     * \see takeModelInitialRunConfig()
+     *
+     * \since QGIS 3.38
+     */
+    void setModelInitialRunConfig( std::unique_ptr< QgsProcessingModelInitialRunConfig > config ) SIP_SKIP;
+
+    /**
      * Returns the model results, populated when the context is used to run a model algorithm.
      *
      * \since QGIS 3.38
@@ -786,6 +834,7 @@ class CORE_EXPORT QgsProcessingContext
     QString mTemporaryFolderOverride;
     int mMaximumThreads = QThread::idealThreadCount();
 
+    std::unique_ptr< QgsProcessingModelInitialRunConfig > mModelConfig;
     QgsProcessingModelResult mModelResult;
 
 #ifdef SIP_RUN

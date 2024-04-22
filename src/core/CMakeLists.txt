@@ -279,6 +279,7 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelcomment.cpp
   processing/models/qgsprocessingmodelcomponent.cpp
   processing/models/qgsprocessingmodelgroupbox.cpp
+  processing/models/qgsprocessingmodelconfig.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
   processing/models/qgsprocessingmodelresult.cpp
@@ -1742,6 +1743,7 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelchildparametersource.h
   processing/models/qgsprocessingmodelcomment.h
   processing/models/qgsprocessingmodelcomponent.h
+  processing/models/qgsprocessingmodelconfig.h
   processing/models/qgsprocessingmodelgroupbox.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h

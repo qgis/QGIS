@@ -300,9 +300,11 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QSet< QString > toExecute;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   QSet< QString > broken;
+  const QSet<QString> childSubset = context.modelInitialRunConfig() ? context.modelInitialRunConfig()->childAlgorithmSubset() : QSet<QString>();
+  const bool useSubsetOfChildren = !childSubset.empty();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
-    if ( childIt->isActive() )
+    if ( childIt->isActive() && ( !useSubsetOfChildren || childSubset.contains( childIt->childId() ) ) )
     {
       if ( childIt->algorithm() )
         toExecute.insert( childIt->childId() );
@@ -324,11 +326,27 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap &childResults = context.modelResult().rawChildOutputs();
   QSet< QString > &executed = context.modelResult().executedChildIds();
 
+  // start with initial configuration from the context's model configuration (allowing us to
+  // resume execution using a previous state)
+  if ( QgsProcessingModelInitialRunConfig *config = context.modelInitialRunConfig() )
+  {
+    childInputs = config->initialChildInputs();
+    childResults = config->initialChildOutputs();
+    executed = config->previouslyExecutedChildAlgorithms();
+    // discard the model config, this should only be used when running the top level model
+    context.setModelInitialRunConfig( nullptr );
+  }
+  if ( useSubsetOfChildren )
+  {
+    executed.subtract( childSubset );
+  }
+
   QVariantMap finalResults;
 
   bool executedAlg = true;
   int previousHtmlLogLength = feedback->htmlLog().length();
-  while ( executedAlg && executed.count() < toExecute.count() )
+  int countExecuted = 0;
+  while ( executedAlg && countExecuted < toExecute.count() )
   {
     executedAlg = false;
     for ( const QString &childId : std::as_const( toExecute ) )
@@ -615,7 +633,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         }
 
         childAlg.reset( nullptr );
-        modelFeedback.setCurrentStep( executed.count() );
+        countExecuted++;
+        modelFeedback.setCurrentStep( countExecuted );
         if ( feedback && !skipGenericLogging )
         {
           feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n output(s)).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
@@ -647,7 +666,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       break;
   }
   if ( feedback )
-    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %n algorithm(s) total in %1 s.", nullptr, executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
+    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %n algorithm(s) total in %1 s.", nullptr, countExecuted ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
   mResults.insert( QStringLiteral( "CHILD_RESULTS" ), childResults );

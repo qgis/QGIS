@@ -310,3 +310,18 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
   }
 }
 
+
+QgsProcessingModelInitialRunConfig *QgsProcessingContext::modelInitialRunConfig()
+{
+  return mModelConfig.get();
+}
+
+void QgsProcessingContext::setModelInitialRunConfig( std::unique_ptr< QgsProcessingModelInitialRunConfig > config )
+{
+  mModelConfig = std::move( config );
+}
+
+std::unique_ptr< QgsProcessingModelInitialRunConfig > QgsProcessingContext::takeModelInitialRunConfig()
+{
+  return std::move( mModelConfig );
+}
