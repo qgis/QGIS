@@ -2475,6 +2475,24 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
   QCOMPARE( firstResult.childResults().value( "calculate2" ).outputs().value( "OUTPUT" ).toString(), QStringLiteral( "a different string_2" ) );
   QCOMPARE( firstResult.rawChildInputs().value( "calculate2" ).toMap().value( "INPUT" ).toString(), QStringLiteral( "a different string_2" ) );
   QCOMPARE( firstResult.rawChildOutputs().value( "calculate2" ).toMap().value( "OUTPUT" ).toString(), QStringLiteral( "a different string_2" ) );
+
+  QCOMPARE( context.temporaryLayerStore()->count(), 0 );
+
+  // test handling of temporary layers generated during earlier runs
+  modelConfig = std::make_unique< QgsProcessingModelInitialRunConfig >();
+
+  std::unique_ptr < QgsMapLayerStore > previousStore = std::make_unique< QgsMapLayerStore >();
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+  previousStore->addMapLayer( layer );
+  previousStore->moveToThread( nullptr );
+  modelConfig->setPreviousLayerStore( std::move( previousStore ) );
+
+  context.setModelInitialRunConfig( std::move( modelConfig ) );
+  m.run( params, context, &feedback, &ok );
+  QVERIFY( ok );
+  // layer should have been transferred to context's temporary layer store as part of model execution
+  QCOMPARE( context.temporaryLayerStore()->count(), 1 );
+  QCOMPARE( context.temporaryLayerStore()->mapLayersByName( QStringLiteral( "v1" ) ).at( 0 ), layer );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()
