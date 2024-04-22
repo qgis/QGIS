@@ -359,6 +359,15 @@ This allows the dialog to override default Processing settings for an individual
 
   signals:
 
+    void algorithmAboutToRun( QgsProcessingContext *context );
+%Docstring
+Emitted when the algorithm is about to run in the specified ``context``.
+
+This signal can be used to tweak the ``context`` prior to the algorithm execution.
+
+.. versionadded:: 3.38
+%End
+
     void algorithmFinished( bool successful, const QVariantMap &result );
 %Docstring
 Emitted whenever an algorithm has finished executing in the dialog.

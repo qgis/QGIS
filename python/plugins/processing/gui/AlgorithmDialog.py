@@ -166,6 +166,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.feedback = self.createFeedback()
         self.context = dataobjects.createContext(self.feedback)
         self.applyContextOverrides(self.context)
+        self.algorithmAboutToRun.emit(self.context)
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
