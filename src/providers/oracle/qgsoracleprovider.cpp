@@ -785,7 +785,7 @@ bool QgsOracleProvider::loadFields()
     if ( !mIsQuery && !types.contains( field.name() ) )
       continue;
 
-    QMetaType::Type type = field.type();
+    QMetaType::Type type = QgsVariantUtils::variantTypeToMetaType( field.type() );
     QgsField newField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) );
     newField.setReadOnly( alwaysGenerated.value( field.name(), false ) );
 
@@ -3039,8 +3039,8 @@ bool QgsOracleProvider::createSpatialIndex()
                                           "))" ) };
 
 
-      if ( !QMetaType::Type::IntLoggedExecStatic( qry, sql,
-                              QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createVariant( QVariant::Int ) : mSrid )
+      if ( !LoggedExecStatic( qry, sql,
+                              QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createVariant( QMetaType::Type::Int ) : mSrid )
                               << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum(), mUri.uri() )
          )
       {
