@@ -37,3 +37,20 @@ void QgsProcessingModelResult::clear()
   mRawChildInputs.clear();
   mRawChildOutputs.clear();
 }
+
+void QgsProcessingModelResult::mergeWith( const QgsProcessingModelResult &other )
+{
+  for ( auto it = other.mChildResults.constBegin(); it != other.mChildResults.constEnd(); ++it )
+  {
+    mChildResults.insert( it.key(), it.value() );
+  }
+  mExecutedChildren.unite( other.mExecutedChildren );
+  for ( auto it = other.mRawChildInputs.constBegin(); it != other.mRawChildInputs.constEnd(); ++it )
+  {
+    mRawChildInputs.insert( it.key(), it.value() );
+  }
+  for ( auto it = other.mRawChildOutputs.constBegin(); it != other.mRawChildOutputs.constEnd(); ++it )
+  {
+    mRawChildOutputs.insert( it.key(), it.value() );
+  }
+}
