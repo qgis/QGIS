@@ -414,6 +414,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
   signals:
 
     /**
+     * Emitted when the algorithm is about to run in the specified \a context.
+     *
+     * This signal can be used to tweak the \a context prior to the algorithm execution.
+     *
+     * \since QGIS 3.38
+     */
+    void algorithmAboutToRun( QgsProcessingContext *context );
+
+    /**
      * Emitted whenever an algorithm has finished executing in the dialog.
      *
      * \since QGIS 3.14
