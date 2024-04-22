@@ -770,7 +770,7 @@
   <action name="mActionRunSelectedSteps">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
+     <normaloff>:/images/themes/default/mActionRunSelected.svg</normaloff>:/images/themes/default/mActionRunSelected.svg</iconset>
    </property>
    <property name="text">
     <string>Run Selected Steps…</string>
