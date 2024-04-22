@@ -84,7 +84,7 @@ void TestQgsField::create()
 {
   std::unique_ptr<QgsField> field( new QgsField( QStringLiteral( "name" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) ) );
   QCOMPARE( field->name(), QString( "name" ) );
-  QCOMPARE( field->type(), QVariant::Double );
+  QCOMPARE( field->type(), QMetaType::Type::Double );
   QCOMPARE( field->typeName(), QString( "double" ) );
   QCOMPARE( field->length(), 5 );
   QCOMPARE( field->precision(), 2 );
@@ -95,7 +95,7 @@ void TestQgsField::create()
 
 void TestQgsField::copy()
 {
-  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  QgsField original( QStringLiteral( "original" ), QMetaType::Type::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
@@ -123,7 +123,7 @@ void TestQgsField::copy()
 
 void TestQgsField::assignment()
 {
-  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  QgsField original( QStringLiteral( "original" ), QMetaType::Type::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
@@ -147,8 +147,8 @@ void TestQgsField::gettersSetters()
   QgsField field;
   field.setName( QStringLiteral( "name" ) );
   QCOMPARE( field.name(), QString( "name" ) );
-  field.setType( QVariant::Int );
-  QCOMPARE( field.type(), QVariant::Int );
+  field.setType( QMetaType::Type::Int );
+  QCOMPARE( field.type(), QMetaType::Type::Int );
   field.setTypeName( QStringLiteral( "typeName" ) );
   QCOMPARE( field.typeName(), QString( "typeName" ) );
   field.setLength( 5 );
@@ -226,50 +226,50 @@ void TestQgsField::gettersSetters()
 void TestQgsField::isNumeric()
 {
   QgsField field;
-  field.setType( QVariant::Int );
+  field.setType( QMetaType::Type::Int );
   QVERIFY( field.isNumeric() );
-  field.setType( QVariant::UInt );
+  field.setType( QMetaType::Type::UInt );
   QVERIFY( field.isNumeric() );
-  field.setType( QVariant::Double );
+  field.setType( QMetaType::Type::Double );
   QVERIFY( field.isNumeric() );
-  field.setType( QVariant::LongLong );
+  field.setType( QMetaType::Type::LongLong );
   QVERIFY( field.isNumeric() );
-  field.setType( QVariant::ULongLong );
+  field.setType( QMetaType::Type::ULongLong );
   QVERIFY( field.isNumeric() );
-  field.setType( QVariant::String );
+  field.setType( QMetaType::Type::QString );
   QVERIFY( !field.isNumeric() );
-  field.setType( QVariant::DateTime );
+  field.setType( QMetaType::Type::QDateTime );
   QVERIFY( !field.isNumeric() );
-  field.setType( QVariant::Bool );
+  field.setType( QMetaType::Type::Bool );
   QVERIFY( !field.isNumeric() );
-  field.setType( QVariant::Invalid );
+  field.setType( QMetaType::Type::UnknownType );
   QVERIFY( !field.isNumeric() );
 }
 
 void TestQgsField::isDateTime()
 {
   QgsField field;
-  field.setType( QVariant::Int );
+  field.setType( QMetaType::Type::Int );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::UInt );
+  field.setType( QMetaType::Type::UInt );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::Double );
+  field.setType( QMetaType::Type::Double );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::LongLong );
+  field.setType( QMetaType::Type::LongLong );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::ULongLong );
+  field.setType( QMetaType::Type::ULongLong );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::String );
+  field.setType( QMetaType::Type::QString );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::DateTime );
+  field.setType( QMetaType::Type::QDateTime );
   QVERIFY( field.isDateOrTime() );
-  field.setType( QVariant::Time );
+  field.setType( QMetaType::Type::QTime );
   QVERIFY( field.isDateOrTime() );
-  field.setType( QVariant::Date );
+  field.setType( QMetaType::Type::QDate );
   QVERIFY( field.isDateOrTime() );
-  field.setType( QVariant::Bool );
+  field.setType( QMetaType::Type::Bool );
   QVERIFY( !field.isDateOrTime() );
-  field.setType( QVariant::Invalid );
+  field.setType( QMetaType::Type::UnknownType );
   QVERIFY( !field.isDateOrTime() );
 }
 
@@ -277,7 +277,7 @@ void TestQgsField::equality()
 {
   QgsField field1;
   field1.setName( QStringLiteral( "name" ) );
-  field1.setType( QVariant::Int );
+  field1.setType( QMetaType::Type::Int );
   field1.setLength( 5 );
   field1.setPrecision( 2 );
   field1.setTypeName( QStringLiteral( "typename1" ) ); //typename is NOT required for equality
@@ -287,7 +287,7 @@ void TestQgsField::equality()
   field1.setConstraints( constraints );
   QgsField field2;
   field2.setName( QStringLiteral( "name" ) );
-  field2.setType( QVariant::Int );
+  field2.setType( QMetaType::Type::Int );
   field2.setLength( 5 );
   field2.setPrecision( 2 );
   field2.setTypeName( QStringLiteral( "typename2" ) ); //typename is NOT required for equality
@@ -303,10 +303,10 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setName( QStringLiteral( "name" ) );
-  field2.setType( QVariant::Double );
+  field2.setType( QMetaType::Type::Double );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  field2.setType( QVariant::Int );
+  field2.setType( QMetaType::Type::Int );
   field2.setLength( 9 );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
@@ -412,7 +412,7 @@ void TestQgsField::equality()
 
 void TestQgsField::asVariant()
 {
-  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  QgsField original( QStringLiteral( "original" ), QMetaType::Type::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull );
   original.setConstraints( constraints );
@@ -427,7 +427,7 @@ void TestQgsField::asVariant()
 
 void TestQgsField::displayString()
 {
-  const QgsField stringField( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
+  const QgsField stringField( QStringLiteral( "string" ), QMetaType::Type::QString, QStringLiteral( "string" ) );
 
   //test string value
   const QString test( QStringLiteral( "test string" ) );
@@ -435,37 +435,37 @@ void TestQgsField::displayString()
 
   //test NULL
   QgsApplication::setNullRepresentation( QStringLiteral( "TEST NULL" ) );
-  const QVariant nullString = QVariant( QVariant::String );
+  const QVariant nullString = QgsVariantUtils::createVariant( QMetaType::Type::QString );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 
   //test int value in string type
-  const QgsField intField( QStringLiteral( "int" ), QVariant::String, QStringLiteral( "int" ) );
+  const QgsField intField( QStringLiteral( "int" ), QMetaType::Type::QString, QStringLiteral( "int" ) );
   QCOMPARE( intField.displayString( 5 ), QString( "5" ) );
   QCOMPARE( intField.displayString( 599999898999LL ), QString( "599999898999" ) );
 
   //test int value in int type
-  const QgsField intField2( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "int" ) );
+  const QgsField intField2( QStringLiteral( "int" ), QMetaType::Type::Int, QStringLiteral( "int" ) );
   QCOMPARE( intField2.displayString( 5 ), QString( "5" ) );
   QCOMPARE( intField2.displayString( 599999898999LL ), QString( "599,999,898,999" ) );
 
   //test long type
-  const QgsField longField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
+  const QgsField longField( QStringLiteral( "long" ), QMetaType::Type::LongLong, QStringLiteral( "longlong" ) );
   QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
   QCOMPARE( longField.displayString( 599999898999LL ), QString( "599,999,898,999" ) );
 
   //test NULL int
-  const QVariant nullInt = QVariant( QVariant::Int );
+  const QVariant nullInt = QgsVariantUtils::createVariant( QMetaType::Type::Int );
   QCOMPARE( intField.displayString( nullInt ), QString( "TEST NULL" ) );
 
   //test double value
-  const QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
+  const QgsField doubleField( QStringLiteral( "double" ), QMetaType::Type::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
   QCOMPARE( doubleField.displayString( 4.5e-09 ).toLower(), QString( "4.5e-09" ) );
   QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleField.displayString( -5.005005 ), QString( "-5.005" ) );
   QCOMPARE( doubleField.displayString( -4.5e-09 ).toLower(), QString( "-4.5e-09" ) );
   QCOMPARE( doubleField.displayString( -1e-04 ), QString( "-0.0001" ) );
-  const QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
+  const QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QMetaType::Type::Double, QStringLiteral( "double" ), 10 );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ).toLower(), QString( "4.5e-09" ) );
@@ -499,7 +499,7 @@ void TestQgsField::displayString()
   QCOMPARE( doubleFieldNoPrec.displayString( ( "(1+2)" ) ), QString( "(1+2)" ) );
 
   //test NULL double
-  const QVariant nullDouble = QVariant( QVariant::Double );
+  const QVariant nullDouble = QgsVariantUtils::createVariant( QMetaType::Type::Double );
   QCOMPARE( doubleField.displayString( nullDouble ), QString( "TEST NULL" ) );
 
   //test double value with German locale
@@ -567,92 +567,92 @@ void TestQgsField::displayString()
   QCOMPARE( longField.displayString( 599999898999LL ), QString( "599999898999" ) );
 
   // binary field
-  const QgsField binaryField( QStringLiteral( "binary" ), QVariant::ByteArray, QStringLiteral( "Binary" ) );
+  const QgsField binaryField( QStringLiteral( "binary" ), QMetaType::Type::QByteArray, QStringLiteral( "Binary" ) );
   const QString testBAString( QStringLiteral( "test string" ) );
   const QByteArray testBA( testBAString.toLocal8Bit() );
   QCOMPARE( binaryField.displayString( testBA ), QStringLiteral( "BLOB" ) );
 
   // array field
-  const QgsField stringArrayField( QStringLiteral( "stringArray" ), QVariant::StringList, QStringLiteral( "StringArray" ) );
+  const QgsField stringArrayField( QStringLiteral( "stringArray" ), QMetaType::Type::QStringList, QStringLiteral( "StringArray" ) );
   QCOMPARE( stringArrayField.displayString( QStringList() << "A" << "B" << "C" ), QStringLiteral( "A, B, C" ) );
-  const QgsField intArrayField( QStringLiteral( "intArray" ), QVariant::List, QStringLiteral( "IntArray" ) );
+  const QgsField intArrayField( QStringLiteral( "intArray" ), QMetaType::Type::QVariantList, QStringLiteral( "IntArray" ) );
   QCOMPARE( intArrayField.displayString( QVariantList() << 1 << 2 << 3 ), QStringLiteral( "1, 2, 3" ) );
 }
 
 void TestQgsField::convertCompatible()
 {
   //test string field
-  const QgsField stringField( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
+  const QgsField stringField( QStringLiteral( "string" ), QMetaType::Type::QString, QStringLiteral( "string" ) );
 
   QVariant stringVar( "test string" );
   QVERIFY( stringField.convertCompatible( stringVar ) );
   QCOMPARE( stringVar.toString(), QString( "test string" ) );
-  QVariant nullString = QVariant( QVariant::String );
+  QVariant nullString = QgsVariantUtils::createVariant( QMetaType::Type::QString );
   QVERIFY( stringField.convertCompatible( nullString ) );
-  QCOMPARE( nullString.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( nullString.userType() ), QMetaType::Type::QString );
   QVERIFY( nullString.isNull() );
   QVariant intVar( 5 );
   QVERIFY( stringField.convertCompatible( intVar ) );
-  QCOMPARE( intVar.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( intVar.userType() ), QMetaType::Type::QString );
   QCOMPARE( intVar, QVariant( "5" ) );
-  QVariant nullInt = QVariant( QVariant::Int );
+  QVariant nullInt = QgsVariantUtils::createVariant( QMetaType::Type::Int );
   QVERIFY( stringField.convertCompatible( nullInt ) );
-  QCOMPARE( nullInt.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( nullInt.userType() ), QMetaType::Type::QString );
   QVERIFY( nullInt.isNull() );
   QVariant doubleVar( 1.25 );
   QVERIFY( stringField.convertCompatible( doubleVar ) );
-  QCOMPARE( doubleVar.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( doubleVar.userType() ), QMetaType::Type::QString );
   QCOMPARE( doubleVar, QVariant( "1.25" ) );
-  QVariant nullDouble = QVariant( QVariant::Double );
+  QVariant nullDouble = QgsVariantUtils::createVariant( QMetaType::Type::Double );
   QVERIFY( stringField.convertCompatible( nullDouble ) );
-  QCOMPARE( nullDouble.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::QString );
   QVERIFY( nullDouble.isNull() );
 
   //test double
-  const QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ) );
+  const QgsField doubleField( QStringLiteral( "double" ), QMetaType::Type::Double, QStringLiteral( "double" ) );
 
   stringVar = QVariant( "test string" );
   QString error;
   QVERIFY( !doubleField.convertCompatible( stringVar, &error ) );
-  QCOMPARE( stringVar.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( error, QStringLiteral( "Could not convert value \"test string\" to target type \"double\"" ) );
   stringVar = QVariant( "test string" );
   QVERIFY( !doubleField.convertCompatible( stringVar ) );
   QVERIFY( stringVar.isNull() );
-  nullString = QVariant( QVariant::String );
+  nullString = QgsVariantUtils::createVariant( QMetaType::Type::QString );
   QVERIFY( doubleField.convertCompatible( nullString, &error ) );
   QVERIFY( error.isEmpty() );
-  QCOMPARE( nullString.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( nullString.userType() ), QMetaType::Type::Double );
   QVERIFY( nullString.isNull() );
   intVar = QVariant( 5 );
   QVERIFY( doubleField.convertCompatible( intVar ) );
-  QCOMPARE( intVar.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( intVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( intVar, QVariant( 5.0 ) );
-  nullInt = QVariant( QVariant::Int );
+  nullInt = QgsVariantUtils::createVariant( QMetaType::Type::Int );
   QVERIFY( doubleField.convertCompatible( nullInt ) );
-  QCOMPARE( nullInt.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( nullInt.userType() ), QMetaType::Type::Double );
   QVERIFY( nullInt.isNull() );
   doubleVar = QVariant( 1.25 );
   QVERIFY( doubleField.convertCompatible( doubleVar ) );
-  QCOMPARE( doubleVar.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( doubleVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( doubleVar, QVariant( 1.25 ) );
-  nullDouble = QVariant( QVariant::Double );
+  nullDouble = QgsVariantUtils::createVariant( QMetaType::Type::Double );
   QVERIFY( doubleField.convertCompatible( nullDouble ) );
-  QCOMPARE( nullDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::Double );
   QVERIFY( nullDouble.isNull() );
 
   //test special rules
 
   //conversion of double to int
-  QgsField intField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "int" ) );
+  QgsField intField( QStringLiteral( "int" ), QMetaType::Type::Int, QStringLiteral( "int" ) );
   //small double, should be rounded
   QVariant smallDouble( 45.7 );
   QVERIFY( intField.convertCompatible( smallDouble ) );
-  QCOMPARE( smallDouble.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( smallDouble.userType() ), QMetaType::Type::Int );
   QCOMPARE( smallDouble, QVariant( 46 ) );
   QVariant negativeSmallDouble( -9345.754534525235235 );
   QVERIFY( intField.convertCompatible( negativeSmallDouble ) );
-  QCOMPARE( negativeSmallDouble.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( negativeSmallDouble.userType() ), QMetaType::Type::Int );
   QCOMPARE( negativeSmallDouble, QVariant( -9346 ) );
   //large double, cannot be converted
   QVariant largeDouble( 9999999999.99 );
@@ -660,7 +660,7 @@ void TestQgsField::convertCompatible()
   QCOMPARE( error, QStringLiteral( "Value \"10000000000\" is too large for integer field" ) );
   largeDouble = QVariant( 9999999999.99 );
   QVERIFY( !intField.convertCompatible( largeDouble ) );
-  QCOMPARE( largeDouble.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( largeDouble.userType() ), QMetaType::Type::Int );
   QVERIFY( largeDouble.isNull() );
 
   //conversion of string double value to int
@@ -669,16 +669,16 @@ void TestQgsField::convertCompatible()
   QCOMPARE( error, QStringLiteral( "Value \"notanumber\" is not a number" ) );
   notNumberString = QVariant( "notanumber" );
   QVERIFY( !intField.convertCompatible( notNumberString ) );
-  QCOMPARE( notNumberString.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( notNumberString.userType() ), QMetaType::Type::Int );
   QVERIFY( notNumberString.isNull() );
   //small double, should be rounded
   QVariant smallDoubleString( "45.7" );
   QVERIFY( intField.convertCompatible( smallDoubleString ) );
-  QCOMPARE( smallDoubleString.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( smallDoubleString.userType() ), QMetaType::Type::Int );
   QCOMPARE( smallDoubleString, QVariant( 46 ) );
   QVariant negativeSmallDoubleString( "-9345.754534525235235" );
   QVERIFY( intField.convertCompatible( negativeSmallDoubleString ) );
-  QCOMPARE( negativeSmallDoubleString.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( negativeSmallDoubleString.userType() ), QMetaType::Type::Int );
   QCOMPARE( negativeSmallDoubleString, QVariant( -9346 ) );
   //large double, cannot be converted
   QVariant largeDoubleString( "9999999999.99" );
@@ -686,96 +686,96 @@ void TestQgsField::convertCompatible()
   QCOMPARE( error, QStringLiteral( "Value \"1e+10\" is too large for integer field" ) );
   largeDoubleString = QVariant( "9999999999.99" );
   QVERIFY( !intField.convertCompatible( largeDoubleString ) );
-  QCOMPARE( largeDoubleString.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( largeDoubleString.userType() ), QMetaType::Type::Int );
   QVERIFY( largeDoubleString.isNull() );
 
   //conversion of longlong to int
   QVariant longlong( 99999999999999999LL );
   QVERIFY( !intField.convertCompatible( longlong, &error ) );
   QCOMPARE( error, QStringLiteral( "Value \"99999999999999999\" is too large for integer field" ) );
-  QCOMPARE( longlong.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( longlong.userType() ), QMetaType::Type::Int );
   QVERIFY( longlong.isNull() );
   QVariant smallLonglong( 99LL );
   QVERIFY( intField.convertCompatible( smallLonglong ) );
-  QCOMPARE( smallLonglong.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( smallLonglong.userType() ), QMetaType::Type::Int );
   QCOMPARE( smallLonglong, QVariant( 99 ) );
   // negative longlong to int
   QVariant negativeLonglong( -99999999999999999LL );
   QVERIFY( !intField.convertCompatible( negativeLonglong, &error ) );
   QCOMPARE( error, QStringLiteral( "Value \"-99999999999999999\" is too large for integer field" ) );
-  QCOMPARE( negativeLonglong.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( negativeLonglong.userType() ), QMetaType::Type::Int );
   QVERIFY( negativeLonglong.isNull() );
   // small negative longlong to int
   QVariant smallNegativeLonglong( -99LL );
   QVERIFY( intField.convertCompatible( smallNegativeLonglong ) );
-  QCOMPARE( smallNegativeLonglong.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( smallNegativeLonglong.userType() ), QMetaType::Type::Int );
   QCOMPARE( smallNegativeLonglong, QVariant( -99 ) );
 
   //string representation of an int
   QVariant stringInt( "123456" );
   QVERIFY( intField.convertCompatible( stringInt ) );
-  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( stringInt.userType() ), QMetaType::Type::Int );
   QCOMPARE( stringInt, QVariant( 123456 ) );
   // now with group separator for english locale
   stringInt = QVariant( "123,456" );
   QVERIFY( intField.convertCompatible( stringInt ) );
-  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( stringInt.userType() ), QMetaType::Type::Int );
   QCOMPARE( stringInt, QVariant( "123456" ) );
 
   //conversion of longlong to longlong field
-  const QgsField longlongField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
+  const QgsField longlongField( QStringLiteral( "long" ), QMetaType::Type::LongLong, QStringLiteral( "longlong" ) );
   longlong = QVariant( 99999999999999999LL );
   QVERIFY( longlongField.convertCompatible( longlong ) );
-  QCOMPARE( longlong.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( longlong.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
 
   //string representation of a longlong
   QVariant stringLong( "99999999999999999" );
   QVERIFY( longlongField.convertCompatible( stringLong ) );
-  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( stringLong.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
   // now with group separator for english locale
   stringLong = QVariant( "99,999,999,999,999,999" );
   QVERIFY( longlongField.convertCompatible( stringLong ) );
-  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( stringLong.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
 
   //conversion of string double value to longlong
   notNumberString = QVariant( "notanumber" );
   QVERIFY( !longlongField.convertCompatible( notNumberString, &error ) );
   QCOMPARE( error, QStringLiteral( "Value \"notanumber\" is not a number" ) );
-  QCOMPARE( notNumberString.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( notNumberString.userType() ), QMetaType::Type::LongLong );
   QVERIFY( notNumberString.isNull() );
   //small double, should be rounded
   smallDoubleString = QVariant( "45.7" );
   QVERIFY( longlongField.convertCompatible( smallDoubleString ) );
-  QCOMPARE( smallDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( smallDoubleString.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( smallDoubleString, QVariant( 46 ) );
   negativeSmallDoubleString = QVariant( "-9345.754534525235235" );
   QVERIFY( longlongField.convertCompatible( negativeSmallDoubleString ) );
-  QCOMPARE( negativeSmallDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( negativeSmallDoubleString.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( negativeSmallDoubleString, QVariant( -9346 ) );
   //large double, can be converted
   largeDoubleString = QVariant( "9999999999.99" );
   QVERIFY( longlongField.convertCompatible( largeDoubleString ) );
-  QCOMPARE( largeDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( largeDoubleString.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( largeDoubleString, QVariant( 10000000000LL ) );
   //extra large double, cannot be converted
   largeDoubleString = QVariant( "999999999999999999999.99" );
   QVERIFY( !longlongField.convertCompatible( largeDoubleString, &error ) );
   QCOMPARE( error, QStringLiteral( "Value \"1e+21\" is too large for long long field" ) );
-  QCOMPARE( largeDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( largeDoubleString.userType() ), QMetaType::Type::LongLong );
   QVERIFY( largeDoubleString.isNull() );
 
   //string representation of a double
   QVariant stringDouble( "123456.012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
   // now with group separator for english locale
   stringDouble = QVariant( "1,223,456.012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
   // This should not convert
   stringDouble = QVariant( "1.223.456,012345" );
@@ -783,28 +783,28 @@ void TestQgsField::convertCompatible()
   QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type \"double\"" ) );
 
   //double with precision
-  const QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
+  const QgsField doubleWithPrecField( QStringLiteral( "double" ), QMetaType::Type::Double, QStringLiteral( "double" ), 10, 3 );
   doubleVar = QVariant( 10.12345678 );
   //note - this returns true!
   QVERIFY( doubleWithPrecField.convertCompatible( doubleVar ) );
-  QCOMPARE( doubleVar.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( doubleVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( doubleVar.toDouble(), 10.123 );
 
   //truncating string length
-  const QgsField stringWithLen( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ), 3 );
+  const QgsField stringWithLen( QStringLiteral( "string" ), QMetaType::Type::QString, QStringLiteral( "string" ), 3 );
   stringVar = QVariant( "longstring" );
   QVERIFY( !stringWithLen.convertCompatible( stringVar, &error ) );
   QCOMPARE( error, QStringLiteral( "String of length 10 exceeds maximum field length (3)" ) );
-  QCOMPARE( stringVar.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( stringVar.userType() ), QMetaType::Type::QString );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
 
   // Referenced geometries
-  const QgsField stringGeomRef( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
+  const QgsField stringGeomRef( QStringLiteral( "string" ), QMetaType::Type::QString, QStringLiteral( "string" ) );
   QgsGeometry geom { QgsGeometry::fromWkt( "POINT( 1 1 )" ) };
   QgsReferencedGeometry geomRef { geom, QgsCoordinateReferenceSystem() };
   QVariant geomVar = QVariant::fromValue( geomRef );
   QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
-  QCOMPARE( geomVar.type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( geomVar.userType() ), QMetaType::Type::QString );
   QCOMPARE( geomVar.toString().toUpper(), QString( "POINT (1 1)" ) );
 
   /////////////////////////////////////////////////////////
@@ -814,98 +814,98 @@ void TestQgsField::convertCompatible()
   QLocale::setDefault( QLocale::German );
   QVariant doubleCommaVar( "1,2345" );
   QVERIFY( doubleField.convertCompatible( doubleCommaVar ) );
-  QCOMPARE( doubleCommaVar.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( doubleCommaVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( doubleCommaVar.toString(), QString( "1.2345" ) );
 
   //string representation of an int
   stringInt = QVariant( "123456" );
   QVERIFY( intField.convertCompatible( stringInt ) );
-  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( stringInt.userType() ), QMetaType::Type::Int );
   QCOMPARE( stringInt, QVariant( 123456 ) );
   // now with group separator for german locale
   stringInt = QVariant( "123.456" );
   QVERIFY( intField.convertCompatible( stringInt ) );
-  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( static_cast<QMetaType::Type>( stringInt.userType() ), QMetaType::Type::Int );
   QCOMPARE( stringInt, QVariant( "123456" ) );
 
   //string representation of a longlong
   stringLong = QVariant( "99999999999999999" );
   QVERIFY( longlongField.convertCompatible( stringLong ) );
-  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( stringLong.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
   // now with group separator for german locale
   stringLong = QVariant( "99.999.999.999.999.999" );
   QVERIFY( longlongField.convertCompatible( stringLong ) );
-  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( stringLong.userType() ), QMetaType::Type::LongLong );
   QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
 
   //string representation of a double
   stringDouble = QVariant( "123456,012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
   // For doubles we also want to accept dot as a decimal point
   stringDouble = QVariant( "123456.012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
   // now with group separator for german locale
   stringDouble = QVariant( "1.223.456,012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
   // Be are good citizens and we also accept english locale
   stringDouble = QVariant( "1,223,456.012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
 
   // Test that wrongly formatted decimal separator are also accepted
   QLocale::setDefault( QLocale::German );
   stringDouble = QVariant( "12.23.456,012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
-  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( stringDouble.userType() ), QMetaType::Type::Double );
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
 
   // Test 0 on int fields
-  intField = QgsField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "Integer" ), 10 );
+  intField = QgsField( QStringLiteral( "int" ), QMetaType::Type::Int, QStringLiteral( "Integer" ), 10 );
   QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
 
   // Test string-based json field conversion
   {
-    const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
+    const QgsField jsonField( QStringLiteral( "json" ), QMetaType::Type::QString, QStringLiteral( "json" ) );
     QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
     QVERIFY( jsonField.convertCompatible( jsonValue ) );
-    QCOMPARE( jsonValue.type(), QVariant::String );
+    QCOMPARE( static_cast<QMetaType::Type>( jsonValue.userType() ), QMetaType::Type::QString );
     QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
     QVariantMap variantMap;
     variantMap.insert( QStringLiteral( "a" ), 1 );
     variantMap.insert( QStringLiteral( "c" ), 3 );
     jsonValue = QVariant::fromValue( variantMap );
     QVERIFY( jsonField.convertCompatible( jsonValue ) );
-    QCOMPARE( jsonValue.type(), QVariant::String );
+    QCOMPARE( static_cast<QMetaType::Type>( jsonValue.userType() ), QMetaType::Type::QString );
     QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
   }
 
   // Test map-based json field (i.e. OGR geopackage JSON fields) conversion
   {
-    const QgsField jsonField( QStringLiteral( "json" ), QVariant::Map, QStringLiteral( "json" ) );
+    const QgsField jsonField( QStringLiteral( "json" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ) );
     QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
     QVERIFY( jsonField.convertCompatible( jsonValue ) );
-    QCOMPARE( jsonValue.type(), QVariant::List );
+    QCOMPARE( static_cast<QMetaType::Type>( jsonValue.userType() ), QMetaType::Type::QVariantList );
     QCOMPARE( jsonValue, QVariantList() << 1 << 5 << 8 );
     QVariantMap variantMap;
     variantMap.insert( QStringLiteral( "a" ), 1 );
     variantMap.insert( QStringLiteral( "c" ), 3 );
     jsonValue = QVariant::fromValue( variantMap );
     QVERIFY( jsonField.convertCompatible( jsonValue ) );
-    QCOMPARE( jsonValue.type(), QVariant::Map );
+    QCOMPARE( static_cast<QMetaType::Type>( jsonValue.userType() ), QMetaType::Type::QVariantMap );
     QCOMPARE( jsonValue, variantMap );
   }
 
   // geometry field conversion
-  const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
+  const QgsField geometryField( QStringLiteral( "geometry" ), QMetaType::Type::User, QStringLiteral( "geometry" ) );
   QVariant geometryValue;
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
   QVERIFY( geometryValue.isNull() );
@@ -926,7 +926,7 @@ void TestQgsField::dataStream()
 {
   QgsField original;
   original.setName( QStringLiteral( "name" ) );
-  original.setType( QVariant::Int );
+  original.setType( QMetaType::Type::Int );
   original.setLength( 5 );
   original.setPrecision( 2 );
   original.setTypeName( QStringLiteral( "typename1" ) );
@@ -1000,15 +1000,15 @@ void TestQgsField::displayType()
 void TestQgsField::friendlyTypeString()
 {
   QgsField field;
-  field.setType( QVariant::String );
+  field.setType( QMetaType::Type::QString );
   QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Text (string)" ) );
-  field.setType( QVariant::Double );
+  field.setType( QMetaType::Type::Double );
   field.setLength( 20 );
   QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Decimal (double)" ) );
-  field.setType( QVariant::List );
-  field.setSubType( QVariant::String );
+  field.setType( QMetaType::Type::QVariantList );
+  field.setSubType( QMetaType::Type::QString );
   QCOMPARE( field.friendlyTypeString(), QStringLiteral( "List" ) );
-  field.setType( QVariant::UserType );
+  field.setType( QMetaType::Type::User );
   field.setTypeName( QStringLiteral( "geometry" ) );
   QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Geometry" ) );
 }
@@ -1036,10 +1036,10 @@ void TestQgsField::editorWidgetSetup()
 
 void TestQgsField::collection()
 {
-  QgsField field( QStringLiteral( "collection" ), QVariant::List, QStringLiteral( "_int32" ), 0, 0, QString(), QVariant::Int );
-  QCOMPARE( field.subType(), QVariant::Int );
-  field.setSubType( QVariant::Double );
-  QCOMPARE( field.subType(), QVariant::Double );
+  QgsField field( QStringLiteral( "collection" ), QMetaType::Type::QVariantList, QStringLiteral( "_int32" ), 0, 0, QString(), QMetaType::Type::Int );
+  QCOMPARE( field.subType(), QMetaType::Type::Int );
+  field.setSubType( QMetaType::Type::Double );
+  QCOMPARE( field.subType(), QMetaType::Type::Double );
 
   QVariant str( "hello" );
   QVERIFY( !field.convertCompatible( str ) );
@@ -1052,7 +1052,7 @@ void TestQgsField::collection()
   QVERIFY( field.convertCompatible( doubleList ) );
   QCOMPARE( doubleList.toList(), QVariantList( {1.1, 2.2, 3.3 } ) );
 
-  QgsField stringListField( QStringLiteral( "collection" ), QVariant::StringList );
+  QgsField stringListField( QStringLiteral( "collection" ), QMetaType::Type::QStringList );
   str = QVariant( "hello" );
   QVERIFY( stringListField.convertCompatible( str ) );
   QCOMPARE( str, QStringList{ QStringLiteral( "hello" )} );

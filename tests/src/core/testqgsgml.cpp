@@ -115,8 +115,8 @@ const QString data1( "<myns:FeatureCollection "
 void TestQgsGML::testFromURL()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
-  fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
+  fields.append( QgsField( QStringLiteral( "intfield" ), QMetaType::Type::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "nillablefield" ), QMetaType::Type::Int, QStringLiteral( "nillablefield" ) ) );
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   Qgis::WkbType wkbType;
   QTemporaryFile tmpFile;
@@ -137,8 +137,8 @@ void TestQgsGML::testFromURL()
 void TestQgsGML::testFromByteArray()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
-  fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
+  fields.append( QgsField( QStringLiteral( "intfield" ), QMetaType::Type::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "nillablefield" ), QMetaType::Type::Int, QStringLiteral( "nillablefield" ) ) );
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   Qgis::WkbType wkbType;
   QCOMPARE( gmlParser.getFeatures( data1.toLatin1(), &wkbType ), 0 );
@@ -157,12 +157,12 @@ void TestQgsGML::testFromByteArray()
 void TestQgsGML::testStreamingParser()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
-  fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
-  fields.append( QgsField( QStringLiteral( "longfield" ), QVariant::LongLong, QStringLiteral( "longlong" ) ) );
-  fields.append( QgsField( QStringLiteral( "doublefield" ), QVariant::Double, QStringLiteral( "double" ) ) );
-  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "datetimefield" ), QVariant::DateTime, QStringLiteral( "datetime" ) ) );
+  fields.append( QgsField( QStringLiteral( "intfield" ), QMetaType::Type::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "nillablefield" ), QMetaType::Type::Int, QStringLiteral( "nillablefield" ) ) );
+  fields.append( QgsField( QStringLiteral( "longfield" ), QMetaType::Type::LongLong, QStringLiteral( "longlong" ) ) );
+  fields.append( QgsField( QStringLiteral( "doublefield" ), QMetaType::Type::Double, QStringLiteral( "double" ) ) );
+  fields.append( QgsField( QStringLiteral( "strfield" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "datetimefield" ), QMetaType::Type::QDateTime, QStringLiteral( "datetime" ) ) );
   QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( data1.mid( 0, data1.size() / 2 ).toLatin1(), false ), true );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
@@ -991,8 +991,8 @@ void TestQgsGML::testException()
 void TestQgsGML::testTuple()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "my_first_attr" ), QVariant::Int, QStringLiteral( "int" ) ) );
-  fields.append( QgsField( QStringLiteral( "my_second_attr" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "my_first_attr" ), QMetaType::Type::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "my_second_attr" ), QMetaType::Type::Int, QStringLiteral( "int" ) ) );
   QList<QgsGmlStreamingParser::LayerProperties> layerProperties;
   QgsGmlStreamingParser::LayerProperties prop;
   prop.mName = QStringLiteral( "ns:firstlayer" );
@@ -1046,7 +1046,7 @@ void TestQgsGML::testTuple()
 void TestQgsGML::testRenamedFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "my_first_attr" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "my_first_attr" ), QMetaType::Type::Int, QStringLiteral( "int" ) ) );
   QList<QgsGmlStreamingParser::LayerProperties> layerProperties;
   QgsGmlStreamingParser::LayerProperties prop;
   prop.mName = QStringLiteral( "ns:mylayer" );
@@ -1319,7 +1319,7 @@ void TestQgsGML::testUnknownEncoding()
                         "</myns:FeatureCollection>" ).arg( xmlHeader ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "strfield" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
 
   {
     QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
@@ -1370,7 +1370,7 @@ void TestQgsGML::testUnhandledEncoding()
                    "</myns:FeatureCollection>" );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "strfield" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
 
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.getFeatures( data.toUtf8(), &wkbType ), 0 );
@@ -1419,15 +1419,15 @@ void TestQgsGML::testXPath()
                    "</myns:FeatureCollection>" );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "fid" ), QVariant::String, QStringLiteral( "fid" ) ) );
-  fields.append( QgsField( QStringLiteral( "my_attr" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "nested_strfield2" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "nested_strfield2_attr" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "nested_strfield3" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "complex" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "complex2" ), QVariant::String, QStringLiteral( "string" ) ) );
-  fields.append( QgsField( QStringLiteral( "complex_repeated" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "fid" ), QMetaType::Type::QString, QStringLiteral( "fid" ) ) );
+  fields.append( QgsField( QStringLiteral( "my_attr" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "strfield" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "nested_strfield2" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "nested_strfield2_attr" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "nested_strfield3" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "complex" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "complex2" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "complex_repeated" ), QMetaType::Type::QString, QStringLiteral( "string" ) ) );
 
   QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
 

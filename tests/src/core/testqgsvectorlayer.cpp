@@ -460,7 +460,7 @@ void TestQgsVectorLayer::testFieldExpression()
   QgsVectorLayer layer1( QStringLiteral( "Point?field=name:string" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
   QVERIFY( layer1.isValid() );
 
-  layer1.addExpressionField( QStringLiteral( "'abc'" ), QgsField( QStringLiteral( "virtual_field" ), QVariant::String ) );
+  layer1.addExpressionField( QStringLiteral( "'abc'" ), QgsField( QStringLiteral( "virtual_field" ), QMetaType::Type::QString ) );
 
   QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "virtual_field" ) ) ),  QStringLiteral( "'abc'" ) );
   QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "name" ) ) ),  QString() );
@@ -474,7 +474,7 @@ void TestQgsVectorLayer::testFieldAggregateExpression()
   QgsVectorLayer layer( testPolysFile, QStringLiteral( "layer1" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer.isValid() );
 
-  layer.addExpressionField( QStringLiteral( "sum($area)" ), QgsField( QStringLiteral( "virtual_field" ), QVariant::String ) );
+  layer.addExpressionField( QStringLiteral( "sum($area)" ), QgsField( QStringLiteral( "virtual_field" ), QMetaType::Type::QString ) );
 
   const int vfIndex = layer.fields().count() - 1;
   QCOMPARE( layer.fields().at( 0 ).name(), QStringLiteral( "fid" ) );

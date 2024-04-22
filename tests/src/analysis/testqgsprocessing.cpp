@@ -2371,7 +2371,7 @@ void TestQgsProcessing::createFeatureSink()
   // memory layer parameters
   destination = QStringLiteral( "memory:mylayer" );
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "my_field" ), QVariant::String, QString(), 100 ) );
+  fields.append( QgsField( QStringLiteral( "my_field" ), QMetaType::Type::QString, QString(), 100 ) );
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, Qgis::WkbType::PointZM, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
   QVERIFY( sink.get() );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, false ) );
@@ -2384,7 +2384,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().at( 0 ).type(), QMetaType::Type::QString );
   QCOMPARE( destination, layer->id() );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( layer->id() ), layer ); // layer should be in store
   QCOMPARE( layer->featureCount(), 0L );
@@ -2408,7 +2408,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().at( 0 ).type(), QMetaType::Type::QString );
   QCOMPARE( layer->featureCount(), 1L );
 
   // no extension, should default to shp
@@ -2428,7 +2428,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().size(), 2 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "fid" ) );
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().at( 1 ).type(), QMetaType::Type::QString );
   QCOMPARE( layer->featureCount(), 1L );
   // append to existing OGR layer
   QgsRemappingSinkDefinition remapDef;
@@ -2438,7 +2438,7 @@ void TestQgsProcessing::createFeatureSink()
   remapDef.setDestinationWkbType( Qgis::WkbType::Polygon );
   remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
   QgsFields fields2;
-  fields2.append( QgsField( "field2", QVariant::String ) );
+  fields2.append( QgsField( "field2", QMetaType::Type::QString ) );
   context.expressionContext().appendScope( new QgsExpressionContextScope() );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "extra" ), 2 );
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields2, Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::SinkFlags(), &remapDef ) );
@@ -2692,7 +2692,7 @@ void TestQgsProcessing::parameters()
 
   // correctly setup feature
   QgsFields fields;
-  fields.append( QgsField( "a_field", QVariant::String, QString(), 30 ) );
+  fields.append( QgsField( "a_field", QMetaType::Type::QString, QString(), 30 ) );
   QgsFeature f( fields );
   f.setAttribute( 0, QStringLiteral( "field value" ) );
   context.expressionContext().setFeature( f );

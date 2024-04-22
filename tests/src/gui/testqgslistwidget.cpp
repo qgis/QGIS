@@ -81,7 +81,7 @@ class TestQgsListWidget : public QObject
       wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
-      QCOMPARE( int( value.type() ), int( QVariant::StringList ) );
+      QCOMPARE( int( static_cast<QMetaType::Type>( value.userType() ) ), int( QMetaType::Type::QStringList ) );
       QCOMPARE( value.toStringList(), initial );
       QCOMPARE( spy.count(), 0 );
 
@@ -93,7 +93,7 @@ class TestQgsListWidget : public QObject
       QStringList expected = initial;
       expected[0] = QStringLiteral( "hello" );
       const QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
-      QCOMPARE( int( eventValue.type() ), int( QVariant::StringList ) );
+      QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QStringList ) );
       QCOMPARE( eventValue.toStringList(), expected );
       QCOMPARE( wrapper->value().toStringList(), expected );
       QCOMPARE( spy.count(), 1 );
@@ -116,7 +116,7 @@ class TestQgsListWidget : public QObject
       wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
-      QCOMPARE( int( value.type() ), int( QVariant::List ) );
+      QCOMPARE( int( static_cast<QMetaType::Type>( value.userType() ) ), int( QMetaType::Type::QVariantList ) );
       QCOMPARE( value.toList(), initial );
       QCOMPARE( spy.count(), 0 );
 
@@ -128,7 +128,7 @@ class TestQgsListWidget : public QObject
       expected[0] = 3;
       QCOMPARE( spy.count(), 1 );
       QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
-      QCOMPARE( int( eventValue.type() ), int( QVariant::List ) );
+      QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QVariantList ) );
       QCOMPARE( eventValue.toList(), expected );
       QCOMPARE( wrapper->value().toList(), expected );
       QVERIFY( widget->valid() );

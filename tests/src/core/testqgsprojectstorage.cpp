@@ -174,7 +174,7 @@ void TestQgsProjectStorage::testMemoryStorage()
   const int fldCnt0 = layer1->fields().count();
   QgsAuxiliaryLayer *layerAux = prj1.auxiliaryStorage()->createAuxiliaryLayer( layer1->fields().at( 0 ), layer1 );
   layer1->setAuxiliaryLayer( layerAux );
-  layerAux->addAttribute( QgsField( "fld_aux", QVariant::Int ) );
+  layerAux->addAttribute( QgsField( "fld_aux", QMetaType::Type::Int ) );
   layerAux->commitChanges();
   QCOMPARE( fldCnt0, 6 );
   QCOMPARE( layer1->fields().count(), 7 );

@@ -138,7 +138,7 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
 void TestQgsFieldExpressionWidget::asExpression()
 {
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-  layer->dataProvider()->addAttributes( QList< QgsField >() << QgsField( QStringLiteral( "a space" ), QVariant::String ) );
+  layer->dataProvider()->addAttributes( QList< QgsField >() << QgsField( QStringLiteral( "a space" ), QMetaType::Type::QString ) );
   layer->updateFields();
   QgsProject::instance()->addMapLayer( layer );
 

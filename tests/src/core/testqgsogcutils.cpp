@@ -547,7 +547,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
 
   QgsVectorLayer layer( "Point?crs=epsg:4326", "temp", "memory" );
 
-  const QgsField longlongField( QStringLiteral( "id" ), QVariant::LongLong );
+  const QgsField longlongField( QStringLiteral( "id" ), QMetaType::Type::LongLong );
 
   QList<QgsField> fields;
   fields.append( longlongField );
