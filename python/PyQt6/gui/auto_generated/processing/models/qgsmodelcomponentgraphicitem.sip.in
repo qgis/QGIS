@@ -410,6 +410,13 @@ Emitted when the user opts to run the model from this child algorithm.
 .. versionadded:: 3.38
 %End
 
+    void runSelected();
+%Docstring
+Emitted when the user opts to run selected steps from the model.
+
+.. versionadded:: 3.38
+%End
+
     void showPreviousResults();
 %Docstring
 Emitted when the user opts to view previous results from this child algorithm.
