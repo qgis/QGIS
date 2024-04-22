@@ -608,8 +608,15 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
     mLocalContext.reset( new QgsProcessingContext() );
     // copy across everything we can safely do from the passed context
     mLocalContext->copyThreadSafeSettings( context );
+
     // and we'll run the actual algorithm processing using the local thread safe context
     runContext = mLocalContext.get();
+  }
+
+  std::unique_ptr< QgsProcessingModelInitialRunConfig > modelConfig = context.takeModelInitialRunConfig();
+  if ( modelConfig )
+  {
+    runContext->setModelInitialRunConfig( std::move( modelConfig ) );
   }
 
   mHasExecuted = true;
