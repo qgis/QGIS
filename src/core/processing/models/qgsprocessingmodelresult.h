@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include <QSet>
 
 /**
  * \ingroup core
@@ -122,6 +123,10 @@ class CORE_EXPORT QgsProcessingModelResult
 
     QgsProcessingModelResult();
 
+    /**
+     * Clears any existing results.
+     */
+    void clear();
 
     /**
      * Returns the map of child algorithm results.
@@ -139,9 +144,46 @@ class CORE_EXPORT QgsProcessingModelResult
      */
     QMap< QString, QgsProcessingModelChildAlgorithmResult > &childResults() SIP_SKIP { return mChildResults; }
 
+    /**
+     * Returns a reference to the map of raw child algorithm inputs.
+     *
+     * Map keys refer to the child algorithm IDs. Map values may take any form, including
+     * values which are not safe to access from Python.
+     *
+     * \note Not available in Python bindings
+     */
+    QVariantMap &rawChildInputs() SIP_SKIP { return mRawChildInputs; }
+
+    /**
+     * Returns a reference to the map of raw child algorithm outputs.
+     *
+     * Map keys refer to the child algorithm IDs. Map values may take any form, including
+     * values which are not safe to access from Python.
+     *
+     * \note Not available in Python bindings
+     */
+    QVariantMap &rawChildOutputs() SIP_SKIP { return mRawChildOutputs; }
+
+    /**
+     * Returns a reference to the set of child algorithm IDs which were executed
+     * during the model execution.
+     *
+     * \note Not available in Python bindings
+     */
+    QSet< QString > &executedChildIds() SIP_SKIP { return mExecutedChildren; }
+
+    /**
+     * Returns the set of child algorithm IDs which were executed during the model execution.
+     */
+    QSet< QString > executedChildIds() const { return mExecutedChildren; }
+
   private:
 
     QMap< QString, QgsProcessingModelChildAlgorithmResult > mChildResults;
+
+    QSet< QString > mExecutedChildren;
+    QVariantMap mRawChildInputs;
+    QVariantMap mRawChildOutputs;
 
 };
 

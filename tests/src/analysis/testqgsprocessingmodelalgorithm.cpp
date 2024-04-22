@@ -1657,6 +1657,7 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
 
   // raster input
   params.insert( QStringLiteral( "LAYER" ), QStringLiteral( "R1" ) );
+  context.modelResult().clear();
   results = model1.run( params, context, &feedback );
   // we should get the raster branch outputs only
   QVERIFY( !results.value( QStringLiteral( "fill2:RASTER_OUTPUT" ) ).toString().isEmpty() );
@@ -1719,6 +1720,7 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var1" ), 0 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var2" ), 1 );
 
+  context.modelResult().clear();
   results = model1.run( params, context, &feedback, &ok );
   QVERIFY( ok ); // the branch with the exception should NOT be hit
 }
@@ -2364,10 +2366,16 @@ void TestQgsProcessingModelAlgorithm::modelWithChildException()
   QCOMPARE( context.modelResult().childResults().value( "buffer" ).htmlLog().left( 50 ), QStringLiteral( "<span style=\"color:#777\">Prepare algorithm: buffer" ) );
   QCOMPARE( context.modelResult().childResults().value( "buffer" ).htmlLog().right( 21 ), QStringLiteral( "s (1 output(s)).<br/>" ) );
   QVERIFY( context.temporaryLayerStore()->mapLayer( context.modelResult().childResults().value( "buffer" ).outputs().value( "OUTPUT" ).toString() ) );
+  QCOMPARE( context.modelResult().rawChildInputs().value( "buffer" ).toMap().value( "INPUT" ).toString(), QStringLiteral( "v1" ) );
+  QCOMPARE( context.modelResult().rawChildInputs().value( "buffer" ).toMap().value( "OUTPUT" ).toString(), QStringLiteral( "memory:Buffered" ) );
+  QCOMPARE( context.modelResult().rawChildOutputs().value( "buffer" ).toMap().value( "OUTPUT" ).toString(), context.modelResult().childResults().value( "buffer" ).outputs().value( "OUTPUT" ).toString() );
 
   QCOMPARE( context.modelResult().childResults().value( "raise" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
   QCOMPARE( context.modelResult().childResults().value( "raise" ).htmlLog().left( 49 ), QStringLiteral( "<span style=\"color:#777\">Prepare algorithm: raise" ) );
   QVERIFY( context.modelResult().childResults().value( "raise" ).htmlLog().contains( QStringLiteral( "Error encountered while running my second step: something bad happened" ) ) );
+
+  QSet<QString> expected{ QStringLiteral( "buffer" ) };
+  QCOMPARE( context.modelResult().executedChildIds(), expected );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()

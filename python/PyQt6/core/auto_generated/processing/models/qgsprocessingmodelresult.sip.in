@@ -100,6 +100,10 @@ Encapsulates the results of running a Processing model
 
     QgsProcessingModelResult();
 
+    void clear();
+%Docstring
+Clears any existing results.
+%End
 
     QMap< QString, QgsProcessingModelChildAlgorithmResult > childResults() const;
 %Docstring
@@ -108,6 +112,14 @@ Returns the map of child algorithm results.
 Map keys refer to the child algorithm IDs.
 %End
 
+
+
+
+
+    QSet< QString > executedChildIds() const;
+%Docstring
+Returns the set of child algorithm IDs which were executed during the model execution.
+%End
 
 };
 
