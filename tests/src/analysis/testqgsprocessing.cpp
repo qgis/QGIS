@@ -2538,7 +2538,7 @@ void TestQgsProcessing::createFeatureSinkPostgres()
   QgsProcessingContext context;
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "my_field" ), QVariant::String, QString(), 100 ) );
+  fields.append( QgsField( QStringLiteral( "my_field" ), QMetaType::Type::QString, QString(), 100 ) );
 
   // save to database
   QString destination = "postgres://dbname='qgis_test' service='qgis_test' table=\"public\".\"test_feature_sink\" (geom)";
