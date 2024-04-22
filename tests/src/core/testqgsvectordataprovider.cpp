@@ -123,9 +123,9 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
   }
   else
   {
-    QCOMPARE( attrs[0].type(), QVariant::Invalid );
-    QCOMPARE( attrs[1].type(), QVariant::Invalid );
-    QCOMPARE( attrs[2].type(), QVariant::Invalid );
+    QCOMPARE( static_cast<QMetaType::Type>( attrs[0].userType() ), QMetaType::Type::UnknownType );
+    QCOMPARE( static_cast<QMetaType::Type>( attrs[1].userType() ), QMetaType::Type::UnknownType );
+    QCOMPARE( static_cast<QMetaType::Type>( attrs[2].userType() ), QMetaType::Type::UnknownType );
   }
 
   if ( hasGeometry )

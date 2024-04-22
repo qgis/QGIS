@@ -55,7 +55,7 @@ class TestQgsKeyValueWidget : public QObject
       wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
-      QCOMPARE( int( value.type() ), int( QVariant::Map ) );
+      QCOMPARE( int( static_cast<QMetaType::Type>( value.userType() ) ), int( QMetaType::Type::QVariantMap ) );
       QCOMPARE( value.toMap(), initial );
       QCOMPARE( spy.count(), 0 );
 
@@ -66,7 +66,7 @@ class TestQgsKeyValueWidget : public QObject
       QVariantMap expected = initial;
       expected[QStringLiteral( "1" )] = "hello";
       const QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
-      QCOMPARE( int( eventValue.type() ), int( QVariant::Map ) );
+      QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QVariantMap ) );
       QCOMPARE( eventValue.toMap(), expected );
       QCOMPARE( wrapper->value().toMap(), expected );
       QCOMPARE( spy.count(), 1 );

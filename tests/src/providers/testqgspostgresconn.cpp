@@ -112,12 +112,12 @@ class TestQgsPostgresConn: public QObject
       QgsFields fields;
       QgsField f;
       f.setName( "ts" );
-      f.setType( QVariant::DateTime );
+      f.setType( QMetaType::Type::QDateTime );
       f.setTypeName( "timestamp" );
       fields.append( f );
       QgsField f2;
       f2.setName( "pk" );
-      f2.setType( QVariant::LongLong );
+      f2.setType( QMetaType::Type::LongLong );
       f2.setTypeName( "serial8" );
       fields.append( f2 );
 

@@ -443,7 +443,7 @@ void TestQgsFields::dataStream()
 {
   QgsField original1;
   original1.setName( QStringLiteral( "name" ) );
-  original1.setType( QVariant::Int );
+  original1.setType( QMetaType::Type::Int );
   original1.setLength( 5 );
   original1.setPrecision( 2 );
   original1.setTypeName( QStringLiteral( "typename1" ) );
@@ -451,7 +451,7 @@ void TestQgsFields::dataStream()
 
   QgsField original2;
   original2.setName( QStringLiteral( "next name" ) );
-  original2.setType( QVariant::Double );
+  original2.setType( QMetaType::Type::Double );
   original2.setLength( 15 );
   original2.setPrecision( 3 );
   original2.setTypeName( QStringLiteral( "double" ) );
@@ -480,7 +480,7 @@ void TestQgsFields::field()
 {
   QgsField original;
   original.setName( QStringLiteral( "name" ) );
-  original.setType( QVariant::Int );
+  original.setType( QMetaType::Type::Int );
   original.setLength( 5 );
   original.setPrecision( 2 );
 

@@ -164,7 +164,7 @@ void TestVectorLayerCache::testCacheAttrActions()
 
   // Add an attribute, make sure it is returned also if a cached feature is requested
   mPointsLayer->startEditing();
-  const QVariant::Type attrType = QVariant::Int;
+  const QMetaType::Type attrType = QMetaType::Type::Int;
   mPointsLayer->addAttribute( QgsField( QStringLiteral( "newAttr" ), attrType, QStringLiteral( "Int" ), 5, 0 ) );
   mPointsLayer->commitChanges();
 

@@ -303,12 +303,12 @@ void TestQgsOgrUtils::getOgrFeatureAttribute()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
-  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
-  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
-  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
-  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QMetaType::Type::QDate ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QMetaType::Type::QTime ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QMetaType::Type::QDateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QMetaType::Type::QString ) );
 
   // attribute index out of range
   val = QgsOgrUtils::getOgrFeatureAttribute( oFeat, fields, -1, QTextCodec::codecForName( "System" ), &ok );
@@ -370,12 +370,12 @@ void TestQgsOgrUtils::readOgrFeatureAttributes()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
-  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
-  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
-  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
-  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QMetaType::Type::QDate ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QMetaType::Type::QTime ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QMetaType::Type::QDateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QMetaType::Type::QString ) );
 
   QVERIFY( QgsOgrUtils::readOgrFeatureAttributes( oFeat, fields, f, QTextCodec::codecForName( "System" ) ) );
   QCOMPARE( f.attribute( "int_field" ), QVariant( 5 ) );
@@ -407,12 +407,12 @@ void TestQgsOgrUtils::readOgrFeature()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
-  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
-  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
-  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
-  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QMetaType::Type::QDate ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QMetaType::Type::QTime ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QMetaType::Type::QDateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QMetaType::Type::QString ) );
 
   f = QgsOgrUtils::readOgrFeature( oFeat, fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( f.isValid() );
@@ -450,17 +450,17 @@ void TestQgsOgrUtils::readOgrFields()
   f = QgsOgrUtils::readOgrFields( oFeat, QTextCodec::codecForName( "System" ) );
   QCOMPARE( f.count(), 6 );
   QCOMPARE( f.at( 0 ).name(), QString( "int_field" ) );
-  QCOMPARE( f.at( 0 ).type(), QVariant::Int );
+  QCOMPARE( f.at( 0 ).type(), QMetaType::Type::Int );
   QCOMPARE( f.at( 1 ).name(), QString( "dbl_field" ) );
-  QCOMPARE( f.at( 1 ).type(), QVariant::Double );
+  QCOMPARE( f.at( 1 ).type(), QMetaType::Type::Double );
   QCOMPARE( f.at( 2 ).name(), QString( "date_field" ) );
-  QCOMPARE( f.at( 2 ).type(), QVariant::Date );
+  QCOMPARE( f.at( 2 ).type(), QMetaType::Type::QDate );
   QCOMPARE( f.at( 3 ).name(), QString( "time_field" ) );
-  QCOMPARE( f.at( 3 ).type(), QVariant::Time );
+  QCOMPARE( f.at( 3 ).type(), QMetaType::Type::QTime );
   QCOMPARE( f.at( 4 ).name(), QString( "datetime_field" ) );
-  QCOMPARE( f.at( 4 ).type(), QVariant::DateTime );
+  QCOMPARE( f.at( 4 ).type(), QMetaType::Type::QDateTime );
   QCOMPARE( f.at( 5 ).name(), QString( "string_field" ) );
-  QCOMPARE( f.at( 5 ).type(), QVariant::String );
+  QCOMPARE( f.at( 5 ).type(), QMetaType::Type::QString );
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );
@@ -469,7 +469,7 @@ void TestQgsOgrUtils::readOgrFields()
 void TestQgsOgrUtils::stringToFeatureList()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
 
   //empty string
   QgsFeatureList features = QgsOgrUtils::stringToFeatureList( QString(), fields, QTextCodec::codecForName( "System" ) );
@@ -522,17 +522,17 @@ void TestQgsOgrUtils::stringToFields()
   fields = QgsOgrUtils::stringToFields( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
-  QCOMPARE( fields.at( 0 ).type(), QVariant::String );
+  QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
   QCOMPARE( fields.at( 1 ).name(), QString( "height" ) );
-  QCOMPARE( fields.at( 1 ).type(), QVariant::Double );
+  QCOMPARE( fields.at( 1 ).type(), QMetaType::Type::Double );
 
   // geojson string with 2 features
   fields = QgsOgrUtils::stringToFields( QStringLiteral( "{ \"type\": \"FeatureCollection\",\"features\":[{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}, {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\",\"height\":6.5}}]}" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
-  QCOMPARE( fields.at( 0 ).type(), QVariant::String );
+  QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
   QCOMPARE( fields.at( 1 ).name(), QString( "height" ) );
-  QCOMPARE( fields.at( 1 ).type(), QVariant::Double );
+  QCOMPARE( fields.at( 1 ).type(), QMetaType::Type::Double );
 }
 
 void TestQgsOgrUtils::textCodec()
@@ -928,29 +928,29 @@ void TestQgsOgrUtils::testOgrFieldTypeToQVariantType_data()
   QTest::addColumn<int>( "expectedType" );
   QTest::addColumn<int>( "expectedSubType" );
 
-  QTest::newRow( "OFTInteger" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::Int ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTIntegerList" ) << static_cast< int >( OFTIntegerList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::List ) << static_cast< int >( QVariant::Int );
+  QTest::newRow( "OFTInteger" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::Int ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTIntegerList" ) << static_cast< int >( OFTIntegerList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QVariantList ) << static_cast< int >( QMetaType::Type::Int );
 
-  QTest::newRow( "OFSTBoolean" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTBoolean ) << static_cast< int >( QVariant::Bool ) << static_cast< int >( QVariant::Invalid );
+  QTest::newRow( "OFSTBoolean" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTBoolean ) << static_cast< int >( QMetaType::Type::Bool ) << static_cast< int >( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "OFTReal" ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::Double ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTRealList" ) << static_cast< int >( OFTRealList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::List ) << static_cast< int >( QVariant::Double );
+  QTest::newRow( "OFTReal" ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::Double ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTRealList" ) << static_cast< int >( OFTRealList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QVariantList ) << static_cast< int >( QMetaType::Type::Double );
 
-  QTest::newRow( "OFTString" ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::String ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTStringList" ) << static_cast< int >( OFTStringList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::StringList ) << static_cast< int >( QVariant::String );
-  QTest::newRow( "OFTWideString" ) << static_cast< int >( OFTWideString ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::String ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTWideStringList" ) << static_cast< int >( OFTWideStringList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::StringList ) << static_cast< int >( QVariant::String );
+  QTest::newRow( "OFTString" ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QString ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTStringList" ) << static_cast< int >( OFTStringList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QStringList ) << static_cast< int >( QMetaType::Type::QString );
+  QTest::newRow( "OFTWideString" ) << static_cast< int >( OFTWideString ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QString ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTWideStringList" ) << static_cast< int >( OFTWideStringList ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QStringList ) << static_cast< int >( QMetaType::Type::QString );
 
-  QTest::newRow( "OFTString OFSTJSON" ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTJSON ) << static_cast< int >( QVariant::Map ) << static_cast< int >( QVariant::String );
-  QTest::newRow( "OFTWideString OFSTJSON" ) << static_cast< int >( OFTWideString ) << static_cast< int >( OFSTJSON ) << static_cast< int >( QVariant::Map ) << static_cast< int >( QVariant::String );
+  QTest::newRow( "OFTString OFSTJSON" ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTJSON ) << static_cast< int >( QMetaType::Type::QVariantMap ) << static_cast< int >( QMetaType::Type::QString );
+  QTest::newRow( "OFTWideString OFSTJSON" ) << static_cast< int >( OFTWideString ) << static_cast< int >( OFSTJSON ) << static_cast< int >( QMetaType::Type::QVariantMap ) << static_cast< int >( QMetaType::Type::QString );
 
-  QTest::newRow( "OFTInteger64" ) << static_cast< int >( OFTInteger64 ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::LongLong ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTInteger64List" ) << static_cast< int >( OFTInteger64List ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::List ) << static_cast< int >( QVariant::LongLong );
+  QTest::newRow( "OFTInteger64" ) << static_cast< int >( OFTInteger64 ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::LongLong ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTInteger64List" ) << static_cast< int >( OFTInteger64List ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QVariantList ) << static_cast< int >( QMetaType::Type::LongLong );
 
-  QTest::newRow( "OFTBinary" ) << static_cast< int >( OFTBinary ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::ByteArray ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTDate" ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::Date ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTTime" ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::Time ) << static_cast< int >( QVariant::Invalid );
-  QTest::newRow( "OFTDateTime" ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone ) << static_cast< int >( QVariant::DateTime ) << static_cast< int >( QVariant::Invalid );
+  QTest::newRow( "OFTBinary" ) << static_cast< int >( OFTBinary ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QByteArray ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTDate" ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QDate ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTTime" ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QTime ) << static_cast< int >( QMetaType::Type::UnknownType );
+  QTest::newRow( "OFTDateTime" ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone ) << static_cast< int >( QMetaType::Type::QDateTime ) << static_cast< int >( QMetaType::Type::UnknownType );
 }
 
 void TestQgsOgrUtils::testOgrFieldTypeToQVariantType()
@@ -960,8 +960,8 @@ void TestQgsOgrUtils::testOgrFieldTypeToQVariantType()
   QFETCH( int, expectedType );
   QFETCH( int, expectedSubType );
 
-  QVariant::Type variantType;
-  QVariant::Type variantSubType;
+  QMetaType::Type variantType;
+  QMetaType::Type variantSubType;
   QgsOgrUtils::ogrFieldTypeToQVariantType( static_cast<OGRFieldType>( ogrType ),
       static_cast<OGRFieldSubType>( ogrSubType ),
       variantType, variantSubType );
@@ -975,17 +975,17 @@ void TestQgsOgrUtils::testVariantTypeToOgrFieldType_data()
   QTest::addColumn<int>( "expectedType" );
   QTest::addColumn<int>( "expectedSubType" );
 
-  QTest::newRow( "Bool" ) << static_cast< int >( QVariant::Type::Bool ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTBoolean );
-  QTest::newRow( "Int" ) << static_cast< int >( QVariant::Type::Int ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "LongLong" ) << static_cast< int >( QVariant::Type::LongLong ) << static_cast< int >( OFTInteger64 ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "Double" ) << static_cast< int >( QVariant::Type::Double ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "Char" ) << static_cast< int >( QVariant::Type::Char ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "String" ) << static_cast< int >( QVariant::Type::String ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "StringList" ) << static_cast< int >( QVariant::Type::StringList ) << static_cast< int >( OFTStringList ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "ByteArray" ) << static_cast< int >( QVariant::Type::ByteArray ) << static_cast< int >( OFTBinary ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "Date" ) << static_cast< int >( QVariant::Type::Date ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "Time" ) << static_cast< int >( QVariant::Type::Time ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone );
-  QTest::newRow( "DateTime" ) << static_cast< int >( QVariant::Type::DateTime ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Bool" ) << static_cast< int >( QMetaType::Type::Bool ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTBoolean );
+  QTest::newRow( "Int" ) << static_cast< int >( QMetaType::Type::Int ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "LongLong" ) << static_cast< int >( QMetaType::Type::LongLong ) << static_cast< int >( OFTInteger64 ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Double" ) << static_cast< int >( QMetaType::Type::Double ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Char" ) << static_cast< int >( QMetaType::Type::QChar ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "String" ) << static_cast< int >( QMetaType::Type::QString ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "StringList" ) << static_cast< int >( QMetaType::Type::QStringList ) << static_cast< int >( OFTStringList ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "ByteArray" ) << static_cast< int >( QMetaType::Type::QByteArray ) << static_cast< int >( OFTBinary ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Date" ) << static_cast< int >( QMetaType::Type::QDate ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Time" ) << static_cast< int >( QMetaType::Type::QTime ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "DateTime" ) << static_cast< int >( QMetaType::Type::QDateTime ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone );
 }
 
 void TestQgsOgrUtils::testVariantTypeToOgrFieldType()
@@ -996,7 +996,7 @@ void TestQgsOgrUtils::testVariantTypeToOgrFieldType()
 
   OGRFieldType type;
   OGRFieldSubType subType;
-  QgsOgrUtils::variantTypeToOgrFieldType( static_cast<QVariant::Type>( variantType ),
+  QgsOgrUtils::variantTypeToOgrFieldType( static_cast<QMetaType::Type>( variantType ),
                                           type, subType );
   QCOMPARE( static_cast< int >( type ), expectedType );
   QCOMPARE( static_cast< int >( subType ), expectedSubType );
@@ -1133,7 +1133,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   QVERIFY( codedFieldDomain );
   QCOMPARE( codedFieldDomain->name(), QStringLiteral( "name" ) );
   QCOMPARE( codedFieldDomain->description(), QStringLiteral( "desc" ) );
-  QCOMPARE( codedFieldDomain->fieldType(), QVariant::Int );
+  QCOMPARE( codedFieldDomain->fieldType(), QMetaType::Type::Int );
   QCOMPARE( codedFieldDomain->values().size(), 2 );
   QCOMPARE( codedFieldDomain->values().at( 0 ).code(), QVariant( 1 ) );
   QCOMPARE( codedFieldDomain->values().at( 0 ).value(), QStringLiteral( "val1" ) );
@@ -1173,7 +1173,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   QVERIFY( rangeDomain );
   QCOMPARE( rangeDomain->name(), QStringLiteral( "name" ) );
   QCOMPARE( rangeDomain->description(), QStringLiteral( "desc" ) );
-  QCOMPARE( rangeDomain->fieldType(), QVariant::Int );
+  QCOMPARE( rangeDomain->fieldType(), QMetaType::Type::Int );
   QCOMPARE( rangeDomain->minimum(), QVariant( 5 ) );
   QCOMPARE( rangeDomain->maximum(), QVariant( 15 ) );
   QVERIFY( rangeDomain->minimumIsInclusive() );
@@ -1192,14 +1192,14 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   QVERIFY( globDomain );
   QCOMPARE( globDomain->name(), QStringLiteral( "name" ) );
   QCOMPARE( globDomain->description(), QStringLiteral( "desc" ) );
-  QCOMPARE( globDomain->fieldType(), QVariant::String );
+  QCOMPARE( globDomain->fieldType(), QMetaType::Type::QString );
   OGR_FldDomain_Destroy( domain );
 }
 
 void TestQgsOgrUtils::testConvertToFieldDomain()
 {
   // test converting QgsFieldDomain to OGR field domain
-  QgsGlobFieldDomain globDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QVariant::String, QStringLiteral( "*a*" ) );
+  QgsGlobFieldDomain globDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QMetaType::Type::QString, QStringLiteral( "*a*" ) );
   OGRFieldDomainH domain = QgsOgrUtils::convertFieldDomain( &globDomain );
 
   std::unique_ptr< QgsFieldDomain > res = QgsOgrUtils::convertFieldDomain( domain );
@@ -1228,7 +1228,7 @@ void TestQgsOgrUtils::testConvertToFieldDomain()
 
   // range
 
-  QgsRangeFieldDomain rangeDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QVariant::Int,
+  QgsRangeFieldDomain rangeDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QMetaType::Type::Int,
                                    1, true, 5, false );
   domain = QgsOgrUtils::convertFieldDomain( &rangeDomain );
   res = QgsOgrUtils::convertFieldDomain( domain );
@@ -1240,7 +1240,7 @@ void TestQgsOgrUtils::testConvertToFieldDomain()
   QCOMPARE( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximum(), QVariant( 5 ) );
   QVERIFY( !dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximumIsInclusive() );
 
-  rangeDomain.setFieldType( QVariant::Double );
+  rangeDomain.setFieldType( QMetaType::Type::Double );
   rangeDomain.setMinimum( 5.5 );
   rangeDomain.setMaximum( 12.1 );
   rangeDomain.setMinimumIsInclusive( false );
@@ -1254,7 +1254,7 @@ void TestQgsOgrUtils::testConvertToFieldDomain()
   QVERIFY( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximumIsInclusive() );
 
   // coded
-  QgsCodedFieldDomain codedDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QVariant::String,
+  QgsCodedFieldDomain codedDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QMetaType::Type::QString,
   {
     QgsCodedValue( "aa", "aaaa" ),
     QgsCodedValue( "bb", "bbbb" ),

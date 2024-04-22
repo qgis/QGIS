@@ -255,7 +255,7 @@ void TestQgsLegendRenderer::init()
   {
     QgsVectorDataProvider *pr = mVL3->dataProvider();
     QList<QgsField> attrs;
-    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    attrs << QgsField( QStringLiteral( "test_attr" ), QMetaType::Type::Int );
     pr->addAttributes( attrs );
 
     QgsFields fields;
@@ -975,7 +975,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   {
     QgsVectorDataProvider *pr = vl4->dataProvider();
     QList<QgsField> attrs;
-    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    attrs << QgsField( QStringLiteral( "test_attr" ), QMetaType::Type::Int );
     pr->addAttributes( attrs );
 
     QgsFields fields;
@@ -1491,7 +1491,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
   {
     QgsVectorDataProvider *pr = vlDataDefinedSize->dataProvider();
     QList<QgsField> attrs;
-    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    attrs << QgsField( QStringLiteral( "test_attr" ), QMetaType::Type::Int );
     pr->addAttributes( attrs );
 
     QgsFields fields;

@@ -102,7 +102,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "Polygon", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField uniqueField( QStringLiteral( "unique" ), QVariant::Int );
+      QgsField uniqueField( QStringLiteral( "unique" ), QMetaType::Type::Int );
       QgsFieldConstraints constraints;
       constraints.setConstraint(
         QgsFieldConstraints::ConstraintUnique
@@ -111,7 +111,7 @@ class TestQgsMergeattributesDialog : public QgsTest
         constraints
       );
 
-      QgsField notUniqueField( QStringLiteral( "not_unique" ), QVariant::Int );
+      QgsField notUniqueField( QStringLiteral( "not_unique" ), QMetaType::Type::Int );
       QVERIFY( ml.dataProvider()->addAttributes(
       { uniqueField, notUniqueField }
                ) );

@@ -1403,7 +1403,7 @@ QList<QgsGeometryCheckError *> TestQgsGeometryChecks::searchCheckErrors( const Q
     }
     if ( !value.isNull() )
     {
-      if ( value.type() == QVariant::Double )
+      if ( value.userType() == QMetaType::Type::Double )
       {
         if ( !qgsDoubleNear( value.toDouble(), error->value().toDouble(), tol ) )
         {
