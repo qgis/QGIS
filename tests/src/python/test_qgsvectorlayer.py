@@ -4547,6 +4547,46 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             self.assertEqual(vl2.fields()[3].splitPolicy(),
                              Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
+    def test_duplicate_policies(self):
+        vl = QgsVectorLayer('Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer', 'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        with self.assertRaises(KeyError):
+            vl.setFieldDuplicatePolicy(-1, Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+        with self.assertRaises(KeyError):
+            vl.setFieldDuplicatePolicy(4, Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+
+        vl.setFieldDuplicatePolicy(0, Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+        vl.setFieldDuplicatePolicy(1, Qgis.FieldDomainDuplicatePolicy.Duplicate)
+        vl.setFieldDuplicatePolicy(2, Qgis.FieldDomainDuplicatePolicy.UnsetField)
+
+        self.assertEqual(vl.fields()[0].duplicatePolicy(),
+                         Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+        self.assertEqual(vl.fields()[1].duplicatePolicy(),
+                         Qgis.FieldDomainDuplicatePolicy.Duplicate)
+        self.assertEqual(vl.fields()[2].duplicatePolicy(),
+                         Qgis.FieldDomainDuplicatePolicy.UnsetField)
+
+        p = QgsProject()
+        p.addMapLayer(vl)
+
+        # test saving and restoring split policies
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + '/test.qgs'))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + '/test.qgs'))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertEqual(vl2.fields()[0].duplicatePolicy(),
+                             Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+            self.assertEqual(vl2.fields()[1].duplicatePolicy(),
+                             Qgis.FieldDomainDuplicatePolicy.Duplicate)
+            self.assertEqual(vl2.fields()[2].duplicatePolicy(),
+                             Qgis.FieldDomainDuplicatePolicy.UnsetField)
+
     def test_selection_properties(self):
         vl = QgsVectorLayer(
             'Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer',
