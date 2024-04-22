@@ -29,3 +29,11 @@ QgsProcessingModelChildAlgorithmResult::QgsProcessingModelChildAlgorithmResult()
 //
 
 QgsProcessingModelResult::QgsProcessingModelResult() = default;
+
+void QgsProcessingModelResult::clear()
+{
+  mChildResults.clear();
+  mExecutedChildren.clear();
+  mRawChildInputs.clear();
+  mRawChildOutputs.clear();
+}

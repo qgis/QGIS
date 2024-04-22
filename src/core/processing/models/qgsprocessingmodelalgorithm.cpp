@@ -320,11 +320,12 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
-  QVariantMap childResults;
-  QVariantMap childInputs;
+  QVariantMap &childInputs = context.modelResult().rawChildInputs();
+  QVariantMap &childResults = context.modelResult().rawChildOutputs();
+  QSet< QString > &executed = context.modelResult().executedChildIds();
 
   QVariantMap finalResults;
-  QSet< QString > executed;
+
   bool executedAlg = true;
   int previousHtmlLogLength = feedback->htmlLog().length();
   while ( executedAlg && executed.count() < toExecute.count() )
