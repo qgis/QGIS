@@ -145,6 +145,10 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::runFromHere, this, [this, childId]
+    {
+      emit runFromChild( childId );
+    } );
     connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId]
     {
       emit showChildAlgorithmOutputs( childId );

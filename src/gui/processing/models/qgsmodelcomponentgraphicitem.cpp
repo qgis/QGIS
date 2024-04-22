@@ -870,6 +870,11 @@ QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcess
 void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
   QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *runFromHereAction = popupmenu->addAction( QObject::tr( "Run from Here…" ) );
+  runFromHereAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
+  connect( runFromHereAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::runFromHere );
+  popupmenu->addSeparator();
+
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
   connect( removeAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deleteComponent );
   QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
