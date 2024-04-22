@@ -94,7 +94,7 @@ def run_startup_script(script_path):
 
     return script_executed
         """,
-        'inline string in qgspythonutilsimpl.cpp',
+        'QgsPythonUtilsImpl::checkSystemImports [run_startup_script]',
         'exec',
     ),
     globals(),
