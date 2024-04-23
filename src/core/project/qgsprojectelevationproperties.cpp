@@ -76,6 +76,10 @@ bool QgsProjectElevationProperties::readXml( const QDomElement &element, const Q
     rangeUpper = storedRangeUpper;
   mElevationRange = QgsDoubleRange( rangeLower, rangeUpper );
 
+  mElevationFilterRangeSize = element.attribute( QStringLiteral( "FilterRangeSize" ) ).toDouble( &ok );
+  if ( !ok )
+    mElevationFilterRangeSize = -1;
+
   emit changed();
   emit elevationRangeChanged( mElevationRange );
   return true;
@@ -98,6 +102,10 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
   if ( mElevationRange.upper() != std::numeric_limits< double >::max() )
     element.setAttribute( QStringLiteral( "RangeUpper" ), qgsDoubleToString( mElevationRange.upper() ) );
 
+  if ( mElevationFilterRangeSize >= 0 )
+  {
+    element.setAttribute( QStringLiteral( "FilterRangeSize" ), mElevationFilterRangeSize );
+  }
   return element;
 }
 
@@ -112,6 +120,15 @@ void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvid
     return;
 
   mTerrainProvider.reset( provider );
+  emit changed();
+}
+
+void QgsProjectElevationProperties::setElevationFilterRangeSize( double size )
+{
+  if ( mElevationFilterRangeSize == size )
+    return;
+
+  mElevationFilterRangeSize = size;
   emit changed();
 }
 

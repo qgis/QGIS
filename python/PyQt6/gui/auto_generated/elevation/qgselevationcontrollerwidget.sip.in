@@ -112,6 +112,8 @@ A fixed size forces the selected elevation range to have a matching difference b
 the upper and lower elevation.
 
 .. seealso:: :py:func:`fixedRangeSize`
+
+.. seealso:: :py:func:`fixedRangeSizeChanged`
 %End
 
   signals:
@@ -123,6 +125,15 @@ Emitted when the visible range from the widget is changed.
 .. seealso:: :py:func:`setRange`
 
 .. seealso:: :py:func:`range`
+%End
+
+    void fixedRangeSizeChanged( double size );
+%Docstring
+Emitted when the fixed range size is changed from the widget.
+
+.. seealso:: :py:func:`fixedRangeSize`
+
+.. seealso:: :py:func:`setFixedRangeSize`
 %End
 
 };

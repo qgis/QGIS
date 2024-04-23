@@ -100,6 +100,34 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      */
     QgsDoubleRange elevationRange() const { return mElevationRange; }
 
+    /**
+     * Sets the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+     *
+     * Set to -1 if no fixed elevation range size is desired.
+     *
+     * A fixed size forces the selected elevation range to have a matching difference between
+     * the upper and lower elevation.
+     *
+     * \see elevationFilterRangeSize()
+     *
+     * \since QGIS 3.38
+     */
+    void setElevationFilterRangeSize( double size );
+
+    /**
+     * Returns the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+     *
+     * Returns -1 if no fixed elevation range size is desired.
+     *
+     * A fixed size forces the selected elevation range to have a matching difference between
+     * the upper and lower elevation.
+     *
+     * \see setElevationFilterRangeSize()
+     *
+     * \since QGIS 3.38
+     */
+    double elevationFilterRangeSize() const { return mElevationFilterRangeSize; }
+
   public slots:
 
     /**
@@ -140,6 +168,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
 
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
     QgsDoubleRange mElevationRange;
+    double mElevationFilterRangeSize = -1;
 
 };
 
