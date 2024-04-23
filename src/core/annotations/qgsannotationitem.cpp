@@ -57,7 +57,7 @@ bool QgsAnnotationItem::writeCommonProperties( QDomElement &element, QDomDocumen
 
 bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
 {
-  setEnabled( element.attribute( QStringLiteral( "enabled" ) ).toInt() );
+  setEnabled( element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() );
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
   setUseSymbologyReferenceScale( element.attribute( QStringLiteral( "useReferenceScale" ), QStringLiteral( "0" ) ).toInt() );
   setSymbologyReferenceScale( element.attribute( QStringLiteral( "referenceScale" ) ).toDouble() );
