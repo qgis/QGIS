@@ -100,6 +100,8 @@ void QgsSensorThingsSourceSelect::btnNew_clicked()
 
     QgsSensorThingsProviderConnection::addConnection( nc.connectionName(), connectionData );
     populateConnectionList();
+    QgsSensorThingsProviderConnection::setSelectedConnection( nc.connectionName() );
+    setConnectionListPosition();
     emit connectionsChanged();
   }
 }
