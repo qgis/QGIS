@@ -237,9 +237,9 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
 
   // TODO: types according to database
   setNativeTypes( QList<NativeType>()
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "text" ), QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QMetaType::Type::Int, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double precision" ), QMetaType::Type::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "text" ), QMetaType::Type::QString )
                   // TODO:
                   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
                 );
@@ -1039,24 +1039,24 @@ bool QgsGrassProvider::isTopoType( int layerType )
 
 void QgsGrassProvider::setTopoFields()
 {
-  mTopoFields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
+  mTopoFields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::Int ) );
 
   if ( mLayerType == TopoPoint )
   {
-    mTopoFields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
-    mTopoFields.append( QgsField( QStringLiteral( "node" ), QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
+    mTopoFields.append( QgsField( QStringLiteral( "node" ), QMetaType::Type::Int ) );
   }
   else if ( mLayerType == TopoLine )
   {
-    mTopoFields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
-    mTopoFields.append( QgsField( QStringLiteral( "node1" ), QVariant::Int ) );
-    mTopoFields.append( QgsField( QStringLiteral( "node2" ), QVariant::Int ) );
-    mTopoFields.append( QgsField( QStringLiteral( "left" ), QVariant::Int ) );
-    mTopoFields.append( QgsField( QStringLiteral( "right" ), QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
+    mTopoFields.append( QgsField( QStringLiteral( "node1" ), QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "node2" ), QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "left" ), QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "right" ), QMetaType::Type::Int ) );
   }
   else if ( mLayerType == TopoNode )
   {
-    mTopoFields.append( QgsField( QStringLiteral( "lines" ), QVariant::String ) );
+    mTopoFields.append( QgsField( QStringLiteral( "lines" ), QMetaType::Type::QString ) );
   }
 }
 

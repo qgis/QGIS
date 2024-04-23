@@ -2375,25 +2375,25 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
     QString typeName;
     switch ( field.type() )
     {
-      case QVariant::Int:
-      case QVariant::LongLong:
-      case QVariant::Bool:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::Bool:
         typeName = QStringLiteral( "integer" );
         break;
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         typeName = QStringLiteral( "double precision" );
         break;
       // TODO: verify how is it with SpatiaLite/dbf support for date, time, datetime, v.in.ogr is using all
-      case QVariant::Date:
+      case QMetaType::Type::QDate:
         typeName = QStringLiteral( "date" );
         break;
-      case QVariant::Time:
+      case QMetaType::Type::QTime:
         typeName = QStringLiteral( "time" );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         typeName = QStringLiteral( "datetime" );
         break;
-      case QVariant::String:
+      case QMetaType::Type::QString:
         typeName = QStringLiteral( "varchar (%1)" ).arg( field.length() );
         break;
       default:
