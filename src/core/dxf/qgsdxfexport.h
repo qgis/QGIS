@@ -62,6 +62,9 @@ namespace pal // SIP_SKIP
 class CORE_EXPORT QgsDxfExport
 {
 #else
+
+static const bool DEFAULT_DXF_DATA_DEFINED_BLOCKS = true;
+
 class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 {
 #endif
@@ -73,7 +76,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      */
     struct CORE_EXPORT DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = true, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() )
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() )
           : mLayer( vl )
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
           , mBuildDDBlocks( buildDDBlocks )
@@ -126,7 +129,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
         /**
          * \brief try to build data defined symbol blocks if necessary
          */
-        bool mBuildDDBlocks = false;
+        bool mBuildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
 
         /**
          * \brief Limit for the number of data defined symbol block classes (keep only the most used ones). -1 means no limit
