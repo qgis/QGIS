@@ -80,6 +80,8 @@ bool QgsProjectElevationProperties::readXml( const QDomElement &element, const Q
   if ( !ok )
     mElevationFilterRangeSize = -1;
 
+  mInvertElevationFilter = element.attribute( QStringLiteral( "FilterInvertSlider" ), QStringLiteral( "0" ) ).toInt();
+
   emit changed();
   emit elevationRangeChanged( mElevationRange );
   return true;
@@ -106,6 +108,8 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
   {
     element.setAttribute( QStringLiteral( "FilterRangeSize" ), mElevationFilterRangeSize );
   }
+  element.setAttribute( QStringLiteral( "FilterInvertSlider" ), mInvertElevationFilter ? "1" : "0" );
+
   return element;
 }
 
@@ -129,6 +133,15 @@ void QgsProjectElevationProperties::setElevationFilterRangeSize( double size )
     return;
 
   mElevationFilterRangeSize = size;
+  emit changed();
+}
+
+void QgsProjectElevationProperties::setInvertElevationFilter( bool invert )
+{
+  if ( mInvertElevationFilter == invert )
+    return;
+
+  mInvertElevationFilter = invert;
   emit changed();
 }
 

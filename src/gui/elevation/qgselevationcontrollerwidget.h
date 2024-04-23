@@ -43,11 +43,13 @@ class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
 
     void setLimits( const QgsDoubleRange &limits );
     void setRange( const QgsDoubleRange &range );
+    void setInverted( bool inverted );
 
   private:
 
     QgsDoubleRange mLimits;
     QgsDoubleRange mRange;
+    bool mInverted = false;
 
 };
 
@@ -153,6 +155,13 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      */
     void setFixedRangeSize( double size );
 
+    /**
+     * Sets whether the elevation slider should be inverted.
+     *
+     * \see invertedChanged()
+     */
+    void setInverted( bool inverted );
+
   signals:
 
     /**
@@ -171,6 +180,13 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      */
     void fixedRangeSizeChanged( double size );
 
+    /**
+     * Emitted when the elevation filter slider is inverted.
+     *
+     * \see setInverted()
+     */
+    void invertedChanged( bool inverted );
+
   private:
 
     void updateWidgetMask();
@@ -178,6 +194,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QToolButton *mConfigureButton = nullptr;
     QgsElevationControllerSettingsAction *mSettingsAction = nullptr;
     QMenu *mMenu = nullptr;
+    QAction *mInvertDirectionAction = nullptr;
     QgsRangeSlider *mSlider = nullptr;
     QgsElevationControllerLabels *mSliderLabels = nullptr;
     QgsDoubleRange mRangeLimits;
