@@ -49,11 +49,11 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mMenu = new QMenu( this );
   mConfigureButton->setMenu( mMenu );
 
-  QgsElevationControllerSettingsAction *settingsAction = new QgsElevationControllerSettingsAction( mMenu );
-  mMenu->addAction( settingsAction );
+  mSettingsAction = new QgsElevationControllerSettingsAction( mMenu );
+  mMenu->addAction( mSettingsAction );
 
-  settingsAction->sizeSpin()->clear();
-  connect( settingsAction->sizeSpin(), qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size )
+  mSettingsAction->sizeSpin()->clear();
+  connect( mSettingsAction->sizeSpin(), qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size )
   {
     setFixedRangeSize( size < 0 ? -1 : size );
   } );
@@ -225,6 +225,9 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
   {
     mSlider->setFixedRangeSize( static_cast< int >( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
+  if ( mFixedRangeSize != mSettingsAction->sizeSpin()->value() )
+    mSettingsAction->sizeSpin()->setValue( mFixedRangeSize );
+  emit fixedRangeSizeChanged( mFixedRangeSize );
 }
 
 //

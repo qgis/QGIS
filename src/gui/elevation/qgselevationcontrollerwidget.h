@@ -149,6 +149,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      * the upper and lower elevation.
      *
      * \see fixedRangeSize()
+     * \see fixedRangeSizeChanged()
      */
     void setFixedRangeSize( double size );
 
@@ -162,11 +163,20 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      */
     void rangeChanged( const QgsDoubleRange &range );
 
+    /**
+     * Emitted when the fixed range size is changed from the widget.
+     *
+     * \see fixedRangeSize()
+     * \see setFixedRangeSize()
+     */
+    void fixedRangeSizeChanged( double size );
+
   private:
 
     void updateWidgetMask();
 
     QToolButton *mConfigureButton = nullptr;
+    QgsElevationControllerSettingsAction *mSettingsAction = nullptr;
     QMenu *mMenu = nullptr;
     QgsRangeSlider *mSlider = nullptr;
     QgsElevationControllerLabels *mSliderLabels = nullptr;
