@@ -2448,6 +2448,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool mMapTipsEnabled = true;
 
     friend class QgsVectorLayer;
+    friend class TestQgsProject;
     friend class TestQgsMapLayer;
 };
 
