@@ -149,24 +149,24 @@ QgsFields QgsGrassVectorLayer::fields()
 
           int ctype = db_sqltype_to_Ctype( db_get_column_sqltype( column ) );
           QString type;
-          QVariant::Type qtype = QVariant::String; //default to string to prevent compiler warnings
+          QMetaType::Type qtype = QMetaType::Type::QString; //default to string to prevent compiler warnings
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
               type = QStringLiteral( "int" );
-              qtype = QVariant::Int;
+              qtype = QMetaType::Type::Int;
               break;
             case DB_C_TYPE_DOUBLE:
               type = QStringLiteral( "double" );
-              qtype = QVariant::Double;
+              qtype = QMetaType::Type::Double;
               break;
             case DB_C_TYPE_STRING:
               type = QStringLiteral( "string" );
-              qtype = QVariant::String;
+              qtype = QMetaType::Type::QString;
               break;
             case DB_C_TYPE_DATETIME:
               type = QStringLiteral( "datetime" );
-              qtype = QVariant::String;
+              qtype = QMetaType::Type::QString;
               break;
           }
           mFields.append( QgsField( db_get_column_name( column ), qtype, type, db_get_column_length( column ), 0 ) );

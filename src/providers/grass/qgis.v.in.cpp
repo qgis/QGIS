@@ -183,7 +183,7 @@ int main( int argc, char **argv )
   }
 
   QgsFields fields;
-  fields.append( QgsField( key, QVariant::Int ) );
+  fields.append( QgsField( key, QMetaType::Type::Int ) );
   fields.extend( srcFields );
 
   struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, nullptr, GV_1TABLE );
