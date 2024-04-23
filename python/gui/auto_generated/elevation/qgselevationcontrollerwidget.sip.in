@@ -116,6 +116,13 @@ the upper and lower elevation.
 .. seealso:: :py:func:`fixedRangeSizeChanged`
 %End
 
+    void setInverted( bool inverted );
+%Docstring
+Sets whether the elevation slider should be inverted.
+
+.. seealso:: :py:func:`invertedChanged`
+%End
+
   signals:
 
     void rangeChanged( const QgsDoubleRange &range );
@@ -134,6 +141,13 @@ Emitted when the fixed range size is changed from the widget.
 .. seealso:: :py:func:`fixedRangeSize`
 
 .. seealso:: :py:func:`setFixedRangeSize`
+%End
+
+    void invertedChanged( bool inverted );
+%Docstring
+Emitted when the elevation filter slider is inverted.
+
+.. seealso:: :py:func:`setInverted`
 %End
 
 };
