@@ -966,6 +966,13 @@ Returns registry of available external storage implementations.
 .. versionadded:: 3.20
 %End
 
+    static QgsProfileSourceRegistry *profileSourceRegistry() /KeepReference/;
+%Docstring
+Returns registry of available profile source implementations.
+
+.. versionadded:: 3.38
+%End
+
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
 %Docstring
 Returns the registry of data repositories
