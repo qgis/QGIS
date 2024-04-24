@@ -88,6 +88,7 @@ class TestQgs3DRendering : public QgsTest
     void testBufferedLineRenderingWidth();
     void testMapTheme();
     void testRuleBasedRenderer();
+    void testFilteredRuleBasedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
     void testInstancedRendering();
@@ -1065,6 +1066,66 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   delete map;
 
   QGSVERIFYIMAGECHECK( "rulebased", "rulebased", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testFilteredRuleBasedRenderer()
+{
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+
+  QgsPhongMaterialSettings materialSettings2;
+  materialSettings2.setAmbient( Qt::red );
+  QgsPolygon3DSymbol *symbol3d2 = new QgsPolygon3DSymbol;
+  symbol3d2->setMaterialSettings( materialSettings2.clone() );
+  symbol3d2->setExtrusionHeight( 10.f );
+
+  QgsRuleBased3DRenderer::Rule *root = new QgsRuleBased3DRenderer::Rule( nullptr );
+  QgsRuleBased3DRenderer::Rule *rule1 = new QgsRuleBased3DRenderer::Rule( symbol3d, "ogc_fid < 29069", "rule 1" );
+  QgsRuleBased3DRenderer::Rule *rule2 = new QgsRuleBased3DRenderer::Rule( symbol3d2, "ogc_fid >= 29069", "rule 2" );
+  root->appendChild( rule1 );
+  root->appendChild( rule2 );
+  QgsRuleBased3DRenderer *renderer3d = new QgsRuleBased3DRenderer( root );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  QgsRectangle fullExtent = mLayerBuildings->extent();
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
+                                      fullExtent.xMinimum() + 0.8 * fullExtent.width(), fullExtent.yMinimum() + 0.7 * fullExtent.height() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( filteredExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  // When running the test, it would sometimes return partially rendered image.
+  // It is probably based on how fast qt3d manages to upload the data to GPU...
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "rulebased_filtered", "rulebased_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testAnimationExport()
