@@ -87,6 +87,7 @@
 #include "qgsgpsconnection.h"
 #include "qgssensorregistry.h"
 #include "qgssensorthingsutils.h"
+#include "qgsprofilesourceregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2640,6 +2641,11 @@ QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
   return members()->mExternalStorageRegistry;
 }
 
+QgsProfileSourceRegistry *QgsApplication::profileSourceRegistry()
+{
+  return members()->mProfileSourceRegistry;
+}
+
 QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
 {
   return members()->mLocalizedDataPathRegistry;
@@ -2824,6 +2830,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup profile source registry" ) );
+    mProfileSourceRegistry = new QgsProfileSourceRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup network content cache" ) );
     mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
     profiler->end();
@@ -2888,6 +2899,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRecentStyleHandler;
   delete mSymbolLayerRegistry;
   delete mExternalStorageRegistry;
+  delete mProfileSourceRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
   delete mClassificationMethodRegistry;

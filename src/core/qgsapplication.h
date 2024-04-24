@@ -77,6 +77,7 @@ class QgsRecentStyleHandler;
 class QgsDatabaseQueryLog;
 class QgsFontManager;
 class QgsSensorRegistry;
+class QgsProfileSourceRegistry;
 
 /**
  * \ingroup core
@@ -948,6 +949,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsExternalStorageRegistry *externalStorageRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns registry of available profile source implementations.
+     * \since QGIS 3.38
+     */
+    static QgsProfileSourceRegistry *profileSourceRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the registry of data repositories
      * These are used as paths for basemaps, logos, etc. which can be referenced
      * differently across work stations.
@@ -1138,6 +1145,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsLayerMetadataProviderRegistry *mLayerMetadataProviderRegistry = nullptr;
       QgsExternalStorageRegistry *mExternalStorageRegistry = nullptr;
+      QgsProfileSourceRegistry *mProfileSourceRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
