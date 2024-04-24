@@ -95,14 +95,10 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   QString username = uri.username();
   QString password = uri.password();
 
-  QString realm( database );
-  if ( !username.isEmpty() )
-    realm.prepend( username + '@' );
-
-  if ( sBrokenConnections.contains( realm ) )
+  if ( sBrokenConnections.contains( mConnInfo ) )
   {
     QDateTime now( QDateTime::currentDateTime() );
-    QDateTime since( sBrokenConnections[ realm ] );
+    QDateTime since( sBrokenConnections[ mConnInfo ] );
     QgsDebugError( QStringLiteral( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
 
     if ( since.secsTo( now ) < 30 )
@@ -120,21 +116,20 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
 
     while ( !mDatabase.open() )
     {
-      bool ok = QgsCredentials::instance()->get( realm, username, password, mDatabase.lastError().text() );
+      bool ok = QgsCredentials::instance()->get( mConnInfo, username, password, mDatabase.lastError().text() );
       if ( !ok )
       {
         QDateTime now( QDateTime::currentDateTime() );
-        QgsDebugError( QStringLiteral( "get failed: %1 <= %2" ).arg( realm, now.toString( Qt::ISODate ) ) );
-        sBrokenConnections.insert( realm, now );
+        QgsDebugError( QStringLiteral( "get failed: %1 <= %2" ).arg( mConnInfo, now.toString( Qt::ISODate ) ) );
+        sBrokenConnections.insert( mConnInfo, now );
         break;
       }
 
-      sBrokenConnections.remove( realm );
+      sBrokenConnections.remove( mConnInfo );
 
       if ( !username.isEmpty() )
       {
         uri.setUsername( username );
-        realm = username + '@' + database;
       }
 
       if ( !password.isEmpty() )
@@ -146,7 +141,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
     }
 
     if ( mDatabase.isOpen() )
-      QgsCredentials::instance()->put( realm, username, password );
+      QgsCredentials::instance()->put( mConnInfo, username, password );
 
     QgsCredentials::instance()->unlock();
   }
