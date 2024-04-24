@@ -39,8 +39,7 @@ QgsOracleTransaction::~QgsOracleTransaction()
 bool QgsOracleTransaction::beginTransaction( QString &, int /* statementTimeout */ )
 {
   mConn = QgsOracleConn::connectDb( mConnString, true /*transaction*/ );
-
-  return true;
+  return mConn;
 }
 
 bool QgsOracleTransaction::commitTransaction( QString &error )
@@ -67,6 +66,12 @@ bool QgsOracleTransaction::rollbackTransaction( QString &error )
 
 bool QgsOracleTransaction::executeSql( const QString &sql, QString &errorMsg, bool isDirty, const QString &name )
 {
+  if ( !mConn )
+  {
+    errorMsg = tr( "Connection to the database not available" );
+    return false;
+  }
+
   QString err;
   if ( isDirty )
   {
