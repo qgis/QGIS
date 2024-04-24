@@ -50,6 +50,12 @@ QgsField::QgsField( const QString &name, QMetaType::Type type,
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
 
+QgsField::QgsField( const QString &name, QVariant::Type type,
+                    const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
+  : QgsField( name, QgsVariantUtils::variantTypeToMetaType( type ), typeName, len, prec, comment, QgsVariantUtils::variantTypeToMetaType( subType ) )
+{
+}
+
 QgsField::QgsField( const QgsField &other ) //NOLINT
   : d( other.d )
 {
@@ -223,9 +229,19 @@ void QgsField::setType( QMetaType::Type type )
   d->type = type;
 }
 
+void QgsField::setType( QVariant::Type type )
+{
+  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
 void QgsField::setSubType( QMetaType::Type subType )
 {
   d->subType = subType;
+}
+
+void QgsField::setSubType( QVariant::Type subType )
+{
+  setSubType( QgsVariantUtils::variantTypeToMetaType( subType ) );
 }
 
 void QgsField::setTypeName( const QString &typeName )

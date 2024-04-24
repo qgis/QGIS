@@ -36,6 +36,11 @@ QgsServerParameterDefinition::QgsServerParameterDefinition( const QMetaType::Typ
 {
 }
 
+QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type type, const QVariant defaultValue )
+  : QgsServerParameterDefinition( QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
+{
+}
+
 QString QgsServerParameterDefinition::typeName() const
 {
   return  QVariant::typeToName( mType );
@@ -416,6 +421,13 @@ QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
                                         const QMetaType::Type type, const QVariant defaultValue )
   : QgsServerParameterDefinition( type, defaultValue )
   , mName( name )
+{
+}
+
+QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
+                                        const QVariant::Type type,
+                                        const QVariant defaultValue )
+  : QgsServerParameter( name, QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
 {
 }
 

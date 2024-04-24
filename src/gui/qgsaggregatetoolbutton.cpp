@@ -40,6 +40,11 @@ void QgsAggregateToolButton::setType( QMetaType::Type type )
   updateAvailableAggregates();
 }
 
+void QgsAggregateToolButton::setType( QVariant::Type type )
+{
+  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
 void QgsAggregateToolButton::aboutToShowMenu()
 {
   mMenu->clear();

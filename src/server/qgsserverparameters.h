@@ -43,6 +43,16 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
                                   const QVariant defaultValue = QVariant( "" ) );
 
+
+    /**
+     * Constructor for QgsServerParameterDefinition.
+     * \param type The type of the parameter
+     * \param defaultValue The default value of the parameter
+     */
+    Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type,
+        const QVariant defaultValue = QVariant( "" ) );
+
+
     /**
      * Default destructor for QgsServerParameterDefinition.
      */
@@ -212,6 +222,16 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
                         const QMetaType::Type type = QMetaType::Type::QString,
                         const QVariant defaultValue = QVariant( "" ) );
+
+    /**
+     * Constructor for QgsServerParameter.
+     * \param name The name of the parameter
+     * \param type The type of the parameter
+     * \param defaultValue The default value to use if not defined
+     */
+    Q_DECL_DEPRECATED QgsServerParameter( const QgsServerParameter::Name name,
+                                          const QVariant::Type type,
+                                          const QVariant defaultValue = QVariant( "" ) );
 
     /**
      * Raises an error in case of an invalid conversion.

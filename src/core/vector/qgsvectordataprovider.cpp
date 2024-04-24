@@ -753,6 +753,11 @@ QVariant QgsVectorDataProvider::convertValue( QMetaType::Type type, const QStrin
   return v;
 }
 
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString &value )
+{
+  return convertValue( QgsVariantUtils::variantTypeToMetaType( type ), value );
+}
+
 QgsTransaction *QgsVectorDataProvider::transaction() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

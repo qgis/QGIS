@@ -93,6 +93,17 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage SIP_OUT = nullptr );
 
     /**
+     * Inserts a field at the given position.
+     * \param name field name
+     * \param usage field usage
+     * \param type field type
+     * \param position insertion point (before)
+     * \param errorMessage optional error message
+     * \returns true on success
+     */
+    Q_DECL_DEPRECATED bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
      * Remove the field at given \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool removeField( const int position, QString *errorMessage SIP_OUT = nullptr );

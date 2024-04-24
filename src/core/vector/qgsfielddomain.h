@@ -63,6 +63,13 @@ class CORE_EXPORT QgsFieldDomain
                     const QString &description,
                     QMetaType::Type fieldType );
 
+    /**
+     * Constructor for QgsFieldDomain, with the specified \a name, \a description and \a fieldType.
+     */
+    Q_DECL_DEPRECATED QgsFieldDomain( const QString &name,
+                                      const QString &description,
+                                      QVariant::Type fieldType );
+
     virtual ~QgsFieldDomain();
 
     /**
@@ -121,6 +128,13 @@ class CORE_EXPORT QgsFieldDomain
      * \see fieldType()
      */
     void setFieldType( QMetaType::Type type ) { mFieldType = type; }
+
+    /**
+     * Sets the associated field \a type.
+     *
+     * \see fieldType()
+     */
+    Q_DECL_DEPRECATED void setFieldType( QVariant::Type type );
 
     /**
      * Returns the split policy.
@@ -238,6 +252,17 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
                          QMetaType::Type fieldType,
                          const QList<QgsCodedValue> &values );
 
+    /**
+     * Constructor for QgsCodedFieldDomain, with the associated \a name, \a description and \a fieldType.
+     *
+     * The \a values list details the coded field values as QgsCodedValue objects. Each code should
+     * appear only once, but it is the responsibility of the user to check this.
+     */
+    Q_DECL_DEPRECATED QgsCodedFieldDomain( const QString &name,
+                                           const QString &description,
+                                           QVariant::Type fieldType,
+                                           const QList<QgsCodedValue> &values );
+
 #ifndef SIP_RUN
     //! QgsCodedFieldDomain cannot be copied - use clone() instead
     QgsCodedFieldDomain( const QgsCodedFieldDomain & ) = delete;
@@ -303,6 +328,20 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
                          bool minimumIsInclusive,
                          const QVariant &maximum,
                          bool maximumIsInclusive );
+
+    /**
+     * Constructor for QgsRangeFieldDomain, with the specified \a name, \a description and \a fieldType.
+     *
+     * Set an invalid QVariant for \a minimum or \a maximum respectively if no minimum or maximum value is desired.
+     */
+    Q_DECL_DEPRECATED QgsRangeFieldDomain( const QString &name,
+                                           const QString &description,
+                                           QVariant::Type fieldType,
+                                           const QVariant &minimum,
+                                           bool minimumIsInclusive,
+                                           const QVariant &maximum,
+                                           bool maximumIsInclusive );
+
 
 #ifndef SIP_RUN
     //! QgsRangeFieldDomain cannot be copied - use clone() instead
@@ -433,6 +472,17 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
                         const QString &description,
                         QMetaType::Type fieldType,
                         const QString &glob );
+
+    /**
+     * Constructor for QgsGlobFieldDomain, with the specified \a name, \a description and \a fieldType.
+     *
+     * The \a glob argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+     */
+    QgsGlobFieldDomain( const QString &name,
+                        const QString &description,
+                        QVariant::Type fieldType,
+                        const QString &glob );
+
 
 #ifndef SIP_RUN
     //! QgsGlobFieldDomain cannot be copied - use clone() instead

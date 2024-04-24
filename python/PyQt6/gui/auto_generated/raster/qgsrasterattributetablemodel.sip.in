@@ -80,6 +80,19 @@ Inserts a field at the given position.
          - errorMessage: error message
 %End
 
+ bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+%Docstring
+Inserts a field at the given position.
+
+:param name: field name
+:param usage: field usage
+:param type: field type
+:param position: insertion point (before)
+
+:return: - true on success
+         - errorMessage: error message
+%End
+
     bool removeField( const int position, QString *errorMessage /Out/ = 0 );
 %Docstring
 Remove the field at given ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.

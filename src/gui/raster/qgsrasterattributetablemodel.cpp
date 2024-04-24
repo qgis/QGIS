@@ -141,6 +141,12 @@ bool QgsRasterAttributeTableModel::insertField( const int position, const QStrin
   return retVal;
 }
 
+bool QgsRasterAttributeTableModel::insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+{
+  return insertField( position, name, usage, QgsVariantUtils::variantTypeToMetaType( type ), errorMessage );
+}
+
+
 bool QgsRasterAttributeTableModel::removeField( const int position, QString *errorMessage )
 {
 

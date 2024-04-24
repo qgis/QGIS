@@ -40,6 +40,13 @@ class CORE_EXPORT QgsVariantUtils
     static QString typeToDisplayString( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType );
 
     /**
+     * Returns a user-friendly translated string representing a QVariant \a type.
+     *
+     * The optional \a subType can be used to specify the type of variant list or map values.
+     */
+    Q_DECL_DEPRECATED static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+
+    /**
      * Returns TRUE if the specified \a variant should be considered a NULL value.
      *
      * This method is more rigorous vs QVariant::isNull(), which will return

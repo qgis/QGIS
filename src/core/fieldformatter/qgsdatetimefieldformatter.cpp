@@ -123,6 +123,12 @@ QString QgsDateTimeFieldFormatter::defaultFormat( QMetaType::Type type )
   }
 }
 
+QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
+{
+  return defaultFormat( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
+
 QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QMetaType::Type type )
 {
   switch ( type )
@@ -134,6 +140,11 @@ QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QMetaType::Type type )
     default:
       return QgsDateTimeFieldFormatter::DATE_DISPLAY_FORMAT;
   }
+}
+
+QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QVariant::Type type )
+{
+  return defaultDisplayFormat( QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 void QgsDateTimeFieldFormatter::applyLocaleChange()

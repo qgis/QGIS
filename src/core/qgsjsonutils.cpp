@@ -411,6 +411,11 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
   return result;
 }
 
+QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type )
+{
+  return parseArray( json, QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
 std::unique_ptr< QgsPoint> parsePointFromGeoJson( const json &coords )
 {
   if ( !coords.is_array() || coords.size() < 2 || coords.size() > 3 )

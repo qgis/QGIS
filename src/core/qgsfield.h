@@ -91,6 +91,14 @@ class CORE_EXPORT QgsField
               const QString &comment = QString(),
               QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
 
+    Q_DECL_DEPRECATED QgsField( const QString &name,
+                                QVariant::Type type,
+                                const QString &typeName = QString(),
+                                int len = 0,
+                                int prec = 0,
+                                const QString &comment = QString(),
+                                QVariant::Type subType = QVariant::Invalid );
+
     /**
      * Copy constructor
      */
@@ -270,11 +278,23 @@ class CORE_EXPORT QgsField
     void setType( QMetaType::Type type ) SIP_HOLDGIL;
 
     /**
+     * Set variant type.
+     */
+    Q_DECL_DEPRECATED void setType( QVariant::Type type );
+
+    /**
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
      */
     void setSubType( QMetaType::Type subType ) SIP_HOLDGIL;
+
+    /**
+     * If the field is a collection, set its element's type.
+     * When all the elements don't need to have the same type, set this to
+     * QVariant::Invalid.
+     */
+    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType );
 
     /**
      * Set the field type.
