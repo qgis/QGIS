@@ -451,6 +451,16 @@ class CORE_EXPORT QgsFields
      */
     static QIcon iconForFieldType( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType, const QString &typeString = QString() );
 
+    /**
+     * Returns an icon corresponding to a field \a type
+     *
+     * Since QGIS 3.24, the optional \a subType argument can be used to specify the type of variant list or map values.
+     * Since QGIS 3.30, the optional \a typeString argument can be used to specify field type strings for handling user field types.
+     *
+     * \since QGIS 3.16
+     */
+    Q_DECL_DEPRECATED static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() );
+
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
     {

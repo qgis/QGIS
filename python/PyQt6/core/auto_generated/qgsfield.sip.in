@@ -58,6 +58,14 @@ Constructor. Constructs a new QgsField object.
                 this to QVariant.Invalid.
 %End
 
+ QgsField( const QString &name,
+                                QVariant::Type type,
+                                const QString &typeName = QString(),
+                                int len = 0,
+                                int prec = 0,
+                                const QString &comment = QString(),
+                                QVariant::Type subType = QVariant::Invalid );
+
     QgsField( const QgsField &other ) /HoldGIL/;
 %Docstring
 Copy constructor
@@ -237,7 +245,19 @@ Set the field name.
 Set variant type.
 %End
 
+ void setType( QVariant::Type type );
+%Docstring
+Set variant type.
+%End
+
     void setSubType( QMetaType::Type subType ) /HoldGIL/;
+%Docstring
+If the field is a collection, set its element's type.
+When all the elements don't need to have the same type, set this to
+QVariant.Invalid.
+%End
+
+ void setSubType( QVariant::Type subType );
 %Docstring
 If the field is a collection, set its element's type.
 When all the elements don't need to have the same type, set this to

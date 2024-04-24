@@ -487,6 +487,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
         , mSubType( subType )
       {}
 
+      Q_DECL_DEPRECATED NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid )
+        : mTypeDesc( typeDesc )
+        , mTypeName( typeName )
+        , mType( QgsVariantUtils::variantTypeToMetaType( type ) )
+        , mMinLen( minLen )
+        , mMaxLen( maxLen )
+        , mMinPrec( minPrec )
+        , mMaxPrec( maxPrec )
+        , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) )
+      {}
+
+
       QString mTypeDesc;
       QString mTypeName;
       QMetaType::Type mType;
@@ -561,6 +573,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     static QVariant convertValue( QMetaType::Type type, const QString &value );
+
+    Q_DECL_DEPRECATED static QVariant convertValue( QVariant::Type type, const QString &value );
 
     /**
      * Returns the transaction this data provider is included in, if any.

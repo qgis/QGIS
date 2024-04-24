@@ -31,6 +31,17 @@ Constructor for QgsServerParameterDefinition.
 :param defaultValue: The default value of the parameter
 %End
 
+
+ QgsServerParameterDefinition( const QVariant::Type type,
+        const QVariant defaultValue = QVariant( "" ) );
+%Docstring
+Constructor for QgsServerParameterDefinition.
+
+:param type: The type of the parameter
+:param defaultValue: The default value of the parameter
+%End
+
+
     virtual ~QgsServerParameterDefinition();
 
     QString typeName() const;
@@ -224,6 +235,17 @@ Parameter common to all services (WMS, WFS, ...)
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
                         const QMetaType::Type type = QMetaType::Type::QString,
                         const QVariant defaultValue = QVariant( "" ) );
+%Docstring
+Constructor for QgsServerParameter.
+
+:param name: The name of the parameter
+:param type: The type of the parameter
+:param defaultValue: The default value to use if not defined
+%End
+
+ QgsServerParameter( const QgsServerParameter::Name name,
+                                          const QVariant::Type type,
+                                          const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameter.
 

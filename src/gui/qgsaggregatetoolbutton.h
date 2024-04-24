@@ -48,6 +48,11 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     /**
      * Based on the \a type of underlying data, some aggregates will be available or not.
      */
+    Q_DECL_DEPRECATED void setType( QVariant::Type type );
+
+    /**
+     * Based on the \a type of underlying data, some aggregates will be available or not.
+     */
     QMetaType::Type type() const;
 
     /**

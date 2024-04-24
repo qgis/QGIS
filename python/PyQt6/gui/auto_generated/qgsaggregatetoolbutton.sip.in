@@ -32,6 +32,11 @@ Constructor
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End
 
+ void setType( QVariant::Type type );
+%Docstring
+Based on the ``type`` of underlying data, some aggregates will be available or not.
+%End
+
     QMetaType::Type type() const;
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.

@@ -563,6 +563,19 @@ quotations where required.
 .. seealso:: :py:func:`quotedColumnRef`
 %End
 
+ static QString quotedValue( const QVariant &value, QVariant::Type type );
+%Docstring
+Returns a string representation of a literal value, including appropriate
+quotations where required.
+
+:param value: value to convert to a string representation
+:param type: value type
+
+.. seealso:: :py:func:`quotedString`
+
+.. seealso:: :py:func:`quotedColumnRef`
+%End
+
 
 
     static QString helpText( QString name );
@@ -646,6 +659,18 @@ length, and presents text representations of non numeric/text types (e.g., geome
 %End
 
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QMetaType::Type fieldType = QMetaType::Type::UnknownType );
+%Docstring
+Create an expression allowing to evaluate if a field is equal to a
+value. The value may be null.
+
+:param fieldName: the name of the field
+:param value: the value of the field
+:param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
+
+:return: the expression to evaluate field equality
+%End
+
+ static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType );
 %Docstring
 Create an expression allowing to evaluate if a field is equal to a
 value. The value may be null.

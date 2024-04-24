@@ -161,6 +161,11 @@ QString QgsVariantUtils::typeToDisplayString( QMetaType::Type type, QMetaType::T
   return QString();
 }
 
+QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Type subType )
+{
+  return typeToDisplayString( QgsVariantUtils::variantTypeToMetaType( type ), QgsVariantUtils::variantTypeToMetaType( subType ) );
+}
+
 bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings )
 {
 #ifndef QGISDEBUG

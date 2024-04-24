@@ -94,6 +94,12 @@ QVariant QgsExternalResourceWidget::documentPath( QMetaType::Type type ) const
   }
 }
 
+QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
+{
+  return documentPath( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
+
 void QgsExternalResourceWidget::setDocumentPath( const QVariant &path )
 {
   mFileWidget->setFilePath( path.toString() );

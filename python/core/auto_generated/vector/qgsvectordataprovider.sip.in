@@ -490,6 +490,9 @@ check if provider supports type of field
     {
       NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType );
 
+ NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid );
+
+
       QString mTypeDesc;
       QString mTypeName;
       QMetaType::Type mType;
@@ -566,6 +569,8 @@ providers will return ``None``.
 %End
 
     static QVariant convertValue( QMetaType::Type type, const QString &value );
+
+ static QVariant convertValue( QVariant::Type type, const QString &value );
 
     virtual QgsTransaction *transaction() const;
 %Docstring

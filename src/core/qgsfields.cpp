@@ -17,6 +17,7 @@
 #include "qgsfields.h"
 #include "qgsfields_p.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 #include <QIcon>
 
 /***************************************************************************
@@ -348,6 +349,11 @@ QIcon QgsFields::iconForFieldType( QMetaType::Type type, QMetaType::Type subType
     default:
       return QIcon();
   }
+}
+
+QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString )
+{
+  return iconForFieldType( QgsVariantUtils::variantTypeToMetaType( type ), QgsVariantUtils::variantTypeToMetaType( subType ), typeString );
 }
 
 /***************************************************************************
