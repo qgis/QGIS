@@ -10,6 +10,7 @@ __date__ = '2016-07-06'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
+import re
 
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
@@ -17,6 +18,7 @@ from qgis.core import (
     NULL,
     Qgis,
     QgsCoordinateReferenceSystem,
+    QgsCredentials,
     QgsDataProvider,
     QgsFeature,
     QgsFeatureRequest,
@@ -1288,6 +1290,61 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             self.assertEqual(layer.wkbType(), wkb_type)
 
             self.execSQLCommand(f'DROP TABLE "QGIS"."DETECT_{name}"')
+
+    def testCredentialsCache(self):
+        """
+        Test that credentials are correctly cached when using
+        """
+        # self.dbconn remove user/pwd
+
+        # get username/password from uri
+
+        user_pattern = "user='([^']*)'"
+        pwd_pattern = "password='([^']*)'"
+
+        rematch = re.search(user_pattern, self.dbconn)
+        self.assertTrue(rematch)
+        self.assertEqual(len(rematch.groups()), 1)
+        username = rematch.groups()[0]
+
+        rematch = re.search(pwd_pattern, self.dbconn)
+        self.assertTrue(rematch)
+        self.assertEqual(len(rematch.groups()), 1)
+        password = rematch.groups()[0]
+
+        conn_wo_login_pwd = re.sub(user_pattern, "", self.dbconn)
+        conn_wo_login_pwd = re.sub(pwd_pattern, "", conn_wo_login_pwd)
+
+        class TestCredentials(QgsCredentials):
+
+            def __init__(self, username, pwd):
+                super().__init__()
+                self.setInstance(self)
+                self.nbCall = 0
+                self.username = username
+                self.pwd = pwd
+
+            def request(self, realm, username, pwd, msg):
+                self.nbCall += 1
+                return (True, self.username, self.pwd)
+
+        credentials = TestCredentials(username, password)
+        self.assertEqual(credentials, QgsCredentials.instance())
+
+        # no user/pwd -> credential is called
+        transaction = QgsProviderRegistry.instance().createTransaction("oracle", conn_wo_login_pwd)
+        self.assertEqual(transaction.begin()[0], True)
+        self.assertEqual(credentials.nbCall, 1)
+
+        # no user/pwd second times -> use cache
+        transaction = QgsProviderRegistry.instance().createTransaction("oracle", conn_wo_login_pwd)
+        self.assertEqual(transaction.begin()[0], True)
+        self.assertEqual(credentials.nbCall, 1)
+
+        # same connection, different user, don't use cache (credentials.nbCall is incremented)
+        transaction = QgsProviderRegistry.instance().createTransaction("oracle", conn_wo_login_pwd + " user='titi'")
+        self.assertEqual(transaction.begin()[0], True)  # test credentials always return valid credentials so it's valid, but we don't care
+        self.assertEqual(credentials.nbCall, 2)
 
 
 if __name__ == '__main__':
