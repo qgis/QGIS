@@ -34,8 +34,8 @@ ELSE(EXISTS PYQT5_VERSION_STR)
     ENDIF(_pyqt5_metadata)
 
     IF(PYQT5_VERSION_STR)
-      SET(PYQT5_MOD_DIR "${Python_SITEARCH}/PyQt5")
-      SET(PYQT5_SIP_DIR "${Python_SITEARCH}/PyQt5/bindings")
+      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "import os; import PyQt5; print(os.path.dirname(PyQt5.__file__), end='')" OUTPUT_VARIABLE PYQT5_MOD_DIR)
+      SET(PYQT5_SIP_DIR "${PYQT5_MOD_DIR}/bindings")
       FIND_PROGRAM(__pyuic5 "pyuic5")
       GET_FILENAME_COMPONENT(PYQT5_BIN_DIR ${__pyuic5} DIRECTORY)
 
