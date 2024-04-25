@@ -230,8 +230,8 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       element.setAttribute( QStringLiteral( "value" ), value.value< QTime >().isValid() ? value.toTime().toString( Qt::ISODate ) : QString() );
       break;
 
-    case QMetaType::Type::User:
-    {
+    default:
+
       if ( value.userType() == QMetaType::type( "QgsProperty" ) )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
@@ -274,12 +274,16 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsRemappingSinkDefinition" ) );
         break;
       }
-      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported user variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
-      break;
-    }
-
-    default:
-      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported variant type %1" ).arg( QVariant::typeToName( static_cast<QMetaType::Type>( value.userType() ) ) ).toLocal8Bit() );
+      else
+      {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported %1variant type %2" )
+                    .arg( value.userType() >= QMetaType::Type::User ? "user " : QString() ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
+#else
+        Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported %1variant type %2" )
+                    .arg( value.userType() >= QMetaType::Type::User ? "user " : QString() ).arg( value.metaType().name() ).toLocal8Bit() );
+#endif
+      }
       break;
   }
 
