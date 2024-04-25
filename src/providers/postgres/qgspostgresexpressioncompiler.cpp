@@ -44,16 +44,15 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
     case QMetaType::Type::Double:
       return value.toString();
 
-    case QMetaType::Type::User:
-      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    default:
+
+      if ( value.userType() == qMetaTypeId<QgsGeometry>() )
       {
         const QgsGeometry geom = value.value<QgsGeometry>();
         return QString( "ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
       }
       break;
 
-    default:
-      break;
   }
 
   return QgsPostgresConn::quotedValue( value );
