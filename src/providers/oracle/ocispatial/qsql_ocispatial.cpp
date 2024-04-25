@@ -593,7 +593,36 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
                         sizeof( double ),
                         SQLT_FLT, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
       break;
-    case QMetaType::Type::User:
+    case QMetaType::Type::QString:
+    {
+      const QString s = val.toString();
+      if ( isBinaryValue( pos ) )
+      {
+        r = OCIBindByPos( sql, hbnd, err,
+                          pos + 1,
+                          const_cast<ushort *>( s.utf16() ),
+                          s.length() * sizeof( QChar ),
+                          SQLT_LNG, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
+        break;
+      }
+      else if ( !isOutValue( pos ) )
+      {
+        // don't detach the string
+        r = OCIBindByPos( sql, hbnd, err,
+                          pos + 1,
+                          // safe since oracle doesn't touch OUT values
+                          const_cast<ushort *>( s.utf16() ),
+                          ( s.length() + 1 ) * sizeof( QChar ),
+                          SQLT_STR, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
+        if ( r == OCI_SUCCESS )
+          setCharset( *hbnd, OCI_HTYPE_BIND );
+        break;
+      }
+    }
+    FALLTHROUGH
+
+    default:
+    {
       if ( val.canConvert<QOCISpatialGeometry>() && !isOutValue( pos ) )
       {
         try
@@ -689,67 +718,39 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
                           -1,
                           SQLT_RDD, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
       }
-      else
+      else if ( val.userType() >= QMetaType::Type::User )
       {
         qWarning( "Unknown bind variable" );
         r = OCI_ERROR;
       }
-      break;
-    case QMetaType::Type::QString:
-    {
-      const QString s = val.toString();
-      if ( isBinaryValue( pos ) )
+      else
       {
-        r = OCIBindByPos( sql, hbnd, err,
-                          pos + 1,
-                          const_cast<ushort *>( s.utf16() ),
-                          s.length() * sizeof( QChar ),
-                          SQLT_LNG, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
-        break;
-      }
-      else if ( !isOutValue( pos ) )
-      {
-        // don't detach the string
-        r = OCIBindByPos( sql, hbnd, err,
-                          pos + 1,
-                          // safe since oracle doesn't touch OUT values
-                          const_cast<ushort *>( s.utf16() ),
-                          ( s.length() + 1 ) * sizeof( QChar ),
-                          SQLT_STR, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
+        const QString s = val.toString();
+        // create a deep-copy
+        QByteArray ba( reinterpret_cast<const char *>( s.utf16() ), ( s.length() + 1 ) * sizeof( QChar ) );
+        if ( isOutValue( pos ) )
+        {
+          ba.reserve( ( s.capacity() + 1 ) * sizeof( QChar ) );
+          *tmpSize = ba.size();
+          r = OCIBindByPos( sql, hbnd, err,
+                            pos + 1,
+                            ba.data(),
+                            ba.capacity(),
+                            SQLT_STR, indPtr, tmpSize, nullptr, 0, nullptr, OCI_DEFAULT );
+          tmpStorage.append( ba );
+        }
+        else
+        {
+          r = OCIBindByPos( sql, hbnd, err,
+                            pos + 1,
+                            ba.data(),
+                            ba.size(),
+                            SQLT_STR, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
+        }
         if ( r == OCI_SUCCESS )
           setCharset( *hbnd, OCI_HTYPE_BIND );
         break;
       }
-    }
-    FALLTHROUGH
-
-    default:
-    {
-      const QString s = val.toString();
-      // create a deep-copy
-      QByteArray ba( reinterpret_cast<const char *>( s.utf16() ), ( s.length() + 1 ) * sizeof( QChar ) );
-      if ( isOutValue( pos ) )
-      {
-        ba.reserve( ( s.capacity() + 1 ) * sizeof( QChar ) );
-        *tmpSize = ba.size();
-        r = OCIBindByPos( sql, hbnd, err,
-                          pos + 1,
-                          ba.data(),
-                          ba.capacity(),
-                          SQLT_STR, indPtr, tmpSize, nullptr, 0, nullptr, OCI_DEFAULT );
-        tmpStorage.append( ba );
-      }
-      else
-      {
-        r = OCIBindByPos( sql, hbnd, err,
-                          pos + 1,
-                          ba.data(),
-                          ba.size(),
-                          SQLT_STR, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
-      }
-      if ( r == OCI_SUCCESS )
-        setCharset( *hbnd, OCI_HTYPE_BIND );
-      break;
     } // default case
   } // switch
   if ( r != OCI_SUCCESS )
@@ -1919,11 +1920,6 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
         col.maxLen = sizeof( double );
         break;
 
-      case QMetaType::Type::User:
-        col.bindAs = SQLT_RDD;
-        col.maxLen = sizeof( OCIRowid * );
-        break;
-
       case QMetaType::Type::QString:
       {
         col.bindAs = SQLT_STR;
@@ -1944,15 +1940,23 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
       case QMetaType::Type::QByteArray:
       default:
       {
-        col.bindAs = SQLT_LBI;
-        for ( uint j = 0; j < col.recordCount; ++j )
+        if ( fieldTypes[i] >= QMetaType::Type::User )
         {
-          if ( d->isOutValue( i ) )
-            col.lengths[j] = boundValues.at( i ).toList().at( j ).toByteArray().capacity();
-          else
-            col.lengths[j] = boundValues.at( i ).toList().at( j ).toByteArray().size();
-          if ( col.lengths[j] > col.maxLen )
-            col.maxLen = col.lengths[j];
+          col.bindAs = SQLT_RDD;
+          col.maxLen = sizeof( OCIRowid * );
+        }
+        else
+        {
+          col.bindAs = SQLT_LBI;
+          for ( uint j = 0; j < col.recordCount; ++j )
+          {
+            if ( d->isOutValue( i ) )
+              col.lengths[j] = boundValues.at( i ).toList().at( j ).toByteArray().capacity();
+            else
+              col.lengths[j] = boundValues.at( i ).toList().at( j ).toByteArray().size();
+            if ( col.lengths[j] > col.maxLen )
+              col.maxLen = col.lengths[j];
+          }
         }
         break;
       }
@@ -2024,23 +2028,22 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
             memcpy( dataPtr, s.utf16(), columns[i].lengths[row] );
             break;
           }
-          case QMetaType::Type::User:
+
+          case QMetaType::Type::QByteArray:
+          default:
+          {
             if ( val.canConvert<QOCISpatialRowIdPointer>() )
             {
               const QOCISpatialRowIdPointer rptr = qvariant_cast<QOCISpatialRowIdPointer>( val );
               *reinterpret_cast<OCIRowid **>( dataPtr ) = rptr->id;
               columns[i].lengths[row] = 0;
-              break;
             }
-
-            FALLTHROUGH
-
-          case QMetaType::Type::QByteArray:
-          default:
-          {
-            const QByteArray ba = val.toByteArray();
-            columns[i].lengths[row] = ba.size();
-            memcpy( dataPtr, ba.constData(), ba.size() );
+            else
+            {
+              const QByteArray ba = val.toByteArray();
+              columns[i].lengths[row] = ba.size();
+              memcpy( dataPtr, ba.constData(), ba.size() );
+            }
             break;
           }
         }
