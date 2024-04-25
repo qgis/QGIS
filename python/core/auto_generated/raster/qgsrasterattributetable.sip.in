@@ -73,6 +73,11 @@ The Field class represents a Raster Attribute Table field, including its name, u
 Creates a new Field with ``name``, ``type`` and ``usage``.
 %End
 
+ Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type );
+%Docstring
+Creates a new Field with ``name``, ``type`` and ``usage``.
+%End
+
         bool isColor( ) const;
 %Docstring
 Returns ``True`` if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
@@ -255,6 +260,11 @@ Inserts a new ``field`` at ``position``, optionally reporting any error in ``err
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
+ bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+%Docstring
+Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
     bool insertColor( int position, QString *errorMessage /Out/ = 0 );
 %Docstring
 Create RGBA fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
@@ -273,6 +283,11 @@ Create RGBA minimum and maximum fields and inserts them at ``position``, optiona
 %End
 
     bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage /Out/ = 0 );
+%Docstring
+Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
@@ -409,6 +424,11 @@ the current data are returned without any change.
 %End
 
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QMetaType::Type type );
+%Docstring
+Try to determine the field usage from its ``name`` and ``type``.
+%End
+
+    static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 %Docstring
 Try to determine the field usage from its ``name`` and ``type``.
 %End
