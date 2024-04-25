@@ -2294,22 +2294,23 @@ class TestQgsExpression: public QObject
         case QMetaType::Type::QByteArray:
           QCOMPARE( result.toByteArray(), expected.toByteArray() );
           break;
-        case QMetaType::Type::User:
-        {
+
+        default:
           if ( result.userType() == qMetaTypeId<QgsInterval>() )
           {
             QgsInterval inter = result.value<QgsInterval>();
             QgsInterval gotinter = expected.value<QgsInterval>();
             QCOMPARE( inter.seconds(), gotinter.seconds() );
           }
-          else
+          else if ( result.userType() >= QMetaType::Type::User )
           {
             QFAIL( "unexpected user type" );
           }
+          else
+          {
+            QVERIFY( false ); // should never happen
+          }
           break;
-        }
-        default:
-          QVERIFY( false ); // should never happen
       }
     }
 
