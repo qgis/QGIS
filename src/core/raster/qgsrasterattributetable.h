@@ -97,6 +97,11 @@ class CORE_EXPORT QgsRasterAttributeTable
         Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QMetaType::Type type ): name( name ), usage( usage ), type( type ) {}
 
         /**
+         * Creates a new Field with \a name, \a type and \a usage.
+         */
+        Q_DECL_DEPRECATED Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ): Field( name, usage, QgsVariantUtils::variantTypeToMetaType( type ) ) {}
+
+        /**
          * Returns TRUE if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
          */
         bool isColor( ) const;
@@ -249,6 +254,11 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage SIP_OUT = nullptr );
 
     /**
+     * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    Q_DECL_DEPRECATED bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
      * Create RGBA fields and inserts them at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool insertColor( int position, QString *errorMessage SIP_OUT = nullptr );
@@ -268,6 +278,11 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Creates a new field from \a name, \a usage and \a type and appends it to the fields, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Creates a new field from \a name, \a usage and \a type and appends it to the fields, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Appends a new \a field, optionally reporting any error in \a errorMessage, returns TRUE on success.
@@ -390,6 +405,11 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Try to determine the field usage from its \a name and \a type.
      */
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QMetaType::Type type );
+
+    /**
+     * Try to determine the field usage from its \a name and \a type.
+     */
+    static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 
     /**
     * Returns the (possibly empty) path of the file-based RAT, the path is set when a RAT is read or written from/to a file.

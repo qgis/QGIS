@@ -342,6 +342,11 @@ bool QgsRasterAttributeTable::insertField( int position, const QString &name, co
   return insertField( position, { name, usage, type}, errorMessage );
 }
 
+bool QgsRasterAttributeTable::insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+{
+  return insertField( position, name, usage, QgsVariantUtils::variantTypeToMetaType( type ), errorMessage );
+}
+
 bool QgsRasterAttributeTable::insertColor( int position, QString *errorMessage )
 {
   const QList<Qgis::RasterAttributeTableFieldUsage> colors {{ Qgis::RasterAttributeTableFieldUsage::Red, Qgis::RasterAttributeTableFieldUsage::Green, Qgis::RasterAttributeTableFieldUsage::Blue, Qgis::RasterAttributeTableFieldUsage::Alpha }};
@@ -401,6 +406,11 @@ bool QgsRasterAttributeTable::insertRamp( int position, QString *errorMessage )
 bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage )
 {
   return insertField( mFields.count(), name, usage, type, errorMessage );
+}
+
+bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+{
+  return appendField( name, usage, QgsVariantUtils::variantTypeToMetaType( type ), errorMessage );
 }
 
 bool QgsRasterAttributeTable::appendField( const Field &field, QString *errorMessage )
@@ -973,6 +983,11 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
   // default to generic for all other cases
   return Qgis::RasterAttributeTableFieldUsage::Generic;
 
+}
+
+Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )
+{
+  return guessFieldUsage( name, QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 QString QgsRasterAttributeTable::usageName( const Qgis::RasterAttributeTableFieldUsage usage )
