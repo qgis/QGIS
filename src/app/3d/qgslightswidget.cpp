@@ -380,24 +380,36 @@ bool QgsLightsModel::removeRows( int row, int count, const QModelIndex &parent )
 
 void QgsLightsModel::setPointLights( const QList<QgsPointLightSettings> &lights )
 {
-  beginRemoveRows( QModelIndex(), 0, mPointLights.size() - 1 );
-  mPointLights.clear();
-  endRemoveRows();
+  if ( !mPointLights.empty() )
+  {
+    beginRemoveRows( QModelIndex(), 0, mPointLights.size() - 1 );
+    mPointLights.clear();
+    endRemoveRows();
+  }
 
-  beginInsertRows( QModelIndex(), 0, lights.size() - 1 );
-  mPointLights = lights;
-  endInsertRows();
+  if ( !lights.empty() )
+  {
+    beginInsertRows( QModelIndex(), 0, lights.size() - 1 );
+    mPointLights = lights;
+    endInsertRows();
+  }
 }
 
 void QgsLightsModel::setDirectionalLights( const QList<QgsDirectionalLightSettings> &lights )
 {
-  beginRemoveRows( QModelIndex(), mPointLights.size(), mPointLights.size() + mDirectionalLights.size() - 1 );
-  mDirectionalLights.clear();
-  endRemoveRows();
+  if ( !mDirectionalLights.empty() )
+  {
+    beginRemoveRows( QModelIndex(), mPointLights.size(), mPointLights.size() + mDirectionalLights.size() - 1 );
+    mDirectionalLights.clear();
+    endRemoveRows();
+  }
 
-  beginInsertRows( QModelIndex(), mPointLights.size(), mPointLights.size() + lights.size() - 1 );
-  mDirectionalLights = lights;
-  endInsertRows();
+  if ( !lights.empty() )
+  {
+    beginInsertRows( QModelIndex(), mPointLights.size(), mPointLights.size() + lights.size() - 1 );
+    mDirectionalLights = lights;
+    endInsertRows();
+  }
 }
 
 QList<QgsPointLightSettings> QgsLightsModel::pointLights() const
