@@ -46,6 +46,7 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     int indexFromListWidgetItem( QListWidgetItem *item );
 
     QgsVectorLayer *mReferencedLayer = nullptr;
+    bool mAllowNullWasSetByConfig = false;
 
   private slots:
     void relationChanged( int idx );

@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfieldconstraints.h"
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -101,7 +102,13 @@ void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
 
 void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
 {
-  mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
+  // Only unset allowNull if it was in the config or the default value that was
+  // calculated from the field constraints when the widget was created will be overridden
+  mAllowNullWasSetByConfig = config.contains( QStringLiteral( "AllowNULL" ) );
+  if ( mAllowNullWasSetByConfig )
+  {
+    mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
+  }
   mCbxShowForm->setChecked( config.value( QStringLiteral( "ShowForm" ), false ).toBool() );
   mCbxShowOpenFormButton->setChecked( config.value( QStringLiteral( "ShowOpenFormButton" ), true ).toBool() );
 
@@ -142,6 +149,22 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
   {
     mExpressionWidget->setField( mReferencedLayer->displayExpression() );
     mCbxMapIdentification->setEnabled( mReferencedLayer->isSpatial() );
+  }
+
+  // Provide a default for AllowNull if it was not set by the config
+  if ( ! mAllowNullWasSetByConfig )
+  {
+    const QgsAttributeList referencingFields = rel.referencingFields();
+    const bool allowNull { std::find_if( referencingFields.constBegin(), referencingFields.constEnd(), [&]( const auto & fieldIdx )
+    {
+      if ( !rel.referencingLayer()->fields().exists( fieldIdx ) )
+      {
+        return false;
+      }
+      const QgsField field = rel.referencingLayer()->fields().field( fieldIdx );
+      return field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull );
+    } ) == referencingFields.constEnd()};
+    mCbxAllowNull->setChecked( allowNull );
   }
 
   loadFields();
