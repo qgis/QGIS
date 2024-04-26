@@ -241,6 +241,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   if ( !loaded )
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
+#ifdef WITH_QTWEBKIT
   //inject JSON feature
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
@@ -251,6 +252,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
 
     jsLoop.execIfNotDone();
   }
+#endif
 
   recalculateFrameSizes();
   //trigger a repaint
