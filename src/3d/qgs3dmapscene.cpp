@@ -1002,6 +1002,7 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   shadowRenderingFrameGraph->setDebugOverlayEnabled( mMap.isDebugOverlayEnabled() );
+  mEngine->renderSettings()->setRenderPolicy( mMap.isDebugOverlayEnabled() ? Qt3DRender::QRenderSettings::Always : Qt3DRender::QRenderSettings::OnDemand );
 }
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
