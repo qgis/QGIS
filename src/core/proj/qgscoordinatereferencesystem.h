@@ -1026,9 +1026,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * An invalid CRS will be returned if the object does not contain a vertical component.
      *
      * \see horizontalCrs()
+     * \see hasVerticalAxis()
+     *
      * \since QGIS 3.38
      */
     QgsCoordinateReferenceSystem verticalCrs() const;
+
+    /**
+     * Returns TRUE if the CRS has a vertical axis.
+     *
+     * \see verticalCrs()
+     * \since QGIS 3.38
+     */
+    bool hasVerticalAxis() const;
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
