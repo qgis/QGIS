@@ -996,6 +996,7 @@ void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
 void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 {
   mEngine->frameGraph()->setDebugOverlayEnabled( mMap.isDebugOverlayEnabled() );
+  mEngine->renderSettings()->setRenderPolicy( mMap.isDebugOverlayEnabled() ? Qt3DRender::QRenderSettings::Always : Qt3DRender::QRenderSettings::OnDemand );
 }
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
