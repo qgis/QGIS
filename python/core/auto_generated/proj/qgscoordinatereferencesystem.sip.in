@@ -1125,6 +1125,17 @@ An invalid CRS will be returned if the object does not contain a vertical compon
 
 .. seealso:: :py:func:`horizontalCrs`
 
+.. seealso:: :py:func:`hasVerticalAxis`
+
+.. versionadded:: 3.38
+%End
+
+    bool hasVerticalAxis() const;
+%Docstring
+Returns ``True`` if the CRS has a vertical axis.
+
+.. seealso:: :py:func:`verticalCrs`
+
 .. versionadded:: 3.38
 %End
 

@@ -187,6 +187,13 @@ class CORE_EXPORT QgsProjUtils
     static proj_pj_unique_ptr crsToVerticalCrs( const PJ *crs );
 
     /**
+     * Returns TRUE if a PROJ \a crs has a vertical axis.
+     *
+     * \since QGIS 3.38
+     */
+    static bool hasVerticalAxis( const PJ *crs );
+
+    /**
      * Given a PROJ crs (which may be a compound or bound crs, or some other type), ensure that it is not
      * a bound CRS object.
      *

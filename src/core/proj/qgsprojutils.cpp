@@ -251,6 +251,63 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToVerticalCrs( const PJ *crs )
   BUILTIN_UNREACHABLE
 }
 
+bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
+{
+  if ( !crs )
+    return false;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  switch ( proj_get_type( crs ) )
+  {
+    case PJ_TYPE_COMPOUND_CRS:
+    {
+      int i = 0;
+      QgsProjUtils::proj_pj_unique_ptr res( proj_crs_get_sub_crs( context, crs, i ) );
+      while ( res )
+      {
+        if ( hasVerticalAxis( res.get() ) )
+          return true;
+        i++;
+        res.reset( proj_crs_get_sub_crs( context, crs, i ) );
+      }
+      return false;
+    }
+
+    // maybe other types to handle like this??
+
+    default:
+      break;
+  }
+
+  QgsProjUtils::proj_pj_unique_ptr pjCs( proj_crs_get_coordinate_system( context, crs ) );
+  if ( !pjCs )
+    return false;
+
+  const int axisCount = proj_cs_get_axis_count( context, pjCs.get() );
+  for ( int axisIndex = 0; axisIndex < axisCount; ++axisIndex )
+  {
+    const char *outDirection = nullptr;
+    proj_cs_get_axis_info( context, pjCs.get(), axisIndex,
+                           nullptr,
+                           nullptr,
+                           &outDirection,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           nullptr
+                         );
+    const QString outDirectionString = QString( outDirection );
+    if ( outDirectionString.compare( QLatin1String( "geocentricZ" ), Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( QLatin1String( "up" ), Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( QLatin1String( "down" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::unboundCrs( const PJ *crs )
 {
   if ( !crs )

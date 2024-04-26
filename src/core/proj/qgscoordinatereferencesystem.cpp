@@ -3081,6 +3081,15 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::verticalCrs() const
   return QgsCoordinateReferenceSystem();
 }
 
+bool QgsCoordinateReferenceSystem::hasVerticalAxis() const
+{
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    return QgsProjUtils::hasVerticalAxis( obj );
+  }
+  return false;
+}
+
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
   if ( isGeographic() )

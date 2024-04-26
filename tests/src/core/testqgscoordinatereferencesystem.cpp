@@ -51,6 +51,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void geographic3d();
     void toHorizontal();
     void toVertical();
+    void hasVerticalAxis();
     void coordinateEpoch();
     void createCompound();
     void saveAsUserCrs();
@@ -351,7 +352,7 @@ void TestQgsCoordinateReferenceSystem::toVertical()
 {
   // invalid
   QVERIFY( !QgsCoordinateReferenceSystem().verticalCrs().isValid() );
-  // horizontal only
+  // horizontal only (projected 2d)
   QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ).verticalCrs().isValid() );
   // compound
   QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) ).verticalCrs().authid(), QStringLiteral( "EPSG:5703" ) );
@@ -359,6 +360,65 @@ void TestQgsCoordinateReferenceSystem::toVertical()
   QCOMPARE( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ).verticalCrs().authid(), QStringLiteral( "EPSG:5703" ) );
   // geographic 3d
   QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ).verticalCrs().isValid() );
+}
+
+void TestQgsCoordinateReferenceSystem::hasVerticalAxis()
+{
+  // invalid
+  QVERIFY( !QgsCoordinateReferenceSystem().hasVerticalAxis() );
+  // horizontal only (projected 2d)
+  QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ).hasVerticalAxis() );
+  // compound
+  QVERIFY( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) ).hasVerticalAxis() );
+  // already vertical
+  QVERIFY( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) ).hasVerticalAxis() );
+  // geographic 2d
+  QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ).hasVerticalAxis() );
+  // geographic 3d
+  QVERIFY( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ).hasVerticalAxis() );
+  // projected 3d
+  const QString projected3DWkt = QStringLiteral( "PROJCRS[\"NAD83(HARN) / Oregon GIC Lambert (ft)\",\n"
+                                 "    BASEGEOGCRS[\"NAD83(HARN)\",\n"
+                                 "        DATUM[\"NAD83 (High Accuracy Reference Network)\",\n"
+                                 "            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n"
+                                 "                LENGTHUNIT[\"metre\",1]]],\n"
+                                 "        PRIMEM[\"Greenwich\",0,\n"
+                                 "            ANGLEUNIT[\"degree\",0.0174532925199433]],\n"
+                                 "        ID[\"EPSG\",4957]],\n"
+                                 "    CONVERSION[\"unnamed\",\n"
+                                 "        METHOD[\"Lambert Conic Conformal (2SP)\",\n"
+                                 "            ID[\"EPSG\",9802]],\n"
+                                 "        PARAMETER[\"Latitude of false origin\",41.75,\n"
+                                 "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                 "            ID[\"EPSG\",8821]],\n"
+                                 "        PARAMETER[\"Longitude of false origin\",-120.5,\n"
+                                 "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                 "            ID[\"EPSG\",8822]],\n"
+                                 "        PARAMETER[\"Latitude of 1st standard parallel\",43,\n"
+                                 "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                 "            ID[\"EPSG\",8823]],\n"
+                                 "        PARAMETER[\"Latitude of 2nd standard parallel\",45.5,\n"
+                                 "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                 "            ID[\"EPSG\",8824]],\n"
+                                 "        PARAMETER[\"Easting at false origin\",1312335.958,\n"
+                                 "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                 "            ID[\"EPSG\",8826]],\n"
+                                 "        PARAMETER[\"Northing at false origin\",0,\n"
+                                 "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                 "            ID[\"EPSG\",8827]]],\n"
+                                 "    CS[Cartesian,3],\n"
+                                 "        AXIS[\"easting\",east,\n"
+                                 "            ORDER[1],\n"
+                                 "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                 "        AXIS[\"northing\",north,\n"
+                                 "            ORDER[2],\n"
+                                 "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                 "        AXIS[\"ellipsoidal height (h)\",up,\n"
+                                 "            ORDER[3],\n"
+                                 "            LENGTHUNIT[\"foot\",0.3048]]]" );
+  const QgsCoordinateReferenceSystem projected3D = QgsCoordinateReferenceSystem::fromWkt( projected3DWkt );
+  QVERIFY( projected3D.isValid() );
+  QVERIFY( projected3D.hasVerticalAxis() );
 }
 
 void TestQgsCoordinateReferenceSystem::coordinateEpoch()
