@@ -6871,6 +6871,8 @@ void QgisApp::dxfExport()
       flags = flags | QgsDxfExport::FlagNoMText;
     if ( d.selectedFeaturesOnly() )
       flags = flags | QgsDxfExport::FlagOnlySelectedFeatures;
+    if ( d.hairlineWidthExport() )
+      flags = flags | QgsDxfExport::FlagHairlineWidthExport;
     dxfExport.setFlags( flags );
 
     if ( auto *lMapCanvas = mapCanvas() )

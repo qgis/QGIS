@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/dxf/qgsdxfexport.h
 QgsDxfExport.FlagNoMText = QgsDxfExport.Flag.FlagNoMText
 QgsDxfExport.FlagOnlySelectedFeatures = QgsDxfExport.Flag.FlagOnlySelectedFeatures
+QgsDxfExport.FlagHairlineWidthExport = QgsDxfExport.Flag.FlagHairlineWidthExport
 QgsDxfExport.Flags = lambda flags=0: QgsDxfExport.Flag(flags)
 # monkey patching scoped based enum
 QgsDxfExport.ExportResult.Success.__doc__ = "Successful export"

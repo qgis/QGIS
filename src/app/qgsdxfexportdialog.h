@@ -119,6 +119,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     bool layerTitleAsName() const;
     bool force2d() const;
     bool useMText() const;
+    bool hairlineWidthExport() const;
     QString mapTheme() const;
     QString encoding() const;
     QgsCoordinateReferenceSystem crs() const;

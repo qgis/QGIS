@@ -804,6 +804,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mSelectedFeaturesOnly->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSelectedFeaturesOnly" ), settings.value( QStringLiteral( "qgis/lastDxfSelectedFeaturesOnly" ), "false" ).toString() ) != QLatin1String( "false" ) );
   mMTextCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfUseMText" ), settings.value( QStringLiteral( "qgis/lastDxfUseMText" ), "true" ).toString() ) != QLatin1String( "false" ) );
   mForce2d->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfForce2d" ), settings.value( QStringLiteral( "qgis/lastDxfForce2d" ), "false" ).toString() ) != QLatin1String( "false" ) );
+  mHairlineWidthExportCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfHairlineWidthExport" ), settings.value( QStringLiteral( "qgis/lastDxfHairlineWidthExport" ), "false" ).toString() ) !=  QLatin1String( "false" ) );
 
   QStringList ids = QgsProject::instance()->mapThemeCollection()->mapThemes();
   ids.prepend( QString() );
@@ -1054,6 +1055,11 @@ bool QgsDxfExportDialog::loadSettingsFromXML( QDomDocument &doc, QString &errorM
   if ( !value.isNull() )
     mSelectedFeaturesOnly->setChecked( value == true );
 
+  element = dxfElement.namedItem( QStringLiteral( "hairline_width_export" ) ).toElement();
+  value = QgsXmlUtils::readVariant( element.firstChildElement() );
+  if ( !value.isNull() )
+    mHairlineWidthExportCheckBox->setChecked( value == true );
+
   return true;
 }
 
@@ -1177,6 +1183,11 @@ void QgsDxfExportDialog::saveSettingsToXML( QDomDocument &doc ) const
   selectedFeatures.appendChild( QgsXmlUtils::writeVariant( selectedFeaturesOnly(), doc ) );
   dxfElement.appendChild( selectedFeatures );
 
+  QDomElement hairlineWidthExportElem = domDocument.createElement( QStringLiteral( "hairline_width_export" ) );
+  hairlineWidthExportElem.appendChild( QgsXmlUtils::writeVariant( hairlineWidthExport(), doc ) );
+  dxfElement.appendChild( hairlineWidthExportElem );
+
+
   doc = domDocument;
 }
 
@@ -1252,6 +1263,11 @@ bool QgsDxfExportDialog::useMText() const
   return mMTextCheckBox->isChecked();
 }
 
+bool QgsDxfExportDialog::hairlineWidthExport() const
+{
+  return mHairlineWidthExportCheckBox->isChecked();
+}
+
 void QgsDxfExportDialog::saveSettings()
 {
   QgsSettings settings;
@@ -1266,6 +1282,7 @@ void QgsDxfExportDialog::saveSettings()
   settings.setValue( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
   settings.setValue( QStringLiteral( "qgis/lastDxfUseMText" ), mMTextCheckBox->isChecked() );
   settings.setValue( QStringLiteral( "qgis/lastDxfForce2d" ), mForce2d->isChecked() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfHairlineWidthExport" ), mHairlineWidthExportCheckBox->isChecked() );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
@@ -1277,6 +1294,7 @@ void QgsDxfExportDialog::saveSettings()
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfUseMText" ), mMTextCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfForce2d" ), mForce2d->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfHairlineWidthExport" ), mHairlineWidthExportCheckBox->isChecked() );
 
   mModel->saveLayersOutputAttribute( mModel->rootGroup() );
 }
