@@ -82,6 +82,7 @@ Returns the overridden layer name to be used in the exported DXF.
     {
       FlagNoMText,
       FlagOnlySelectedFeatures,
+      FlagHairlineWidthExport
     };
     typedef QFlags<QgsDxfExport::Flag> Flags;
 

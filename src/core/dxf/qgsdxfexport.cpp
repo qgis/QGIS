@@ -1763,6 +1763,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
       offset = 0.0;
   }
 
+  if ( mFlags & FlagHairlineWidthExport )
+  {
+    width = 0;
+  }
+
   QString lineStyleName = QStringLiteral( "CONTINUOUS" );
   if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology )
   {
