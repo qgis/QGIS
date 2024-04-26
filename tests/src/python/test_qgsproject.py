@@ -216,7 +216,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(spy), 4)
         self.assertFalse(project.verticalCrs().isValid())
 
-    def test_vertical_crs_with_compound_horizontal_crs(self):
+    def test_vertical_crs_with_compound_project_crs(self):
         """
         Test vertical crs logic when project has a compound crs set
         """
@@ -268,6 +268,77 @@ class TestQgsProject(QgisTestCase):
         self.assertFalse(ok)
         self.assertEqual(err, 'Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored')
         self.assertEqual(project.crs3D().authid(), 'EPSG:4978')
+
+    def test_vertical_crs_with_projected3d_project_crs(self):
+        """
+        Test vertical crs logic when project has a compound crs set
+        """
+        project = QgsProject()
+        self.assertFalse(project.crs().isValid())
+        self.assertFalse(project.verticalCrs().isValid())
+
+        spy = QSignalSpy(project.verticalCrsChanged)
+
+        projected3d_crs = QgsCoordinateReferenceSystem.fromWkt("PROJCRS[\"NAD83(HARN) / Oregon GIC Lambert (ft)\",\n"
+                                                               "    BASEGEOGCRS[\"NAD83(HARN)\",\n"
+                                                               "        DATUM[\"NAD83 (High Accuracy Reference Network)\",\n"
+                                                               "            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n"
+                                                               "                LENGTHUNIT[\"metre\",1]]],\n"
+                                                               "        PRIMEM[\"Greenwich\",0,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433]],\n"
+                                                               "        ID[\"EPSG\",4957]],\n"
+                                                               "    CONVERSION[\"unnamed\",\n"
+                                                               "        METHOD[\"Lambert Conic Conformal (2SP)\",\n"
+                                                               "            ID[\"EPSG\",9802]],\n"
+                                                               "        PARAMETER[\"Latitude of false origin\",41.75,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8821]],\n"
+                                                               "        PARAMETER[\"Longitude of false origin\",-120.5,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8822]],\n"
+                                                               "        PARAMETER[\"Latitude of 1st standard parallel\",43,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8823]],\n"
+                                                               "        PARAMETER[\"Latitude of 2nd standard parallel\",45.5,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8824]],\n"
+                                                               "        PARAMETER[\"Easting at false origin\",1312335.958,\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                                               "            ID[\"EPSG\",8826]],\n"
+                                                               "        PARAMETER[\"Northing at false origin\",0,\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                                               "            ID[\"EPSG\",8827]]],\n"
+                                                               "    CS[Cartesian,3],\n"
+                                                               "        AXIS[\"easting\",east,\n"
+                                                               "            ORDER[1],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                                               "        AXIS[\"northing\",north,\n"
+                                                               "            ORDER[2],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                                               "        AXIS[\"ellipsoidal height (h)\",up,\n"
+                                                               "            ORDER[3],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]]]")
+        self.assertTrue(projected3d_crs.isValid())
+        project.setCrs(projected3d_crs)
+        self.assertEqual(project.crs().toWkt(), projected3d_crs.toWkt())
+        # project 3d crs should be projected 3d crs
+        self.assertEqual(project.crs3D().toWkt(), projected3d_crs.toWkt())
+        # QgsProject.verticalCrs() should return invalid crs
+        self.assertFalse(project.verticalCrs().isValid())
+        self.assertEqual(len(spy), 0)
+        other_vert_crs = QgsCoordinateReferenceSystem('ESRI:115700')
+        self.assertTrue(other_vert_crs.isValid())
+        self.assertEqual(other_vert_crs.type(), Qgis.CrsType.Vertical)
+
+        # if we explicitly set a vertical crs now, it should be ignored
+        # because the main project crs is already 3d and that takes
+        # precedence
+        ok, err = project.setVerticalCrs(other_vert_crs)
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored')
+        self.assertFalse(project.verticalCrs().isValid())
+        self.assertEqual(len(spy), 0)
+        self.assertEqual(project.crs3D().toWkt(), projected3d_crs.toWkt())
 
     def test_crs_3d(self):
         project = QgsProject()

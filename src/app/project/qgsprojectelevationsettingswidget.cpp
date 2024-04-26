@@ -192,11 +192,21 @@ void QgsProjectElevationSettingsWidget::updateVerticalCrsOptions()
                                   ) );
       break;
 
+    case Qgis::CrsType::Projected:
+      if ( QgsProject::instance()->crs().hasVerticalAxis() )
+      {
+        mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+        mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                      QgsProject::instance()->crs().userFriendlyIdentifier()
+                                    ) );
+        break;
+      }
+      [[fallthrough]];
+
     case Qgis::CrsType::Unknown:
     case Qgis::CrsType::Geodetic:
     case Qgis::CrsType::Geographic2d:
     case Qgis::CrsType::Vertical:
-    case Qgis::CrsType::Projected:
     case Qgis::CrsType::Temporal:
     case Qgis::CrsType::Engineering:
     case Qgis::CrsType::Bound:

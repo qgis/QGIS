@@ -1097,10 +1097,18 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
         }
         break;
 
+      case Qgis::CrsType::Projected:
+        if ( mCrs.hasVerticalAxis() && crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
       case Qgis::CrsType::Unknown:
       case Qgis::CrsType::Geodetic:
       case Qgis::CrsType::Geographic2d:
-      case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
       case Qgis::CrsType::Bound:
@@ -1618,6 +1626,14 @@ bool QgsProject::rebuildCrs3D( QString *error )
         mCrs3D = mCrs;
         break;
 
+      case Qgis::CrsType::Projected:
+      {
+        QString tempError;
+        mCrs3D = mCrs.hasVerticalAxis() ? mCrs : QgsCoordinateReferenceSystem::createCompoundCrs( mCrs, mVerticalCrs, error ? *error : tempError );
+        res = mCrs3D.isValid();
+        break;
+      }
+
       case Qgis::CrsType::Vertical:
         // nonsense situation
         mCrs3D = QgsCoordinateReferenceSystem();
@@ -1627,7 +1643,6 @@ bool QgsProject::rebuildCrs3D( QString *error )
       case Qgis::CrsType::Unknown:
       case Qgis::CrsType::Geodetic:
       case Qgis::CrsType::Geographic2d:
-      case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
       case Qgis::CrsType::Bound:
