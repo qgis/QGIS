@@ -341,7 +341,7 @@ class TestQgsRelationEditWidget(QgisTestCase):
         # Mock vector layer tool to just set default value on created feature
         class DummyVlTools(QgsVectorLayerTools):
 
-            def addFeature(self, layer, defaultValues, defaultGeometry, parentWidget=None, showModal=True, hideParent=False):
+            def addFeature(self, layer, defaultValues, defaultGeometry, parentWidget=None, showModal=True, hideParent=False, scope=None):
                 f = QgsFeature(layer.fields())
                 for idx, value in defaultValues.items():
                     f.setAttribute(idx, value)
@@ -440,7 +440,7 @@ class VlTools(QgsVectorLayerTools):
         """
         self.values = values
 
-    def addFeature(self, layer, defaultValues, defaultGeometry, parentWidget=None, showModal=True, hideParent=False):
+    def addFeature(self, layer, defaultValues, defaultGeometry, parentWidget=None, showModal=True, hideParent=False, scope=None):
         """
         Overrides the addFeature method
         :param layer: vector layer

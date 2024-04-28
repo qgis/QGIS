@@ -1002,7 +1002,7 @@ void QgsVectorLayer::setExtent3D( const QgsBox3D &r )
   mValidExtent3D = true;
 }
 
-void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
+void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature, QgsExpressionContext *context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1016,7 +1016,7 @@ void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
     {
       if ( idx < 0 || idx >= size )
         continue;
-      feature.setAttribute( idx, defaultValue( idx, feature ) );
+      feature.setAttribute( idx, defaultValue( idx, feature, context ) );
       updateFeature( feature, true );
     }
   }
@@ -3398,7 +3398,7 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool s
 }
 
 
-bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue, bool skipDefaultValues )
+bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue, bool skipDefaultValues, QgsExpressionContext *context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3426,12 +3426,12 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   }
 
   if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
-    updateDefaultValues( fid );
+    updateDefaultValues( fid, QgsFeature(), context );
 
   return result;
 }
 
-bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues, bool skipDefaultValues )
+bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues, bool skipDefaultValues, QgsExpressionContext *context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3488,7 +3488,7 @@ bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttribute
 
   if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
   {
-    updateDefaultValues( fid );
+    updateDefaultValues( fid, QgsFeature(), context );
   }
 
   return result;

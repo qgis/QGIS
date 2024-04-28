@@ -1777,7 +1777,7 @@ be updated. This can be used to override default field value expressions.
 .. seealso:: :py:func:`updateFeature`
 %End
 
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false,  QgsExpressionContext *context = 0 );
 %Docstring
 Changes an attribute value for a feature (but does not immediately commit the changes).
 The ``fid`` argument specifies the ID of the feature to be changed.
@@ -1795,6 +1795,8 @@ so it is more efficient to explicitly pass an ``oldValue`` if it is already avai
 
 If ``skipDefaultValues`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value expressions.
+
+If ``context`` is provided, it will be used when updating default values.
 
 :return: ``True`` if the feature's attribute was successfully changed.
 
@@ -1815,7 +1817,7 @@ be updated. This can be used to override default field value expressions.
 .. seealso:: :py:func:`updateFeature`
 %End
 
-    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false, QgsExpressionContext *context = 0 );
 %Docstring
 Changes attributes' values for a feature (but does not immediately
 commit the changes).
@@ -1834,6 +1836,8 @@ explicitly pass an oldValue if it is already available.
 If ``skipDefaultValues`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value
 expressions.
+
+If ``context`` is provided, it will be used when updating default values.
 
 :return: ``True`` if feature's attributes was successfully changed.
 
