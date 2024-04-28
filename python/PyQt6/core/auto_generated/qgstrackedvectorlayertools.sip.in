@@ -20,7 +20,7 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 Constructor for QgsTrackedVectorLayerTools.
 %End
 
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false, QgsExpressionContextScope *scope = 0 ) const;
 
 %Docstring
 This method calls the addFeature method of the backend :py:class:`QgsVectorLayerTools`
@@ -32,6 +32,7 @@ This method calls the addFeature method of the backend :py:class:`QgsVectorLayer
 :param parentWidget: The widget calling this function to be passed to the used dialog
 :param showModal: If the used dialog should be modal or not
 :param hideParent: If the parent widget should be hidden, when the used dialog is opened
+:param scope: A  context scope to be used to calculate feature expression-based values
 
 :return: ``True`` in case of success, ``False`` if the operation failed/was aborted
 %End

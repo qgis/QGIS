@@ -203,7 +203,9 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
   // values and field constraints
   QgsExpressionContext context = mLayer->createExpressionContext();
   if ( scope )
+  {
     context.appendScope( scope.release() );
+  }
 
   const QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,
                                 &context );

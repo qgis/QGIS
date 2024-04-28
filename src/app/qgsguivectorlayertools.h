@@ -44,10 +44,11 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * \param parentWidget    The widget calling this function to be passed to the used dialog
      * \param showModal       If the used dialog should be modal or not
      * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
+     * \param scope           A  context scope to be used to calculate feature expression-based values
      *
-     * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
+     * \returns               TRUE in case of success, FALSE if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override;
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false, QgsExpressionContextScope *scope = nullptr ) const override;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful

@@ -17,15 +17,14 @@
 #include "qgsvectorlayer.h"
 
 
-bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget, bool showModal, bool hideParent ) const
+bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget, bool showModal, bool hideParent, QgsExpressionContextScope *scope ) const
 {
   QgsFeature *f = feature;
   if ( !feature )
     f = new QgsFeature();
 
   const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
-
-  if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f, parentWidget, showModal, hideParent ) )
+  if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f, parentWidget, showModal, hideParent, scope ) )
   {
     mAddedFeatures[layer].insert( f->id() );
     if ( !feature )

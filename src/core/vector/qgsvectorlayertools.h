@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include <QObject>
 
+#include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 
@@ -56,10 +57,11 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param parentWidget    The widget calling this function to be passed to the used dialog
      * \param showModal       If the used dialog should be modal or not
      * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
+     * \param scope           A  context scope to be used to calculate feature expression-based values
      * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
      *
      */
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const = 0;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false, QgsExpressionContextScope *scope = nullptr ) const = 0;
 
     // TODO QGIS 4: remove const qualifier
 
