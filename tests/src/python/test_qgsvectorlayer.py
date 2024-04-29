@@ -1139,6 +1139,36 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertTrue(layer.commitChanges())
         checkAfter()
 
+    def test_ChangeAttributeValuesWithContext(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("geom_to_wkt(@current_parent_geometry)", True))
+
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+
+        assert layer.dataProvider().addFeatures([f])
+        assert layer.featureCount() == 1
+        fid = 1
+
+        fields = QgsFields()
+        fields.append(QgsField("parenttxt", QVariant.String))
+        fields.append(QgsField("parentinteger", QVariant.Int))
+        pf = QgsFeature(fields)
+        pf.setAttributes(["parent", 789])
+        pf.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+
+        layer.startEditing()
+
+        context = layer.createExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.parentFormScope(pf))
+        self.assertTrue(layer.changeAttributeValues(fid, {1: 100}, {}, False, context))
+
+        f = layer.getFeature(1)
+        self.assertEqual(f.attributes(), ["Point (1 2)", 100])
+
     def test_ChangeAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
         layer.dataProvider().deleteFeatures([1])  # no need for this feature
