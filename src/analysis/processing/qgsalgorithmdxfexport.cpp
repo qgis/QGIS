@@ -76,6 +76,7 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( useTitleParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "EXPORT_LINES_WITH_ZERO_WIDTH" ), QObject::tr( "Export lines with zero width" ) ), false );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
 
@@ -116,6 +117,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   const bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
   const bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
   const bool force2D = parameterAsBool( parameters, QStringLiteral( "FORCE_2D" ), context );
+  const bool exportLinesWithZeroWidth = parameterAsBool( parameters, QStringLiteral( "EXPORT_LINES_WITH_ZERO_WIDTH" ), context );
 
   QgsRectangle extent;
   if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
@@ -145,6 +147,8 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
     flags = flags | QgsDxfExport::FlagNoMText;
   if ( selectedFeaturesOnly )
     flags = flags | QgsDxfExport::FlagOnlySelectedFeatures;
+  if ( exportLinesWithZeroWidth )
+    flags = flags | QgsDxfExport::FlagHairlineWidthExport;
   dxfExport.setFlags( flags );
 
   QFile dxfFile( outputFile );
