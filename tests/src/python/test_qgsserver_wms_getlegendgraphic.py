@@ -1254,7 +1254,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         self.wms_request_compare("GetLegendGraphic",
                                  "&LAYERS=testlayer%20%C3%A8%C3%A9,testlayer3"
                                  "&FORMAT=application/json",
-                                 ["wms_getlegendgraphic_json_multiple_layers", "wms_getlegendgraphic_json_multiple_layers2"])
+                                 ["wms_getlegendgraphic_json_multiple_layers", "wms_getlegendgraphic_json_multiple_layers2", "wms_getlegendgraphic_json_multiple_layers3"])
 
     def test_wms_GetLegendGraphic_JSON_multiple_symbol(self):
         self.wms_request_compare("GetLegendGraphic",
