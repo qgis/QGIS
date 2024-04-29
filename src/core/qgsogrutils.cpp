@@ -2860,9 +2860,9 @@ QString QgsOgrUtils::loadStoredStyle( GDALDatasetH hDS, const QString &layerName
                            " AND f_table_name=%1"
                            " AND f_geometry_column=%2"
                            " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
-                           ",update_time DESC LIMIT 1" )
-                           .arg( QgsOgrProviderUtils::quotedValue( layerName ) )
-                           .arg( QgsOgrProviderUtils::quotedValue( geomColumn ) );
+                           ",update_time DESC" )
+                           .arg( QgsOgrProviderUtils::quotedValue( layerName ),
+                                 QgsOgrProviderUtils::quotedValue( geomColumn ) );
   OGR_L_SetAttributeFilter( hLayer, selectQmlQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
