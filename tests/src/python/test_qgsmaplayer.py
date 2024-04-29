@@ -13,17 +13,23 @@ import glob
 import os
 import shutil
 import tempfile
+from tempfile import TemporaryDirectory
 
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.core import (
+    Qgis,
+    QgsMapLayer,
     QgsLayerMetadata,
     QgsLayerNotesUtils,
     QgsProject,
     QgsRasterLayer,
     QgsReadWriteContext,
     QgsVectorLayer,
+    QgsCoordinateReferenceSystem
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -79,6 +85,274 @@ class TestQgsMapLayer(QgisTestCase):
         layer.setAutoRefreshInterval(0)  # should disable auto refresh
         self.assertFalse(layer.hasAutoRefreshEnabled())
         self.assertEqual(layer.autoRefreshInterval(), 0)
+
+    def test_crs(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        spy = QSignalSpy(layer.crsChanged)
+        layer.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 1)
+        self.assertFalse(layer.crs().isValid())
+        layer.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 1)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(layer.crs().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 2)
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 2)
+
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer", "memory")
+        self.copyLayerViaXmlReadWrite(layer, layer2)
+        self.assertEqual(layer2.crs().authid(), 'EPSG:3111')
+
+    def test_vertical_crs(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        layer.setCrs(QgsCoordinateReferenceSystem())
+        self.assertFalse(layer.verticalCrs().isValid())
+
+        spy = QSignalSpy(layer.verticalCrsChanged)
+        # not a vertical crs
+        ok, err = layer.setVerticalCrs(
+            QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Specified CRS is a Projected CRS, not a Vertical CRS')
+        self.assertFalse(layer.verticalCrs().isValid())
+
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(layer.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
+        # try overwriting with same crs, should be no new signal
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(len(spy), 1)
+
+        # check that vertical crs is saved/restored
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer", "memory")
+        spy2 = QSignalSpy(layer2.verticalCrsChanged)
+        self.copyLayerViaXmlReadWrite(layer, layer2)
+
+        self.assertEqual(layer2.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy2), 1)
+        self.copyLayerViaXmlReadWrite(layer, layer2)
+        self.assertEqual(layer2.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy2), 1)
+
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 2)
+        self.assertFalse(layer.verticalCrs().isValid())
+
+    def test_vertical_crs_with_compound_project_crs(self):
+        """
+        Test vertical crs logic when layer has a compound crs set
+        """
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        layer.setCrs(QgsCoordinateReferenceSystem())
+        self.assertFalse(layer.crs().isValid())
+        self.assertFalse(layer.verticalCrs().isValid())
+
+        spy = QSignalSpy(layer.verticalCrsChanged)
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(layer.crs().authid(), 'EPSG:5500')
+        # verticalCrs() should return the vertical part of the
+        # compound CRS
+        self.assertEqual(layer.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
+        other_vert_crs = QgsCoordinateReferenceSystem('ESRI:115700')
+        self.assertTrue(other_vert_crs.isValid())
+        self.assertEqual(other_vert_crs.type(), Qgis.CrsType.Vertical)
+
+        # if we explicitly set a vertical crs now, it should be ignored
+        # because the main project crs is a compound crs and that takes
+        # precedence
+        ok, err = layer.setVerticalCrs(other_vert_crs)
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Layer CRS is a Compound CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(layer.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
+        # setting the vertical crs to the vertical component of the compound crs
+        # IS permitted, even though it effectively has no impact...
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(layer.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
+
+        # reset horizontal crs to a non-compound crs, now the manually
+        # specified vertical crs should take precedence
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(layer.verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 1)
+
+        # invalid combinations
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4979'))
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Layer CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:4979')
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4978'))
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Layer CRS is a Geocentric CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:4978')
+
+    def test_vertical_crs_with_projected3d_project_crs(self):
+        """
+        Test vertical crs logic when layer has a projected 3d crs set
+        """
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        layer.setCrs(QgsCoordinateReferenceSystem())
+        self.assertFalse(layer.crs().isValid())
+        self.assertFalse(layer.verticalCrs().isValid())
+
+        spy = QSignalSpy(layer.verticalCrsChanged)
+
+        projected3d_crs = QgsCoordinateReferenceSystem.fromWkt("PROJCRS[\"NAD83(HARN) / Oregon GIC Lambert (ft)\",\n"
+                                                               "    BASEGEOGCRS[\"NAD83(HARN)\",\n"
+                                                               "        DATUM[\"NAD83 (High Accuracy Reference Network)\",\n"
+                                                               "            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n"
+                                                               "                LENGTHUNIT[\"metre\",1]]],\n"
+                                                               "        PRIMEM[\"Greenwich\",0,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433]],\n"
+                                                               "        ID[\"EPSG\",4957]],\n"
+                                                               "    CONVERSION[\"unnamed\",\n"
+                                                               "        METHOD[\"Lambert Conic Conformal (2SP)\",\n"
+                                                               "            ID[\"EPSG\",9802]],\n"
+                                                               "        PARAMETER[\"Latitude of false origin\",41.75,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8821]],\n"
+                                                               "        PARAMETER[\"Longitude of false origin\",-120.5,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8822]],\n"
+                                                               "        PARAMETER[\"Latitude of 1st standard parallel\",43,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8823]],\n"
+                                                               "        PARAMETER[\"Latitude of 2nd standard parallel\",45.5,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8824]],\n"
+                                                               "        PARAMETER[\"Easting at false origin\",1312335.958,\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                                               "            ID[\"EPSG\",8826]],\n"
+                                                               "        PARAMETER[\"Northing at false origin\",0,\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                                               "            ID[\"EPSG\",8827]]],\n"
+                                                               "    CS[Cartesian,3],\n"
+                                                               "        AXIS[\"easting\",east,\n"
+                                                               "            ORDER[1],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                                               "        AXIS[\"northing\",north,\n"
+                                                               "            ORDER[2],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                                               "        AXIS[\"ellipsoidal height (h)\",up,\n"
+                                                               "            ORDER[3],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]]]")
+        self.assertTrue(projected3d_crs.isValid())
+        layer.setCrs(projected3d_crs)
+        self.assertEqual(layer.crs().toWkt(), projected3d_crs.toWkt())
+        # layer 3d crs should be projected 3d crs
+        self.assertEqual(layer.crs3D().toWkt(), projected3d_crs.toWkt())
+        # verticalCrs() should return invalid crs
+        self.assertFalse(layer.verticalCrs().isValid())
+        self.assertEqual(len(spy), 0)
+        other_vert_crs = QgsCoordinateReferenceSystem('ESRI:115700')
+        self.assertTrue(other_vert_crs.isValid())
+        self.assertEqual(other_vert_crs.type(), Qgis.CrsType.Vertical)
+
+        # if we explicitly set a vertical crs now, it should be ignored
+        # because the main layer crs is already 3d and that takes
+        # precedence
+        ok, err = layer.setVerticalCrs(other_vert_crs)
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Layer CRS is a Projected 3D CRS, specified Vertical CRS will be ignored')
+        self.assertFalse(layer.verticalCrs().isValid())
+        self.assertEqual(len(spy), 0)
+        self.assertEqual(layer.crs3D().toWkt(), projected3d_crs.toWkt())
+
+    def test_crs_3d(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        layer.setCrs(QgsCoordinateReferenceSystem())
+        self.assertFalse(layer.crs3D().isValid())
+
+        spy = QSignalSpy(layer.crs3DChanged)
+
+        # set layer crs to a 2d crs
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        # don't change, no new signals
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        # change 2d crs, should be new signals
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:3113')
+        self.assertEqual(len(spy), 2)
+
+        # change vertical crs:
+
+        # not a vertical crs, no change
+        ok, err = layer.setVerticalCrs(
+            QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(ok)
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:3113')
+        self.assertEqual(len(spy), 2)
+
+        # valid vertical crs
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(layer.crs3D().type(), Qgis.CrsType.Compound)
+        # crs3D should be a compound crs
+        self.assertEqual(layer.crs3D().horizontalCrs().authid(), 'EPSG:3113')
+        self.assertEqual(layer.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 3)
+        # try overwriting with same crs, should be no new signal
+        ok, err = layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(len(spy), 3)
+
+        # set 2d crs to a compound crs
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(layer.crs().authid(), 'EPSG:5500')
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(layer.crs().authid(), 'EPSG:5500')
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        # remove vertical crs, should be no change because compound crs is causing vertical crs to be ignored
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertEqual(layer.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        # set crs back to 2d crs, should be new signal
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(layer.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+        self.assertEqual(layer.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 5)
+
+        # check that crs3D is handled correctly during save/restore
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+
+        spy2 = QSignalSpy(layer2.crs3DChanged)
+        self.copyLayerViaXmlReadWrite(layer, layer2)
+        self.assertEqual(layer2.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+        self.assertEqual(layer2.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy2), 1)
+        self.copyLayerViaXmlReadWrite(layer, layer2)
+        self.assertEqual(layer2.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+        self.assertEqual(layer2.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy2), 1)
 
     def testLayerNotes(self):
         """
