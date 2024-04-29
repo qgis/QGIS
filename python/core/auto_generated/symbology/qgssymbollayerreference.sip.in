@@ -166,7 +166,7 @@ The symbol layer's id
 
 };
 
- uint qHash( const QgsSymbolLayerId &id );
+uint qHash( const QgsSymbolLayerId &id );
 
 uint qHash( const QgsSymbolLayerReference &r );
 
