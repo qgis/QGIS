@@ -1104,7 +1104,7 @@ void TestQgsOgrUtils::testOgrUtilsStoredStyle()
   QCOMPARE( ids.size(), 3 );
   QCOMPARE( names.size(), 3 );
   QCOMPARE( descriptions.size(), 3 );
-  QCOMPARE( names.toSet(), QSet<QString>() << QStringLiteral( "style1" ) << QStringLiteral( "style2" ) << QStringLiteral( "style3" ) );
+  QCOMPARE( QSet<QString>( names.constBegin(), names.constEnd() ), QSet<QString>() << QStringLiteral( "style1" ) << QStringLiteral( "style2" ) << QStringLiteral( "style3" ) );
 
 }
 
