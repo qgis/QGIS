@@ -74,6 +74,7 @@ const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = ne
 const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsAuthCfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeOwsConnections ) ;
+const QgsSettingsEntryInteger *QgsOwsConnection::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "feature-count" ), sTreeOwsConnections, 10 );
 
 QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connName )
   : mConnName( connName )
@@ -211,6 +212,10 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   if ( settingsTilePixelRatio->exists( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( static_cast<int>( settingsTilePixelRatio->value( {service.toLower(), connName} ) ) ) );
+  }
+  if ( settingsFeatureCount->exists( {service.toLower(), connName} ) )
+  {
+    uri.setParam( QStringLiteral( "featureCount" ), QString::number( settingsFeatureCount->value( {service.toLower(), connName} ) ) );
   }
 
   return uri;
