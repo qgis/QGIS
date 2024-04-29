@@ -2997,7 +2997,8 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(rel.cardinality(), Qgis.RelationshipCardinality.OneToOne)
         self.assertEqual(rel.forwardPathLabel(), 'my forward path label')
         self.assertEqual(rel.backwardPathLabel(), 'my backward path label')
-        self.assertEqual(rel.relatedTableType(), 'feature')
+        # result depends on gdal version
+        self.assertIn(rel.relatedTableType(), ('feature', 'features'))
 
         rel = [r for r in relationships if r.id() == 'composite_many_to_many'][0]
         self.assertEqual(rel.id(), 'composite_many_to_many')
