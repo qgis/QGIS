@@ -624,11 +624,26 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement, context );
 
+  const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+  const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+
   // overwrite CRS with what we read from project file before the raster/vector
   // file reading functions changed it. They will if projections is specified in the file.
   // FIXME: is this necessary? Yes, it is (autumn 2019)
   QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
   mCRS = savedCRS;
+
+  //vertical CRS
+  {
+    QgsCoordinateReferenceSystem verticalCrs;
+    const QDomNode verticalCrsNode = layerElement.firstChildElement( QStringLiteral( "verticalCrs" ) );
+    if ( !verticalCrsNode.isNull() )
+    {
+      verticalCrs.readXml( verticalCrsNode );
+    }
+    mVerticalCrs = verticalCrs;
+  }
+  rebuildCrs3D();
 
   //legendUrl
   const QDomElement legendUrlElem = layerElement.firstChildElement( QStringLiteral( "legendUrl" ) );
@@ -680,6 +695,11 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   }
 
   mLegendPlaceholderImage = layerElement.attribute( QStringLiteral( "legendPlaceholderImage" ) );
+
+  if ( verticalCrs() != oldVerticalCrs )
+    emit verticalCrsChanged();
+  if ( mCrs3D != oldCrs3D )
+    emit crs3DChanged();
 
   return ! layerError;
 } // bool QgsMapLayer::readLayerXML
@@ -740,6 +760,12 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerId.appendChild( layerIdText );
 
   layerElement.appendChild( layerId );
+
+  {
+    QDomElement verticalSrsNode = document.createElement( QStringLiteral( "verticalCrs" ) );
+    mVerticalCrs.writeXml( verticalSrsNode, document );
+    layerElement.appendChild( verticalSrsNode );
+  }
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
@@ -1274,9 +1300,50 @@ QgsCoordinateReferenceSystem QgsMapLayer::crs() const
   return mCRS;
 }
 
+QgsCoordinateReferenceSystem QgsMapLayer::verticalCrs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  switch ( mCRS.type() )
+  {
+    case Qgis::CrsType::Vertical: // would hope this never happens!
+      QgsDebugError( QStringLiteral( "Layer has a vertical CRS set as the horizontal CRS!" ) );
+      return mCRS;
+
+    case Qgis::CrsType::Compound:
+      return mCRS.verticalCrs();
+
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Geographic3d:
+    case Qgis::CrsType::Projected:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::Other:
+    case Qgis::CrsType::DerivedProjected:
+      break;
+  }
+  return mVerticalCrs;
+}
+
+QgsCoordinateReferenceSystem QgsMapLayer::crs3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs3D.isValid() ? mCrs3D : mCRS;
+}
+
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( mCRS == srs )
+    return;
+
+  const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+  const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
 
   mCRS = srs;
 
@@ -1286,8 +1353,114 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
     mCRS.validate();
   }
 
+  rebuildCrs3D();
+
   if ( emitSignal )
     emit crsChanged();
+
+  // Did vertical crs also change as a result of this? If so, emit signal
+  if ( oldVerticalCrs != verticalCrs() )
+    emit verticalCrsChanged();
+  if ( oldCrs3D != mCrs3D )
+    emit crs3DChanged();
+}
+
+bool QgsMapLayer::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  bool res = true;
+  if ( crs.isValid() )
+  {
+    // validate that passed crs is a vertical crs
+    switch ( crs.type() )
+    {
+      case Qgis::CrsType::Vertical:
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Compound:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geocentric:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Specified CRS is a %1 CRS, not a Vertical CRS" ).arg( qgsEnumValueToKey( crs.type() ) );
+        return false;
+    }
+  }
+
+  if ( crs != mVerticalCrs )
+  {
+    const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+    const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+
+    switch ( mCRS.type() )
+    {
+      case Qgis::CrsType::Compound:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Layer CRS is a Compound CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Geographic3d:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Layer CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Geocentric:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Layer CRS is a Geocentric CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Projected:
+        if ( mCRS.hasVerticalAxis() && crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Layer CRS is a Projected 3D CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::Vertical:
+      case Qgis::CrsType::DerivedProjected:
+        break;
+    }
+
+    mVerticalCrs = crs;
+    res = rebuildCrs3D( errorMessage );
+
+    // only emit signal if vertical crs was actually changed, so eg if mCrs is compound
+    // then we haven't actually changed the vertical crs by this call!
+    if ( verticalCrs() != oldVerticalCrs )
+      emit verticalCrsChanged();
+    if ( mCrs3D != oldCrs3D )
+      emit crs3DChanged();
+  }
+  return res;
 }
 
 QgsCoordinateTransformContext QgsMapLayer::transformContext() const
@@ -2931,6 +3104,60 @@ void QgsMapLayer::updateExtent( const QgsBox3D &extent ) const
 
     mWgs84Extent = wgs84Extent( true );
   }
+}
+
+bool QgsMapLayer::rebuildCrs3D( QString *error )
+{
+  bool res = true;
+  if ( !mCRS.isValid() )
+  {
+    mCrs3D = QgsCoordinateReferenceSystem();
+  }
+  else if ( !mVerticalCrs.isValid() )
+  {
+    mCrs3D = mCRS;
+  }
+  else
+  {
+    switch ( mCRS.type() )
+    {
+      case Qgis::CrsType::Compound:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Geocentric:
+        mCrs3D = mCRS;
+        break;
+
+      case Qgis::CrsType::Projected:
+      {
+        QString tempError;
+        mCrs3D = mCRS.hasVerticalAxis() ? mCRS : QgsCoordinateReferenceSystem::createCompoundCrs( mCRS, mVerticalCrs, error ? *error : tempError );
+        res = mCrs3D.isValid();
+        break;
+      }
+
+      case Qgis::CrsType::Vertical:
+        // nonsense situation
+        mCrs3D = QgsCoordinateReferenceSystem();
+        res = false;
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+      {
+        QString tempError;
+        mCrs3D = QgsCoordinateReferenceSystem::createCompoundCrs( mCRS, mVerticalCrs, error ? *error : tempError );
+        res = mCrs3D.isValid();
+        break;
+      }
+    }
+  }
+  return res;
 }
 
 void QgsMapLayer::invalidateWgs84Extent()
