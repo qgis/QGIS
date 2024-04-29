@@ -49,8 +49,10 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
             'Problem with GRASS installation: GRASS was not found or is not correctly installed',
             'QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700',
             'MESA: error: ZINK: failed to choose pdev',
+            'MESA: error: ZINK: vkEnumeratePhysicalDevices failed (VK_ERROR_INITIALIZATION_FAILED)',
             'glx: failed to create drisw screen',
-            'failed to load driver: zink'
+            'failed to load driver: zink',
+            'QML debugging is enabled. Only use this in a safe environment.'
         )
         ])
 
