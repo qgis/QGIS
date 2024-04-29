@@ -219,7 +219,7 @@
        <item row="2" column="1">
         <widget class="QCheckBox" name="mHairlineWidthExportCheckBox">
          <property name="text">
-          <string>Export minimum line width</string>
+          <string>Export lines with zero width</string>
          </property>
         </widget>
        </item>
