@@ -1182,6 +1182,11 @@ namespace QgsWms
     if ( mWmsParameters.noMText() )
       flags.setFlag( QgsDxfExport::Flag::FlagNoMText );
 
+    if ( mWmsParameters.exportLinesWithZeroWidth() )
+    {
+      flags.setFlag( QgsDxfExport::Flag::FlagHairlineWidthExport );
+    }
+
     dxf->setFlags( flags );
 
     return dxf;
