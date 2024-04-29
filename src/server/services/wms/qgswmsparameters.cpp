@@ -1605,6 +1605,19 @@ namespace QgsWms
     return force2D;
   }
 
+  bool QgsWmsParameters::exportLinesWithZeroWidth() const
+  {
+    bool zeroWidth = false;
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
+
+    if ( options.contains( DxfFormatOption::EXPORT_LINES_WITH_ZERO_WIDTH ) )
+    {
+      zeroWidth = QVariant( options[ DxfFormatOption::EXPORT_LINES_WITH_ZERO_WIDTH ] ).toBool();
+    }
+
+    return zeroWidth;
+  }
+
   bool QgsWmsParameters::noMText() const
   {
     bool noMText = false;
