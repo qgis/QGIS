@@ -4934,6 +4934,7 @@ double QgsSymbolLayerUtils::sizeInPixelsFromSldUom( const QString &uom, double s
 
 QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
   {
     public:
@@ -4958,10 +4959,12 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( const Q
           QVector<int> indexPath = rootPath;
           indexPath.append( idx );
           const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          Q_NOWARN_DEPRECATED_PUSH
           if ( mSymbolLayerIds.contains( QgsSymbolLayerId( mCurrentRuleKey + identifier, indexPath ) ) )
           {
             mSymbolLayers.insert( sl );
           }
+          Q_NOWARN_DEPRECATED_POP
 
           const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
           if ( subSymbol )
@@ -4986,6 +4989,7 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( const Q
       const QSet<QgsSymbolLayerId> &mSymbolLayerIds;
       QSet<const QgsSymbolLayer *> mSymbolLayers;
   };
+  Q_NOWARN_DEPRECATED_POP
 
   SymbolLayerVisitor visitor( symbolLayerIds );
   renderer->accept( &visitor );
