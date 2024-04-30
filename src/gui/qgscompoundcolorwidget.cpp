@@ -53,6 +53,14 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsCompoundColorWidget::mTabWidget_currentChanged );
   connect( mActionShowInButtons, &QAction::toggled, this, &QgsCompoundColorWidget::mActionShowInButtons_toggled );
 
+  connect( mColorModel, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index )
+  {
+    if ( index )
+      setColor( this->color().toCmyk() );
+    else
+      setColor( this->color().toRgb() );
+  } );
+
   if ( widgetLayout == LayoutVertical )
   {
     // shuffle stuff around
@@ -112,7 +120,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSchemeToolButton->setMenu( schemeMenu );
 
   connect( mSchemeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCompoundColorWidget::schemeIndexChanged );
-  connect( mSchemeList, &QgsColorSchemeList::colorSelected, this, &QgsCompoundColorWidget::setColor );
+  connect( mSchemeList, &QgsColorSchemeList::colorSelected, this, &QgsCompoundColorWidget::_setColor );
 
   mOldColorLabel->hide();
 
@@ -127,6 +135,10 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSaturationSlider->setComponent( QgsColorWidget::Saturation );
   mValueSlider->setComponent( QgsColorWidget::Value );
   mAlphaSlider->setComponent( QgsColorWidget::Alpha );
+  mCyanSlider->setComponent( QgsColorWidget::Cyan );
+  mMagentaSlider->setComponent( QgsColorWidget::Magenta );
+  mYellowSlider->setComponent( QgsColorWidget::Yellow );
+  mBlackSlider->setComponent( QgsColorWidget::Black );
 
   mSwatchButton1->setShowMenu( false );
   mSwatchButton1->setBehavior( QgsColorButton::SignalOnly );
@@ -259,34 +271,38 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mTabWidget->setCurrentIndex( currentTab );
 
   //setup connections
-  connect( mColorBox, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mColorWheel, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mColorText, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mVerticalRamp, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mRedSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mGreenSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mBlueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mHueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mValueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mSaturationSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mAlphaSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mColorPreview, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton1, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton2, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton3, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton4, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton5, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton6, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton7, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton8, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton9, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton10, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton11, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton12, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton13, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton14, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton15, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton16, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
+  connect( mColorBox, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mColorWheel, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mColorText, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mVerticalRamp, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mRedSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mGreenSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mBlueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mHueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mValueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mCyanSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mMagentaSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mYellowSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mBlackSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSaturationSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mAlphaSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mColorPreview, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton1, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton2, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton3, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton4, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton5, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton6, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton7, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton8, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton9, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton10, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton11, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton12, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton13, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton14, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton15, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton16, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
 }
 
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
@@ -708,6 +724,14 @@ void QgsCompoundColorWidget::stopPicking( QPoint eventPos, const bool takeSample
 
 void QgsCompoundColorWidget::setColor( const QColor &color )
 {
+  mColorModel->setCurrentIndex( color.spec() == QColor::Cmyk ? 1 : 0 );
+  mRGB->setVisible( color.spec() != QColor::Cmyk );
+  mCMYK->setVisible( color.spec() == QColor::Cmyk );
+  _setColor( color );
+}
+
+void QgsCompoundColorWidget::_setColor( const QColor &color )
+{
   if ( !color.isValid() )
   {
     return;
@@ -719,6 +743,12 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     //opacity disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
   }
+
+  if ( mColorModel->currentIndex() && fixedColor.spec() != QColor::Cmyk )
+  {
+    fixedColor = fixedColor.toCmyk();
+  }
+
   const QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();
   const auto constColorWidgets = colorWidgets;
   for ( QgsColorWidget *widget : constColorWidgets )
@@ -731,6 +761,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     widget->setColor( fixedColor );
     widget->blockSignals( false );
   }
+
+
   emit currentColorChanged( fixedColor );
 }
 

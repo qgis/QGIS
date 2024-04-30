@@ -167,9 +167,13 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void mSampleButton_clicked();
     void mTabWidget_currentChanged( int index );
 
-  private slots:
-
     void mActionShowInButtons_toggled( bool state );
+
+    /**
+     * Internal color setter. Set \a color without changing current color model (RGB or CMYK),
+     * contrary to public setColor()
+     */
+    void _setColor( const QColor &color );
 
   private:
 
@@ -224,6 +228,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     //! Updates the state of actions for the current selected scheme
     void updateActionsForCurrentScheme();
+
+    friend class TestQgsCompoundColorWidget;
 };
 
 #endif // QGSCOMPOUNDCOLORWIDGET_H
