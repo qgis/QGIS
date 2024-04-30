@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsprofilesourceregistry.h"
 
 #include <QTimer>
 
@@ -673,6 +674,9 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
         QList< QgsAbstractProfileSource * > sources;
+        QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+
+        sources << registrySources;
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
           if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
@@ -725,6 +729,9 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
         QList< QgsAbstractProfileSource * > sources;
+        QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+
+        sources << registrySources;
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
           if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
@@ -960,6 +967,9 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
 
   QList< QgsAbstractProfileSource * > sources;
+  QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+
+  sources << registrySources;
   for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
