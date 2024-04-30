@@ -56,6 +56,7 @@
 #include "qgsprofileexporter.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsterrainprovider.h"
+#include "qgsprofilesourceregistry.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -890,7 +891,10 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 
   const QList< QgsMapLayer * > layersToGenerate = mCanvas->layers();
   QList< QgsAbstractProfileSource * > sources;
-  sources.reserve( layersToGenerate.size() );
+  QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+  sources.reserve( layersToGenerate.size() + registrySources.size() );
+
+  sources << registrySources;
   for ( QgsMapLayer *layer : layersToGenerate )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
