@@ -1,0 +1,118 @@
+name: OSGeo4W Windows Build
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/osgeo4w.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  REPO: ${{ github.server_url }}/${{ github.repository }}
+
+jobs:
+  osgeo4w-packages:
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.osgeo4w-packages.outputs.matrix }}
+
+    steps:
+      - name: Determine package names
+        id: osgeo4w-packages
+        run: |
+          RELBRANCH=$(git ls-remote --heads $REPO "refs/heads/release-*_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/heads/release-#release-#p' | sort -V | tail -1)
+          LTRBRANCH=$(git ls-remote --tags $REPO | sed -e '/\^{}$/d' -ne 's#^.*refs/tags/ltr-#release-#p' | sort -V | fgrep -vx $RELBRANCH | tail -1)
+
+          if [ -n "$GITHUB_BASE_REF" ]; then
+            branch=$GITHUB_BASE_REF
+          else
+            branch=${GITHUB_REF##*/}
+          fi
+
+          case "$branch" in
+          $LTRBRANCH|queued_ltr_backports)
+            p=qgis-ltr-dev
+            ;;
+          $RELBRANCH)
+            p=qgis-rel-dev
+            ;;
+          master)
+            p="qgis-dev qgis-qt6-dev"
+            ;;
+          *)
+            echo "Could not determine package name"
+            exit 1
+            ;;
+          esac
+
+          echo "matrix={\"pkg\":[\"${p// /\",\"}\"]}">>$GITHUB_OUTPUT
+
+  osgeo4w-build:
+    name: OSGeo4W Windows Build
+    needs: osgeo4w-packages
+    runs-on: windows-latest
+    env:
+      O4W_REPO: jef-n/OSGeo4W
+
+    strategy:
+      matrix: ${{ fromJson(needs.osgeo4w-packages.outputs.matrix) }}
+
+    steps:
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ccache
+          key: build-ccache-osgeo4w-${{ matrix.pkg }}-${{ github.event.pull_request.base.ref || github.ref_name }}
+          restore-keys: |
+            build-ccache-osgeo4w-${{ matrix.pkg }}
+
+      - name: Build QGIS
+        shell: cmd
+        env:
+          PKG: ${{ matrix.pkg }}
+          GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+          REF: ${{ github.ref }}
+          PKGDESC: "QGIS build of ${{ github.ref }}"
+          OSGEO4W_BUILD_RDEPS: 0
+          PATH: C:\WINDOWS\system32;C:\Windows
+          CCACHE_DIR: ${{ github.workspace }}/ccache
+          SITE: github.com
+        run: |
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/%O4W_REPO%/master/bootstrap.cmd>bootstrap.cmd
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/%O4W_REPO%/master/bootstrap.sh>bootstrap.sh
+
+          set O4W_GIT_REPO=%GITHUB_SERVER_URL%/%O4W_REPO%
+          call bootstrap.cmd %PKG%
+
+          %GITHUB_WORKSPACE%\scripts\ccache -sv
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pkg }}
+          path: x86_64/
+          retention-days: 1
+
+      - name: Save build cache for push only
+        uses: actions/cache/save@v4
+        if: ${{ github.event_name == 'push' }}
+        with:
+          path: ccache
+          key: build-ccache-osgeo4w-${{ matrix.pkg }}-${{ github.ref_name }}-${{ github.run_id }}
