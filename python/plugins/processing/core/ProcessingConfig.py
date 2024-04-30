@@ -355,6 +355,9 @@ class Setting:
     def save(self, qsettings=None):
         if not qsettings:
             qsettings = QgsSettings()
+        if self.value == self.default:
+            qsettings.remove(self.qname)
+            return
         if self.valuetype == self.SELECTION:
             qsettings.setValue(self.qname, self.options.index(self.value))
         else:
