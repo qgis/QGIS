@@ -137,7 +137,7 @@
      <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
    </property>
    <property name="text">
-    <string>Past</string>
+    <string>Paste</string>
    </property>
    <property name="toolTip">
     <string>Paste</string>
