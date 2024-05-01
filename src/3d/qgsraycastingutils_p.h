@@ -28,7 +28,6 @@
 //
 
 #include "qgsraycastingutils.h"
-#include <QSize>
 
 #define SIP_NO_FILE
 
