@@ -439,7 +439,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
       {
         delete writer;
 
-        const QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
+        const QString msg = QObject::tr( "Failed to transform feature with ID '%1'. Writing stopped. (Exception: %2)" )
                             .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
