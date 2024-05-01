@@ -36,7 +36,7 @@ namespace Qt3DExtras
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 #include "qgsray3d.h"
-#include "qgsraycastingutils_p.h"
+#include "qgsraycastingutils.h"
 
 #include <QSize>
 #include <Qt3DRender/QCamera>

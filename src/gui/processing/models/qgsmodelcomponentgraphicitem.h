@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsprocessingcontext.h"
 #include <QGraphicsObject>
 #include <QFont>
 #include <QPicture>
@@ -461,14 +462,25 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     bool canDeleteComponent() override;
 
     /**
-     * Sets the results obtained for this child algorithm for the last model execution through the dialog.
+     * Sets the \a results obtained for this child algorithm for the last model execution through the dialog.
      */
-    void setResults( const QVariantMap &results );
+    void setResults( const QgsProcessingModelChildAlgorithmResult &results );
+
+  signals:
 
     /**
-     * Sets the inputs used for this child algorithm for the last model execution through the dialog.
+     * Emitted when the user opts to view previous results from this child algorithm.
+     *
+     * \since QGIS 3.38
      */
-    void setInputs( const QVariantMap &inputs );
+    void showPreviousResults();
+
+    /**
+    * Emitted when the user opts to view the previous log from this child algorithm.
+    *
+    * \since QGIS 3.38
+    */
+    void showLog();
 
   protected:
 
@@ -493,8 +505,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   private:
     QPicture mPicture;
     QPixmap mPixmap;
-    QVariantMap mResults;
-    QVariantMap mInputs;
+    QgsProcessingModelChildAlgorithmResult mResults;
     bool mIsValid = true;
 };
 

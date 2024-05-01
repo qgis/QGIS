@@ -38,6 +38,8 @@
 #include "qgssymbol.h"
 #include "qgsfielddomain.h"
 #include "qgsweakrelation.h"
+#include "qgsogrproviderutils.h"
+#include "qgssinglesymbolrenderer.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -71,6 +73,7 @@ class TestQgsOgrUtils: public QObject
     void testVariantTypeToOgrFieldType();
     void testOgrStringToVariant_data();
     void testOgrStringToVariant();
+    void testOgrUtilsStoredStyle();
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
     void testConvertFieldDomain();
@@ -1043,6 +1046,66 @@ void TestQgsOgrUtils::testOgrStringToVariant()
                        static_cast<OGRFieldSubType>( ogrSubType ),
                        string );
   QCOMPARE( res, expected );
+}
+
+/**
+ * Test for issue GH #57251
+ */
+void TestQgsOgrUtils::testOgrUtilsStoredStyle()
+{
+  // Create a test GPKG file with layer in a temporary directory
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QString tempDirPath = tempDir.path();
+  QString testFile = tempDirPath + "/test.gpkg";
+  // Create datasource
+  QString error;
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, QStringLiteral( "GPKG" ),
+           QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, QList< QPair<QString, QString> >(),
+           QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+
+  {
+    // Open the datasource
+    QgsVectorLayer vl = QgsVectorLayer( testFile, QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+    QVERIFY( vl.isValid() );
+
+    QgsSingleSymbolRenderer *renderer { static_cast<QgsSingleSymbolRenderer *>( vl.renderer() ) };
+    QVERIFY( renderer );
+    QgsSymbol *symbol = renderer->symbol()->clone();
+
+    // Store styles in the DB
+
+    symbol->setColor( QColor( 255, 0, 0 ) );
+    renderer->setSymbol( symbol );
+    vl.saveStyleToDatabase( "style1", "style1", false, QString(), error );
+
+    // Default
+    symbol = renderer->symbol()->clone();
+    symbol->setColor( QColor( 0, 255, 0 ) );
+    renderer->setSymbol( symbol );
+    vl.saveStyleToDatabase( "style2", "style2", true, QString(), error );
+
+    symbol = renderer->symbol()->clone();
+    symbol->setColor( QColor( 0, 0, 255 ) );
+    renderer->setSymbol( symbol );
+    vl.saveStyleToDatabase( "style3", "style3", false, QString(), error );
+  }
+
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( testFile.toUtf8().constData(), false, nullptr ) );
+
+  QString styleName;
+  QgsOgrUtils::loadStoredStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), styleName, error );
+  QCOMPARE( styleName, QStringLiteral( "style2" ) );
+
+  QStringList ids;
+  QStringList names;
+  QStringList descriptions;
+  QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), ids, names, descriptions, error );
+  QCOMPARE( ids.size(), 3 );
+  QCOMPARE( names.size(), 3 );
+  QCOMPARE( descriptions.size(), 3 );
+  QCOMPARE( QSet<QString>( names.constBegin(), names.constEnd() ), QSet<QString>() << QStringLiteral( "style1" ) << QStringLiteral( "style2" ) << QStringLiteral( "style3" ) );
+
 }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)

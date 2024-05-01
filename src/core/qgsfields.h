@@ -43,6 +43,12 @@ class QgsFieldsPrivate;
  */
 class CORE_EXPORT  QgsFields
 {
+    Q_GADGET
+
+    Q_PROPERTY( bool isEmpty READ isEmpty )
+    Q_PROPERTY( int count READ count )
+    Q_PROPERTY( QStringList names READ names )
+
   public:
 
     enum FieldOrigin
@@ -173,7 +179,7 @@ class CORE_EXPORT  QgsFields
      * \param i  Index of the field which needs to be checked
      * \returns   TRUE if the field exists
      */
-    bool exists( int i ) const;
+    Q_INVOKABLE bool exists( int i ) const;
 
 #ifndef SIP_RUN
     //! Gets field at particular index (must be in range 0..N-1)
@@ -354,7 +360,7 @@ class CORE_EXPORT  QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
      */
-    int indexFromName( const QString &fieldName ) const;
+    Q_INVOKABLE int indexFromName( const QString &fieldName ) const;
 
     /**
      * Gets the field index from the field name.
@@ -367,7 +373,7 @@ class CORE_EXPORT  QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
      */
-    int indexOf( const QString &fieldName ) const;
+    Q_INVOKABLE int indexOf( const QString &fieldName ) const;
 
     /**
      * Looks up field's index from the field name.
@@ -382,7 +388,7 @@ class CORE_EXPORT  QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see indexFromName For a more performant and precise but less tolerant alternative.
      */
-    int lookupField( const QString &fieldName ) const;
+    Q_INVOKABLE  int lookupField( const QString &fieldName ) const;
 
     /**
      * Utility function to get list of attribute indexes

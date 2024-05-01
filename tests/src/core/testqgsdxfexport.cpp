@@ -55,6 +55,7 @@ class TestQgsDxfExport : public QObject
     void testPoints();
     void testPointsDataDefinedSizeAngle();
     void testPointsDataDefinedSizeSymbol();
+    void testPointsOverriddenName();
     void testLines();
     void testPolygons();
     void testMultiSurface();
@@ -81,6 +82,8 @@ class TestQgsDxfExport : public QObject
     void testSelectedPolygons();
     void testMultipleLayersWithSelection();
     void testExtentWithSelection();
+    void testOutputLayerNamePrecedence();
+    void testMinimumLineWidthExport();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -281,6 +284,40 @@ void TestQgsDxfExport::testPointsDataDefinedSizeSymbol()
   QVERIFY( dxfString.contains( QStringLiteral( "symbolLayer0class" ) ) );
   //test a rotation for a referenced block
   QVERIFY( dxfString.contains( QStringLiteral( "50\n5.0" ) ) );
+}
+
+void TestQgsDxfExport::testPointsOverriddenName()
+{
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1, QStringLiteral( "My Point Layer" ) ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayer->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayer->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  const QString file = getTempFileName( "point_overridden_name_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
+  QVERIFY( !fileContainsText( file, mPointLayer->name() ) ); // "points"
+
+  // reload and compare
+  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
+  QgsFeature feature;
+  result->getFeatures().nextFeature( feature );
+  QCOMPARE( feature.attribute( "Layer" ), QStringLiteral( "My Point Layer" ) );
 }
 
 void TestQgsDxfExport::testLines()
@@ -1771,6 +1808,156 @@ void TestQgsDxfExport::testExtentWithSelection()
   QCOMPARE( result->featureCount(), 3L ); // 4 in extent, 8 selected, 17 in total
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
   mPointLayer->removeSelection();
+}
+
+void TestQgsDxfExport::testOutputLayerNamePrecedence()
+{
+  // Test that output layer name precedence is:
+  // 1) Attribute (if any)
+  // 2) Overridden name (if any)
+  // 3) Layer title (if any)
+  // 4) Layer name
+
+  const QString layerTitle = QStringLiteral( "Point Layer Title" );
+  const QString layerOverriddenName = QStringLiteral( "My Point Layer" );
+
+  // A) All layer name options are set
+  QgsDxfExport d;
+  mPointLayer->serverProperties()->setTitle( layerTitle );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer,
+               0, // Class attribute, 3 unique values
+               false,
+               -1,
+               layerOverriddenName ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayer->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayer->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setLayerTitleAsName( true );
+
+  const QString file = getTempFileName( "name_precedence_a_all_set_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
+  QVERIFY( !fileContainsText( file, layerTitle ) );
+  QVERIFY( !fileContainsText( file, layerOverriddenName ) );
+  QVERIFY( !fileContainsText( file, mPointLayer->name() ) );
+
+  // reload and compare
+  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
+  QSet<QVariant> values = result->uniqueValues( 0 ); // "Layer" field
+  QCOMPARE( values.count(), 3 );
+  QVERIFY( values.contains( QVariant( "B52" ) ) );
+  QVERIFY( values.contains( QVariant( "Jet" ) ) );
+  QVERIFY( values.contains( QVariant( "Biplane" ) ) );
+
+  // B) No attribute given
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1, layerOverriddenName ) ); // this replaces layers
+
+  const QString file2 = getTempFileName( "name_precedence_b_no_attr_dxf" );
+  QFile dxfFile2( file2 );
+  QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile2.close();
+
+  QVERIFY( !fileContainsText( file2, QStringLiteral( "nan.0" ) ) );
+  QVERIFY( !fileContainsText( file2, layerTitle ) );
+  QVERIFY( fileContainsText( file2, layerOverriddenName ) );
+  QVERIFY( !fileContainsText( file2, mPointLayer->name() ) );
+
+  // reload and compare
+  result = std::make_unique< QgsVectorLayer >( file2, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
+  QgsFeature feature;
+  result->getFeatures().nextFeature( feature );
+  QCOMPARE( feature.attribute( "Layer" ), layerOverriddenName );
+  QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
+
+  // C) No attribute given, no override
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1 ) ); // this replaces layers
+
+  const QString file3 = getTempFileName( "name_precedence_c_no_attr_no_override_dxf" );
+  QFile dxfFile3( file3 );
+  QCOMPARE( d.writeToFile( &dxfFile3, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile3.close();
+
+  QVERIFY( !fileContainsText( file3, QStringLiteral( "nan.0" ) ) );
+  QVERIFY( fileContainsText( file3, layerTitle ) );
+  QVERIFY( !fileContainsText( file3, layerOverriddenName ) );
+  QVERIFY( !fileContainsText( file3, mPointLayer->name() ) );
+
+  // reload and compare
+  result = std::make_unique< QgsVectorLayer >( file3, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
+  result->getFeatures().nextFeature( feature );
+  QCOMPARE( feature.attribute( "Layer" ), layerTitle );
+  QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
+
+  // D) No name options given, use default layer name
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) ); // This replaces layers
+  d.setLayerTitleAsName( false );
+
+  const QString file4 = getTempFileName( "name_precedence_d_no_anything_dxf" );
+  QFile dxfFile4( file4 );
+  QCOMPARE( d.writeToFile( &dxfFile4, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile4.close();
+
+  QVERIFY( !fileContainsText( file4, QStringLiteral( "nan.0" ) ) );
+  QVERIFY( !fileContainsText( file4, layerTitle ) );
+  QVERIFY( !fileContainsText( file4, layerOverriddenName ) );
+  QVERIFY( fileContainsText( file4, mPointLayer->name() ) );
+
+  // reload and compare
+  result = std::make_unique< QgsVectorLayer >( file4, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
+  result->getFeatures().nextFeature( feature );
+  QCOMPARE( feature.attribute( "Layer" ), mPointLayer->name() );
+  QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
+
+  mPointLayer->serverProperties()->setTitle( QString() ); // Leave the original empty title
+}
+
+void TestQgsDxfExport::testMinimumLineWidthExport()
+{
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mLineLayer ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mLineLayer->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mLineLayer );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mLineLayer->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
+  d.setFlags( QgsDxfExport::Flag::FlagHairlineWidthExport );
+
+  const QString file = getTempFileName( "minimum_line_width_export" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QVERIFY( !fileContainsText( file, QStringLiteral( " 43\n7.0" ) ) );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const

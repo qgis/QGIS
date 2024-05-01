@@ -87,6 +87,29 @@ elevation limits associated with the project.
 .. versionadded:: 3.38
 %End
 
+    double elevationFilterRangeSize() const;
+%Docstring
+Returns the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+
+Returns -1 if no fixed elevation range size is desired.
+
+A fixed size forces the selected elevation range to have a matching difference between
+the upper and lower elevation.
+
+.. seealso:: :py:func:`setElevationFilterRangeSize`
+
+.. versionadded:: 3.38
+%End
+
+    bool invertElevationFilter() const;
+%Docstring
+Returns ``True`` if the elevation range filter slider should be inverted for this project.
+
+.. seealso:: :py:func:`setInvertElevationFilter`
+
+.. versionadded:: 3.38
+%End
+
   public slots:
 
     void setElevationRange( const QgsDoubleRange &range );
@@ -103,6 +126,29 @@ elevation limits associated with the project.
 
 .. seealso:: :py:func:`elevationRangeChanged`
 
+
+.. versionadded:: 3.38
+%End
+
+    void setElevationFilterRangeSize( double size );
+%Docstring
+Sets the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+
+Set to -1 if no fixed elevation range size is desired.
+
+A fixed size forces the selected elevation range to have a matching difference between
+the upper and lower elevation.
+
+.. seealso:: :py:func:`elevationFilterRangeSize`
+
+.. versionadded:: 3.38
+%End
+
+    void setInvertElevationFilter( bool invert );
+%Docstring
+Sets whether the elevation range filter slider should be inverted for this project.
+
+.. seealso:: :py:func:`invertElevationFilter`
 
 .. versionadded:: 3.38
 %End

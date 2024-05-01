@@ -25,6 +25,7 @@
 #include "qgslayertree.h"
 #include "qgssettings.h"
 #include "qgsunittypes.h"
+#include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmanager.h"
@@ -409,6 +410,10 @@ void TestQgsProject::testLayerFlags()
   QgsMapLayer *layer = prj2.mapLayer( layer2id );
   QVERIFY( layer );
   QVERIFY( !layer->flags().testFlag( QgsMapLayer::Removable ) );
+  QVERIFY( !layer->mReadFlags.testFlag( QgsMapLayer::FlagDontResolveLayers ) );
+  QVERIFY( !layer->mReadFlags.testFlag( QgsMapLayer::FlagTrustLayerMetadata ) );
+  QVERIFY( !layer->mReadFlags.testFlag( QgsMapLayer::FlagReadExtentFromXml ) );
+  QVERIFY( !layer->mReadFlags.testFlag( QgsMapLayer::FlagForceReadOnly ) );
 
   // test setFlags modifies correctly existing layer settings
   QVERIFY( !prj2.isDirty() );
@@ -433,10 +438,29 @@ void TestQgsProject::testLayerFlags()
   vlayer = qobject_cast<QgsVectorLayer *>( prj3.mapLayer( layer2id ) );
   QVERIFY( vlayer );
   QVERIFY( !vlayer->flags().testFlag( QgsMapLayer::Removable ) );
+  QVERIFY( !vlayer->mReadFlags.testFlag( QgsMapLayer::FlagDontResolveLayers ) );
+  QVERIFY( vlayer->mReadFlags.testFlag( QgsMapLayer::FlagTrustLayerMetadata ) );
+  QVERIFY( vlayer->mReadFlags.testFlag( QgsMapLayer::FlagReadExtentFromXml ) );
+  QVERIFY( !vlayer->mReadFlags.testFlag( QgsMapLayer::FlagForceReadOnly ) );
   QVERIFY( !prj3.isDirty() );
   QVERIFY( vlayer->readExtentFromXml() );
   QVERIFY( vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
   QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
+
+  // check reload of project with read fags that sets the correct layer properties
+  QgsProject prj4;
+  prj4.setFileName( f.fileName() );
+  Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontResolveLayers
+                                     | Qgis::ProjectReadFlag::TrustLayerMetadata
+                                     | Qgis::ProjectReadFlag::ForceReadOnlyLayers;
+  QVERIFY( prj4.read( readFlags ) );
+  vlayer = qobject_cast<QgsVectorLayer *>( prj4.mapLayer( layer2id ) );
+  QVERIFY( vlayer );
+  QVERIFY( !vlayer->flags().testFlag( QgsMapLayer::Removable ) );
+  QVERIFY( vlayer->mReadFlags.testFlag( QgsMapLayer::FlagDontResolveLayers ) );
+  QVERIFY( vlayer->mReadFlags.testFlag( QgsMapLayer::FlagTrustLayerMetadata ) );
+  QVERIFY( vlayer->mReadFlags.testFlag( QgsMapLayer::FlagReadExtentFromXml ) );
+  QVERIFY( vlayer->mReadFlags.testFlag( QgsMapLayer::FlagForceReadOnly ) );
 }
 
 void TestQgsProject::testLocalFiles()

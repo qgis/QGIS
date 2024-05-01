@@ -25,6 +25,7 @@
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsmaptoolprofilecurvefromfeature.h"
 #include "qgsprojectelevationproperties.h"
+#include "qgsvectorlayerelevationproperties.h"
 #include "qgsrubberband.h"
 #include "qgsplottoolpan.h"
 #include "qgsplottoolxaxiszoom.h"
@@ -476,6 +477,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   // initially populate layer tree with project layers
   mLayerTreeView->populateInitialLayers( QgsProject::instance() );
 
+  connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
+
   updateCanvasLayers();
 }
 
@@ -887,7 +890,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 
   const QList< QgsMapLayer * > layersToGenerate = mCanvas->layers();
   QList< QgsAbstractProfileSource * > sources;
-  sources.reserve( layersToGenerate .size() );
+  sources.reserve( layersToGenerate.size() );
   for ( QgsMapLayer *layer : layersToGenerate )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
@@ -1033,6 +1036,32 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
   {
     if ( mToleranceRubberBand )
       mToleranceRubberBand->hide();
+  }
+}
+
+void QgsElevationProfileWidget::onProjectElevationPropertiesChanged()
+{
+  // Only the vector layers whose clamping depend on the terrain need to be updated
+  // if the project elevation properties have changed.
+  // Therefore, update the plot if this criteria is met.
+  for ( QgsMapLayer *layer : mCanvas->layers() )
+  {
+    if ( layer->type() == Qgis::LayerType::Vector )
+    {
+      QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() );
+      switch ( elevationProperties->clamping() )
+      {
+        case Qgis::AltitudeClamping::Relative:
+        case Qgis::AltitudeClamping::Terrain:
+        {
+          scheduleUpdate();
+          break;
+        }
+
+        case Qgis::AltitudeClamping::Absolute:
+          break;
+      }
+    }
   }
 }
 

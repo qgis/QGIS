@@ -124,14 +124,9 @@ not correctly emit signals to allow the scene's model to update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
-    void setChildAlgorithmResults( const QVariantMap &results );
+    void setLastRunResult( const QgsProcessingModelResult &result );
 %Docstring
-Sets the results for child algorithms for the last model execution.
-%End
-
-    void setChildAlgorithmInputs( const QVariantMap &inputs );
-%Docstring
-Sets the inputs for child algorithms for the last model execution.
+Sets the ``result`` of the last run of the model through the designer window.
 %End
 
     QgsMessageBar *messageBar() const;
@@ -177,6 +172,20 @@ Emitted whenever a component of the model is changed.
 %Docstring
 Emitted whenever the selected item changes.
 If ``None``, no item is selected.
+%End
+
+    void showChildAlgorithmOutputs( const QString &childId );
+%Docstring
+Emitted when the user opts to view previous results from the child algorithm with matching ID.
+
+.. versionadded:: 3.38
+%End
+
+    void showChildAlgorithmLog( const QString &childId );
+%Docstring
+Emitted when the user opts to view the previous log from the child algorithm with matching ID.
+
+.. versionadded:: 3.38
 %End
 
   protected:

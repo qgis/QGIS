@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgsprojectviewsettings.h"
 #include "canvas/qgsappcanvasfiltering.h"
 
 #include <QMessageBox>
@@ -597,6 +598,17 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( label, 2, 0 );
 
   mScaleCombo = new QgsScaleComboBox();
+  // use either global scales or project scales
+  if ( QgsProject::instance()->viewSettings()->useProjectScales() )
+  {
+    mScaleCombo->setPredefinedScales( QgsProject::instance()->viewSettings()->mapScales() );
+  }
+  else
+  {
+    // use global scales
+    mScaleCombo->updateScales();
+  }
+
   gLayout->addWidget( mScaleCombo, 2, 1 );
 
   mRotationWidget = new QgsDoubleSpinBox();

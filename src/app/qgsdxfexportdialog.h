@@ -81,6 +81,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     QHash<const QgsVectorLayer *, int> mAttributeIdx;
     QHash<const QgsVectorLayer *, bool> mCreateDDBlockInfo;
     QHash<const QgsVectorLayer *, int>  mDDBlocksMaxNumberOfClasses;
+    QHash<const QgsVectorLayer *, QString> mOverriddenName;
     QSet<QModelIndex> mCheckedLeafs;
 
     void applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node );
@@ -118,6 +119,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     bool layerTitleAsName() const;
     bool force2d() const;
     bool useMText() const;
+    bool hairlineWidthExport() const;
     QString mapTheme() const;
     QString encoding() const;
     QgsCoordinateReferenceSystem crs() const;

@@ -415,14 +415,14 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
   nmea_trace_buff( buff, buff_sz );
 
   nsen = nmea_scanf( buff, buff_sz,
-                     "$G%CRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C*",
+                     "$G%CRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C,%C*",
                      &( type ), &( time_buff[0] ),
                      &( pack->status ), &( pack->lat ), &( pack->ns ), &( pack->lon ), &( pack->ew ),
                      &( pack->speed ), &( pack->direction ),
                      &( pack->utc.day ), &( pack->utc.mon ), &( pack->utc.year ),
-                     &( pack->declination ), &( pack->declin_ew ), &( pack->mode ) );
+                     &( pack->declination ), &( pack->declin_ew ), &( pack->mode ), &( pack->navstatus ) );
 
-  if ( nsen != 14 && nsen != 15 )
+  if ( nsen < 14 || nsen > 16 )
   {
     nmea_error( "G?RMC parse error!" );
     return 0;

@@ -49,11 +49,14 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mMenu = new QMenu( this );
   mConfigureButton->setMenu( mMenu );
 
-  QgsElevationControllerSettingsAction *settingsAction = new QgsElevationControllerSettingsAction( mMenu );
-  mMenu->addAction( settingsAction );
+  mSettingsAction = new QgsElevationControllerSettingsAction( mMenu );
+  mMenu->addAction( mSettingsAction );
+  mInvertDirectionAction = new QAction( tr( "Invert Direction" ), this );
+  mInvertDirectionAction->setCheckable( true );
+  mMenu->addAction( mInvertDirectionAction );
 
-  settingsAction->sizeSpin()->clear();
-  connect( settingsAction->sizeSpin(), qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size )
+  mSettingsAction->sizeSpin()->clear();
+  connect( mSettingsAction->sizeSpin(), qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size )
   {
     setFixedRangeSize( size < 0 ? -1 : size );
   } );
@@ -94,6 +97,14 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
 
     emit rangeChanged( range() );
     mSliderLabels->setRange( range() );
+  } );
+
+  connect( mInvertDirectionAction, &QAction::toggled, this, [this]()
+  {
+    mSlider->setFlippedDirection( !mInvertDirectionAction->isChecked() );
+    mSliderLabels->setInverted( mInvertDirectionAction->isChecked() );
+
+    emit invertedChanged( mInvertDirectionAction->isChecked() );
   } );
 
   // default initial value to full range
@@ -225,6 +236,14 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
   {
     mSlider->setFixedRangeSize( static_cast< int >( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
+  if ( mFixedRangeSize != mSettingsAction->sizeSpin()->value() )
+    mSettingsAction->sizeSpin()->setValue( mFixedRangeSize );
+  emit fixedRangeSizeChanged( mFixedRangeSize );
+}
+
+void QgsElevationControllerWidget::setInverted( bool inverted )
+{
+  mInvertDirectionAction->setChecked( inverted );
 }
 
 //
@@ -266,14 +285,26 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   const double limitRange = mLimits.upper() - mLimits.lower();
   const double lowerFraction = ( mRange.lower() - mLimits.lower() ) / limitRange;
   const double upperFraction = ( mRange.upper() - mLimits.lower() ) / limitRange;
-  const int lowerY = std::min( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ),
-                               rect().bottom() - fm.descent() );
-  const int upperY = std::max( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ),
-                               rect().top() + fm.ascent() );
+  const int lowerY = !mInverted
+                     ? ( std::min( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ),
+                                   rect().bottom() - fm.descent() ) )
+                     : ( std::max( static_cast< int >( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) ),
+                                   rect().top() + fm.ascent() ) );
+  const int upperY = !mInverted ?
+                     ( std::max( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ),
+                                 rect().top() + fm.ascent() ) )
+                     : ( std::min( static_cast< int >( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) ),
+                                   rect().bottom() - fm.descent() ) );
 
-  const bool lowerIsCloseToLimit = lowerY + fm.height() > rect().bottom() - fm.descent();
-  const bool upperIsCloseToLimit = upperY - fm.height() < rect().top() + fm.ascent();
-  const bool lowerIsCloseToUpperLimit = lowerY - fm.height() < rect().top() + fm.ascent();
+  const bool lowerIsCloseToLimit = !mInverted
+                                   ? ( lowerY + fm.height() > rect().bottom() - fm.descent() )
+                                   : ( lowerY - fm.height() < rect().top() + fm.ascent() ) ;
+  const bool upperIsCloseToLimit = !mInverted
+                                   ? ( upperY - fm.height() < rect().top() + fm.ascent() )
+                                   : ( upperY + fm.height() > rect().bottom() - fm.descent() ) ;
+  const bool lowerIsCloseToUpperLimit = !mInverted
+                                        ? ( lowerY - fm.height() < rect().top() + fm.ascent() )
+                                        : ( lowerY + fm.height() > rect().bottom() - fm.descent() );
 
   QLocale locale;
 
@@ -290,7 +321,7 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
       f.setBold( true );
       path.addText( left, lowerY, f, locale.toString( mRange.lower() ) );
       f.setBold( false );
-      path.addText( left, rect().bottom() - fm.descent(), f, locale.toString( mLimits.lower() ) );
+      path.addText( left, !mInverted ? ( rect().bottom() - fm.descent() ) : ( rect().top() + fm.ascent() ), f, locale.toString( mLimits.lower() ) );
     }
   }
 
@@ -301,7 +332,7 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
       if ( !lowerIsCloseToUpperLimit )
       {
         f.setBold( false );
-        path.addText( left, rect().top() + fm.ascent(), f, locale.toString( mLimits.upper() ) );
+        path.addText( left, !mInverted ? ( rect().top() + fm.ascent() ) : ( rect().bottom() - fm.descent() ), f, locale.toString( mLimits.upper() ) );
       }
     }
     else
@@ -316,7 +347,7 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
         f.setBold( true );
         path.addText( left, upperY, f, locale.toString( mRange.upper() ) );
         f.setBold( false );
-        path.addText( left, rect().top() + fm.ascent(), f, locale.toString( mLimits.upper() ) );
+        path.addText( left, !mInverted ? ( rect().top() + fm.ascent() ) : ( rect().bottom() - fm.descent() ), f, locale.toString( mLimits.upper() ) );
       }
     }
   }
@@ -358,6 +389,15 @@ void QgsElevationControllerLabels::setRange( const QgsDoubleRange &range )
     return;
 
   mRange = range;
+  update();
+}
+
+void QgsElevationControllerLabels::setInverted( bool inverted )
+{
+  if ( inverted == mInverted )
+    return;
+
+  mInverted = inverted;
   update();
 }
 

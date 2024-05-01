@@ -12,7 +12,6 @@
 
 
 
-
 class QgsProcessingContext
 {
 %Docstring(signature="appended")
@@ -657,6 +656,14 @@ Returns list of the equivalent qgis_process arguments representing the settings 
 
 .. versionadded:: 3.24
 %End
+
+    QgsProcessingModelResult modelResult() const;
+%Docstring
+Returns the model results, populated when the context is used to run a model algorithm.
+
+.. versionadded:: 3.38
+%End
+
 
   private:
     QgsProcessingContext( const QgsProcessingContext &other );

@@ -120,7 +120,10 @@ QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation 
     if ( mColumnMapping.at( section ) == -1 && role == Qt::DisplayRole )
       return tr( "Actions" );
     else
-      return QSortFilterProxyModel::headerData( section, orientation, role );
+    {
+      const int sourceSection = mapColumnToSource( section );
+      return sourceModel()->headerData( sourceSection, orientation, role );
+    }
   }
   else
   {

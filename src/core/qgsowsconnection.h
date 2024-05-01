@@ -115,6 +115,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsUsername;
     static const QgsSettingsEntryString *settingsPassword;
     static const QgsSettingsEntryString *settingsAuthCfg;
+    static const QgsSettingsEntryInteger *settingsFeatureCount;
 
 #endif
 

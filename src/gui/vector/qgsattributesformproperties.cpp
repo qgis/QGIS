@@ -378,16 +378,17 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, mAttributeTypeDialog->constraintExpressionEnforced() ?
                                      QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
 
+  // The call to mLayer->setDefaultValueDefinition will possibly emit updatedFields
+  // which will set mAttributeTypeDialog to nullptr so we need to store any value before calling it
   cfg.mFieldConstraints = constraints;
-
-  mLayer->setDefaultValueDefinition( mAttributeTypeDialog->fieldIdx(), QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
-
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
   cfg.mEditorWidgetConfig = mAttributeTypeDialog->editorWidgetConfig();
-
   cfg.mSplitPolicy = mAttributeTypeDialog->splitPolicy();
+  const int fieldIndex = mAttributeTypeDialog->fieldIdx();
 
-  const QString fieldName = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).name();
+  mLayer->setDefaultValueDefinition( fieldIndex, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
+
+  const QString fieldName = mLayer->fields().at( fieldIndex ).name();
 
   for ( auto itemIt = QTreeWidgetItemIterator( mAvailableWidgetsTree ); *itemIt; ++itemIt )
   {

@@ -191,7 +191,6 @@ class TestQgsProject(QgisTestCase):
                       project_scope.variable('project_vertical_crs_wkt'), '')
 
         # check that vertical crs is saved/restored
-        # Tests whether the home paths of a GPKG stored project returns the GPKG folder.
         with TemporaryDirectory() as d:
             self.assertTrue(project.write(os.path.join(d, 'test_vertcrs.qgs')))
             project2 = QgsProject()
@@ -217,7 +216,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(spy), 4)
         self.assertFalse(project.verticalCrs().isValid())
 
-    def test_vertical_crs_with_compound_horizontal_crs(self):
+    def test_vertical_crs_with_compound_project_crs(self):
         """
         Test vertical crs logic when project has a compound crs set
         """
@@ -256,6 +255,178 @@ class TestQgsProject(QgisTestCase):
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(project.verticalCrs().authid(), 'EPSG:5703')
         self.assertEqual(len(spy), 1)
+
+        # invalid combinations
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:4979'))
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:4979')
+
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:4978'))
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:4978')
+
+    def test_vertical_crs_with_projected3d_project_crs(self):
+        """
+        Test vertical crs logic when project has a compound crs set
+        """
+        project = QgsProject()
+        self.assertFalse(project.crs().isValid())
+        self.assertFalse(project.verticalCrs().isValid())
+
+        spy = QSignalSpy(project.verticalCrsChanged)
+
+        projected3d_crs = QgsCoordinateReferenceSystem.fromWkt("PROJCRS[\"NAD83(HARN) / Oregon GIC Lambert (ft)\",\n"
+                                                               "    BASEGEOGCRS[\"NAD83(HARN)\",\n"
+                                                               "        DATUM[\"NAD83 (High Accuracy Reference Network)\",\n"
+                                                               "            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n"
+                                                               "                LENGTHUNIT[\"metre\",1]]],\n"
+                                                               "        PRIMEM[\"Greenwich\",0,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433]],\n"
+                                                               "        ID[\"EPSG\",4957]],\n"
+                                                               "    CONVERSION[\"unnamed\",\n"
+                                                               "        METHOD[\"Lambert Conic Conformal (2SP)\",\n"
+                                                               "            ID[\"EPSG\",9802]],\n"
+                                                               "        PARAMETER[\"Latitude of false origin\",41.75,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8821]],\n"
+                                                               "        PARAMETER[\"Longitude of false origin\",-120.5,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8822]],\n"
+                                                               "        PARAMETER[\"Latitude of 1st standard parallel\",43,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8823]],\n"
+                                                               "        PARAMETER[\"Latitude of 2nd standard parallel\",45.5,\n"
+                                                               "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+                                                               "            ID[\"EPSG\",8824]],\n"
+                                                               "        PARAMETER[\"Easting at false origin\",1312335.958,\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                                               "            ID[\"EPSG\",8826]],\n"
+                                                               "        PARAMETER[\"Northing at false origin\",0,\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048],\n"
+                                                               "            ID[\"EPSG\",8827]]],\n"
+                                                               "    CS[Cartesian,3],\n"
+                                                               "        AXIS[\"easting\",east,\n"
+                                                               "            ORDER[1],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                                               "        AXIS[\"northing\",north,\n"
+                                                               "            ORDER[2],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]],\n"
+                                                               "        AXIS[\"ellipsoidal height (h)\",up,\n"
+                                                               "            ORDER[3],\n"
+                                                               "            LENGTHUNIT[\"foot\",0.3048]]]")
+        self.assertTrue(projected3d_crs.isValid())
+        project.setCrs(projected3d_crs)
+        self.assertEqual(project.crs().toWkt(), projected3d_crs.toWkt())
+        # project 3d crs should be projected 3d crs
+        self.assertEqual(project.crs3D().toWkt(), projected3d_crs.toWkt())
+        # QgsProject.verticalCrs() should return invalid crs
+        self.assertFalse(project.verticalCrs().isValid())
+        self.assertEqual(len(spy), 0)
+        other_vert_crs = QgsCoordinateReferenceSystem('ESRI:115700')
+        self.assertTrue(other_vert_crs.isValid())
+        self.assertEqual(other_vert_crs.type(), Qgis.CrsType.Vertical)
+
+        # if we explicitly set a vertical crs now, it should be ignored
+        # because the main project crs is already 3d and that takes
+        # precedence
+        ok, err = project.setVerticalCrs(other_vert_crs)
+        self.assertFalse(ok)
+        self.assertEqual(err, 'Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored')
+        self.assertFalse(project.verticalCrs().isValid())
+        self.assertEqual(len(spy), 0)
+        self.assertEqual(project.crs3D().toWkt(), projected3d_crs.toWkt())
+
+    def test_crs_3d(self):
+        project = QgsProject()
+        self.assertFalse(project.crs3D().isValid())
+
+        spy = QSignalSpy(project.crs3DChanged)
+
+        # set project crs to a 2d crs
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        # don't change, no new signals
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        # change 2d crs, should be new signals
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3113')
+        self.assertEqual(len(spy), 2)
+
+        # change vertical crs:
+
+        # not a vertical crs, no change
+        ok, err = project.setVerticalCrs(
+            QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(ok)
+        self.assertEqual(project.crs3D().authid(), 'EPSG:3113')
+        self.assertEqual(len(spy), 2)
+
+        # valid vertical crs
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(project.crs3D().type(), Qgis.CrsType.Compound)
+        # crs3D should be a compound crs
+        self.assertEqual(project.crs3D().horizontalCrs().authid(), 'EPSG:3113')
+        self.assertEqual(project.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 3)
+        # try overwriting with same crs, should be no new signal
+        ok, err = project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertTrue(ok)
+        self.assertEqual(len(spy), 3)
+
+        # set 2d crs to a compound crs
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(project.crs().authid(), 'EPSG:5500')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:5500'))
+        self.assertEqual(project.crs().authid(), 'EPSG:5500')
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        # remove vertical crs, should be no change because compound crs is causing vertical crs to be ignored
+        project.setVerticalCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        project.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        self.assertEqual(project.crs3D().authid(), 'EPSG:5500')
+        self.assertEqual(len(spy), 4)
+
+        # set crs back to 2d crs, should be new signal
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(project.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+        self.assertEqual(project.crs3D().verticalCrs().authid(), 'EPSG:5703')
+        self.assertEqual(len(spy), 5)
+
+        # check that crs3D is handled correctly during save/restore
+        with TemporaryDirectory() as d:
+            self.assertTrue(project.write(os.path.join(d, 'test_crs3d.qgs')))
+            project2 = QgsProject()
+            spy2 = QSignalSpy(project2.crs3DChanged)
+            project2.read(os.path.join(d, 'test_crs3d.qgs'))
+            self.assertEqual(project2.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+            self.assertEqual(project2.crs3D().verticalCrs().authid(), 'EPSG:5703')
+            self.assertEqual(len(spy2), 1)
+            project2.read(os.path.join(d, 'test_crs3d.qgs'))
+            self.assertEqual(project2.crs3D().horizontalCrs().authid(), 'EPSG:3111')
+            self.assertEqual(project2.crs3D().verticalCrs().authid(), 'EPSG:5703')
+            self.assertEqual(len(spy2), 1)
+
+        project.clear()
+        self.assertEqual(len(spy), 6)
+        self.assertFalse(project.crs3D().isValid())
 
     def testEllipsoid(self):
         prj = QgsProject.instance()

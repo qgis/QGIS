@@ -75,10 +75,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString id READ id WRITE setId NOTIFY idChanged )
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsCoordinateReferenceSystem verticalCrs READ verticalCrs WRITE setVerticalCrs NOTIFY verticalCrsChanged )
+    Q_PROPERTY( QgsCoordinateReferenceSystem crs3D READ crs3D NOTIFY crs3DChanged )
     Q_PROPERTY( Qgis::LayerType type READ type CONSTANT )
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
@@ -256,8 +259,30 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QString extensionPropertyType( PropertyType type );
 
-    //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
+    /**
+     * Returns the layer's unique ID, which is used to access this layer from QgsProject.
+     *
+     * \see setId()
+     * \see idChanged()
+     */
     QString id() const;
+
+    /**
+     * Sets the layer's \a id.
+     *
+     * Returns TRUE if the layer ID was successfully changed, or FALSE if it could not be changed (e.g. because
+     * the layer is owned by a QgsProject or QgsMapLayerStore).
+     *
+     * \warning It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
+     * Generally this method should not be called, and the auto generated ID should be used instead.
+     *
+     * \warning This method should not be called on layers which already belong to a QgsProject or QgsMapLayerStore.
+     *
+     * \see id()
+     * \see idChanged()
+     * \since QGIS 3.38
+     */
+    bool setId( const QString &id );
 
     /**
      * Set the display \a name of the layer.
@@ -943,11 +968,89 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the layer's spatial reference system.
+     *
+     * \warning Since QGIS 3.38, consider using crs3D() whenever transforming 3D data or whenever
+     * z/elevation value handling is important.
+     *
+     * \see setCrs()
+     * \see crs3D()
+     * \see verticalCrs()
+     * \see crsChanged()
      */
     QgsCoordinateReferenceSystem crs() const;
 
-    //! Sets layer's spatial reference system
+    /**
+     * Returns the layer's vertical coordinate reference system.
+     *
+     * If the layer crs() is a compound CRS, then the CRS returned will
+     * be the vertical component of crs(). Otherwise it will be the value
+     * explicitly set by a call to setVerticalCrs().
+     *
+     * The returned CRS will be invalid if the layer has no vertical CRS.
+     *
+     * \note Consider also using crs3D(), which will return a CRS which takes into account
+     * both crs() and verticalCrs().
+     *
+     * \see crs()
+     * \see crs3D()
+     * \see setVerticalCrs()
+     *
+     * \since QGIS 3.38
+     */
+    QgsCoordinateReferenceSystem verticalCrs() const;
+
+    /**
+     * Returns the CRS to use for the layer when transforming 3D data, or when z/elevation
+     * value handling is important.
+     *
+     * The returned CRS will take into account verticalCrs() when appropriate, e.g. it may return a compound
+     * CRS consisting of crs() + verticalCrs(). This method may still return a 2D CRS, e.g in the
+     * case that crs() is a 2D CRS and no verticalCrs() has been set for the layer. Check QgsCoordinateReferenceSystem::type()
+     * on the returned value to determine the type of CRS returned by this method.
+     *
+     * \warning It is NOT guaranteed that the returned CRS will actually be a 3D CRS, but rather
+     * it is guaranteed that the returned CRS is ALWAYS the most appropriate CRS to use when handling 3D data.
+     *
+     * \see crs()
+     * \see verticalCrs()
+     * \see crs3DChanged()
+     *
+     * \since QGIS 3.38
+     */
+    QgsCoordinateReferenceSystem crs3D() const;
+
+    /**
+     * Sets layer's spatial reference system.
+     *
+     * If \a emitSignal is TRUE, changing the CRS will trigger a crsChanged() signal. Additionally, if \a crs is a compound
+     * CRS, then the verticalCrsChanged() signal will also be emitted.
+     *
+     * \see crs()
+     * \see crsChanged()
+     * \see setVerticalCrs()
+     */
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
+
+    /**
+     * Sets the layer's vertical coordinate reference system.
+     *
+     * The verticalCrsChanged() signal will be raised if the vertical CRS is changed.
+     *
+     * \note If the layer crs() is a compound CRS, then the CRS returned for
+     * verticalCrs() will be the vertical component of crs(). Otherwise it will be the value
+     * explicitly set by this call.
+     *
+     * \param crs the vertical CRS
+     * \param errorMessage will be set to a descriptive message if the vertical CRS could not be set
+     *
+     * \returns TRUE if vertical CRS was successfully set
+     *
+     * \see verticalCrs()
+     * \see setCrs()
+     *
+     * \since QGIS 3.38
+     */
+    bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Returns the layer data provider coordinate transform context
@@ -1792,13 +1895,57 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void statusChanged( const QString &status );
 
     /**
-     * Emitted when the name has been changed
+     * Emitted when the layer's ID has been changed.
      *
+     * \see id()
+     * \see setId()
+     *
+     * \since QGIS 3.38
+     */
+    void idChanged( const QString &id );
+
+    /**
+     * Emitted when the name has been changed
      */
     void nameChanged();
 
-    //! Emit a signal that layer's CRS has been reset
+    /**
+     * Emitted when the crs() of the layer has changed.
+     *
+     * \see crs()
+     * \see setCrs()
+     * \see verticalCrsChanged()
+     * \see crs3DChanged()
+     */
     void crsChanged();
+
+    /**
+     * Emitted when the crs3D() of the layer has changed.
+     *
+     * \see crs3D()
+     * \see crsChanged()
+     * \see verticalCrsChanged()
+     *
+     * \since QGIS 3.38
+     */
+    void crs3DChanged();
+
+    /**
+     * Emitted when the verticalCrs() of the layer has changed.
+     *
+     * This signal will be emitted whenever the vertical CRS of the layer is changed, either
+     * as a direct result of a call to setVerticalCrs() or when setCrs() is called with a compound
+     * CRS.
+     *
+     * \see crsChanged()
+     * \see crs3DChanged()
+     * \see setCrs()
+     * \see setVerticalCrs()
+     * \see verticalCrs()
+     *
+     * \since QGIS 3.38
+     */
+    void verticalCrsChanged();
 
     /**
      * By emitting this signal the layer tells that either appearance or content have been changed
@@ -2204,6 +2351,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void updateExtent( const QgsRectangle &extent ) const;
     void updateExtent( const QgsBox3D &extent ) const;
 
+    bool rebuildCrs3D( QString *error = nullptr );
+
     /**
      * This method returns TRUE by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -2215,6 +2364,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * private to make sure setCrs must be used and crsChanged() is emitted.
     */
     QgsCoordinateReferenceSystem mCRS;
+    QgsCoordinateReferenceSystem mVerticalCrs;
+    QgsCoordinateReferenceSystem mCrs3D;
 
     //! Unique ID of this layer - used to refer to this layer in map layer registry
     QString mID;
@@ -2297,6 +2448,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool mMapTipsEnabled = true;
 
     friend class QgsVectorLayer;
+    friend class TestQgsProject;
     friend class TestQgsMapLayer;
 };
 

@@ -34,7 +34,7 @@ env:
 jobs:
   mac_os_build:
     if: github.repository == 'qgis/QGIS'
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
 

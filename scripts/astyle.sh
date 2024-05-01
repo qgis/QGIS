@@ -83,12 +83,16 @@ if ! type -p autopep8 >/dev/null; then
 fi
 
 ASTYLEOPTS=$(dirname "$0")/astyle.options
-if type -p cygpath >/dev/null; then
-	ASTYLEOPTS="$(cygpath -w "$ASTYLEOPTS")"
-fi
+# when using `qgisstyle` built alongside QGIS (on windows),
+# convert path to options file
+if [ $ASTYLE != "astyle" ] ; then
+	if type -p cygpath >/dev/null; then
+		ASTYLEOPTS="$(cygpath -w "$ASTYLEOPTS")"
+	fi
 
-if type -p wslpath >/dev/null; then
-	ASTYLEOPTS="$(wslpath -a -w "$ASTYLEOPTS")"
+	if type -p wslpath >/dev/null; then
+		ASTYLEOPTS="$(wslpath -a -w "$ASTYLEOPTS")"
+	fi
 fi
 
 set -e

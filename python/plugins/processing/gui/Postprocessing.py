@@ -38,8 +38,10 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingAlgorithm,
     QgsLayerTreeLayer,
-    QgsLayerTreeGroup
+    QgsLayerTreeGroup,
+    QgsLayerTreeNode
 )
+from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
@@ -143,15 +145,15 @@ def create_layer_tree_layer(layer: QgsMapLayer,
 
 def get_layer_tree_results_group(details: QgsProcessingContext.LayerDetails,
                                  context: QgsProcessingContext) \
-        -> QgsLayerTreeGroup:
+        -> Optional[QgsLayerTreeGroup]:
     """
-    Returns the destination layer tree group to store results in
+    Returns the destination layer tree group to store results in, or None
+    if there is no specific destination tree group associated with the layer
     """
 
     destination_project = details.project or context.project()
 
-    # default to placing results in the top level of the layer tree
-    results_group = details.project.layerTreeRoot()
+    results_group: Optional[QgsLayerTreeGroup] = None
 
     # if a specific results group is specified in Processing settings,
     # respect it (and create if necessary)
@@ -168,6 +170,9 @@ def get_layer_tree_results_group(details: QgsProcessingContext.LayerDetails,
     # if this particular output layer has a specific output group assigned,
     # find or create it now
     if details.groupName:
+        if results_group is None:
+            results_group = destination_project.layerTreeRoot()
+
         group = results_group.findGroup(details.groupName)
         if not group:
             group = results_group.insertGroup(
@@ -197,7 +202,7 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
     )
     i = 0
 
-    added_layers: List[Tuple[QgsLayerTreeGroup, QgsLayerTreeLayer]] = []
+    added_layers: List[Tuple[Optional[QgsLayerTreeGroup], QgsLayerTreeLayer]] = []
     layers_to_post_process: List[Tuple[QgsMapLayer,
                                        QgsProcessingContext.LayerDetails]] = []
 
@@ -264,9 +269,35 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
         added_layers,
         key=lambda x: x[1].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
     )
+    have_set_active_layer = False
+
+    current_selected_node: Optional[QgsLayerTreeNode] = None
+    if iface is not None:
+        current_selected_node = iface.layerTreeView().currentNode()
+        iface.layerTreeView().setUpdatesEnabled(False)
+
     for group, layer_node in sorted_layer_tree_layers:
         layer_node.removeCustomProperty(SORT_ORDER_CUSTOM_PROPERTY)
-        group.insertChildNode(0, layer_node)
+        if group is not None:
+            group.insertChildNode(0, layer_node)
+        else:
+            # no destination group for this layer, so should be placed
+            # above the current layer
+            if isinstance(current_selected_node, QgsLayerTreeLayer):
+                current_node_group = current_selected_node.parent()
+                current_node_index = current_node_group.children().index(
+                    current_selected_node)
+                current_node_group.insertChildNode(
+                    current_node_index,
+                    layer_node)
+            elif isinstance(current_selected_node, QgsLayerTreeGroup):
+                current_selected_node.insertChildNode(0, layer_node)
+            elif context.project():
+                context.project().layerTreeRoot().insertChildNode(0, layer_node)
+
+        if not have_set_active_layer and iface is not None:
+            iface.setActiveLayer(layer_node.layer())
+            have_set_active_layer = True
 
     # all layers have been added to the layer tree, so safe to call
     # postProcessors now
@@ -275,6 +306,9 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
             layer,
             context,
             feedback)
+
+    if iface is not None:
+        iface.layerTreeView().setUpdatesEnabled(True)
 
     feedback.setProgress(100)
 

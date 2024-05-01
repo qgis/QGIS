@@ -323,13 +323,20 @@ Creates a CRS from a specified QGIS SRS ID.
 .. seealso:: :py:func:`validSrsIds`
 %End
 
-    static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs );
+    static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs, QString &error /Out/ );
 %Docstring
 Given a horizontal and vertical CRS, attempts to create a compound CRS
 from them.
 
 Returns an invalid CRS if the inputs are not suitable for a compound CRS,
 or the compound CRS could not be created for the combination.
+
+:param horizontalCrs: horizontal component for CRS
+:param verticalCrs: vertical component for CRS
+
+:return: - compound CRS if it was possible to create one, or an invalid CRS if not
+         - error: will be set to a descriptive error if the compound CRS could not be created
+
 
 .. versionadded:: 3.38
 %End
@@ -1117,6 +1124,17 @@ In the case of a compound CRS, this method will return just the vertical CRS com
 An invalid CRS will be returned if the object does not contain a vertical component.
 
 .. seealso:: :py:func:`horizontalCrs`
+
+.. seealso:: :py:func:`hasVerticalAxis`
+
+.. versionadded:: 3.38
+%End
+
+    bool hasVerticalAxis() const;
+%Docstring
+Returns ``True`` if the CRS has a vertical axis.
+
+.. seealso:: :py:func:`verticalCrs`
 
 .. versionadded:: 3.38
 %End

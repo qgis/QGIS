@@ -76,6 +76,12 @@ bool QgsProjectElevationProperties::readXml( const QDomElement &element, const Q
     rangeUpper = storedRangeUpper;
   mElevationRange = QgsDoubleRange( rangeLower, rangeUpper );
 
+  mElevationFilterRangeSize = element.attribute( QStringLiteral( "FilterRangeSize" ) ).toDouble( &ok );
+  if ( !ok )
+    mElevationFilterRangeSize = -1;
+
+  mInvertElevationFilter = element.attribute( QStringLiteral( "FilterInvertSlider" ), QStringLiteral( "0" ) ).toInt();
+
   emit changed();
   emit elevationRangeChanged( mElevationRange );
   return true;
@@ -98,6 +104,12 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
   if ( mElevationRange.upper() != std::numeric_limits< double >::max() )
     element.setAttribute( QStringLiteral( "RangeUpper" ), qgsDoubleToString( mElevationRange.upper() ) );
 
+  if ( mElevationFilterRangeSize >= 0 )
+  {
+    element.setAttribute( QStringLiteral( "FilterRangeSize" ), mElevationFilterRangeSize );
+  }
+  element.setAttribute( QStringLiteral( "FilterInvertSlider" ), mInvertElevationFilter ? "1" : "0" );
+
   return element;
 }
 
@@ -111,7 +123,28 @@ void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvid
   if ( mTerrainProvider.get() == provider )
     return;
 
+  const bool hasChanged = ( provider && mTerrainProvider ) ? !mTerrainProvider->equals( provider ) : ( static_cast< bool >( provider ) != static_cast< bool >( mTerrainProvider.get() ) );
+
   mTerrainProvider.reset( provider );
+  if ( hasChanged )
+    emit changed();
+}
+
+void QgsProjectElevationProperties::setElevationFilterRangeSize( double size )
+{
+  if ( mElevationFilterRangeSize == size )
+    return;
+
+  mElevationFilterRangeSize = size;
+  emit changed();
+}
+
+void QgsProjectElevationProperties::setInvertElevationFilter( bool invert )
+{
+  if ( mInvertElevationFilter == invert )
+    return;
+
+  mInvertElevationFilter = invert;
   emit changed();
 }
 

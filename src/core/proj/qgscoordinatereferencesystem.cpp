@@ -241,15 +241,26 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromSrsId( long srsId
   return crs;
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs )
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs, QString &error )
 {
+  error.clear();
   PJ *horizontalObj = horizontalCrs.projObject();
   PJ *verticalObj = verticalCrs.projObject();
   if ( horizontalObj && verticalObj )
   {
-    QgsProjUtils::proj_pj_unique_ptr compoundCrs = QgsProjUtils::createCompoundCrs( horizontalObj, verticalObj );
+    QStringList errors;
+    QgsProjUtils::proj_pj_unique_ptr compoundCrs = QgsProjUtils::createCompoundCrs( horizontalObj, verticalObj, &errors );
     if ( compoundCrs )
       return QgsCoordinateReferenceSystem::fromProjObject( compoundCrs.get() );
+
+    QStringList formattedErrorList;
+    for ( const QString &rawError : std::as_const( errors ) )
+    {
+      QString formattedError = rawError;
+      formattedError.replace( QLatin1String( "proj_create_compound_crs: " ), QString() );
+      formattedErrorList.append( formattedError );
+    }
+    error = formattedErrorList.join( '\n' );
   }
   return QgsCoordinateReferenceSystem();
 }
@@ -3068,6 +3079,15 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::verticalCrs() const
       return QgsCoordinateReferenceSystem::fromProjObject( vertCrs.get() );
   }
   return QgsCoordinateReferenceSystem();
+}
+
+bool QgsCoordinateReferenceSystem::hasVerticalAxis() const
+{
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    return QgsProjUtils::hasVerticalAxis( obj );
+  }
+  return false;
 }
 
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const

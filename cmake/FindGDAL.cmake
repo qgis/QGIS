@@ -98,9 +98,8 @@ if(NOT GDAL_FOUND)
         IF (GDAL_CONFIG) 
   
           ## extract gdal version 
-          EXEC_PROGRAM(${GDAL_CONFIG}
-              ARGS --version
-              OUTPUT_VARIABLE GDAL_VERSION )
+          execute_process(COMMAND ${GDAL_CONFIG} --version
+              OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE GDAL_VERSION )
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\3" GDAL_VERSION_MICRO "${GDAL_VERSION}")
@@ -123,9 +122,8 @@ if(NOT GDAL_FOUND)
           ENDIF( (GDAL_VERSION_MAJOR EQUAL 3) AND (GDAL_VERSION_MINOR EQUAL 0) AND (GDAL_VERSION_MICRO LESS 3) )
   
           # set INCLUDE_DIR to prefix+include
-          EXEC_PROGRAM(${GDAL_CONFIG}
-              ARGS --prefix
-              OUTPUT_VARIABLE GDAL_PREFIX)
+          execute_process(COMMAND ${GDAL_CONFIG} --prefix
+              OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE GDAL_PREFIX)
           #SET(GDAL_INCLUDE_DIR ${GDAL_PREFIX}/include CACHE STRING INTERNAL)
           FIND_PATH(GDAL_INCLUDE_DIR 
               gdal.h 
@@ -136,9 +134,8 @@ if(NOT GDAL_FOUND)
               )
   
           ## extract link dirs for rpath  
-          EXEC_PROGRAM(${GDAL_CONFIG}
-              ARGS --libs
-              OUTPUT_VARIABLE GDAL_CONFIG_LIBS )
+          execute_process(COMMAND ${GDAL_CONFIG} --libs
+              OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE GDAL_CONFIG_LIBS )
   
           ## split off the link dirs (for rpath)
           ## use regular expression to match wildcard equivalent "-L*<endchar>"

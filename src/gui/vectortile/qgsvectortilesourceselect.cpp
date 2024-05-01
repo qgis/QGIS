@@ -98,6 +98,8 @@ void QgsVectorTileSourceSelect::btnNew_clicked()
   {
     QgsVectorTileProviderConnection::addConnection( nc.connectionName(), QgsVectorTileProviderConnection::decodedUri( nc.connectionUri() ) );
     populateConnectionList();
+    QgsVectorTileProviderConnection::setSelectedConnection( nc.connectionName() );
+    setConnectionListPosition();
     emit connectionsChanged();
   }
 }

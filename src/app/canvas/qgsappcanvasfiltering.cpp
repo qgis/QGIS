@@ -15,6 +15,7 @@
 
 #include "qgsappcanvasfiltering.h"
 #include "qgselevationcontrollerwidget.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"
 #include <QInputDialog>
@@ -58,6 +59,21 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
       {
         mCanvasElevationControllerMap.remove( canvas );
       } );
+
+      if ( canvas == QgisApp::instance()->mapCanvas() )
+      {
+        // for main canvas, attach settings to project settings
+        controller->setFixedRangeSize( QgsProject::instance()->elevationProperties()->elevationFilterRangeSize() );
+        connect( controller, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size )
+        {
+          QgsProject::instance()->elevationProperties()->setElevationFilterRangeSize( size );
+        } );
+        controller->setInverted( QgsProject::instance()->elevationProperties()->invertElevationFilter() );
+        connect( controller, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted )
+        {
+          QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
+        } );
+      }
     }
     else
     {

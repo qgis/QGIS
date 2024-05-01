@@ -494,7 +494,10 @@ void TestQgis::testQgsFlagKeysToValue()
   QgsFieldProxyModel::Filters defaultValue( QgsFieldProxyModel::Filter::AllTypes );
   QgsFieldProxyModel::Filters newValue( QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double );
 
-  bool ok = false;
+  bool ok = true;
+  QCOMPARE( qgsFlagKeysToValue( QString(), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( ok, false );
+
   QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "String|Double" ), defaultValue, false, &ok ), newValue );
   QCOMPARE( ok, true );
   QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );

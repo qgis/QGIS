@@ -47,7 +47,8 @@ QString QgsDxfExportAlgorithm::groupId() const
 
 QString QgsDxfExportAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports layers to DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output." );
+  return QObject::tr( "Exports layers to DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
+                      "If no field is chosen, you can still override the output layer name by directly entering a new output layer name in the Configure Layer panel or by preferring layer title (set in layer properties) to layer name." );
 }
 
 QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
@@ -70,9 +71,12 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
   addParameter( extentParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Use only selected features" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false ) );
+  std::unique_ptr<QgsProcessingParameterBoolean> useTitleParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false );
+  useTitleParam->setHelp( QObject::tr( "If no attribute is chosen and layer name is not being overridden, prefer layer title (set in layer properties) to layer name" ) );
+  addParameter( useTitleParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "EXPORT_LINES_WITH_ZERO_WIDTH" ), QObject::tr( "Export lines with zero width" ) ), false );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
 
@@ -113,6 +117,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   const bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
   const bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
   const bool force2D = parameterAsBool( parameters, QStringLiteral( "FORCE_2D" ), context );
+  const bool exportLinesWithZeroWidth = parameterAsBool( parameters, QStringLiteral( "EXPORT_LINES_WITH_ZERO_WIDTH" ), context );
 
   QgsRectangle extent;
   if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
@@ -142,6 +147,8 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
     flags = flags | QgsDxfExport::FlagNoMText;
   if ( selectedFeaturesOnly )
     flags = flags | QgsDxfExport::FlagOnlySelectedFeatures;
+  if ( exportLinesWithZeroWidth )
+    flags = flags | QgsDxfExport::FlagHairlineWidthExport;
   dxfExport.setFlags( flags );
 
   QFile dxfFile( outputFile );

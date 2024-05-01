@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     QString mSymbolLayerId;
 };
 
-Q_DECL_DEPRECATED inline uint qHash( const QgsSymbolLayerId &id )
+inline uint qHash( const QgsSymbolLayerId &id )
 {
   return qHash( id.symbolKey() ) ^ qHash( id.symbolLayerIndexPath() );
 }

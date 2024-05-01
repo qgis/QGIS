@@ -26,12 +26,9 @@ onto a scene with custom composition modes.
 %End
   public:
 
- QgsLayoutEffect() /Deprecated/;
+    QgsLayoutEffect();
 %Docstring
 Constructor for QgsLayoutEffect.
-
-.. deprecated:: QGIS 3.34
-   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
 %End
 
  void setCompositionMode( QPainter::CompositionMode mode ) /Deprecated/;

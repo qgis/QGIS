@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
@@ -250,6 +251,63 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToVerticalCrs( const PJ *crs )
   BUILTIN_UNREACHABLE
 }
 
+bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
+{
+  if ( !crs )
+    return false;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  switch ( proj_get_type( crs ) )
+  {
+    case PJ_TYPE_COMPOUND_CRS:
+    {
+      int i = 0;
+      QgsProjUtils::proj_pj_unique_ptr res( proj_crs_get_sub_crs( context, crs, i ) );
+      while ( res )
+      {
+        if ( hasVerticalAxis( res.get() ) )
+          return true;
+        i++;
+        res.reset( proj_crs_get_sub_crs( context, crs, i ) );
+      }
+      return false;
+    }
+
+    // maybe other types to handle like this??
+
+    default:
+      break;
+  }
+
+  QgsProjUtils::proj_pj_unique_ptr pjCs( proj_crs_get_coordinate_system( context, crs ) );
+  if ( !pjCs )
+    return false;
+
+  const int axisCount = proj_cs_get_axis_count( context, pjCs.get() );
+  for ( int axisIndex = 0; axisIndex < axisCount; ++axisIndex )
+  {
+    const char *outDirection = nullptr;
+    proj_cs_get_axis_info( context, pjCs.get(), axisIndex,
+                           nullptr,
+                           nullptr,
+                           &outDirection,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           nullptr
+                         );
+    const QString outDirectionString = QString( outDirection );
+    if ( outDirectionString.compare( QLatin1String( "geocentricZ" ), Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( QLatin1String( "up" ), Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( QLatin1String( "down" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::unboundCrs( const PJ *crs )
 {
   if ( !crs )
@@ -292,16 +350,52 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 #endif
 }
 
-QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *horizontalCrs, const PJ *verticalCrs )
+static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
+{
+  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
+  dest->append( QString( message ) );
+}
+
+static void proj_logger( void *, int level, const char *message )
+{
+#ifdef QGISDEBUG
+  if ( level == PJ_LOG_ERROR )
+  {
+    QgsDebugError( QString( message ) );
+  }
+  else if ( level == PJ_LOG_DEBUG )
+  {
+    QgsDebugMsgLevel( QString( message ), 3 );
+  }
+#else
+  ( void )level;
+  ( void )message;
+#endif
+}
+
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *horizontalCrs, const PJ *verticalCrs, QStringList *errors )
 {
   if ( !horizontalCrs || !verticalCrs )
     return nullptr;
 
+  PJ_CONTEXT *context = QgsProjContext::get();
+  // collect errors instead of dumping them to terminal
+
+  QStringList tempErrors;
+  proj_log_func( context, &tempErrors, proj_collecting_logger );
+
   // const cast here is for compatibility with proj < 9.5
-  return QgsProjUtils::proj_pj_unique_ptr( proj_create_compound_crs( QgsProjContext::get(),
-         nullptr,
-         const_cast< PJ *>( horizontalCrs ),
-         const_cast< PJ * >( verticalCrs ) ) );
+  QgsProjUtils::proj_pj_unique_ptr compoundCrs( proj_create_compound_crs( context,
+      nullptr,
+      const_cast< PJ *>( horizontalCrs ),
+      const_cast< PJ * >( verticalCrs ) ) );
+
+  // reset logging function
+  proj_log_func( context, nullptr, proj_logger );
+  if ( errors )
+    *errors = tempErrors;
+
+  return compoundCrs;
 }
 
 bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags )

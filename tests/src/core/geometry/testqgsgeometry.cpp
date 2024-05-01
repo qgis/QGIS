@@ -1710,11 +1710,11 @@ void TestQgsGeometry::dataStream()
   QCOMPARE( geom.constGet()->asWkt(), resultGeometry.constGet()->asWkt() );
 
   //also test with geometry without data
-  std::unique_ptr<QgsGeometry> emptyGeom( new QgsGeometry() );
+  QgsGeometry emptyGeom;
 
   QByteArray ba2;
   QDataStream ds2( &ba2, QIODevice::ReadWrite );
-  ds2 << emptyGeom.get();
+  ds2 << emptyGeom;
 
   ds2.device()->seek( 0 );
   ds2 >> resultGeometry;

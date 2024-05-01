@@ -29,6 +29,8 @@
 #include "qgsvectorlayerref.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgsmaplayerstore.h"
+#include "qgsproject.h"
 #include "qgsxmlutils.h"
 
 /**
@@ -49,6 +51,7 @@ class TestQgsMapLayer : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void isValid();
+    void testId();
     void formatName();
 
     void setBlendMode();
@@ -111,6 +114,42 @@ void TestQgsMapLayer::cleanupTestCase()
 void TestQgsMapLayer::isValid()
 {
   QVERIFY( mpLayer->isValid() );
+}
+
+void TestQgsMapLayer::testId()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QSignalSpy spy( layer.get(), &QgsMapLayer::idChanged );
+  QVERIFY( layer->setId( QStringLiteral( "my forced id" ) ) );
+  QCOMPARE( layer->id(), QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "my forced id" ) );
+
+  // same id, should not emit signal
+  layer->setId( QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy.count(), 1 );
+
+  // if layer is owned by QgsMapLayerStore, cannot change ID
+  QgsMapLayerStore store;
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QSignalSpy spy2( layer2, &QgsMapLayer::idChanged );
+  layer2->setId( QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy2.count(), 1 );
+  store.addMapLayer( layer2 );
+  QVERIFY( !layer2->setId( QStringLiteral( "aaa" ) ) );
+  QCOMPARE( layer2->id(), QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy2.count(), 1 );
+
+  // if layer is owned by QgsProject, cannot change ID
+  QgsProject project;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QSignalSpy spy3( layer3, &QgsMapLayer::idChanged );
+  layer3->setId( QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy3.count(), 1 );
+  project.addMapLayer( layer3 );
+  QVERIFY( !layer3->setId( QStringLiteral( "aaa" ) ) );
+  QCOMPARE( layer3->id(), QStringLiteral( "my forced id" ) );
+  QCOMPARE( spy3.count(), 1 );
 }
 
 void TestQgsMapLayer::formatName()

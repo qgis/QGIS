@@ -326,6 +326,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
+  int previousHtmlLogLength = feedback->htmlLog().length();
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
@@ -391,7 +392,12 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
-      childInputs.insert( childId, QgsProcessingUtils::removePointerValuesFromMap( childParams ) );
+      QgsProcessingModelChildAlgorithmResult childResult;
+
+      const QVariantMap thisChildParams = QgsProcessingUtils::removePointerValuesFromMap( childParams );
+      childInputs.insert( childId, thisChildParams );
+      childResult.setInputs( thisChildParams );
+
       QStringList params;
       for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
       {
@@ -437,6 +443,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       QVariantMap results;
+
+      bool runResult = false;
       try
       {
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
@@ -460,26 +468,28 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           // safe to run on model thread
           results = childAlg->runPrepared( childParams, context, &modelFeedback );
         }
+        runResult = true;
+        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
       }
       catch ( QgsProcessingException &e )
       {
-        const QString error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
-        throw QgsProcessingException( error );
+        error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
+        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
       }
 
       Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
 
       QVariantMap ppRes;
-      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &modelFeedback]
+      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &modelFeedback, runResult]
       {
         Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->postProcess() must be run on the main thread" );
-        ppRes = childAlg->postProcess( context, &modelFeedback );
+        ppRes = childAlg->postProcess( context, &modelFeedback, runResult );
         context.pushToThread( modelThread );
       };
 
       // Make sure we only run postProcess steps on the main thread!
       if ( modelThread == qApp->thread() )
-        ppRes = childAlg->postProcess( context, &modelFeedback );
+        ppRes = childAlg->postProcess( context, &modelFeedback, runResult );
       else
       {
         context.pushToThread( qApp->thread() );
@@ -491,119 +501,145 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !ppRes.isEmpty() )
         results = ppRes;
 
-      if ( feedback && !skipGenericLogging )
-      {
-        const QVariantMap displayOutputs = QgsProcessingUtils::removePointerValuesFromMap( results );
-        QStringList formattedOutputs;
-        for ( auto displayOutputIt = displayOutputs.constBegin(); displayOutputIt != displayOutputs.constEnd(); ++displayOutputIt )
-        {
-          formattedOutputs << QStringLiteral( "%1: %2" ).arg( displayOutputIt.key(),
-                           QgsProcessingUtils::variantToPythonLiteral( displayOutputIt.value() ) );;
-        }
-        feedback->pushInfo( QObject::tr( "Results:" ) );
-        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( formattedOutputs.join( QLatin1String( ", " ) ) ) );
-      }
-
       childResults.insert( childId, results );
+      childResult.setOutputs( results );
 
-      // look through child alg's outputs to determine whether any of these should be copied
-      // to the final model outputs
-      const QMap<QString, QgsProcessingModelOutput> outputs = child.modelOutputs();
-      for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); ++outputIt )
+      if ( runResult )
       {
-        const int outputSortKey = mOutputOrder.indexOf( QStringLiteral( "%1:%2" ).arg( childId, outputIt->childOutputName() ) );
-        switch ( mInternalVersion )
+        if ( feedback && !skipGenericLogging )
         {
-          case QgsProcessingModelAlgorithm::InternalVersion::Version1:
-            finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
-            break;
-          case QgsProcessingModelAlgorithm::InternalVersion::Version2:
-            if ( const QgsProcessingParameterDefinition *modelParam = modelParameterFromChildIdAndOutputName( child.childId(), outputIt.key() ) )
-            {
-              finalResults.insert( modelParam->name(), results.value( outputIt->childOutputName() ) );
-            }
-            break;
-        }
-
-        if ( !results.value( outputIt->childOutputName() ).toString().isEmpty() )
-        {
-          QgsProcessingContext::LayerDetails &details = context.layerToLoadOnCompletionDetails( results.value( outputIt->childOutputName() ).toString() );
-          details.groupName = mOutputGroup;
-          if ( outputSortKey > 0 )
-            details.layerSortKey = outputSortKey;
-        }
-      }
-
-      executed.insert( childId );
-
-      std::function< void( const QString &, const QString & )> pruneAlgorithmBranchRecursive;
-      pruneAlgorithmBranchRecursive = [&]( const QString & id, const QString &branch = QString() )
-      {
-        const QSet<QString> toPrune = dependentChildAlgorithms( id, branch );
-        for ( const QString &targetId : toPrune )
-        {
-          if ( executed.contains( targetId ) )
-            continue;
-
-          executed.insert( targetId );
-          pruneAlgorithmBranchRecursive( targetId, branch );
-        }
-      };
-
-      // prune remaining algorithms if they are dependent on a branch from this child which didn't eventuate
-      const QgsProcessingOutputDefinitions outputDefs = childAlg->outputDefinitions();
-      for ( const QgsProcessingOutputDefinition *outputDef : outputDefs )
-      {
-        if ( outputDef->type() == QgsProcessingOutputConditionalBranch::typeName() && !results.value( outputDef->name() ).toBool() )
-        {
-          pruneAlgorithmBranchRecursive( childId, outputDef->name() );
-        }
-      }
-
-      if ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::PruneModelBranchesBasedOnAlgorithmResults )
-      {
-        // check if any dependent algorithms should be canceled based on the outputs of this algorithm run
-        // first find all direct dependencies of this algorithm by looking through all remaining child algorithms
-        for ( const QString &candidateId : std::as_const( toExecute ) )
-        {
-          if ( executed.contains( candidateId ) )
-            continue;
-
-          // a pending algorithm was found..., check it's parameter sources to see if it links to any of the current
-          // algorithm's outputs
-          const QgsProcessingModelChildAlgorithm &candidate = mChildAlgorithms[ candidateId ];
-          const QMap<QString, QgsProcessingModelChildParameterSources> candidateParams = candidate.parameterSources();
-          QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = candidateParams.constBegin();
-          bool pruned = false;
-          for ( ; paramIt != candidateParams.constEnd(); ++paramIt )
+          const QVariantMap displayOutputs = QgsProcessingUtils::removePointerValuesFromMap( results );
+          QStringList formattedOutputs;
+          for ( auto displayOutputIt = displayOutputs.constBegin(); displayOutputIt != displayOutputs.constEnd(); ++displayOutputIt )
           {
-            for ( const QgsProcessingModelChildParameterSource &source : paramIt.value() )
-            {
-              if ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId() == childId )
+            formattedOutputs << QStringLiteral( "%1: %2" ).arg( displayOutputIt.key(),
+                             QgsProcessingUtils::variantToPythonLiteral( displayOutputIt.value() ) );;
+          }
+          feedback->pushInfo( QObject::tr( "Results:" ) );
+          feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( formattedOutputs.join( QLatin1String( ", " ) ) ) );
+        }
+
+        // look through child alg's outputs to determine whether any of these should be copied
+        // to the final model outputs
+        const QMap<QString, QgsProcessingModelOutput> outputs = child.modelOutputs();
+        for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); ++outputIt )
+        {
+          const int outputSortKey = mOutputOrder.indexOf( QStringLiteral( "%1:%2" ).arg( childId, outputIt->childOutputName() ) );
+          switch ( mInternalVersion )
+          {
+            case QgsProcessingModelAlgorithm::InternalVersion::Version1:
+              finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
+              break;
+            case QgsProcessingModelAlgorithm::InternalVersion::Version2:
+              if ( const QgsProcessingParameterDefinition *modelParam = modelParameterFromChildIdAndOutputName( child.childId(), outputIt.key() ) )
               {
-                // ok, this one is dependent on the current alg. Did we get a value for it?
-                if ( !results.contains( source.outputName() ) )
-                {
-                  // oh no, nothing returned for this parameter. Gotta trim the branch back!
-                  pruned = true;
-                  // skip the dependent alg..
-                  executed.insert( candidateId );
-                  //... and everything which depends on it
-                  pruneAlgorithmBranchRecursive( candidateId, QString() );
-                  break;
-                }
+                finalResults.insert( modelParam->name(), results.value( outputIt->childOutputName() ) );
               }
-            }
-            if ( pruned )
               break;
           }
+
+          if ( !results.value( outputIt->childOutputName() ).toString().isEmpty() )
+          {
+            QgsProcessingContext::LayerDetails &details = context.layerToLoadOnCompletionDetails( results.value( outputIt->childOutputName() ).toString() );
+            details.groupName = mOutputGroup;
+            if ( outputSortKey > 0 )
+              details.layerSortKey = outputSortKey;
+          }
+        }
+
+        executed.insert( childId );
+
+        std::function< void( const QString &, const QString & )> pruneAlgorithmBranchRecursive;
+        pruneAlgorithmBranchRecursive = [&]( const QString & id, const QString &branch = QString() )
+        {
+          const QSet<QString> toPrune = dependentChildAlgorithms( id, branch );
+          for ( const QString &targetId : toPrune )
+          {
+            if ( executed.contains( targetId ) )
+              continue;
+
+            executed.insert( targetId );
+            pruneAlgorithmBranchRecursive( targetId, branch );
+          }
+        };
+
+        // prune remaining algorithms if they are dependent on a branch from this child which didn't eventuate
+        const QgsProcessingOutputDefinitions outputDefs = childAlg->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *outputDef : outputDefs )
+        {
+          if ( outputDef->type() == QgsProcessingOutputConditionalBranch::typeName() && !results.value( outputDef->name() ).toBool() )
+          {
+            pruneAlgorithmBranchRecursive( childId, outputDef->name() );
+          }
+        }
+
+        if ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::PruneModelBranchesBasedOnAlgorithmResults )
+        {
+          // check if any dependent algorithms should be canceled based on the outputs of this algorithm run
+          // first find all direct dependencies of this algorithm by looking through all remaining child algorithms
+          for ( const QString &candidateId : std::as_const( toExecute ) )
+          {
+            if ( executed.contains( candidateId ) )
+              continue;
+
+            // a pending algorithm was found..., check it's parameter sources to see if it links to any of the current
+            // algorithm's outputs
+            const QgsProcessingModelChildAlgorithm &candidate = mChildAlgorithms[ candidateId ];
+            const QMap<QString, QgsProcessingModelChildParameterSources> candidateParams = candidate.parameterSources();
+            QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = candidateParams.constBegin();
+            bool pruned = false;
+            for ( ; paramIt != candidateParams.constEnd(); ++paramIt )
+            {
+              for ( const QgsProcessingModelChildParameterSource &source : paramIt.value() )
+              {
+                if ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId() == childId )
+                {
+                  // ok, this one is dependent on the current alg. Did we get a value for it?
+                  if ( !results.contains( source.outputName() ) )
+                  {
+                    // oh no, nothing returned for this parameter. Gotta trim the branch back!
+                    pruned = true;
+                    // skip the dependent alg..
+                    executed.insert( candidateId );
+                    //... and everything which depends on it
+                    pruneAlgorithmBranchRecursive( candidateId, QString() );
+                    break;
+                  }
+                }
+              }
+              if ( pruned )
+                break;
+            }
+          }
+        }
+
+        childAlg.reset( nullptr );
+        modelFeedback.setCurrentStep( executed.count() );
+        if ( feedback && !skipGenericLogging )
+        {
+          feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n output(s)).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
         }
       }
 
-      childAlg.reset( nullptr );
-      modelFeedback.setCurrentStep( executed.count() );
-      if ( feedback && !skipGenericLogging )
-        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n output(s)).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
+      // trim out just the portion of the overall log which relates to this child
+      const QString thisAlgorithmHtmlLog = feedback->htmlLog().mid( previousHtmlLogLength );
+      previousHtmlLogLength = feedback->htmlLog().length();
+
+      if ( !runResult )
+      {
+        const QString formattedException = QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) );
+        const QString formattedRunTime = QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( QObject::tr( "Failed after %1 s." ).arg( childTime.elapsed() / 1000.0 ).toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) );
+
+        childResult.setHtmlLog( thisAlgorithmHtmlLog + formattedException + formattedRunTime );
+        context.modelResult().childResults().insert( childId, childResult );
+
+        throw QgsProcessingException( error );
+      }
+      else
+      {
+        childResult.setHtmlLog( thisAlgorithmHtmlLog );
+        context.modelResult().childResults().insert( childId, childResult );
+      }
     }
 
     if ( feedback && feedback->isCanceled() )

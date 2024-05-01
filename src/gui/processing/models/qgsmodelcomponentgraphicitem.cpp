@@ -890,6 +890,44 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
       QAction *deactivateAction = popupmenu->addAction( QObject::tr( "Deactivate" ) );
       connect( deactivateAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deactivateAlgorithm );
     }
+
+    // only show the "View Output Layers" action for algorithms which create layers
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      const QList< const QgsProcessingParameterDefinition * > outputParams = algorithm->destinationParameterDefinitions();
+      if ( !outputParams.isEmpty() )
+      {
+        popupmenu->addSeparator();
+        QAction *viewOutputLayersAction = popupmenu->addAction( QObject::tr( "View Output Layers" ) );
+        viewOutputLayersAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionShowSelectedLayers.svg" ) ) );
+        connect( viewOutputLayersAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::showPreviousResults );
+        // enable this action only when the child succeeded
+        switch ( mResults.executionStatus() )
+        {
+          case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
+          case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed:
+            viewOutputLayersAction->setEnabled( false );
+            break;
+
+          case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success:
+            break;
+        }
+      }
+    }
+
+    QAction *viewLogAction = popupmenu->addAction( QObject::tr( "View Log…" ) );
+    connect( viewLogAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::showLog );
+    // enable this action even when the child failed
+    switch ( mResults.executionStatus() )
+    {
+      case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
+        viewLogAction->setEnabled( false );
+        break;
+
+      case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success:
+      case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed:
+        break;
+    }
   }
 
   popupmenu->exec( event->screenPos() );
@@ -986,6 +1024,8 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
     if ( !child->algorithm() )
       return QString();
 
+    const QVariantMap inputs = mResults.inputs();
+    const QVariantMap outputs = mResults.outputs();
     switch ( edge )
     {
       case Qt::BottomEdge:
@@ -1001,9 +1041,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
 
         const QgsProcessingOutputDefinition *output = child->algorithm()->outputDefinitions().at( index );
         QString title = output->description();
-        if ( mResults.contains( output->name() ) )
+        if ( outputs.contains( output->name() ) )
         {
-          title += QStringLiteral( ": %1" ).arg( mResults.value( output->name() ).toString() );
+          title += QStringLiteral( ": %1" ).arg( outputs.value( output->name() ).toString() );
         }
         return truncatedTextForItem( title );
       }
@@ -1026,8 +1066,8 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         }
 
         QString title = params.at( index )->description();
-        if ( !mInputs.value( params.at( index )->name() ).toString().isEmpty() )
-          title +=  QStringLiteral( ": %1" ).arg( mInputs.value( params.at( index )->name() ).toString() );
+        if ( !inputs.value( params.at( index )->name() ).toString().isEmpty() )
+          title +=  QStringLiteral( ": %1" ).arg( inputs.value( params.at( index )->name() ).toString() );
         return truncatedTextForItem( title );
       }
 
@@ -1057,22 +1097,12 @@ bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
   return false;
 }
 
-void QgsModelChildAlgorithmGraphicItem::setResults( const QVariantMap &results )
+void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChildAlgorithmResult &results )
 {
   if ( mResults == results )
     return;
 
   mResults = results;
-  update();
-  emit updateArrowPaths();
-}
-
-void QgsModelChildAlgorithmGraphicItem::setInputs( const QVariantMap &inputs )
-{
-  if ( mInputs == inputs )
-    return;
-
-  mInputs = inputs;
   update();
   emit updateArrowPaths();
 }

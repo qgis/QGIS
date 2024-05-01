@@ -63,6 +63,11 @@ void QgsServiceAreaFromPointAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
                 Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
 
+  std::unique_ptr< QgsProcessingParameterNumber > maxPointDistanceFromNetwork = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "POINT_TOLERANCE" ), QObject::tr( "Maximum point distance from network" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 );
+  maxPointDistanceFromNetwork->setFlags( maxPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  maxPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the point to the network layer. If the point is further from the network than this distance an error will be raised." ) );
+  addParameter( maxPointDistanceFromNetwork.release() );
+
   std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
   includeBounds->setFlags( includeBounds->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( includeBounds.release() );
@@ -100,11 +105,24 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
   QVector< QgsPointXY > snappedPoints;
-  mDirector->makeGraph( mBuilder.get(), QVector< QgsPointXY >() << startPoint, snappedPoints, feedback );
+  mDirector->makeGraph( mBuilder.get(), { startPoint }, snappedPoints, feedback );
+  const QgsPointXY snappedStartPoint = snappedPoints[0];
+
+  // check distance for the snapped point
+  if ( parameters.value( QStringLiteral( "POINT_TOLERANCE" ) ).isValid() )
+  {
+    const double pointDistanceThreshold = parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context );
+
+    const double distancePointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    if ( distancePointToNetwork > pointDistanceThreshold )
+    {
+      throw QgsProcessingException( QObject::tr( "Point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distancePointToNetwork ).arg( pointDistanceThreshold ) );
+    }
+  }
 
   feedback->pushInfo( QObject::tr( "Calculating service area…" ) );
   std::unique_ptr< QgsGraph> graph( mBuilder->takeGraph() );
-  const int idxStart = graph->findVertex( snappedPoints[0] );
+  const int idxStart = graph->findVertex( snappedStartPoint );
 
   QVector< int > tree;
   QVector< double > costs;

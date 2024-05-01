@@ -187,6 +187,34 @@ Returns the extension of a Property.
     QString id() const;
 %Docstring
 Returns the layer's unique ID, which is used to access this layer from :py:class:`QgsProject`.
+
+.. seealso:: :py:func:`setId`
+
+.. seealso:: :py:func:`idChanged`
+%End
+
+    bool setId( const QString &id );
+%Docstring
+Sets the layer's ``id``.
+
+Returns ``True`` if the layer ID was successfully changed, or ``False`` if it could not be changed (e.g. because
+the layer is owned by a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`).
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the layer ID is unique in the desired context.
+   Generally this method should not be called, and the auto generated ID should be used instead.
+
+.. warning::
+
+   This method should not be called on layers which already belong to a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`.
+
+
+.. seealso:: :py:func:`id`
+
+.. seealso:: :py:func:`idChanged`
+
+.. versionadded:: 3.38
 %End
 
     void setName( const QString &name );
@@ -780,11 +808,110 @@ after accessing data by :py:func:`~QgsMapLayer.draw` etc.
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the layer's spatial reference system.
+
+.. warning::
+
+   Since QGIS 3.38, consider using :py:func:`~QgsMapLayer.crs3D` whenever transforming 3D data or whenever
+   z/elevation value handling is important.
+
+.. seealso:: :py:func:`setCrs`
+
+.. seealso:: :py:func:`crs3D`
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. seealso:: :py:func:`crsChanged`
+%End
+
+    QgsCoordinateReferenceSystem verticalCrs() const;
+%Docstring
+Returns the layer's vertical coordinate reference system.
+
+If the layer :py:func:`~QgsMapLayer.crs` is a compound CRS, then the CRS returned will
+be the vertical component of :py:func:`~QgsMapLayer.crs`. Otherwise it will be the value
+explicitly set by a call to :py:func:`~QgsMapLayer.setVerticalCrs`.
+
+The returned CRS will be invalid if the layer has no vertical CRS.
+
+.. note::
+
+   Consider also using :py:func:`~QgsMapLayer.crs3D`, which will return a CRS which takes into account
+   both :py:func:`~QgsMapLayer.crs` and :py:func:`~QgsMapLayer.verticalCrs`.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`crs3D`
+
+.. seealso:: :py:func:`setVerticalCrs`
+
+
+.. versionadded:: 3.38
+%End
+
+    QgsCoordinateReferenceSystem crs3D() const;
+%Docstring
+Returns the CRS to use for the layer when transforming 3D data, or when z/elevation
+value handling is important.
+
+The returned CRS will take into account :py:func:`~QgsMapLayer.verticalCrs` when appropriate, e.g. it may return a compound
+CRS consisting of :py:func:`~QgsMapLayer.crs` + :py:func:`~QgsMapLayer.verticalCrs`. This method may still return a 2D CRS, e.g in the
+case that :py:func:`~QgsMapLayer.crs` is a 2D CRS and no :py:func:`~QgsMapLayer.verticalCrs` has been set for the layer. Check :py:func:`QgsCoordinateReferenceSystem.type()`
+on the returned value to determine the type of CRS returned by this method.
+
+.. warning::
+
+   It is NOT guaranteed that the returned CRS will actually be a 3D CRS, but rather
+   it is guaranteed that the returned CRS is ALWAYS the most appropriate CRS to use when handling 3D data.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. seealso:: :py:func:`crs3DChanged`
+
+
+.. versionadded:: 3.38
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
 %Docstring
-Sets layer's spatial reference system
+Sets layer's spatial reference system.
+
+If ``emitSignal`` is ``True``, changing the CRS will trigger a :py:func:`~QgsMapLayer.crsChanged` signal. Additionally, if ``crs`` is a compound
+CRS, then the :py:func:`~QgsMapLayer.verticalCrsChanged` signal will also be emitted.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`setVerticalCrs`
+%End
+
+    bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage /Out/ = 0 );
+%Docstring
+Sets the layer's vertical coordinate reference system.
+
+The :py:func:`~QgsMapLayer.verticalCrsChanged` signal will be raised if the vertical CRS is changed.
+
+.. note::
+
+   If the layer :py:func:`~QgsMapLayer.crs` is a compound CRS, then the CRS returned for
+   :py:func:`~QgsMapLayer.verticalCrs` will be the vertical component of :py:func:`~QgsMapLayer.crs`. Otherwise it will be the value
+   explicitly set by this call.
+
+:param crs: the vertical CRS
+
+
+:return: - ``True`` if vertical CRS was successfully set
+         - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
+
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. seealso:: :py:func:`setCrs`
+
+
+.. versionadded:: 3.38
 %End
 
     QgsCoordinateTransformContext transformContext( ) const;
@@ -1777,6 +1904,17 @@ just before the references of this layer are resolved.
 Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
 %End
 
+    void idChanged( const QString &id );
+%Docstring
+Emitted when the layer's ID has been changed.
+
+.. seealso:: :py:func:`id`
+
+.. seealso:: :py:func:`setId`
+
+.. versionadded:: 3.38
+%End
+
     void nameChanged();
 %Docstring
 Emitted when the name has been changed
@@ -1784,7 +1922,49 @@ Emitted when the name has been changed
 
     void crsChanged();
 %Docstring
-Emit a signal that layer's CRS has been reset
+Emitted when the :py:func:`~QgsMapLayer.crs` of the layer has changed.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`setCrs`
+
+.. seealso:: :py:func:`verticalCrsChanged`
+
+.. seealso:: :py:func:`crs3DChanged`
+%End
+
+    void crs3DChanged();
+%Docstring
+Emitted when the :py:func:`~QgsMapLayer.crs3D` of the layer has changed.
+
+.. seealso:: :py:func:`crs3D`
+
+.. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`verticalCrsChanged`
+
+.. versionadded:: 3.38
+%End
+
+    void verticalCrsChanged();
+%Docstring
+Emitted when the :py:func:`~QgsMapLayer.verticalCrs` of the layer has changed.
+
+This signal will be emitted whenever the vertical CRS of the layer is changed, either
+as a direct result of a call to :py:func:`~QgsMapLayer.setVerticalCrs` or when :py:func:`~QgsMapLayer.setCrs` is called with a compound
+CRS.
+
+.. seealso:: :py:func:`crsChanged`
+
+.. seealso:: :py:func:`crs3DChanged`
+
+.. seealso:: :py:func:`setCrs`
+
+.. seealso:: :py:func:`setVerticalCrs`
+
+.. seealso:: :py:func:`verticalCrs`
+
+.. versionadded:: 3.38
 %End
 
     void repaintRequested( bool deferredUpdate = false );

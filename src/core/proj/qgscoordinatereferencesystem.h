@@ -344,9 +344,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Returns an invalid CRS if the inputs are not suitable for a compound CRS,
      * or the compound CRS could not be created for the combination.
      *
+     * \param horizontalCrs horizontal component for CRS
+     * \param verticalCrs vertical component for CRS
+     * \param error will be set to a descriptive error if the compound CRS could not be created
+     *
+     * \returns compound CRS if it was possible to create one, or an invalid CRS if not
+     *
      * \since QGIS 3.38
      */
-    static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs );
+    static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs, QString &error SIP_OUT );
 
     // Misc helper functions -----------------------
 
@@ -1020,9 +1026,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * An invalid CRS will be returned if the object does not contain a vertical component.
      *
      * \see horizontalCrs()
+     * \see hasVerticalAxis()
+     *
      * \since QGIS 3.38
      */
     QgsCoordinateReferenceSystem verticalCrs() const;
+
+    /**
+     * Returns TRUE if the CRS has a vertical axis.
+     *
+     * \see verticalCrs()
+     * \since QGIS 3.38
+     */
+    bool hasVerticalAxis() const;
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;

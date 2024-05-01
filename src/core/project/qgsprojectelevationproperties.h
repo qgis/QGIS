@@ -100,6 +100,29 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      */
     QgsDoubleRange elevationRange() const { return mElevationRange; }
 
+    /**
+     * Returns the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+     *
+     * Returns -1 if no fixed elevation range size is desired.
+     *
+     * A fixed size forces the selected elevation range to have a matching difference between
+     * the upper and lower elevation.
+     *
+     * \see setElevationFilterRangeSize()
+     *
+     * \since QGIS 3.38
+     */
+    double elevationFilterRangeSize() const { return mElevationFilterRangeSize; }
+
+    /**
+     * Returns TRUE if the elevation range filter slider should be inverted for this project.
+     *
+     * \see setInvertElevationFilter()
+     *
+     * \since QGIS 3.38
+     */
+    bool invertElevationFilter() const { return mInvertElevationFilter; }
+
   public slots:
 
     /**
@@ -115,6 +138,29 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      * \since QGIS 3.38
      */
     void setElevationRange( const QgsDoubleRange &range );
+
+    /**
+     * Sets the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+     *
+     * Set to -1 if no fixed elevation range size is desired.
+     *
+     * A fixed size forces the selected elevation range to have a matching difference between
+     * the upper and lower elevation.
+     *
+     * \see elevationFilterRangeSize()
+     *
+     * \since QGIS 3.38
+     */
+    void setElevationFilterRangeSize( double size );
+
+    /**
+     * Sets whether the elevation range filter slider should be inverted for this project.
+     *
+     * \see invertElevationFilter()
+     *
+     * \since QGIS 3.38
+     */
+    void setInvertElevationFilter( bool invert );
 
   signals:
 
@@ -140,6 +186,8 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
 
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
     QgsDoubleRange mElevationRange;
+    double mElevationFilterRangeSize = -1;
+    bool mInvertElevationFilter = false;
 
 };
 

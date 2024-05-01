@@ -25,7 +25,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayerfactory.h"
-#include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
 #include "qgssnappingconfig.h"
@@ -74,6 +73,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsrunnableprovidercreator.h"
 #include "qgssettingsregistrycore.h"
+#include "qgspluginlayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -941,6 +941,13 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
   return mCrs;
 }
 
+QgsCoordinateReferenceSystem QgsProject::crs3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs3D.isValid() ? mCrs3D : mCrs;
+}
+
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -948,6 +955,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
   if ( crs != mCrs )
   {
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+    const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
     mCrs = crs;
     writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -957,11 +965,15 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
     if ( !mMainAnnotationLayer->crs().isValid() || mMainAnnotationLayer->isEmpty() )
       mMainAnnotationLayer->setCrs( crs );
 
+    rebuildCrs3D();
+
     setDirty( true );
     emit crsChanged();
     // Did vertical crs also change as a result of this? If so, emit signal
     if ( oldVerticalCrs != verticalCrs() )
       emit verticalCrsChanged();
+    if ( oldCrs3D != mCrs3D )
+      emit crs3DChanged();
   }
 
   if ( adjustEllipsoid )
@@ -1024,7 +1036,7 @@ QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
 bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
+  bool res = true;
   if ( crs.isValid() )
   {
     // validate that passed crs is a vertical crs
@@ -1054,6 +1066,7 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
   if ( crs != mVerticalCrs )
   {
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
+    const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
 
     switch ( mCrs.type() )
     {
@@ -1066,12 +1079,36 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
         }
         break;
 
+      case Qgis::CrsType::Geographic3d:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Geocentric:
+        if ( crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
+      case Qgis::CrsType::Projected:
+        if ( mCrs.hasVerticalAxis() && crs != oldVerticalCrs )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored" );
+          return false;
+        }
+        break;
+
       case Qgis::CrsType::Unknown:
       case Qgis::CrsType::Geodetic:
-      case Qgis::CrsType::Geocentric:
       case Qgis::CrsType::Geographic2d:
-      case Qgis::CrsType::Geographic3d:
-      case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
       case Qgis::CrsType::Bound:
@@ -1082,6 +1119,7 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
     }
 
     mVerticalCrs = crs;
+    res = rebuildCrs3D( errorMessage );
     mProjectScope.reset();
 
     setDirty( true );
@@ -1089,8 +1127,10 @@ bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QStrin
     // then we haven't actually changed the vertical crs by this call!
     if ( verticalCrs() != oldVerticalCrs )
       emit verticalCrsChanged();
+    if ( mCrs3D != oldCrs3D )
+      emit crs3DChanged();
   }
-  return true;
+  return res;
 }
 
 QgsCoordinateTransformContext QgsProject::transformContext() const
@@ -1142,6 +1182,7 @@ void QgsProject::clear()
   mCustomVariables.clear();
   mCrs = QgsCoordinateReferenceSystem();
   mVerticalCrs = QgsCoordinateReferenceSystem();
+  mCrs3D = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   mElevationShadingRenderer = QgsElevationShadingRenderer();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
@@ -1239,6 +1280,7 @@ void QgsProject::clear()
   if ( !mBlockChangeSignalsDuringClear )
   {
     emit verticalCrsChanged();
+    emit crs3DChanged();
   }
   emit cleared();
 }
@@ -1426,11 +1468,16 @@ void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode m
 static  QgsMapLayer::ReadFlags projectFlagsToLayerReadFlags( Qgis::ProjectReadFlags projectReadFlags, Qgis::ProjectFlags projectFlags )
 {
   QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
+  // Propagate don't resolve layers
   if ( projectReadFlags & Qgis::ProjectReadFlag::DontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   // Propagate trust layer metadata flag
+  // Propagate read extent from XML based trust layer metadata flag
   if ( ( projectFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( projectReadFlags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
+  {
     layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
+    layerFlags |= QgsMapLayer::FlagReadExtentFromXml;
+  }
   // Propagate open layers in read-only mode
   if ( ( projectReadFlags & Qgis::ProjectReadFlag::ForceReadOnlyLayers ) )
     layerFlags |= QgsMapLayer::FlagForceReadOnly;
@@ -1561,6 +1608,60 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
 void QgsProject::releaseHandlesToProjectArchive()
 {
   mStyleSettings->removeProjectStyle();
+}
+
+bool QgsProject::rebuildCrs3D( QString *error )
+{
+  bool res = true;
+  if ( !mCrs.isValid() )
+  {
+    mCrs3D = QgsCoordinateReferenceSystem();
+  }
+  else if ( !mVerticalCrs.isValid() )
+  {
+    mCrs3D = mCrs;
+  }
+  else
+  {
+    switch ( mCrs.type() )
+    {
+      case Qgis::CrsType::Compound:
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Geocentric:
+        mCrs3D = mCrs;
+        break;
+
+      case Qgis::CrsType::Projected:
+      {
+        QString tempError;
+        mCrs3D = mCrs.hasVerticalAxis() ? mCrs : QgsCoordinateReferenceSystem::createCompoundCrs( mCrs, mVerticalCrs, error ? *error : tempError );
+        res = mCrs3D.isValid();
+        break;
+      }
+
+      case Qgis::CrsType::Vertical:
+        // nonsense situation
+        mCrs3D = QgsCoordinateReferenceSystem();
+        res = false;
+        break;
+
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+      {
+        QString tempError;
+        mCrs3D = QgsCoordinateReferenceSystem::createCompoundCrs( mCrs, mVerticalCrs, error ? *error : tempError );
+        res = mCrs3D.isValid();
+        break;
+      }
+    }
+  }
+  return res;
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
@@ -1772,7 +1873,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
   // apply specific settings to vector layer
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
   {
-    vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
+    vl->setReadExtentFromXml( layerFlags & QgsMapLayer::FlagReadExtentFromXml );
     if ( vl->dataProvider() )
     {
       const bool evaluateDefaultValues = mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
@@ -2013,7 +2114,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const QString fileName = mFile.fileName();
 
   const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
-
+  const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
 
   // NOTE [ND] -- I suspect this is wrong, as the archive may contain any number of non-auxiliary
   // storage related files from the previously loaded project.
@@ -2147,6 +2248,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     }
     mVerticalCrs = verticalCrs;
   }
+  rebuildCrs3D();
 
   QStringList datumErrors;
   if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) && !datumErrors.empty() )
@@ -2492,6 +2594,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   emit crsChanged();
   if ( verticalCrs() != oldVerticalCrs )
     emit verticalCrsChanged();
+  if ( mCrs3D != oldCrs3D )
+    emit crs3DChanged();
   emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend

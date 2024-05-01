@@ -38,7 +38,8 @@
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsscreenhelper.h"
 #include "qgsmessagelog.h"
-
+#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsproject.h"
 #include <QShortcut>
 #include <QKeySequence>
 #include <QFileDialog>
@@ -85,6 +86,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   , mToolsActionGroup( new QActionGroup( this ) )
 {
   setupUi( this );
+
+  mLayerStore.setProject( QgsProject::instance() );
 
   mScreenHelper = new QgsScreenHelper( this );
 
@@ -157,6 +160,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionReorderOutputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderOutputs );
   connect( mActionEditHelp, &QAction::triggered, this, &QgsModelDesignerDialog::editHelp );
   connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mActionRun, &QAction::triggered, this, &QgsModelDesignerDialog::run );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -489,7 +493,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
-  mScene->setChildAlgorithmResults( mChildResults );
+  mScene->setLastRunResult( mLastResult );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
 
@@ -508,6 +512,8 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
+  connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmOutputs, this, &QgsModelDesignerDialog::showChildAlgorithmOutputs );
+  connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmLog, this, &QgsModelDesignerDialog::showChildAlgorithmLog );
 
   mView->centerOn( center );
 
@@ -590,18 +596,11 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
   }
 }
 
-void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QVariantMap &results )
+void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &result )
 {
-  mChildResults = results;
+  mLastResult = result;
   if ( mScene )
-    mScene->setChildAlgorithmResults( mChildResults );
-}
-
-void QgsModelDesignerDialog::setLastRunChildAlgorithmInputs( const QVariantMap &inputs )
-{
-  mChildInputs = inputs;
-  if ( mScene )
-    mScene->setChildAlgorithmInputs( mChildInputs );
+    mScene->setLastRunResult( mLastResult );
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -992,6 +991,152 @@ void QgsModelDesignerDialog::editHelp()
     mModel->setHelpContent( dialog.helpContent() );
     endUndoCommand();
   }
+}
+
+void QgsModelDesignerDialog::run()
+{
+  QStringList errors;
+  const bool isValid = model()->validate( errors );
+  if ( !isValid )
+  {
+    QMessageBox messageBox;
+    messageBox.setWindowTitle( tr( "Model is Invalid" ) );
+    messageBox.setIcon( QMessageBox::Icon::Warning );
+    messageBox.setText( tr( "This model is not valid and contains one or more issues. Are you sure you want to run it in this state?" ) );
+    messageBox.setStandardButtons( QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::Cancel );
+    messageBox.setDefaultButton( QMessageBox::StandardButton::Cancel );
+
+    QString errorString;
+    for ( const QString &error : std::as_const( errors ) )
+    {
+      QString cleanedError = error;
+      const thread_local QRegularExpression re( QStringLiteral( "<[^>]*>" ) );
+      cleanedError.replace( re, QString() );
+      errorString += QStringLiteral( "• %1\n" ).arg( cleanedError );
+    }
+
+    messageBox.setDetailedText( errorString );
+    if ( messageBox.exec() == QMessageBox::StandardButton::Cancel )
+      return;
+  }
+
+  std::unique_ptr< QgsProcessingAlgorithmDialogBase > dialog( createExecutionDialog() );
+  if ( !dialog )
+    return;
+
+  dialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+  dialog->setParameters( mModel->designerParameterValues() );
+
+  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & )
+  {
+    QgsProcessingContext *context = dialog->processingContext();
+
+    setLastRunResult( context->modelResult() );
+
+    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+
+    // take child output layers
+    mLayerStore.temporaryLayerStore()->removeAllMapLayers();
+    mLayerStore.takeResultsFrom( *context );
+  } );
+
+  dialog->exec();
+}
+
+void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
+{
+  const QString childDescription = mModel->childAlgorithm( childId ).description();
+
+  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
+  const QVariantMap childAlgorithmOutputs = result.outputs();
+  if ( childAlgorithmOutputs.isEmpty() )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
+    return;
+  }
+
+  const QgsProcessingAlgorithm *algorithm = mModel->childAlgorithm( childId ).algorithm();
+  if ( !algorithm )
+  {
+    mMessageBar->pushCritical( QString(), tr( "Results cannot be shown for an invalid model component" ) );
+    return;
+  }
+
+  const QList< const QgsProcessingParameterDefinition * > outputParams = algorithm->destinationParameterDefinitions();
+  if ( outputParams.isEmpty() )
+  {
+    // this situation should not arise in normal use, we don't show the action in this case
+    QgsDebugError( "Cannot show results for algorithms with no outputs" );
+    return;
+  }
+
+  bool foundResults = false;
+  for ( const QgsProcessingParameterDefinition *outputParam : outputParams )
+  {
+    const QVariant output = childAlgorithmOutputs.value( outputParam->name() );
+    if ( !output.isValid() )
+      continue;
+
+    if ( output.type() == QVariant::String )
+    {
+      if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( output.toString(), mLayerStore ) )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Loading previous result for %1: %2" ).arg( outputParam->name(), output.toString() ), 2 );
+
+        std::unique_ptr< QgsMapLayer > layer( resultLayer->clone() );
+
+        QString baseName;
+        if ( outputParams.size() > 1 )
+          baseName = tr( "%1 — %2" ).arg( childDescription, outputParam->name() );
+        else
+          baseName = childDescription;
+
+        // make name unique, so that's it's easy to see which is the most recent result.
+        // (this helps when running the model multiple times.)
+        QString name = baseName;
+        int counter = 1;
+        while ( !QgsProject::instance()->mapLayersByName( name ).empty() )
+        {
+          counter += 1;
+          name = tr( "%1 (%2)" ).arg( baseName ).arg( counter );
+        }
+
+        layer->setName( name );
+
+        QgsProject::instance()->addMapLayer( layer.release() );
+        foundResults = true;
+      }
+      else
+      {
+        // should not happen in normal operation
+        QgsDebugError( QStringLiteral( "Could not load previous result for %1: %2" ).arg( outputParam->name(), output.toString() ) );
+      }
+    }
+  }
+
+  if ( !foundResults )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
+    return;
+  }
+}
+
+void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
+{
+  const QString childDescription = mModel->childAlgorithm( childId ).description();
+
+  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
+  if ( result.htmlLog().isEmpty() )
+  {
+    mMessageBar->pushWarning( QString(), tr( "No log is available for %1" ).arg( childDescription ) );
+    return;
+  }
+
+  QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
+  m.setWindowTitle( childDescription );
+  m.setCheckBoxVisible( false );
+  m.setMessageAsHtml( result.htmlLog() );
+  m.exec();
 }
 
 void QgsModelDesignerDialog::validate()

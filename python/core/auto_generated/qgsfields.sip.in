@@ -29,6 +29,9 @@ In addition to storing a list of :py:class:`QgsField` instances, it also:
 #include "qgsfields.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum FieldOrigin
     {
@@ -289,7 +292,7 @@ name of the field.
 .. seealso:: :py:func:`lookupField`
 %End
 
-    int lookupField( const QString &fieldName ) const;
+     int lookupField( const QString &fieldName ) const;
 %Docstring
 Looks up field's index from the field name.
 This method matches in the following order:
