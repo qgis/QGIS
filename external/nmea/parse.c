@@ -422,7 +422,7 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
                      &( pack->utc.day ), &( pack->utc.mon ), &( pack->utc.year ),
                      &( pack->declination ), &( pack->declin_ew ), &( pack->mode ), &( pack->navstatus ) );
 
-  if ( nsen != 14 && nsen != 15 && nsen != 16 )
+  if ( nsen < 14 || nsen > 16 )
   {
     nmea_error( "G?RMC parse error!" );
     return 0;
