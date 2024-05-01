@@ -745,6 +745,18 @@ class TestPointPlacement(TestPlacementBase):
         self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
+    def test_point_ordered_placement_over_point(self):
+        # Test ordered placements using over point placement
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Placement.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.PredefinedPositionOrder, QgsProperty.fromExpression("'O'"))
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.PredefinedPositionOrder, QgsProperty())
+        self.layer = None
+
     def test_point_ordered_symbol_bound_offset(self):
         # Test ordered placements for point using symbol bounds offset
         self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')

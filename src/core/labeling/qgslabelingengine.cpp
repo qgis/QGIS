@@ -740,6 +740,9 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<Qgis::Lab
       case Qgis::LabelPredefinedPointPosition::BottomRight:
         predefinedOrderString << QStringLiteral( "BR" );
         break;
+      case Qgis::LabelPredefinedPointPosition::OverPoint:
+        predefinedOrderString << QStringLiteral( "O" );
+        break;
     }
   }
   return predefinedOrderString.join( ',' );
@@ -777,6 +780,8 @@ QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPo
       result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
     else if ( cleaned == QLatin1String( "BR" ) )
       result << Qgis::LabelPredefinedPointPosition::BottomRight;
+    else if ( cleaned == QLatin1String( "O" ) )
+      result << Qgis::LabelPredefinedPointPosition::OverPoint;
   }
   return result;
 }
