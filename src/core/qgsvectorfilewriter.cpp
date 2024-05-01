@@ -3645,8 +3645,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
       }
       catch ( QgsCsException &e )
       {
-        QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
-                      .arg( fet.id() ).arg( e.what() );
+        const QString msg = QObject::tr( "Failed to transform feature with ID '%1'. Writing stopped. (Exception: %2)" )
+                            .arg( fet.id() ).arg( e.what() );
         QgsLogger::warning( msg );
         if ( errorMessage )
           *errorMessage = msg;
