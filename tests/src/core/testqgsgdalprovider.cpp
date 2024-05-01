@@ -669,27 +669,26 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // tiff with two raster layers and TIFF Tags describing sublayers
-  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/gtiff_subdataset_tags.tif" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif" );
   QCOMPARE( res.count(), 2 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "Test Image Name 1" ) );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "Test Document Name 1" ) );
   QCOMPARE( res.at( 0 ).description(), QStringLiteral( "Test Image Description 1" ) );
-  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "GTIFF_DIR:1:%1/gtiff_subdataset_tags.tif:band1" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "GTIFF_DIR:1:%1/raster/gtiff_subdataset_tags.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
-  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 2 );
-  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "Test Image Name 2" ) );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "Test Document Name 2" ) );
   QCOMPARE( res.at( 1 ).description(), QStringLiteral( "Test Image Description 2" ) );
-  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "GTIFF_DIR:2:%1/gtiff_subdataset_tags.tiff:band2" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "GTIFF_DIR:2:%1/raster/gtiff_subdataset_tags.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
-  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GTiff" ) );
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
-
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
