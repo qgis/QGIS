@@ -202,6 +202,24 @@ class CORE_EXPORT QgsGpsInformation
     bool satInfoComplete = false;
 
     /**
+     * Returns the navigation status.
+     *
+     * \see setNavigationStatus()
+     *
+     * \since QGIS 3.38
+     */
+    Qgis::GpsNavigationStatus navigationStatus() const { return mNavigationStatus; }
+
+    /**
+     * Sets the navigation \a status.
+     *
+     * \see navigationStatus()
+     *
+     * \since QGIS 3.38
+     */
+    void setNavigationStatus( Qgis::GpsNavigationStatus status ) { mNavigationStatus = status; }
+
+    /**
      * Returns whether the connection information is valid
      * \since QGIS 3.10
      */
@@ -230,6 +248,7 @@ class CORE_EXPORT QgsGpsInformation
   private:
 
     QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > mConstellationFixStatus;
+    Qgis::GpsNavigationStatus mNavigationStatus = Qgis::GpsNavigationStatus::NotValid;
 
     friend class QgsNmeaConnection;
     friend class QgsQtLocationConnection;

@@ -896,6 +896,14 @@ The development version
       Simulation,
     };
 
+    enum class GpsNavigationStatus
+    {
+      NotValid,
+      Safe,
+      Caution,
+      Unsafe,
+    };
+
     enum class GpsInformationComponent
     {
       Location,

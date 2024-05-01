@@ -896,6 +896,14 @@ The development version
       Simulation,
     };
 
+    enum class GpsNavigationStatus /BaseType=IntEnum/
+    {
+      NotValid,
+      Safe,
+      Caution,
+      Unsafe,
+    };
+
     enum class GpsInformationComponent /BaseType=IntFlag/
     {
       Location,

@@ -88,6 +88,24 @@ Returns the best fix status and corresponding constellation.
 
     bool satInfoComplete;
 
+    Qgis::GpsNavigationStatus navigationStatus() const;
+%Docstring
+Returns the navigation status.
+
+.. seealso:: :py:func:`setNavigationStatus`
+
+.. versionadded:: 3.38
+%End
+
+    void setNavigationStatus( Qgis::GpsNavigationStatus status );
+%Docstring
+Sets the navigation ``status``.
+
+.. seealso:: :py:func:`navigationStatus`
+
+.. versionadded:: 3.38
+%End
+
     bool isValid() const;
 %Docstring
 Returns whether the connection information is valid
