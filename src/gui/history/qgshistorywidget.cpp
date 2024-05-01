@@ -18,10 +18,13 @@
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"
 #include "qgssettings.h"
+#include "qgsnative.h"
 
 #include <QTextBrowser>
 #include <QtGlobal>
 #include <QMenu>
+#include <QFileInfo>
+#include <QDesktopServices>
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -71,8 +74,10 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
       if ( !html.isEmpty() )
       {
         QTextBrowser *htmlBrowser = new QTextBrowser();
-        htmlBrowser->setOpenExternalLinks( true );
+        htmlBrowser->setOpenLinks( false );
         htmlBrowser->setHtml( html );
+        connect( htmlBrowser, &QTextBrowser::anchorClicked, this, &QgsHistoryWidget::urlClicked );
+
         newWidget = htmlBrowser;
       }
     }
@@ -122,6 +127,15 @@ void QgsHistoryWidget::showNodeContextMenu( const QPoint &pos )
     }
     delete menu;
   }
+}
+
+void QgsHistoryWidget::urlClicked( const QUrl &url )
+{
+  const QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }
 
 //
