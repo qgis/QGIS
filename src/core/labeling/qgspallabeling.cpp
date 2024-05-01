@@ -24,8 +24,6 @@
 #include "qgsstyle.h"
 #include "qgstextrenderer.h"
 
-#include <list>
-
 #include "pal/labelposition.h"
 
 #include <cmath>
@@ -221,7 +219,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
                             "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
                             "<b>L</b>=Left|<b>R</b>=Right|<br>"
                             "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
-                            "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ), origin )
+                            "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right|<b>O</b>=Over point]" ), origin )
     },
     {
       static_cast< int >( QgsPalLayerSettings::Property::LinePlacementOptions ), QgsPropertyDefinition( "LinePlacementFlags", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line placement options" ),  QObject::tr( "Comma separated list of placement options<br>" )

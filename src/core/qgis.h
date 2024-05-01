@@ -945,6 +945,7 @@ class CORE_EXPORT Qgis
       BottomMiddle, //!< Label directly below point
       BottomSlightlyRight, //!< Label below point, slightly right of center
       BottomRight, //!< Label on bottom right of point
+      OverPoint, //!< Label directly centered over point (since QGIS 3.38)
     };
     Q_ENUM( LabelPredefinedPointPosition )
 

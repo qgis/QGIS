@@ -41,13 +41,11 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
-#include "qgslabeling.h"
 #include "qgspolygon.h"
 #include "qgstextrendererutils.h"
 
 #include <QLinkedList>
 #include <cmath>
-#include <cfloat>
 
 using namespace pal;
 
@@ -522,6 +520,14 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
       alpha = 7 * M_PI_4;
       deltaX = -visualMargin.left() + symbolWidthOffset;
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      break;
+
+    case Qgis::LabelPredefinedPointPosition::OverPoint:
+      quadrant = LabelPosition::QuadrantOver;
+      alpha = 0;
+      distanceToLabel = 0;
+      deltaX = -labelWidth / 2.0;
+      deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
       break;
   }
 

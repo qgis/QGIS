@@ -577,6 +577,7 @@ The development version
       BottomMiddle,
       BottomSlightlyRight,
       BottomRight,
+      OverPoint,
     };
 
     enum class LabelOffsetType
