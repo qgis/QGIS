@@ -782,7 +782,22 @@ QDomElement QgsMeshRendererVectorWindBarbSettings::writeXml( QDomDocument &doc )
 
 double QgsMeshRendererVectorWindBarbSettings::magnitudeMultiplier() const
 {
-  return mMagnitudeMultiplier;
+  switch ( mMagnitudeUnits )
+  {
+    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::Knots:
+      return 1.0;
+    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::MetersPerSecond:
+      return 3600.0 / 1852.0;
+    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::KilometersPerHour:
+      return 1.0 / 1.852;
+    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::MilesPerHour:
+      return 1.609344 / 1.852;
+    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::FeetPerSecond:
+      return 3600.0 / 1.852 / 5280.0 * 1.609344 ;
+    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit:
+      return mMagnitudeMultiplier;
+  }
+  return 1.0; // should not reach
 }
 
 void QgsMeshRendererVectorWindBarbSettings::setMagnitudeMultiplier( double magnitudeMultiplier )

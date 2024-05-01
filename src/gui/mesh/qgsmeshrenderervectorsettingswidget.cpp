@@ -50,6 +50,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   mTracesMaxLengthSpinBox->setClearValue( 100.0 );
 
   mWindBarbLengthSpinBox->setClearValue( 10.0 );
+  mWindBarbMagnitudeMultiplierSpinBox->setValue( 1.0 );
   mWindBarbMagnitudeMultiplierSpinBox->setClearValue( 1.0 );
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
@@ -293,9 +294,9 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   // Wind Barb settings
   const QgsMeshRendererVectorWindBarbSettings windBarbSettings = settings.windBarbSettings();
   mWindBarbLengthSpinBox->setValue( windBarbSettings.shaftLength() );
-  mWindBarbMagnitudeMultiplierSpinBox->setValue( windBarbSettings.magnitudeMultiplier() );
   mWindBarbUnitsComboBox->setCurrentIndex( static_cast<int>( windBarbSettings.magnitudeUnits() ) );
-  onWindBarbUnitsChanged( static_cast<int>( windBarbSettings.magnitudeUnits() ) );
+  if ( windBarbSettings.magnitudeUnits() == QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit )
+    mWindBarbMagnitudeMultiplierSpinBox->setValue( windBarbSettings.magnitudeMultiplier() );
 }
 
 void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
@@ -333,30 +334,11 @@ void QgsMeshRendererVectorSettingsWidget::onWindBarbUnitsChanged( int currentInd
 {
   const QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit units =
     static_cast<QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit>( currentIndex );
-  double multiplier;
-  switch ( units )
-  {
-    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::Knots:
-    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit:
-      multiplier = 1.0;
-      break;
-    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::MetersPerSecond:
-      multiplier = 3600.0 / 1852.0;
-      break;
-    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::KilometersPerHour:
-      multiplier = 1.852;
-      break;
-    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::MilesPerHour:
-      multiplier = 1.609344 / 1.852;
-      break;
-    case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::FeetPerSecond:
-      multiplier = 3600.0 / 1.852 / 5280.0 * 1.609344 ;
-      break;
-  }
 
   mWindBarbMagnitudeMultiplierLabel->setVisible( units == QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit );
   mWindBarbMagnitudeMultiplierSpinBox->setVisible( units == QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit );
-  mWindBarbMagnitudeMultiplierSpinBox->setValue( multiplier );
+
+  emit widgetChanged();
 }
 
 void QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged()
