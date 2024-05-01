@@ -2,7 +2,7 @@
   qgsraycastingutils.h
   --------------------------------------
   Date                 : April 2024
-  Copyright            : (C) 2014 by Matthias Kuhn
+  Copyright            : (C) 2024 by Matthias Kuhn
   Email                : matthias@opengis.ch
  ***************************************************************************
  *                                                                         *
