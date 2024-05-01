@@ -5,9 +5,6 @@ on:
     workflows: [🪟 MingW64 Windows 64bit Build]
     types:
       - completed
-    branches-ignore:
-      - 'master'
-      - 'release*'
 
 permissions:
   contents: read
