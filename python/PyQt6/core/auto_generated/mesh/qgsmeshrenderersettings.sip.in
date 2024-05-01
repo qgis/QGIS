@@ -448,7 +448,8 @@ Represents a mesh renderer settings for vector datasets displayed with wind barb
 
     double magnitudeMultiplier() const;
 %Docstring
-Returns the multiplier for the magnitude to convert it to knots
+Returns the multiplier for the magnitude to convert it to knots, according to the units set with :py:func:`~QgsMeshRendererVectorWindBarbSettings.setMagnitudeUnits`
+A custom multiplier can be set with :py:func:`~QgsMeshRendererVectorWindBarbSettings.setMagnitudeMultiplier` for the case when units are set to OtherUnit
 %End
 
     void setMagnitudeMultiplier( double magnitudeMultiplier );

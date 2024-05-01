@@ -419,7 +419,8 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
     };
 
     /**
-     * Returns the multiplier for the magnitude to convert it to knots
+     * Returns the multiplier for the magnitude to convert it to knots, according to the units set with setMagnitudeUnits()
+     * A custom multiplier can be set with setMagnitudeMultiplier() for the case when units are set to OtherUnit
      */
     double magnitudeMultiplier() const;
 
