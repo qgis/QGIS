@@ -377,6 +377,23 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
       mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Invalid;
     }
   }
+
+  if ( result.navstatus == 'S' )
+  {
+    mLastGPSInformation.setNavigationStatus( Qgis::GpsNavigationStatus::Safe );
+  }
+  else if ( result.navstatus == 'C' )
+  {
+    mLastGPSInformation.setNavigationStatus( Qgis::GpsNavigationStatus::Caution );
+  }
+  else if ( result.navstatus == 'U' )
+  {
+    mLastGPSInformation.setNavigationStatus( Qgis::GpsNavigationStatus::Unsafe );
+  }
+  else
+  {
+    mLastGPSInformation.setNavigationStatus( Qgis::GpsNavigationStatus::NotValid );
+  }
 }
 
 void QgsNmeaConnection::processGsvSentence( const char *data, int len )

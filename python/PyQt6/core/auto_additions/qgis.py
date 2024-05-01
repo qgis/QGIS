@@ -1548,6 +1548,14 @@ Qgis.GpsQualityIndicator.__doc__ = "GPS signal quality indicator\n\n.. versionad
 # --
 Qgis.GpsQualityIndicator.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GpsNavigationStatus.NotValid.__doc__ = "Navigation status not valid"
+Qgis.GpsNavigationStatus.Safe.__doc__ = "Safe"
+Qgis.GpsNavigationStatus.Caution.__doc__ = "Caution"
+Qgis.GpsNavigationStatus.Unsafe.__doc__ = "Unsafe"
+Qgis.GpsNavigationStatus.__doc__ = "GPS navigation status.\n\n.. versionadded:: 3.38\n\n" + '* ``NotValid``: ' + Qgis.GpsNavigationStatus.NotValid.__doc__ + '\n' + '* ``Safe``: ' + Qgis.GpsNavigationStatus.Safe.__doc__ + '\n' + '* ``Caution``: ' + Qgis.GpsNavigationStatus.Caution.__doc__ + '\n' + '* ``Unsafe``: ' + Qgis.GpsNavigationStatus.Unsafe.__doc__
+# --
+Qgis.GpsNavigationStatus.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GpsInformationComponent.Location.__doc__ = "2D location (latitude/longitude), as a QgsPointXY value"
 Qgis.GpsInformationComponent.Altitude.__doc__ = "Altitude/elevation above or below the mean sea level"
 Qgis.GpsInformationComponent.GroundSpeed.__doc__ = "Ground speed"

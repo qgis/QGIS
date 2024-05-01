@@ -1522,6 +1522,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( GpsQualityIndicator )
 
     /**
+     * GPS navigation status.
+     *
+     * \since QGIS 3.38
+     */
+    enum class GpsNavigationStatus : int
+    {
+      NotValid, //!< Navigation status not valid
+      Safe, //!< Safe
+      Caution, //!< Caution
+      Unsafe, //!< Unsafe
+    };
+    Q_ENUM( GpsNavigationStatus );
+
+    /**
      * GPS information component.
      *
      * \since QGIS 3.30
