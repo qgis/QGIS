@@ -34,15 +34,6 @@
 #define M_DEG2RAD 0.0174532925
 #endif
 
-inline double mag( double input )
-{
-  if ( input < 0.0 )
-  {
-    return -1.0;
-  }
-  return 1.0;
-}
-
 inline bool nodataValue( double x, double y )
 {
   return ( std::isnan( x ) || std::isnan( y ) );
@@ -148,10 +139,10 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
 
   // Determine the angle of the vector, counter-clockwise, from east
   // (and associated trigs)
-  const double vectorAngle = -1.0 * atan( ( -1.0 * yVal ) / xVal ) - mContext.mapToPixel().mapRotation() * M_DEG2RAD;
+  const double vectorAngle = std::atan2( yVal, xVal ) - mContext.mapToPixel().mapRotation() * M_DEG2RAD;
 
-  cosAlpha = cos( vectorAngle ) * mag( xVal );
-  sinAlpha = sin( vectorAngle ) * mag( xVal );
+  cosAlpha = cos( vectorAngle );
+  sinAlpha = sin( vectorAngle );
 
   // Now determine the X and Y distances of the end of the line from the start
   double xDist = 0.0;
@@ -202,11 +193,8 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
 
   vectorLength = sqrt( xDist * xDist + yDist * yDist );
 
-  // Check to see if both of the coords are outside the QImage area, if so, skip the whole vector
-  if ( ( lineStart.x() < 0 || lineStart.x() > mOutputSize.width() ||
-         lineStart.y() < 0 || lineStart.y() > mOutputSize.height() ) &&
-       ( lineEnd.x() < 0   || lineEnd.x() > mOutputSize.width() ||
-         lineEnd.y() < 0   || lineEnd.y() > mOutputSize.height() ) )
+  // skip rendering if line bbox does not intersect the QImage area
+  if ( !QgsRectangle( lineStart, lineEnd ).intersects( QgsRectangle( 0, 0, mOutputSize.width(), mOutputSize.height() ) ) )
     return true;
 
   return false; //success
@@ -576,6 +564,9 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
 
   const double shaftLength = mContext.convertToPainterUnits( mCfg.windBarbSettings().shaftLength(),
                              mCfg.windBarbSettings().shaftLengthUnits() );
+  if ( shaftLength < 1 )
+    return;
+
   const double d = shaftLength / 25; // this is a magic number ratio between shaft length and other barb dimensions
   const double centerRadius = d;
   const double zeroCircleRadius = 2 * d;
@@ -585,27 +576,19 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
 
   // Determine the angle of the vector, counter-clockwise, from east
   // (and associated trigs)
-  const double vectorAngle = -1.0 * atan( ( -1.0 * yVal ) / xVal ) - mContext.mapToPixel().mapRotation() * M_DEG2RAD;
-  const double cosAlpha = cos( vectorAngle ) * mag( xVal );
-  const double sinAlpha = sin( vectorAngle ) * mag( xVal );
+  const double vectorAngle = std::atan2( yVal, xVal ) - mContext.mapToPixel().mapRotation() * M_DEG2RAD;
 
   // Now determine the X and Y distances of the end of the line from the start
   // Flip the Y axis (pixel vs real-world axis)
-  const double xDist = cosAlpha * shaftLength;
-  const double yDist = - sinAlpha * shaftLength;
-
-  if ( std::abs( xDist ) < 1 && std::abs( yDist ) < 1 )
-    return;
+  const double xDist = cos( vectorAngle ) * shaftLength;
+  const double yDist = - sin( vectorAngle ) * shaftLength;
 
   // Determine the line coords
   const QgsPointXY lineEnd = QgsPointXY( lineStart.x() - xDist,
                                          lineStart.y() - yDist );
 
-  // Check to see if both of the coords are outside the QImage area, if so, skip the whole vector
-  if ( ( lineStart.x() < 0 || lineStart.x() > mOutputSize.width() ||
-         lineStart.y() < 0 || lineStart.y() > mOutputSize.height() ) &&
-       ( lineEnd.x() < 0   || lineEnd.x() > mOutputSize.width() ||
-         lineEnd.y() < 0   || lineEnd.y() > mOutputSize.height() ) )
+  // skip rendering if line bbox does not intersect the QImage area
+  if ( !QgsRectangle( lineStart, lineEnd ).intersects( QgsRectangle( 0, 0, mOutputSize.width(), mOutputSize.height() ) ) )
     return;
 
   // scale the magnitude to convert it to knots
