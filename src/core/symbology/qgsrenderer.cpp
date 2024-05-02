@@ -39,6 +39,8 @@
 #include <QPolygonF>
 #include <QThread>
 
+QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
+
 QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point )
 {
   return QgsSymbol::_getPoint( context, point );
@@ -57,6 +59,7 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) co
   destRenderer->mOrderBy = mOrderBy;
   destRenderer->mOrderByEnabled = mOrderByEnabled;
   destRenderer->mReferenceScale = mReferenceScale;
+  destRenderer->mDataDefinedProperties = mDataDefinedProperties;
 }
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
@@ -69,6 +72,12 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
 QgsFeatureRenderer::~QgsFeatureRenderer()
 {
   delete mPaintEffect;
+}
+
+const QgsPropertiesDefinition &QgsFeatureRenderer::propertyDefinitions()
+{
+  QgsFeatureRenderer::initPropertyDefinitions();
+  return sPropertyDefinitions;
 }
 
 QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType geomType )
@@ -88,7 +97,7 @@ QSet< QString > QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feat
   return QSet< QString >();
 }
 
-void QgsFeatureRenderer::startRender( QgsRenderContext &, const QgsFields & )
+void QgsFeatureRenderer::startRender( QgsRenderContext &context, const QgsFields & )
 {
 #ifdef QGISDEBUG
   if ( !mThread )
@@ -100,6 +109,8 @@ void QgsFeatureRenderer::startRender( QgsRenderContext &, const QgsFields & )
     Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
   }
 #endif
+
+  mDataDefinedProperties.prepare( context.expressionContext() );
 }
 
 bool QgsFeatureRenderer::canSkipRender()
@@ -186,6 +197,10 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsRea
     const QDomElement orderByElem = element.firstChildElement( QStringLiteral( "orderby" ) );
     r->mOrderBy.load( orderByElem );
     r->setOrderByEnabled( element.attribute( QStringLiteral( "enableorderby" ), QStringLiteral( "0" ) ).toInt() );
+
+    const QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+    if ( !elemDataDefinedProperties.isNull() )
+      r->mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
   }
   return r;
 }
@@ -206,6 +221,10 @@ void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rende
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "referencescale" ), mReferenceScale );
+
+  QDomElement elemDataDefinedProperties = doc.createElement( QStringLiteral( "data-defined-properties" ) );
+  mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
+  rendererElem.appendChild( elemDataDefinedProperties );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -491,6 +510,11 @@ void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect = effect;
 }
 
+void QgsFeatureRenderer::setDataDefinedProperty( Property key, const QgsProperty &property )
+{
+  mDataDefinedProperties.setProperty( key, property );
+}
+
 QgsFeatureRequest::OrderBy QgsFeatureRenderer::orderBy() const
 {
   return mOrderBy;
@@ -558,6 +582,20 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol *symbol, const QString
                            : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
+}
+
+void QgsFeatureRenderer::initPropertyDefinitions()
+{
+  if ( !sPropertyDefinitions.isEmpty() )
+    return;
+
+  QString origin = QStringLiteral( "renderer" );
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapRadius ), QgsPropertyDefinition( "heatmapRadius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapMaximum ), QgsPropertyDefinition( "heatmapMaximum", QObject::tr( "Maximum" ), QgsPropertyDefinition::DoublePositive, origin )},
+  };
 }
 
 QgsSymbol *QgsSymbolLevelItem::symbol() const

@@ -82,6 +82,20 @@ class QgsFeatureRenderer
 %End
   public:
 
+    enum class Property /BaseType=IntEnum/
+    {
+      HeatmapRadius,
+      HeatmapMaximum,
+    };
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the symbol property definitions.
+
+.. versionadded:: 3.18
+%End
+
+
     static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Returns a new renderer - used by default in vector layers
@@ -451,6 +465,42 @@ Sets whether the renderer should be rendered to a raster destination.
 .. seealso:: :py:func:`forceRasterRender`
 %End
 
+    void setDataDefinedProperty( Property key, const QgsProperty &property );
+%Docstring
+Sets a data defined property for the renderer. Any existing property with the same key
+will be overwritten.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.38
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the renderer's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.38
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the renderer's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+
+.. versionadded:: 3.38
+%End
+
     double referenceScale() const;
 %Docstring
 Returns the symbology reference scale.
@@ -567,6 +617,7 @@ Currently clones
 - Reference scale
 - Symbol levels enabled/disabled
 - Force raster render enabled/disabled
+- Data defined properties
 
 :param destRenderer: destination renderer for copied effect
 
