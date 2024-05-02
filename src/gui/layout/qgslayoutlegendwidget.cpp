@@ -42,6 +42,7 @@
 #include "qgssymbol.h"
 #include "qgslayoutundostack.h"
 #include "qgsexpressionfinder.h"
+#include "qgscolorramplegendnode.h"
 
 #include <QMenu>
 #include <QMessageBox>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>359</width>
-    <height>368</height>
+    <height>399</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -78,7 +78,7 @@
        <widget class="QgsFilterLineEdit" name="mPrefixLineEdit"/>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="mPrefixLabel">
         <property name="text">
          <string>Prefix</string>
         </property>
@@ -92,7 +92,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="mSuffixLabel">
         <property name="text">
          <string>Suffix</string>
         </property>
@@ -106,7 +106,7 @@
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="mUnitLabelLabel_2">
+       <widget class="QLabel" name="mNumberFormatLabel">
         <property name="text">
          <string>Number format</string>
         </property>
