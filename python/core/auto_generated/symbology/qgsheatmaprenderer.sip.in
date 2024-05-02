@@ -60,6 +60,8 @@ Creates a new heatmap renderer instance from XML
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
 
@@ -81,6 +83,24 @@ Sets the color ramp to use for shading the heatmap.
 :param ramp: color ramp for heatmap. Ownership of ramp is transferred to the renderer.
 
 .. seealso:: :py:func:`colorRamp`
+%End
+
+    const QgsColorRampLegendNodeSettings &legendSettings() const;
+%Docstring
+Returns the color ramp legend settings.
+
+.. seealso:: :py:func:`setLegendSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setLegendSettings( const QgsColorRampLegendNodeSettings &settings );
+%Docstring
+Sets the color ramp legend ``settings``.
+
+.. seealso:: :py:func:`legendSettings`
+
+.. versionadded:: 3.38
 %End
 
     double radius() const;

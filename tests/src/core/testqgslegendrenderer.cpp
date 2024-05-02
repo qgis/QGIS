@@ -48,6 +48,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsheatmaprenderer.h"
 
 static void _setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
 {
@@ -206,6 +207,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testBigMarkerJson();
 
     void testLabelLegend();
+    void testHeatmap();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -1802,6 +1804,39 @@ void TestQgsLegendRenderer::testLabelLegend()
 
   vLayerLegend->setShowLabelLegend( bkLabelLegendEnabled );
   mVL3->setLabelsEnabled( bkLabelsEnabled );
+}
+
+void TestQgsLegendRenderer::testHeatmap()
+{
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
+
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Points" ), QStringLiteral( "Points" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vl );
+  QgsHeatmapRenderer *renderer = new QgsHeatmapRenderer();
+  renderer->setColorRamp( new QgsGradientColorRamp( QColor( 255, 0, 0 ), QColor( 255, 200, 100 ) ) );
+  QgsColorRampLegendNodeSettings rampSettings;
+
+  QFont font( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  QgsTextFormat f;
+  f.setSize( 16 );
+  f.setFont( font );
+  rampSettings.setTextFormat( f );
+  rampSettings.setMinimumLabel( "min" );
+  rampSettings.setMaximumLabel( "max" );
+  renderer->setLegendSettings( rampSettings );
+
+  vl->setRenderer( renderer );
+  vl->setLegend( new QgsDefaultVectorLayerLegend( vl ) );
+  root->addLayer( vl );
+
+  QgsLayerTreeModel legendModel( root.get() );
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  const QImage res = _renderLegend( &legendModel, settings );
+
+  QgsProject::instance()->removeMapLayer( vl );
+  QVERIFY( _verifyImage( res, QStringLiteral( "heatmap" ) ) );
 }
 
 
