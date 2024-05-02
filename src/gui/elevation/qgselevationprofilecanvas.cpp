@@ -845,7 +845,7 @@ void QgsElevationProfileCanvas::refresh()
 
   const QList< QgsMapLayer * > layersToGenerate = layers();
   QList< QgsAbstractProfileSource * > sources;
-  QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+  const QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
   sources.reserve( layersToGenerate.size() + registrySources.size() );
 
   sources << registrySources;

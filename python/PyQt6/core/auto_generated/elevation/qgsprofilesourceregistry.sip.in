@@ -39,14 +39,14 @@ Constructor - creates a registry of profile sources
 Returns a list of registered profile sources
 %End
 
-    void registerProfileSource( QgsAbstractProfileSource *profileSource /Transfer/ );
+    void registerProfileSource( QgsAbstractProfileSource *source /Transfer/ );
 %Docstring
-Registers a profileSource and takes ownership of it
+Registers a profile ``source`` and takes ownership of it
 %End
 
-    void unregisterProfileSource( QgsAbstractProfileSource *profileSource );
+    void unregisterProfileSource( QgsAbstractProfileSource *source );
 %Docstring
-Unregisters a profileSource and destroys its instance
+Unregisters a profile ``source`` and destroys its instance
 %End
 
 };
