@@ -32,6 +32,7 @@
 #include "qgsapplication.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -390,6 +391,27 @@ QString QgsFeatureRenderer::legendKeyToExpression( const QString &, QgsVectorLay
 QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
 {
   return QgsLegendSymbolList();
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsFeatureRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
+{
+  QList<QgsLayerTreeModelLegendNode *> nodes;
+
+  const QgsLegendSymbolList symbolItems = legendSymbolItems();
+  nodes.reserve( symbolItems.size() );
+
+  for ( const QgsLegendSymbolItem &item : symbolItems )
+  {
+    if ( const QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings = item.dataDefinedSizeLegendSettings() )
+    {
+      nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *dataDefinedSizeLegendSettings );
+    }
+    else
+    {
+      nodes << new QgsSymbolLegendNode( nodeLayer, item );
+    }
+  }
+  return nodes;
 }
 
 void QgsFeatureRenderer::setVertexMarkerAppearance( Qgis::VertexMarkerType type, double size )

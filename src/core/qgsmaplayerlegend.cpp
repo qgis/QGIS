@@ -384,26 +384,23 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  const auto constLegendSymbolItems = r->legendSymbolItems();
-  for ( const QgsLegendSymbolItem &i : constLegendSymbolItems )
+  const QList<QgsLayerTreeModelLegendNode *> rendererNodes = r->createLegendNodes( nodeLayer );
+  for ( QgsLayerTreeModelLegendNode *node : rendererNodes )
   {
-    if ( auto *lDataDefinedSizeLegendSettings = i.dataDefinedSizeLegendSettings() )
-      nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *lDataDefinedSizeLegendSettings );
-    else
+    if ( QgsSymbolLegendNode *legendNode = qobject_cast< QgsSymbolLegendNode *>( node ) )
     {
-      QgsSymbolLegendNode *legendNode = new QgsSymbolLegendNode( nodeLayer, i );
-      if ( mTextOnSymbolEnabled && mTextOnSymbolContent.contains( i.ruleKey() ) )
+      const QString ruleKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+      if ( mTextOnSymbolEnabled && mTextOnSymbolContent.contains( ruleKey ) )
       {
-        legendNode->setTextOnSymbolLabel( mTextOnSymbolContent.value( i.ruleKey() ) );
+        legendNode->setTextOnSymbolLabel( mTextOnSymbolContent.value( ruleKey ) );
         legendNode->setTextOnSymbolTextFormat( mTextOnSymbolTextFormat );
       }
-      nodes << legendNode;
     }
+    nodes << node;
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );
-
 
   if ( mLayer->diagramsEnabled() )
   {
@@ -439,7 +436,6 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
       }
     }
   }
-
 
   return nodes;
 }

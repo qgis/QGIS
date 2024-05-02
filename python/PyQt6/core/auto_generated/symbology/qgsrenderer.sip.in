@@ -358,7 +358,22 @@ the features displayed using that key.
 %Docstring
 Returns a list of symbology items for the legend
 
+.. seealso:: :py:func:`createLayerTreeModelLegendNodes`
+
 .. seealso:: :py:func:`legendKeys`
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+%Docstring
+Returns a list of legend nodes to be used for the legend for the renderer.
+
+Ownership is transferred to the caller.
+
+The default implementation creates a legend node for each symbol item returned by :py:func:`~QgsFeatureRenderer.legendSymbolItems`
+
+.. seealso:: :py:func:`legendSymbolItems`
+
+.. versionadded:: 3.38
 %End
 
     virtual QString legendClassificationAttribute() const;

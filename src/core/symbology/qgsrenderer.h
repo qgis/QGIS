@@ -38,6 +38,8 @@ class QgsPaintEffect;
 class QgsReadWriteContext;
 class QgsStyleEntityVisitorInterface;
 class QgsRenderContext;
+class QgsLayerTreeModelLegendNode;
+class QgsLayerTreeLayer;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -396,10 +398,23 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Returns a list of symbology items for the legend
      *
+     * \see createLayerTreeModelLegendNodes()
      * \see legendKeys()
-     *
      */
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
+    /**
+     * Returns a list of legend nodes to be used for the legend for the renderer.
+     *
+     * Ownership is transferred to the caller.
+     *
+     * The default implementation creates a legend node for each symbol item returned by legendSymbolItems()
+     *
+     * \see legendSymbolItems()
+     *
+     * \since QGIS 3.38
+     */
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
     /**
      * If supported by the renderer, return classification attribute for the use in legend
