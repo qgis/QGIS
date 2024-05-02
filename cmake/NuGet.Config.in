@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <config>
+        <add key="defaultPushSource" value="@NUGET_SOURCE@" />
+    </config>
+    <activePackageSource>
+        <add key="vcpkg" value="@NUGET_SOURCE@" />
+    </activePackageSource>
+    <packageSources>
+        <add key="vcpkg" value="@NUGET_SOURCE@" />
+    </packageSources>
+    <packageSourceCredentials>
+        <vcpkg>
+            <add key="Username" value="@NUGET_USERNAME@" />
+            <add key="ClearTextPassword" value="@NUGET_TOKEN@" />
+        </vcpkg>
+    </packageSourceCredentials>
+</configuration>

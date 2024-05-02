@@ -1,0 +1,81 @@
+---
+name: 🪟 Windows Qt6
+on:
+  push:
+    branches:
+      - windows-qt6
+      - release-**
+  pull_request:
+  release:
+    types: ['published']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build (windows)
+    runs-on: windows-2022
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: 🐩 Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.29.2
+
+      - name: 🧽 Developer Command Prompt for Microsoft Visual C++
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          # See https://github.com/actions/runner-images/issues/9398
+          toolset: 14.39
+
+      - name: Setup vcpkg
+        uses: ./.github/actions/setup-vcpkg
+  
+      - name: 🌱 Install dependencies and generate project files
+        shell: bash
+        run: |
+          BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
+          SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
+
+          cmake -S "${SOURCE_DIR}" \
+                -B "${BUILD_DIR}" \
+                -G Ninja \
+                -D CMAKE_BUILD_TYPE=Release \
+                -D WITH_VCPKG=ON \
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+                -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D WITH_3D=ON \
+                -D WITH_BINDINGS=ON \
+                -D ENABLE_TESTS=OFF \
+                -D BUILD_WITH_QT6=ON \
+                -D USE_CCACHE=ON \
+                -D FLEX_EXECUTABLE="${VCPKG_ROOT}\downloads\tools\win_bison\2.5.25\win_flex.exe" \
+                -D BISON_EXECUTABLE="${VCPKG_ROOT}\downloads\tools\win_bison\2.5.25\win_bison.exe" \
+                -D WITH_QTWEBKIT=OFF \
+                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
+                -D NUGET_USERNAME=m-kuhn \
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🌋 Build
+        run: |
+          cmake --build "${{ github.workspace }}/build" --config Release
+
+      - name: 📦 Package
+        run: |
+          cmake --install "${{ github.workspace }}/build" --config Release
+
+      - name: 📑 Upload dep build logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs-x64-windows
+          path: |
+            C:/src/**/*.log
+  

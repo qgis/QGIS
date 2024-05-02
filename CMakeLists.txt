@@ -19,6 +19,16 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
+set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
+set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
+set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
+set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+
+if(WITH_VCPKG)
+  include(VcpkgToolchain)
+endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
@@ -140,7 +150,6 @@ if(WITH_CORE)
     endif()
   endforeach (GRASS_SEARCH_VERSION)
 
-  set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
   set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Determines whether OAuth2 authentication method plugin should be built")
   if(WITH_OAUTH2_PLUGIN)
@@ -151,7 +160,6 @@ if(WITH_CORE)
 
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
-  set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
   if(WITH_DESKTOP)
       if((WIN32 AND NOT MINGW) OR (UNIX AND NOT APPLE AND NOT ANDROID AND NOT IOS))
@@ -171,17 +179,14 @@ if(WITH_CORE)
       endif()
   endif()
 
-  set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
-  set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
   set (NATIVE_CRSSYNC_BIN "" CACHE PATH "Path to a natively compiled synccrsdb binary. If set, crssync will not build but use provided bin instead.")
   mark_as_advanced (NATIVE_CRSSYNC_BIN)
 
   # try to configure and build python bindings by default
-  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
   if (WITH_BINDINGS)
     # By default bindings will be installed only to QGIS directory
     # Someone might want to install it to python site-packages directory

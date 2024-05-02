@@ -36,6 +36,7 @@ Building QGIS from source - step by step
            * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
            * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
        * [4.2.2. Testing QGIS](#422-testing-qgis)
+   * [4.3 Building for Qt 6 with VCPKG / Microsoft Visual Studio](#41-building-with-qt6)
 * [5. Building on MacOS X](#5-building-on-macos-x)
    * [5.1. Install Developer Tools](#51-install-developer-tools)
    * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
@@ -707,6 +708,13 @@ can also change the build and release directories.
 
 Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
 is required.
+
+# 4.3 Building with XXX
+
+- Install Microsoft Visual Studio Community Edition as explained in ...
+- Get all dependencies
+  - Download an SDK
+  - Build all dependencies yourself
 
 # 5. Building on MacOS X
 
