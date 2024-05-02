@@ -32,7 +32,7 @@ class QgsPointClusterRenderer;
  * \brief A widget which allows configuration of the properties for a QgsPointClusterRenderer.
  */
 
-class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public QgsExpressionContextGenerator, private Ui::QgsPointClusterRendererWidgetBase
+class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, private Ui::QgsPointClusterRendererWidgetBase
 {
     Q_OBJECT
 

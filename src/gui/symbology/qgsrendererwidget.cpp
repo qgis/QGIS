@@ -314,6 +314,14 @@ void QgsRendererWidget::copySymbol()
   QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbolList.at( 0 ) ) );
 }
 
+void QgsRendererWidget::updateDataDefinedProperty()
+{
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  const QgsFeatureRenderer::Property key = static_cast< QgsFeatureRenderer::Property >( button->propertyKey() );
+  renderer()->setDataDefinedProperty( key, button->toProperty() );
+  emit widgetChanged();
+}
+
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
@@ -386,6 +394,50 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
 void QgsRendererWidget::setSymbolLevels( const QList< QgsLegendSymbolItem > &, bool )
 {
 
+}
+
+void QgsRendererWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsFeatureRenderer::Property key )
+{
+  // note that we don't specify the layer here -- we don't want to expose a choice of fields for renderer level buttons,
+  // as the settings apply to the WHOLE layer and aren't evaluated on a feature-by-feature basis
+  button->init( static_cast< int >( key ), renderer()->dataDefinedProperties(), QgsFeatureRenderer::propertyDefinitions(), nullptr, true );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRendererWidget::updateDataDefinedProperty );
+
+  button->registerExpressionContextGenerator( this );
+}
+
+QgsExpressionContext QgsRendererWidget::createExpressionContext() const
+{
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
+
+  QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( vectorLayer() ) );
+
+  // additional scopes
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
+  //TODO - show actual value
+  expContext.setOriginalValueVariable( QVariant() );
+
+  QStringList highlights;
+  highlights << QgsExpressionContext::EXPR_ORIGINAL_VALUE;
+
+  if ( expContext.hasVariable( QStringLiteral( "zoom_level" ) ) )
+  {
+    highlights << QStringLiteral( "zoom_level" );
+  }
+  if ( expContext.hasVariable( QStringLiteral( "vector_tile_zoom" ) ) )
+  {
+    highlights << QStringLiteral( "vector_tile_zoom" );
+  }
+
+  expContext.setHighlightedVariables( highlights );
+
+  return expContext;
 }
 
 //

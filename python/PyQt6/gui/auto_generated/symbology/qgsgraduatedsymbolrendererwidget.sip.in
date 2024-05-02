@@ -30,6 +30,8 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
   public slots:
     void graduatedColumnChanged( const QString &field );

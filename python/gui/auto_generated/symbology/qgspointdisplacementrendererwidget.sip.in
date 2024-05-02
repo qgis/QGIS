@@ -10,7 +10,7 @@
 
 
 
-class QgsPointDisplacementRendererWidget: QgsRendererWidget, QgsExpressionContextGenerator
+class QgsPointDisplacementRendererWidget: QgsRendererWidget
 {
 
 %TypeHeaderCode

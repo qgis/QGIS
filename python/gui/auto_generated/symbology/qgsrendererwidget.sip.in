@@ -8,7 +8,7 @@
 
 
 
-class QgsRendererWidget : QgsPanelWidget
+class QgsRendererWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Base class for renderer settings widgets.
@@ -27,6 +27,8 @@ WORKFLOW:
 %End
   public:
     QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
     virtual QgsFeatureRenderer *renderer() = 0;
 %Docstring
@@ -112,6 +114,13 @@ The ``levels`` argument defines the updated list of symbols with rendering passe
 The ``enabled`` arguments specifies if symbol levels should be enabled for the renderer.
 
 .. versionadded:: 3.20
+%End
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsFeatureRenderer::Property key );
+%Docstring
+Registers a data defined override button. Handles setting up connections
+for the button and initializing the button to show the correct descriptions
+and help text for the associated property.
 %End
 
   protected slots:
