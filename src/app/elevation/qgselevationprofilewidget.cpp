@@ -891,7 +891,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 
   const QList< QgsMapLayer * > layersToGenerate = mCanvas->layers();
   QList< QgsAbstractProfileSource * > sources;
-  QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+  const QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
   sources.reserve( layersToGenerate.size() + registrySources.size() );
 
   sources << registrySources;

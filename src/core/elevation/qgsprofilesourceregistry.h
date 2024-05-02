@@ -53,14 +53,14 @@ class CORE_EXPORT QgsProfileSourceRegistry
     QList< QgsAbstractProfileSource * > profileSources() const;
 
     /**
-     * Registers a profileSource and takes ownership of it
+     * Registers a profile \a source and takes ownership of it
      */
-    void registerProfileSource( QgsAbstractProfileSource *profileSource SIP_TRANSFER );
+    void registerProfileSource( QgsAbstractProfileSource *source SIP_TRANSFER );
 
     /**
-     * Unregisters a profileSource and destroys its instance
+     * Unregisters a profile \a source and destroys its instance
      */
-    void unregisterProfileSource( QgsAbstractProfileSource *profileSource );
+    void unregisterProfileSource( QgsAbstractProfileSource *source );
 
   private:
     QList< QgsAbstractProfileSource * > mSources;
