@@ -531,22 +531,26 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Creates mesh data source from a file name \a fileName and a driver \a driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Since QGIS 3.38 the optional \a metadata argument can be used to pass metadata to the provider.
      * \since QGIS 3.16
      */
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &fileName,
       const QString &driverName,
-      const QgsCoordinateReferenceSystem &crs ) const;
+      const QgsCoordinateReferenceSystem &crs,
+      const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 
     /**
      * Creates mesh data source from an \a uri, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Since QGIS 3.38 the optional \a metadata argument can be used to pass metadata to the provider.
      * \since QGIS 3.22
      */
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &uri,
-      const QgsCoordinateReferenceSystem &crs ) const;
+      const QgsCoordinateReferenceSystem &crs,
+      const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 
     /**
      * Returns pyramid resampling methods available for provider
