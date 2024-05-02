@@ -20,15 +20,17 @@
 #include <QStackedWidget>
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgsrenderer.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsDataDefinedSizeLegend;
 class QgsDataDefinedSizeLegendWidget;
 class QgsVectorLayer;
 class QgsStyle;
-class QgsFeatureRenderer;
 class QgsMapCanvas;
 class QgsMarkerSymbol;
 class QgsLegendSymbolItem;
+class QgsPropertyOverrideButton;
 
 /**
  * \ingroup gui
@@ -42,11 +44,12 @@ class QgsLegendSymbolItem;
  * - on any change of renderer type, create some default (dummy?) version and change the stacked widget
  * - when clicked OK/Apply, get the renderer from active widget and clone it for the layer
 */
-class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
+class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
     QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
+    QgsExpressionContext createExpressionContext() const override;
 
     //! Returns pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRenderer *renderer() = 0;
@@ -151,6 +154,13 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
 
+    /**
+     * Registers a data defined override button. Handles setting up connections
+     * for the button and initializing the button to show the correct descriptions
+     * and help text for the associated property.
+     */
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsFeatureRenderer::Property key );
+
   protected slots:
     void  contextMenuViewCategories( QPoint p );
     //! Change color of selected symbols
@@ -180,6 +190,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
   private slots:
 
     void copySymbol();
+    void updateDataDefinedProperty();
 
   private:
 

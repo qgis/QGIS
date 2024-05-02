@@ -39,6 +39,8 @@ Constructor
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

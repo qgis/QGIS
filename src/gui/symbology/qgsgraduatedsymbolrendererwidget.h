@@ -92,7 +92,7 @@ class QgsGraduatedSymbolRendererViewStyle: public QgsProxyStyle
  * \ingroup gui
  * \class QgsGraduatedSymbolRendererWidget
  */
-class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget
 {
     Q_OBJECT
 
@@ -105,6 +105,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
     void disableSymbolLevels() override SIP_SKIP;
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
     void graduatedColumnChanged( const QString &field );
@@ -186,7 +187,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
       SizeMode
     };
 
-    QgsExpressionContext createExpressionContext() const override;
     void toggleMethodWidgets( MethodMode mode );
 
     void clearParameterWidgets();

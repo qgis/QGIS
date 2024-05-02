@@ -29,7 +29,7 @@ class QgsEmbeddedSymbolRenderer;
  *
  * \since QGIS 3.20
  */
-class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, public QgsExpressionContextGenerator, private Ui::QgsEmbeddedSymbolRendererWidgetBase
+class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsEmbeddedSymbolRendererWidgetBase
 {
     Q_OBJECT
 
