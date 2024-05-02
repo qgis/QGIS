@@ -22,6 +22,7 @@
 #include "qgsstyle.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgscolorramplegendnodewidget.h"
 #include <QGridLayout>
 #include <QLabel>
 
@@ -116,6 +117,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   btnColorRamp->setShowGradientOnly( true );
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsHeatmapRendererWidget::applyColorRamp );
+  connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsHeatmapRendererWidget::showLegendSettings );
 
   if ( mRenderer->colorRamp() )
   {
@@ -169,6 +171,35 @@ void QgsHeatmapRendererWidget::applyColorRamp()
 
   mRenderer->setColorRamp( ramp );
   emit widgetChanged();
+}
+
+void QgsHeatmapRendererWidget::showLegendSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
+  {
+    QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
+    legendPanel->setUseContinuousRampCheckBoxVisibility( false );
+    legendPanel->setPanelTitle( tr( "Legend Settings" ) );
+    legendPanel->setSettings( mRenderer->legendSettings() );
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
+    {
+      mRenderer->setLegendSettings( legendPanel->settings() );
+      emit widgetChanged();
+    } );
+    panel->openPanel( legendPanel );
+  }
+  else
+  {
+    QgsColorRampLegendNodeDialog dialog( mRenderer->legendSettings(), this );
+    dialog.setUseContinuousRampCheckBoxVisibility( false );
+    dialog.setWindowTitle( tr( "Legend Settings" ) );
+    if ( dialog.exec() )
+    {
+      mRenderer->setLegendSettings( dialog.settings() );
+      emit widgetChanged();
+    }
+  }
 }
 
 void QgsHeatmapRendererWidget::mRadiusUnitWidget_changed()

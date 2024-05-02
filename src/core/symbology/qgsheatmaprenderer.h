@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapunitscale.h"
 #include "qgis.h"
+#include "qgscolorramplegendnodesettings.h"
 
 class QgsColorRamp;
 
@@ -58,6 +59,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+    QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
@@ -78,6 +80,22 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * \see colorRamp
      */
     void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
+
+    /**
+     * Returns the color ramp legend settings.
+     *
+     * \see setLegendSettings()
+     * \since QGIS 3.38
+     */
+    const QgsColorRampLegendNodeSettings &legendSettings() const { return mLegendSettings; }
+
+    /**
+     * Sets the color ramp legend \a settings.
+     *
+     * \see legendSettings()
+     * \since QGIS 3.38
+     */
+    void setLegendSettings( const QgsColorRampLegendNodeSettings &settings );
 
     /**
      * Returns the radius for the heatmap
@@ -201,6 +219,8 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     int mRenderQuality = 3;
 
     int mFeaturesRendered = 0;
+
+    QgsColorRampLegendNodeSettings mLegendSettings;
 
     double uniformKernel( double distance, int bandwidth ) const;
     double quarticKernel( double distance, int bandwidth ) const;
