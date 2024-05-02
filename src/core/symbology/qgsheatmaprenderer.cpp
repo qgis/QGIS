@@ -68,6 +68,15 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields
     mWeightExpression->prepare( &context.expressionContext() );
   }
 
+  bool ok = false;
+  const double dataDefinedExplicitMax = dataDefinedProperties().valueAsDouble( Property::HeatmapMaximum, context.expressionContext(), mExplicitMax, &ok );
+  if ( ok )
+    mExplicitMax = dataDefinedExplicitMax;
+
+  const double dataDefinedRadius = dataDefinedProperties().valueAsDouble( Property::HeatmapRadius, context.expressionContext(), mRadius, &ok );
+  if ( ok )
+    mRadius = dataDefinedRadius;
+
   initializeValues( context );
 }
 

@@ -142,6 +142,9 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   mWeightExpressionWidget->setLayer( layer );
   mWeightExpressionWidget->setField( mRenderer->weightExpression() );
   connect( mWeightExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsHeatmapRendererWidget::weightExpressionChanged );
+
+  registerDataDefinedButton( mRadiusDDBtn, QgsFeatureRenderer::Property::HeatmapRadius );
+  registerDataDefinedButton( mMaximumValueDDBtn, QgsFeatureRenderer::Property::HeatmapMaximum );
 }
 
 QgsHeatmapRendererWidget::~QgsHeatmapRendererWidget() = default;
