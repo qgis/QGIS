@@ -1319,11 +1319,16 @@ void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode m
 static  QgsMapLayer::ReadFlags projectFlagsToLayerReadFlags( Qgis::ProjectReadFlags projectReadFlags, Qgis::ProjectFlags projectFlags )
 {
   QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
+  // Propagate don't resolve layers
   if ( projectReadFlags & Qgis::ProjectReadFlag::DontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   // Propagate trust layer metadata flag
+  // Propagate read extent from XML based trust layer metadata flag
   if ( ( projectFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( projectReadFlags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
+  {
     layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
+    layerFlags |= QgsMapLayer::FlagReadExtentFromXml;
+  }
   // Propagate open layers in read-only mode
   if ( ( projectReadFlags & Qgis::ProjectReadFlag::ForceReadOnlyLayers ) )
     layerFlags |= QgsMapLayer::FlagForceReadOnly;
@@ -1665,7 +1670,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
   // apply specific settings to vector layer
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
   {
-    vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
+    vl->setReadExtentFromXml( layerFlags & QgsMapLayer::FlagReadExtentFromXml );
     if ( vl->dataProvider() )
     {
       const bool evaluateDefaultValues = mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
