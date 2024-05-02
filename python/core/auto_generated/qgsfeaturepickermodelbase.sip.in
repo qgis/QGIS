@@ -213,7 +213,7 @@ The index at which the extra identifier value is available within the model.
 
     void extraValueDoesNotExistChanged();
 %Docstring
-Flag indicating that the extraIdentifierValue does not exist in the data.
+Notification that the model has found a feature tied to the extraIdentifierValue.
 %End
 
     void beginUpdate();

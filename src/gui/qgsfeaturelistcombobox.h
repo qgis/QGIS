@@ -251,6 +251,12 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      */
     void currentFeatureChanged();
 
+    /**
+     * Emitted when the feature picker model changes its feature found state
+     * \since QGIS 3.38
+     */
+    void currentFeatureFoundChanged();
+
   private slots:
     void onCurrentTextChanged( const QString &text );
     void onFilterLineEditCleared();
