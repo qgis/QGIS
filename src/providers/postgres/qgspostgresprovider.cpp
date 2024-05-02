@@ -3975,8 +3975,8 @@ QgsBox3D QgsPostgresProvider::extent3D() const
     {
       QgsDebugMsgLevel( QStringLiteral( "Got extents (%1) using: %2" ).arg( ext ).arg( sql ), 2 );
 
-      const thread_local QRegularExpression rx( "\\((.+) (.+) (.+),(.+) (.+) (.+)\\)" );
-      const QRegularExpressionMatch match = rx.match( ext );
+      const thread_local QRegularExpression rx3d( "\\((.+) (.+) (.+),(.+) (.+) (.+)\\)" );
+      const QRegularExpressionMatch match = rx3d.match( ext );
       if ( match.hasMatch() )
       {
         mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
@@ -3994,7 +3994,19 @@ QgsBox3D QgsPostgresProvider::extent3D() const
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "result of extents query invalid: %1" ).arg( ext ), tr( "PostGIS" ) );
+        const thread_local QRegularExpression rx2d( "\\((.+) (.+),(.+) (.+)\\)" );
+        const QRegularExpressionMatch match = rx2d.match( ext );
+        if ( match.hasMatch() )
+        {
+          mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
+          mLayerExtent.setYMinimum( match.captured( 2 ).toDouble() );
+          mLayerExtent.setXMaximum( match.captured( 3 ).toDouble() );
+          mLayerExtent.setYMaximum( match.captured( 4 ).toDouble() );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "result of extents query invalid: %1" ).arg( ext ), tr( "PostGIS" ) );
+        }
       }
     }
 
