@@ -225,14 +225,16 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
 bool QgsProviderMetadata::createMeshData( const QgsMesh &,
     const QString &,
     const QString &,
-    const QgsCoordinateReferenceSystem & ) const
+    const QgsCoordinateReferenceSystem &,
+    const QMap<QString, QString> & ) const
 {
   return false;
 }
 
 bool QgsProviderMetadata::createMeshData( const QgsMesh &,
     const QString &,
-    const QgsCoordinateReferenceSystem & ) const
+    const QgsCoordinateReferenceSystem &,
+    const QMap<QString, QString> & ) const
 {
   return false;
 }

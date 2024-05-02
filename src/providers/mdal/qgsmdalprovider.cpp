@@ -464,9 +464,9 @@ bool QgsMdalProvider::saveMeshFrame( const QgsMesh &mesh )
   QVariantMap uriComponent = mdalProviderMetaData.decodeUri( dataSourceUri() );
 
   if ( uriComponent.contains( QStringLiteral( "driver" ) ) )
-    return mdalProviderMetaData.createMeshData( mesh, dataSourceUri(), crs() );
+    return mdalProviderMetaData.createMeshData( mesh, dataSourceUri(), crs(), mMeshMetadata );
   else if ( uriComponent.contains( QStringLiteral( "path" ) ) )
-    return mdalProviderMetaData.createMeshData( mesh, uriComponent.value( QStringLiteral( "path" ) ).toString(), mDriverName, crs() );
+    return mdalProviderMetaData.createMeshData( mesh, uriComponent.value( QStringLiteral( "path" ) ).toString(), mDriverName, crs(), mMeshMetadata );
 
   return false;
 
@@ -493,6 +493,11 @@ void QgsMdalProvider::loadData()
     const QString proj = MDAL_M_projection( mMeshH );
     if ( !proj.isEmpty() )
       mCrs.createFromString( proj );
+
+    for ( int i = 0; i < MDAL_M_metadataCount( mMeshH ); ++i )
+    {
+      mMeshMetadata.insert( MDAL_M_metadataKey( mMeshH, i ), MDAL_M_metadataValue( mMeshH, i ) );
+    }
 
     int dsGroupCount = MDAL_M_datasetGroupCount( mMeshH );
     for ( int i = 0; i < dsGroupCount; ++i )
@@ -1019,12 +1024,17 @@ static MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &driverName
 }
 
 
-bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &fileName, const QString &driverName, const QgsCoordinateReferenceSystem &crs ) const
+bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &fileName, const QString &driverName, const QgsCoordinateReferenceSystem &crs, const QMap<QString, QString> &metadata ) const
 {
   MDAL_MeshH mdalMesh = createMDALMesh( mesh, driverName, crs );
 
   if ( !mdalMesh )
     return false;
+
+  for ( auto it = metadata.cbegin(); it != metadata.cend(); ++it )
+  {
+    MDAL_M_setMetadata( mdalMesh, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
+  }
 
   MDAL_SaveMesh( mdalMesh, fileName.toStdString().c_str(), driverName.toStdString().c_str() );
 
@@ -1038,7 +1048,7 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
   return true;
 }
 
-bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &uri, const QgsCoordinateReferenceSystem &crs ) const
+bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &uri, const QgsCoordinateReferenceSystem &crs, const QMap<QString, QString> &metadata ) const
 {
   QVariantMap uriComponents = decodeUri( uri );
 
@@ -1051,6 +1061,11 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
 
   if ( !mdalMesh )
     return false;
+
+  for ( auto it = metadata.cbegin(); it != metadata.cend(); ++it )
+  {
+    MDAL_M_setMetadata( mdalMesh, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
+  }
 
   MDAL_SaveMeshWithUri( mdalMesh, uri.toStdString().c_str() );
 
