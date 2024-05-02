@@ -178,7 +178,7 @@ void QgsHeatmapRendererWidget::showLegendSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
-    QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
+    QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget( nullptr, QgsColorRampLegendNodeWidget::Capabilities() );
     legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mRenderer->legendSettings() );
@@ -191,7 +191,7 @@ void QgsHeatmapRendererWidget::showLegendSettings()
   }
   else
   {
-    QgsColorRampLegendNodeDialog dialog( mRenderer->legendSettings(), this );
+    QgsColorRampLegendNodeDialog dialog( mRenderer->legendSettings(), this, QgsColorRampLegendNodeWidget::Capabilities() );
     dialog.setUseContinuousRampCheckBoxVisibility( false );
     dialog.setWindowTitle( tr( "Legend Settings" ) );
     if ( dialog.exec() )
