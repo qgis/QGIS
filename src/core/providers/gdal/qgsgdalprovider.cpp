@@ -4696,6 +4696,10 @@ QString QgsGdalProviderMetadata::loadStoredStyle( const QString &uri, QString &s
   }
   QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
   QString layerName = uriParts["layerName"].toString();
+  if ( layerName.isEmpty() )
+  {
+    layerName = GDALGetMetadataItem( ds.get(), "IDENTIFIER", "" );
+  }
   return QgsOgrUtils::loadStoredStyle( ds.get(), layerName, "", styleName, errCause );
 }
 
