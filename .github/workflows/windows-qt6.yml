@@ -66,9 +66,9 @@ jobs:
                 -D USE_CCACHE=ON \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
-                -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows\tools\python3\Scripts\sip-build.exe" \
-                -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows\tools\python3\pyuic5.bat" \
-                -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows\tools\python3\pyrcc5.bat" \
+                -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
+                -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyuic5.bat" \
+                -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyrcc5.bat" \
                 -D WITH_QTWEBKIT=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=m-kuhn \
