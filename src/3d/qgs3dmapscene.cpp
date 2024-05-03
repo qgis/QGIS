@@ -352,19 +352,6 @@ void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
   }
 }
 
-void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt3DRender::QLayer *> &layers )
-{
-  for ( Qt3DRender::QLayer *layer : layers )
-    entity->addComponent( layer );
-
-  const QList< Qt3DCore::QEntity *> childEntities = entity->findChildren<Qt3DCore::QEntity *>();
-  for ( Qt3DCore::QEntity *child : childEntities )
-  {
-    if ( child != nullptr )
-      addQLayerComponentsToHierarchy( child, layers );
-  }
-}
-
 void Qgs3DMapScene::updateScene( bool forceUpdate )
 {
   if ( forceUpdate )
