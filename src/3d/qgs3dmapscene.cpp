@@ -332,26 +332,6 @@ void Qgs3DMapScene::onCameraChanged()
   emit viewed2DExtentFrom3DChanged( extent2D );
 }
 
-void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
-{
-  QVector<Qt3DCore::QComponent *> toBeRemovedComponents;
-  const Qt3DCore::QComponentVector entityComponents = entity->components();
-  for ( Qt3DCore::QComponent *component : entityComponents )
-  {
-    Qt3DRender::QLayer *layer = qobject_cast<Qt3DRender::QLayer *>( component );
-    if ( layer != nullptr )
-      toBeRemovedComponents.push_back( layer );
-  }
-  for ( Qt3DCore::QComponent *component : toBeRemovedComponents )
-    entity->removeComponent( component );
-  const QList< Qt3DCore::QEntity *> childEntities = entity->findChildren<Qt3DCore::QEntity *>();
-  for ( Qt3DCore::QEntity *obj : childEntities )
-  {
-    if ( obj != nullptr )
-      removeQLayerComponentsFromHierarchy( obj );
-  }
-}
-
 void Qgs3DMapScene::updateScene( bool forceUpdate )
 {
   if ( forceUpdate )
