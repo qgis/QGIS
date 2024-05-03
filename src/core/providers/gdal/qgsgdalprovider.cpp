@@ -4564,6 +4564,10 @@ int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, Q
   }
   QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
   QString layerName = uriParts["layerName"].toString();
+  if ( layerName.isEmpty() )
+  {
+    layerName = GDALGetMetadataItem( ds.get(), "IDENTIFIER", "" );
+  }
   return QgsOgrUtils::listStyles( ds.get(), layerName, "", ids, names, descriptions, errCause );
 }
 
@@ -4578,6 +4582,10 @@ bool QgsGdalProviderMetadata::styleExists( const QString &uri, const QString &st
   }
   QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
   QString layerName = uriParts["layerName"] .toString();
+  if ( layerName.isEmpty() )
+  {
+    layerName = GDALGetMetadataItem( ds.get(), "IDENTIFIER", "" );
+  }
   return QgsOgrUtils::styleExists( ds.get(), layerName, "", styleId, errCause );
 }
 
@@ -4618,6 +4626,10 @@ bool QgsGdalProviderMetadata::saveStyle( const QString &uri, const QString &qmlS
   }
   QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
   QString layerName = uriParts["layerName"].toString();
+  if ( layerName.isEmpty() )
+  {
+    layerName = GDALGetMetadataItem( ds.get(), "IDENTIFIER", "" );
+  }
   return QgsOgrUtils::saveStyle( ds.get(), layerName, "", qmlStyle, sldStyle, styleName, styleDescription, uiFileContent, useAsDefault, errCause );
 }
 
