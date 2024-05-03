@@ -358,7 +358,7 @@ the features displayed using that key.
 %Docstring
 Returns a list of symbology items for the legend
 
-.. seealso:: :py:func:`createLayerTreeModelLegendNodes`
+.. seealso:: :py:func:`createLegendNodes`
 
 .. seealso:: :py:func:`legendKeys`
 %End
