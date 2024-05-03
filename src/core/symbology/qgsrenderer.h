@@ -398,7 +398,7 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Returns a list of symbology items for the legend
      *
-     * \see createLayerTreeModelLegendNodes()
+     * \see createLegendNodes()
      * \see legendKeys()
      */
     virtual QgsLegendSymbolList legendSymbolItems() const;
