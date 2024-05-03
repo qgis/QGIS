@@ -37,7 +37,15 @@ jobs:
 
       - name: Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
-  
+
+      - name: Setup flex/bison
+        uses: robinraju/release-downloader@v1.10
+        with:
+          repository: 'lexxmark/winflexbison'
+          fileName: '*.zip'
+          tag: 'v2.5.25'
+          extract: true
+
       - name: 🌱 Install dependencies and generate project files
         shell: bash
         run: |
@@ -56,8 +64,8 @@ jobs:
                 -D ENABLE_TESTS=OFF \
                 -D BUILD_WITH_QT6=ON \
                 -D USE_CCACHE=ON \
-                -D FLEX_EXECUTABLE="${VCPKG_ROOT}\downloads\tools\win_bison\2.5.25\win_flex.exe" \
-                -D BISON_EXECUTABLE="${VCPKG_ROOT}\downloads\tools\win_bison\2.5.25\win_bison.exe" \
+                -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
+                -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows\tools\python3\Scripts\sip-build.exe" \
                 -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows\tools\python3\pyuic5.bat" \
                 -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows\tools\python3\pyrcc5.bat" \
