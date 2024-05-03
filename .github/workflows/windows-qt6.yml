@@ -75,10 +75,12 @@ jobs:
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
       - name: 🌋 Build
+        shell: bash
         run: |
           cmake --build "${{ github.workspace }}/build" --config Release
 
       - name: 📦 Package
+        shell: bash
         run: |
           cmake --install "${{ github.workspace }}/build" --config Release
 
