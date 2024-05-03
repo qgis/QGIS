@@ -18,10 +18,6 @@ class Qgs3DMapScene : QObject
 {
 %Docstring(signature="appended")
 Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
-
-.. note::
-
-   Not available in Python bindings
 %End
 
 %TypeHeaderCode
