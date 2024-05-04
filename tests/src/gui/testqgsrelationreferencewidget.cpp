@@ -517,30 +517,57 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
 {
   QWidget parentWidget;
   QgsRelationReferenceWidget w( &parentWidget );
+
   w.setRelation( *mRelation, true );
   w.init();
 
   QSignalSpy spy( &w, &QgsRelationReferenceWidget::foreignKeysChanged );
-
-  w.setForeignKeys( QVariantList() << 0 );
-  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 0 ) );
-  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(0)" ) );
-  QCOMPARE( spy.count(), 1 );
-
-  w.setForeignKeys( QVariantList() << 11 );
-  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
-  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
-  QCOMPARE( spy.count(), 2 );
-
-  w.setForeignKeys( QVariantList() << 12 );
-  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
-  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
-  QCOMPARE( spy.count(), 3 );
+  QEventLoop loop;
 
   w.setForeignKeys( QVariantList() << QVariant() );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
   QVERIFY( w.foreignKeys().at( 0 ).isNull() );
   QVERIFY( w.foreignKeys().at( 0 ).isValid() );
+  QCOMPARE( spy.count(), 1 );
+
+  w.setForeignKeys( QVariantList() << 12 );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "12" ) );
+  QCOMPARE( spy.count(), 2 );
+
+  w.setForeignKeys( QVariantList() << 11 );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "11" ) );
+  QCOMPARE( spy.count(), 3 );
+
+  w.setForeignKeys( QVariantList() << 0 );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 0 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(0)" ) );
   QCOMPARE( spy.count(), 4 );
+
+  w.setForeignKeys( QVariantList() << QVariant() );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QVERIFY( w.foreignKeys().at( 0 ).isNull() );
+  QVERIFY( w.foreignKeys().at( 0 ).isValid() );
+  QCOMPARE( spy.count(), 5 );
 }
 
 // Test issue https://github.com/qgis/QGIS/issues/29884
