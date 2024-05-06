@@ -46,6 +46,9 @@ jobs:
           tag: 'v2.5.25'
           extract: true
 
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+
       - name: 🌱 Install dependencies and generate project files
         shell: bash
         run: |
@@ -69,6 +72,8 @@ jobs:
                 -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
                 -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyuic5.bat" \
                 -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyrcc5.bat" \
+                -D CMAKE_C_COMPILER_LAUNCHER=ccache \
+                -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
                 -D WITH_QTWEBKIT=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=m-kuhn \
@@ -82,7 +87,7 @@ jobs:
       - name: 📦 Package
         shell: bash
         run: |
-          cmake --install "${{ github.workspace }}/build" --config Release
+          cmake --build "${{ github.workspace }}/build" --target bundle --config Release
 
       - name: 📑 Upload dep build logs
         uses: actions/upload-artifact@v4
@@ -91,4 +96,14 @@ jobs:
           name: build-logs-x64-windows
           path: |
             C:/src/**/*.log
-  
+
+      - name: 📤 Upload bundle
+#        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: qgis-windows-qt6
+          path: |
+            build/*-win64.zip
+
+      - uses: m-kuhn/action-tmate@patch-1
+        if: always()
