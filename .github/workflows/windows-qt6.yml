@@ -48,6 +48,8 @@ jobs:
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 1G
 
       - name: 🌱 Install dependencies and generate project files
         shell: bash
@@ -60,8 +62,10 @@ jobs:
                 -G Ninja \
                 -D CMAKE_BUILD_TYPE=Release \
                 -D WITH_VCPKG=ON \
+                -D CREATE_ZIP=ON \
                 -D VCPKG_TARGET_TRIPLET=x64-windows-release \
                 -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
                 -D ENABLE_TESTS=OFF \
@@ -98,12 +102,8 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-#        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: qgis-windows-qt6
           path: |
             build/*-win64.zip
-
-      - uses: m-kuhn/action-tmate@patch-1
-        if: always()
