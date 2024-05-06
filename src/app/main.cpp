@@ -177,9 +177,9 @@ void usage( const QString &appName )
       << QStringLiteral( "        the PostGIS extension\n" )  ; // OK
 
 #ifdef Q_OS_WIN
-  MessageBox( nullptr,
-              msg.join( QString() ).toLocal8Bit().constData(),
-              "QGIS command line options",
+  MessageBoxW( nullptr,
+              reinterpret_cast<const WCHAR*>( msg.join( QString() ).utf16() ),
+              L"QGIS command line options",
               MB_OK );
 #else
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
@@ -219,7 +219,7 @@ void myPrint( const char *fmt, ... )
 #if defined(Q_OS_WIN)
   char buffer[1024];
   vsnprintf( buffer, sizeof buffer, fmt, ap );
-  OutputDebugString( buffer );
+  OutputDebugStringA( buffer );
 #else
   vfprintf( stderr, fmt, ap );
 #endif
