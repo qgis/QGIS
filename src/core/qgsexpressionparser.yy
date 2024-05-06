@@ -35,7 +35,7 @@
 #define MAX_ERRORS 10
 
 struct expression_parser_context;
-#include "qgsexpressionparser.hpp"
+#include "qgsexpressionparser.h"
 
 //! from lexer
 typedef void* yyscan_t;

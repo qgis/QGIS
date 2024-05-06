@@ -37,7 +37,7 @@
 #include "expression/qgsexpressionnodeimpl.h"
 #include "qgsexpressionfunction.h"
         struct expression_parser_context;
-#include "qgsexpressionparser.hpp"
+#include "qgsexpressionparser.h"
 #include <QLocale>
 
 // if not defined, searches for isatty()

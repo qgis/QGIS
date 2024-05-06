@@ -27,7 +27,7 @@
 %{
   //directly included in the output program
   #include "qgsmeshcalcnode.h"
-  #include "qgsmeshcalcparser.hpp"
+  #include "qgsmeshcalcparser.h"
 
   // if not defined, searches for isatty()
   // which doesn't in MSVC compiler
