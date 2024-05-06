@@ -1847,7 +1847,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.38
      */
-    void setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy );
+    void setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
 #else
 
     /**
@@ -1876,7 +1876,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \throws KeyError if no field with the specified index exists
      * \since QGIS 3.38
      */
-    void setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy );
+    void setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
 
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->fields().count() )
@@ -2896,7 +2896,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QMap< QString, Qgis::FieldDomainSplitPolicy > mAttributeSplitPolicy;
 
     //! Map that stores the duplicate policy for attributes
-    QMap< QString, Qgis::FieldDomainDuplicatePolicy > mAttributeDuplicatePolicy;
+    QMap< QString, Qgis::FieldDuplicatePolicy > mAttributeDuplicatePolicy;
 
     //! An internal structure to keep track of fields that have a defaultValueOnUpdate
     QSet<int> mDefaultValueOnUpdateFields;

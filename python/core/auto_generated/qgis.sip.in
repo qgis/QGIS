@@ -1826,7 +1826,7 @@ The development version
       GeometryWeighted,
     };
 
-    enum class FieldDomainDuplicatePolicy
+    enum class FieldDuplicatePolicy
     {
       DefaultValue,
       Duplicate,

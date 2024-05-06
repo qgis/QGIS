@@ -3221,18 +3221,17 @@ class CORE_EXPORT Qgis
     /**
      * Duplicate policy for fields.
      *
-     * When a feature is duplicated, defines how the value of attributes
-     * following the domain are computed.
+     * When a feature is duplicated, defines how the value of attributes are computed.
      *
      * \since QGIS 3.38
      */
-    enum class FieldDomainDuplicatePolicy : int
+    enum class FieldDuplicatePolicy : int
     {
       DefaultValue, //!< Use default field value
       Duplicate, //!< Duplicate original value
       UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)
     };
-    Q_ENUM( FieldDomainDuplicatePolicy )
+    Q_ENUM( FieldDuplicatePolicy )
 
     /**
      * Types of field domain

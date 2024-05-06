@@ -1935,7 +1935,7 @@ Sets a split ``policy`` for the field with the specified index.
     }
 %End
 
-    void setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy );
+    void setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
 %Docstring
 Sets a duplicate ``policy`` for the field with the specified index.
 

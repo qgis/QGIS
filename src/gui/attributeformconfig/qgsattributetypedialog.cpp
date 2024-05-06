@@ -125,9 +125,9 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   connect( mSplitPolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateSplitPolicyLabel );
   updateSplitPolicyLabel();
 
-  mDuplicatePolicyComboBox->addItem( tr( "Duplicate Value" ), QVariant::fromValue( Qgis::FieldDomainDuplicatePolicy::Duplicate ) );
-  mDuplicatePolicyComboBox->addItem( tr( "Use Default Value" ), QVariant::fromValue( Qgis::FieldDomainDuplicatePolicy::DefaultValue ) );
-  mDuplicatePolicyComboBox->addItem( tr( "Remove Value" ), QVariant::fromValue( Qgis::FieldDomainDuplicatePolicy::UnsetField ) );
+  mDuplicatePolicyComboBox->addItem( tr( "Duplicate Value" ), QVariant::fromValue( Qgis::FieldDuplicatePolicy::Duplicate ) );
+  mDuplicatePolicyComboBox->addItem( tr( "Use Default Value" ), QVariant::fromValue( Qgis::FieldDuplicatePolicy::DefaultValue ) );
+  mDuplicatePolicyComboBox->addItem( tr( "Remove Value" ), QVariant::fromValue( Qgis::FieldDuplicatePolicy::UnsetField ) );
   connect( mDuplicatePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateDuplicatePolicyLabel );
   updateDuplicatePolicyLabel();
 }
@@ -387,12 +387,12 @@ void QgsAttributeTypeDialog::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy
   updateSplitPolicyLabel();
 }
 
-Qgis::FieldDomainDuplicatePolicy QgsAttributeTypeDialog::duplicatePolicy() const
+Qgis::FieldDuplicatePolicy QgsAttributeTypeDialog::duplicatePolicy() const
 {
-  return mDuplicatePolicyComboBox->currentData().value< Qgis::FieldDomainDuplicatePolicy >();
+  return mDuplicatePolicyComboBox->currentData().value< Qgis::FieldDuplicatePolicy >();
 }
 
-void QgsAttributeTypeDialog::setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy )
+void QgsAttributeTypeDialog::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy )
 {
   mDuplicatePolicyComboBox->setCurrentIndex( mDuplicatePolicyComboBox->findData( QVariant::fromValue( policy ) ) );
   updateSplitPolicyLabel();
@@ -518,17 +518,17 @@ void QgsAttributeTypeDialog::updateSplitPolicyLabel()
 void QgsAttributeTypeDialog::updateDuplicatePolicyLabel()
 {
   QString helperText;
-  switch ( mDuplicatePolicyComboBox->currentData().value< Qgis::FieldDomainDuplicatePolicy >() )
+  switch ( mDuplicatePolicyComboBox->currentData().value< Qgis::FieldDuplicatePolicy >() )
   {
-    case Qgis::FieldDomainDuplicatePolicy::DefaultValue:
+    case Qgis::FieldDuplicatePolicy::DefaultValue:
       helperText = tr( "Resets the field by recalculating its default value." );
       break;
 
-    case Qgis::FieldDomainDuplicatePolicy::Duplicate:
+    case Qgis::FieldDuplicatePolicy::Duplicate:
       helperText = tr( "Copies the current field value without change." );
       break;
 
-    case Qgis::FieldDomainDuplicatePolicy::UnsetField:
+    case Qgis::FieldDuplicatePolicy::UnsetField:
       helperText = tr( "Clears the field to an unset state." );
       break;
   }

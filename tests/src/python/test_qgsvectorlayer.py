@@ -4552,20 +4552,20 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertTrue(vl.isValid())
 
         with self.assertRaises(KeyError):
-            vl.setFieldDuplicatePolicy(-1, Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+            vl.setFieldDuplicatePolicy(-1, Qgis.FieldDuplicatePolicy.DefaultValue)
         with self.assertRaises(KeyError):
-            vl.setFieldDuplicatePolicy(4, Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+            vl.setFieldDuplicatePolicy(4, Qgis.FieldDuplicatePolicy.DefaultValue)
 
-        vl.setFieldDuplicatePolicy(0, Qgis.FieldDomainDuplicatePolicy.DefaultValue)
-        vl.setFieldDuplicatePolicy(1, Qgis.FieldDomainDuplicatePolicy.Duplicate)
-        vl.setFieldDuplicatePolicy(2, Qgis.FieldDomainDuplicatePolicy.UnsetField)
+        vl.setFieldDuplicatePolicy(0, Qgis.FieldDuplicatePolicy.DefaultValue)
+        vl.setFieldDuplicatePolicy(1, Qgis.FieldDuplicatePolicy.Duplicate)
+        vl.setFieldDuplicatePolicy(2, Qgis.FieldDuplicatePolicy.UnsetField)
 
         self.assertEqual(vl.fields()[0].duplicatePolicy(),
-                         Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+                         Qgis.FieldDuplicatePolicy.DefaultValue)
         self.assertEqual(vl.fields()[1].duplicatePolicy(),
-                         Qgis.FieldDomainDuplicatePolicy.Duplicate)
+                         Qgis.FieldDuplicatePolicy.Duplicate)
         self.assertEqual(vl.fields()[2].duplicatePolicy(),
-                         Qgis.FieldDomainDuplicatePolicy.UnsetField)
+                         Qgis.FieldDuplicatePolicy.UnsetField)
 
         p = QgsProject()
         p.addMapLayer(vl)
@@ -4581,11 +4581,11 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             self.assertEqual(vl2.name(), vl.name())
 
             self.assertEqual(vl2.fields()[0].duplicatePolicy(),
-                             Qgis.FieldDomainDuplicatePolicy.DefaultValue)
+                             Qgis.FieldDuplicatePolicy.DefaultValue)
             self.assertEqual(vl2.fields()[1].duplicatePolicy(),
-                             Qgis.FieldDomainDuplicatePolicy.Duplicate)
+                             Qgis.FieldDuplicatePolicy.Duplicate)
             self.assertEqual(vl2.fields()[2].duplicatePolicy(),
-                             Qgis.FieldDomainDuplicatePolicy.UnsetField)
+                             Qgis.FieldDuplicatePolicy.UnsetField)
 
     def test_selection_properties(self):
         vl = QgsVectorLayer(

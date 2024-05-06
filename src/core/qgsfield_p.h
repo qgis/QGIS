@@ -147,7 +147,7 @@ class QgsFieldPrivate : public QSharedData
     Qgis::FieldDomainSplitPolicy splitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
 
     //! Duplicate policy
-    Qgis::FieldDomainDuplicatePolicy duplicatePolicy = Qgis::FieldDomainDuplicatePolicy::Duplicate;
+    Qgis::FieldDuplicatePolicy duplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
 
     //! Read-only
     bool isReadOnly = false;

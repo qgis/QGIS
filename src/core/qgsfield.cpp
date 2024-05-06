@@ -741,12 +741,12 @@ void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
   d->splitPolicy = policy;
 }
 
-Qgis::FieldDomainDuplicatePolicy QgsField::duplicatePolicy() const
+Qgis::FieldDuplicatePolicy QgsField::duplicatePolicy() const
 {
   return d->duplicatePolicy;
 }
 
-void QgsField::setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy )
+void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy )
 {
   d->duplicatePolicy = policy;
 }
@@ -823,7 +823,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setAlias( alias );
   field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
   field.setSplitPolicy( static_cast< Qgis::FieldDomainSplitPolicy >( splitPolicy ) );
-  field.setDuplicatePolicy( static_cast< Qgis::FieldDomainDuplicatePolicy >( duplicatePolicy ) );
+  field.setDuplicatePolicy( static_cast< Qgis::FieldDuplicatePolicy >( duplicatePolicy ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

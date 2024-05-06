@@ -652,15 +652,15 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
     const QgsField field = layer->fields().at( fieldIdx );
     switch ( field.duplicatePolicy() )
     {
-      case Qgis::FieldDomainDuplicatePolicy::DefaultValue:
+      case Qgis::FieldDuplicatePolicy::DefaultValue:
         //do nothing - default values ​​are determined
         break;
 
-      case Qgis::FieldDomainDuplicatePolicy::Duplicate:
+      case Qgis::FieldDuplicatePolicy::Duplicate:
         attributeMap.insert( fieldIdx, feature.attribute( fieldIdx ) );
         break;
 
-      case Qgis::FieldDomainDuplicatePolicy::UnsetField:
+      case Qgis::FieldDuplicatePolicy::UnsetField:
         attributeMap.insert( fieldIdx, QgsUnsetAttributeValue() );
         break;
     }

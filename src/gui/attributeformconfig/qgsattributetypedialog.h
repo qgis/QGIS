@@ -252,7 +252,7 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      *
      * \since QGIS 3.38
      */
-    Qgis::FieldDomainDuplicatePolicy duplicatePolicy() const;
+    Qgis::FieldDuplicatePolicy duplicatePolicy() const;
 
     /**
      * Sets the field's duplicate policy.
@@ -261,7 +261,7 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      *
      * \since QGIS 3.38
      */
-    void setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy );
+    void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy );
 
   private slots:
 

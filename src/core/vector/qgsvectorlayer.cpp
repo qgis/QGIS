@@ -2587,7 +2587,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       {
         const QDomElement duplicatePolicyElem = duplicatePolicyNodeList.at( i ).toElement();
         const QString field = duplicatePolicyElem.attribute( QStringLiteral( "field" ) );
-        const Qgis::FieldDomainDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainDuplicatePolicy::Duplicate );
+        const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDuplicatePolicy::Duplicate );
         mAttributeDuplicatePolicy.insert( field, policy );
       }
     }
@@ -3620,7 +3620,7 @@ void QgsVectorLayer::setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolic
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
-void QgsVectorLayer::setFieldDuplicatePolicy( int index, Qgis::FieldDomainDuplicatePolicy policy )
+void QgsVectorLayer::setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

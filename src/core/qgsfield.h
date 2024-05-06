@@ -502,7 +502,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.38
      */
-    Qgis::FieldDomainDuplicatePolicy duplicatePolicy() const;
+    Qgis::FieldDuplicatePolicy duplicatePolicy() const;
 
     /**
      * Sets the field's duplicate \a policy, which indicates how field values should
@@ -512,7 +512,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.38
      */
-    void setDuplicatePolicy( Qgis::FieldDomainDuplicatePolicy policy );
+    void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
