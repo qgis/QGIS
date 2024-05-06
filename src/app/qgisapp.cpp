@@ -2206,6 +2206,8 @@ QgisApp::~QgisApp()
   mCoordsEdit = nullptr;
   delete mLayerTreeView;
   mLayerTreeView = nullptr;
+  delete mMessageButton;
+  mMessageButton = nullptr;
 
   QgsGui::nativePlatformInterface()->cleanup();
 
