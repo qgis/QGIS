@@ -478,10 +478,10 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
      *
      * The \a glob argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
      */
-    QgsGlobFieldDomain( const QString &name,
-                        const QString &description,
-                        QVariant::Type fieldType,
-                        const QString &glob );
+    Q_DECL_DEPRECATED QgsGlobFieldDomain( const QString &name,
+                                          const QString &description,
+                                          QVariant::Type fieldType,
+                                          const QString &glob );
 
 
 #ifndef SIP_RUN

@@ -441,10 +441,10 @@ Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description``
 The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
 %End
 
-    QgsGlobFieldDomain( const QString &name,
-                        const QString &description,
-                        QVariant::Type fieldType,
-                        const QString &glob );
+ QgsGlobFieldDomain( const QString &name,
+                                          const QString &description,
+                                          QVariant::Type fieldType,
+                                          const QString &glob );
 %Docstring
 Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
