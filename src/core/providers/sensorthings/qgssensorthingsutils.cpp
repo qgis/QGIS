@@ -496,16 +496,16 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
 
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
-      fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QVariant::String ) );
-      fields.append( QgsField( QStringLiteral( "unitOfMeasurements" ), QVariant::Map, QStringLiteral( "json" ), 0, 0, QString(), QVariant::String ) );
-      fields.append( QgsField( QStringLiteral( "observationType" ), QVariant::String ) );
-      fields.append( QgsField( QStringLiteral( "multiObservationDataTypes" ), QVariant::StringList, QString(), 0, 0, QString(), QVariant::String ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QVariant::Map, QStringLiteral( "json" ), 0, 0, QString(), QVariant::String ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QVariant::DateTime ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QVariant::DateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QVariant::DateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QVariant::DateTime ) );
+      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
+      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
+      fields.append( QgsField( QStringLiteral( "unitOfMeasurements" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( QStringLiteral( "observationType" ), QMetaType::Type::QString ) );
+      fields.append( QgsField( QStringLiteral( "multiObservationDataTypes" ), QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
+      fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
+      fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
+      fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
       break;
   }
 

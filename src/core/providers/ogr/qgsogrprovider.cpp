@@ -1721,7 +1721,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
       {
         case OFTInteger:
         {
-          if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean && qType == QVariant::String )
+          if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean && qType == QMetaType::Type::QString )
           {
             // compatibility with use case of https://github.com/qgis/QGIS/issues/55517
             const QString strVal = attrVal.toString();
@@ -2711,7 +2711,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
         {
           case OFTInteger:
           {
-            if ( OGR_Fld_GetSubType( fd ) == OFSTBoolean && qType == QVariant::String )
+            if ( OGR_Fld_GetSubType( fd ) == OFSTBoolean && qType == QMetaType::Type::QString )
             {
               // compatibility with use case of https://github.com/qgis/QGIS/issues/55517
               const QString strVal = it2->toString();
