@@ -133,9 +133,9 @@ QgsHanaPrimaryKeyType QgsHanaPrimaryKeyUtils::getPrimaryKeyType( const QgsField 
 {
   switch ( field.type() )
   {
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       return PktInt64;
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       return PktInt;
     default:
       return PktFidMap;
