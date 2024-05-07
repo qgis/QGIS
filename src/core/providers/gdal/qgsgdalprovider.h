@@ -24,6 +24,7 @@
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgsogrutils.h"
 #include "qgsrasterbandstats.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
@@ -415,6 +416,9 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
                     const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+  private:
+    //! Get layer name from gdal url
+    static QString getLayerNameForStyle( const QString &uri, gdal::dataset_unique_ptr &ds );
 };
 
 ///@endcond
