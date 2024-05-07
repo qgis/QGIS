@@ -45,6 +45,13 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   mProgressBar->hide();
 
+  mSqlEditor = new QgsCodeEditorSQL();
+  mCodeEditorWidget = new QgsCodeEditorWidget( mSqlEditor );
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  vl->addWidget( mCodeEditorWidget );
+  mSqlEditorContainer->setLayout( vl );
+
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
   connect( mClearButton, &QPushButton::pressed, this, [ = ]
   {

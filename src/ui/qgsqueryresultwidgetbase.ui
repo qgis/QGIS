@@ -18,7 +18,7 @@
     <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
    </item>
    <item>
-    <widget class="QgsCodeEditorSQL" name="mSqlEditor" native="true"/>
+    <widget class="QWidget" name="mSqlEditorContainer" native="true"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0,0">
