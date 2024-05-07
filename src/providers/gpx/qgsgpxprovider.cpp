@@ -51,9 +51,9 @@ const QStringList QgsGPXProvider::sAttributeNames = { "name", "elevation", "symb
                                                       "url", "url name", "time"
                                                     };
 const QList< QMetaType::Type > QgsGPXProvider::sAttributeTypes = { QMetaType::Type::QString, QMetaType::Type::Double, QMetaType::Type::QString, QMetaType::Type::Int,
-                                                                  QMetaType::Type::QString, QMetaType::Type::QString, QMetaType::Type::QString,
-                                                                  QMetaType::Type::QString, QMetaType::Type::QString, QMetaType::Type::QDateTime,
-                                                                };
+                                                                   QMetaType::Type::QString, QMetaType::Type::QString, QMetaType::Type::QString,
+                                                                   QMetaType::Type::QString, QMetaType::Type::QString, QMetaType::Type::QDateTime,
+                                                                 };
 const QList< QgsGPXProvider::DataType > QgsGPXProvider::sAttributedUsedForLayerType =
 {
   QgsGPXProvider::AllType, QgsGPXProvider::WaypointType, QgsGPXProvider::TrkRteType, QgsGPXProvider::TrkRteType,
