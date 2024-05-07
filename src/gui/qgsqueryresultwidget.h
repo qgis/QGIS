@@ -216,6 +216,9 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
 
   private:
 
+    QgsCodeEditorWidget *mCodeEditorWidget = nullptr;
+    QgsCodeEditorSQL *mSqlEditor = nullptr;
+
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;
     std::unique_ptr<QgsQueryResultModel> mModel;
     std::unique_ptr<QgsFeedback> mFeedback;
