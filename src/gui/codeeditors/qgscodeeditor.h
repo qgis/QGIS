@@ -21,6 +21,7 @@
 #include "qgscodeeditorcolorscheme.h"
 #include "qgis.h"
 #include "qgssettingstree.h"
+#include "qgspanelwidget.h"
 
 // qscintilla includes
 #include <Qsci/qsciapis.h>
@@ -29,6 +30,9 @@
 
 #include <QMap>
 
+class QgsFilterLineEdit;
+class QToolButton;
+class QCheckBox;
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -81,8 +85,11 @@ class GUI_EXPORT QgsCodeInterpreter
 };
 
 
-
-class QWidget;
+// TODO QGIS 4.0 -- make QgsCodeEditor inherit QWidget only,
+// with a separate getter for the QsciScintilla child widget. This
+// would give us more flexibility to add functionality to the base
+// QgsCodeEditor class, eg adding a message bar or other child widgets
+// to the editor widget.
 
 /**
  * \ingroup gui
@@ -653,6 +660,86 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCodeEditor::Flags )
+
+
+/**
+ * \ingroup gui
+ * \brief A widget which wraps a QgsCodeEditor in additional functionality.
+ *
+ * This widget wraps an existing QgsCodeEditor object in a widget which provides
+ * additional standard functionality, such as search/replace tools. The caller
+ * must create an unparented QgsCodeEditor object (or a subclass of QgsCodeEditor)
+ * first, and then construct a QgsCodeEditorWidget passing this object to the
+ * constructor.
+ *
+ * \note may not be available in Python bindings, depending on platform support
+ */
+class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsCodeEditorWidget, wrapping the specified \a editor widget.
+     *
+     * Ownership of \a editor will be transferred to this widget.
+     */
+    QgsCodeEditorWidget( QgsCodeEditor *editor SIP_TRANSFER, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the wrapped code editor.
+     */
+    QgsCodeEditor *editor() { return mEditor; }
+
+  public slots:
+
+    /**
+     * Shows the find bar.
+     *
+     * \see hideFind()
+     * \see setFindVisible()
+     */
+    void showFind();
+
+    /**
+     * Hides the find bar.
+     *
+     * \see showFind()
+     * \see setFindVisible()
+     */
+    void hideFind();
+
+    /**
+     * Sets whether the find bar is \a visible.
+     *
+     * \see showFind()
+     * \see hideFind()
+     */
+    void setFindVisible( bool visible );
+
+  private slots:
+
+    void findNext();
+    void findPrevious();
+    void textFindChanged( const QString &text );
+    void updateFind();
+
+  private:
+
+    void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
+
+    QgsCodeEditor *mEditor = nullptr;
+    QWidget *mFindWidget = nullptr;
+    QgsFilterLineEdit *mLineEditFind = nullptr;
+    QToolButton *mFindPrevButton = nullptr;
+    QToolButton *mFindNextButton = nullptr;
+    QCheckBox *mCaseSensitiveCheck = nullptr;
+    QCheckBox *mWholeWordCheck = nullptr;
+    QCheckBox *mWrapAroundCheck = nullptr;
+    int mBlockSearching = 0;
+};
+
 
 // clazy:excludeall=qstring-allocations
 
