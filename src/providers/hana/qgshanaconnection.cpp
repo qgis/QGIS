@@ -96,69 +96,69 @@ namespace
 
 QgsField AttributeField::toQgsField() const
 {
-  QVariant::Type fieldType;
+  QMetaType::Type fieldType;
   switch ( type )
   {
     case SQLDataTypes::Bit:
     case SQLDataTypes::Boolean:
-      fieldType = QVariant::Bool;
+      fieldType = QMetaType::Type::Bool;
       break;
     case SQLDataTypes::TinyInt:
     case SQLDataTypes::SmallInt:
     case SQLDataTypes::Integer:
-      fieldType = isSigned ? QVariant::Int : QVariant::UInt;
+      fieldType = isSigned ? QMetaType::Type::Int : QMetaType::Type::UInt;
       break;
     case SQLDataTypes::BigInt:
-      fieldType = isSigned ? QVariant::LongLong : QVariant::ULongLong;
+      fieldType = isSigned ? QMetaType::Type::LongLong : QMetaType::Type::ULongLong;
       break;
     case SQLDataTypes::Numeric:
     case SQLDataTypes::Decimal:
-      fieldType = QVariant::Double;
+      fieldType = QMetaType::Type::Double;
       break;
     case SQLDataTypes::Double:
     case SQLDataTypes::Float:
     case SQLDataTypes::Real:
-      fieldType = QVariant::Double;
+      fieldType = QMetaType::Type::Double;
       break;
     case SQLDataTypes::Char:
     case SQLDataTypes::WChar:
-      fieldType = ( size == 1 ) ? QVariant::Char : QVariant::String;
+      fieldType = ( size == 1 ) ? QMetaType::Type::QChar : QMetaType::Type::QString;
       break;
     case SQLDataTypes::VarChar:
     case SQLDataTypes::WVarChar:
     case SQLDataTypes::LongVarChar:
     case SQLDataTypes::WLongVarChar:
-      fieldType = QVariant::String;
+      fieldType = QMetaType::Type::QString;
       break;
     case SQLDataTypes::Binary:
     case SQLDataTypes::VarBinary:
     case SQLDataTypes::LongVarBinary:
-      fieldType = QVariant::ByteArray;
+      fieldType = QMetaType::Type::QByteArray;
       break;
     case SQLDataTypes::Date:
     case SQLDataTypes::TypeDate:
-      fieldType = QVariant::Date;
+      fieldType = QMetaType::Type::QDate;
       break;
     case SQLDataTypes::Time:
     case SQLDataTypes::TypeTime:
-      fieldType = QVariant::Time;
+      fieldType = QMetaType::Type::QTime;
       break;
     case SQLDataTypes::Timestamp:
     case SQLDataTypes::TypeTimestamp:
-      fieldType = QVariant::DateTime;
+      fieldType = QMetaType::Type::QDateTime;
       break;
     default:
       if ( isGeometry() )
         // There are two options how to treat geometry columns that are attributes:
         // 1. Type is QVariant::String. The value is provided as WKT and editable.
         // 2. Type is QVariant::ByteArray. The value is provided as BLOB and uneditable.
-        fieldType = QVariant::String;
+        fieldType = QMetaType::Type::QString;
       else
         throw QgsHanaException( QString( "Field type '%1' is not supported" ).arg( QString::number( type ) ) );
       break;
   }
 
-  QgsField field = QgsField( name, fieldType, typeName, size, precision, comment, QVariant::Invalid );
+  QgsField field = QgsField( name, fieldType, typeName, size, precision, comment, QMetaType::Type::UnknownType );
   if ( !isNullable || isUnique )
   {
     QgsFieldConstraints constraints;
@@ -467,28 +467,28 @@ QList<QgsVectorDataProvider::NativeType> QgsHanaConnection::getNativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // boolean
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "BOOLEAN" ), QVariant::Bool, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), QStringLiteral( "BOOLEAN" ), QMetaType::Type::Bool, -1, -1, -1, -1 )
          // integer types
-         << QgsVectorDataProvider::NativeType( tr( "8 bytes Integer" ), QStringLiteral( "BIGINT" ), QVariant::LongLong, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "4 bytes Integer" ), QStringLiteral( "INTEGER" ), QVariant::Int, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "2 bytes Integer" ), QStringLiteral( "SMALLINT" ), QVariant::Int, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "1 byte Integer" ), QStringLiteral( "TINYINT" ), QVariant::Int, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (DECIMAL)" ), QStringLiteral( "DECIMAL" ), QVariant::Double, 1, 31, 0, 31 )
+         << QgsVectorDataProvider::NativeType( tr( "8 bytes Integer" ), QStringLiteral( "BIGINT" ), QMetaType::Type::LongLong, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "4 bytes Integer" ), QStringLiteral( "INTEGER" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "2 bytes Integer" ), QStringLiteral( "SMALLINT" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "1 byte Integer" ), QStringLiteral( "TINYINT" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (DECIMAL)" ), QStringLiteral( "DECIMAL" ), QMetaType::Type::Double, 1, 31, 0, 31 )
          // floating point
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (REAL)" ), QStringLiteral( "REAL" ), QVariant::Double )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (DOUBLE)" ), QStringLiteral( "DOUBLE" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (REAL)" ), QStringLiteral( "REAL" ), QMetaType::Type::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (DOUBLE)" ), QStringLiteral( "DOUBLE" ), QMetaType::Type::Double )
          // date/time types
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "DATE" ), QVariant::Date, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "TIME" ), QVariant::Time, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "DATE" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "TIME" ), QMetaType::Type::QTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "TIMESTAMP" ), QMetaType::Type::QDateTime, -1, -1, -1, -1 )
          // string types
-         << QgsVectorDataProvider::NativeType( tr( "Text, variable length (VARCHAR)" ), QStringLiteral( "VARCHAR" ), QVariant::String, 1, 5000 )
-         << QgsVectorDataProvider::NativeType( tr( "Unicode Text, variable length (NVARCHAR)" ), QStringLiteral( "NVARCHAR" ), QVariant::String, 1, 5000 )
-         << QgsVectorDataProvider::NativeType( tr( "Text, variable length large object (CLOB)" ), QStringLiteral( "CLOB" ), QVariant::String )
-         << QgsVectorDataProvider::NativeType( tr( "Unicode Text, variable length large object (NCLOB)" ), QStringLiteral( "NCLOB" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Text, variable length (VARCHAR)" ), QStringLiteral( "VARCHAR" ), QMetaType::Type::QString, 1, 5000 )
+         << QgsVectorDataProvider::NativeType( tr( "Unicode Text, variable length (NVARCHAR)" ), QStringLiteral( "NVARCHAR" ), QMetaType::Type::QString, 1, 5000 )
+         << QgsVectorDataProvider::NativeType( tr( "Text, variable length large object (CLOB)" ), QStringLiteral( "CLOB" ), QMetaType::Type::QString )
+         << QgsVectorDataProvider::NativeType( tr( "Unicode Text, variable length large object (NCLOB)" ), QStringLiteral( "NCLOB" ), QMetaType::Type::QString )
          // binary types
-         << QgsVectorDataProvider::NativeType( tr( "Binary Object (VARBINARY)" ), QStringLiteral( "VARBINARY" ), QVariant::ByteArray, 1, 5000 )
-         << QgsVectorDataProvider::NativeType( tr( "Binary Object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray );
+         << QgsVectorDataProvider::NativeType( tr( "Binary Object (VARBINARY)" ), QStringLiteral( "VARBINARY" ), QMetaType::Type::QByteArray, 1, 5000 )
+         << QgsVectorDataProvider::NativeType( tr( "Binary Object (BLOB)" ), QStringLiteral( "BLOB" ), QMetaType::Type::QByteArray );
 }
 
 const QString &QgsHanaConnection::getDatabaseVersion()
@@ -1078,24 +1078,24 @@ PreparedStatementRef QgsHanaConnection::createPreparedStatement( const QString &
     for ( unsigned short i = 1; i <= args.size(); ++i )
     {
       const QVariant &value = args.at( i - 1 );
-      switch ( value.type() )
+      switch ( value.userType() )
       {
-        case QVariant::Type::Double:
+        case QMetaType::Type::Double:
           stmt->setDouble( i, value.isNull() ? Double() : value.toDouble() );
           break;
-        case QVariant::Type::Int:
+        case QMetaType::Type::Int:
           stmt->setInt( i, value.isNull() ? Int() : value.toInt() );
           break;
-        case QVariant::Type::UInt:
+        case QMetaType::Type::UInt:
           stmt->setUInt( i, value.isNull() ? UInt() : value.toUInt() );
           break;
-        case QVariant::Type::LongLong:
+        case QMetaType::Type::LongLong:
           stmt->setLong( i, value.isNull() ? Long() : value.toLongLong() );
           break;
-        case QVariant::Type::ULongLong:
+        case QMetaType::Type::ULongLong:
           stmt->setULong( i, value.isNull() ? ULong() : value.toULongLong() );
           break;
-        case QVariant::Type::String:
+        case QMetaType::Type::QString:
           stmt->setNString( i, value.isNull() ? NString() : value.toString().toStdU16String() );
           break;
         default:

@@ -161,9 +161,9 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
     case QgsExpressionNode::ntLiteral:
     {
       const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
-      switch ( n->value().type() )
+      switch ( n->value().userType() )
       {
-        case QVariant::Bool:
+        case QMetaType::Type::Bool:
           result = n->value().toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
           return Complete;
         default:
