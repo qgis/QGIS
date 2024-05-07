@@ -356,7 +356,7 @@ Since QGIS 3.30, the optional ``typeString`` argument can be used to specify fie
 .. versionadded:: 3.16
 %End
 
- static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() );
+ static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() ) /Deprecated/;
 %Docstring
 Returns an icon corresponding to a field ``type``
 
@@ -364,6 +364,9 @@ Since QGIS 3.24, the optional ``subType`` argument can be used to specify the ty
 Since QGIS 3.30, the optional ``typeString`` argument can be used to specify field type strings for handling user field types.
 
 .. versionadded:: 3.16
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     operator QVariant() const;

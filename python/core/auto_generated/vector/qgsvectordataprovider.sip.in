@@ -493,7 +493,7 @@ check if provider supports type of field
  NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid );
 
 
-      QString mTypeDesc;
+          QString mTypeDesc;
       QString mTypeName;
       QMetaType::Type mType;
       int mMinLen;
@@ -569,8 +569,17 @@ providers will return ``None``.
 %End
 
     static QVariant convertValue( QMetaType::Type type, const QString &value );
+%Docstring
+Convert ``value`` to ``type``
+%End
 
- static QVariant convertValue( QVariant::Type type, const QString &value );
+ static QVariant convertValue( QVariant::Type type, const QString &value ) /Deprecated/;
+%Docstring
+Convert ``value`` to ``type``
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
+%End
 
     virtual QgsTransaction *transaction() const;
 %Docstring

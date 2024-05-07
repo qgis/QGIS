@@ -100,8 +100,9 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
      * \param position insertion point (before)
      * \param errorMessage optional error message
      * \returns true on success
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
-    Q_DECL_DEPRECATED bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
+    Q_DECL_DEPRECATED bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr ) SIP_DEPRECATED;
 
     /**
      * Remove the field at given \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
