@@ -250,14 +250,12 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
          !mShared->mURI.ignoreAxisOrientation() )
     {
-      // This is a bit nasty, but if the server reports OGC::CRS84
-      // mSourceCrs will report hasAxisInverted() == false, but srsName()
-      // will be urn:ogc:def:crs:EPSG::4326, so axis inversion is needed...
-      if ( mShared->srsName() == QLatin1String( "urn:ogc:def:crs:EPSG::4326" ) )
-      {
-        invertAxis = true;
-      }
-      else if ( mShared->mSourceCrs.hasAxisInverted() )
+      // For WFS 1.1 and above we honor requested CRS and axis order
+      // Axis is not inverted if srsName starts with EPSG
+      // It needs to be an EPSG urn, e.g. urn:ogc:def:crs:EPSG::4326
+      // This follows geoserver convention
+      // See: https://docs.geoserver.org/stable/en/user/services/wfs/axis_order.html
+      if ( mShared->mSourceCrs.hasAxisInverted() && !( mShared->srsName() == QLatin1String( "EPSG:4326" ) ) )
       {
         invertAxis = true;
       }
