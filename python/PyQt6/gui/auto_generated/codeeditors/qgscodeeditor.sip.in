@@ -617,6 +617,8 @@ constructor.
 .. note::
 
    may not be available in Python bindings, depending on platform support
+
+.. versionadded:: 3.38
 %End
 
 %TypeHeaderCode
