@@ -33,12 +33,15 @@ Constructor for QgsServerParameterDefinition.
 
 
  QgsServerParameterDefinition( const QVariant::Type type,
-        const QVariant defaultValue = QVariant( "" ) );
+        const QVariant defaultValue = QVariant( "" ) ) /Deprecated/;
 %Docstring
 Constructor for QgsServerParameterDefinition.
 
 :param type: The type of the parameter
 :param defaultValue: The default value of the parameter
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
 
@@ -245,13 +248,16 @@ Constructor for QgsServerParameter.
 
  QgsServerParameter( const QgsServerParameter::Name name,
                                           const QVariant::Type type,
-                                          const QVariant defaultValue = QVariant( "" ) );
+                                          const QVariant defaultValue = QVariant( "" ) ) /Deprecated/;
 %Docstring
 Constructor for QgsServerParameter.
 
 :param name: The name of the parameter
 :param type: The type of the parameter
 :param defaultValue: The default value to use if not defined
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     void raiseError() const;

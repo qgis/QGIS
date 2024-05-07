@@ -65,10 +65,11 @@ class CORE_EXPORT QgsFieldDomain
 
     /**
      * Constructor for QgsFieldDomain, with the specified \a name, \a description and \a fieldType.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
     Q_DECL_DEPRECATED QgsFieldDomain( const QString &name,
                                       const QString &description,
-                                      QVariant::Type fieldType );
+                                      QVariant::Type fieldType ) SIP_DEPRECATED;
 
     virtual ~QgsFieldDomain();
 
@@ -133,8 +134,9 @@ class CORE_EXPORT QgsFieldDomain
      * Sets the associated field \a type.
      *
      * \see fieldType()
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
-    Q_DECL_DEPRECATED void setFieldType( QVariant::Type type );
+    Q_DECL_DEPRECATED void setFieldType( QVariant::Type type ) SIP_DEPRECATED;
 
     /**
      * Returns the split policy.
@@ -257,11 +259,12 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
      *
      * The \a values list details the coded field values as QgsCodedValue objects. Each code should
      * appear only once, but it is the responsibility of the user to check this.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
     Q_DECL_DEPRECATED QgsCodedFieldDomain( const QString &name,
                                            const QString &description,
                                            QVariant::Type fieldType,
-                                           const QList<QgsCodedValue> &values );
+                                           const QList<QgsCodedValue> &values ) SIP_DEPRECATED;
 
 #ifndef SIP_RUN
     //! QgsCodedFieldDomain cannot be copied - use clone() instead
@@ -333,6 +336,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      * Constructor for QgsRangeFieldDomain, with the specified \a name, \a description and \a fieldType.
      *
      * Set an invalid QVariant for \a minimum or \a maximum respectively if no minimum or maximum value is desired.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
     Q_DECL_DEPRECATED QgsRangeFieldDomain( const QString &name,
                                            const QString &description,
@@ -340,7 +344,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
                                            const QVariant &minimum,
                                            bool minimumIsInclusive,
                                            const QVariant &maximum,
-                                           bool maximumIsInclusive );
+                                           bool maximumIsInclusive ) SIP_DEPRECATED;
 
 
 #ifndef SIP_RUN
@@ -477,11 +481,12 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
      * Constructor for QgsGlobFieldDomain, with the specified \a name, \a description and \a fieldType.
      *
      * The \a glob argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
     Q_DECL_DEPRECATED QgsGlobFieldDomain( const QString &name,
                                           const QString &description,
                                           QVariant::Type fieldType,
-                                          const QString &glob );
+                                          const QString &glob ) SIP_DEPRECATED;
 
 
 #ifndef SIP_RUN

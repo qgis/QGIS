@@ -563,7 +563,7 @@ quotations where required.
 .. seealso:: :py:func:`quotedColumnRef`
 %End
 
- static QString quotedValue( const QVariant &value, QVariant::Type type );
+ static QString quotedValue( const QVariant &value, QVariant::Type type ) /Deprecated/;
 %Docstring
 Returns a string representation of a literal value, including appropriate
 quotations where required.
@@ -574,6 +574,9 @@ quotations where required.
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
 
@@ -670,7 +673,7 @@ value. The value may be null.
 :return: the expression to evaluate field equality
 %End
 
- static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType );
+ static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType ) /Deprecated/;
 %Docstring
 Create an expression allowing to evaluate if a field is equal to a
 value. The value may be null.
@@ -680,6 +683,9 @@ value. The value may be null.
 :param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
 
 :return: the expression to evaluate field equality
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     static bool isFieldEqualityExpression( const QString &expression, QString &field /Out/, QVariant &value /Out/ );

@@ -80,7 +80,7 @@ Inserts a field at the given position.
          - errorMessage: error message
 %End
 
- bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+ bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated/;
 %Docstring
 Inserts a field at the given position.
 
@@ -91,6 +91,9 @@ Inserts a field at the given position.
 
 :return: - true on success
          - errorMessage: error message
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     bool removeField( const int position, QString *errorMessage /Out/ = 0 );

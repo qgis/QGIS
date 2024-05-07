@@ -29,11 +29,14 @@ Returns a user-friendly translated string representing a QVariant ``type``.
 The optional ``subType`` can be used to specify the type of variant list or map values.
 %End
 
- static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+ static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid ) /Deprecated/;
 %Docstring
 Returns a user-friendly translated string representing a QVariant ``type``.
 
 The optional ``subType`` can be used to specify the type of variant list or map values.
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     static bool isNull( const QVariant &variant);

@@ -47,8 +47,9 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
 
     /**
      * Based on the \a type of underlying data, some aggregates will be available or not.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
-    Q_DECL_DEPRECATED void setType( QVariant::Type type );
+    Q_DECL_DEPRECATED void setType( QVariant::Type type ) SIP_DEPRECATED;
 
     /**
      * Based on the \a type of underlying data, some aggregates will be available or not.

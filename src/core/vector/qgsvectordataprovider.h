@@ -495,11 +495,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
         , mMaxLen( maxLen )
         , mMinPrec( minPrec )
         , mMaxPrec( maxPrec )
-        , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) )
-      {}
+        , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ) SIP_DEPRECATED
+          {}
 
 
-      QString mTypeDesc;
+          QString mTypeDesc;
       QString mTypeName;
       QMetaType::Type mType;
       int mMinLen;
@@ -572,9 +572,17 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
+    /**
+     * Convert \a value to \a type
+     */
     static QVariant convertValue( QMetaType::Type type, const QString &value );
 
-    Q_DECL_DEPRECATED static QVariant convertValue( QVariant::Type type, const QString &value );
+    /**
+     * Convert \a value to \a type
+     *
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED static QVariant convertValue( QVariant::Type type, const QString &value ) SIP_DEPRECATED;
 
     /**
      * Returns the transaction this data provider is included in, if any.
