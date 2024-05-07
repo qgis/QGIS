@@ -673,6 +673,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCodeEditor::Flags )
  * constructor.
  *
  * \note may not be available in Python bindings, depending on platform support
+ *
+ * \since QGIS 3.38
  */
 class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 {
