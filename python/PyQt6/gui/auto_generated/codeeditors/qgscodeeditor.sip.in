@@ -62,7 +62,6 @@ whenever the public :py:func:`~QgsCodeInterpreter.exec` method is called.
 
 
 
-
 class QgsCodeEditor : QsciScintilla
 {
 %Docstring(signature="appended")
@@ -601,6 +600,72 @@ The default implementation uses QMessageBox.
 };
 
 QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEditor::Flag> f2);
+
+
+
+class QgsCodeEditorWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget which wraps a QgsCodeEditor in additional functionality.
+
+This widget wraps an existing QgsCodeEditor object in a widget which provides
+additional standard functionality, such as search/replace tools. The caller
+must create an unparented QgsCodeEditor object (or a subclass of QgsCodeEditor)
+first, and then construct a :py:class:`QgsCodeEditorWidget` passing this object to the
+constructor.
+
+.. note::
+
+   may not be available in Python bindings, depending on platform support
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditor.h"
+%End
+  public:
+
+    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorWidget, wrapping the specified ``editor`` widget.
+
+Ownership of ``editor`` will be transferred to this widget.
+%End
+
+    QgsCodeEditor *editor();
+%Docstring
+Returns the wrapped code editor.
+%End
+
+  public slots:
+
+    void showFind();
+%Docstring
+Shows the find bar.
+
+.. seealso:: :py:func:`hideFind`
+
+.. seealso:: :py:func:`setFindVisible`
+%End
+
+    void hideFind();
+%Docstring
+Hides the find bar.
+
+.. seealso:: :py:func:`showFind`
+
+.. seealso:: :py:func:`setFindVisible`
+%End
+
+    void setFindVisible( bool visible );
+%Docstring
+Sets whether the find bar is ``visible``.
+
+.. seealso:: :py:func:`showFind`
+
+.. seealso:: :py:func:`hideFind`
+%End
+
+};
 
 
 
