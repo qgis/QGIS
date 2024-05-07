@@ -26,6 +26,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
     QgsFeedback,
+    QgsFillSymbol,
+    QgsFontUtils,
     QgsGeometry,
     QgsLayout,
     QgsLayoutItemElevationProfile,
@@ -61,7 +63,7 @@ class MyProfileResults(QgsAbstractProfileResults):
         self.max_z = -100
 
         self.marker_symbol = QgsMarkerSymbol.createSimple(
-            {'name': 'square', 'size': 1, 'color': '#00ff00',
+            {'name': 'square', 'size': 2, 'color': '#00ff00',
              'outline_style': 'no'})
 
     def asFeatures(self, type, feedback):
@@ -195,14 +197,20 @@ class MyProfileSource(QgsAbstractProfileSource):
 class TestQgsProfileSourceRegistry(QgisTestCase):
 
     def test_register_unregister_source(self):
-        self.assertEqual(QgsApplication.profileSourceRegistry().profileSources(), [])
+        initial_sources = QgsApplication.profileSourceRegistry().profileSources()
 
         source = MyProfileSource()
         QgsApplication.profileSourceRegistry().registerProfileSource(source)
-        self.assertEqual(len(QgsApplication.profileSourceRegistry().profileSources()), 1)
-        self.assertEqual(QgsApplication.profileSourceRegistry().profileSources()[0], source)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1
+        )
+        self.assertEqual(QgsApplication.profileSourceRegistry().profileSources()[-1], source)
         QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
-        self.assertEqual(QgsApplication.profileSourceRegistry().profileSources(), [])
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources(),
+            initial_sources
+        )
 
     def test_generate_profile_from_custom_source(self):
         curve = QgsLineString()
@@ -361,6 +369,7 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         profile_item.setProfileCurve(curve)
         profile_item.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
 
+        profile_item.plot().setXMinimum(-100)
         profile_item.plot().setXMaximum(curve.length() + 100)
         profile_item.plot().setYMaximum(1300)
 
@@ -371,10 +380,12 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
             QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
 
         format = QgsTextFormat()
-        format.setSize(10)
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
         format.setColor(QColor(0, 0, 0))
         profile_item.plot().xAxis().setTextFormat(format)
-        profile_item.plot().xAxis().setLabelInterval(1000)
+        profile_item.plot().xAxis().setLabelInterval(2000)
 
         profile_item.plot().yAxis().setGridIntervalMajor(1000)
         profile_item.plot().yAxis().setGridIntervalMinor(500)
@@ -384,6 +395,9 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
 
         profile_item.plot().yAxis().setTextFormat(format)
         profile_item.plot().yAxis().setLabelInterval(500)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
 
         self.assertTrue(
             self.render_layout_check('custom_profile', layout)
