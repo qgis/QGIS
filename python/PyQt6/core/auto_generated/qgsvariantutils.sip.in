@@ -53,6 +53,7 @@ This method is more rigorous vs QVariant.isNull(), which will return
 
 
 
+
 };
 
 /************************************************************************
