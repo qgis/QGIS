@@ -761,6 +761,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   layerElement.appendChild( layerId );
 
+  if ( mVerticalCrs.isValid() )
   {
     QDomElement verticalSrsNode = document.createElement( QStringLiteral( "verticalCrs" ) );
     mVerticalCrs.writeXml( verticalSrsNode, document );
