@@ -171,6 +171,9 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     if ( setup.type() == QLatin1String( "Hidden" ) || setup.type() == QLatin1String( "Immutable" ) )
     {
       mHiddenAttributes.insert( idx );
+    }
+    if ( setup.type() == QLatin1String( "Immutable" ) )
+    {
       continue;
     }
 
@@ -182,12 +185,17 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mTableWidget->setHorizontalHeaderItem( col, item );
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type(), col );
-    if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
-         mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
+           mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) || mHiddenAttributes.contains( idx ) )
     {
       cb->setCurrentIndex( cb->findData( "skip" ) );
     }
     mTableWidget->setCellWidget( 0, col, cb );
+
+    if ( mHiddenAttributes.contains( idx ) )
+    {
+      mTableWidget->setColumnHidden( idx, col );
+    }
 
     col++;
   }
@@ -768,13 +776,6 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
   QgsAttributes results( mFields.count() );
   for ( int fieldIdx = 0; fieldIdx < mFields.count(); ++fieldIdx )
   {
-    if ( mHiddenAttributes.contains( fieldIdx ) )
-    {
-      //hidden attribute, set to default value
-      results[fieldIdx] = QVariant();
-      continue;
-    }
-
     QComboBox *comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, widgetIndex ) );
     if ( !comboBox )
       continue;
