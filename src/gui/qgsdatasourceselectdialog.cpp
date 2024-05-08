@@ -31,6 +31,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QActionGroup>
+#include <QDir>
 
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,
@@ -116,6 +117,8 @@ QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   {
     mActionShowFilter->trigger();
   }
+
+  setAcceptDrops( true );
 }
 
 QgsDataSourceSelectWidget::~QgsDataSourceSelectWidget() = default;
@@ -141,6 +144,58 @@ void QgsDataSourceSelectWidget::showEvent( QShowEvent *e )
         mBrowserTreeView->scrollTo( expandIndex, QgsBrowserTreeView::ScrollHint::PositionAtTop );
         mBrowserTreeView->expand( expandIndex );
       }
+    }
+  }
+}
+
+QString QgsDataSourceSelectWidget::acceptableFilePath( QDropEvent *event ) const
+{
+  if ( event->mimeData()->hasUrls() )
+  {
+    const QList< QUrl > urls = event->mimeData()->urls();
+    for ( const QUrl &url : urls )
+    {
+      const QString local = url.toLocalFile();
+      if ( local.isEmpty() )
+        continue;
+
+      if ( QFile::exists( local ) )
+      {
+        return local;
+      }
+    }
+  }
+  return QString();
+}
+
+void QgsDataSourceSelectWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  const QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
+  {
+    event->acceptProposedAction();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsDataSourceSelectWidget::dropEvent( QDropEvent *event )
+{
+  const QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
+  {
+    event->acceptProposedAction();
+
+    const QFileInfo fi( filePath );
+    if ( fi.isDir() )
+    {
+      expandPath( filePath, true );
+    }
+    else
+    {
+      expandPath( fi.dir().path(), true );
     }
   }
 }

@@ -104,6 +104,9 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
     //! Scroll to last selected index and expand it's children
     void showEvent( QShowEvent *e ) override;
 
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+
   signals:
 
     /**
@@ -136,6 +139,9 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
     void refreshModel( const QModelIndex &index );
 
     void setValid( bool valid );
+
+    //! Returns file name if object meets drop criteria.
+    QString acceptableFilePath( QDropEvent *event ) const;
 
     QgsBrowserProxyModel mBrowserProxyModel;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
