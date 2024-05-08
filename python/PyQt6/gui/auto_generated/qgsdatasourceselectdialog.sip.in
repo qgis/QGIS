@@ -103,6 +103,11 @@ Apply filter to the model
 Scroll to last selected index and expand it's children
 %End
 
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+
   signals:
 
     void validationChanged( bool isValid );
