@@ -28,6 +28,8 @@
 #include <QtConcurrent>
 #include <QStyledItemDelegate>
 
+class QgsCodeEditorWidget;
+
 ///@cond private
 
 #ifndef SIP_RUN

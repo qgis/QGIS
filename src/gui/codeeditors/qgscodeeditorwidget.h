@@ -1,0 +1,110 @@
+/***************************************************************************
+    qgscodeeditorwidget.h
+     --------------------------------------
+    Date                 : May 2024
+    Copyright            : (C) 2024 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSCODEEDITORWIDGET_H
+#define QGSCODEEDITORWIDGET_H
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgspanelwidget.h"
+
+class QgsCodeEditor;
+class QgsFilterLineEdit;
+class QToolButton;
+class QCheckBox;
+
+SIP_IF_MODULE( HAVE_QSCI_SIP )
+
+/**
+ * \ingroup gui
+ * \brief A widget which wraps a QgsCodeEditor in additional functionality.
+ *
+ * This widget wraps an existing QgsCodeEditor object in a widget which provides
+ * additional standard functionality, such as search/replace tools. The caller
+ * must create an unparented QgsCodeEditor object (or a subclass of QgsCodeEditor)
+ * first, and then construct a QgsCodeEditorWidget passing this object to the
+ * constructor.
+ *
+ * \note may not be available in Python bindings, depending on platform support
+ *
+ * \since QGIS 3.38
+ */
+class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsCodeEditorWidget, wrapping the specified \a editor widget.
+     *
+     * Ownership of \a editor will be transferred to this widget.
+     */
+    QgsCodeEditorWidget( QgsCodeEditor *editor SIP_TRANSFER, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the wrapped code editor.
+     */
+    QgsCodeEditor *editor() { return mEditor; }
+
+  public slots:
+
+    /**
+     * Shows the search bar.
+     *
+     * \see hideSearchBar()
+     * \see setSearchBarVisible()
+     */
+    void showSearchBar();
+
+    /**
+     * Hides the search bar.
+     *
+     * \see showSearchBar()
+     * \see setSearchBarVisible()
+     */
+    void hideSearchBar();
+
+    /**
+     * Sets whether the search bar is \a visible.
+     *
+     * \see showSearchBar()
+     * \see hideSearchBar()
+     */
+    void setSearchBarVisible( bool visible );
+
+  private slots:
+
+    void findNext();
+    void findPrevious();
+    void textSearchChanged( const QString &text );
+    void updateSearch();
+
+  private:
+
+    void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
+
+    QgsCodeEditor *mEditor = nullptr;
+    QWidget *mFindWidget = nullptr;
+    QgsFilterLineEdit *mLineEditFind = nullptr;
+    QToolButton *mFindPrevButton = nullptr;
+    QToolButton *mFindNextButton = nullptr;
+    QCheckBox *mCaseSensitiveCheck = nullptr;
+    QCheckBox *mWholeWordCheck = nullptr;
+    QCheckBox *mWrapAroundCheck = nullptr;
+    int mBlockSearching = 0;
+};
+
+#endif // QGSCODEEDITORWIDGET_H
