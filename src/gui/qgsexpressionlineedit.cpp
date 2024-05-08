@@ -19,10 +19,10 @@
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextgenerator.h"
-#include "qgscodeeditorsql.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgscodeeditorexpression.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

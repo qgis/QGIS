@@ -39,7 +39,6 @@
 #include "qgspythonrunner.h"
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
@@ -49,7 +48,7 @@
 #include "qgsfieldformatter.h"
 #include "qgsexpressionstoredialog.h"
 #include "qgsexpressiontreeview.h"
-
+#include "qgscodeeditorwidget.h"
 
 
 bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
@@ -75,6 +74,13 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   , mProject( QgsProject::instance() )
 {
   setupUi( this );
+
+  txtExpressionString = new QgsCodeEditorExpression();
+  QgsCodeEditorWidget *codeEditorWidget = new QgsCodeEditorWidget( txtExpressionString );
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  vl->addWidget( codeEditorWidget );
+  mExpressionEditorContainer->setLayout( vl );
 
   connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );
   connect( btnNewFile, &QPushButton::clicked, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );

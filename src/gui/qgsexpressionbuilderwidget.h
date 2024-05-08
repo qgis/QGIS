@@ -32,7 +32,7 @@
 class QgsFields;
 class QgsExpressionHighlighter;
 class QgsRelation;
-
+class QgsCodeEditorExpression;
 
 /**
  * \ingroup gui
@@ -493,6 +493,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     // Translated name of the user expressions group
     QString mUserExpressionsGroupName;
+
+    QgsCodeEditorExpression *txtExpressionString = nullptr;
 };
 
 // clazy:excludeall=qstring-allocations
