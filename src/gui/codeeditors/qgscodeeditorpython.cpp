@@ -93,6 +93,8 @@ void QgsCodeEditorPython::initializeLexer()
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
 
+  SendScintilla( QsciScintillaBase::SCI_SETPROPERTY, "highlight.current.word", "1" );
+
   QFont font = lexerFont();
   const QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
 
