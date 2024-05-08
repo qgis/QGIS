@@ -25,6 +25,7 @@ class QgsFilterLineEdit;
 class QToolButton;
 class QCheckBox;
 class QgsMessageBar;
+class QgsScrollBarHighlightController;
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -59,6 +60,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QgsCodeEditorWidget( QgsCodeEditor *editor SIP_TRANSFER,
                          QgsMessageBar *messageBar = nullptr,
                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
+   ~QgsCodeEditorWidget() override;
 
     /**
      * Returns the wrapped code editor.
@@ -129,6 +131,11 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     void addSearchHighlights();
     void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
 
+    enum HighlightCategory
+    {
+      SearchMatch = 0
+    };
+
     QgsCodeEditor *mEditor = nullptr;
     QWidget *mFindWidget = nullptr;
     QgsFilterLineEdit *mLineEditFind = nullptr;
@@ -139,6 +146,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QCheckBox *mWrapAroundCheck = nullptr;
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
+    std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;
 };
 
 #endif // QGSCODEEDITORWIDGET_H

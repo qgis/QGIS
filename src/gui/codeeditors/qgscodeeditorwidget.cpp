@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 #include "qgsmessagebar.h"
+#include "qgsdecoratedscrollbar.h"
 
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -136,7 +137,12 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mFindWidget->hide();
 
   setLayout( vl );
+
+  mHighlightController = std::make_unique< QgsScrollBarHighlightController >();
+  mHighlightController->setScrollArea( mEditor );
 }
+
+QgsCodeEditorWidget::~QgsCodeEditorWidget() = default;
 
 bool QgsCodeEditorWidget::isSearchBarVisible() const
 {
@@ -233,6 +239,9 @@ void QgsCodeEditorWidget::addSearchHighlights()
   long startPos = 0;
   long docEnd = mEditor->length();
 
+  mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
+  mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
+
   while ( true )
   {
     mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, startPos, docEnd );
@@ -244,6 +253,11 @@ void QgsCodeEditorWidget::addSearchHighlights()
 
     mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
     mEditor->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, fstart, searchString.length() );
+
+    int thisLine = 0;
+    int thisIndex = 0;
+    mEditor->lineIndexFromPosition( fstart, &thisLine, &thisIndex );
+    mHighlightController->addHighlight( QgsScrollBarHighlight( SearchMatch, thisLine, QColor( 0, 200, 0 ), QgsScrollBarHighlight::Priority::HighPriority ) );
   }
 
   mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, originalStartPos, originalEndPos );
@@ -255,6 +269,8 @@ void QgsCodeEditorWidget::clearSearchHighlights()
   long docEnd = mEditor->length();
   mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
   mEditor->SendScintilla( QsciScintilla::SCI_INDICATORCLEARRANGE, docStart, docEnd - docStart );
+
+  mHighlightController->removeHighlights( SearchMatch );
 }
 
 void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFoundWarning )
