@@ -177,7 +177,7 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
   return false;
 }
 
-void QgsBrowserTreeView::expandPath( const QString &str )
+void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
 {
   const QStringList pathParts = QgsFileUtils::splitPathToComponents( str );
   if ( pathParts.isEmpty() )
@@ -289,6 +289,7 @@ void QgsBrowserTreeView::expandPath( const QString &str )
     currentDir = QDir( thisPath );
   }
 
+  QgsDirectoryItem *lastItem = nullptr;
   for ( QgsDirectoryItem *i : std::as_const( pathItems ) )
   {
     QModelIndex index = mBrowserModel->findItem( i );
@@ -297,7 +298,11 @@ void QgsBrowserTreeView::expandPath( const QString &str )
       index = proxyModel->mapFromSource( index );
     }
     expand( index );
+    lastItem = i;
   }
+
+  if ( selectPath && lastItem )
+    setSelectedItem( lastItem );
 }
 
 bool QgsBrowserTreeView::setSelectedItem( QgsDataItem *item )
