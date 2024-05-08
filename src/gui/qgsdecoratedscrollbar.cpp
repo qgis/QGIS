@@ -54,7 +54,10 @@ void QgsScrollBarHighlightOverlay::scheduleUpdate()
     return;
 
   mIsCacheUpdateScheduled = true;
+// silence false positive leak warning
+#ifndef __clang_analyzer__
   QMetaObject::invokeMethod( this, qOverload<>( &QWidget::update ), Qt::QueuedConnection );
+#endif
 }
 
 void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
@@ -115,7 +118,7 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
     // be stretched using the background ratio.
     const double handleVirtualHeight = sizeDocVisible * backgroundRatio;
     // Skip the doc above and visible part.
-    const int offset = std::round( aboveHandleRect.height() + handleVirtualHeight );
+    const int offset = static_cast< int >( std::round( aboveHandleRect.height() + handleVirtualHeight ) );
 
     drawHighlights( &painter,
                     sizeDocAbove + sizeDocVisible,
@@ -137,7 +140,7 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
   // The correction between handle position (int) and accurate position (double)
   const double correction = aboveHandleRect.height() - accurateHandlePos;
   // Skip the doc above and apply correction
-  const int offset = std::round( aboveVirtualHeight + correction );
+  const int offset = static_cast< int >( std::round( aboveVirtualHeight + correction ) );
 
   drawHighlights( &painter,
                   sizeDocAbove,
@@ -187,7 +190,7 @@ void QgsScrollBarHighlightOverlay::drawHighlights( QPainter *painter,
           break;
 
         const int height = std::max( static_cast< int >( std::round( ( posEnd - posStart ) * docSizeToHandleSizeRatio ) ), 1 );
-        const int top = std::round( posStart * docSizeToHandleSizeRatio ) - handleOffset + viewport.y();
+        const int top = static_cast< int >( std::round( posStart * docSizeToHandleSizeRatio ) - handleOffset + viewport.y() );
 
         const QRect rect( viewport.left(), top, viewport.width(), height );
         painter->fillRect( rect, color );
