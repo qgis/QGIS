@@ -82,9 +82,11 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
      *
      * The \a path must correspond to a valid directory existing on the file system.
      *
+     * Since QGIS 3.38 the \a selectPath argument can be used to automatically select the path too.
+     *
      * \since QGIS 3.28
      */
-    void expandPath( const QString &path );
+    void expandPath( const QString &path, bool selectPath = false );
 
     /**
      * Returns the (possibly invalid) uri of the selected data source
@@ -195,9 +197,11 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
      *
      * The \a path must correspond to a valid directory existing on the file system.
      *
+     * Since QGIS 3.38 the \a selectPath argument can be used to automatically select the path too.
+     *
      * \since QGIS 3.28
      */
-    void expandPath( const QString &path );
+    void expandPath( const QString &path, bool selectPath = false );
 
     /**
      * Returns the (possibly invalid) uri of the selected data source

@@ -7755,7 +7755,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
     const QString closestPath = QFile::exists( path ) ? path : QgsFileUtils::findClosestExistingPath( path );
 
     const QFileInfo pathInfo( closestPath );
-    dlg.expandPath( pathInfo.isDir() ? closestPath : pathInfo.dir().path() );
+    dlg.expandPath( pathInfo.isDir() ? closestPath : pathInfo.dir().path(), true );
     if ( source.contains( path ) )
     {
       source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
