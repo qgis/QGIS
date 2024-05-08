@@ -698,35 +698,35 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
   public slots:
 
     /**
-     * Shows the find bar.
+     * Shows the search bar.
      *
-     * \see hideFind()
-     * \see setFindVisible()
+     * \see hideSearchBar()
+     * \see setSearchBarVisible()
      */
-    void showFind();
+    void showSearchBar();
 
     /**
-     * Hides the find bar.
+     * Hides the search bar.
      *
-     * \see showFind()
-     * \see setFindVisible()
+     * \see showSearchBar()
+     * \see setSearchBarVisible()
      */
-    void hideFind();
+    void hideSearchBar();
 
     /**
-     * Sets whether the find bar is \a visible.
+     * Sets whether the search bar is \a visible.
      *
-     * \see showFind()
-     * \see hideFind()
+     * \see showSearchBar()
+     * \see hideSearchBar()
      */
-    void setFindVisible( bool visible );
+    void setSearchBarVisible( bool visible );
 
   private slots:
 
     void findNext();
     void findPrevious();
-    void textFindChanged( const QString &text );
-    void updateFind();
+    void textSearchChanged( const QString &text );
+    void updateSearch();
 
   private:
 

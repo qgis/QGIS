@@ -1219,18 +1219,18 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
   layoutFind->addWidget( mWrapAroundCheck );
 
   connect( mLineEditFind, &QLineEdit::returnPressed, this, &QgsCodeEditorWidget::findNext );
-  connect( mLineEditFind, &QLineEdit::textChanged, this, &QgsCodeEditorWidget::textFindChanged );
+  connect( mLineEditFind, &QLineEdit::textChanged, this, &QgsCodeEditorWidget::textSearchChanged );
   connect( mFindNextButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::findNext );
   connect( mFindPrevButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::findPrevious );
-  connect( mCaseSensitiveCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateFind );
-  connect( mWholeWordCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateFind );
-  connect( mWrapAroundCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateFind );
+  connect( mCaseSensitiveCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mWholeWordCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mWrapAroundCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
 
   QShortcut *findShortcut = new QShortcut( QKeySequence::StandardKey::Find, mEditor );
   findShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
   connect( findShortcut, &QShortcut::activated, this, [this]
   {
-    showFind();
+    showSearchBar();
     mLineEditFind->setFocus();
     if ( mEditor->hasSelectedText() )
     {
@@ -1254,7 +1254,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
   closeFindShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
   connect( closeFindShortcut, &QShortcut::activated, this, [this]
   {
-    hideFind();
+    hideSearchBar();
     mEditor->setFocus();
   } );
 
@@ -1265,22 +1265,22 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
   setLayout( vl );
 }
 
-void QgsCodeEditorWidget::showFind()
+void QgsCodeEditorWidget::showSearchBar()
 {
   mFindWidget->show();
 }
 
-void QgsCodeEditorWidget::hideFind()
+void QgsCodeEditorWidget::hideSearchBar()
 {
   mFindWidget->hide();
 }
 
-void QgsCodeEditorWidget::setFindVisible( bool visible )
+void QgsCodeEditorWidget::setSearchBarVisible( bool visible )
 {
   if ( visible )
-    showFind();
+    showSearchBar();
   else
-    hideFind();
+    hideSearchBar();
 }
 
 void QgsCodeEditorWidget::findNext()
@@ -1293,13 +1293,13 @@ void QgsCodeEditorWidget::findPrevious()
   findText( false, false );
 }
 
-void QgsCodeEditorWidget::textFindChanged( const QString &text )
+void QgsCodeEditorWidget::textSearchChanged( const QString &text )
 {
   if ( !text.isEmpty() )
   {
     mFindNextButton->setEnabled( true );
     mFindPrevButton->setEnabled( true );
-    updateFind();
+    updateSearch();
   }
   else
   {
@@ -1309,7 +1309,7 @@ void QgsCodeEditorWidget::textFindChanged( const QString &text )
   }
 }
 
-void QgsCodeEditorWidget::updateFind()
+void QgsCodeEditorWidget::updateSearch()
 {
   if ( mBlockSearching )
     return;
