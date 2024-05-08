@@ -78,7 +78,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
   findShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
   connect( findShortcut, &QShortcut::activated, this, [this]
   {
-    showSearchBar();
+    clearSearchHighlights();
     mLineEditFind->setFocus();
     if ( mEditor->hasSelectedText() )
     {
@@ -87,6 +87,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
       mBlockSearching--;
     }
     mLineEditFind->selectAll();
+    showSearchBar();
   } );
 
   QShortcut *findNextShortcut = new QShortcut( QKeySequence::StandardKey::FindNext, this );
@@ -134,11 +135,13 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
 
 void QgsCodeEditorWidget::showSearchBar()
 {
+  addSearchHighlights();
   mFindWidget->show();
 }
 
 void QgsCodeEditorWidget::hideSearchBar()
 {
+  clearSearchHighlights();
   mFindWidget->hide();
 }
 
@@ -170,6 +173,7 @@ void QgsCodeEditorWidget::textSearchChanged( const QString &text )
   }
   else
   {
+    clearSearchHighlights();
     mLineEditFind->setStyleSheet( QString() );
     mFindNextButton->setEnabled( false );
     mFindPrevButton->setEnabled( false );
@@ -181,11 +185,45 @@ void QgsCodeEditorWidget::updateSearch()
   if ( mBlockSearching )
     return;
 
+  clearSearchHighlights();
+  addSearchHighlights();
+
+  findText( true, true, true );
+}
+
+void QgsCodeEditorWidget::addSearchHighlights()
+{
   const QString searchString = mLineEditFind->text();
   if ( searchString.isEmpty() )
     return;
 
-  findText( true, true, true );
+  const long originalStartPos = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETSTART );
+  const long originalEndPos = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETEND );
+  long startPos = 0;
+  long docEnd = mEditor->length();
+
+  while ( true )
+  {
+    mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, startPos, docEnd );
+    const int fstart = mEditor->SendScintilla( QsciScintilla::SCI_SEARCHINTARGET, searchString.length(), searchString.toLocal8Bit().constData() );
+    if ( fstart < 0 )
+      break;
+
+    startPos = fstart + searchString.length();
+
+    mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
+    mEditor->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, fstart, searchString.length() );
+  }
+
+  mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, originalStartPos, originalEndPos );
+}
+
+void QgsCodeEditorWidget::clearSearchHighlights()
+{
+  long docStart = 0;
+  long docEnd = mEditor->length();
+  mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
+  mEditor->SendScintilla( QsciScintilla::SCI_INDICATORCLEARRANGE, docStart, docEnd - docStart );
 }
 
 void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFoundWarning )
