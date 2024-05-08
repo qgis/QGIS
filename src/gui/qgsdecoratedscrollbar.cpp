@@ -54,7 +54,7 @@ void QgsScrollBarHighlightOverlay::scheduleUpdate()
     return;
 
   mIsCacheUpdateScheduled = true;
-  QMetaObject::invokeMethod( this, QOverload<>::of( &QWidget::update ), Qt::QueuedConnection );
+  QMetaObject::invokeMethod( this, qOverload<>( &QWidget::update ), Qt::QueuedConnection );
 }
 
 void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
