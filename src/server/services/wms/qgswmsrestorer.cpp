@@ -58,7 +58,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       {
         QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
 
-        if ( rLayer )
+        if ( rLayer && rLayer->renderer() )
         {
           settings.mOpacity = rLayer->renderer()->opacity();
         }
@@ -119,7 +119,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
       {
         QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
 
-        if ( rLayer )
+        if ( rLayer && rLayer->renderer() )
         {
           rLayer->renderer()->setOpacity( settings.mOpacity );
         }
