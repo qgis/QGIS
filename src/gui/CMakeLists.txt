@@ -553,6 +553,7 @@ set(QGIS_GUI_SRCS
   qgsdatasourceselectdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
+  qgsdecoratedscrollbar.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
@@ -824,6 +825,7 @@ set(QGIS_GUI_HDRS
   qgsdatasourceselectdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
+  qgsdecoratedscrollbar.h
   qgsnewdatabasetablenamewidget.h
   qgsdetaileditemdata.h
   qgsdetaileditemdelegate.h
