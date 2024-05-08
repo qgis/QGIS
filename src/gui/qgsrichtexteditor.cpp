@@ -33,6 +33,7 @@
 #include "qgscolorbutton.h"
 #include "qgscodeeditor.h"
 #include "qgscodeeditorhtml.h"
+#include "qgscodeeditorwidget.h"
 
 #include <QMimeData>
 #include <QApplication>
@@ -59,7 +60,8 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   QVBoxLayout *sourceLayout = new QVBoxLayout();
   sourceLayout->setContentsMargins( 0, 0, 0, 0 );
   mSourceEdit = new QgsCodeEditorHTML();
-  sourceLayout->addWidget( mSourceEdit );
+  QgsCodeEditorWidget *codeEditorWidget = new QgsCodeEditorWidget( mSourceEdit );
+  sourceLayout->addWidget( codeEditorWidget );
   mPageSourceEdit->setLayout( sourceLayout );
 
   mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
