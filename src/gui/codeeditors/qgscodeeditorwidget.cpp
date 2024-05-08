@@ -17,6 +17,7 @@
 #include "qgscodeeditor.h"
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -104,6 +105,25 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
     hideSearchBar();
     mEditor->setFocus();
   } );
+
+  QToolButton *closeFindButton = new QToolButton( this );
+  closeFindButton->setToolTip( tr( "Close" ) );
+  closeFindButton->setMinimumWidth( QgsGuiUtils::scaleIconSize( 44 ) );
+  closeFindButton->setStyleSheet(
+    "QToolButton { border:none; background-color: rgba(0, 0, 0, 0); }"
+    "QToolButton::menu-button { border:none; background-color: rgba(0, 0, 0, 0); }" );
+  closeFindButton->setCursor( Qt::PointingHandCursor );
+  closeFindButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
+
+  const int iconSize = std::max( 18.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.9 );
+  closeFindButton->setIconSize( QSize( iconSize, iconSize ) );
+  closeFindButton->setFixedSize( QSize( iconSize, iconSize ) );
+  connect( closeFindButton, &QAbstractButton::clicked, this, [this]
+  {
+    hideSearchBar();
+    mEditor->setFocus();
+  } );
+  layoutFind->addWidget( closeFindButton );
 
   mFindWidget->setLayout( layoutFind );
   vl->addWidget( mFindWidget );
