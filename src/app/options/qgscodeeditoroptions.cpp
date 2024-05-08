@@ -71,6 +71,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, mColorFoldIcon },
     {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, mColorFoldIconHalo },
     {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, mColorIndentation },
+    {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, mColorSearchResult },
   };
 
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
@@ -188,6 +189,12 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     mPreviewStackedWidget->setCurrentIndex( mListLanguage->currentRow() );
   } );
 
+  auto addSearchHighlight = []( QgsCodeEditor * editor, int start, int length )
+  {
+    editor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
+    editor->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, start, length );
+  };
+
   mPythonPreview->setText( R"""(def simple_function(x,y,z):
     """
     Function docstring
@@ -204,16 +211,20 @@ def somefunc(param1: str='', param2=0):
 class SomeClass:
     """
     My class docstring
+
+    A search result
     """
     pass
 )""" );
+  addSearchHighlight( mPythonPreview, 385, 13 );
 
   mExpressionPreview->setText( R"""(aggregate(layer:='rail_stations',
     aggregate:='collect', -- a comment
     expression:=centroid($geometry), /* a comment */
-    filter:="region_name" = attribute(@parent,'name') + 55
+    filter:="region_name" = attribute(@parent,'name') + 55 /* a search result */
 )
 )""");
+    addSearchHighlight( mExpressionPreview, 190, 13 );
 
   mSQLPreview->setText( R"""(CREATE TABLE "my_table" (
     "pk" serial NOT NULL PRIMARY KEY,
@@ -223,7 +234,9 @@ class SomeClass:
 
 -- Retrieve values
 SELECT count(*) FROM "my_table" WHERE "a_field" > 'a value';
+-- A search result
 )""");
+    addSearchHighlight( mSQLPreview, 209, 13 );
 
   mHtmlPreview->setText(R"""(<html>
   <head>
@@ -234,9 +247,11 @@ SELECT count(*) FROM "my_table" WHERE "a_field" > 'a value';
     <img src="qgis.png" style="width: 100px" />
     <!--Sample comment-->
     <p>Sample paragraph</p>
+    <!--A search result-->
   </body>
 </html>
 )""");
+    addSearchHighlight( mHtmlPreview, 196, 13 );
 
   mCssPreview->setText( R"""(@import url(print.css);
 
@@ -250,6 +265,7 @@ p.style_name:lang(en) {
  background: #600;
 }
 
+/* A search result */
 ul > li, a:hover {
  line-height: 11px;
  text-decoration: underline;
@@ -261,6 +277,7 @@ ul > li, a:hover {
   }
 }
 )""" );
+    addSearchHighlight( mCssPreview, 178, 13 );
 
   mJsPreview->setText( R"""(// my sample JavaScript function
 
@@ -273,10 +290,12 @@ window.onAction(function update() {
     element.name = 'a string';
     element.title= "another string";
 
+    /* A search result */
     if (prevPos.x > 100) {
         element.x += max(100*2, 100);
     }
 });)""" );
+  addSearchHighlight( mJsPreview, 255, 13 );
 
   mRPreview->setText( R"""(# a comment
 x <- 1:12
@@ -288,6 +307,7 @@ resample(x[x >  8]) # length 2
 
 a_variable <- "My string"
 
+# a search result
 `%func_name%` <- function(arg_1,arg_2) {
   # function body
 }
@@ -297,7 +317,7 @@ a_variable <- "My string"
  return(x^y)
 }
 )""");
-
+  addSearchHighlight( mRPreview, 181, 13 );
 
   mBashPreview->setText(R"""(#!/bin/bash
 
@@ -309,6 +329,7 @@ a_variable <- "My string"
 
 [ ! -d "$1" ] && { echo "Error: $1 does not exist or is not a directory."; exit 1; }
 
+# A search result
 echo "Files with extension .$2 in $1:"
 
 for file in "$1"/*."$2"; do
@@ -316,6 +337,7 @@ for file in "$1"/*."$2"; do
   echo "$(basename "$file"): $((size / 1024)) KB"
 done
 )""" );
+  addSearchHighlight( mBashPreview, 361, 13 );
 
   mBatchPreview->setText( R"""(@echo off
 
@@ -333,6 +355,8 @@ if not exist %1 (
   exit /b 1
 )
 
+REM A search result
+
 echo Files with extension %2 in %1:
 
 for %%f in (%1\*.%2) do (
@@ -343,6 +367,7 @@ for %%f in (%1\*.%2) do (
 
 echo Done.
 )""" );
+  addSearchHighlight( mBatchPreview, 367, 13 );
 
   mListLanguage->setCurrentRow( 0 );
   mPreviewStackedWidget->setCurrentIndex( 0 );

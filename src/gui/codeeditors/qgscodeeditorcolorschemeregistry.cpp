@@ -56,6 +56,7 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
     {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QColor( "#ffffff" ) },
     {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QColor( "#000000" ) },
     {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QColor( "#d5d5d5" ) },
+    {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QColor( "#dadada" ) },
   } );
   addColorScheme( defaultScheme );
 
@@ -97,6 +98,7 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
     {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QColor( "#ffffff" ) },
     {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QColor( "#93a1a1" ) },
     {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QColor( "#c2beb3" ) },
+    {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QColor( "#b58900" ) },
   } );
   addColorScheme( solarizedLight );
 
@@ -138,6 +140,7 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
     {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QColor( "#586e75" ) },
     {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QColor( "#839496" ) },
     {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QColor( "#586E75" ) },
+    {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QColor( "#075e42" ) },
   } );
   addColorScheme( solarizedDark );
 }

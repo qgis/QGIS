@@ -244,8 +244,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>663</width>
-         <height>549</height>
+         <width>677</width>
+         <height>531</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
@@ -822,6 +822,20 @@
             <widget class="QgsColorButton" name="mColorErrorBackground">
              <property name="text">
               <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="5">
+            <widget class="QgsColorButton" name="mColorSearchResult">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="4">
+            <widget class="QLabel" name="label_35">
+             <property name="text">
+              <string>Search result</string>
              </property>
             </widget>
            </item>
