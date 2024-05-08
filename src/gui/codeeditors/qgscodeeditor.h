@@ -85,11 +85,12 @@ class GUI_EXPORT QgsCodeInterpreter
 };
 
 
-// TODO QGIS 4.0 -- make QgsCodeEditor inherit QWidget only,
+// TODO QGIS 4.0 -- Consider making QgsCodeEditor inherit QWidget only,
 // with a separate getter for the QsciScintilla child widget. This
 // would give us more flexibility to add functionality to the base
 // QgsCodeEditor class, eg adding a message bar or other child widgets
-// to the editor widget.
+// to the editor widget. For now this extra functionality lives in
+// the QgsCodeEditorWidget wrapper widget.
 
 /**
  * \ingroup gui
