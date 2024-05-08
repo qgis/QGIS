@@ -94,6 +94,8 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
   private:
 
+    void clearSearchHighlights();
+    void addSearchHighlights();
     void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
 
     QgsCodeEditor *mEditor = nullptr;
