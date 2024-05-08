@@ -220,7 +220,7 @@
                </layout>
               </item>
               <item>
-               <widget class="QgsCodeEditorExpression" name="txtExpressionString" native="true"/>
+               <widget class="QWidget" name="mExpressionEditorContainer" native="true"/>
               </item>
               <item>
                <widget class="QFrame" name="mOperatorsGroupBox">
@@ -880,12 +880,6 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCodeEditorExpression</class>
-   <extends>QWidget</extends>
-   <header>qgscodeeditorexpression.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorPython</class>
