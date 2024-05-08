@@ -73,6 +73,7 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
   {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
   {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
   {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
+  {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QStringLiteral( "searchMatchBackground" ) }
 };
 
 
@@ -401,6 +402,12 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
   SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDER,  lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
   SendScintilla( SCI_STYLESETFORE, STYLE_INDENTGUIDE, lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
   SendScintilla( SCI_STYLESETBACK, STYLE_INDENTGUIDE,  lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
+
+  SendScintilla( QsciScintilla::SCI_INDICSETSTYLE, SEARCH_RESULT_INDICATOR, QsciScintilla::INDIC_STRAIGHTBOX );
+  SendScintilla( QsciScintilla::SCI_INDICSETFORE, SEARCH_RESULT_INDICATOR, lexerColor( QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground ) );
+  SendScintilla( QsciScintilla::SCI_INDICSETALPHA, SEARCH_RESULT_INDICATOR, 100 );
+  SendScintilla( QsciScintilla::SCI_INDICSETUNDER, SEARCH_RESULT_INDICATOR, true );
+  SendScintilla( QsciScintilla::SCI_INDICGETOUTLINEALPHA, SEARCH_RESULT_INDICATOR, 255 );
 
   if ( mMode == QgsCodeEditor::Mode::CommandInput )
   {
@@ -964,6 +971,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
       {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
       {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
       {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
+      {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QStringLiteral( "searchMatchBackground" ) },
     };
 
     const QgsCodeEditorColorScheme defaultScheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( QStringLiteral( "default" ) );
