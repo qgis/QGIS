@@ -71,7 +71,7 @@ jobs:
             -DPython_EXECUTABLE=${MINGW_PREFIX}/bin/python \
             -DWITH_3D=ON \
             -DWITH_DRACO=ON \
-            -DWITH_PDAL=OFF \
+            -DWITH_PDAL=ON \
             -DWITH_CUSTOM_WIDGETS=ON \
             -DWITH_BINDINGS=OFF \
             -DWITH_GRASS=OFF \

@@ -122,7 +122,7 @@ void cleanup(const std::string& dir, bool rmdir)
 
 } // namespace untwine
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] )
 #else
 int main(int argc, char *argv[])
