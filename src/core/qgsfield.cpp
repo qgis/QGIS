@@ -706,6 +706,11 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   return true;
 }
 
+QgsField::operator QVariant() const
+{
+  return QVariant::fromValue( *this );
+}
+
 void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup &v )
 {
   d->editorWidgetSetup = v;
@@ -736,6 +741,16 @@ void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
   d->splitPolicy = policy;
 }
 
+Qgis::FieldDuplicatePolicy QgsField::duplicatePolicy() const
+{
+  return d->duplicatePolicy;
+}
+
+void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy )
+{
+  d->duplicatePolicy = policy;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
@@ -764,6 +779,7 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.constraints().constraintDescription();
   out << static_cast< quint32 >( field.subType() );
   out << static_cast< int >( field.splitPolicy() );
+  out << static_cast< int >( field.duplicatePolicy() );
   out << field.metadata();
   return out;
 }
@@ -782,6 +798,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   quint32 strengthUnique;
   quint32 strengthExpression;
   int splitPolicy;
+  int duplicatePolicy;
 
   bool applyOnUpdate;
 
@@ -796,7 +813,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
 
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
      >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-     constraintExpression >> constraintDescription >> subType >> splitPolicy >> metadata;
+     constraintExpression >> constraintDescription >> subType >> splitPolicy >> duplicatePolicy >> metadata;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -806,6 +823,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setAlias( alias );
   field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
   field.setSplitPolicy( static_cast< Qgis::FieldDomainSplitPolicy >( splitPolicy ) );
+  field.setDuplicatePolicy( static_cast< Qgis::FieldDuplicatePolicy >( duplicatePolicy ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

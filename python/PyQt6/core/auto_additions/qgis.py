@@ -3215,6 +3215,13 @@ Qgis.FieldDomainMergePolicy.__doc__ = "Merge policy for field domains.\n\nWhen a
 # --
 Qgis.FieldDomainMergePolicy.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.FieldDuplicatePolicy.DefaultValue.__doc__ = "Use default field value"
+Qgis.FieldDuplicatePolicy.Duplicate.__doc__ = "Duplicate original value"
+Qgis.FieldDuplicatePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)"
+Qgis.FieldDuplicatePolicy.__doc__ = "Duplicate policy for fields.\n\nWhen a feature is duplicated, defines how the value of attributes are computed.\n\n.. versionadded:: 3.38\n\n" + '* ``DefaultValue``: ' + Qgis.FieldDuplicatePolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDuplicatePolicy.Duplicate.__doc__ + '\n' + '* ``UnsetField``: ' + Qgis.FieldDuplicatePolicy.UnsetField.__doc__
+# --
+Qgis.FieldDuplicatePolicy.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.FieldDomainType.Coded.__doc__ = "Coded field domain"
 Qgis.FieldDomainType.Range.__doc__ = "Numeric range field domain (min/max)"
 Qgis.FieldDomainType.Glob.__doc__ = "Glob string pattern field domain"

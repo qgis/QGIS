@@ -103,6 +103,7 @@ void TestQgsField::copy()
   original.setConstraints( constraints );
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
 
   QVariantMap config;
@@ -130,6 +131,7 @@ void TestQgsField::assignment()
   original.setConstraints( constraints );
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
   QgsField copy;
   copy = original;
@@ -203,6 +205,9 @@ void TestQgsField::gettersSetters()
 
   field.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   QCOMPARE( field.splitPolicy(), Qgis::FieldDomainSplitPolicy::GeometryRatio );
+
+  field.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
+  QCOMPARE( field.duplicatePolicy(), Qgis::FieldDuplicatePolicy::UnsetField );
 
   field.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
   QMap< int, QVariant> expected {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }};
@@ -357,6 +362,12 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  QVERIFY( field1 == field2 );
+
+  field1.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   QVERIFY( field1 == field2 );
 
   field1.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
@@ -923,6 +934,7 @@ void TestQgsField::dataStream()
   original.setAlias( QStringLiteral( "alias" ) );
   original.setDefaultValueDefinition( QgsDefaultValue( QStringLiteral( "default" ) ) );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::DefaultValue );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );

@@ -15,6 +15,7 @@ import tempfile
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,
+    Qgis,
     QgsDefaultValue,
     QgsFeature,
     QgsField,
@@ -478,29 +479,53 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertEqual(f.attributes(), ['test_5', 132, NULL])
 
     def testDuplicateFeature(self):
-        """ test duplicating a feature """
+        """ test duplicating a feature with relations """
 
         project = QgsProject().instance()
 
         # LAYERS
         # - add first layer (parent)
-        layer1 = QgsVectorLayer("Point?field=fldtxt:string&field=pkid:integer",
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string&field=pkid:integer&field=policycheck1value:text&field=policycheck2value:text&field=policycheck3value:text",
                                 "parentlayer", "memory")
         # > check first layer (parent)
         self.assertTrue(layer1.isValid())
-        # -  set the value for the copy
+        # -  set the default values for pk and policy check and the field policy
         layer1.setDefaultValueDefinition(1, QgsDefaultValue("rand(1000,2000)"))
+        layer1.setDefaultValueDefinition(2, QgsDefaultValue("'Def Blabla L1'"))
+        layer1.setDefaultValueDefinition(3, QgsDefaultValue("'Def Blabla L1'"))
+        layer1.setDefaultValueDefinition(4, QgsDefaultValue("'Def Blabla L1'"))
+        layer1.setFieldDuplicatePolicy(2, Qgis.FieldDuplicatePolicy.Duplicate)
+        layer1.setFieldDuplicatePolicy(3, Qgis.FieldDuplicatePolicy.DefaultValue)
+        layer1.setFieldDuplicatePolicy(4, Qgis.FieldDuplicatePolicy.UnsetField)
         # > check first layer (parent)
         self.assertTrue(layer1.isValid())
         # - add second layer (child)
-        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=id:integer&field=foreign_key:integer",
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=id:integer&field=foreign_key:integer&field=policycheck1value:text&field=policycheck2value:text&field=policycheck3value:text",
                                 "childlayer1", "memory")
         # > check second layer (child)
         self.assertTrue(layer2.isValid())
-        # - add second layer (child)
-        layer3 = QgsVectorLayer("Point?field=fldtxt:string&field=id:integer&field=foreign_key:integer",
-                                "childlayer2", "memory")
+        # -  set the default values for pk and policy check and the field policy
+        layer2.setDefaultValueDefinition(3, QgsDefaultValue("'Def Blabla L2'"))
+        layer2.setDefaultValueDefinition(4, QgsDefaultValue("'Def Blabla L2'"))
+        layer2.setDefaultValueDefinition(5, QgsDefaultValue("'Def Blabla L2'"))
+        layer2.setFieldDuplicatePolicy(3, Qgis.FieldDuplicatePolicy.Duplicate)
+        layer2.setFieldDuplicatePolicy(4, Qgis.FieldDuplicatePolicy.DefaultValue)
+        layer2.setFieldDuplicatePolicy(5, Qgis.FieldDuplicatePolicy.UnsetField)
         # > check second layer (child)
+        self.assertTrue(layer2.isValid())
+        # - add third layer (child)
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string&field=id:integer&field=foreign_key:integer&field=policycheck1value:text&field=policycheck2value:text&field=policycheck3value:text",
+                                "childlayer2", "memory")
+        # > check third layer (child)
+        self.assertTrue(layer3.isValid())
+        # -  set the default values for pk and policy check and the field policy
+        layer3.setDefaultValueDefinition(3, QgsDefaultValue("'Def Blabla L3'"))
+        layer3.setDefaultValueDefinition(4, QgsDefaultValue("'Def Blabla L3'"))
+        layer3.setDefaultValueDefinition(5, QgsDefaultValue("'Def Blabla L3'"))
+        layer3.setFieldDuplicatePolicy(3, Qgis.FieldDuplicatePolicy.Duplicate)
+        layer3.setFieldDuplicatePolicy(4, Qgis.FieldDuplicatePolicy.DefaultValue)
+        layer3.setFieldDuplicatePolicy(5, Qgis.FieldDuplicatePolicy.UnsetField)
+        # > check third layer (child)
         self.assertTrue(layer3.isValid())
         # - add layers
         project.addMapLayers([layer1, layer2, layer3])
@@ -509,34 +534,34 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         # - add 2 features on layer1 (parent)
         l1f1orig = QgsFeature()
         l1f1orig.setFields(layer1.fields())
-        l1f1orig.setAttributes(["F_l1f1", 100])
+        l1f1orig.setAttributes(["F_l1f1", 100, 'Orig Blabla L1', 'Orig Blabla L1', 'Orig Blabla L1'])
         l1f2orig = QgsFeature()
         l1f2orig.setFields(layer1.fields())
-        l1f2orig.setAttributes(["F_l1f2", 101])
+        l1f2orig.setAttributes(["F_l1f2", 101, 'Orig Blabla L1', 'Orig Blabla L1', 'Orig Blabla L1'])
         # > check by adding features
         self.assertTrue(layer1.dataProvider().addFeatures([l1f1orig, l1f2orig]))
         # add 4 features on layer2 (child)
         l2f1orig = QgsFeature()
         l2f1orig.setFields(layer2.fields())
-        l2f1orig.setAttributes(["F_l2f1", 201, 100])
+        l2f1orig.setAttributes(["F_l2f1", 201, 100, 'Orig Blabla L2', 'Orig Blabla L2', 'Orig Blabla L2'])
         l2f2orig = QgsFeature()
         l2f2orig.setFields(layer2.fields())
-        l2f2orig.setAttributes(["F_l2f2", 202, 100])
+        l2f2orig.setAttributes(["F_l2f2", 202, 100, 'Orig Blabla L2', 'Orig Blabla L2', 'Orig Blabla L2'])
         l2f3orig = QgsFeature()
         l2f3orig.setFields(layer2.fields())
-        l2f3orig.setAttributes(["F_l2f3", 203, 100])
+        l2f3orig.setAttributes(["F_l2f3", 203, 100, 'Orig Blabla L2', 'Orig Blabla L2', 'Orig Blabla L2'])
         l2f4orig = QgsFeature()
         l2f4orig.setFields(layer2.fields())
-        l2f4orig.setAttributes(["F_l2f4", 204, 101])
+        l2f4orig.setAttributes(["F_l2f4", 204, 101, 'Orig Blabla L2', 'Orig Blabla L2', 'Orig Blabla L2'])
         # > check by adding features
         self.assertTrue(layer2.dataProvider().addFeatures([l2f1orig, l2f2orig, l2f3orig, l2f4orig]))
         # add 2 features on layer3 (child)
         l3f1orig = QgsFeature()
         l3f1orig.setFields(layer3.fields())
-        l3f1orig.setAttributes(["F_l3f1", 201, 100])
+        l3f1orig.setAttributes(["F_l3f1", 301, 100, 'Orig Blabla L3', 'Orig Blabla L3', 'Orig Blabla L3'])
         l3f2orig = QgsFeature()
         l3f2orig.setFields(layer2.fields())
-        l3f2orig.setAttributes(["F_l3f2", 202, 100])
+        l3f2orig.setAttributes(["F_l3f2", 302, 100, 'Orig Blabla L3', 'Orig Blabla L3', 'Orig Blabla L3'])
         # > check by adding features
         self.assertTrue(layer3.dataProvider().addFeatures([l3f1orig, l3f2orig]))
 
@@ -618,16 +643,30 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         results = QgsVectorLayerUtils.duplicateFeature(layer1, l1f1orig, project, 0)
 
         # > check if name is name of duplicated (pk is different)
+        # > and duplicate policy is concerned
         result_feature = results[0]
         self.assertEqual(result_feature.attribute('fldtxt'), l1f1orig.attribute('fldtxt'))
+        self.assertEqual(result_feature.attribute('policycheck1value'), 'Orig Blabla L1')  # duplicated
+        self.assertEqual(result_feature.attribute('policycheck2value'), 'Def Blabla L1')  # default Value
+        self.assertEqual(result_feature.attribute('policycheck3value'), None)  # unset
         # > check duplicated children occurred on both layers
         self.assertEqual(len(results[1].layers()), 2)
         idx = results[1].layers().index(layer2)
         self.assertEqual(results[1].layers()[idx], layer2)
         self.assertTrue(results[1].duplicatedFeatures(layer2))
+        for child_fid in results[1].duplicatedFeatures(layer2):
+            child_feature = layer2.getFeature(child_fid)
+            self.assertEqual(child_feature.attribute('policycheck1value'), 'Orig Blabla L2')  # duplicated
+            self.assertEqual(child_feature.attribute('policycheck2value'), 'Def Blabla L2')  # default Value
+            self.assertEqual(child_feature.attribute('policycheck3value'), None)  # unset
         idx = results[1].layers().index(layer3)
         self.assertEqual(results[1].layers()[idx], layer3)
         self.assertTrue(results[1].duplicatedFeatures(layer3))
+        for child_fid in results[1].duplicatedFeatures(layer3):
+            child_feature = layer3.getFeature(child_fid)
+            self.assertEqual(child_feature.attribute('policycheck1value'), 'Orig Blabla L3')  # duplicated
+            self.assertEqual(child_feature.attribute('policycheck2value'), 'Def Blabla L3')  # default Value
+            self.assertEqual(child_feature.attribute('policycheck3value'), None)  # unset
 
         '''
         # testoutput 2

@@ -84,6 +84,7 @@ class QgsFieldPrivate : public QSharedData
       , constraints( other.constraints )
       , editorWidgetSetup( other.editorWidgetSetup )
       , splitPolicy( other.splitPolicy )
+      , duplicatePolicy( other.duplicatePolicy )
       , isReadOnly( other.isReadOnly )
     {
     }
@@ -99,6 +100,7 @@ class QgsFieldPrivate : public QSharedData
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints )  && ( flags == other.flags )
                && ( splitPolicy == other.splitPolicy )
+               && ( duplicatePolicy == other.duplicatePolicy )
                && ( isReadOnly == other.isReadOnly )
                && ( editorWidgetSetup == other.editorWidgetSetup ) );
     }
@@ -143,6 +145,9 @@ class QgsFieldPrivate : public QSharedData
 
     //! Split policy
     Qgis::FieldDomainSplitPolicy splitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
+
+    //! Duplicate policy
+    Qgis::FieldDuplicatePolicy duplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
 
     //! Read-only
     bool isReadOnly = false;

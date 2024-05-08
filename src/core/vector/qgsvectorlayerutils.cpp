@@ -36,6 +36,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgssymbollayerreference.h"
 #include "qgspainteffect.h"
+#include "qgsunsetattributevalue.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -643,7 +644,29 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   QgsExpressionContext context = layer->createExpressionContext();
   context.setFeature( feature );
 
-  QgsFeature newFeature = createFeature( layer, feature.geometry(), feature.attributes().toMap(), &context );
+  //respect field duplicate policy
+  QgsAttributeMap attributeMap;
+  const int fieldCount = layer->fields().count();
+  for ( int fieldIdx = 0; fieldIdx < fieldCount; ++fieldIdx )
+  {
+    const QgsField field = layer->fields().at( fieldIdx );
+    switch ( field.duplicatePolicy() )
+    {
+      case Qgis::FieldDuplicatePolicy::DefaultValue:
+        //do nothing - default values ​​are determined
+        break;
+
+      case Qgis::FieldDuplicatePolicy::Duplicate:
+        attributeMap.insert( fieldIdx, feature.attribute( fieldIdx ) );
+        break;
+
+      case Qgis::FieldDuplicatePolicy::UnsetField:
+        attributeMap.insert( fieldIdx, QgsUnsetAttributeValue() );
+        break;
+    }
+  }
+
+  QgsFeature newFeature = createFeature( layer, feature.geometry(), attributeMap, &context );
   layer->addFeature( newFeature );
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );

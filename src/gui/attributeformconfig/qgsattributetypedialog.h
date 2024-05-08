@@ -245,6 +245,24 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      */
     void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
 
+    /**
+     * Returns the field's duplicate policy.
+     *
+     * \see setDuplicatePolicy()
+     *
+     * \since QGIS 3.38
+     */
+    Qgis::FieldDuplicatePolicy duplicatePolicy() const;
+
+    /**
+     * Sets the field's duplicate policy.
+     *
+     * \see duplicatePolicy()
+     *
+     * \since QGIS 3.38
+     */
+    void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy );
+
   private slots:
 
     /**
@@ -256,6 +274,8 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     void defaultExpressionChanged();
 
     void updateSplitPolicyLabel();
+
+    void updateDuplicatePolicyLabel();
 
   private:
     QgsVectorLayer *mLayer = nullptr;

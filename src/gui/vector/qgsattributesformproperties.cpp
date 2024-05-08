@@ -302,6 +302,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeDialog->setUnique( constraints.constraints() & QgsFieldConstraints::ConstraintUnique );
   mAttributeTypeDialog->setUniqueEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrengthHard );
   mAttributeTypeDialog->setSplitPolicy( cfg.mSplitPolicy );
+  mAttributeTypeDialog->setDuplicatePolicy( cfg.mDuplicatePolicy );
 
   QgsFieldConstraints::Constraints providerConstraints = QgsFieldConstraints::Constraints();
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
@@ -384,8 +385,9 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
   cfg.mEditorWidgetConfig = mAttributeTypeDialog->editorWidgetConfig();
   cfg.mSplitPolicy = mAttributeTypeDialog->splitPolicy();
-  const int fieldIndex = mAttributeTypeDialog->fieldIdx();
+  cfg.mDuplicatePolicy = mAttributeTypeDialog->duplicatePolicy();
 
+  const int fieldIndex = mAttributeTypeDialog->fieldIdx();
   mLayer->setDefaultValueDefinition( fieldIndex, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   const QString fieldName = mLayer->fields().at( fieldIndex ).name();
@@ -1014,6 +1016,7 @@ void QgsAttributesFormProperties::apply()
 
     mLayer->setFieldAlias( idx, cfg.mAlias );
     mLayer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
+    mLayer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
   }
 
   // tabs and groups
@@ -1086,6 +1089,7 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();
   mSplitPolicy = layer->fields().at( idx ).splitPolicy();
+  mDuplicatePolicy = layer->fields().at( idx ).duplicatePolicy();
 }
 
 QgsAttributesFormProperties::FieldConfig::operator QVariant()

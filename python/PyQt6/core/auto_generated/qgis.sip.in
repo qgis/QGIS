@@ -1826,6 +1826,13 @@ The development version
       GeometryWeighted,
     };
 
+    enum class FieldDuplicatePolicy /BaseType=IntEnum/
+    {
+      DefaultValue,
+      Duplicate,
+      UnsetField,
+    };
+
     enum class FieldDomainType /BaseType=IntEnum/
     {
       Coded,
