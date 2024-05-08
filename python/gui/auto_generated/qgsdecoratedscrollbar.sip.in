@@ -37,7 +37,11 @@ Encapsulates the details of a highlight in a scrollbar, used alongside :py:class
 %Docstring
 Constructor for QgsScrollBarHighlight.
 %End
+
     QgsScrollBarHighlight();
+%Docstring
+Default constructor for QgsScrollBarHighlight.
+%End
 
     int category;
 

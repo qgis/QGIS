@@ -56,6 +56,10 @@ class GUI_EXPORT QgsScrollBarHighlight
     * Constructor for QgsScrollBarHighlight.
     */
     QgsScrollBarHighlight( int category, int position, const QColor &color, QgsScrollBarHighlight::Priority priority = QgsScrollBarHighlight::Priority::NormalPriority );
+
+    /**
+    * Default constructor for QgsScrollBarHighlight.
+    */
     QgsScrollBarHighlight() = default;
 
     //! Category ID
@@ -180,6 +184,8 @@ class GUI_EXPORT QgsScrollBarHighlightController
 #ifndef SIP_RUN
 class QgsScrollBarHighlightOverlay : public QWidget
 {
+    Q_OBJECT
+
   public:
     QgsScrollBarHighlightOverlay( QgsScrollBarHighlightController *scrollBarController );
 
