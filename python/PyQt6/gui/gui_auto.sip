@@ -309,6 +309,9 @@
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorsql.sip
 %End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorwidget.sip
+%End
 %Include auto_generated/devtools/qgsdevtoolwidget.sip
 %Include auto_generated/devtools/qgsdevtoolwidgetfactory.sip
 %Include auto_generated/editorwidgets/core/qgseditorconfigwidget.sip

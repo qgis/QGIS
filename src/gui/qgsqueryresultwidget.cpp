@@ -26,6 +26,7 @@
 #include "qgshistoryentry.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgscodeeditorwidget.h"
 
 #include <QClipboard>
 #include <QShortcut>
