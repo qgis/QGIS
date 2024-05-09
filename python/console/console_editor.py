@@ -32,7 +32,12 @@ from operator import itemgetter
 from pathlib import Path
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
-from qgis.gui import QgsCodeEditorPython, QgsMessageBar
+from qgis.gui import (
+    QgsCodeEditorPython,
+    QgsCodeEditorWidget,
+    QgsMessageBar
+)
+
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileInfo, QJsonDocument, QSize, Qt, QUrl
 from qgis.PyQt.QtGui import QKeySequence
@@ -574,6 +579,11 @@ class EditorTab(QWidget):
         self._editor = Editor(editor_tab=self,
                               console_widget=console_widget,
                               tab_widget=tab_widget)
+
+        self._editor_code_widget = QgsCodeEditorWidget(
+            self._editor
+        )
+
         if filename:
             if QFileInfo(filename).exists():
                 self._editor.loadFile(filename, read_only)
@@ -591,7 +601,7 @@ class EditorTab(QWidget):
 
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
-        self.tabLayout.addWidget(self._editor)
+        self.tabLayout.addWidget(self._editor_code_widget)
 
     def modified(self, modified):
         self.tab_widget.tabModified(self, modified)
