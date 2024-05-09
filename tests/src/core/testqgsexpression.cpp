@@ -1749,7 +1749,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_replace (map)" ) << "array_replace(array('APP','SHOULD','ROCK'),map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( QVariantList() << "QGIS" << "DOES" << "ROCK" );
 
       // map HTML formatting
-      QTest::newRow( "map_to_html_table (map)" ) << "map_to_html_table(map('APP','QGIS','<SHOULD>','DOES'))" << false << QVariant( "\n  <table>\n    <thead>\n      <th>&lt;SHOULD&gt;</th><th>APP</th>\n    </thead>\n    <tbody>\n      <tr><td>DOES</td><td>QGIS</td></tr>\n    </tbody>\n  </table>" );
+      QTest::newRow( "map_to_html_table (map)" ) << "map_to_html_table(map('APP','QGIS','<SHOULD>','DOES'))" << false << QVariant( "\n  <table>\n    <thead>\n      <tr><th>&lt;SHOULD&gt;</th><th>APP</th></tr>\n    </thead>\n    <tbody>\n      <tr><td>DOES</td><td>QGIS</td></tr>\n    </tbody>\n  </table>" );
       QTest::newRow( "map_to_html_dl (map)" ) << "map_to_html_dl(map('APP','QGIS','<SHOULD>','DOES'))" << false << QVariant( "\n  <dl>\n    <dt>&lt;SHOULD&gt;</dt><dd>DOES</dd><dt>APP</dt><dd>QGIS</dd>\n  </dl>" );
 
       //fuzzy matching
