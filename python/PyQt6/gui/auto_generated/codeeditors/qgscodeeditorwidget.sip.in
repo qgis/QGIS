@@ -33,11 +33,16 @@ constructor.
 %End
   public:
 
-    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/, QWidget *parent /TransferThis/ = 0 );
+    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/,
+                         QgsMessageBar *messageBar = 0,
+                         QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorWidget, wrapping the specified ``editor`` widget.
 
 Ownership of ``editor`` will be transferred to this widget.
+
+If an explicit ``messageBar`` is specified then it will be used to provide
+feedback, otherwise an integrated message bar will be used.
 %End
 
     QgsCodeEditor *editor();
@@ -48,6 +53,11 @@ Returns the wrapped code editor.
     bool isSearchBarVisible() const;
 %Docstring
 Returns ``True`` if the search bar is visible.
+%End
+
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the message bar associated with the widget, to use for user feedback.
 %End
 
   public slots:

@@ -24,6 +24,7 @@ class QgsCodeEditor;
 class QgsFilterLineEdit;
 class QToolButton;
 class QCheckBox;
+class QgsMessageBar;
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -51,8 +52,13 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * Constructor for QgsCodeEditorWidget, wrapping the specified \a editor widget.
      *
      * Ownership of \a editor will be transferred to this widget.
+     *
+     * If an explicit \a messageBar is specified then it will be used to provide
+     * feedback, otherwise an integrated message bar will be used.
      */
-    QgsCodeEditorWidget( QgsCodeEditor *editor SIP_TRANSFER, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsCodeEditorWidget( QgsCodeEditor *editor SIP_TRANSFER,
+                         QgsMessageBar *messageBar = nullptr,
+                         QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the wrapped code editor.
@@ -63,6 +69,11 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * Returns TRUE if the search bar is visible.
      */
     bool isSearchBarVisible() const;
+
+    /**
+     * Returns the message bar associated with the widget, to use for user feedback.
+     */
+    QgsMessageBar *messageBar();
 
   public slots:
 
@@ -127,6 +138,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QCheckBox *mWholeWordCheck = nullptr;
     QCheckBox *mWrapAroundCheck = nullptr;
     int mBlockSearching = 0;
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 #endif // QGSCODEEDITORWIDGET_H

@@ -18,15 +18,20 @@
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgsmessagebar.h"
 
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QCheckBox>
 #include <QShortcut>
 
-QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent )
+QgsCodeEditorWidget::QgsCodeEditorWidget(
+  QgsCodeEditor *editor,
+  QgsMessageBar *messageBar,
+  QWidget *parent )
   : QgsPanelWidget( parent )
   , mEditor( editor )
+  , mMessageBar( messageBar )
 {
   Q_ASSERT( mEditor );
 
@@ -34,6 +39,18 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->setSpacing( 0 );
   vl->addWidget( editor, 1 );
+
+  if ( !mMessageBar )
+  {
+    QGridLayout *layout = new QGridLayout( mEditor );
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addItem( new QSpacerItem( 20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding ), 1, 0, 1, 1 );
+
+    mMessageBar = new QgsMessageBar();
+    QSizePolicy sizePolicy = QSizePolicy( QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed );
+    mMessageBar->setSizePolicy( sizePolicy );
+    layout->addWidget( mMessageBar, 0, 0, 1, 1 );
+  }
 
   mFindWidget = new QWidget();
   QHBoxLayout *layoutFind = new QHBoxLayout();
@@ -124,6 +141,11 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
 bool QgsCodeEditorWidget::isSearchBarVisible() const
 {
   return !mFindWidget->isHidden();
+}
+
+QgsMessageBar *QgsCodeEditorWidget::messageBar()
+{
+  return mMessageBar;
 }
 
 void QgsCodeEditorWidget::showSearchBar()
@@ -272,14 +294,11 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFo
     const QString styleError = QStringLiteral( "QLineEdit {background-color: #d65253;  color: #ffffff;}" );
     mLineEditFind->setStyleSheet( styleError );
 
-    Q_UNUSED( showNotFoundWarning )
-#if 0 // TODO -- port this bit when messagebar is available
-    if ( showMessage )
+    if ( showNotFoundWarning )
     {
       mMessageBar->pushMessage( QString(), tr( "\"%1\" was not found" ).arg( searchString ),
                                 Qgis::MessageLevel::Info );
     }
-#endif
   }
   else
   {

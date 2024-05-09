@@ -552,17 +552,6 @@ class EditorTab(QWidget):
             if QFileInfo(filename).exists():
                 self._editor.loadFile(filename, read_only)
 
-        # Creates layout for message bar
-        self.layout = QGridLayout(self._editor)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        self.layout.addItem(spacerItem, 1, 0, 1, 1)
-        # messageBar instance
-        self.infoBar = QgsMessageBar()
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        self.infoBar.setSizePolicy(sizePolicy)
-        self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
-
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
         self.tabLayout.addWidget(self._editor_code_widget)
@@ -606,7 +595,7 @@ class EditorTab(QWidget):
             return setattr(self._editor, name, value)
 
     def showMessage(self, text, level=Qgis.MessageLevel.Info, timeout=-1, title=""):
-        self.infoBar.pushMessage(title, text, level, timeout)
+        self._editor_code_widget.messageBar().pushMessage(title, text, level, timeout)
 
 
 class EditorTabWidget(QTabWidget):
