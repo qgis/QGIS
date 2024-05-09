@@ -1567,7 +1567,6 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     if ( mSchemaName.isEmpty() )
       mSchemaName = testAccess.PQgetvalue( 0, 2 );
 
-
     // Do not set editable capabilities if the provider has been forced to be
     // in read-only mode or if the database is still in recovery
     if ( !forceReadOnly && !inRecovery )
@@ -1596,20 +1595,19 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
         mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
       }
 
-    }
-
-    // TODO: merge this with the previous query
-    sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
-                   "pg_class.relnamespace=pg_namespace.oid AND "
-                   "%3 AND "
-                   "relname=%1 AND nspname=%2" )
-          .arg( quotedValue( mTableName ),
-                quotedValue( mSchemaName ),
-                connectionRO()->pgVersion() < 80100 ? "pg_get_userbyid(relowner)=current_user" : "pg_has_role(relowner,'MEMBER')" );
-    testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-    if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
-    {
-      mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+      // TODO: merge this with the previous query
+      sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
+                     "pg_class.relnamespace=pg_namespace.oid AND "
+                     "%3 AND "
+                     "relname=%1 AND nspname=%2" )
+            .arg( quotedValue( mTableName ),
+                  quotedValue( mSchemaName ),
+                  connectionRO()->pgVersion() < 80100 ? "pg_get_userbyid(relowner)=current_user" : "pg_has_role(relowner,'MEMBER')" );
+      testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
+      if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
+      {
+        mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+      }
     }
   }
   else
