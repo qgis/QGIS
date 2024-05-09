@@ -1887,7 +1887,7 @@ static QVariant fcnMapToHtmlTable( const QVariantList &values, const QgsExpressi
   QString table { R"html(
   <table>
     <thead>
-      <th>%1</th>
+      <tr><th>%1</th></tr>
     </thead>
     <tbody>
       <tr><td>%2</td></tr>
