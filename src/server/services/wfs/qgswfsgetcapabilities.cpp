@@ -475,7 +475,7 @@ namespace QgsWfs
 
       //create Title
       QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-      QString title = layer->serverProperties()->title();
+      QString title = layer->serverProperties()->wfsTitle();
       if ( title.isEmpty() )
       {
         title = layer->name();

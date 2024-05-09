@@ -335,6 +335,15 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
     void setTitle( const QString &title ) { mTitle = title; }
 
     /**
+     * Sets the \a title of the layer used by QGIS Server in WFS GetCapabilities request.
+     *
+     * \see title()
+     *
+     * \since QGIS 3.40
+     */
+    void setWfsTitle( const QString &title ) { mWfsTitle = title; }
+
+    /**
      * Returns the title of the layer used by QGIS Server in GetCapabilities request.
      *
      * \see setTitle()
@@ -342,6 +351,16 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      * \since QGIS 3.38
      */
     QString title() const { return mTitle; }
+
+    /**
+     * Returns the optional WFS title if set or the title of the layer used by
+     * QGIS WFS in GetCapabilities request.
+     *
+     * \see setWfsTitle()
+     *
+     * \since QGIS 3.40
+     */
+    QString wfsTitle() const { return mWfsTitle.isEmpty() ? mTitle : mWfsTitle; }
 
     /**
      * Sets the \a abstract of the layer used by QGIS Server in GetCapabilities request.
@@ -475,6 +494,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
 
     QString mShortName;
     QString mTitle;
+    QString mWfsTitle;  // optional WFS title
 
     QString mAttribution;
     QString mAttributionUrl;

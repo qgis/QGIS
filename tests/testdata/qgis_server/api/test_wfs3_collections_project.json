@@ -31,17 +31,17 @@ Content-Type: application/json
         {
           "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json",
           "rel": "item",
-          "title": "A test vector layer èé as GeoJSON",
+          "title": "A test wfs vector layer èé as GeoJSON",
           "type": "application/geo+json"
         },
         {
           "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html",
           "rel": "item",
-          "title": "A test vector layer èé as HTML",
+          "title": "A test wfs vector layer èé as HTML",
           "type": "text/html"
         }
       ],
-      "title": "A test vector layer èé"
+      "title": "A test wfs vector layer èé"
     },
     {
       "crs": [
