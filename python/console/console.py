@@ -145,10 +145,13 @@ class PythonConsoleWidget(QWidget):
         QWidget.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
-        self.shell = ShellScintilla(self)
+        self.shell = ShellScintilla(console_widget=self)
         self.setFocusProxy(self.shell)
-        self.shellOut = ShellOutputScintilla(self)
-        self.tabEditorWidget = EditorTabWidget(self)
+        self.shell_output = ShellOutputScintilla(
+            console_widget=self,
+            shell_editor=self.shell
+        )
+        self.tabEditorWidget = EditorTabWidget(console_widget=self)
 
         # ------------ UI -------------------------------
 
@@ -160,7 +163,7 @@ class PythonConsoleWidget(QWidget):
         self.shellOutWidget = QWidget(self)
         self.shellOutWidget.setLayout(QVBoxLayout())
         self.shellOutWidget.layout().setContentsMargins(0, 0, 0, 0)
-        self.shellOutWidget.layout().addWidget(self.shellOut)
+        self.shellOutWidget.layout().addWidget(self.shell_output)
 
         self.splitter = QSplitter(self.splitterEditor)
         self.splitter.setOrientation(Qt.Orientation.Vertical)
@@ -455,10 +458,10 @@ class PythonConsoleWidget(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.shellOut.sizePolicy().hasHeightForWidth())
-        self.shellOut.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.shell_output.sizePolicy().hasHeightForWidth())
+        self.shell_output.setSizePolicy(sizePolicy)
 
-        self.shellOut.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.shell_output.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.shell.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
         # ------------ Layout -------------------------------
@@ -534,7 +537,7 @@ class PythonConsoleWidget(QWidget):
         self.copyEditorButton.triggered.connect(self.copyEditor)
         self.pasteEditorButton.triggered.connect(self.pasteEditor)
         self.showEditorButton.toggled.connect(self.toggleEditor)
-        self.clearButton.triggered.connect(self.shellOut.clearConsole)
+        self.clearButton.triggered.connect(self.shell_output.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
         self.runButton.triggered.connect(self.shell.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
@@ -756,14 +759,14 @@ class PythonConsoleWidget(QWidget):
 
     def updateSettings(self):
         self.shell.refreshSettingsShell()
-        self.shellOut.refreshSettingsOutput()
+        self.shell_output.refreshSettingsOutput()
         self.tabEditorWidget.refreshSettingsEditor()
 
     def callWidgetMessageBar(self, text):
-        self.shellOut.widgetMessageBar(iface, text)
+        self.shell_output.widgetMessageBar(text)
 
-    def callWidgetMessageBarEditor(self, text, level, timeout):
-        self.tabEditorWidget.showMessage(text, level, timeout)
+    def callWidgetMessageBarEditor(self, text, level):
+        self.tabEditorWidget.showMessage(text, level)
 
     def updateTabListScript(self, script, action=None):
         if action == 'remove':

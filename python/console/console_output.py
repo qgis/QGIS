@@ -117,10 +117,12 @@ From the console, you can type the following special commands:
 
 class ShellOutputScintilla(QgsCodeEditorPython):
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.parent = parent
-        self.shell = self.parent.shell
+    def __init__(self,
+                 console_widget: 'PythonConsoleWidget',
+                 shell_editor: 'ShellScintilla'):
+        super().__init__(console_widget)
+        self.console_widget: 'PythonConsoleWidget' = console_widget
+        self.shell_editor: 'ShellScintilla' = shell_editor
 
         # Creates layout for message bar
         self.layout = QGridLayout(self)
@@ -202,7 +204,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
     def clearConsole(self):
         self.setText('')
         self.insertInitText()
-        self.shell.setFocus()
+        self.shell_editor.setFocus()
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
@@ -254,7 +256,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         settings_action = QAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
                                   QCoreApplication.translate("PythonConsole", "Options…"),
                                   menu)
-        settings_action.triggered.connect(self.parent.openSettings)
+        settings_action.triggered.connect(self.console_widget.openSettings)
         menu.addAction(settings_action)
 
         runAction.setEnabled(False)
@@ -270,21 +272,21 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
-        if self.parent.tabEditorWidget.isVisible():
+        if self.console_widget.tabEditorWidget.isVisible():
             showEditorAction.setEnabled(False)
         menu.exec(self.mapToGlobal(e.pos()))
 
     def hideToolBar(self):
-        tB = self.parent.toolBar
+        tB = self.console_widget.toolBar
         tB.hide() if tB.isVisible() else tB.show()
-        self.shell.setFocus()
+        self.shell_editor.setFocus()
 
     def showEditor(self):
-        Ed = self.parent.splitterObj
+        Ed = self.console_widget.splitterObj
         if not Ed.isVisible():
             Ed.show()
-            self.parent.showEditorButton.setChecked(True)
-        self.shell.setFocus()
+            self.console_widget.showEditorButton.setChecked(True)
+        self.shell_editor.setFocus()
 
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""
@@ -297,21 +299,20 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
     def enteredSelected(self):
         cmd = self.selectedText()
-        self.shell.insertFromDropPaste(cmd)
-        self.shell.entered()
+        self.shell_editor.insertFromDropPaste(cmd)
+        self.shell_editor.entered()
 
     def keyPressEvent(self, e):
         # empty text indicates possible shortcut key sequence so stay in output
         txt = e.text()
         if len(txt) and txt >= " ":
-            self.shell.append(txt)
-            self.shell.moveCursorToEnd()
-            self.shell.setFocus()
+            self.shell_editor.append(txt)
+            self.shell_editor.moveCursorToEnd()
+            self.shell_editor.setFocus()
             e.ignore()
         else:
             # possible shortcut key sequence, accept it
             e.accept()
 
-    def widgetMessageBar(self, iface, text):
-        timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, Qgis.MessageLevel.Info, timeout)
+    def widgetMessageBar(self, text: str):
+        self.infoBar.pushMessage(text, Qgis.MessageLevel.Info)
