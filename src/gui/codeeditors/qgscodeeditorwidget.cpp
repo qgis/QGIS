@@ -76,19 +76,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
 
   QShortcut *findShortcut = new QShortcut( QKeySequence::StandardKey::Find, mEditor );
   findShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
-  connect( findShortcut, &QShortcut::activated, this, [this]
-  {
-    clearSearchHighlights();
-    mLineEditFind->setFocus();
-    if ( mEditor->hasSelectedText() )
-    {
-      mBlockSearching++;
-      mLineEditFind->setText( mEditor->selectedText().trimmed() );
-      mBlockSearching--;
-    }
-    mLineEditFind->selectAll();
-    showSearchBar();
-  } );
+  connect( findShortcut, &QShortcut::activated, this, &QgsCodeEditorWidget::triggerFind );
 
   QShortcut *findNextShortcut = new QShortcut( QKeySequence::StandardKey::FindNext, this );
   findNextShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
@@ -133,16 +121,23 @@ QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QWidget *parent
   setLayout( vl );
 }
 
+bool QgsCodeEditorWidget::isSearchBarVisible() const
+{
+  return !mFindWidget->isHidden();
+}
+
 void QgsCodeEditorWidget::showSearchBar()
 {
   addSearchHighlights();
   mFindWidget->show();
+  emit searchBarToggled( true );
 }
 
 void QgsCodeEditorWidget::hideSearchBar()
 {
   clearSearchHighlights();
   mFindWidget->hide();
+  emit searchBarToggled( false );
 }
 
 void QgsCodeEditorWidget::setSearchBarVisible( bool visible )
@@ -151,6 +146,20 @@ void QgsCodeEditorWidget::setSearchBarVisible( bool visible )
     showSearchBar();
   else
     hideSearchBar();
+}
+
+void QgsCodeEditorWidget::triggerFind()
+{
+  clearSearchHighlights();
+  mLineEditFind->setFocus();
+  if ( mEditor->hasSelectedText() )
+  {
+    mBlockSearching++;
+    mLineEditFind->setText( mEditor->selectedText().trimmed() );
+    mBlockSearching--;
+  }
+  mLineEditFind->selectAll();
+  showSearchBar();
 }
 
 void QgsCodeEditorWidget::findNext()

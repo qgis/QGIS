@@ -59,6 +59,11 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     QgsCodeEditor *editor() { return mEditor; }
 
+    /**
+     * Returns TRUE if the search bar is visible.
+     */
+    bool isSearchBarVisible() const;
+
   public slots:
 
     /**
@@ -84,6 +89,21 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * \see hideSearchBar()
      */
     void setSearchBarVisible( bool visible );
+
+    /**
+     * Triggers a find operation, using the default behavior.
+     *
+     * This will automatically open the search bar and start a find operation using
+     * the default behavior, e.g. searching for any selected text in the code editor.
+     */
+    void triggerFind();
+
+  signals:
+
+    /**
+     * Emitted when the visibility of the search bar is changed.
+     */
+    void searchBarToggled( bool visible );
 
   private slots:
 
