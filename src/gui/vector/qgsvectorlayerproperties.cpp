@@ -354,6 +354,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   //layer title and abstract
   mLayerTitleLineEdit->setText( mLayer->serverProperties()->title() );
+  if ( mLayer->serverProperties()->wfsTitle() != mLayer->serverProperties()->title() )
+    mLayerOptWfsTitleLineEdit->setText( mLayer->serverProperties()->wfsTitle() );
   mLayerAbstractTextEdit->setPlainText( mLayer->serverProperties()->abstract() );
   mLayerKeywordListLineEdit->setText( mLayer->serverProperties()->keywordList() );
   mLayerDataUrlLineEdit->setText( mLayer->serverProperties()->dataUrl() );
@@ -833,6 +835,16 @@ void QgsVectorLayerProperties::apply()
   if ( mLayer->serverProperties()->title() != mLayerTitleLineEdit->text() )
     mMetadataFilled = false;
   mLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
+
+  if ( !mLayerOptWfsTitleLineEdit->text().isEmpty() && mLayerOptWfsTitleLineEdit->text() != mLayerTitleLineEdit->text() )
+  {
+    mLayer->serverProperties()->setWfsTitle( mLayerOptWfsTitleLineEdit->text() );
+    mMetadataFilled = false;
+  }
+  else
+  {
+    mLayer->serverProperties()->setWfsTitle( QString() );
+  }
 
   if ( mLayer->serverProperties()->abstract() != mLayerAbstractTextEdit->toPlainText() )
     mMetadataFilled = false;

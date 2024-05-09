@@ -84,6 +84,33 @@ class TestQgsMapLayerServerConfig(QgisTestCase):
         other = QgsMapLayerServerProperties.MetadataUrl("https://my.url", "FGDC", "text/xml")
         self.assertTrue(url == other)
 
+    def test_wfs_title(self):
+        layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
+
+        self.assertEqual("", layer.title())
+        self.assertEqual("", layer.serverProperties().title())
+        self.assertEqual("", layer.serverProperties().wfsTitle())
+
+        layer.serverProperties().setTitle("title")
+        self.assertEqual("title", layer.title())
+        self.assertEqual("title", layer.serverProperties().title())
+        self.assertEqual("title", layer.serverProperties().wfsTitle())
+
+        layer.serverProperties().setWfsTitle("wfstitle")
+        self.assertEqual("title", layer.title())
+        self.assertEqual("title", layer.serverProperties().title())
+        self.assertEqual("wfstitle", layer.serverProperties().wfsTitle())
+
+        layer.serverProperties().setTitle("title2")
+        self.assertEqual("title2", layer.title())
+        self.assertEqual("title2", layer.serverProperties().title())
+        self.assertEqual("wfstitle", layer.serverProperties().wfsTitle())
+
+        layer.serverProperties().setWfsTitle("")
+        self.assertEqual("title2", layer.title())
+        self.assertEqual("title2", layer.serverProperties().title())
+        self.assertEqual("title2", layer.serverProperties().wfsTitle())
+
 
 if __name__ == '__main__':
     unittest.main()

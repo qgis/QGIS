@@ -251,6 +251,7 @@ void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
   if ( !titleElem.isNull() )
   {
     mTitle = titleElem.text();
+    mWfsTitle = titleElem.attribute( QStringLiteral( "wfs" ) );
   }
 
   //abstract

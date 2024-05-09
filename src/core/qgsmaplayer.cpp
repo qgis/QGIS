@@ -802,6 +802,12 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     QDomElement layerTitle = document.createElement( QStringLiteral( "title" ) );
     const QDomText layerTitleText = document.createTextNode( mServerProperties->title() );
     layerTitle.appendChild( layerTitleText );
+
+    if ( mServerProperties->title() != mServerProperties->wfsTitle() )
+    {
+      layerTitle.setAttribute( "wfs",  mServerProperties->wfsTitle() );
+    }
+
     layerElement.appendChild( layerTitle );
   }
 
