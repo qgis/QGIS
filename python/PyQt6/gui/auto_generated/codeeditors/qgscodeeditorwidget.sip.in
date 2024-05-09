@@ -45,6 +45,11 @@ Ownership of ``editor`` will be transferred to this widget.
 Returns the wrapped code editor.
 %End
 
+    bool isSearchBarVisible() const;
+%Docstring
+Returns ``True`` if the search bar is visible.
+%End
+
   public slots:
 
     void showSearchBar();
@@ -72,6 +77,21 @@ Sets whether the search bar is ``visible``.
 .. seealso:: :py:func:`showSearchBar`
 
 .. seealso:: :py:func:`hideSearchBar`
+%End
+
+    void triggerFind();
+%Docstring
+Triggers a find operation, using the default behavior.
+
+This will automatically open the search bar and start a find operation using
+the default behavior, e.g. searching for any selected text in the code editor.
+%End
+
+  signals:
+
+    void searchBarToggled( bool visible );
+%Docstring
+Emitted when the visibility of the search bar is changed.
 %End
 
 };

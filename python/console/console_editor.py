@@ -39,7 +39,18 @@ from qgis.gui import (
 )
 
 from qgis.PyQt.Qsci import QsciScintilla
-from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileInfo, QJsonDocument, QSize, Qt, QUrl
+from qgis.PyQt.QtCore import (
+    pyqtSignal,
+    QByteArray,
+    QCoreApplication,
+    QDir,
+    QEvent,
+    QFileInfo,
+    QJsonDocument,
+    QSize,
+    Qt,
+    QUrl
+)
 from qgis.PyQt.QtGui import QKeySequence
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
@@ -63,6 +74,8 @@ from qgis.utils import OverrideCursor, iface
 
 
 class Editor(QgsCodeEditorPython):
+
+    trigger_find = pyqtSignal()
 
     def __init__(self,
                  editor_tab: 'EditorTab',
@@ -165,7 +178,7 @@ class Editor(QgsCodeEditorPython):
             QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"),
             QCoreApplication.translate("PythonConsole", "Find Text"),
             menu)
-        find_action.triggered.connect(self.openFindWidget)
+        find_action.triggered.connect(self.trigger_find)
         menu.addAction(find_action)
 
         cutAction = QAction(
@@ -253,44 +266,6 @@ class Editor(QgsCodeEditorPython):
             showCodeInspection.setEnabled(True)
         menu.exec(self.mapToGlobal(e.pos()))
 
-    def findText(self, forward, showMessage=True, findFirst=False):
-        lineFrom, indexFrom, lineTo, indexTo = self.getSelection()
-        if findFirst:
-            line = 0
-            index = 0
-        else:
-            line, index = self.getCursorPosition()
-        text = self.console_widget.lineEditFind.text()
-        re = False
-        wrap = self.console_widget.wrapAround.isChecked()
-        cs = self.console_widget.caseSensitive.isChecked()
-        wo = self.console_widget.wholeWord.isChecked()
-        notFound = False
-        if text:
-            if not forward:
-                line = lineFrom
-                index = indexFrom
-            # findFirst(QString(), re bool, cs bool, wo bool, wrap, bool, forward=True)
-            # re = Regular Expression, cs = Case Sensitive, wo = Whole Word, wrap = Wrap Around
-            if not self.findFirst(text, re, cs, wo, wrap, forward, line, index):
-                notFound = True
-            if notFound:
-                styleError = 'QLineEdit {background-color: #d65253; \
-                                        color: #ffffff;}'
-                if showMessage:
-                    msgText = QCoreApplication.translate('PythonConsole',
-                                                         '<b>"{0}"</b> was not found.').format(text)
-                    self.showMessage(msgText)
-            else:
-                styleError = ''
-            self.console_widget.lineEditFind.setStyleSheet(styleError)
-
-    def findNext(self):
-        self.findText(True)
-
-    def findPrevious(self):
-        self.findText(False)
-
     def objectListEditor(self):
         listObj = self.console_widget.listClassMethod
         if listObj.isVisible():
@@ -342,26 +317,6 @@ class Editor(QgsCodeEditorPython):
     def hideEditor(self):
         self.console_widget.splitterObj.hide()
         self.console_widget.showEditorButton.setChecked(False)
-
-    def openFindWidget(self):
-        wF = self.console_widget.widgetFind
-        wF.show()
-        if self.hasSelectedText():
-            self.console_widget.lineEditFind.setText(self.selectedText().strip())
-        self.console_widget.lineEditFind.setFocus()
-        self.console_widget.findTextButton.setChecked(True)
-
-    def closeFindWidget(self):
-        wF = self.console_widget.widgetFind
-        wF.hide()
-        self.console_widget.findTextButton.setChecked(False)
-
-    def toggleFindWidget(self):
-        wF = self.console_widget.widgetFind
-        if wF.isVisible():
-            self.closeFindWidget()
-        else:
-            self.openFindWidget()
 
     def createTempFile(self):
         name = tempfile.NamedTemporaryFile(delete=False).name
@@ -568,6 +523,8 @@ class Editor(QgsCodeEditorPython):
 
 class EditorTab(QWidget):
 
+    search_bar_toggled = pyqtSignal(bool)
+
     def __init__(self,
                  tab_widget: 'EditorTabWidget',
                  console_widget: 'PythonConsoleWidget',
@@ -582,6 +539,13 @@ class EditorTab(QWidget):
 
         self._editor_code_widget = QgsCodeEditorWidget(
             self._editor
+        )
+        self._editor_code_widget.searchBarToggled.connect(
+            self.search_bar_toggled
+        )
+
+        self._editor.trigger_find.connect(
+            self._editor_code_widget.triggerFind
         )
 
         if filename:
@@ -606,6 +570,24 @@ class EditorTab(QWidget):
     def modified(self, modified):
         self.tab_widget.tabModified(self, modified)
 
+    def search_bar_visible(self) -> bool:
+        """
+        Returns True if the tab's search bar is visible
+        """
+        return self._editor_code_widget.isSearchBarVisible()
+
+    def trigger_find(self):
+        """
+        Triggers a find operation using the default behavior
+        """
+        self._editor_code_widget.triggerFind()
+
+    def hide_search_bar(self):
+        """
+        Hides the search bar
+        """
+        self._editor_code_widget.hideSearchBar()
+
     def close(self):
         self.tab_widget._removeTab(self, tab2index=True)
 
@@ -628,6 +610,8 @@ class EditorTab(QWidget):
 
 
 class EditorTabWidget(QTabWidget):
+
+    search_bar_toggled = pyqtSignal(bool)
 
     def __init__(self, console_widget: 'PythonConsoleWidget'):
         super().__init__(parent=None)
@@ -725,6 +709,19 @@ class EditorTabWidget(QTabWidget):
         self.changeLastDirPath(tab)
         self.enableSaveIfModified(tab)
 
+        self.search_bar_toggled.emit(
+            self.currentWidget().search_bar_visible()
+        )
+
+    def toggle_search_bar(self, visible: bool):
+        """
+        Toggles whether the search bar should be visible
+        """
+        if visible and not self.currentWidget().search_bar_visible():
+            self.currentWidget().trigger_find()
+        elif not visible and self.currentWidget().search_bar_visible():
+            self.currentWidget().hide_search_bar()
+
     def contextMenuEvent(self, e):
         tabBar = self.tabBar()
         self.idx = tabBar.tabAt(e.pos())
@@ -821,6 +818,14 @@ class EditorTabWidget(QTabWidget):
             self.setTabToolTip(self.currentIndex(), filename)
         else:
             self.setTabToolTip(self.currentIndex(), tabName)
+
+        tab.search_bar_toggled.connect(self._tab_search_bar_toggled)
+
+    def _tab_search_bar_toggled(self, visible: bool):
+        if self.sender() != self.currentWidget():
+            return
+
+        self.search_bar_toggled.emit(visible)
 
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
