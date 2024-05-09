@@ -8,8 +8,8 @@
     "description": "The input value"
   }],
   "examples": [{
-    "expression": "to_json(map('qgis','rocks'))",
-    "returns": "{\"qgis\":\"rocks\"}"
+    "expression": "to_json(map('1','one','2','two'))",
+    "returns": "{\"1\":\"one\",\"2\":\"two\"}"
   }, {
     "expression": "to_json(array(1,2,3))",
     "returns": "[1,2,3]"
