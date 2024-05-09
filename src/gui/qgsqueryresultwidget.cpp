@@ -47,7 +47,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   mProgressBar->hide();
 
   mSqlEditor = new QgsCodeEditorSQL();
-  mCodeEditorWidget = new QgsCodeEditorWidget( mSqlEditor );
+  mCodeEditorWidget = new QgsCodeEditorWidget( mSqlEditor, mMessageBar );
   QVBoxLayout *vl = new QVBoxLayout();
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->addWidget( mCodeEditorWidget );
