@@ -8,8 +8,8 @@
     "description": "the input map"
   }],
   "examples": [{
-    "expression": "map_to_html_dl(map('qgis','rocks'))",
-    "returns": "<dl><dt>qgis</dt><dd>rocks</dd></dl>"
+    "expression": "map_to_html_dl(map('1','one','2','two'))",
+    "returns": "<dl><dt>1</dt><dd>one</dd><dt>2</dt><dd>two</dd></dl>"
   }],
   "tags": ["formatted", "map", "html"]
 }

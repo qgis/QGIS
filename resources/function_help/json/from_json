@@ -8,8 +8,8 @@
     "description": "JSON string"
   }],
   "examples": [{
-    "expression": "from_json('{\"qgis\":\"rocks\"}')",
-    "returns": "{ 'qgis': 'rocks' }"
+    "expression": "from_json('{\"1\":\"one\",\"2\":\"two\"}')",
+    "returns": "{ '1': 'one', '2': 'two' }"
   }, {
     "expression": "from_json('[1,2,3]')",
     "returns": "[1,2,3]"
