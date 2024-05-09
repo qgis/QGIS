@@ -167,6 +167,8 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
     return;
   }
 
+  invalidateNetworkCache();
+
   mGdalDataset = nullptr;
   if ( dataset )
   {
@@ -479,6 +481,7 @@ void QgsGdalProvider::closeDataset()
 void QgsGdalProvider::reloadProviderData()
 {
   QMutexLocker locker( mpMutex );
+  invalidateNetworkCache();
   closeDataset();
 
   mHasInit = false;
@@ -4269,6 +4272,21 @@ Qgis::ProviderStyleStorageCapabilities QgsGdalProvider::styleStorageCapabilities
     storageCapabilities |= Qgis::ProviderStyleStorageCapability::DeleteFromDatabase;
   }
   return storageCapabilities;
+}
+
+void QgsGdalProvider::invalidateNetworkCache()
+{
+  const QString uri( dataSourceUri() );
+
+  if ( uri.startsWith( QLatin1String( "/vsicurl/" ) )  ||
+       uri.startsWith( QLatin1String( "/vsis3/" ) ) ||
+       uri.startsWith( QLatin1String( "/vsigs/" ) ) ||
+       uri.startsWith( QLatin1String( "/vsiaz/" ) ) ||
+       uri.startsWith( QLatin1String( "/vsiadls/" ) ) )
+  {
+    QgsDebugMsgLevel( QString( "Invalidating cache for %1" ).arg( uri ), 3 );
+    VSICurlPartialClearCache( uri.toUtf8().constData() );
+  }
 }
 
 // pyramids resampling

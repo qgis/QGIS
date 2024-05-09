@@ -372,6 +372,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
       const QgsRectangle &reqExtent,
       int bufferWidthPix,
       int bufferHeightPix );
+
+    //! Invalidate GDAL /vsicurl/ RAM cache for this uri
+    void invalidateNetworkCache();
 };
 
 /**
