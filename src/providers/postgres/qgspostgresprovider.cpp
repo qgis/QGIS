@@ -1492,35 +1492,21 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   mEnabledCapabilities = QgsVectorDataProvider::Capability::ReloadData;
 
+  QString sql;
   QgsPostgresResult testAccess;
+
+  bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
+  bool inRecovery = false;
+  sql = QStringLiteral( "SELECT "
+                        "has_table_privilege(%1,'SELECT'),"   // 0
+                        "pg_is_in_recovery(),"                // 1
+                        "current_schema(), "                  // 2
+                        "has_table_privilege(%1,'INSERT'),"   // 3
+                        "has_table_privilege(%1,'DELETE')" ) // 4
+        .arg( quotedValue( mQuery ) );
+
   if ( !mIsQuery )
   {
-    // Check that we can read from the table (i.e., we have select permission).
-    QString sql = QStringLiteral( "SELECT * FROM %1 LIMIT 1" ).arg( mQuery );
-    QgsPostgresResult testAccess( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
-    if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK )
-    {
-      QgsMessageLog::logMessage( tr( "Unable to access the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                                 .arg( mQuery,
-                                       testAccess.PQresultErrorMessage(),
-                                       sql ), tr( "PostGIS" ) );
-      return false;
-    }
-
-    bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
-    bool inRecovery = false;
-    // Check if the database is still in recovery after a database crash
-    // or if you are connected to a (read-only) standby server
-    // only if the provider has not been force to be in read-only mode
-    if ( !forceReadOnly && connectionRO()->pgVersion() >= 90000 )
-    {
-      testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider",  QStringLiteral( "SELECT pg_is_in_recovery()" ) );
-      if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK || testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
-      {
-        QgsMessageLog::logMessage( tr( "PostgreSQL is still in recovery after a database crash\n(or you are connected to a (read-only) standby server).\nWrite accesses will be denied." ), tr( "PostGIS" ) );
-        inRecovery = true;
-      }
-    }
 
     // postgres has fast access to features at id (thanks to primary key / unique index)
     // the latter flag is here just for compatibility
@@ -1529,88 +1515,101 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
     }
 
-    // Do not check the editable capabilities if the provider has been forced to be
+    if ( connectionRO()->pgVersion() >= 80400 )
+    {
+      sql += QString( ",has_any_column_privilege(%1,'UPDATE')" // 5
+                      ",%2" ) // 6
+             .arg( quotedValue( mQuery ),
+                   mGeometryColumn.isNull()
+                   ? QStringLiteral( "'f'" )
+                   : QStringLiteral( "has_column_privilege(%1,%2,'UPDATE')" )
+                   .arg( quotedValue( mQuery ),
+                         quotedValue( mGeometryColumn ) )
+                 );
+    }
+    else
+    {
+      sql += QString( ",has_table_privilege(%1,'UPDATE')" // 5
+                      ",has_table_privilege(%1,'UPDATE')" ) // 6
+             .arg( quotedValue( mQuery ) );
+    }
+
+    testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
+    if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK )
+    {
+      QgsMessageLog::logMessage( tr( "Unable to determine table access privileges for the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                                 .arg( mQuery,
+                                       testAccess.PQresultErrorMessage(),
+                                       sql ),
+                                 tr( "PostGIS" ) );
+      return false;
+    }
+
+    if ( testAccess.PQgetvalue( 0, 0 ) != QLatin1String( "t" ) )
+    {
+      // SELECT
+      QgsMessageLog::logMessage( tr( "User has no SELECT privilege on %1 relation." )
+                                 .arg( mQuery ), tr( "PostGIS" ) );
+      return false;
+    }
+
+    if ( testAccess.PQgetvalue( 0, 1 ) == QLatin1String( "t" ) )
+    {
+      // RECOVERY
+      QgsMessageLog::logMessage(
+        tr( "PostgreSQL is still in recovery after a database crash\n(or you are connected to a (read-only) standby server).\nWrite accesses will be denied." ),
+        tr( "PostGIS" )
+      );
+      inRecovery = true;
+    }
+
+    // CURRENT SCHEMA
+    if ( mSchemaName.isEmpty() )
+      mSchemaName = testAccess.PQgetvalue( 0, 2 );
+
+
+    // Do not set editable capabilities if the provider has been forced to be
     // in read-only mode or if the database is still in recovery
     if ( !forceReadOnly && !inRecovery )
     {
-      if ( connectionRO()->pgVersion() >= 80400 )
-      {
-        sql = QString( "SELECT "
-                       "has_table_privilege(%1,'DELETE'),"
-                       "has_any_column_privilege(%1,'UPDATE'),"
-                       "%2"
-                       "has_table_privilege(%1,'INSERT'),"
-                       "current_schema()" )
-              .arg( quotedValue( mQuery ),
-                    mGeometryColumn.isNull()
-                    ? QStringLiteral( "'f'," )
-                    : QStringLiteral( "has_column_privilege(%1,%2,'UPDATE')," )
-                    .arg( quotedValue( mQuery ),
-                          quotedValue( mGeometryColumn ) )
-                  );
-      }
-      else
-      {
-        sql = QString( "SELECT "
-                       "has_table_privilege(%1,'DELETE'),"
-                       "has_table_privilege(%1,'UPDATE'),"
-                       "has_table_privilege(%1,'UPDATE'),"
-                       "has_table_privilege(%1,'INSERT'),"
-                       "current_schema()" )
-              .arg( quotedValue( mQuery ) );
-      }
-
-      testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-      if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK )
-      {
-        QgsMessageLog::logMessage( tr( "Unable to determine table access privileges for the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                                   .arg( mQuery,
-                                         testAccess.PQresultErrorMessage(),
-                                         sql ),
-                                   tr( "PostGIS" ) );
-        return false;
-      }
-
-
-      if ( testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
-      {
-        // DELETE
-        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
-      }
-
-      if ( testAccess.PQgetvalue( 0, 1 ) == QLatin1String( "t" ) )
-      {
-        // UPDATE
-        mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
-      }
-
-      if ( testAccess.PQgetvalue( 0, 2 ) == QLatin1String( "t" ) )
-      {
-        // UPDATE
-        mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
-      }
-
       if ( testAccess.PQgetvalue( 0, 3 ) == QLatin1String( "t" ) )
       {
         // INSERT
         mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
       }
 
-      if ( mSchemaName.isEmpty() )
-        mSchemaName = testAccess.PQgetvalue( 0, 4 );
-
-      sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
-                     "pg_class.relnamespace=pg_namespace.oid AND "
-                     "%3 AND "
-                     "relname=%1 AND nspname=%2" )
-            .arg( quotedValue( mTableName ),
-                  quotedValue( mSchemaName ),
-                  connectionRO()->pgVersion() < 80100 ? "pg_get_userbyid(relowner)=current_user" : "pg_has_role(relowner,'MEMBER')" );
-      testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-      if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
+      if ( testAccess.PQgetvalue( 0, 4 ) == QLatin1String( "t" ) )
       {
-        mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+        // DELETE
+        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
       }
+
+      if ( testAccess.PQgetvalue( 0, 5 ) == QLatin1String( "t" ) )
+      {
+        // UPDATE
+        mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+      }
+
+      if ( testAccess.PQgetvalue( 0, 6 ) == QLatin1String( "t" ) )
+      {
+        // UPDATE (geom column specific)
+        mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+      }
+
+    }
+
+    // TODO: merge this with the previous query
+    sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
+                   "pg_class.relnamespace=pg_namespace.oid AND "
+                   "%3 AND "
+                   "relname=%1 AND nspname=%2" )
+          .arg( quotedValue( mTableName ),
+                quotedValue( mSchemaName ),
+                connectionRO()->pgVersion() < 80100 ? "pg_get_userbyid(relowner)=current_user" : "pg_has_role(relowner,'MEMBER')" );
+    testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
+    if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
+    {
+      mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
     }
   }
   else
