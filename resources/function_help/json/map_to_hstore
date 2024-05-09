@@ -8,8 +8,8 @@
     "description": "the input map"
   }],
   "examples": [{
-    "expression": "map_to_hstore(map('qgis','rocks'))",
-    "returns": "'\"qgis\"=>\"rocks\"'"
+    "expression": "map_to_hstore(map('1','one','2','two'))",
+    "returns": "'\"1\"=>\"one\"','\"2\"=>\"two\"'"
   }],
   "tags": ["formatted", "hstore", "elements", "map", "merge"]
 }
