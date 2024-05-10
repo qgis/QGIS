@@ -44,6 +44,7 @@ Ownership of ``editor`` will be transferred to this widget.
 If an explicit ``messageBar`` is specified then it will be used to provide
 feedback, otherwise an integrated message bar will be used.
 %End
+    ~QgsCodeEditorWidget();
 
     QgsCodeEditor *editor();
 %Docstring

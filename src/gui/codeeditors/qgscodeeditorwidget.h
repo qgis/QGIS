@@ -60,7 +60,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QgsCodeEditorWidget( QgsCodeEditor *editor SIP_TRANSFER,
                          QgsMessageBar *messageBar = nullptr,
                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
-   ~QgsCodeEditorWidget() override;
+    ~QgsCodeEditorWidget() override;
 
     /**
      * Returns the wrapped code editor.
