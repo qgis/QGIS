@@ -199,7 +199,7 @@ class TestQgsLineString(QgisTestCase):
         self.assertEqual(line.interpolateM(True).asWkt(2), 'LineStringZM (20 10 5 17, 30 10 12 19.31, 30 40 17 25.07, 20 40 19 27, 20 50 21 31.03, 25 50 22 33.05, 25 55 22 35.02, 30 55 22 37)')
 
         # missing at start and middle
-        line = QgsLineString([[10, 10, 1, math.nan],[10, 12, 2, math.nan], [20, 10, 5, 17], [30, 10, 12, math.nan], [30, 40, 17, math.nan], [20, 40, 19, math.nan], [20, 50, 21, 29]])
+        line = QgsLineString([[10, 10, 1, math.nan], [10, 12, 2, math.nan], [20, 10, 5, 17], [30, 10, 12, math.nan], [30, 40, 17, math.nan], [20, 40, 19, math.nan], [20, 50, 21, 29]])
         # 2d distance
         self.assertEqual(line.interpolateM(False).asWkt(), 'LineStringZM (10 10 1 17, 10 12 2 17, 20 10 5 17, 30 10 12 19, 30 40 17 25, 20 40 19 27, 20 50 21 29)')
         # 3d distance
