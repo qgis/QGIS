@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 """
 /***************************************************************************
 Python Console for QGIS
@@ -18,6 +17,13 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+try:
+    from __future__ import annotations
+except SyntaxError:
+    pass
+
+import sys
+from typing import TYPE_CHECKING
 
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_ARG, QObject, pyqtSlot
@@ -26,7 +32,10 @@ from qgis.PyQt.QtWidgets import QAction, QGridLayout, QSpacerItem, QSizePolicy, 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar, QgsCodeEditorPython
-import sys
+
+if TYPE_CHECKING:
+    from .console import PythonConsoleWidget
+    from .console_sci import ShellScintilla
 
 
 class writeOut(QObject):
@@ -118,11 +127,11 @@ From the console, you can type the following special commands:
 class ShellOutputScintilla(QgsCodeEditorPython):
 
     def __init__(self,
-                 console_widget: 'PythonConsoleWidget',
-                 shell_editor: 'ShellScintilla'):
+                 console_widget: PythonConsoleWidget,
+                 shell_editor: ShellScintilla):
         super().__init__(console_widget)
-        self.console_widget: 'PythonConsoleWidget' = console_widget
-        self.shell_editor: 'ShellScintilla' = shell_editor
+        self.console_widget: PythonConsoleWidget = console_widget
+        self.shell_editor: ShellScintilla = shell_editor
 
         # Creates layout for message bar
         self.layout = QGridLayout(self)
