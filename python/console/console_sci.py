@@ -17,11 +17,7 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-
-try:
-    from __future__ import annotations
-except SyntaxError:
-    pass
+from __future__ import annotations
 
 import code
 import os
