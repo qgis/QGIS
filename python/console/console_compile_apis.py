@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 """
 /***************************************************************************
 Module to generate prepared APIs for calltips and auto-completion.
