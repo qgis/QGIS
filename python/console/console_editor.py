@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 """
 /***************************************************************************
 Python Console for QGIS
@@ -19,6 +18,11 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
+try:
+    from __future__ import annotations
+except SyntaxError:
+    pass
+
 import codecs
 import importlib
 import os
@@ -26,7 +30,10 @@ import pyclbr
 import re
 import sys
 import tempfile
-from typing import Optional
+from typing import (
+    Optional,
+    TYPE_CHECKING
+)
 from functools import partial
 from operator import itemgetter
 from pathlib import Path
@@ -72,19 +79,22 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
+if TYPE_CHECKING:
+    from .console import PythonConsoleWidget
+
 
 class Editor(QgsCodeEditorPython):
 
     trigger_find = pyqtSignal()
 
     def __init__(self,
-                 editor_tab: 'EditorTab',
-                 console_widget: 'PythonConsoleWidget',
-                 tab_widget: 'EditorTabWidget'):
+                 editor_tab: EditorTab,
+                 console_widget: PythonConsoleWidget,
+                 tab_widget: EditorTabWidget):
         super().__init__(editor_tab)
-        self.editor_tab: 'EditorTab' = editor_tab
-        self.console_widget: 'PythonConsoleWidget' = console_widget
-        self.tab_widget: 'EditorTabWidget' = tab_widget
+        self.editor_tab: EditorTab = editor_tab
+        self.console_widget: PythonConsoleWidget = console_widget
+        self.tab_widget: EditorTabWidget = tab_widget
 
         self.path: Optional[str] = None
         #  recent modification time
@@ -526,12 +536,12 @@ class EditorTab(QWidget):
     search_bar_toggled = pyqtSignal(bool)
 
     def __init__(self,
-                 tab_widget: 'EditorTabWidget',
-                 console_widget: 'PythonConsoleWidget',
+                 tab_widget: EditorTabWidget,
+                 console_widget: PythonConsoleWidget,
                  filename: Optional[str],
                  read_only: bool):
         super().__init__(tab_widget)
-        self.tab_widget: 'EditorTabWidget' = tab_widget
+        self.tab_widget: EditorTabWidget = tab_widget
 
         self._editor = Editor(editor_tab=self,
                               console_widget=console_widget,
@@ -602,9 +612,9 @@ class EditorTabWidget(QTabWidget):
 
     search_bar_toggled = pyqtSignal(bool)
 
-    def __init__(self, console_widget: 'PythonConsoleWidget'):
+    def __init__(self, console_widget: PythonConsoleWidget):
         super().__init__(parent=None)
-        self.console_widget: 'PythonConsoleWidget' = console_widget
+        self.console_widget: PythonConsoleWidget = console_widget
 
         self.idx = -1
         # Layout for top frame (restore tabs)
