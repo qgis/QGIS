@@ -241,7 +241,7 @@ class CORE_EXPORT QgsGeometry
     bool isNull() const SIP_HOLDGIL;
 
     //! Creates a new geometry from a WKT string
-    static QgsGeometry fromWkt( const QString &wkt );
+    Q_INVOKABLE static QgsGeometry fromWkt( const QString &wkt );
     //! Creates a new geometry from a QgsPointXY object
     static QgsGeometry fromPointXY( const QgsPointXY &point ) SIP_HOLDGIL;
 
@@ -2132,7 +2132,7 @@ class CORE_EXPORT QgsGeometry
      * \returns TRUE in case of success and FALSE else
      * \note precision parameter added in QGIS 2.4
      */
-    QString asWkt( int precision = 17 ) const;
+    Q_INVOKABLE QString asWkt( int precision = 17 ) const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
