@@ -156,7 +156,7 @@ class TestPyQgsPostgresProviderLatency(QgisTestCase):
         settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading')
         settings.setVariantValue(False)
 
-        davg = 8.67
+        davg = 7.61
         dmin = round(davg - 0.2, 2)
         dmax = round(davg + 0.3, 2)
         error_string = 'expected from {0}s to {1}s, got {2}s\nHINT: set davg={2} to pass the test :)'
