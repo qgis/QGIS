@@ -43,7 +43,7 @@ jobs:
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'
-          tag: 'v2.5.25'
+          tag: 'v2.5.24'
           extract: true
 
       - name: ccache
