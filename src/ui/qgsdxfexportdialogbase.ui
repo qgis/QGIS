@@ -123,12 +123,17 @@
      <item row="5" column="1">
       <widget class="QComboBox" name="mVisibilityPresets"/>
      </item>
-     <item row="7" column="0" colspan="2">
-      <widget class="QWidget" name="mTreeViewContainer">
-      <layout class="QHBoxLayout" name="mTreeViewLayout"/>
+     <item row="6" column="0" colspan="2">
+      <widget class="QTreeView" name="mTreeView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
       </widget>
      </item>
-     <item row="9" column="0" colspan="2">
+     <item row="7" column="0" colspan="2">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QPushButton" name="mSelectAllButton">
@@ -160,7 +165,7 @@
        </item>
       </layout>
      </item>
-     <item row="11" column="0" colspan="2">
+     <item row="8" column="0" colspan="2">
       <layout class="QGridLayout" name="gridLayout">
        <item row="1" column="0">
         <widget class="QCheckBox" name="mMapExtentCheckBox">
@@ -186,7 +191,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="2">
         <widget class="QCheckBox" name="mMTextCheckBox">
          <property name="text">
           <string>Export labels as MTEXT elements</string>
@@ -196,7 +201,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
+       <item row="0" column="3">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -209,23 +214,39 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="2">
         <widget class="QCheckBox" name="mSelectedFeaturesOnly">
          <property name="text">
           <string>Use only selected features</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="2" column="2">
         <widget class="QCheckBox" name="mHairlineWidthExportCheckBox">
          <property name="text">
           <string>Export lines with zero width</string>
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>10</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </item>
-     <item row="15" column="0" colspan="2">
+     <item row="9" column="0" colspan="2">
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -265,6 +286,7 @@
   <tabstop>mEncoding</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mVisibilityPresets</tabstop>
+  <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mDeselectAllButton</tabstop>
   <tabstop>mSelectDataDefinedBlocks</tabstop>
@@ -274,6 +296,7 @@
   <tabstop>mMapExtentCheckBox</tabstop>
   <tabstop>mSelectedFeaturesOnly</tabstop>
   <tabstop>mForce2d</tabstop>
+  <tabstop>mHairlineWidthExportCheckBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

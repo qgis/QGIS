@@ -746,8 +746,10 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   mModel = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
   mModel->setFlags( QgsLayerTreeModel::Flags() );
-
   mTreeView->setModel( mModel );
+  mTreeView->resizeColumnToContents( 0 );
+  mTreeView->resizeColumnToContents( 1 );
+  mTreeView->header()->setSectionResizeMode( QHeaderView::ResizeMode::Interactive );
   mTreeView->header()->show();
 
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
