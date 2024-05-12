@@ -33,7 +33,25 @@ Updates the point settings to respect any data defined properties
 set within the specified ``properties`` collection.
 %End
 
+    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const;
+%Docstring
+Returns the ordered list of predefined label positions for points.
 
+Positions earlier in the list will be prioritized over later positions.
+Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
+
+.. seealso:: :py:func:`setPredefinedPositionOrder`
+%End
+
+    void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order );
+%Docstring
+Sets the ordered list of predefined label positions for points.
+
+Positions earlier in the list will be prioritized over later positions.
+Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
+
+.. seealso:: :py:func:`predefinedPositionOrder`
+%End
 
 };
 
