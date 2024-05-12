@@ -1589,7 +1589,7 @@ void QgsOptions::saveOptions()
   else
     mSettings->remove( QStringLiteral( "cache/directory" ) );
 
-  mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024L ) );
+  mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024LL ) );
 
   //url with no proxy at all
   QStringList noProxyUrls;
