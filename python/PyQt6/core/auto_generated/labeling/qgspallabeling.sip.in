@@ -276,7 +276,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool centroidInside;
 
-
     bool fitInPolygonOnly;
 
     double dist;
