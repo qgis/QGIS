@@ -56,6 +56,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mFindWidget = new QWidget();
   QHBoxLayout *layoutFind = new QHBoxLayout();
   layoutFind->setContentsMargins( 0, 2, 0, 0 );
+  layoutFind->setSpacing( 1 );
   mLineEditFind = new QgsFilterLineEdit();
   mLineEditFind->setShowSearchIcon( true );
   mLineEditFind->setPlaceholderText( tr( "Enter text to find…" ) );
