@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelpointsettings.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelPointSettings
+{
+%Docstring(signature="appended")
+
+Contains settings related to how the label engine places and formats
+labels for point features.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgslabelpointsettings.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the point settings to respect any data defined properties
+set within the specified ``properties`` collection.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelpointsettings.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

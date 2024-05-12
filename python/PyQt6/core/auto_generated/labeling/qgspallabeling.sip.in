@@ -486,6 +486,27 @@ a "perimeter" style mode).
 %End
 
 
+    QgsLabelPointSettings &pointSettings();
+%Docstring
+Returns the label point settings, which contain settings related to how the label
+engine places and formats labels for point features.
+
+.. seealso:: :py:func:`setPointSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setPointSettings( const QgsLabelPointSettings &settings );
+%Docstring
+Sets the label point ``settings``, which contain settings related to how the label
+engine places and formats labels for point features.
+
+.. seealso:: :py:func:`pointSettings`
+
+.. versionadded:: 3.38
+%End
+
+
     QgsLabelObstacleSettings &obstacleSettings();
 %Docstring
 Returns the label obstacle settings.
