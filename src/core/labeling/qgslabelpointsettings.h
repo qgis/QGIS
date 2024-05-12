@@ -29,7 +29,8 @@ class QgsExpressionContext;
  * \class QgsLabelPointSettings
  *
  * \brief Contains settings related to how the label engine places and formats
- * labels for point features.
+ * labels for point features, or polygon features which are labeled in
+ * the "around" or "over" centroid placement modes.
  *
  * \since QGIS 3.38
  */
