@@ -61,6 +61,27 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mLineEditFind->setPlaceholderText( tr( "Enter text to find…" ) );
   layoutFind->addWidget( mLineEditFind, 1 );
 
+  mCaseSensitiveButton = new QToolButton();
+  mCaseSensitiveButton->setToolTip( tr( "Case Sensitive" ) );
+  mCaseSensitiveButton->setCheckable( true );
+  mCaseSensitiveButton->setAutoRaise( true );
+  mCaseSensitiveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchCaseSensitive.svg" ) ) );
+  layoutFind->addWidget( mCaseSensitiveButton );
+
+  mWholeWordButton = new QToolButton( );
+  mWholeWordButton->setToolTip( tr( "Whole Word" ) );
+  mWholeWordButton->setCheckable( true );
+  mWholeWordButton->setAutoRaise( true );
+  mWholeWordButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWholeWord.svg" ) ) );
+  layoutFind->addWidget( mWholeWordButton );
+
+  mWrapAroundButton = new QToolButton();
+  mWrapAroundButton->setToolTip( tr( "Wrap Around" ) );
+  mWrapAroundButton->setCheckable( true );
+  mWrapAroundButton->setAutoRaise( true );
+  mWrapAroundButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWrapAround.svg" ) ) );
+  layoutFind->addWidget( mWrapAroundButton );
+
   mFindPrevButton = new QToolButton();
   mFindPrevButton->setEnabled( false );
   mFindPrevButton->setToolTip( tr( "Find Previous" ) );
@@ -75,22 +96,13 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mFindNextButton->setAutoRaise( true );
   layoutFind->addWidget( mFindNextButton );
 
-  mCaseSensitiveCheck = new QCheckBox( tr( "Case Sensitive" ) );
-  layoutFind->addWidget( mCaseSensitiveCheck );
-
-  mWholeWordCheck = new QCheckBox( tr( "Whole Word" ) );
-  layoutFind->addWidget( mWholeWordCheck );
-
-  mWrapAroundCheck = new QCheckBox( tr( "Wrap Around" ) );
-  layoutFind->addWidget( mWrapAroundCheck );
-
   connect( mLineEditFind, &QLineEdit::returnPressed, this, &QgsCodeEditorWidget::findNext );
   connect( mLineEditFind, &QLineEdit::textChanged, this, &QgsCodeEditorWidget::textSearchChanged );
   connect( mFindNextButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::findNext );
   connect( mFindPrevButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::findPrevious );
-  connect( mCaseSensitiveCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
-  connect( mWholeWordCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
-  connect( mWrapAroundCheck, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mCaseSensitiveButton, &QToolButton::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mCaseSensitiveButton, &QToolButton::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mWrapAroundButton, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
 
   QShortcut *findShortcut = new QShortcut( QKeySequence::StandardKey::Find, mEditor );
   findShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
@@ -298,9 +310,9 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFo
   }
 
   const bool isRegEx = false;
-  const bool wrapAround = mWrapAroundCheck->isChecked();
-  const bool isCaseSensitive = mCaseSensitiveCheck->isChecked();
-  const bool isWholeWordOnly = mWholeWordCheck->isChecked();
+  const bool wrapAround = mWrapAroundButton->isChecked();
+  const bool isCaseSensitive = mCaseSensitiveButton->isChecked();
+  const bool isWholeWordOnly = mWholeWordButton->isChecked();
 
   const bool found = mEditor->findFirst( searchString, isRegEx, isCaseSensitive, isWholeWordOnly, wrapAround, forward,
                                          line, index );

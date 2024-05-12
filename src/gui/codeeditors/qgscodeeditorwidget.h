@@ -141,9 +141,9 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QgsFilterLineEdit *mLineEditFind = nullptr;
     QToolButton *mFindPrevButton = nullptr;
     QToolButton *mFindNextButton = nullptr;
-    QCheckBox *mCaseSensitiveCheck = nullptr;
-    QCheckBox *mWholeWordCheck = nullptr;
-    QCheckBox *mWrapAroundCheck = nullptr;
+    QToolButton *mCaseSensitiveButton = nullptr;
+    QToolButton *mWholeWordButton = nullptr;
+    QToolButton *mWrapAroundButton = nullptr;
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;

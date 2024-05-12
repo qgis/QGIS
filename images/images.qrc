@@ -999,6 +999,9 @@
         <file>themes/default/mActionAddSensorThingsLayer.svg</file>
         <file>themes/default/mIconSensorThings.svg</file>
         <file>themes/default/mActionRunSelected.svg</file>
+        <file>themes/default/mIconSearchCaseSensitive.svg</file>
+        <file>themes/default/mIconSearchWholeWord.svg</file>
+        <file>themes/default/mIconSearchWrapAround.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
