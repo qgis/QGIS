@@ -89,7 +89,7 @@ prior to generating label positions.
 
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
-Updates the thinning settings to respect any data defined properties
+Updates the line settings to respect any data defined properties
 set within the specified ``properties`` collection.
 %End
 
