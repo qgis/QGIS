@@ -1002,6 +1002,7 @@
         <file>themes/default/mIconSearchCaseSensitive.svg</file>
         <file>themes/default/mIconSearchWholeWord.svg</file>
         <file>themes/default/mIconSearchWrapAround.svg</file>
+        <file>themes/default/mIconSearchRegex.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
