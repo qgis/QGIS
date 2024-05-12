@@ -45,7 +45,34 @@ class CORE_EXPORT QgsLabelPointSettings
      */
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
+    /**
+     * Returns the ordered list of predefined label positions for points.
+     *
+     * Positions earlier in the list will be prioritized over later positions.
+     * Only used when the placement is set to Qgis::LabelPlacement::OrderedPositionsAroundPoint.
+     *
+     * \note not available in Python bindings
+     *
+     * \see setPredefinedPositionOrder()
+    */
+    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const SIP_SKIP { return mPredefinedPositionOrder; }
+
+    /**
+     * Sets the ordered list of predefined label positions for points.
+     *
+     * Positions earlier in the list will be prioritized over later positions.
+     * Only used when the placement is set to Qgis::LabelPlacement::OrderedPositionsAroundPoint.
+     *
+     * \note not available in Python bindings
+     *
+     * \see predefinedPositionOrder()
+    */
+    void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order ) SIP_SKIP { mPredefinedPositionOrder = order; }
+
   private:
+
+    QVector< Qgis::LabelPredefinedPointPosition > mPredefinedPositionOrder;
+
 };
 
 #endif // QGSLABELPOINTSETTINGS_H

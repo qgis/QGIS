@@ -416,14 +416,6 @@ class CORE_EXPORT QgsPalLayerSettings
     bool centroidInside = false;
 
     /**
-     * Ordered list of predefined label positions for points. Positions earlier
-     * in the list will be prioritized over later positions. Only used when the placement
-     * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
-     * \note not available in Python bindings
-     */
-    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder SIP_SKIP;
-
-    /**
      * TRUE if only labels which completely fit within a polygon are allowed.
      */
     bool fitInPolygonOnly = false;

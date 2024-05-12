@@ -33,6 +33,8 @@ Updates the point settings to respect any data defined properties
 set within the specified ``properties`` collection.
 %End
 
+
+
 };
 
 /************************************************************************
