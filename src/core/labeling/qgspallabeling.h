@@ -774,7 +774,9 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Returns the label point settings, which contain settings related to how the label
-     * engine places and formats labels for point features.
+     * engine places and formats labels for point features, or polygon features which are
+     * labeled in the "around" or "over" centroid placement modes.
+     *
      * \see setPointSettings()
      * \note Not available in Python bindings
      * \since QGIS 3.38
@@ -783,7 +785,9 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Returns the label point settings, which contain settings related to how the label
-     * engine places and formats labels for point features.
+     * engine places and formats labels for point features, or polygon features which are
+     * labeled in the "around" or "over" centroid placement modes.
+     *
     * \see setPointSettings()
     * \since QGIS 3.38
     */
@@ -791,7 +795,9 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Sets the label point \a settings, which contain settings related to how the label
-     * engine places and formats labels for point features.
+     * engine places and formats labels for point features, or polygon features which are
+     * labeled in the "around" or "over" centroid placement modes.
+     *
      * \see pointSettings()
      * \since QGIS 3.38
      */

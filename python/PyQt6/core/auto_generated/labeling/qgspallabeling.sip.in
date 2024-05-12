@@ -488,7 +488,8 @@ a "perimeter" style mode).
     QgsLabelPointSettings &pointSettings();
 %Docstring
 Returns the label point settings, which contain settings related to how the label
-engine places and formats labels for point features.
+engine places and formats labels for point features, or polygon features which are
+labeled in the "around" or "over" centroid placement modes.
 
 .. seealso:: :py:func:`setPointSettings`
 
@@ -498,7 +499,8 @@ engine places and formats labels for point features.
     void setPointSettings( const QgsLabelPointSettings &settings );
 %Docstring
 Sets the label point ``settings``, which contain settings related to how the label
-engine places and formats labels for point features.
+engine places and formats labels for point features, or polygon features which are
+labeled in the "around" or "over" centroid placement modes.
 
 .. seealso:: :py:func:`pointSettings`
 
