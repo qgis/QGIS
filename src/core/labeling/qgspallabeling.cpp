@@ -348,6 +348,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   mPlacementSettings = s.mPlacementSettings;
   mLineSettings = s.mLineSettings;
+  mPointSettings = s.mPointSettings;
   mObstacleSettings = s.mObstacleSettings;
   mThinningSettings = s.mThinningSettings;
 
@@ -2247,6 +2248,9 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   QgsLabelLineSettings lineSettings = mLineSettings;
   lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
 
+  QgsLabelPointSettings pointSettings = mPointSettings;
+  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
   if ( geom.type() == Qgis::GeometryType::Line || placement == Qgis::LabelPlacement::Line || placement == Qgis::LabelPlacement::PerimeterCurved )
   {
     switch ( lineSettings.anchorClipping() )
@@ -2306,7 +2310,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   if ( featureThinningSettings.minimumFeatureSize() > 0 )
   {
     // for minimum feature size on merged lines, we need to delay the filtering after the merging occurred in PAL
-    if ( geom.type() == Qgis::GeometryType::Line && mLineSettings.mergeLines() )
+    if ( geom.type() == Qgis::GeometryType::Line && lineSettings.mergeLines() )
     {
       minimumSize = context.convertToMapUnits( featureThinningSettings.minimumFeatureSize(), Qgis::RenderUnit::Millimeters );
     }

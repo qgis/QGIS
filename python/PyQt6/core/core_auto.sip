@@ -381,6 +381,7 @@
 %Include auto_generated/labeling/qgslabellinesettings.sip
 %Include auto_generated/labeling/qgslabelobstaclesettings.sip
 %Include auto_generated/labeling/qgslabelplacementsettings.sip
+%Include auto_generated/labeling/qgslabelpointsettings.sip
 %Include auto_generated/labeling/qgslabelposition.sip
 %Include auto_generated/labeling/qgslabelsearchtree.sip
 %Include auto_generated/labeling/qgslabelthinningsettings.sip
