@@ -76,6 +76,13 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mWholeWordButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWholeWord.svg" ) ) );
   layoutFind->addWidget( mWholeWordButton );
 
+  mRegexButton = new QToolButton( );
+  mRegexButton->setToolTip( tr( "Use Regular Expressions" ) );
+  mRegexButton->setCheckable( true );
+  mRegexButton->setAutoRaise( true );
+  mRegexButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchRegex.svg" ) ) );
+  layoutFind->addWidget( mRegexButton );
+
   mWrapAroundButton = new QToolButton();
   mWrapAroundButton->setToolTip( tr( "Wrap Around" ) );
   mWrapAroundButton->setCheckable( true );
@@ -102,7 +109,8 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   connect( mFindNextButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::findNext );
   connect( mFindPrevButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::findPrevious );
   connect( mCaseSensitiveButton, &QToolButton::toggled, this, &QgsCodeEditorWidget::updateSearch );
-  connect( mCaseSensitiveButton, &QToolButton::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mWholeWordButton, &QToolButton::toggled, this, &QgsCodeEditorWidget::updateSearch );
+  connect( mRegexButton, &QToolButton::toggled, this, &QgsCodeEditorWidget::updateSearch );
   connect( mWrapAroundButton, &QCheckBox::toggled, this, &QgsCodeEditorWidget::updateSearch );
 
   QShortcut *findShortcut = new QShortcut( QKeySequence::StandardKey::Find, mEditor );
@@ -255,6 +263,17 @@ void QgsCodeEditorWidget::addSearchHighlights()
   mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
   mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
 
+  int searchFlags = 0;
+  const bool isRegEx = mRegexButton->isChecked();
+  const bool isCaseSensitive = mCaseSensitiveButton->isChecked();
+  const bool isWholeWordOnly = mWholeWordButton->isChecked();
+  if ( isRegEx )
+    searchFlags |= QsciScintilla::SCFIND_REGEXP | QsciScintilla::SCFIND_CXX11REGEX;
+  if ( isCaseSensitive )
+    searchFlags |= QsciScintilla::SCFIND_MATCHCASE;
+  if ( isWholeWordOnly )
+    searchFlags |= QsciScintilla::SCFIND_WHOLEWORD;
+  mEditor->SendScintilla( QsciScintilla::SCI_SETSEARCHFLAGS, searchFlags );
   while ( true )
   {
     mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, startPos, docEnd );
@@ -262,10 +281,12 @@ void QgsCodeEditorWidget::addSearchHighlights()
     if ( fstart < 0 )
       break;
 
-    startPos = fstart + searchString.length();
+    const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast< void * >( nullptr ) );
+
+    startPos = fstart + matchLength;
 
     mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
-    mEditor->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, fstart, searchString.length() );
+    mEditor->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, fstart, matchLength );
 
     int thisLine = 0;
     int thisIndex = 0;
@@ -310,13 +331,13 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFo
     index = indexFrom;
   }
 
-  const bool isRegEx = false;
+  const bool isRegEx = mRegexButton->isChecked();
   const bool wrapAround = mWrapAroundButton->isChecked();
   const bool isCaseSensitive = mCaseSensitiveButton->isChecked();
   const bool isWholeWordOnly = mWholeWordButton->isChecked();
 
   const bool found = mEditor->findFirst( searchString, isRegEx, isCaseSensitive, isWholeWordOnly, wrapAround, forward,
-                                         line, index );
+                                         line, index, true, true, isRegEx );
 
   if ( !found )
   {

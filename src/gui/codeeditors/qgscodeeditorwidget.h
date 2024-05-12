@@ -129,6 +129,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
     void clearSearchHighlights();
     void addSearchHighlights();
+    int searchFlags() const;
     void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
 
     enum HighlightCategory
@@ -143,6 +144,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QToolButton *mFindNextButton = nullptr;
     QToolButton *mCaseSensitiveButton = nullptr;
     QToolButton *mWholeWordButton = nullptr;
+    QToolButton *mRegexButton = nullptr;
     QToolButton *mWrapAroundButton = nullptr;
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
