@@ -20,7 +20,7 @@
 #include "qgspallabeling.h"
 
 
-void QgsLabelPointSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
+void QgsLabelPointSettings::updateDataDefinedProperties( const QgsPropertyCollection &, QgsExpressionContext & )
 {
-
+  // for future use when new additional properties are added to QgsLabelPointSettings
 }
