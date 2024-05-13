@@ -38,10 +38,10 @@ jobs:
           # See https://github.com/actions/runner-images/issues/9398
           toolset: 14.39
 
-      - name: Setup vcpkg
+      - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
 
-      - name: Setup flex/bison
+      - name: 🦬 Setup flex/bison
         uses: robinraju/release-downloader@v1.10
         with:
           repository: 'lexxmark/winflexbison'
@@ -49,7 +49,7 @@ jobs:
           tag: 'v2.5.24'
           extract: true
 
-      - name: ccache
+      - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           max-size: 1G
