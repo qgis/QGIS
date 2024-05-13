@@ -36,6 +36,8 @@ class QgsAppCanvasFiltering : public QObject
 
   private:
 
+    void createElevationController( QAction *senderAction, QgsMapCanvas *canvas );
+
     QHash< QgsMapCanvas *, QgsElevationControllerWidget * > mCanvasElevationControllerMap;
 
 };

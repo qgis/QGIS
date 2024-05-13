@@ -33,47 +33,7 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
   {
     if ( checked )
     {
-      QgsElevationControllerWidget *controller = new QgsElevationControllerWidget();
-      connect( controller, &QgsElevationControllerWidget::rangeChanged, canvas, &QgsMapCanvas::setZRange );
-
-      QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
-      controller->menu()->addAction( setProjectLimitsAction );
-      connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), []
-      {
-        QgisApp::instance()->showProjectProperties( tr( "Elevation" ) );
-      } );
-      QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
-      controller->menu()->addAction( disableAction );
-      connect( disableAction, &QAction::triggered, action, [action]
-      {
-        action->setChecked( false );
-      } );
-
-      canvas->addOverlayWidget( controller, Qt::Edge::LeftEdge );
-      mCanvasElevationControllerMap.insert( canvas, controller );
-      connect( canvas, &QObject::destroyed, this, [canvas, this]
-      {
-        mCanvasElevationControllerMap.remove( canvas );
-      } );
-      connect( controller, &QObject::destroyed, this, [canvas, this]
-      {
-        mCanvasElevationControllerMap.remove( canvas );
-      } );
-
-      if ( canvas == QgisApp::instance()->mapCanvas() )
-      {
-        // for main canvas, attach settings to project settings
-        controller->setFixedRangeSize( QgsProject::instance()->elevationProperties()->elevationFilterRangeSize() );
-        connect( controller, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size )
-        {
-          QgsProject::instance()->elevationProperties()->setElevationFilterRangeSize( size );
-        } );
-        controller->setInverted( QgsProject::instance()->elevationProperties()->invertElevationFilter() );
-        connect( controller, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted )
-        {
-          QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
-        } );
-      }
+      createElevationController( action, canvas );
     }
     else
     {
@@ -84,4 +44,49 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
       }
     }
   } );
+}
+
+void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, QgsMapCanvas *canvas )
+{
+  QgsElevationControllerWidget *controller = new QgsElevationControllerWidget();
+  connect( controller, &QgsElevationControllerWidget::rangeChanged, canvas, &QgsMapCanvas::setZRange );
+
+  QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
+  controller->menu()->addAction( setProjectLimitsAction );
+  connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), []
+  {
+    QgisApp::instance()->showProjectProperties( tr( "Elevation" ) );
+  } );
+  QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
+  controller->menu()->addAction( disableAction );
+  connect( disableAction, &QAction::triggered, senderAction, [senderAction]
+  {
+    senderAction->setChecked( false );
+  } );
+
+  canvas->addOverlayWidget( controller, Qt::Edge::LeftEdge );
+  mCanvasElevationControllerMap.insert( canvas, controller );
+  connect( canvas, &QObject::destroyed, this, [canvas, this]
+  {
+    mCanvasElevationControllerMap.remove( canvas );
+  } );
+  connect( controller, &QObject::destroyed, this, [canvas, this]
+  {
+    mCanvasElevationControllerMap.remove( canvas );
+  } );
+
+  if ( canvas == QgisApp::instance()->mapCanvas() )
+  {
+    // for main canvas, attach settings to project settings
+    controller->setFixedRangeSize( QgsProject::instance()->elevationProperties()->elevationFilterRangeSize() );
+    connect( controller, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size )
+    {
+      QgsProject::instance()->elevationProperties()->setElevationFilterRangeSize( size );
+    } );
+    controller->setInverted( QgsProject::instance()->elevationProperties()->invertElevationFilter() );
+    connect( controller, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted )
+    {
+      QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
+    } );
+  }
 }
