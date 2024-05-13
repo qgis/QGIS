@@ -39,6 +39,12 @@ A widget for configuring vertical elevation slicing behavior for maps.
 %TypeHeaderCode
 #include "qgselevationcontrollerwidget.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsElevationControllerWidget *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsElevationControllerWidget;
+    else
+      sipType = nullptr;
+%End
   public:
 
     QgsElevationControllerWidget( QWidget *parent /TransferThis/ = 0 );
@@ -121,6 +127,11 @@ the upper and lower elevation.
 Sets whether the elevation slider should be inverted.
 
 .. seealso:: :py:func:`invertedChanged`
+%End
+
+    void setSignificantElevations( const QList< double > &elevations );
+%Docstring
+Sets a list of significant ``elevations`` to highlight in the widget.
 %End
 
   signals:

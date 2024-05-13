@@ -246,6 +246,11 @@ void QgsElevationControllerWidget::setInverted( bool inverted )
   mInvertDirectionAction->setChecked( inverted );
 }
 
+void QgsElevationControllerWidget::setSignificantElevations( const QList<double> &elevations )
+{
+  mSliderLabels->setSignificantElevations( elevations );
+}
+
 //
 // QgsElevationControllerLabels
 //
@@ -309,6 +314,39 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   QLocale locale;
 
   QPainterPath path;
+
+  for ( double value : std::as_const( mSignificantElevations ) )
+  {
+    const double valueFraction = ( value - mLimits.lower() ) / limitRange;
+    const double verticalCenter = !mInverted
+                                  ? ( std::min( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ),
+                                      rect().bottom() - fm.descent() ) )
+                                  : ( std::max( static_cast< int >( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ),
+                                      rect().top() + fm.ascent() ) );
+
+    const bool valueIsCloseToLower = verticalCenter + fm.height() > lowerY && verticalCenter - fm.height() < lowerY;
+    if ( valueIsCloseToLower )
+      continue;
+
+    const bool valueIsCloseToUpper = verticalCenter + fm.height() > upperY && verticalCenter - fm.height() < upperY;
+    if ( valueIsCloseToUpper )
+      continue;
+
+    const bool valueIsCloseToLowerLimit = !mInverted
+                                          ? ( verticalCenter + fm.height() > rect().bottom() - fm.descent() )
+                                          : ( verticalCenter - fm.height() < rect().top() + fm.ascent() ) ;
+    if ( valueIsCloseToLowerLimit )
+      continue;
+
+    const bool valueIsCloseToUpperLimit = !mInverted
+                                          ? ( verticalCenter - fm.height() < rect().top() + fm.ascent() )
+                                          : ( verticalCenter + fm.height() > rect().bottom() - fm.descent() ) ;
+    if ( valueIsCloseToUpperLimit )
+      continue;
+
+    path.addText( left, verticalCenter, f, locale.toString( value ) );
+  }
+
   if ( mLimits.lower() > std::numeric_limits< double >::lowest() )
   {
     if ( lowerIsCloseToLimit )
@@ -398,6 +436,15 @@ void QgsElevationControllerLabels::setInverted( bool inverted )
     return;
 
   mInverted = inverted;
+  update();
+}
+
+void QgsElevationControllerLabels::setSignificantElevations( const QList<double> &elevations )
+{
+  if ( elevations == mSignificantElevations )
+    return;
+
+  mSignificantElevations = elevations;
   update();
 }
 
