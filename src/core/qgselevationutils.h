@@ -52,6 +52,15 @@ class CORE_EXPORT QgsElevationUtils
     static QList< double > significantZValuesForProject( QgsProject *project );
 
     /**
+     * Returns a list of significant elevation/z-values for the specified \a layers.
+     *
+     * These values will be highlighted in elevation related widgets for the project.
+     *
+     * \since QGIS 3.38
+     */
+    static QList< double > significantZValuesForLayers( const QList< QgsMapLayer * > &layers );
+
+    /**
      * Returns TRUE if elevation can be enabled for a map \a layer.
      *
      * \since QGIS 3.32

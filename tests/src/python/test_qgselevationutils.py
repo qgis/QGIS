@@ -78,12 +78,16 @@ class TestQgsElevationUtils(QgisTestCase):
         project = QgsProject()
         self.assertFalse(
             QgsElevationUtils.significantZValuesForProject(project))
+        self.assertFalse(
+            QgsElevationUtils.significantZValuesForLayers([]))
 
         raster_layer = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
         self.assertTrue(raster_layer.isValid())
         project.addMapLayer(raster_layer)
         self.assertFalse(
             QgsElevationUtils.significantZValuesForProject(project))
+        self.assertFalse(
+            QgsElevationUtils.significantZValuesForLayers([raster_layer]))
 
         props = raster_layer.elevationProperties()
         props.setEnabled(True)
@@ -94,12 +98,19 @@ class TestQgsElevationUtils(QgisTestCase):
         self.assertEqual(
             QgsElevationUtils.significantZValuesForProject(project),
             [103.1, 106.8, 116.8, 126.8])
+        self.assertEqual(
+            QgsElevationUtils.significantZValuesForLayers([raster_layer]),
+            [103.1, 106.8, 116.8, 126.8])
 
         raster_layer2 = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
         self.assertTrue(raster_layer2.isValid())
         project.addMapLayer(raster_layer2)
         self.assertEqual(
             QgsElevationUtils.significantZValuesForProject(project),
+            [103.1, 106.8, 116.8, 126.8])
+        self.assertEqual(
+            QgsElevationUtils.significantZValuesForLayers([raster_layer,
+                                                           raster_layer2]),
             [103.1, 106.8, 116.8, 126.8])
 
         props = raster_layer2.elevationProperties()
@@ -110,6 +121,10 @@ class TestQgsElevationUtils(QgisTestCase):
                                    3: QgsDoubleRange(126.8, 136.8)})
         self.assertEqual(
             QgsElevationUtils.significantZValuesForProject(project),
+            [103.1, 106.8, 116.8, 126.8, 136.8])
+        self.assertEqual(
+            QgsElevationUtils.significantZValuesForLayers([raster_layer,
+                                                           raster_layer2]),
             [103.1, 106.8, 116.8, 126.8, 136.8])
 
 
