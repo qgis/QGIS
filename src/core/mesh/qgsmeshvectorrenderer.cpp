@@ -542,6 +542,8 @@ QgsMeshVectorWindBarbRenderer::QgsMeshVectorWindBarbRenderer(
         context,
         size )
 {
+  const QgsCoordinateReferenceSystem mapCrs = mContext.coordinateTransform().destinationCrs();
+  mMapToWgs = QgsCoordinateTransform( mapCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mContext.coordinateTransform().context() );
 }
 
 QgsMeshVectorWindBarbRenderer::~QgsMeshVectorWindBarbRenderer() = default;
@@ -567,11 +569,24 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
   if ( shaftLength < 1 )
     return;
 
+  // Check if barb is above or below the equinox
+  const QgsPointXY mapPoint = mContext.mapToPixel().toMapCoordinates( lineStart.x(), lineStart.y() );
+  bool isNorthHemisphere = true;
+  try
+  {
+    const QgsPointXY wgsPoint = mMapToWgs.transform( mapPoint );
+    isNorthHemisphere = wgsPoint.y() >= 0;
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "Could not transform wind barb coordinates to WGS84" ) );
+  }
+
   const double d = shaftLength / 25; // this is a magic number ratio between shaft length and other barb dimensions
   const double centerRadius = d;
   const double zeroCircleRadius = 2 * d;
   const double barbLength = 8 * d + pen.widthF();
-  const double barbAngle = 135;
+  const double barbAngle = isNorthHemisphere ? 135 : -135;
   const double barbOffset = 2 * d + pen.widthF();
 
   // Determine the angle of the vector, counter-clockwise, from east
