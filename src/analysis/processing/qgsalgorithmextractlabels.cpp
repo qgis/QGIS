@@ -517,7 +517,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
       settings.fieldName = QStringLiteral( "LabelText" );
       settings.obstacleSettings().setIsObstacle( false );
       settings.placement = Qgis::LabelPlacement::OverPoint;
-      settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+      settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
       settings.placementSettings().setAllowDegradedPlacement( true );
       settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 

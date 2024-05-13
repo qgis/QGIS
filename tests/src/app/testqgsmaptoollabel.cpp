@@ -113,7 +113,7 @@ class TestQgsMapToolLabel : public QObject
       QgsPalLayerSettings pls1;
       pls1.fieldName = QStringLiteral( "text" );
       pls1.placement = Qgis::LabelPlacement::OverPoint;
-      pls1.quadOffset = Qgis::LabelQuadrantPosition::Over;
+      pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
       pls1.placementSettings().setAllowDegradedPlacement( true );
       pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -270,7 +270,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.fieldName = QStringLiteral( "'label'" );
       pls1.isExpression = true;
       pls1.placement = Qgis::LabelPlacement::OverPoint;
-      pls1.quadOffset = Qgis::LabelQuadrantPosition::Over;
+      pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
       pls1.placementSettings().setAllowDegradedPlacement( true );
       pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -414,7 +414,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.fieldName = QStringLiteral( "'label'" );
       pls1.isExpression = true;
       pls1.placement = Qgis::LabelPlacement::OverPoint;
-      pls1.quadOffset = Qgis::LabelQuadrantPosition::Over;
+      pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
       pls1.placementSettings().setAllowDegradedPlacement( true );
       pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -456,7 +456,7 @@ class TestQgsMapToolLabel : public QObject
 
       // now try with quadrant property
       pls1.placement = Qgis::LabelPlacement::OverPoint;
-      pls1.quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
+      pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowLeft );
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );

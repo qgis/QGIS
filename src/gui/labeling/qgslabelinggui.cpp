@@ -390,7 +390,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineDistanceUnitWidget->setUnit( mSettings.distUnits );
   mLineDistanceUnitWidget->setMapUnitScale( mSettings.distMapUnitScale );
   mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( static_cast< int >( mSettings.offsetType ) ) );
-  mQuadrantBtnGrp->button( static_cast<int>( mSettings.quadOffset ) )->setChecked( true );
+  mQuadrantBtnGrp->button( static_cast<int>( mSettings.pointSettings().quadrant() ) )->setChecked( true );
   mPointOffsetXSpinBox->setValue( mSettings.xOffset );
   mPointOffsetYSpinBox->setValue( mSettings.yOffset );
   mPointOffsetUnitWidget->setUnit( mSettings.offsetUnits );
@@ -570,7 +570,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.offsetType = static_cast< Qgis::LabelOffsetType >( mOffsetTypeComboBox->currentData().toInt() );
   if ( mQuadrantBtnGrp )
   {
-    lyr.quadOffset = static_cast< Qgis::LabelQuadrantPosition >( mQuadrantBtnGrp->checkedId() );
+    lyr.pointSettings().setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( mQuadrantBtnGrp->checkedId() ) );
   }
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
