@@ -305,6 +305,19 @@ class QgisTestCase(unittest.TestCase):
 
         return result
 
+    @staticmethod
+    def get_test_data_path(file_path: str) -> Path:
+        """
+        Returns the full path to a file contained within the test data
+        directory.
+        """
+        from utilities import unitTestDataPath
+
+        return (
+            Path(unitTestDataPath()) /
+            (file_path[1:] if file_path.startswith('/') else file_path)
+        )
+
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """
         :param layer_expected: The first layer to compare
