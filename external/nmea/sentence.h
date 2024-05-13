@@ -118,7 +118,7 @@ typedef struct _nmeaGPRMC
   double  declination; //!< Magnetic variation degrees (Easterly var. subtracts from true course)
   char    declin_ew;  //!< [E]ast or [W]est
   char    mode;       //!< Mode indicator of fix type (A = autonomous, D = differential, E = estimated, N = not valid, S = simulator)
-
+  char    navstatus;  //!< NMEA v4.1 - Navigation Status type (S = Safe, C = Caution, U = Unsafe, V = Navigational status not valid)
 } nmeaGPRMC;
 
 /**
