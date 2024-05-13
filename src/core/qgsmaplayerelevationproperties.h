@@ -174,6 +174,16 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
     /**
+     * Returns a list of significant elevation/z-values for the specified \a layer, using
+     * the settings defined by this elevation properties object.
+     *
+     * These values will be highlighted in elevation related widgets for the layer.
+     *
+     * \since QGIS 3.38
+     */
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+
+    /**
      * Returns TRUE if the layer should be visible by default in newly created elevation
      * profile plots.
      *

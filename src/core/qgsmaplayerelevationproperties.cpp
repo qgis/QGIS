@@ -78,6 +78,11 @@ QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) 
   return QgsDoubleRange();
 }
 
+QList<double> QgsMapLayerElevationProperties::significantZValues( QgsMapLayer * ) const
+{
+  return {};
+}
+
 bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const
 {
   return false;

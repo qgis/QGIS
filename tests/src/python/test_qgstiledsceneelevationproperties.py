@@ -99,16 +99,22 @@ class TestQgsTiledSceneElevationProperties(QgisTestCase):
             z_range = props.calculateZRange(layer)
             self.assertEqual(z_range.lower(), 1.2)
             self.assertEqual(z_range.upper(), 67.00999999999999)
+            self.assertEqual(props.significantZValues(layer),
+                             [1.2, 67.00999999999999])
 
             props.setZOffset(10)
             z_range = props.calculateZRange(layer)
             self.assertEqual(z_range.lower(), 11.2)
             self.assertEqual(z_range.upper(), 77.00999999999999)
+            self.assertEqual(props.significantZValues(layer),
+                             [11.2, 77.00999999999999])
 
             props.setZScale(2)
             z_range = props.calculateZRange(layer)
             self.assertEqual(z_range.lower(), 12.4)
             self.assertEqual(z_range.upper(), 144.01999999999998)
+            self.assertEqual(props.significantZValues(layer),
+                             [12.4, 144.01999999999998])
 
 
 if __name__ == '__main__':
