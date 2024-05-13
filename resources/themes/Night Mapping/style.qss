@@ -226,7 +226,6 @@ QLineEdit
     padding: 0.12em;
     border: 1px solid @itemdarkbackground;
     background-color: @itembackground;
-    color: @text;
     selection-background-color: @selection;
     selection-color: @textlight;
 }
@@ -1307,4 +1306,12 @@ QgsAttributeFormWidget QComboBox:disabled {
 
 QgsAttributeFormWidget QComboBox::down-arrow:disabled {
      image: none;
+}
+
+QWidget#mCadWidget QLineEdit {
+    color: @textlight;
+}
+
+QWidget#mCadWidget QLineEdit:disabled {
+    color: @text;
 }
