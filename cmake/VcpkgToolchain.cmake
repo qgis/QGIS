@@ -1,5 +1,5 @@
-set(NUGET_SOURCE "https://nuget.pkg.github.com/m-kuhn/index.json")
-set(NUGET_USERNAME "m-kuhn" CACHE STRING "Nuget user")
+set(NUGET_SOURCE "https://nuget.pkg.github.com/qgis/index.json" CACHE STRING "Nuget source")
+set(NUGET_USERNAME "qgis" CACHE STRING "Nuget user")
 
 # Setup features (dependencies) based on cmake configuration
 if(WITH_BINDINGS)
@@ -39,7 +39,7 @@ if(NOT "${NUGET_TOKEN}" STREQUAL "" AND WIN32)
     "${_CONFIG_PATH}"
     @ONLY)
   execute_process(
-    COMMAND ${_NUGET_EXE} setapikey "${NUGET_TOKEN}" -src "https://nuget.pkg.github.com/m-kuhn/index.json" -configfile ${_CONFIG_PATH}
+    COMMAND ${_NUGET_EXE} setapikey "${NUGET_TOKEN}" -src ${NUGET_SOURCE} -configfile ${_CONFIG_PATH}
     OUTPUT_VARIABLE _OUTPUT
     ERROR_VARIABLE _ERROR
     RESULT_VARIABLE _RESULT)

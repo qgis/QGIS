@@ -3,7 +3,7 @@ name: 🪟 Windows Qt6
 on:
   push:
     branches:
-      - windows-qt6
+      - master
       - release-**
   pull_request:
   release:
@@ -80,7 +80,7 @@ jobs:
                 -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
                 -D WITH_QTWEBKIT=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
-                -D NUGET_USERNAME=m-kuhn \
+                -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
       - name: 🌋 Build
