@@ -178,9 +178,9 @@ void usage( const QString &appName )
 
 #ifdef Q_OS_WIN
   MessageBoxW( nullptr,
-              reinterpret_cast<const WCHAR*>( msg.join( QString() ).utf16() ),
-              L"QGIS command line options",
-              MB_OK );
+               reinterpret_cast<const WCHAR *>( msg.join( QString() ).utf16() ),
+               L"QGIS command line options",
+               MB_OK );
 #else
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 #endif

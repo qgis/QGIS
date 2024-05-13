@@ -13054,7 +13054,7 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
   CFRelease( urlRef );
 #elif defined(Q_OS_WIN)
   if ( url.startsWith( "file://", Qt::CaseInsensitive ) )
-    ShellExecuteW( 0, 0, reinterpret_cast<const WCHAR*>( url.mid( 7 ).utf16() ), 0, 0, SW_SHOWNORMAL );
+    ShellExecuteW( 0, 0, reinterpret_cast<const WCHAR *>( url.mid( 7 ).utf16() ), 0, 0, SW_SHOWNORMAL );
   else
     QDesktopServices::openUrl( url );
 #else
