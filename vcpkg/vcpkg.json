@@ -95,12 +95,6 @@
         "python3"
       ]
     },
-    "customwidgets": {
-      "description": "Determines whether the QGIS custom widgets for QtCreator should be built"
-    },
-    "desktop": {
-      "description": "Determines whether the QGIS desktop (main app) should be built"
-    },
     "gui": {
       "description": "Determines whether the QGIS gui should be built",
       "dependencies": [
@@ -114,9 +108,6 @@
       "dependencies": [
         "opencl"
       ]
-    },
-    "process": {
-      "description": "Determines whether the command line QGIS process tool should be built"
     },
     "quick": {
       "description": "Build the QGIS quick components for mobile interfaces",
