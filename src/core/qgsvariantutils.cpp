@@ -462,11 +462,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
     case QMetaType::Type::QTransform:
     case QMetaType::Type::QMatrix4x4:
     case QMetaType::Type::QSizePolicy:
-      break;
-
     case QMetaType::Type::User:
-      break;
-
     default:
       break;
   }

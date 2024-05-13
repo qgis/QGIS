@@ -601,7 +601,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
         r = OCIBindByPos( sql, hbnd, err,
                           pos + 1,
                           const_cast<ushort *>( s.utf16() ),
-                          s.length() * sizeof( QChar ),
+                          static_cast<sb4>( s.length() * sizeof( QChar ) ),
                           SQLT_LNG, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
         break;
       }
@@ -612,7 +612,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
                           pos + 1,
                           // safe since oracle doesn't touch OUT values
                           const_cast<ushort *>( s.utf16() ),
-                          ( s.length() + 1 ) * sizeof( QChar ),
+                          static_cast<sb4>( ( s.length() + 1 ) * sizeof( QChar ) ),
                           SQLT_STR, indPtr, nullptr, nullptr, 0, nullptr, OCI_DEFAULT );
         if ( r == OCI_SUCCESS )
           setCharset( *hbnd, OCI_HTYPE_BIND );
@@ -727,10 +727,10 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
       {
         const QString s = val.toString();
         // create a deep-copy
-        QByteArray ba( reinterpret_cast<const char *>( s.utf16() ), ( s.length() + 1 ) * sizeof( QChar ) );
+        QByteArray ba( reinterpret_cast<const char *>( s.utf16() ), static_cast<int>( ( s.length() + 1 ) * sizeof( QChar ) ) );
         if ( isOutValue( pos ) )
         {
-          ba.reserve( ( s.capacity() + 1 ) * sizeof( QChar ) );
+          ba.reserve( static_cast<int>( ( s.capacity() + 1 ) * sizeof( QChar ) ) );
           *tmpSize = ba.size();
           r = OCIBindByPos( sql, hbnd, err,
                             pos + 1,
@@ -969,9 +969,7 @@ QMetaType::Type qDecodeOCIType( const QString &ocitype, QSql::NumericalPrecision
     }
   }
   else if ( ocitype == QLatin1String( "LONG" ) || ocitype == QLatin1String( "NCLOB" )
-            || ocitype == QLatin1String( "CLOB" ) )
-    type = QMetaType::Type::QByteArray;
-  else if ( ocitype == QLatin1String( "RAW" ) || ocitype == QLatin1String( "LONG RAW" )
+            || ocitype == QLatin1String( "CLOB" ) || ocitype == QLatin1String( "RAW" ) || ocitype == QLatin1String( "LONG RAW" )
             || ocitype == QLatin1String( "ROWID" ) || ocitype == QLatin1String( "BLOB" )
             || ocitype == QLatin1String( "CFILE" ) || ocitype == QLatin1String( "BFILE" ) )
     type = QMetaType::Type::QByteArray;
@@ -1906,10 +1904,6 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
         break;
 
       case QMetaType::Type::LongLong:
-        col.bindAs = SQLT_VNU;
-        col.maxLen = sizeof( OCINumber );
-        break;
-
       case QMetaType::Type::ULongLong:
         col.bindAs = SQLT_VNU;
         col.maxLen = sizeof( OCINumber );
@@ -1951,9 +1945,9 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
           for ( uint j = 0; j < col.recordCount; ++j )
           {
             if ( d->isOutValue( i ) )
-              col.lengths[j] = boundValues.at( i ).toList().at( j ).toByteArray().capacity();
+              col.lengths[j] = boundValues.at( i ).toList().at( static_cast<int>( j ) ).toByteArray().capacity();
             else
-              col.lengths[j] = boundValues.at( i ).toList().at( j ).toByteArray().size();
+              col.lengths[j] = boundValues.at( i ).toList().at( static_cast<int>( j ) ).toByteArray().size();
             if ( col.lengths[j] > col.maxLen )
               col.maxLen = col.lengths[j];
           }
@@ -1962,12 +1956,12 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
       }
     }
 
-    col.data.resize( col.maxLen * col.recordCount );
+    col.data.resize( static_cast<std::size_t>( col.maxLen ) * col.recordCount );
 
     // we may now populate column with data
     for ( uint row = 0; row < col.recordCount; ++row )
     {
-      const QVariant &val = boundValues.at( i ).toList().at( row );
+      const QVariant &val = boundValues.at( i ).toList().at( static_cast<int>( row ) );
 
       if ( val.isNull() )
       {

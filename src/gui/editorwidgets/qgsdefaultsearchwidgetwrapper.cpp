@@ -121,14 +121,14 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::defaultFlags(
   const QMetaType::Type fldType = layer()->fields().at( mFieldIdx ).type();
   switch ( fldType )
   {
+    //numeric
     case QMetaType::Type::Int:
     case QMetaType::Type::UInt:
     case QMetaType::Type::Double:
     case QMetaType::Type::LongLong:
     case QMetaType::Type::ULongLong:
-      //numeric
-      return EqualTo;
 
+    // date
     case QMetaType::Type::QDate:
     case QMetaType::Type::QDateTime:
     case QMetaType::Type::QTime:
