@@ -158,8 +158,8 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QVariant::Int );
-      QgsField hiddenField( QStringLiteral( "hidden" ), QVariant::Int );
+      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QMetaType::Type::Int );
+      QgsField hiddenField( QStringLiteral( "hidden" ), QMetaType::Type::Int );
       // hide the field
       ml.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() ) );
       QVERIFY( ml.dataProvider()->addAttributes( { notHiddenField, hiddenField } ) );
@@ -191,8 +191,8 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QVariant::Int );
-      QgsField hiddenField( QStringLiteral( "hidden" ), QVariant::Int );
+      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QMetaType::Type::Int );
+      QgsField hiddenField( QStringLiteral( "hidden" ), QMetaType::Type::Int );
       QVERIFY( ml.dataProvider()->addAttributes( { notHiddenField, hiddenField } ) );
       ml.updateFields();
 
