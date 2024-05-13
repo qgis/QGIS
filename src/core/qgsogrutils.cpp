@@ -1976,9 +1976,6 @@ void QgsOgrUtils::variantTypeToOgrFieldType( QMetaType::Type variantType, OGRFie
       break;
 
     case QMetaType::Type::QChar:
-      ogrType = OFTString;
-      break;
-
     case QMetaType::Type::QString:
       ogrType = OFTString;
       break;
