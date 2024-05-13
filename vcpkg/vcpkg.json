@@ -13,6 +13,8 @@
         "packages": [
           "python3",
           "py-*",
+          "gdal",
+          "swig",
           "vcpkg-python-scripts"
         ]
       }
