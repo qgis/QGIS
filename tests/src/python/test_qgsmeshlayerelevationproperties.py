@@ -97,6 +97,7 @@ class TestQgsMeshLayerElevationProperties(QgisTestCase):
         self.assertEqual(props.fixedRange(), QgsDoubleRange(103.1, 106.8))
         self.assertEqual(props.calculateZRange(None),
                          QgsDoubleRange(103.1, 106.8))
+        self.assertEqual(props.significantZValues(None), [103.1, 106.8])
         self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 104.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))

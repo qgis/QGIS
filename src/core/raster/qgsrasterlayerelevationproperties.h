@@ -53,6 +53,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    QList< double > significantZValues( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
 

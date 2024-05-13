@@ -261,6 +261,26 @@ QgsDoubleRange QgsMeshLayerElevationProperties::calculateZRange( QgsMapLayer * )
   BUILTIN_UNREACHABLE
 }
 
+QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer * ) const
+{
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+    {
+      if ( !mFixedRange.isInfinite() && mFixedRange.lower() != mFixedRange.upper() )
+        return { mFixedRange.lower(), mFixedRange.upper() };
+      else if ( !mFixedRange.isInfinite() )
+        return { mFixedRange.lower() };
+
+      return {};
+    }
+
+    case Qgis::MeshElevationMode::FromVertices:
+      return {};
+  }
+  BUILTIN_UNREACHABLE
+}
+
 bool QgsMeshLayerElevationProperties::showByDefaultInElevationProfilePlots() const
 {
   return true;

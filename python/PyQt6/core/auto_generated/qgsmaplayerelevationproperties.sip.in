@@ -141,6 +141,16 @@ the settings defined by this elevation properties object.
 May return an infinite range if the extent could not be calculated.
 %End
 
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+%Docstring
+Returns a list of significant elevation/z-values for the specified ``layer``, using
+the settings defined by this elevation properties object.
+
+These values will be highlighted in elevation related widgets for the layer.
+
+.. versionadded:: 3.38
+%End
+
     virtual bool showByDefaultInElevationProfilePlots() const;
 %Docstring
 Returns ``True`` if the layer should be visible by default in newly created elevation

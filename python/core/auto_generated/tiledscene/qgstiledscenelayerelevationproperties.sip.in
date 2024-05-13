@@ -40,6 +40,8 @@ Constructor for QgsTiledSceneLayerElevationProperties, with the specified ``pare
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+
 
 };
 
