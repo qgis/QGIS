@@ -22,17 +22,21 @@
 #include <QString>
 #include <QMap>
 #include <QPair>
+#include <QDateTime>
+#include <QDomElement>
 
 #include <limits>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspoint.h"
-#include "qgsdataprovider.h"
 
 class QgsMeshLayer;
 class QgsMeshDatasetGroup;
 class QgsRectangle;
+class QDomDocument;
+class QgsReadWriteContext;
+
 struct QgsMesh;
 
 /**
@@ -398,11 +402,13 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     QString name() const;
 
     /**
-     * Returns the name of the dataset's parent group.
+     * Returns the name of the dataset's parent quantity, if available.
+     *
+     *
      *
      * \since QGIS 3.38
      */
-    QString parentGroup() const;
+    QString parentQuantityName() const;
 
     /**
      * Returns the uri of the source
