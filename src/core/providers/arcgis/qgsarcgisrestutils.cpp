@@ -768,47 +768,47 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
     if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveCenter" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Above;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Above );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowCenter" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Below;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Below );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterCenter" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Over;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveLeft" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowLeft" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowLeft );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterLeft" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Left;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Left );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveRight" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowRight" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowRight );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterRight" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Right;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||

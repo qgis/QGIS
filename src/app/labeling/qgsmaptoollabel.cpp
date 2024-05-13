@@ -368,7 +368,7 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
 
     // quadrant offset defined via buttons
     if ( mCurrentLabel.settings.placement == Qgis::LabelPlacement::OverPoint )
-      quadrantOffset = mCurrentLabel.settings.quadOffset;
+      quadrantOffset = mCurrentLabel.settings.pointSettings().quadrant();
 
     // quadrant offset DD defined
     if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::OffsetQuad ) )

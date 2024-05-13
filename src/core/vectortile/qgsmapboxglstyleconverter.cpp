@@ -1775,23 +1775,23 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       }
 
       if ( textAnchor == QLatin1String( "center" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Over;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
       else if ( textAnchor == QLatin1String( "left" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Right;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
       else if ( textAnchor == QLatin1String( "right" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Left;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Left );
       else if ( textAnchor == QLatin1String( "top" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Below;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Below );
       else if ( textAnchor == QLatin1String( "bottom" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Above;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Above );
       else if ( textAnchor == QLatin1String( "top-left" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowRight );
       else if ( textAnchor == QLatin1String( "top-right" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowLeft );
       else if ( textAnchor == QLatin1String( "bottom-left" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
       else if ( textAnchor == QLatin1String( "bottom-right" ) )
-        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
+        labelSettings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
     }
 
     QPointF textOffset;

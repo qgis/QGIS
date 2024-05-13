@@ -345,7 +345,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       QDomElement pointPlacement = doc.createElement( "se:PointPlacement" );
       labelPlacement.appendChild( pointPlacement );
       // anchor point
-      const QPointF anchor = quadOffsetToSldAnchor( settings.quadOffset );
+      const QPointF anchor = quadOffsetToSldAnchor( settings.pointSettings().quadrant() );
       QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, anchor );
       // displacement
       if ( settings.xOffset > 0 || settings.yOffset > 0 )

@@ -310,7 +310,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   centroidWhole = s.centroidWhole;
   centroidInside = s.centroidInside;
   fitInPolygonOnly = s.fitInPolygonOnly;
-  quadOffset = s.quadOffset;
   xOffset = s.xOffset;
   yOffset = s.yOffset;
   offsetUnits = s.offsetUnits;
@@ -787,7 +786,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/distMapUnitScale" ) ).toString() );
   }
   offsetType = static_cast< Qgis::LabelOffsetType >( layer->customProperty( QStringLiteral( "labeling/offsetType" ), QVariant( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
-  quadOffset = static_cast< Qgis::LabelQuadrantPosition >( layer->customProperty( QStringLiteral( "labeling/quadOffset" ), QVariant( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() );
+  mPointSettings.setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( layer->customProperty( QStringLiteral( "labeling/quadOffset" ), QVariant( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() ) );
   xOffset = layer->customProperty( QStringLiteral( "labeling/xOffset" ), QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( QStringLiteral( "labeling/yOffset" ), QVariant( 0.0 ) ).toDouble();
   if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), QVariant( true ) ).toBool() )
@@ -1025,7 +1024,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "distMapUnitScale" ) ) );
   }
   offsetType = static_cast< Qgis::LabelOffsetType >( placementElem.attribute( QStringLiteral( "offsetType" ), QString::number( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
-  quadOffset = static_cast< Qgis::LabelQuadrantPosition >( placementElem.attribute( QStringLiteral( "quadOffset" ), QString::number( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() );
+  mPointSettings.setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( placementElem.attribute( QStringLiteral( "quadOffset" ), QString::number( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() ) );
   xOffset = placementElem.attribute( QStringLiteral( "xOffset" ), QStringLiteral( "0" ) ).toDouble();
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
@@ -1287,7 +1286,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "distUnits" ), QgsUnitTypes::encodeUnit( distUnits ) );
   placementElem.setAttribute( QStringLiteral( "distMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( distMapUnitScale ) );
   placementElem.setAttribute( QStringLiteral( "offsetType" ), static_cast< unsigned int >( offsetType ) );
-  placementElem.setAttribute( QStringLiteral( "quadOffset" ), static_cast< unsigned int >( quadOffset ) );
+  placementElem.setAttribute( QStringLiteral( "quadOffset" ), static_cast< unsigned int >( mPointSettings.quadrant() ) );
   placementElem.setAttribute( QStringLiteral( "xOffset" ), xOffset );
   placementElem.setAttribute( QStringLiteral( "yOffset" ), yOffset );
   placementElem.setAttribute( QStringLiteral( "offsetUnits" ), QgsUnitTypes::encodeUnit( offsetUnits ) );
@@ -2374,7 +2373,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   //data defined quadrant offset?
   bool ddFixedQuad = false;
-  Qgis::LabelQuadrantPosition quadOff = quadOffset;
+  Qgis::LabelQuadrantPosition quadOff = pointSettings.quadrant();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::OffsetQuad ) )
   {
     context.expressionContext().setOriginalValueVariable( static_cast< int >( quadOff ) );
