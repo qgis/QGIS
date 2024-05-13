@@ -404,7 +404,8 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     /**
      * Returns the name of the dataset's parent quantity, if available.
      *
-     *
+     * The quantity can be used to collect dataset groups which represent a single quantity
+     * but at different values (e.g. groups which represent different elevations).
      *
      * \since QGIS 3.38
      */
