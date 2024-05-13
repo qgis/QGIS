@@ -34,6 +34,20 @@ Updates the point settings to respect any data defined properties
 set within the specified ``properties`` collection.
 %End
 
+    Qgis::LabelQuadrantPosition quadrant() const;
+%Docstring
+Returns the quadrant in which to offset labels from the point.
+
+.. seealso:: :py:func:`setQuadrant`
+%End
+
+    void setQuadrant( Qgis::LabelQuadrantPosition quadrant );
+%Docstring
+Sets the ``quadrant`` in which to offset labels from the point.
+
+.. seealso:: :py:func:`quadrant`
+%End
+
     QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const;
 %Docstring
 Returns the ordered list of predefined label positions for points.

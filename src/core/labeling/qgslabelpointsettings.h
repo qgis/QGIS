@@ -47,6 +47,20 @@ class CORE_EXPORT QgsLabelPointSettings
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
     /**
+     * Returns the quadrant in which to offset labels from the point.
+     *
+     * \see setQuadrant()
+    */
+    Qgis::LabelQuadrantPosition quadrant() const { return mQuadrant; }
+
+    /**
+     * Sets the \a quadrant in which to offset labels from the point.
+     *
+     * \see quadrant()
+    */
+    void setQuadrant( Qgis::LabelQuadrantPosition quadrant ) { mQuadrant = quadrant; }
+
+    /**
      * Returns the ordered list of predefined label positions for points.
      *
      * Positions earlier in the list will be prioritized over later positions.
@@ -67,6 +81,8 @@ class CORE_EXPORT QgsLabelPointSettings
     void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
 
   private:
+
+    Qgis::LabelQuadrantPosition mQuadrant = Qgis::LabelQuadrantPosition::Over;
 
     QVector< Qgis::LabelPredefinedPointPosition > mPredefinedPositionOrder;
 

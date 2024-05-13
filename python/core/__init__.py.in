@@ -318,6 +318,18 @@ QgsPalLayerSettings.overrunDistanceMapUnitScale = property(get_overrun_distance_
 QgsPalLayerSettings.overrunDistanceMapUnitScale = QgsPalLayerSettings.overrunDistanceMapUnitScale.setter(set_overrun_distance_scale)
 
 
+def get_quad_offset(self):
+    return self.pointSettings().quadrant()
+
+
+def set_quad_offset(self, quadrant):
+    self.pointSettings().setQuadrant(quadrant)
+
+
+QgsPalLayerSettings.quadOffset = property(get_quad_offset)
+QgsPalLayerSettings.quadOffset = QgsPalLayerSettings.quadOffset.setter(set_quad_offset)
+
+
 def get_limit_num_labels(self):
     return self.thinningSettings().limitNumberOfLabelsEnabled()
 

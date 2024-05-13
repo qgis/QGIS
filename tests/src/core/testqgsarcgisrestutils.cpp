@@ -609,7 +609,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QgsPalLayerSettings *settings = children.at( 0 )->settings();
   QVERIFY( settings );
   QCOMPARE( settings->placement, Qgis::LabelPlacement::OverPoint );
-  QCOMPARE( settings->quadOffset, Qgis::LabelQuadrantPosition::AboveRight );
+  QCOMPARE( settings->pointSettings().quadrant(), Qgis::LabelQuadrantPosition::AboveRight );
   QCOMPARE( settings->fieldName, QStringLiteral( "\"Name\"" ) );
 
   QgsTextFormat textFormat = settings->format();

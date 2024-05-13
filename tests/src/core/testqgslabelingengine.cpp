@@ -410,7 +410,7 @@ void TestQgsLabelingEngine::testRuleBased()
   format.setSize( 12 );
   s1.setFormat( format );
   s1.placement = Qgis::LabelPlacement::OverPoint;
-  s1.quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
+  s1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
   s1.placementSettings().setAllowDegradedPlacement( true );
   s1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -426,7 +426,7 @@ void TestQgsLabelingEngine::testRuleBased()
 
   s2.setFormat( format );
   s2.placement = Qgis::LabelPlacement::OverPoint;
-  s2.quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
+  s2.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowRight );
   s2.placementSettings().setAllowDegradedPlacement( true );
   s2.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -497,7 +497,7 @@ void TestQgsLabelingEngine::zOrder()
   QgsPalLayerSettings pls1;
   pls1.fieldName = QStringLiteral( "Class" );
   pls1.placement = Qgis::LabelPlacement::OverPoint;
-  pls1.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+  pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
   pls1.placementSettings().setAllowDegradedPlacement( true );
   pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -1204,7 +1204,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
 
   // this layer has fixed labels, they can't move
   settings.placement = Qgis::LabelPlacement::OverPoint;
-  settings.quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
+  settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
   settings.priority = 10;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -1293,7 +1293,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   // force a fixed position for the label instead of flexible placement
   settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
   settings.placement = Qgis::LabelPlacement::OverPoint;
-  settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+  settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
 
   vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
 
@@ -1350,7 +1350,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   settings.isExpression = true;
   // use a placement mode with only one candidate
   settings.placement = Qgis::LabelPlacement::OverPoint;
-  settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+  settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
   settings.priority = 2;
 
   std::unique_ptr< QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );

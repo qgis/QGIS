@@ -466,11 +466,6 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
     /**
-     * Sets the quadrant in which to offset labels from feature.
-     */
-    Qgis::LabelQuadrantPosition quadOffset = Qgis::LabelQuadrantPosition::Over;
-
-    /**
      * Horizontal offset of label. Units are specified via offsetUnits.
      * \see yOffset
      * \see offsetUnits

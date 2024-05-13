@@ -1483,7 +1483,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     lblX = labelFeature->anchorPosition().x();
     lblY = labelFeature->anchorPosition().y();
 
-    Qgis::LabelQuadrantPosition offsetQuad = layerSettings.quadOffset;
+    Qgis::LabelQuadrantPosition offsetQuad = layerSettings.pointSettings().quadrant();
 
     if ( props.isActive( QgsPalLayerSettings::Property::OffsetQuad ) )
     {
