@@ -704,17 +704,17 @@ QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh 
   return normals;
 }
 
-bool QgsMeshLayerUtils::haveSameParentGroup( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 )
+bool QgsMeshLayerUtils::haveSameParentQuantity( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 )
 {
   const QgsMeshDatasetGroupMetadata metadata1 = layer->datasetGroupMetadata( index1 );
-  if ( metadata1.parentGroup().isEmpty() )
+  if ( metadata1.parentQuantityName().isEmpty() )
     return false;
 
   const QgsMeshDatasetGroupMetadata metadata2 = layer->datasetGroupMetadata( index2 );
-  if ( metadata2.parentGroup().isEmpty() )
+  if ( metadata2.parentQuantityName().isEmpty() )
     return false;
 
-  return metadata1.parentGroup().compare( metadata2.parentGroup(), Qt::CaseInsensitive ) == 0;
+  return metadata1.parentQuantityName().compare( metadata2.parentQuantityName(), Qt::CaseInsensitive ) == 0;
 }
 
 ///@endcond

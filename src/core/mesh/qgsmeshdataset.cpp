@@ -178,7 +178,7 @@ QString QgsMeshDatasetGroupMetadata::name() const
   return mName;
 }
 
-QString QgsMeshDatasetGroupMetadata::parentGroup() const
+QString QgsMeshDatasetGroupMetadata::parentQuantityName() const
 {
   return mParentGroupName;
 }

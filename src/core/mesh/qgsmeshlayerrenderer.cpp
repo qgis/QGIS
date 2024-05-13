@@ -114,8 +114,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
           {
             if ( it.value().overlaps( context.zRange() ) )
             {
-              const bool matchesVectorParentGroup = QgsMeshLayerUtils::haveSameParentGroup( layer, QgsMeshDatasetIndex( activeVectorDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
-              const bool matchesScalarParentGroup = QgsMeshLayerUtils::haveSameParentGroup( layer, QgsMeshDatasetIndex( activeScalarDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
+              const bool matchesVectorParentGroup = QgsMeshLayerUtils::haveSameParentQuantity( layer, QgsMeshDatasetIndex( activeVectorDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
+              const bool matchesScalarParentGroup = QgsMeshLayerUtils::haveSameParentQuantity( layer, QgsMeshDatasetIndex( activeScalarDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
 
               if ( matchesVectorParentGroup && (
                      currentMatchingVectorRange.isInfinite()

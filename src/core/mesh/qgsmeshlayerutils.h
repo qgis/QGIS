@@ -371,11 +371,11 @@ class CORE_EXPORT QgsMeshLayerUtils
       bool isRelative );
 
     /**
-     * Returns TRUE if the datasets from \a layer at \a index1 and \a index2 share the same parent group.
+     * Returns TRUE if the datasets from \a layer at \a index1 and \a index2 share the same parent quantity.
      *
      * \since QGIS 3.38
      */
-    static bool haveSameParentGroup( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 );
+    static bool haveSameParentQuantity( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 );
 
 };
 

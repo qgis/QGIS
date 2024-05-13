@@ -12,6 +12,7 @@
 
 
 
+
 class QgsMeshDatasetIndex
 {
 %Docstring(signature="appended")
@@ -433,9 +434,9 @@ Constructs a valid metadata object
 Returns name of the dataset group
 %End
 
-    QString parentGroup() const;
+    QString parentQuantityName() const;
 %Docstring
-Returns the name of the dataset's parent group.
+Returns the name of the dataset's parent quantity, if available.
 
 .. versionadded:: 3.38
 %End
