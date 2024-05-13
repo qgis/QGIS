@@ -1255,6 +1255,10 @@ void QgsLayoutMapWidget::mCopyGridPushButton_clicked()
   }
 
   QgsLayoutItemMapGrid *sourceGrid = mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
+  if ( !sourceGrid )
+  {
+    return;
+  }
   int i = 0;
   QString itemName = tr( "%1 - Copy" ).arg( sourceGrid->name() );
   QList< QgsLayoutItemMapGrid * > grids = mMapItem->grids()->asList();

@@ -88,9 +88,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-123</y>
-        <width>548</width>
-        <height>1478</height>
+        <y>-798</y>
+        <width>539</width>
+        <height>1640</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -762,7 +762,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+                <normaloff>:/images/themes/default/mActionDuplicateLayout.svg</normaloff>:/images/themes/default/mActionDuplicateLayout.svg</iconset>
               </property>
              </widget>
             </item>
