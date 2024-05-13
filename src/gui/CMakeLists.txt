@@ -1638,6 +1638,13 @@ else()
     PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
 endif()
 
+if(MSVC)
+  set_source_files_properties(
+    ${CMAKE_BINARY_DIR}/src/gui/qgis_gui_autogen/mocs_compilation.cpp
+    PROPERTIES COMPILE_FLAGS "/bigobj"
+  )
+endif()
+
 #############################################################
 # qgis_gui library
 
@@ -1733,7 +1740,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_gui.h)
 
 if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  if (WIN32 )
+  if (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
   elseif (APPLE)
     include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)

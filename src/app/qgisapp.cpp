@@ -13024,7 +13024,11 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
   CFRelease( urlRef );
 #elif defined(Q_OS_WIN)
   if ( url.startsWith( "file://", Qt::CaseInsensitive ) )
+#ifdef UNICODE
+    ShellExecute( 0, 0, url.mid( 7 ).toStdWString().c_str(), 0, 0, SW_SHOWNORMAL );
+#else
     ShellExecute( 0, 0, url.mid( 7 ).toLocal8Bit().constData(), 0, 0, SW_SHOWNORMAL );
+#endif
   else
     QDesktopServices::openUrl( url );
 #else

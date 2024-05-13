@@ -1218,7 +1218,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         {
           mapExtent.transform( mapTransform );
         }
-        catch ( QgsCsException &cse )
+        catch ( QgsCsException & )
         {
           continue;
         }
