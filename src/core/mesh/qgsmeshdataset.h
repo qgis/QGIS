@@ -471,7 +471,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 
   private:
     QString mName;
-    QString mParentGroupName;
+    QString mParentQuantityName;
     QString mUri;
     bool mIsScalar = false;
     DataType mDataType = DataType::DataOnFaces;
