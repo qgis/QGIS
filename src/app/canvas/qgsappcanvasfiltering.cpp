@@ -18,6 +18,9 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"
+#include "qgselevationutils.h"
+#include "qgsmaplayerelevationproperties.h"
+
 #include <QInputDialog>
 
 QgsAppCanvasFiltering::QgsAppCanvasFiltering( QObject *parent )
@@ -89,4 +92,51 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
       QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
     } );
   }
+
+  // bridge is parented to controller
+  QgsCanvasElevationControllerBridge *bridge = new QgsCanvasElevationControllerBridge( controller, canvas );
+  ( void )bridge;
+}
+
+QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsElevationControllerWidget *controller, QgsMapCanvas *canvas )
+  : QObject( controller )
+  , mController( controller )
+  , mCanvas( canvas )
+{
+  connect( mCanvas, &QgsMapCanvas::layersChanged, this, &QgsCanvasElevationControllerBridge::canvasLayersChanged );
+
+  canvasLayersChanged();
+}
+
+void QgsCanvasElevationControllerBridge::canvasLayersChanged()
+{
+  if ( !mCanvas )
+    return;
+
+  // disconnect from old layers
+  for ( QgsMapLayer *layer : std::as_const( mCanvasLayers ) )
+  {
+    if ( layer )
+    {
+      disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::changed, this, &QgsCanvasElevationControllerBridge::updateSignificantElevations );
+    }
+  }
+
+  // and connect to new
+  const QList< QgsMapLayer * > layers = mCanvas->layers( true );
+  for ( QgsMapLayer *layer : layers )
+  {
+    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::changed, this, &QgsCanvasElevationControllerBridge::updateSignificantElevations );
+  }
+  mCanvasLayers = _qgis_listRawToQPointer( layers );
+
+  updateSignificantElevations();
+}
+
+void QgsCanvasElevationControllerBridge::updateSignificantElevations()
+{
+  if ( !mCanvas )
+    return;
+
+  mController->setSignificantElevations( QgsElevationUtils::significantZValuesForLayers( _qgis_listQPointerToRaw( mCanvasLayers ) ) );
 }

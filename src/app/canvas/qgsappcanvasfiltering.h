@@ -16,13 +16,34 @@
 #define QGSAPPCANVASFILTERING_H
 
 #include "qgis.h"
+#include "qgsmaplayerlistutils_p.h"
 #include <QObject>
 #include <QHash>
 #include <QDialog>
+#include <QPointer>
 
 class QAction;
 class QgsMapCanvas;
 class QgsElevationControllerWidget;
+
+class QgsCanvasElevationControllerBridge : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCanvasElevationControllerBridge( QgsElevationControllerWidget *controller, QgsMapCanvas *canvas );
+
+  private slots:
+
+    void canvasLayersChanged();
+    void updateSignificantElevations();
+
+  private:
+    QgsElevationControllerWidget *mController = nullptr;
+    QPointer< QgsMapCanvas> mCanvas;
+    QgsWeakMapLayerPointerList mCanvasLayers;
+};
 
 class QgsAppCanvasFiltering : public QObject
 {
