@@ -21,7 +21,7 @@ __copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 
 import sys
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType, QVariant
 from qgis.core import (QgsProcessingException,
                        QgsField,
                        QgsFields,
@@ -64,17 +64,17 @@ class FieldsPyculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Result field name'), defaultValue='NewField'))
 
-        types = [(QVariant.Int, QVariant.Invalid),
-                 (QVariant.Double, QVariant.Invalid),
-                 (QVariant.String, QVariant.Invalid),
-                 (QVariant.Bool, QVariant.Invalid),
-                 (QVariant.Date, QVariant.Invalid),
-                 (QVariant.Time, QVariant.Invalid),
-                 (QVariant.DateTime, QVariant.Invalid),
-                 (QVariant.ByteArray, QVariant.Invalid),
-                 (QVariant.StringList, QVariant.String),
-                 (QVariant.List, QVariant.Int),
-                 (QVariant.List, QVariant.Double)]
+        types = [(QMetaType.Type.Int, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.Double, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.QString, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.Bool, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.QDate, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.QTime, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.QDateTime, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.QByteArray, QMetaType.Type.UnknownType),
+                 (QMetaType.Type.QStringList, QMetaType.Type.QString),
+                 (QMetaType.Type.QVariantList, QMetaType.Type.Int),
+                 (QMetaType.Type.QVariantList, QMetaType.Type.Double)]
         type_names = []
         type_icons = []
         for type_name, subtype_name in types:
