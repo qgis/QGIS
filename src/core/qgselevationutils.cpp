@@ -57,13 +57,22 @@ QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project
 QList<double> QgsElevationUtils::significantZValuesForProject( QgsProject *project )
 {
   const QMap<QString, QgsMapLayer *> &mapLayers = project->mapLayers();
-  QSet< double > values;
-
-  QgsMapLayer *currentLayer = nullptr;
+  QList< QgsMapLayer * > layers;
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
-    currentLayer = it.value();
+    if ( it.value() )
+      layers << it.value();
+  }
 
+  return significantZValuesForLayers( layers );
+}
+
+QList<double> QgsElevationUtils::significantZValuesForLayers( const QList<QgsMapLayer *> &layers )
+{
+  QSet< double > values;
+
+  for ( QgsMapLayer *currentLayer  : layers )
+  {
     if ( !currentLayer->elevationProperties() || !currentLayer->elevationProperties()->hasElevation() )
       continue;
 

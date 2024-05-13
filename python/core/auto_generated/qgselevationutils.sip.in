@@ -40,6 +40,15 @@ These values will be highlighted in elevation related widgets for the project.
 .. versionadded:: 3.38
 %End
 
+    static QList< double > significantZValuesForLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Returns a list of significant elevation/z-values for the specified ``layers``.
+
+These values will be highlighted in elevation related widgets for the project.
+
+.. versionadded:: 3.38
+%End
+
     static bool canEnableElevationForLayer( QgsMapLayer *layer );
 %Docstring
 Returns ``True`` if elevation can be enabled for a map ``layer``.
