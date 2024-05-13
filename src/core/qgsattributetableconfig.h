@@ -48,7 +48,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Defines the configuration of a column in the attribute table.
      */
-    struct ColumnConfig
+    struct CORE_EXPORT ColumnConfig
     {
       ColumnConfig() = default;
 
