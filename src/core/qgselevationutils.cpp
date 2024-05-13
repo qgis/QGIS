@@ -54,6 +54,31 @@ QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project
                          std::isnan( max ) ? std::numeric_limits< double >::max() : max );
 }
 
+QList<double> QgsElevationUtils::significantZValuesForProject( QgsProject *project )
+{
+  const QMap<QString, QgsMapLayer *> &mapLayers = project->mapLayers();
+  QSet< double > values;
+
+  QgsMapLayer *currentLayer = nullptr;
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    currentLayer = it.value();
+
+    if ( !currentLayer->elevationProperties() || !currentLayer->elevationProperties()->hasElevation() )
+      continue;
+
+    const QList< double > layerValues = currentLayer->elevationProperties()->significantZValues( currentLayer );
+    for ( double value : layerValues )
+    {
+      values.insert( value );
+    }
+  }
+
+  QList< double > res = qgis::setToList( values );
+  std::sort( res.begin(), res.end() );
+  return res;
+}
+
 bool QgsElevationUtils::canEnableElevationForLayer( QgsMapLayer *layer )
 {
   return static_cast< bool >( layer->elevationProperties() );
