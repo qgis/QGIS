@@ -38,7 +38,9 @@
 #include "lazperf/readers.hpp"
 
 #if defined(_MSC_VER)
+#ifndef UNICODE
 #define UNICODE
+#endif
 #include <locale>
 #include <codecvt>
 #endif
