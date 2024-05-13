@@ -52,7 +52,6 @@ void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, Qgs
 void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, QgsMapCanvas *canvas )
 {
   QgsElevationControllerWidget *controller = new QgsElevationControllerWidget();
-  connect( controller, &QgsElevationControllerWidget::rangeChanged, canvas, &QgsMapCanvas::setZRange );
 
   QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
   controller->menu()->addAction( setProjectLimitsAction );
@@ -67,7 +66,6 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
     senderAction->setChecked( false );
   } );
 
-  canvas->addOverlayWidget( controller, Qt::Edge::LeftEdge );
   mCanvasElevationControllerMap.insert( canvas, controller );
   connect( canvas, &QObject::destroyed, this, [canvas, this]
   {
@@ -77,21 +75,6 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
   {
     mCanvasElevationControllerMap.remove( canvas );
   } );
-
-  if ( canvas == QgisApp::instance()->mapCanvas() )
-  {
-    // for main canvas, attach settings to project settings
-    controller->setFixedRangeSize( QgsProject::instance()->elevationProperties()->elevationFilterRangeSize() );
-    connect( controller, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size )
-    {
-      QgsProject::instance()->elevationProperties()->setElevationFilterRangeSize( size );
-    } );
-    controller->setInverted( QgsProject::instance()->elevationProperties()->invertElevationFilter() );
-    connect( controller, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted )
-    {
-      QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
-    } );
-  }
 
   // bridge is parented to controller
   QgsCanvasElevationControllerBridge *bridge = new QgsCanvasElevationControllerBridge( controller, canvas );
@@ -103,6 +86,25 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
   , mController( controller )
   , mCanvas( canvas )
 {
+  connect( mController, &QgsElevationControllerWidget::rangeChanged, mCanvas, &QgsMapCanvas::setZRange );
+
+  mCanvas->addOverlayWidget( mController, Qt::Edge::LeftEdge );
+
+  if ( mCanvas == QgisApp::instance()->mapCanvas() )
+  {
+    // for main canvas, attach settings to project settings
+    mController->setFixedRangeSize( QgsProject::instance()->elevationProperties()->elevationFilterRangeSize() );
+    connect( mController, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size )
+    {
+      QgsProject::instance()->elevationProperties()->setElevationFilterRangeSize( size );
+    } );
+    mController->setInverted( QgsProject::instance()->elevationProperties()->invertElevationFilter() );
+    connect( mController, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted )
+    {
+      QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
+    } );
+  }
+
   connect( mCanvas, &QgsMapCanvas::layersChanged, this, &QgsCanvasElevationControllerBridge::canvasLayersChanged );
 
   canvasLayersChanged();
