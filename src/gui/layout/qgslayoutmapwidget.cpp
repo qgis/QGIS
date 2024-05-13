@@ -73,6 +73,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   connect( mAtlasPredefinedScaleRadio, &QRadioButton::toggled, this, &QgsLayoutMapWidget::mAtlasPredefinedScaleRadio_toggled );
   connect( mAddGridPushButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mAddGridPushButton_clicked );
   connect( mRemoveGridPushButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mRemoveGridPushButton_clicked );
+  connect( mCopyGridPushButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mCopyGridPushButton_clicked );
   connect( mGridUpButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mGridUpButton_clicked );
   connect( mGridDownButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mGridDownButton_clicked );
   connect( mGridListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mGridListWidget_currentItemChanged );
@@ -1243,6 +1244,47 @@ void QgsLayoutMapWidget::mRemoveGridPushButton_clicked()
   mMapItem->endCommand();
   mMapItem->updateBoundingRect();
   mMapItem->update();
+}
+
+void QgsLayoutMapWidget::mCopyGridPushButton_clicked()
+{
+  QListWidgetItem *item = mGridListWidget->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  QgsLayoutItemMapGrid *sourceGrid = mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
+  if ( !sourceGrid )
+  {
+    return;
+  }
+  int i = 0;
+  QString itemName = tr( "%1 - Copy" ).arg( sourceGrid->name() );
+  QList< QgsLayoutItemMapGrid * > grids = mMapItem->grids()->asList();
+  while ( true )
+  {
+    const auto it = std::find_if( grids.begin(), grids.end(), [&itemName]( const QgsLayoutItemMapGrid * grd ) { return grd->name() == itemName; } );
+    if ( it != grids.end() )
+    {
+      i++;
+      itemName = tr( "%1 - Copy %2" ).arg( sourceGrid->name() ).arg( i );
+      continue;
+    }
+    break;
+  }
+  QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( itemName, mMapItem );
+  grid->copyProperties( sourceGrid );
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Duplicate Map Grid" ) );
+  mMapItem->grids()->addGrid( grid );
+  mMapItem->layout()->undoStack()->endCommand();
+  mMapItem->updateBoundingRect();
+  mMapItem->update();
+
+  addGridListItem( grid->id(), grid->name() );
+  mGridListWidget->setCurrentRow( 0 );
+  mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
 }
 
 void QgsLayoutMapWidget::mGridUpButton_clicked()
