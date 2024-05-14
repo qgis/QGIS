@@ -275,6 +275,23 @@ QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer *
       return {};
     }
 
+    case Qgis::MeshElevationMode::FixedRangePerGroup:
+    {
+      QList< double > res;
+      for ( auto it = mRangePerGroup.constBegin(); it != mRangePerGroup.constEnd(); ++it )
+      {
+        if ( it.value().isInfinite() )
+          continue;
+
+        if ( !res.contains( it.value().lower( ) ) )
+          res.append( it.value().lower() );
+        if ( !res.contains( it.value().upper( ) ) )
+          res.append( it.value().upper() );
+      }
+      std::sort( res.begin(), res.end() );
+      return res;
+    }
+
     case Qgis::MeshElevationMode::FromVertices:
       return {};
   }
