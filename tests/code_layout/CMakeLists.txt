@@ -1,6 +1,6 @@
 # TESTSRC is relative to ${CMAKE_SOURCE_DIR}
 macro (add_qgis_test_script TESTNAME TESTSRC)
-  add_test(${TESTNAME} ${CMAKE_SOURCE_DIR}/${TESTSRC})
+  add_test(NAME ${TESTNAME} COMMAND sh ${CMAKE_SOURCE_DIR}/${TESTSRC})
   set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
 endmacro()
 
