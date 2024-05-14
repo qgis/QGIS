@@ -173,6 +173,8 @@ void QgsTextFormatWidget::initWidget()
                                     << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mLineDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                      << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mMaximumDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
@@ -190,6 +192,8 @@ void QgsTextFormatWidget::initWidget()
   mFontWordSpacingSpinBox->setClearValue( 0.0 );
   mZIndexSpinBox->setClearValue( 0.0 );
   mLineDistanceSpnBx->setClearValue( 0.0 );
+  mMaximumDistanceSpnBx->setMinimum( 0 );
+  mMaximumDistanceSpnBx->setClearValue( 0.0, tr( "Not set" ) );
   mSpinStretch->setClearValue( 100 );
 
   connect( mLineHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
@@ -213,6 +217,9 @@ void QgsTextFormatWidget::initWidget()
   mComboOverlapHandling->addItem( tr( "Never Overlap" ), static_cast< int >( Qgis::LabelOverlapHandling::PreventOverlap ) );
   mComboOverlapHandling->addItem( tr( "Allow Overlaps if Required" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapIfRequired ) );
   mComboOverlapHandling->addItem( tr( "Allow Overlaps without Penalty" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ) );
+
+  mPrioritizationComboBox->addItem( tr( "Prefer Closer Labels" ), QVariant::fromValue( Qgis::LabelPrioritization::PreferCloser ) );
+  mPrioritizationComboBox->addItem( tr( "Prefer Position Ordering" ), QVariant::fromValue( Qgis::LabelPrioritization::PreferPositionOrdering ) );
 
   updateAvailableShadowPositions();
 
@@ -409,6 +416,8 @@ void QgsTextFormatWidget::initWidget()
           << mLimitLabelSpinBox
           << mLineDistanceSpnBx
           << mLineDistanceUnitWidget
+          << mMaximumDistanceSpnBx
+          << mMaximumDistanceUnitWidget
           << mMaxCharAngleInDSpinBox
           << mMaxCharAngleOutDSpinBox
           << mMinSizeSpinBox
@@ -492,7 +501,8 @@ void QgsTextFormatWidget::initWidget()
           << mMaskBufferSizeSpinBox
           << mMaskOpacityWidget
           << mCheckAllowLabelsOutsidePolygons
-          << mHtmlFormattingCheckBox;
+          << mHtmlFormattingCheckBox
+          << mPrioritizationComboBox;
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
@@ -817,6 +827,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mPointOffsetUnitsDDBtn, QgsPalLayerSettings::Property::OffsetUnits );
   registerDataDefinedButton( mLineDistanceDDBtn, QgsPalLayerSettings::Property::LabelDistance );
   registerDataDefinedButton( mLineDistanceUnitDDBtn, QgsPalLayerSettings::Property::DistanceUnits );
+  registerDataDefinedButton( mMaximumDistanceDDBtn, QgsPalLayerSettings::Property::MaximumDistance );
   registerDataDefinedButton( mPriorityDDBtn, QgsPalLayerSettings::Property::Priority );
   registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::Property::PolygonLabelOutside );
   registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::Property::AllowDegradedPlacement );
@@ -1358,6 +1369,8 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showOffsetTypeFrame = false;
   bool showOffsetFrame = false;
   bool showDistanceFrame = false;
+  bool showMaximumDistanceFrame = false;
+  bool showPrioritizationFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
 
@@ -1371,6 +1384,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   {
     showCentroidFrame = currentGeometryType == Qgis::GeometryType::Polygon;
     showDistanceFrame = true;
+    showMaximumDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
     showQuadrantFrame = currentGeometryType == Qgis::GeometryType::Point;
   }
@@ -1386,7 +1400,9 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   else if ( currentGeometryType == Qgis::GeometryType::Point && currentPlacement == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
   {
     showDistanceFrame = true;
+    showMaximumDistanceFrame = true;
     showPlacementPriorityFrame = true;
+    showPrioritizationFrame = true;
     showOffsetTypeFrame  = true;
   }
   else if ( ( currentGeometryType == Qgis::GeometryType::Line && currentPlacement == Qgis::LabelPlacement::Line )
@@ -1422,6 +1438,8 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementCartographicFrame->setVisible( showPlacementPriorityFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
+  mPlacementMaximumDistanceFrame->setVisible( showMaximumDistanceFrame );
+  mPlacementPrioritizationFrame->setVisible( showPrioritizationFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon &&

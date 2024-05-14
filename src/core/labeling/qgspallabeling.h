@@ -191,6 +191,7 @@ class CORE_EXPORT QgsPalLayerSettings
       OffsetXY = 78,
       OffsetUnits = 80,
       LabelDistance = 13,
+      MaximumDistance = 119, //!< Maximum distance of label from feature
       DistanceUnits = 81,
       OffsetRotation = 82,
       CurvedCharAngleInOut = 83,

@@ -550,6 +550,12 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelPrioritization /BaseType=IntEnum/
+    {
+      PreferCloser,
+      PreferPositionOrdering,
+    };
+
     enum class LabelPlacement /BaseType=IntEnum/
       {
       AroundPoint,

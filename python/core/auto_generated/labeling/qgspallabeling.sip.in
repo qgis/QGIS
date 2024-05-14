@@ -121,6 +121,7 @@ Contains settings for how a map layer will be labeled.
       OffsetXY,
       OffsetUnits,
       LabelDistance,
+      MaximumDistance,
       DistanceUnits,
       OffsetRotation,
       CurvedCharAngleInOut,

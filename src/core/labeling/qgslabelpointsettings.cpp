@@ -16,11 +16,14 @@
 #include "qgslabelpointsettings.h"
 #include "qgspropertycollection.h"
 #include "qgsexpressioncontext.h"
-#include "qgslabelingengine.h"
 #include "qgspallabeling.h"
 
 
-void QgsLabelPointSettings::updateDataDefinedProperties( const QgsPropertyCollection &, QgsExpressionContext & )
+void QgsLabelPointSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
-  // for future use when new additional properties are added to QgsLabelPointSettings
+  if ( properties.isActive( QgsPalLayerSettings::Property::MaximumDistance ) )
+  {
+    context.setOriginalValueVariable( mMaximumDistance );
+    mMaximumDistance = properties.valueAsDouble( QgsPalLayerSettings::Property::MaximumDistance, context, mMaximumDistance );
+  }
 }
