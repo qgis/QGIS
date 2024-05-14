@@ -543,7 +543,7 @@ QgsMeshVectorWindBarbRenderer::QgsMeshVectorWindBarbRenderer(
         size )
 {
   const QgsCoordinateReferenceSystem mapCrs = mContext.coordinateTransform().destinationCrs();
-  mMapToWgs = QgsCoordinateTransform( mapCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mContext.coordinateTransform().context() );
+  mGeographicTransform = QgsCoordinateTransform( mapCrs, mapCrs.toGeographicCrs(), mContext.coordinateTransform().context() );
 }
 
 QgsMeshVectorWindBarbRenderer::~QgsMeshVectorWindBarbRenderer() = default;
@@ -574,12 +574,12 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
   bool isNorthHemisphere = true;
   try
   {
-    const QgsPointXY wgsPoint = mMapToWgs.transform( mapPoint );
-    isNorthHemisphere = wgsPoint.y() >= 0;
+    const QgsPointXY geoPoint = mGeographicTransform.transform( mapPoint );
+    isNorthHemisphere = geoPoint.y() >= 0;
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Could not transform wind barb coordinates to WGS84" ) );
+    QgsDebugError( QStringLiteral( "Could not transform wind barb coordinates to geographic ones" ) );
   }
 
   const double d = shaftLength / 25; // this is a magic number ratio between shaft length and other barb dimensions
