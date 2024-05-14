@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "7d2535039cd5d76570c6fa2822359c16f02a8a0b",
+        "baseline": "3edb3eb7092173dddb15359aa48b1599708fd96e",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -92,6 +92,8 @@
         "py-pip",
         "py-pyqt6",
         "py-qscintilla",
+        "py-pyyaml",
+        "py-qgis-requirements",
         "python3"
       ]
     },
