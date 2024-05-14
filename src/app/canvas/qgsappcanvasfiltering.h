@@ -38,8 +38,11 @@ class QgsCanvasElevationControllerBridge : public QObject
 
     void canvasLayersChanged();
     void updateSignificantElevations();
+    void controllerZRangeChanged( const QgsDoubleRange &range );
+    void setCanvasZRange();
 
   private:
+    QTimer *mUpdateCanvasTimer = nullptr;
     QgsElevationControllerWidget *mController = nullptr;
     QPointer< QgsMapCanvas> mCanvas;
     QgsWeakMapLayerPointerList mCanvasLayers;
