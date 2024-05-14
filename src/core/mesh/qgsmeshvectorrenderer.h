@@ -169,7 +169,7 @@ class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
   private:
     void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude ) override;
 
-    QgsCoordinateTransform mMapToWgs;
+    QgsCoordinateTransform mGeographicTransform;
 
 };
 
