@@ -86,7 +86,12 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
   , mController( controller )
   , mCanvas( canvas )
 {
-  connect( mController, &QgsElevationControllerWidget::rangeChanged, mCanvas, &QgsMapCanvas::setZRange );
+  // canvas updates are applied after a short timeout, to avoid sending too many rapid redraw requests
+  // while the controller slider is being dragged
+  mUpdateCanvasTimer = new QTimer( this );
+  mUpdateCanvasTimer->setSingleShot( true );
+  connect( mController, &QgsElevationControllerWidget::rangeChanged, this, &QgsCanvasElevationControllerBridge::controllerZRangeChanged );
+  connect( mUpdateCanvasTimer, &QTimer::timeout, this, &QgsCanvasElevationControllerBridge::setCanvasZRange );
 
   mCanvas->addOverlayWidget( mController, Qt::Edge::LeftEdge );
 
@@ -141,4 +146,17 @@ void QgsCanvasElevationControllerBridge::updateSignificantElevations()
     return;
 
   mController->setSignificantElevations( QgsElevationUtils::significantZValuesForLayers( _qgis_listQPointerToRaw( mCanvasLayers ) ) );
+}
+
+void QgsCanvasElevationControllerBridge::controllerZRangeChanged( const QgsDoubleRange & )
+{
+  mUpdateCanvasTimer->start( 100 );
+}
+
+void QgsCanvasElevationControllerBridge::setCanvasZRange()
+{
+  if ( !mCanvas )
+    return;
+
+  mCanvas->setZRange( mController->range() );
 }
