@@ -253,6 +253,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts ), QgsPropertyDefinition( "LabelAllParts", QObject::tr( "Label all parts" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::AllowDegradedPlacement ), QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handing" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::MaximumDistance ), QgsPropertyDefinition( "MaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }
 
@@ -1118,6 +1119,10 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // when reading the anchor text point we default to center mode, to keep same result as for proejcts created in < 3.26
   mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "lineAnchorTextPoint" ) ), QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
 
+  mPointSettings.setMaximumDistance( placementElem.attribute( QStringLiteral( "maximumDistance" ), QStringLiteral( "0" ) ).toDouble() );
+  mPointSettings.setMaximumDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "maximumDistanceUnit" ) ) ) );
+  mPointSettings.setMaximumDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "maximumDistanceMapUnitScale" ) ) ) );
+
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
   {
@@ -1170,6 +1175,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
       mPlacementSettings.setAllowDegradedPlacement( false );
     }
   }
+
+  mPlacementSettings.setPrioritization( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "prioritization" ) ), Qgis::LabelPrioritization::PreferCloser ) );
+
   upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( renderingElem.attribute( QStringLiteral( "upsidedownLabels" ), QString::number( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
 
   labelPerPart = renderingElem.attribute( QStringLiteral( "labelPerPart" ) ).toInt();
@@ -1312,6 +1320,10 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "lineAnchorClipping" ), static_cast< int >( mLineSettings.anchorClipping() ) );
   placementElem.setAttribute( QStringLiteral( "lineAnchorTextPoint" ), qgsEnumValueToKey( mLineSettings.anchorTextPoint() ) );
 
+  placementElem.setAttribute( QStringLiteral( "maximumDistance" ), mPointSettings.maximumDistance() );
+  placementElem.setAttribute( QStringLiteral( "maximumDistanceUnit" ), QgsUnitTypes::encodeUnit( mPointSettings.maximumDistanceUnit() ) );
+  placementElem.setAttribute( QStringLiteral( "maximumDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mPointSettings.maximumDistanceMapUnitScale() ) );
+
   placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), qgsEnumValueToKey( geometryGeneratorType ) + QStringLiteral( "Geometry" ) );
@@ -1319,6 +1331,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( layerType ) + QStringLiteral( "Geometry" ) );
 
   placementElem.setAttribute( QStringLiteral( "overlapHandling" ), qgsEnumValueToKey( mPlacementSettings.overlapHandling() ) );
+  placementElem.setAttribute( QStringLiteral( "prioritization" ), qgsEnumValueToKey( mPlacementSettings.prioritization() ) );
   placementElem.setAttribute( QStringLiteral( "allowDegraded" ), mPlacementSettings.allowDegradedPlacement() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   // rendering
@@ -2726,6 +2739,13 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
+  // maximum distance
+  double maximumDistanceEval = pointSettings.maximumDistance();
+  if ( !qgsDoubleNear( maximumDistanceEval, 0.0 ) )
+  {
+    maximumDistanceEval = context.convertToMapUnits( maximumDistanceEval, pointSettings.maximumDistanceUnit(), pointSettings.maximumDistanceMapUnitScale() );
+  }
+
   //  feature to the layer
   std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelWidth, labelHeight ) );
   labelFeature->setAnchorPosition( anchorPosition );
@@ -2750,6 +2770,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setPermissibleZone( permissibleZone );
   labelFeature->setOverrunDistance( overrunDistanceEval );
   labelFeature->setOverrunSmoothDistance( overrunSmoothDist );
+  labelFeature->setMaximumDistance( maximumDistanceEval );
   labelFeature->setLineAnchorPercent( lineSettings.lineAnchorPercent() );
   labelFeature->setLineAnchorType( lineSettings.anchorType() );
   labelFeature->setLineAnchorTextPoint( lineSettings.anchorTextPoint() );
@@ -2931,6 +2952,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
     labelFeature->setOverlapHandling( overlapHandling );
   }
+
+  labelFeature->setPrioritization( mPlacementSettings.prioritization() );
 
   QgsLabelObstacleSettings os = mObstacleSettings;
   os.setIsObstacle( isObstacle );

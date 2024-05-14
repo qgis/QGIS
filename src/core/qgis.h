@@ -904,6 +904,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelOverlapHandling )
 
     /**
+     * Label prioritization.
+     *
+     * \since QGIS 3.38
+     */
+    enum class LabelPrioritization : int
+    {
+      PreferCloser, //!< Prefer closer labels, falling back to alternate positions before larger distances
+      PreferPositionOrdering, //!< Prefer labels follow position ordering, falling back to more distance labels before alternate positions
+    };
+    Q_ENUM( LabelPrioritization )
+
+    /**
      * Placement modes which determine how label candidates are generated for a feature.
      *
      * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::Placement

@@ -949,6 +949,12 @@ Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__ = "Labels may freely over
 Qgis.LabelOverlapHandling.__doc__ = "Label overlap handling.\n\n.. versionadded:: 3.26\n\n" + '* ``PreventOverlap``: ' + Qgis.LabelOverlapHandling.PreventOverlap.__doc__ + '\n' + '* ``AllowOverlapIfRequired``: ' + Qgis.LabelOverlapHandling.AllowOverlapIfRequired.__doc__ + '\n' + '* ``AllowOverlapAtNoCost``: ' + Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__
 # --
 Qgis.LabelOverlapHandling.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LabelPrioritization.PreferCloser.__doc__ = "Prefer closer labels, falling back to alternate positions before larger distances"
+Qgis.LabelPrioritization.PreferPositionOrdering.__doc__ = "Prefer labels follow position ordering, falling back to more distance labels before alternate positions"
+Qgis.LabelPrioritization.__doc__ = "Label prioritization.\n\n.. versionadded:: 3.38\n\n" + '* ``PreferCloser``: ' + Qgis.LabelPrioritization.PreferCloser.__doc__ + '\n' + '* ``PreferPositionOrdering``: ' + Qgis.LabelPrioritization.PreferPositionOrdering.__doc__
+# --
+Qgis.LabelPrioritization.baseClass = Qgis
 QgsPalLayerSettings.Placement = Qgis.LabelPlacement
 # monkey patching scoped based enum
 QgsPalLayerSettings.AroundPoint = Qgis.LabelPlacement.AroundPoint
