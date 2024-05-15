@@ -21,6 +21,7 @@
 #include <QColor>
 #include <QPainter>
 #include <QImage>
+#include <QImageReader>
 #include <QCryptographicHash>
 #include <QByteArray>
 #include <QDebug>
@@ -282,8 +283,8 @@ bool QgsRenderChecker::runTest( const QString &testName,
   //
   // Load the expected result pixmap
   //
-  const QImage myExpectedImage( mExpectedImageFile );
-  if ( myExpectedImage.isNull() )
+  const QImageReader expectedImageReader( mExpectedImageFile );
+  if ( !expectedImageReader.canRead() )
   {
     qDebug() << "QgsRenderChecker::runTest failed - Could not load expected image from " << mExpectedImageFile;
     mReport = "<table>"
@@ -294,13 +295,15 @@ bool QgsRenderChecker::runTest( const QString &testName,
     performPostTestActions( flags );
     return mResult;
   }
-  mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
+
+  const QSize expectedSize = expectedImageReader.size();
+  mMatchTarget = expectedSize.width() * expectedSize.height();
   //
   // Now render our layers onto a pixmap
   //
   mMapSettings.setBackgroundColor( qRgb( 152, 219, 249 ) );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing );
-  mMapSettings.setOutputSize( QSize( myExpectedImage.width(), myExpectedImage.height() ) / mMapSettings.devicePixelRatio() );
+  mMapSettings.setOutputSize( expectedSize / mMapSettings.devicePixelRatio() );
 
   QElapsedTimer myTime;
   myTime.start();
