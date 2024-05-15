@@ -104,6 +104,13 @@ jobs:
           path: |
             C:/src/**/*.log
 
+      - name: Save PR number to zips
+        run: |
+          echo ${{ github.event.number }} | tee pr_number
+          zip -u *-win64.zip pr_number
+          echo ${{ github.event.pull_request.head.sha }} | tee git_commit
+          zip -u *-win64.zip git_commit
+    
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@v4
         with:
