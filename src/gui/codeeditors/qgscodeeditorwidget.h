@@ -149,17 +149,20 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
   private slots:
 
-    void findNext();
+    bool findNext();
     void findPrevious();
     void textSearchChanged( const QString &text );
     void updateSearch();
+    void replace();
+    void replaceSelection();
+    void replaceAll();
 
   private:
 
     void clearSearchHighlights();
     void addSearchHighlights();
     int searchFlags() const;
-    void findText( bool forward, bool findFirst );
+    bool findText( bool forward, bool findFirst );
     void updateHighlightController();
     void searchMatchCountChanged( int matchCount );
 
@@ -171,12 +174,15 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QgsCodeEditor *mEditor = nullptr;
     QWidget *mFindWidget = nullptr;
     QgsFilterLineEdit *mLineEditFind = nullptr;
+    QgsFilterLineEdit *mLineEditReplace = nullptr;
     QToolButton *mFindPrevButton = nullptr;
     QToolButton *mFindNextButton = nullptr;
     QToolButton *mCaseSensitiveButton = nullptr;
     QToolButton *mWholeWordButton = nullptr;
     QToolButton *mRegexButton = nullptr;
     QToolButton *mWrapAroundButton = nullptr;
+    QToolButton *mReplaceButton = nullptr;
+    QToolButton *mReplaceAllButton = nullptr;
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;
