@@ -62,6 +62,9 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsCodeEditorWidget() override;
 
+    void resizeEvent( QResizeEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
+
     /**
      * Returns the wrapped code editor.
      */
@@ -76,6 +79,12 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * Returns the message bar associated with the widget, to use for user feedback.
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Returns the scrollbar highlight controller, which can be used to add highlights
+     * in the code editor scrollbar.
+     */
+    QgsScrollBarHighlightController *scrollbarHighlightController();
 
   public slots:
 
@@ -131,6 +140,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     void addSearchHighlights();
     int searchFlags() const;
     void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
+    void updateHighlightController();
 
     enum HighlightCategory
     {

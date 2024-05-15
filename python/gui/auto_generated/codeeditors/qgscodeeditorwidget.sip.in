@@ -46,6 +46,11 @@ feedback, otherwise an integrated message bar will be used.
 %End
     ~QgsCodeEditorWidget();
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+    virtual void showEvent( QShowEvent *event );
+
+
     QgsCodeEditor *editor();
 %Docstring
 Returns the wrapped code editor.
@@ -59,6 +64,12 @@ Returns ``True`` if the search bar is visible.
     QgsMessageBar *messageBar();
 %Docstring
 Returns the message bar associated with the widget, to use for user feedback.
+%End
+
+    QgsScrollBarHighlightController *scrollbarHighlightController();
+%Docstring
+Returns the scrollbar highlight controller, which can be used to add highlights
+in the code editor scrollbar.
 %End
 
   public slots:
