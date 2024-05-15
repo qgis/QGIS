@@ -25,6 +25,7 @@
 #include <QToolButton>
 #include <QCheckBox>
 #include <QShortcut>
+#include <QGridLayout>
 
 constexpr int WARNING_HIGHLIGHT_CATEGORY = 48;
 
@@ -56,55 +57,63 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   }
 
   mFindWidget = new QWidget();
-  QHBoxLayout *layoutFind = new QHBoxLayout();
+  QGridLayout *layoutFind = new QGridLayout();
   layoutFind->setContentsMargins( 0, 2, 0, 0 );
   layoutFind->setSpacing( 1 );
   mLineEditFind = new QgsFilterLineEdit();
   mLineEditFind->setShowSearchIcon( true );
   mLineEditFind->setPlaceholderText( tr( "Enter text to find…" ) );
-  layoutFind->addWidget( mLineEditFind, 1 );
+  layoutFind->addWidget( mLineEditFind, 0, 0 );
 
+  mLineEditReplace = new QgsFilterLineEdit();
+  mLineEditReplace->setShowSearchIcon( true );
+  mLineEditReplace->setPlaceholderText( tr( "Replace…" ) );
+  layoutFind->addWidget( mLineEditReplace, 1, 0 );
+
+  QHBoxLayout *findButtonLayout = new QHBoxLayout();
+  findButtonLayout->setContentsMargins( 0, 0, 0, 0 );
+  findButtonLayout->setSpacing( 1 );
   mCaseSensitiveButton = new QToolButton();
   mCaseSensitiveButton->setToolTip( tr( "Case Sensitive" ) );
   mCaseSensitiveButton->setCheckable( true );
   mCaseSensitiveButton->setAutoRaise( true );
   mCaseSensitiveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchCaseSensitive.svg" ) ) );
-  layoutFind->addWidget( mCaseSensitiveButton );
+  findButtonLayout->addWidget( mCaseSensitiveButton );
 
   mWholeWordButton = new QToolButton( );
   mWholeWordButton->setToolTip( tr( "Whole Word" ) );
   mWholeWordButton->setCheckable( true );
   mWholeWordButton->setAutoRaise( true );
   mWholeWordButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWholeWord.svg" ) ) );
-  layoutFind->addWidget( mWholeWordButton );
+  findButtonLayout->addWidget( mWholeWordButton );
 
   mRegexButton = new QToolButton( );
   mRegexButton->setToolTip( tr( "Use Regular Expressions" ) );
   mRegexButton->setCheckable( true );
   mRegexButton->setAutoRaise( true );
   mRegexButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchRegex.svg" ) ) );
-  layoutFind->addWidget( mRegexButton );
+  findButtonLayout->addWidget( mRegexButton );
 
   mWrapAroundButton = new QToolButton();
   mWrapAroundButton->setToolTip( tr( "Wrap Around" ) );
   mWrapAroundButton->setCheckable( true );
   mWrapAroundButton->setAutoRaise( true );
   mWrapAroundButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWrapAround.svg" ) ) );
-  layoutFind->addWidget( mWrapAroundButton );
+  findButtonLayout->addWidget( mWrapAroundButton );
 
   mFindPrevButton = new QToolButton();
   mFindPrevButton->setEnabled( false );
   mFindPrevButton->setToolTip( tr( "Find Previous" ) );
   mFindPrevButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSearchPrevEditorConsole.svg" ) ) );
   mFindPrevButton->setAutoRaise( true );
-  layoutFind->addWidget( mFindPrevButton );
+  findButtonLayout->addWidget( mFindPrevButton );
 
   mFindNextButton = new QToolButton();
   mFindNextButton->setEnabled( false );
   mFindNextButton->setToolTip( tr( "Find Next" ) );
   mFindNextButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSearchNextEditorConsole.svg" ) ) );
   mFindNextButton->setAutoRaise( true );
-  layoutFind->addWidget( mFindNextButton );
+  findButtonLayout->addWidget( mFindNextButton );
 
   connect( mLineEditFind, &QLineEdit::returnPressed, this, &QgsCodeEditorWidget::findNext );
   connect( mLineEditFind, &QLineEdit::textChanged, this, &QgsCodeEditorWidget::textSearchChanged );
@@ -136,6 +145,26 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     mEditor->setFocus();
   } );
 
+  layoutFind->addLayout( findButtonLayout, 0, 1 );
+
+  QHBoxLayout *replaceButtonLayout = new QHBoxLayout();
+  replaceButtonLayout->setContentsMargins( 0, 0, 0, 0 );
+  replaceButtonLayout->setSpacing( 1 );
+
+  mReplaceButton = new QToolButton();
+  mReplaceButton->setText( tr( "Replace" ) );
+  mReplaceButton->setEnabled( false );
+  connect( mReplaceButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::replace );
+  replaceButtonLayout->addWidget( mReplaceButton );
+
+  mReplaceAllButton = new QToolButton();
+  mReplaceAllButton->setText( tr( "Replace All" ) );
+  mReplaceAllButton->setEnabled( false );
+  connect( mReplaceAllButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::replaceAll );
+  replaceButtonLayout->addWidget( mReplaceAllButton );
+
+  layoutFind->addLayout( replaceButtonLayout, 1, 1 );
+
   QToolButton *closeFindButton = new QToolButton( this );
   closeFindButton->setToolTip( tr( "Close" ) );
   closeFindButton->setMinimumWidth( QgsGuiUtils::scaleIconSize( 44 ) );
@@ -153,7 +182,9 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     hideSearchBar();
     mEditor->setFocus();
   } );
-  layoutFind->addWidget( closeFindButton );
+  layoutFind->addWidget( closeFindButton, 0, 2 );
+
+  layoutFind->setColumnStretch( 0, 1 );
 
   mFindWidget->setLayout( layoutFind );
   vl->addWidget( mFindWidget );
@@ -221,6 +252,14 @@ void QgsCodeEditorWidget::showSearchBar()
 {
   addSearchHighlights();
   mFindWidget->show();
+
+  if ( mEditor->isReadOnly() )
+  {
+    mReplaceAllButton->hide();
+    mReplaceButton->hide();
+    mLineEditReplace->hide();
+  }
+
   emit searchBarToggled( true );
 }
 
@@ -253,9 +292,9 @@ void QgsCodeEditorWidget::triggerFind()
   showSearchBar();
 }
 
-void QgsCodeEditorWidget::findNext()
+bool QgsCodeEditorWidget::findNext()
 {
-  findText( true, false );
+  return findText( true, false );
 }
 
 void QgsCodeEditorWidget::findPrevious()
@@ -285,6 +324,61 @@ void QgsCodeEditorWidget::updateSearch()
   addSearchHighlights();
 
   findText( true, true );
+}
+
+void QgsCodeEditorWidget::replace()
+{
+  if ( mEditor->isReadOnly() )
+    return;
+
+  replaceSelection();
+
+  clearSearchHighlights();
+  addSearchHighlights();
+  findNext();
+}
+
+void QgsCodeEditorWidget::replaceSelection()
+{
+  const long selectionStart = mEditor->SendScintilla( QsciScintilla::SCI_GETSELECTIONSTART );
+  const long selectionEnd = mEditor->SendScintilla( QsciScintilla::SCI_GETSELECTIONEND );
+  if ( selectionEnd - selectionStart <= 0 )
+    return;
+
+  const QString replacement = mLineEditReplace->text();
+
+  mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, selectionStart, selectionEnd );
+
+  if ( mRegexButton->isChecked() )
+    mEditor->SendScintilla( QsciScintilla::SCI_REPLACETARGETRE, replacement.size(), replacement.toLocal8Bit().constData() );
+  else
+    mEditor->SendScintilla( QsciScintilla::SCI_REPLACETARGET, replacement.size(), replacement.toLocal8Bit().constData() );
+
+  // set the cursor to the end of the replaced text
+  const long postReplacementEnd = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETEND );
+  mEditor->SendScintilla( QsciScintilla::SCI_SETCURRENTPOS, postReplacementEnd );
+}
+
+void QgsCodeEditorWidget::replaceAll()
+{
+  if ( mEditor->isReadOnly() )
+    return;
+
+  if ( !findText( true, true ) )
+  {
+    return;
+  }
+
+  mEditor->SendScintilla( QsciScintilla::SCI_BEGINUNDOACTION );
+  replaceSelection();
+
+  while ( findText( true, false ) )
+  {
+    replaceSelection();
+  }
+
+  mEditor->SendScintilla( QsciScintilla::SCI_ENDUNDOACTION );
+  clearSearchHighlights();
 }
 
 void QgsCodeEditorWidget::addSearchHighlights()
@@ -350,11 +444,11 @@ void QgsCodeEditorWidget::clearSearchHighlights()
   searchMatchCountChanged( 0 );
 }
 
-void QgsCodeEditorWidget::findText( bool forward, bool findFirst )
+bool QgsCodeEditorWidget::findText( bool forward, bool findFirst )
 {
   const QString searchString = mLineEditFind->text();
   if ( searchString.isEmpty() )
-    return;
+    return false;
 
   int lineFrom = 0;
   int indexFrom = 0;
@@ -391,10 +485,13 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst )
   {
     mLineEditFind->setStyleSheet( QString() );
   }
+  return found;
 }
 
 void QgsCodeEditorWidget::searchMatchCountChanged( int matchCount )
 {
+  mReplaceButton->setEnabled( matchCount > 0 );
+  mReplaceAllButton->setEnabled( matchCount > 0 );
   mFindNextButton->setEnabled( matchCount > 0 );
   mFindPrevButton->setEnabled( matchCount > 0 );
 }
