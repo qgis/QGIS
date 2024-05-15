@@ -315,22 +315,6 @@ bool QgsRenderChecker::runTest( const QString &testName,
 
   mRenderedImage = job.renderedImage();
   Q_ASSERT( mRenderedImage.devicePixelRatioF() == mMapSettings.devicePixelRatio() );
-
-  //create a world file to go with the image...
-
-  QFile wldFile( QDir::tempPath() + '/' + testName + "_result.wld" );
-  if ( wldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    const QgsRectangle r = mMapSettings.extent();
-
-    QTextStream stream( &wldFile );
-    stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
-           .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
-                 qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
-                 qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
-                 qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
-  }
-
   const bool res = compareImages( testName, mismatchCount, QString(), flags );
 
   if ( ! res )
@@ -348,6 +332,20 @@ bool QgsRenderChecker::runTest( const QString &testName,
 
       performPostTestActions( flags );
       return mResult;
+    }
+
+    //create a world file to go with the image...
+    QFile wldFile( QDir::tempPath() + '/' + testName + "_result.wld" );
+    if ( wldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+      const QgsRectangle r = mMapSettings.extent();
+
+      QTextStream stream( &wldFile );
+      stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
+             .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+                   qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+                   qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+                   qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
     }
   }
 
