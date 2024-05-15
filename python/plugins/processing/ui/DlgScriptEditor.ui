@@ -15,81 +15,20 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
-     <widget class="QWidget" name="editor_container"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QWidget" name="searchWidget" native="true">
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>5</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>5</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="chkCaseSensitive">
-         <property name="text">
-          <string>Case sensitive</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="chkWholeWord">
-         <property name="text">
-          <string>Whole word</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4" colspan="2">
-        <widget class="QPushButton" name="btnReplace">
-         <property name="text">
-          <string>Replace</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Find what:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Replace with:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QLineEdit" name="leReplaceText"/>
-       </item>
-       <item row="0" column="4" colspan="2">
-        <widget class="QPushButton" name="btnFind">
-         <property name="text">
-          <string>Find</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLineEdit" name="leFindText"/>
-       </item>
-       <item row="0" column="1" rowspan="2">
-        <widget class="Line" name="line_8">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+     <widget class="QWidget" name="editor_container" native="true"/>
     </item>
    </layout>
   </widget>
@@ -244,9 +183,6 @@
    </property>
    <property name="text">
     <string>Find &amp;&amp; &amp;Replace</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="actionToggleComment">
