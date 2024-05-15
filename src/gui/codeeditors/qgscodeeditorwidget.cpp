@@ -60,15 +60,28 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   QGridLayout *layoutFind = new QGridLayout();
   layoutFind->setContentsMargins( 0, 2, 0, 0 );
   layoutFind->setSpacing( 1 );
+
+  if ( !mEditor->isReadOnly() )
+  {
+    mShowReplaceBarButton = new QToolButton();
+    mShowReplaceBarButton->setToolTip( tr( "Replace" ) );
+    mShowReplaceBarButton->setCheckable( true );
+    mShowReplaceBarButton->setAutoRaise( true );
+    mShowReplaceBarButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionReplace.svg" ) ) );
+    layoutFind->addWidget( mShowReplaceBarButton, 0, 0 );
+
+    connect( mShowReplaceBarButton, &QCheckBox::toggled, this, &QgsCodeEditorWidget::setReplaceBarVisible );
+  }
+
   mLineEditFind = new QgsFilterLineEdit();
   mLineEditFind->setShowSearchIcon( true );
   mLineEditFind->setPlaceholderText( tr( "Enter text to find…" ) );
-  layoutFind->addWidget( mLineEditFind, 0, 0 );
+  layoutFind->addWidget( mLineEditFind, 0, mShowReplaceBarButton ? 1 : 0 );
 
   mLineEditReplace = new QgsFilterLineEdit();
   mLineEditReplace->setShowSearchIcon( true );
   mLineEditReplace->setPlaceholderText( tr( "Replace…" ) );
-  layoutFind->addWidget( mLineEditReplace, 1, 0 );
+  layoutFind->addWidget( mLineEditReplace, 1, mShowReplaceBarButton ? 1 : 0 );
 
   QHBoxLayout *findButtonLayout = new QHBoxLayout();
   findButtonLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -136,6 +149,22 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   findPreviousShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
   connect( findPreviousShortcut, &QShortcut::activated, this, &QgsCodeEditorWidget::findPrevious );
 
+  if ( !mEditor->isReadOnly() )
+  {
+    QShortcut *replaceShortcut = new QShortcut( QKeySequence::StandardKey::Replace, this );
+    replaceShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
+    connect( replaceShortcut, &QShortcut::activated, this, [ = ]
+    {
+      // shortcut toggles bar visibility
+      const bool show = mLineEditReplace->isHidden();
+      setReplaceBarVisible( show );
+
+      // ensure search bar is also visible
+      if ( show )
+        showSearchBar();
+    } );
+  }
+
   // escape on editor hides the find bar
   QShortcut *closeFindShortcut = new QShortcut( Qt::Key::Key_Escape, this );
   closeFindShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
@@ -145,7 +174,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     mEditor->setFocus();
   } );
 
-  layoutFind->addLayout( findButtonLayout, 0, 1 );
+  layoutFind->addLayout( findButtonLayout, 0, mShowReplaceBarButton ? 2 : 1 );
 
   QHBoxLayout *replaceButtonLayout = new QHBoxLayout();
   replaceButtonLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -163,7 +192,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   connect( mReplaceAllButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::replaceAll );
   replaceButtonLayout->addWidget( mReplaceAllButton );
 
-  layoutFind->addLayout( replaceButtonLayout, 1, 1 );
+  layoutFind->addLayout( replaceButtonLayout, 1, mShowReplaceBarButton ? 2 : 1 );
 
   QToolButton *closeFindButton = new QToolButton( this );
   closeFindButton->setToolTip( tr( "Close" ) );
@@ -182,13 +211,15 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     hideSearchBar();
     mEditor->setFocus();
   } );
-  layoutFind->addWidget( closeFindButton, 0, 2 );
+  layoutFind->addWidget( closeFindButton, 0, mShowReplaceBarButton ? 3 : 2 );
 
-  layoutFind->setColumnStretch( 0, 1 );
+  layoutFind->setColumnStretch( mShowReplaceBarButton ? 1 : 0, 1 );
 
   mFindWidget->setLayout( layoutFind );
   vl->addWidget( mFindWidget );
   mFindWidget->hide();
+
+  setReplaceBarVisible( false );
 
   setLayout( vl );
 
@@ -255,9 +286,7 @@ void QgsCodeEditorWidget::showSearchBar()
 
   if ( mEditor->isReadOnly() )
   {
-    mReplaceAllButton->hide();
-    mReplaceButton->hide();
-    mLineEditReplace->hide();
+    setReplaceBarVisible( false );
   }
 
   emit searchBarToggled( true );
@@ -276,6 +305,24 @@ void QgsCodeEditorWidget::setSearchBarVisible( bool visible )
     showSearchBar();
   else
     hideSearchBar();
+}
+
+void QgsCodeEditorWidget::setReplaceBarVisible( bool visible )
+{
+  if ( visible )
+  {
+    mReplaceAllButton->show();
+    mReplaceButton->show();
+    mLineEditReplace->show();
+  }
+  else
+  {
+    mReplaceAllButton->hide();
+    mReplaceButton->hide();
+    mLineEditReplace->hide();
+  }
+  if ( mShowReplaceBarButton )
+    mShowReplaceBarButton->setChecked( visible );
 }
 
 void QgsCodeEditorWidget::triggerFind()
