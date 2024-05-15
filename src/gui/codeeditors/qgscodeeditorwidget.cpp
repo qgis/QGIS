@@ -163,6 +163,18 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mHighlightController->setScrollArea( mEditor );
 }
 
+void QgsCodeEditorWidget::resizeEvent( QResizeEvent *event )
+{
+  QgsPanelWidget::resizeEvent( event );
+  updateHighlightController();
+}
+
+void QgsCodeEditorWidget::showEvent( QShowEvent *event )
+{
+  QgsPanelWidget::showEvent( event );
+  updateHighlightController();
+}
+
 QgsCodeEditorWidget::~QgsCodeEditorWidget() = default;
 
 bool QgsCodeEditorWidget::isSearchBarVisible() const
@@ -173,6 +185,11 @@ bool QgsCodeEditorWidget::isSearchBarVisible() const
 QgsMessageBar *QgsCodeEditorWidget::messageBar()
 {
   return mMessageBar;
+}
+
+QgsScrollBarHighlightController *QgsCodeEditorWidget::scrollbarHighlightController()
+{
+  return mHighlightController.get();
 }
 
 void QgsCodeEditorWidget::showSearchBar()
@@ -260,8 +277,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
   long startPos = 0;
   long docEnd = mEditor->length();
 
-  mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
-  mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
+  updateHighlightController();
 
   int searchFlags = 0;
   const bool isRegEx = mRegexButton->isChecked();
@@ -354,5 +370,11 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFo
   {
     mLineEditFind->setStyleSheet( QString() );
   }
+}
+
+void QgsCodeEditorWidget::updateHighlightController()
+{
+  mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
+  mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
 }
 
