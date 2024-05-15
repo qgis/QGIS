@@ -427,6 +427,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     for i, token in reversed_enumerate(tokens):
         if token.offset in import_offsets:
             end_import_offset = Offset(*import_offsets[token.offset][-2:])
+            del import_offsets[token.offset]
             assert tokens[i].src == 'from'
             token_index = i + 1
             while not tokens[token_index].src.strip():
