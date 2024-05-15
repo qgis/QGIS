@@ -26,6 +26,8 @@
 #include <QCheckBox>
 #include <QShortcut>
 
+constexpr int WARNING_HIGHLIGHT_CATEGORY = 48;
+
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,
   QgsMessageBar *messageBar,
@@ -190,6 +192,29 @@ QgsMessageBar *QgsCodeEditorWidget::messageBar()
 QgsScrollBarHighlightController *QgsCodeEditorWidget::scrollbarHighlightController()
 {
   return mHighlightController.get();
+}
+
+void QgsCodeEditorWidget::addWarning( int lineNumber, const QString &warning )
+{
+  mEditor->addWarning( lineNumber, warning );
+
+  mHighlightController->addHighlight(
+    QgsScrollBarHighlight(
+      WARNING_HIGHLIGHT_CATEGORY,
+      lineNumber,
+      QColor( 255, 0, 0 ),
+      QgsScrollBarHighlight::Priority::HighestPriority
+    )
+  );
+}
+
+void QgsCodeEditorWidget::clearWarnings()
+{
+  mEditor->clearWarnings();
+
+  mHighlightController->removeHighlights(
+    WARNING_HIGHLIGHT_CATEGORY
+  );
 }
 
 void QgsCodeEditorWidget::showSearchBar()

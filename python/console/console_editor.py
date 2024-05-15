@@ -91,6 +91,7 @@ class Editor(QgsCodeEditorPython):
         self.editor_tab: EditorTab = editor_tab
         self.console_widget: PythonConsoleWidget = console_widget
         self.tab_widget: EditorTabWidget = tab_widget
+        self.code_editor_widget: Optional[QgsCodeEditorWidget] = None
 
         self.path: Optional[str] = None
         #  recent modification time
@@ -384,7 +385,7 @@ class Editor(QgsCodeEditorPython):
         self.setFocus()
 
     def syntaxCheck(self):
-        self.clearWarnings()
+        self.code_editor_widget.clearWarnings()
         source = self.text().encode("utf-8")
         try:
             compile(source, "", "exec")
@@ -393,7 +394,7 @@ class Editor(QgsCodeEditorPython):
             eline -= 1
             ecolumn = detail.offset or 1
             edescr = detail.msg
-            self.addWarning(eline, edescr)
+            self.code_editor_widget.addWarning(eline, edescr)
             self.setCursorPosition(eline, ecolumn - 1)
             self.ensureLineVisible(eline)
             return False
@@ -546,6 +547,7 @@ class EditorTab(QWidget):
         self._editor_code_widget = QgsCodeEditorWidget(
             self._editor
         )
+        self._editor.code_editor_widget = self._editor_code_widget
         self._editor_code_widget.searchBarToggled.connect(
             self.search_bar_toggled
         )

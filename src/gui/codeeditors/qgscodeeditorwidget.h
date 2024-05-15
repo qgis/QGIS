@@ -86,6 +86,26 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     QgsScrollBarHighlightController *scrollbarHighlightController();
 
+    /**
+     * Adds a \a warning message and indicator to the specified a \a lineNumber.
+     *
+     * This method calls QgsCodeEditor::addWarning(), but also automatically adds
+     * highlights to the widget scrollbars locating the warning location.
+     *
+     * \see clearWarnings()
+     */
+    void addWarning( int lineNumber, const QString &warning );
+
+    /**
+     * Clears all warning messages from the editor.
+     *
+     * This method calls QgsCodeEditor::clearWarnings(), but also removes
+     * highlights from the widget scrollbars at the warning locations.
+     *
+     * \see addWarning()
+     */
+    void clearWarnings();
+
   public slots:
 
     /**
