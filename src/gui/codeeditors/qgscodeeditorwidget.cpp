@@ -27,8 +27,6 @@
 #include <QShortcut>
 #include <QGridLayout>
 
-constexpr int WARNING_HIGHLIGHT_CATEGORY = 48;
-
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,
   QgsMessageBar *messageBar,
@@ -262,7 +260,7 @@ void QgsCodeEditorWidget::addWarning( int lineNumber, const QString &warning )
 
   mHighlightController->addHighlight(
     QgsScrollBarHighlight(
-      WARNING_HIGHLIGHT_CATEGORY,
+      HighlightCategory::Warning,
       lineNumber,
       QColor( 255, 0, 0 ),
       QgsScrollBarHighlight::Priority::HighestPriority
@@ -275,7 +273,7 @@ void QgsCodeEditorWidget::clearWarnings()
   mEditor->clearWarnings();
 
   mHighlightController->removeHighlights(
-    WARNING_HIGHLIGHT_CATEGORY
+    HighlightCategory::Warning
   );
 }
 

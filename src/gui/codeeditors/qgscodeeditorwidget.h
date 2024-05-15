@@ -176,7 +176,8 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
     enum HighlightCategory
     {
-      SearchMatch = 0
+      SearchMatch = 0,
+      Warning = 1
     };
 
     QgsCodeEditor *mEditor = nullptr;
