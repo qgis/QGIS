@@ -267,16 +267,12 @@ void QgsCodeEditorWidget::textSearchChanged( const QString &text )
 {
   if ( !text.isEmpty() )
   {
-    mFindNextButton->setEnabled( true );
-    mFindPrevButton->setEnabled( true );
     updateSearch();
   }
   else
   {
     clearSearchHighlights();
     mLineEditFind->setStyleSheet( QString() );
-    mFindNextButton->setEnabled( false );
-    mFindPrevButton->setEnabled( false );
   }
 }
 
@@ -315,6 +311,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
   if ( isWholeWordOnly )
     searchFlags |= QsciScintilla::SCFIND_WHOLEWORD;
   mEditor->SendScintilla( QsciScintilla::SCI_SETSEARCHFLAGS, searchFlags );
+  int matchCount = 0;
   while ( true )
   {
     mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, startPos, docEnd );
@@ -322,6 +319,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
     if ( fstart < 0 )
       break;
 
+    matchCount++;
     const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast< void * >( nullptr ) );
 
     startPos = fstart + matchLength;
@@ -336,6 +334,8 @@ void QgsCodeEditorWidget::addSearchHighlights()
   }
 
   mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, originalStartPos, originalEndPos );
+
+  searchMatchCountChanged( matchCount );
 }
 
 void QgsCodeEditorWidget::clearSearchHighlights()
@@ -346,6 +346,8 @@ void QgsCodeEditorWidget::clearSearchHighlights()
   mEditor->SendScintilla( QsciScintilla::SCI_INDICATORCLEARRANGE, docStart, docEnd - docStart );
 
   mHighlightController->removeHighlights( SearchMatch );
+
+  searchMatchCountChanged( 0 );
 }
 
 void QgsCodeEditorWidget::findText( bool forward, bool findFirst )
@@ -389,6 +391,12 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst )
   {
     mLineEditFind->setStyleSheet( QString() );
   }
+}
+
+void QgsCodeEditorWidget::searchMatchCountChanged( int matchCount )
+{
+  mFindNextButton->setEnabled( matchCount > 0 );
+  mFindPrevButton->setEnabled( matchCount > 0 );
 }
 
 void QgsCodeEditorWidget::updateHighlightController()
