@@ -311,29 +311,10 @@ bool QgsRenderChecker::runTest( const QString &testName,
 
   mElapsedTime = myTime.elapsed();
 
-  QImage myImage = job.renderedImage();
-  Q_ASSERT( myImage.devicePixelRatioF() == mMapSettings.devicePixelRatio() );
-
-  //
-  // Save the pixmap to disk so the user can make a
-  // visual assessment if needed
-  //
   mRenderedImageFile = QDir::tempPath() + '/' + testName + "_result.png";
 
-  myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
-  myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
-  if ( ! myImage.save( mRenderedImageFile, "PNG", 100 ) )
-  {
-    qDebug() << "QgsRenderChecker::runTest failed - Could not save rendered image to " << mRenderedImageFile;
-    mReport = "<table>"
-              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
-              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
-              "Image File could not be saved.</td></tr></table>\n";
-    mMarkdownReport = QStringLiteral( "Failed because rendered image file could not be saved to %1\n" ).arg( mRenderedImageFile );
-
-    performPostTestActions( flags );
-    return mResult;
-  }
+  mRenderedImage = job.renderedImage();
+  Q_ASSERT( mRenderedImage.devicePixelRatioF() == mMapSettings.devicePixelRatio() );
 
   //create a world file to go with the image...
 
@@ -350,7 +331,27 @@ bool QgsRenderChecker::runTest( const QString &testName,
                  qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
-  return compareImages( testName, mismatchCount, QString(), flags );
+  const bool res = compareImages( testName, mismatchCount, QString(), flags );
+
+  if ( ! res )
+  {
+    // If test failed, save the pixmap to disk so the user can make a
+    // visual assessment
+    if ( ! mRenderedImage.save( mRenderedImageFile, "PNG", 100 ) )
+    {
+      qDebug() << "QgsRenderChecker::runTest failed - Could not save rendered image to " << mRenderedImageFile;
+      mReport = "<table>"
+                "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+                "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+                "Image File could not be saved.</td></tr></table>\n";
+      mMarkdownReport = QStringLiteral( "Failed because rendered image file could not be saved to %1\n" ).arg( mRenderedImageFile );
+
+      performPostTestActions( flags );
+      return mResult;
+    }
+  }
+
+  return res;
 }
 
 
@@ -423,7 +424,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     return string.left( firstNonTagIndex ) + string.at( firstNonTagIndex ).toUpper() + string.mid( firstNonTagIndex + 1 );
   };
 
-  QImage myResultImage( mRenderedImageFile );
+  QImage myResultImage = mRenderedImage.isNull() ? QImage( mRenderedImageFile ) : mRenderedImage;
   if ( myResultImage.isNull() )
   {
     qDebug() << "QgsRenderChecker::runTest failed - Could not load rendered image from " << mRenderedImageFile;
