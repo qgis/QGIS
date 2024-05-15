@@ -161,6 +161,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     int searchFlags() const;
     void findText( bool forward, bool findFirst );
     void updateHighlightController();
+    void searchMatchCountChanged( int matchCount );
 
     enum HighlightCategory
     {
