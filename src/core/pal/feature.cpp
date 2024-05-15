@@ -605,13 +605,13 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
     if ( ! mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
     {
       lPos.emplace_back( std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
-      created++;
+      ++created;
+      ++i;
       //TODO - tweak
       cost += 0.001;
       if ( maxNumberCandidates > 0 && created >= maxNumberCandidates )
         return false;
     }
-    ++i;
     return true;
   };
 
@@ -715,6 +715,8 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
   double angleToCandidate = M_PI_4;
 
+  int integerRayCost = 0;
+  int integerRayCostIncrement = 2;
 
   for ( int rayIndex = 0; rayIndex < rayCount; ++rayIndex, angleToCandidate += candidateAngleIncrement )
   {
@@ -730,9 +732,8 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
     // ray angle cost increases from 0 at 45 degrees up to 1 at 45 + 180, and then decreases
     // back to 0 at angles greater than 45 + 180
     // scale ray angle cost to range 0 to 1, and then adjust by a magic constant factor
-    const double scaledRayAngleCost = RAY_ANGLE_COST_FACTOR * ( ( rayIndex < rayCount / 2 )
-                                      ? static_cast< double >( rayIndex * 2 ) / rayCount
-                                      : ( 2 - static_cast< double >( rayIndex * 2 ) / rayCount ) );
+    const double scaledRayAngleCost = RAY_ANGLE_COST_FACTOR * static_cast< double >( integerRayCost )
+                                      / static_cast< double >( rayCount - 1 );
 
     for ( int j = 0; j < candidatesPerRay; ++j, rayDistance += rayStepDelta )
     {
@@ -827,6 +828,19 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
       lPos.emplace_back( std::make_unique< LabelPosition >( id, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
       id++;
       numberCandidatesGenerated++;
+    }
+
+    integerRayCost += integerRayCostIncrement;
+
+    if ( integerRayCost == static_cast< int >( rayCount ) )
+    {
+      integerRayCost = static_cast< int >( rayCount ) - 1;
+      integerRayCostIncrement = -2;
+    }
+    else if ( integerRayCost > static_cast< int >( rayCount ) )
+    {
+      integerRayCost = static_cast< int >( rayCount ) - 2;
+      integerRayCostIncrement = -2;
     }
   }
 
