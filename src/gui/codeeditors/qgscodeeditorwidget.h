@@ -129,8 +129,16 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      *
      * \see showSearchBar()
      * \see hideSearchBar()
+     * \see setReplaceBarVisible()
      */
     void setSearchBarVisible( bool visible );
+
+    /**
+     * Sets whether the replace bar is \a visible.
+     *
+     * \see setSearchBarVisible()
+     */
+    void setReplaceBarVisible( bool visible );
 
     /**
      * Triggers a find operation, using the default behavior.
@@ -181,6 +189,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QToolButton *mWholeWordButton = nullptr;
     QToolButton *mRegexButton = nullptr;
     QToolButton *mWrapAroundButton = nullptr;
+    QToolButton *mShowReplaceBarButton = nullptr;
     QToolButton *mReplaceButton = nullptr;
     QToolButton *mReplaceAllButton = nullptr;
     int mBlockSearching = 0;

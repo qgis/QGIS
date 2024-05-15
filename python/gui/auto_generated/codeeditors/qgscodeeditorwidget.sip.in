@@ -119,6 +119,15 @@ Sets whether the search bar is ``visible``.
 .. seealso:: :py:func:`showSearchBar`
 
 .. seealso:: :py:func:`hideSearchBar`
+
+.. seealso:: :py:func:`setReplaceBarVisible`
+%End
+
+    void setReplaceBarVisible( bool visible );
+%Docstring
+Sets whether the replace bar is ``visible``.
+
+.. seealso:: :py:func:`setSearchBarVisible`
 %End
 
     void triggerFind();
