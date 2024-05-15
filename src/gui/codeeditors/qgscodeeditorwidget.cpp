@@ -288,7 +288,7 @@ void QgsCodeEditorWidget::updateSearch()
   clearSearchHighlights();
   addSearchHighlights();
 
-  findText( true, true, true );
+  findText( true, true );
 }
 
 void QgsCodeEditorWidget::addSearchHighlights()
@@ -348,7 +348,7 @@ void QgsCodeEditorWidget::clearSearchHighlights()
   mHighlightController->removeHighlights( SearchMatch );
 }
 
-void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFoundWarning )
+void QgsCodeEditorWidget::findText( bool forward, bool findFirst )
 {
   const QString searchString = mLineEditFind->text();
   if ( searchString.isEmpty() )
@@ -384,12 +384,6 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFo
   {
     const QString styleError = QStringLiteral( "QLineEdit {background-color: #d65253;  color: #ffffff;}" );
     mLineEditFind->setStyleSheet( styleError );
-
-    if ( showNotFoundWarning )
-    {
-      mMessageBar->pushMessage( QString(), tr( "\"%1\" was not found" ).arg( searchString ),
-                                Qgis::MessageLevel::Info );
-    }
   }
   else
   {
