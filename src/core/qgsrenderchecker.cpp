@@ -633,6 +633,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   const int maxHeight = std::min( expectedImage.height(), myResultImage.height() );
   const int maxWidth = std::min( expectedImage.width(), myResultImage.width() );
 
+  const int maskWidth = maskImage.width();
+
   mMismatchCount = 0;
   const int colorTolerance = static_cast< int >( mColorTolerance );
   for ( int y = 0; y < maxHeight; ++y )
@@ -644,8 +646,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
     for ( int x = 0; x < maxWidth; ++x )
     {
-      const int maskTolerance = ( maskScanline && maskImage.width() > x ) ? qRed( maskScanline[ x ] ) : 0;
-      const int pixelTolerance = std::max( colorTolerance, maskTolerance );
+      const int pixelTolerance = maskScanline
+                                 ? std::max( colorTolerance, ( maskWidth > x ) ? qRed( maskScanline[ x ] ) : 0 )
+                                 : colorTolerance;
       if ( pixelTolerance == 255 )
       {
         //skip pixel
