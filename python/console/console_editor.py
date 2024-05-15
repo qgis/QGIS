@@ -706,9 +706,10 @@ class EditorTabWidget(QTabWidget):
         self.changeLastDirPath(tab)
         self.enableSaveIfModified(tab)
 
-        self.search_bar_toggled.emit(
-            self.currentWidget().search_bar_visible()
-        )
+        if self.currentWidget():
+            self.search_bar_toggled.emit(
+                self.currentWidget().search_bar_visible()
+            )
 
     def toggle_search_bar(self, visible: bool):
         """
