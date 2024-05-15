@@ -53,6 +53,7 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSingleBandGrayRenderer,
     QgsSingleBandPseudoColorRenderer,
+    QgsRasterDataProvider,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1074,6 +1075,40 @@ class TestQgsRasterLayer(QgisTestCase):
 
         # compare xml documents
         self.assertEqual(layer_doc.toString(), clone_doc.toString())
+
+    def test_clone_resampling(self):
+        """
+        Test that cloning copies resampling settings
+        """
+        layer = QgsRasterLayer(
+            os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.tif'),
+            'test')
+        self.assertTrue(layer.isValid())
+
+        layer.setResamplingStage(
+            Qgis.RasterResamplingStage.Provider
+        )
+        layer.dataProvider().setZoomedInResamplingMethod(
+            QgsRasterDataProvider.ResamplingMethod.CubicSpline
+        )
+        layer.dataProvider().setZoomedOutResamplingMethod(
+            QgsRasterDataProvider.ResamplingMethod.Average
+        )
+
+        # clone layer
+        clone = layer.clone()
+        self.assertEqual(
+            clone.resamplingStage(),
+            Qgis.RasterResamplingStage.Provider
+        )
+        self.assertEqual(
+            clone.dataProvider().zoomedInResamplingMethod(),
+            QgsRasterDataProvider.ResamplingMethod.CubicSpline
+        )
+        self.assertEqual(
+            clone.dataProvider().zoomedOutResamplingMethod(),
+            QgsRasterDataProvider.ResamplingMethod.Average
+        )
 
     def testSetDataSource(self):
         """Test change data source"""
