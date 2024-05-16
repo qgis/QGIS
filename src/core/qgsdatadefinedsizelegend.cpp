@@ -126,7 +126,8 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
   QgsLegendSymbolList lst;
   if ( !mTitleLabel.isEmpty() )
   {
-    QgsLegendSymbolItem title( nullptr, mTitleLabel, QString() );
+    // we're abusing the ruleKey field here so we can later identify the resulting legend nodes as data defined size related
+    QgsLegendSymbolItem title( nullptr, mTitleLabel, QStringLiteral( "data-defined-size" ) );
     lst << title;
   }
 
@@ -145,7 +146,8 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
       lst.reserve( mSizeClasses.size() );
       for ( const SizeClass &cl : mSizeClasses )
       {
-        QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
+        // we're abusing the ruleKey field here so we can later identify the resulting legend nodes as data defined size related
+        QgsLegendSymbolItem si( mSymbol.get(), cl.label, QStringLiteral( "data-defined-size" ) );
         QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
         double size = cl.size;
         if ( mSizeScaleTransformer )
