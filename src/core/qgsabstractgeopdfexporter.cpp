@@ -304,7 +304,6 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
   QMap< QString, QSet< QString > > createdLayerIds;
   QMap< QString, QDomElement > groupLayerMap;
-  QMap< QString, QString > customGroupNamesToIds;
 
   QMultiMap< QString, QDomElement > pendingLayerTreeElements;
 
@@ -391,16 +390,32 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
 
   // create custom layer tree entries
+  QStringList layerTreeGroupOrder = details.layerTreeGroupOrder;
+
+  // add any missing groups to end of order
   for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
   {
-    if ( customGroupNamesToIds.contains( it.value() ) )
+    if ( layerTreeGroupOrder.contains( it.value() ) )
+      continue;
+    layerTreeGroupOrder.append( it.value() );
+  }
+  // filter out groups which don't have any content
+  layerTreeGroupOrder.erase( std::remove_if( layerTreeGroupOrder.begin(), layerTreeGroupOrder.end(), [&details]( const QString & group )
+  {
+    return details.customLayerTreeGroups.keys( group ).empty();
+  } ), layerTreeGroupOrder.end() );
+
+  QMap< QString, QString > customGroupNamesToIds;
+  for ( const QString &group : std::as_const( layerTreeGroupOrder ) )
+  {
+    if ( customGroupNamesToIds.contains( group ) )
       continue;
 
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     const QString id = QUuid::createUuid().toString();
-    customGroupNamesToIds[ it.value() ] = id;
+    customGroupNamesToIds[ group ] = id;
     layer.setAttribute( QStringLiteral( "id" ), id );
-    layer.setAttribute( QStringLiteral( "name" ), it.value() );
+    layer.setAttribute( QStringLiteral( "name" ), group );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
     layerTree.appendChild( layer );
   }
