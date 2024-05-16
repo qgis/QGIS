@@ -107,9 +107,9 @@ jobs:
       - name: Save PR number to zips
         run: |
           echo ${{ github.event.number }} | tee pr_number
-          zip -u *-win64.zip pr_number
+          powershell Compress-Archive -update pr_number *-win64.zip
           echo ${{ github.event.pull_request.head.sha }} | tee git_commit
-          zip -u *-win64.zip git_commit
+          powershell Compress-Archive -update git_commit *-win64.zip
     
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@v4
