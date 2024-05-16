@@ -23,9 +23,22 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0,0">
      <item>
-      <widget class="QPushButton" name="mClearButton">
+      <widget class="QPushButton" name="mExecuteButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
-        <string>Clear</string>
+        <string>Execute</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mStopButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Stop</string>
        </property>
       </widget>
      </item>
@@ -57,22 +70,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mExecuteButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QPushButton" name="mClearButton">
        <property name="text">
-        <string>Execute</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mStopButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Stop</string>
+        <string>Clear</string>
        </property>
       </widget>
      </item>
