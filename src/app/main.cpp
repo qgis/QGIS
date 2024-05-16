@@ -407,9 +407,16 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "OpenType support missing for" ), Qt::CaseInsensitive ) ||
+
+           // warnings triggered by Wayland limitations, not our responsibility or anything we can fix
            msg.contains( QLatin1String( "Wayland does not support" ), Qt::CaseInsensitive ) ||
+
+           // warnings triggered from KDE libraries, not related to QGIS
            msg.contains( QLatin1String( "This plugin supports grabbing the mouse only for popup windows" ), Qt::CaseInsensitive ) ||
-           msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) )
+           msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "KServiceTypeTrader" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "No node found for item that was just removed" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "Audio notification requested" ), Qt::CaseInsensitive ) )
         break;
 
       myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
