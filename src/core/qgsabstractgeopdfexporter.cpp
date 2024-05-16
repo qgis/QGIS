@@ -423,7 +423,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
       // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
       // srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
-      if ( !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
+      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
       {
         srs.appendChild( doc.createTextNode( section.crs.authid() ) );
       }
