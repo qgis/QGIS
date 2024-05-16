@@ -768,7 +768,7 @@ void QgsGrassNewMapset::setSelectedRegion()
     const QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:4326" ) );
     if ( !source.isValid() )
     {
-      QgsGrass::warning( tr( "Cannot create QgsCoordinateReferenceSystem" ) );
+      QgsGrass::warning( tr( "Cannot create Coordinate Reference System" ) );
       return;
     }
 
@@ -776,7 +776,7 @@ void QgsGrassNewMapset::setSelectedRegion()
 
     if ( !dest.isValid() )
     {
-      QgsGrass::warning( tr( "Cannot create QgsCoordinateReferenceSystem" ) );
+      QgsGrass::warning( tr( "Cannot create Coordinate Reference System" ) );
       return;
     }
 
@@ -882,8 +882,8 @@ void QgsGrassNewMapset::drawRegion()
   const QgsRectangle extent = mExtentWidget->outputExtent();
   double n = extent.yMaximum();
   double s = extent.yMinimum();
-  double e = extent.xMinimum();
-  double w = extent.xMaximum();
+  double e = extent.xMaximum();
+  double w = extent.xMinimum();
 
   // Shift if LL and W > E
   if ( mCellHead.proj == PROJECTION_LL && w > e )
@@ -931,7 +931,7 @@ void QgsGrassNewMapset::drawRegion()
 
     if ( !source.isValid() )
     {
-      QgsGrass::warning( tr( "Cannot create QgsCoordinateReferenceSystem" ) );
+      QgsGrass::warning( tr( "Cannot create Coordinate Reference System" ) );
       return;
     }
 
@@ -939,7 +939,7 @@ void QgsGrassNewMapset::drawRegion()
 
     if ( !dest.isValid() )
     {
-      QgsGrass::warning( tr( "Cannot create QgsCoordinateReferenceSystem" ) );
+      QgsGrass::warning( tr( "Cannot create Coordinate Reference System" ) );
       return;
     }
 
