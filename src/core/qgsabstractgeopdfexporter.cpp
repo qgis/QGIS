@@ -368,7 +368,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   // filter out groups which don't have any content
   layerTreeGroupOrder.erase( std::remove_if( layerTreeGroupOrder.begin(), layerTreeGroupOrder.end(), [&details]( const QString & group )
   {
-    return details.customLayerTreeGroups.keys( group ).empty();
+    return details.customLayerTreeGroups.key( group ).isEmpty();
   } ), layerTreeGroupOrder.end() );
 
   QMap< QString, QString > customGroupNamesToIds;
