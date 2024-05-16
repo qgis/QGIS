@@ -67,6 +67,10 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   }
          );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
+  connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [ = ]
+  {
+    mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) );
+  } );
   connect( mFilterToolButton, &QToolButton::pressed, this, [ = ]
   {
     if ( mConnection )
@@ -180,7 +184,7 @@ void QgsQueryResultWidget::executeQuery()
   cancelRunningQuery();
   if ( mConnection )
   {
-    const QString sql { mSqlEditor->text( ) };
+    const QString sql { mSqlEditor->selectedText().isEmpty() ? mSqlEditor->text() : mSqlEditor->selectedText() };
 
     bool ok = false;
     mCurrentHistoryEntryId = QgsGui::historyProviderRegistry()->addEntry( QStringLiteral( "dbquery" ),
