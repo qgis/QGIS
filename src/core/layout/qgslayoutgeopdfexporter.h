@@ -57,6 +57,8 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
 
     /**
      * Returns any custom layer tree groups defined in the layer's settings.
+     *
+     * \see layerTreeGroupOrder()
      */
     QMap< QString, QString > customLayerTreeGroups() const { return mCustomLayerTreeGroups; }
 
@@ -72,9 +74,22 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
      * Optional list of map layer IDs in the order they should be shown in the generated GeoPDF layer tree.
      * Layer IDs earlier in the list will appear higher in the GeoPDF layer tree.
      *
+     * \see layerTreeGroupOrder()
      * \since QGIS 3.14
      */
     QStringList layerOrder() const { return mLayerOrder; }
+
+    /**
+     * Specifies the ordering of layer tree groups in the generated GeoPDF file.
+     *
+     * Groups appearing earlier in the list will show earlier in the GeoPDF layer tree list.
+     *
+     * \see layerOrder()
+     * \see customLayerTreeGroups()
+     *
+     * \since QGIS 3.38
+     */
+    QStringList layerTreeGroupOrder() const { return mLayerTreeGroupOrder; }
 
   private:
 
@@ -86,6 +101,7 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
     QMap< QString, bool > mInitialLayerVisibility;
     QMap< QString, QString > mCustomLayerTreeGroups;
     QStringList mLayerOrder;
+    QStringList mLayerTreeGroupOrder;
 
     friend class TestQgsLayoutGeoPdfExport;
 };

@@ -259,6 +259,8 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        *
        * Layers which are not included in this group will always have their own individual layer tree entry
        * created for them automatically.
+       *
+       * \see layerTreeGroupOrder
        */
       QMap< QString, QString > customLayerTreeGroups;
 
@@ -282,9 +284,23 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        *
        * Layers appearing earlier in the list will show earlier in the GeoPDF layer tree list.
        *
+       * \see layerTreeGroupOrder
+       *
        * \since QGIS 3.14
        */
       QStringList layerOrder;
+
+      /**
+       * Specifies the ordering of layer tree groups in the generated GeoPDF file.
+       *
+       * Groups appearing earlier in the list will show earlier in the GeoPDF layer tree list.
+       *
+       * \see layerOrder
+       * \see customLayerTreeGroups
+       *
+       * \since QGIS 3.38
+       */
+      QStringList layerTreeGroupOrder;
 
     };
 

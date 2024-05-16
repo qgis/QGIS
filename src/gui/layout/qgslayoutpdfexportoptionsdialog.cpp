@@ -261,6 +261,21 @@ QStringList QgsLayoutPdfExportOptionsDialog::geoPdfLayerOrder() const
   return order;
 }
 
+QStringList QgsLayoutPdfExportOptionsDialog::geoPdfGroupOrder() const
+{
+  // we don't explicitly expose a "group order" widget in the dialog -- rather
+  // we use the ordering of the layers, and build the group ordering based
+  // on grouped layers which appear first
+  QStringList groupOrder;
+  for ( int row = 0; row < mGeoPdfStructureProxyModel->rowCount(); ++row )
+  {
+    const QString group = mGeoPdfStructureProxyModel->data( mGeoPdfStructureProxyModel->index( row, QgsGeoPdfLayerTreeModel::GroupColumn ), Qt::DisplayRole ).toString().trimmed();
+    if ( !group.isEmpty() && !groupOrder.contains( group ) )
+      groupOrder << group;
+  }
+  return groupOrder;
+}
+
 void QgsLayoutPdfExportOptionsDialog::setOpenAfterExporting( bool enabled )
 {
   mOpenAfterExportingCheckBox->setChecked( enabled );
