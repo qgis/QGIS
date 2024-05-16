@@ -1296,7 +1296,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
     {
       for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
       {
-        switch ( node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).value<QgsLayerTreeModelLegendNode::NodeTypes>() )
+        const QgsLayerTreeModelLegendNode::NodeTypes nodeType = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).value<QgsLayerTreeModelLegendNode::NodeTypes>();
+        switch ( nodeType )
         {
           case QgsLayerTreeModelLegendNode::EmbeddedWidget:
             filtered << node;
@@ -1319,7 +1320,15 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
                 auto it = mHitTestResults.constFind( vl->id() );
-                if ( it != mHitTestResults.constEnd() && it->contains( ruleKey ) )
+                if ( it != mHitTestResults.constEnd() &&
+                     ( it->contains( ruleKey ) ||
+                       ( !it->isEmpty() &&  // If there is at least one hit for this layer...
+                         ( nodeType == QgsLayerTreeModelLegendNode::DataDefinedSizeLegend ||  // Show Collapsed data defined size legend...
+                           ruleKey == QLatin1String( "data-defined-size" )  // and data defined size title or dds separated legend items
+                         )
+                       )
+                     )
+                   )
                 {
                   filtered << node;
                 }
