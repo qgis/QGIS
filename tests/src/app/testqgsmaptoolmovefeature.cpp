@@ -49,6 +49,7 @@ class TestQgsMapToolMoveFeature: public QObject
     void testCopyMoveFeature();
     void testTopologicalMoveFeature();
     void testAvoidIntersectionAndTopoEdit();
+    void testAvoidIntersectionsCopyMove();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -217,6 +218,43 @@ void TestQgsMapToolMoveFeature::testAvoidIntersectionAndTopoEdit()
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
   mLayerBase->undoStack()->undo();
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  QgsProject::instance()->setAvoidIntersectionsMode( mode );
+}
+
+void TestQgsMapToolMoveFeature::testAvoidIntersectionsCopyMove()
+{
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
+
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  mCanvas->setMapTool( mCopyMoveTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCopyMoveTool );
+
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2.5, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  const QString wkt1 = "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))";
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );
+  const QString wkt2 = "Polygon ((2 0, 2 1, 2 5, 3 5, 3 0, 2.5 0, 2 0))";
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
+
+  // copied feature
+  const QString wkt3 = "Polygon ((1.5 1, 2 1, 2 0, 1.5 0, 1.5 1))";
+  QgsFeatureIterator fi1 = mLayerBase->getFeatures();
+  QgsFeature f1;
+
+  while ( fi1.nextFeature( f1 ) )
+  {
+    QCOMPARE( f1.geometry().asWkt( 2 ), wkt3 );
+    break;
+  }
+
+  mLayerBase->undoStack()->undo();
+  mCanvas->setMapTool( mCaptureTool );
 
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
