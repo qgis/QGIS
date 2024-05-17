@@ -158,6 +158,7 @@ deprecated_renamed_enums = {
     ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton'),
     ('Qt', 'TextColorRole'): ('ItemDataRole', 'ForegroundRole'),
     ('Qt', 'BackgroundColorRole'): ('ItemDataRole', 'BackgroundRole'),
+    ('QPainter', 'HighQualityAntialiasing'): ('RenderHint', 'Antialiasing'),
 }
 
 rename_function_attributes = {
