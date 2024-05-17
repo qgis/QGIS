@@ -108,8 +108,8 @@ class MyProfileResults(QgsAbstractProfileResults):
         if not painter:
             return
 
-        painter.setBrush(Qt.NoBrush)
-        painter.setPen(Qt.NoPen)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         minDistance = context.distanceRange().lower()
         maxDistance = context.distanceRange().upper()
