@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterial.h"
+#include "qgs3dutils.h"
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
@@ -198,25 +199,6 @@ void QgsMetalRoughMaterial::setTextureScale( float textureScale )
   mTextureScaleParameter->setValue( textureScale );
 }
 
-QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines )
-{
-  // There is one caveat to take care of - GLSL source code needs to start with #version as
-  // a first directive, otherwise we get the old GLSL 100 version. So we can't just prepend the
-  // shader source code, but insert our defines at the right place.
-
-  QStringList defineLines;
-  for ( const QString &define : defines )
-    defineLines += "#define " + define + "\n";
-
-  QString definesText = defineLines.join( QString() );
-
-  QByteArray newShaderCode = shaderCode;
-  int versionIndex = shaderCode.indexOf( "#version " );
-  int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
-  newShaderCode.insert( insertionIndex, definesText.toLatin1() );
-  return newShaderCode;
-}
-
 void QgsMetalRoughMaterial::init()
 {
   QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged,
@@ -282,7 +264,7 @@ void QgsMetalRoughMaterial::updateFragmentShader()
   if ( mFlatShading )
     defines += "FLAT_SHADING";
 
-  QByteArray finalShaderCode = addDefinesToShaderCode( fragmentShaderCode, defines );
+  QByteArray finalShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, defines );
   mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
 }
 
