@@ -779,7 +779,26 @@ class Plugins(QObject):
                     elif compareVersions(self.mPlugins[key]["version_available_stable"], self.mPlugins[key]["version_installed"]) == 0:
                         self.mPlugins[key]["status"] = "installed"
                     elif compareVersions(self.mPlugins[key]["version_available_stable"], self.mPlugins[key]["version_installed"]) == 1:
-                        self.mPlugins[key]["status"] = "upgradeable"
+                        library_path = self.mPlugins[key].get('library')
+                        # resolve symlinks to get actual plugin path
+                        if library_path and QFileInfo(library_path).isFile():
+                            library_path = QFileInfo(library_path).canonicalFilePath()
+                        else:
+                            library_path = QDir(library_path).canonicalPath()
+
+                        plugin_is_installed_outside_of_profile = False
+                        if library_path != self.mPlugins[key]["library"]:
+                            # plugin is symlinked into the user's profile
+                            plugin_is_installed_outside_of_profile = (
+                                QDir(HOME_PLUGIN_PATH).relativeFilePath(library_path).startswith('..')
+                            )
+
+                        if plugin_is_installed_outside_of_profile:
+                            # don't offer to upgrade plugins located outside of default
+                            # profile plugin path
+                            self.mPlugins[key]["status"] = "installed"
+                        else:
+                            self.mPlugins[key]["status"] = "upgradeable"
                     else:
                         self.mPlugins[key]["status"] = "newer"
                     # debug: test if the status match the "installed" tag:
