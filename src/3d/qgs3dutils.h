@@ -304,6 +304,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.34
      */
     static Qt3DRender::QCullFace::CullingMode qt3DcullingMode( Qgs3DTypes::CullingMode mode );
+
+    /**
+     * Inserts some define macros into a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to add
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
 };
 
 #endif // QGS3DUTILS_H
