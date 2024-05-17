@@ -65,6 +65,7 @@ class TestQgsCurvePolygon: public QObject
     void testWKB();
     void testWKT();
     void testExport();
+    void testExportOfCompoundCurveRing();
     void testCast();
     void removeInteriorRings_github_issue_49578();
 };
@@ -1738,7 +1739,7 @@ void TestQgsCurvePolygon::testExport()
   QGSCOMPAREGML( elemToString( QgsCurvePolygon().asGml2( doc ) ), expectedGML2empty );
 
   // as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior></Polygon>" ) );
+  QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Ring xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></curveMember></Ring></exterior></Polygon>" ) );
   res = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1793,13 +1794,25 @@ void TestQgsCurvePolygon::testExport()
   QGSCOMPAREGML( res, expectedGML2prec2 );
 
   // as GML3
-  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior><interior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 0.10000000000000001 0 11 0.20000000000000001 0 12 0.10000000000000001 0.05 13 0 0 10</posList></ArcString></segments></Curve></interior></Polygon>" ) );
+  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Ring xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></curveMember></Ring></exterior><interior xmlns=\"gml\"><Ring xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 0.10000000000000001 0 11 0.20000000000000001 0 12 0.10000000000000001 0.05 13 0 0 10</posList></ArcString></segments></Curve></curveMember></Ring></interior></Polygon>" ) );
   res = elemToString( exportPolygon.asGml3( doc ) );
   QCOMPARE( res, expectedGML3 );
 
-  QString expectedGML3prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior><interior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 0.1 0 11 0.2 0 12 0.1 0.05 13 0 0 10</posList></ArcString></segments></Curve></interior></Polygon>" ) );
+  QString expectedGML3prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Ring xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></curveMember></Ring></exterior><interior xmlns=\"gml\"><Ring xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 0.1 0 11 0.2 0 12 0.1 0.05 13 0 0 10</posList></ArcString></segments></Curve></curveMember></Ring></interior></Polygon>" ) );
   res = elemToString( exportPolygon.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
+}
+
+void TestQgsCurvePolygon::testExportOfCompoundCurveRing()
+{
+  QgsCurvePolygon curvePoly;
+  curvePoly.fromWkt( QStringLiteral( "CURVEPOLYGON (COMPOUNDCURVE ((0 -1,0 1),CIRCULARSTRING (0 1,1 0,0 -1)))" ) );
+
+  // as GML3
+  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Ring xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 -1 0 1</posList></LineString></curveMember><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 1 1 0 0 -1</posList></ArcString></segments></Curve></curveMember></Ring></exterior></Polygon>" ) );
+  QDomDocument doc( QStringLiteral( "gml" ) );
+  QString res = elemToString( curvePoly.asGml3( doc ) );
+  QCOMPARE( res, expectedGML3 );
 }
 
 void TestQgsCurvePolygon::testCast()

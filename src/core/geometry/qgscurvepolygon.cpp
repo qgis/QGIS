@@ -398,24 +398,36 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   if ( isEmpty() )
     return elemCurvePolygon;
 
-  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
-  QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
-  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
+  const auto exportRing = [&doc, precision, &ns, axisOrder]( const QgsCurve * ring )
   {
-    curveElem.setTagName( QStringLiteral( "LinearRing" ) );
-  }
-  elemExterior.appendChild( curveElem );
+    QDomElement ringElem = ring->asGml3( doc, precision, ns, axisOrder );
+    if ( ringElem.tagName() == QLatin1String( "LineString" ) )
+    {
+      ringElem.setTagName( QStringLiteral( "LinearRing" ) );
+    }
+    else if ( ringElem.tagName() == QLatin1String( "CompositeCurve" ) )
+    {
+      ringElem.setTagName( QStringLiteral( "Ring" ) );
+    }
+    else if ( ringElem.tagName() == QLatin1String( "Curve" ) )
+    {
+      QDomElement ringElemNew = doc.createElementNS( ns, QStringLiteral( "Ring" ) );
+      QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+      ringElemNew.appendChild( curveMemberElem );
+      curveMemberElem.appendChild( ringElem );
+      ringElem = std::move( ringElemNew );
+    }
+    return ringElem;
+  };
+
+  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  elemExterior.appendChild( exportRing( exteriorRing() ) );
   elemCurvePolygon.appendChild( elemExterior );
 
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
-    QDomElement innerRing = interiorRing( i )->asGml3( doc, precision, ns, axisOrder );
-    if ( innerRing.tagName() == QLatin1String( "LineString" ) )
-    {
-      innerRing.setTagName( QStringLiteral( "LinearRing" ) );
-    }
-    elemInterior.appendChild( innerRing );
+    elemInterior.appendChild( exportRing( interiorRing( i ) ) );
     elemCurvePolygon.appendChild( elemInterior );
   }
   return elemCurvePolygon;
