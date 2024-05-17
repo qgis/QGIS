@@ -1,4 +1,3 @@
-# coding=utf-8
 """Parse plugin metadata for plugin_dependencies
 
 .. note:: This program is free software; you can redistribute it and/or modify

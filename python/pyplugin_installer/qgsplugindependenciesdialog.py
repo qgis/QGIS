@@ -1,4 +1,3 @@
-# coding=utf-8
 """Plugin dependencies selection dialog
 
 .. note:: This program is free software; you can redistribute it and/or modify
