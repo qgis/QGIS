@@ -33,6 +33,9 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
+gdal.UseExceptions()
+osr.UseExceptions()
+
 
 class ExtractProjection(GdalAlgorithm):
     INPUT = 'INPUT'

@@ -24,6 +24,10 @@ import csv
 
 from osgeo import gdal, ogr, osr
 
+gdal.UseExceptions()
+ogr.UseExceptions()
+osr.UseExceptions()
+
 from qgis.core import (QgsRectangle,
                        QgsGeometry,
                        QgsFeatureRequest,
