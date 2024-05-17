@@ -453,7 +453,7 @@ void TestQgsLayoutGeoPdfExport::groupOrder()
   QVERIFY( geoPdfExporter.layerTreeGroupOrder().isEmpty() );
 
   // custom group order is specified, respect that
-  l.setCustomProperty( QStringLiteral( "pdfGroupOrder" ), QStringLiteral( "group 1~~~GROUP C~~~group 2" ) );
+  l.setCustomProperty( QStringLiteral( "pdfGroupOrder" ), QStringList{ QStringLiteral( "group 1" ), QStringLiteral( "group 2" ) } );
   const QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
   QCOMPARE( geoPdfExporter2.layerTreeGroupOrder(), QStringList() << QStringLiteral( "group 1" ) << QStringLiteral( "GROUP C" ) << QStringLiteral( "group 2" ) );
 }
