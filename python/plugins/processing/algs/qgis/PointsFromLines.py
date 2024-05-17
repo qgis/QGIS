@@ -37,6 +37,8 @@ from qgis.core import (QgsFeature,
 from processing.tools import raster
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
+gdal.UseExceptions()
+
 
 class PointsFromLines(QgisAlgorithm):
     INPUT_RASTER = 'INPUT_RASTER'

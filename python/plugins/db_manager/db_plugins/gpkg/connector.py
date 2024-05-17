@@ -39,6 +39,8 @@ from qgis.core import (
 import sqlite3
 
 from osgeo import gdal, ogr, osr
+gdal.UseExceptions()
+ogr.UseExceptions()
 
 
 def classFactory():
@@ -75,11 +77,13 @@ class GPKGDBConnector(DBConnector):
         # Keep this explicit assignment to None to make sure the file is
         # properly closed before being re-opened
         self.gdal_ds = None
-        self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
-        if self.gdal_ds is None:
-            self.gdal_ds = gdal.OpenEx(self.dbname)
-        if self.gdal_ds is None:
-            raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
+        try:
+            self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
+        except Exception:
+            try:
+                self.gdal_ds = gdal.OpenEx(self.dbname)
+            except Exception:
+                raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
         if self.gdal_ds.GetDriver().ShortName != 'GPKG':
             raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{dbname}" not recognized as GPKG ({shortname} reported instead.)').format(dbname=self.dbname, shortname=self.gdal_ds.GetDriver().ShortName))
         self.has_raster = self.gdal_ds.RasterCount != 0 or self.gdal_ds.GetMetadata('SUBDATASETS') is not None
@@ -186,15 +190,11 @@ class GPKGDBConnector(DBConnector):
 
     @classmethod
     def isValidDatabase(cls, path):
-        if hasattr(gdal, 'OpenEx'):
+        try:
             ds = gdal.OpenEx(path)
-            if ds is None or ds.GetDriver().ShortName != 'GPKG':
-                return False
-        else:
-            ds = ogr.Open(path)
-            if ds is None or ds.GetDriver().GetName() != 'GPKG':
-                return False
-        return True
+        except Exception:
+            return False
+        return ds.GetDriver().ShortName == 'GPKG'
 
     def getInfo(self):
         return None
@@ -442,7 +442,10 @@ class GPKGDBConnector(DBConnector):
                 ds = self.gdal_ds
             else:
                 subdataset_name = 'GPKG:%s:%s' % (self.gdal_ds.GetDescription(), tablename)
-                ds = gdal.Open(subdataset_name)
+                try:
+                    ds = gdal.Open(subdataset_name)
+                except Exception:
+                    ds = None
             if ds is None:
                 return None
             gt = ds.GetGeoTransform()

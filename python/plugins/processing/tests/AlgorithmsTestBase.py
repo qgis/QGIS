@@ -54,6 +54,8 @@ from utilities import unitTestDataPath
 
 import processing
 
+gdal.UseExceptions()
+
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)

@@ -25,6 +25,8 @@ from osgeo import gdal
 
 from qgis.core import QgsProcessingException
 
+gdal.UseExceptions()
+
 
 def scanraster(layer, feedback, band_number=1):
     filename = str(layer.source())

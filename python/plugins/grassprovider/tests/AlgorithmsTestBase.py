@@ -53,6 +53,8 @@ from utilities import unitTestDataPath
 
 import processing
 
+gdal.UseExceptions()
+
 
 def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')

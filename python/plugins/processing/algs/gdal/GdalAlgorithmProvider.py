@@ -93,6 +93,8 @@ from .PointsAlongLines import PointsAlongLines
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
+gdal.UseExceptions()
+
 
 class GdalAlgorithmProvider(QgsProcessingProvider):
 
