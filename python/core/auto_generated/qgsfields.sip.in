@@ -43,12 +43,12 @@ In addition to storing a list of :py:class:`QgsField` instances, it also:
     };
 
 
-    QgsFields();
+    QgsFields() /HoldGIL/;
 %Docstring
 Constructor for an empty field container
 %End
 
-    QgsFields( const QgsFields &other );
+    QgsFields( const QgsFields &other ) /HoldGIL/;
 %Docstring
 Copy constructor
 %End
@@ -56,30 +56,30 @@ Copy constructor
 
     virtual ~QgsFields();
 
-    void clear();
+    void clear() /HoldGIL/;
 %Docstring
 Removes all fields
 %End
 
-    bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 ) /HoldGIL/;
 %Docstring
 Appends a field. The field must have unique name, otherwise it is rejected (returns ``False``)
 %End
 
-    bool rename( int fieldIdx, const QString &name );
+    bool rename( int fieldIdx, const QString &name ) /HoldGIL/;
 %Docstring
 Renames a name of field. The field must have unique name, otherwise change is rejected (returns ``False``)
 
 .. versionadded:: 3.6
 %End
 
-    bool appendExpressionField( const QgsField &field, int originIndex );
+    bool appendExpressionField( const QgsField &field, int originIndex ) /HoldGIL/;
 %Docstring
 Appends an expression field. The field must have unique name, otherwise it is rejected (returns ``False``)
 %End
 
 
-    void remove( int fieldIdx );
+    void remove( int fieldIdx ) /HoldGIL/;
 %Docstring
 Removes the field with the given index.
 
@@ -97,43 +97,43 @@ Removes the field with the given index.
     }
 %End
 
-    void extend( const QgsFields &other );
+    void extend( const QgsFields &other ) /HoldGIL/;
 %Docstring
 Extends with fields from another QgsFields container
 %End
 
-    bool isEmpty() const;
+    bool isEmpty() const /HoldGIL/;
 %Docstring
 Checks whether the container is empty
 %End
 
-    int count() const;
+    int count() const /HoldGIL/;
 %Docstring
 Returns number of items
 %End
 
-    int __len__() const;
+    int __len__() const /HoldGIL/;
 %MethodCode
     sipRes = sipCpp->count();
 %End
 
     //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-    int __bool__() const;
+    int __bool__() const /HoldGIL/;
 %MethodCode
     sipRes = true;
 %End
 
-    int size() const;
+    int size() const /HoldGIL/;
 %Docstring
 Returns number of items
 %End
 
-    QStringList names() const;
+    QStringList names() const /HoldGIL/;
 %Docstring
 Returns a list with field names
 %End
 
-    bool exists( int i ) const;
+    bool exists( int i ) const /HoldGIL/;
 %Docstring
 Returns if a field index is valid
 
@@ -143,7 +143,7 @@ Returns if a field index is valid
 %End
 
 
-    QgsField &operator[]( int i ) /Factory/;
+    QgsField &operator[]( int i ) /HoldGIL,Factory/;
 %MethodCode
     SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->count() );
     if ( idx < 0 )
@@ -152,7 +152,7 @@ Returns if a field index is valid
       sipRes = new QgsField( sipCpp->operator[]( idx ) );
 %End
 
-    SIP_PYOBJECT __getitem__( const QString &name ) const /TypeHint="QgsField"/;
+    SIP_PYOBJECT __getitem__( const QString &name ) const /HoldGIL,TypeHint="QgsField"/;
 %MethodCode
     const int fieldIdx = sipCpp->lookupField( *a0 );
     if ( fieldIdx == -1 )
@@ -167,7 +167,7 @@ Returns if a field index is valid
 %End
 
 
-    QgsField at( int i ) const /Factory/;
+    QgsField at( int i ) const /HoldGIL,Factory/;
 %Docstring
 Returns the field at particular index (must be in range 0..N-1).
 
@@ -186,7 +186,7 @@ Returns the field at particular index (must be in range 0..N-1).
 %End
 
 
-    QgsField field( int fieldIdx ) const /Factory/;
+    QgsField field( int fieldIdx ) const /HoldGIL,Factory/;
 %Docstring
 Returns the field at particular index (must be in range 0..N-1).
 
@@ -205,7 +205,7 @@ Returns the field at particular index (must be in range 0..N-1).
 %End
 
 
-    QgsField field( const QString &name ) const /Factory/;
+    QgsField field( const QString &name ) const /HoldGIL,Factory/;
 %Docstring
 Returns the field with matching name.
 
@@ -225,7 +225,7 @@ Returns the field with matching name.
 %End
 
 
-    FieldOrigin fieldOrigin( int fieldIdx ) const;
+    FieldOrigin fieldOrigin( int fieldIdx ) const /HoldGIL/;
 %Docstring
 Returns the field's origin (value from an enumeration).
 
@@ -244,7 +244,7 @@ Returns the field's origin (value from an enumeration).
 %End
 
 
-    int fieldOriginIndex( int fieldIdx ) const;
+    int fieldOriginIndex( int fieldIdx ) const /HoldGIL/;
 %Docstring
 Returns the field's origin index (its meaning is specific to each type of origin).
 
@@ -262,7 +262,7 @@ Returns the field's origin index (its meaning is specific to each type of origin
     }
 %End
 
-    int indexFromName( const QString &fieldName ) const;
+    int indexFromName( const QString &fieldName ) const /HoldGIL/;
 %Docstring
 Gets the field index from the field name.
 
@@ -278,7 +278,7 @@ Alias for indexOf
 .. seealso:: :py:func:`lookupField`
 %End
 
-    int indexOf( const QString &fieldName ) const;
+    int indexOf( const QString &fieldName ) const /HoldGIL/;
 %Docstring
 Gets the field index from the field name.
 
@@ -292,7 +292,7 @@ name of the field.
 .. seealso:: :py:func:`lookupField`
 %End
 
-     int lookupField( const QString &fieldName ) const;
+     int lookupField( const QString &fieldName ) const /HoldGIL/;
 %Docstring
 Looks up field's index from the field name.
 This method matches in the following order:
@@ -308,18 +308,18 @@ This method matches in the following order:
 .. seealso:: :py:func:`indexFromName`
 %End
 
-    QgsAttributeList allAttributesList() const;
+    QgsAttributeList allAttributesList() const /HoldGIL/;
 %Docstring
 Utility function to get list of attribute indexes
 %End
 
-    QList<QgsField> toList() const;
+    QList<QgsField> toList() const /HoldGIL/;
 %Docstring
 Utility function to return a list of :py:class:`QgsField` instances
 %End
 
-    bool operator==( const QgsFields &other ) const;
-    bool operator!=( const QgsFields &other ) const;
+    bool operator==( const QgsFields &other ) const /HoldGIL/;
+    bool operator!=( const QgsFields &other ) const  /HoldGIL/;
 
 
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;
@@ -356,7 +356,7 @@ Since QGIS 3.30, the optional ``typeString`` argument can be used to specify fie
     operator QVariant() const;
 
 
-    void __setitem__( int key, const QgsField &field );
+    void __setitem__( int key, const QgsField &field ) /HoldGIL/;
 %MethodCode
     int idx = ( int )sipConvertFromSequenceIndex( a0, sipCpp->count() );
     if ( idx < 0 )
