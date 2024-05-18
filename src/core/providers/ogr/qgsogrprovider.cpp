@@ -1771,10 +1771,12 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
         }
         case OFTDateTime:
         {
-          const QDateTime dt =  attrVal.toDateTime();
+          QDateTime dt =  attrVal.toDateTime();
           if ( dt.isValid() )
           {
             ok = true;
+            if ( mConvertLocalTimeToUTC && dt.timeSpec() == Qt::LocalTime )
+              dt = dt.toUTC();
             const QDate date = dt.date();
             const QTime time = dt.time();
             OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
@@ -2755,10 +2757,12 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           }
           case OFTDateTime:
           {
-            const QDateTime dt = it2->toDateTime();
+            QDateTime dt = it2->toDateTime();
             if ( dt.isValid() )
             {
               ok = true;
+              if ( mConvertLocalTimeToUTC && dt.timeSpec() == Qt::LocalTime )
+                dt = dt.toUTC();
               const QDate date = dt.date();
               const QTime time = dt.time();
               OGR_F_SetFieldDateTimeEx( of.get(), f,
@@ -4202,6 +4206,11 @@ void QgsOgrProvider::open( OpenMode mode )
   {
     mGDALDriverName = mOgrOrigLayer->driverName();
     mShareSameDatasetAmongLayers = QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mGDALDriverName );
+
+    // Should we set it to true unconditionally? as OGR doesn't do any time
+    // zone conversion for local time. For now, only do that for GeoPackage
+    // since it requires UTC.
+    mConvertLocalTimeToUTC = ( mGDALDriverName == QLatin1String( "GPKG" ) );
 
     QgsDebugMsgLevel( "OGR opened using Driver " + mGDALDriverName, 2 );
 
