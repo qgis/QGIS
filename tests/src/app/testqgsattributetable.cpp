@@ -638,6 +638,15 @@ void TestQgsAttributeTable::testOrderColumn()
 
   // column 0 is indeed column 2 since we move it
   QCOMPARE( filterModel->sortColumn(), 2 );
+
+  // Assume an action column at the index 0,3
+  // When we request the source index, it should be invalid (because there is no source of this column)
+  index = filterModel->mapToSource( filterModel->sourceModel()->index( 0, 3 ) );
+  QVERIFY( index.isValid() );
+  // "hen we request the source index by mapToMaster, there should be returned the source index of the first column
+  // that's done to provide the feature
+  index = filterModel->mapToMaster( filterModel->sourceModel()->index( 0, 3 ) );
+  QCOMPARE( index.column(), 0 );
 }
 
 void TestQgsAttributeTable::testFilteredFeatures()
