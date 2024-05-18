@@ -36,9 +36,15 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+
   const QStringList fields = parameterAsStrings( parameters, QStringLiteral( "FIELD" ), context );
 
   const long count = source->featureCount();
+
+  if ( !( count > 0 ) )
+    return outputs;
 
   QgsFeature f;
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), sourceFlags );
@@ -67,7 +73,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         firstFeature = false;
       }
 
-      if ( f.hasGeometry() && !f.geometry().isNull() )
+      if ( f.hasGeometry() && !f.geometry().isEmpty() )
       {
         geomQueue.append( f.geometry() );
         if ( maxQueueLength > 0 && geomQueue.length() > maxQueueLength )
@@ -83,7 +89,13 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
       current++;
     }
 
-    if ( !separateDisjoint )
+    if ( geomQueue.isEmpty() )
+    {
+      outputFeature.clearGeometry();
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+    }
+    else if ( !separateDisjoint )
     {
       outputFeature.setGeometry( collector( geomQueue ) );
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
@@ -136,7 +148,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         attributeHash.insert( indexAttributes, f.attributes() );
       }
 
-      if ( f.hasGeometry() && !f.geometry().isNull() )
+      if ( f.hasGeometry() && !f.geometry().isEmpty() )
       {
         geometryHash[ indexAttributes ].append( f.geometry() );
       }
@@ -190,8 +202,6 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
     }
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
