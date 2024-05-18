@@ -411,6 +411,18 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
 
 void QgsDateTimeEditConfig::updateDemoWidget()
 {
+  // Use a UTC datetime if the format string includes a Z
+  if ( mDisplayFormatEdit->text().indexOf( "Z" ) > 0 )
+  {
+    mDemoDateTimeEdit->setTimeSpec( Qt::UTC );
+    mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTimeUtc() );
+  }
+  else
+  {
+    mDemoDateTimeEdit->setTimeSpec( Qt::LocalTime );
+    mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
+  }
+
   mDemoDateTimeEdit->setDisplayFormat( mDisplayFormatEdit->text() );
   mDemoDateTimeEdit->setCalendarPopup( mCalendarPopupCheckBox->isChecked() );
 }
