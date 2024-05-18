@@ -192,14 +192,15 @@ typedef QVector<QVariant> QgsAttributes;
 
   QgsAttributes *qv = new QgsAttributes;
   SIP_SSIZE_T listSize = PyList_GET_SIZE( sipPy );
-  qv->reserve( listSize );
+  qv->resize( listSize );
+  QVariant *outData = qv->data();
 
   for ( SIP_SSIZE_T i = 0; i < listSize; ++i )
   {
     PyObject *obj = PyList_GET_ITEM( sipPy, i );
     if ( obj == Py_None )
     {
-      qv->append( QVariant( QVariant::Int ) );
+      *outData++ = QVariant( QVariant::Int );
     }
     else if ( PyBool_Check( obj ) )
     {
@@ -230,7 +231,7 @@ typedef QVector<QVariant> QgsAttributes;
         return 0;
       }
 
-      qv->append( *t );
+      *outData++ = *t;
       sipReleaseType( t, sipType_QVariant, state );
     }
   }
