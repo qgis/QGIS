@@ -1875,6 +1875,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "time from format and language" ) << "to_time('12:34:56','HH:mm:ss','fr')" << false << QVariant( QTime( 12, 34, 56 ) );
       QTest::newRow( "formatted string from date" ) << "format_date('2019-06-29','MMMM d, yyyy')" << false << QVariant( QString( "June 29, 2019" ) );
       QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
+      QTest::newRow( "formatted string with Z" ) << "format_date(to_datetime('2019-06-29T13:34:56+01:00'),'yyyy-MM-ddTHH:mm:ssZ')" << false << QVariant( QString( "2019-06-29T12:34:56Z" ) );
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
