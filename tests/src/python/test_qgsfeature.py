@@ -25,6 +25,8 @@ from qgis.core import (
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
+from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -183,6 +185,24 @@ class TestQgsFeature(QgisTestCase):
         feat.setAttributes([NULL])
         assert [NULL] == feat.attributes()
 
+        # Test different type of attributes
+        attributes = [
+            -95985674563452,
+            12,
+            34.3,
+            False,
+            "QGIS",
+            "some value",
+            QVariant("foo"),
+            QDate(2023, 1, 1),
+            QTime(12, 11, 10),
+            QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)),
+            True
+        ]
+        feat.initAttributes(len(attributes))
+        feat.setAttributes(attributes)
+        self.assertEqual(feat.attributes(), attributes)
+
     def test_setAttribute(self):
         feat = QgsFeature()
         feat.initAttributes(1)
@@ -191,6 +211,28 @@ class TestQgsFeature(QgisTestCase):
         with self.assertRaises(KeyError):
             feat.setAttribute(10, 5)
         self.assertTrue(feat.setAttribute(0, 5))
+
+        # Test different type of attributes
+        attributes = [
+            -9585674563452,
+            34.3,
+            False,
+            "QGIS",
+            QVariant("foo"),
+            QDate(2023, 1, 1),
+            QTime(12, 11, 10),
+            QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10))
+        ]
+        self.assertEqual(feat.attributeCount(), 1)
+        for attribute in attributes:
+            self.assertTrue(feat.setAttribute(0, attribute))
+            self.assertEqual(feat.attribute(0), attribute)
+
+            feat.setAttribute(0, None)
+            self.assertEqual(feat.attribute(0), NULL)
+
+            feat[0] = attribute
+            self.assertEqual(feat.attribute(0), attribute)
 
     def test_DeleteAttribute(self):
         feat = QgsFeature()
