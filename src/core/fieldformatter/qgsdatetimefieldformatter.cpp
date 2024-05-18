@@ -95,6 +95,10 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     }
     else
     {
+      // Convert to UTC if the format string includes a Z, as QLocale::toString() doesn't do it
+      if ( displayFormat.indexOf( "Z" ) > 0 )
+        date = date.toUTC();
+
       result = date.toString( displayFormat );
     }
   }

@@ -711,6 +711,11 @@ class TestQgsDateTimeFieldFormatter(QgisTestCase):
                                                         QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.OffsetFromUTC, 3600)),
                          '04/03/2020 12:13:14')
 
+        config = {"display_format": "dd/MM/yyyy HH:mm:ssZ"}
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None,
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.OffsetFromUTC, 3600)),
+                         '04/03/2020 11:13:14Z')
+
         locale_assertions = {
             QLocale(QLocale.Language.English): {
                 "date_format": 'M/d/yy',
