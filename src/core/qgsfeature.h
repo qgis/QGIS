@@ -106,17 +106,47 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    void __setitem__( int key, QVariant value / GetWrapper / );
+    void __setitem__( int key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) );
     % MethodCode
     bool rv;
 
-    if ( a1Wrapper == Py_None )
+    if ( a1 == Py_None )
     {
       rv = sipCpp->setAttribute( a0, QVariant( QVariant::Int ) );
     }
+    else if ( PyBool_Check( a1 ) )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( PyObject_IsTrue( a1 ) == 1 ) );
+    }
+    else if ( PyLong_Check( a1 ) )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( PyLong_AsLongLong( a1 ) ) );
+    }
+    else if ( PyFloat_Check( a1 ) )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( PyFloat_AsDouble( a1 ) ) );
+    }
+    else if ( PyUnicode_Check( a1 ) )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( QString::fromUtf8( PyUnicode_AsUTF8( a1 ) ) ) );
+    }
+    else if ( sipCanConvertToType( a1, sipType_QVariant, SIP_NOT_NONE ) )
+    {
+      int state;
+      QVariant *qvariant = reinterpret_cast<QVariant *>( sipConvertToType( a1, sipType_QVariant, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        rv = false;
+      }
+      else
+      {
+        rv = sipCpp->setAttribute( a0, *qvariant );
+      }
+      sipReleaseType( qvariant, sipType_QVariant, state );
+    }
     else
     {
-      rv = sipCpp->setAttribute( a0, *a1 );
+      rv = false;
     }
 
     if ( !rv )
@@ -126,7 +156,7 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    void __setitem__( const QString &key, QVariant value / GetWrapper / );
+    void __setitem__( const QString &key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) );
     % MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
@@ -136,13 +166,39 @@ class CORE_EXPORT QgsFeature
     }
     else
     {
-      if ( a1Wrapper == Py_None )
+      if ( a1 == Py_None )
       {
-        sipCpp->setAttribute( *a0, QVariant( QVariant::Int ) );
+        sipCpp->setAttribute( fieldIdx, QVariant( QVariant::Int ) );
+      }
+      else if ( PyBool_Check( a1 ) )
+      {
+        sipCpp->setAttribute( fieldIdx, QVariant( PyObject_IsTrue( a1 ) == 1 ) );
+      }
+      else if ( PyLong_Check( a1 ) )
+      {
+        sipCpp->setAttribute( fieldIdx, QVariant( PyLong_AsLongLong( a1 ) ) );
+      }
+      else if ( PyFloat_Check( a1 ) )
+      {
+        sipCpp->setAttribute( fieldIdx, QVariant( PyFloat_AsDouble( a1 ) ) );
+      }
+      else if ( PyUnicode_Check( a1 ) )
+      {
+        sipCpp->setAttribute( fieldIdx, QVariant( QString::fromUtf8( PyUnicode_AsUTF8( a1 ) ) ) );
+      }
+      else if ( sipCanConvertToType( a1, sipType_QVariant, SIP_NOT_NONE ) )
+      {
+        int state;
+        QVariant *qvariant = reinterpret_cast<QVariant *>( sipConvertToType( a1, sipType_QVariant, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+        if ( !sipIsErr )
+        {
+          sipCpp->setAttribute( fieldIdx, *qvariant );
+        }
+        sipReleaseType( qvariant, sipType_QVariant, state );
       }
       else
       {
-        sipCpp->setAttribute( fieldIdx, *a1 );
+        sipIsErr = 1;
       }
     }
     % End
