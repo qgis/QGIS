@@ -349,6 +349,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void invalidateNetworkCache();
 
     bool mShapefileHadSpatialIndex = false;
+
+    //! Whether to convert Qt DateTime with local time to UTC
+    bool mConvertLocalTimeToUTC = false;
 };
 
 ///@endcond
