@@ -594,7 +594,7 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        ds = osgeo.ogr.Open(datasource)
+        ds = osgeo.ogr.Open(datasource, update=1)
         lyr = ds.GetLayer(0)
         original_feature_count = lyr.GetFeatureCount()
         lyr.DeleteFeature(2)
