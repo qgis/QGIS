@@ -257,18 +257,18 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, co
       }
 
       case QgsLayoutExporter::FileError:
-        throw QgsProcessingException( QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
 
       case QgsLayoutExporter::PrintError:
-        throw QgsProcessingException( QObject::tr( "Could not create print device." ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Could not create print device." ) );
 
       case QgsLayoutExporter::MemoryError:
-        throw QgsProcessingException( QObject::tr( "Trying to create the image "
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Trying to create the image "
                                       "resulted in a memory overflow.\n\n"
                                       "Please try a lower resolution or a smaller paper size." ) );
 
       case QgsLayoutExporter::IteratorError:
-        throw QgsProcessingException( QObject::tr( "Error encountered while exporting atlas." ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Error encountered while exporting atlas." ) );
 
       case QgsLayoutExporter::SvgLayerError:
       case QgsLayoutExporter::Canceled:
@@ -369,18 +369,18 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *a
       }
 
       case QgsLayoutExporter::FileError:
-        throw QgsProcessingException( QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
 
       case QgsLayoutExporter::PrintError:
-        throw QgsProcessingException( QObject::tr( "Could not create print device." ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Could not create print device." ) );
 
       case QgsLayoutExporter::MemoryError:
-        throw QgsProcessingException( QObject::tr( "Trying to create the image "
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Trying to create the image "
                                       "resulted in a memory overflow.\n\n"
                                       "Please try a lower resolution or a smaller paper size." ) );
 
       case QgsLayoutExporter::IteratorError:
-        throw QgsProcessingException( QObject::tr( "Error encountered while exporting atlas." ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Error encountered while exporting atlas." ) );
 
       case QgsLayoutExporter::SvgLayerError:
       case QgsLayoutExporter::Canceled:

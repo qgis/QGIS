@@ -72,6 +72,15 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
   return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for GeoPDF creation." );
 }
 
+void CPL_STDCALL collectErrors( CPLErr, int, const char *msg )
+{
+  QgsDebugError( QStringLiteral( "GDAL PDF creation error: %1 " ).arg( msg ) );
+  if ( QStringList *errorList = static_cast< QStringList * >( CPLGetErrorHandlerUserData() ) )
+  {
+    errorList->append( QString( msg ) );
+  }
+}
+
 bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
 {
   if ( details.includeFeatures && !saveTemporaryLayers() )
@@ -108,9 +117,34 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
 
   char **papszOptions = CSLSetNameValue( nullptr, "COMPOSITION_FILE", xmlFilePath.toUtf8().constData() );
 
+  QStringList creationErrors;
+  CPLPushErrorHandlerEx( collectErrors, &creationErrors );
+
   // return a non-null (fake) dataset in case of success, nullptr otherwise.
   gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
+
+  CPLPopErrorHandler();
   const bool res = outputDataset.get() != nullptr;
+  if ( !res )
+  {
+    if ( creationErrors.size() == 1 )
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file: %1" ).arg( creationErrors.at( 0 ) );
+    }
+    else if ( !creationErrors.empty() )
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file. Received errors:\n" );
+      for ( const QString &error : std::as_const( creationErrors ) )
+      {
+        mErrorMessage += ( !mErrorMessage.isEmpty() ? QStringLiteral( "\n" ) : QString() ) + error;
+      }
+
+    }
+    else
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file, but no error details are available" );
+    }
+  }
   outputDataset.reset();
 
   CSLDestroy( papszOptions );

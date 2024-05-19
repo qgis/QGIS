@@ -612,6 +612,13 @@ class CORE_EXPORT QgsLayoutExporter
     QString errorFile() const { return mErrorFileName; }
 
     /**
+     * Returns a string describing the last error encountered during an export.
+     *
+     * \since QGIS 3.38
+     */
+    QString errorMessage() const { return mErrorMessage; }
+
+    /**
      * Returns the labeling results for all map items included in the export. Map keys are the item UUIDs (see QgsLayoutItem::uuid()).
      *
      * Ownership of the results remains with the layout exporter.
@@ -703,6 +710,7 @@ class CORE_EXPORT QgsLayoutExporter
     QMap< QString, QgsLabelingResults * > mLabelingResults;
 
     mutable QString mErrorFileName;
+    mutable QString mErrorMessage;
 
     QImage createImage( const ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const;
 
