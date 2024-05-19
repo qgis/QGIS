@@ -164,10 +164,10 @@ QVariantMap QgsLayoutToImageAlgorithm::processAlgorithm( const QVariantMap &para
     }
 
     case QgsLayoutExporter::FileError:
-      throw QgsProcessingException( QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
+      throw QgsProcessingException( !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
 
     case QgsLayoutExporter::MemoryError:
-      throw QgsProcessingException( QObject::tr( "Trying to create the image "
+      throw QgsProcessingException( !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Trying to create the image "
                                     "resulted in a memory overflow.\n\n"
                                     "Please try a lower resolution or a smaller paper size." ) );
 
