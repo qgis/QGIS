@@ -2323,7 +2323,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         tmpfile = os.path.join(
             self.basetestpath, 'testVectorLayerExporterDeferredSpatialIndex.gpkg')
-        gdal.Unlink(tmpfile)
+        if os.path.exists(tmpfile):
+            os.unlink(tmpfile)
         options = {}
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
@@ -2442,7 +2443,10 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         ds = ogr.Open(tmpfile, update=1)
         gdal.PushErrorHandler()
-        ds.ExecuteSQL('DROP TRIGGER gpkg_metadata_reference_column_name_update')
+        try:
+            ds.ExecuteSQL('DROP TRIGGER gpkg_metadata_reference_column_name_update')
+        except Exception:
+            pass
         gdal.PopErrorHandler()
         # inject wrong trigger on purpose
         wrong_trigger = "CREATE TRIGGER 'gpkg_metadata_reference_column_name_update' " + \
