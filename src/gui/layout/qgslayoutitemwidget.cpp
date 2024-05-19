@@ -27,6 +27,7 @@
 #include "qgslayoutdesignerinterface.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutmultiframe.h"
+#include "qgsfilterlineedit.h"
 #include <QButtonGroup>
 
 //
@@ -306,6 +307,11 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
   mStrokeUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
 
+  QgsFilterLineEdit *exportGroupLineEdit = new QgsFilterLineEdit();
+  exportGroupLineEdit->setShowClearButton( true );
+  exportGroupLineEdit->setPlaceholderText( tr( "Not set" ) );
+  mExportGroupNameCombo->setLineEdit( exportGroupLineEdit );
+
   mPosUnitsComboBox->linkToWidget( mXPosSpin );
   mPosUnitsComboBox->linkToWidget( mYPosSpin );
   mSizeUnitsComboBox->linkToWidget( mWidthSpin );
@@ -330,6 +336,7 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mFrameJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutItemPropertiesWidget::mFrameJoinStyleCombo_currentIndexChanged );
   connect( mBackgroundGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutItemPropertiesWidget::mBackgroundGroupBox_toggled );
   connect( mItemIdLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutItemPropertiesWidget::mItemIdLineEdit_editingFinished );
+  connect( mExportGroupNameCombo, &QComboBox::currentTextChanged, this, &QgsLayoutItemPropertiesWidget::exportGroupNameEditingFinished );
   connect( mPageSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mPageSpinBox_valueChanged );
   connect( mXPosSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mXPosSpin_valueChanged );
   connect( mYPosSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mYPosSpin_valueChanged );
@@ -728,37 +735,19 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
     return;
   }
 
-  auto block = [ = ]( bool blocked )
-  {
-    mStrokeWidthSpinBox->blockSignals( blocked );
-    mStrokeUnitsComboBox->blockSignals( blocked );
-    mFrameGroupBox->blockSignals( blocked );
-    mBackgroundGroupBox->blockSignals( blocked );
-    mItemIdLineEdit->blockSignals( blocked );
-    mBlendModeCombo->blockSignals( blocked );
-    mOpacityWidget->blockSignals( blocked );
-    mFrameColorButton->blockSignals( blocked );
-    mFrameJoinStyleCombo->blockSignals( blocked );
-    mBackgroundColorButton->blockSignals( blocked );
-    mItemRotationSpinBox->blockSignals( blocked );
-    mExcludeFromPrintsCheckBox->blockSignals( blocked );
-  };
-  block( true );
-
-  mBackgroundColorButton->setColor( mItem->backgroundColor( false ) );
-  mFrameColorButton->setColor( mItem->frameStrokeColor() );
-  mStrokeUnitsComboBox->setUnit( mItem->frameStrokeWidth().units() );
-  mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth().length() );
-  mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
-  mItemIdLineEdit->setText( mItem->id() );
-  mFrameGroupBox->setChecked( mItem->frameEnabled() );
-  mBackgroundGroupBox->setChecked( mItem->hasBackground() );
-  mBlendModeCombo->setBlendMode( mItem->blendMode() );
-  mOpacityWidget->setOpacity( mItem->itemOpacity() );
-  mItemRotationSpinBox->setValue( mItem->itemRotation() );
-  mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports() );
-
-  block( false );
+  whileBlocking( mBackgroundColorButton )->setColor( mItem->backgroundColor( false ) );
+  whileBlocking( mFrameColorButton )->setColor( mItem->frameStrokeColor() );
+  whileBlocking( mStrokeUnitsComboBox )->setUnit( mItem->frameStrokeWidth().units() );
+  whileBlocking( mStrokeWidthSpinBox )->setValue( mItem->frameStrokeWidth().length() );
+  whileBlocking( mFrameJoinStyleCombo )->setPenJoinStyle( mItem->frameJoinStyle() );
+  whileBlocking( mItemIdLineEdit )->setText( mItem->id() );
+  whileBlocking( mFrameGroupBox )->setChecked( mItem->frameEnabled() );
+  whileBlocking( mBackgroundGroupBox )->setChecked( mItem->hasBackground() );
+  whileBlocking( mBlendModeCombo )->setBlendMode( mItem->blendMode() );
+  whileBlocking( mOpacityWidget )->setOpacity( mItem->itemOpacity() );
+  whileBlocking( mItemRotationSpinBox )->setValue( mItem->itemRotation() );
+  whileBlocking( mExcludeFromPrintsCheckBox )->setChecked( mItem->excludeFromExports() );
+  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->exportLayerName() );
 }
 
 void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
@@ -798,6 +787,27 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
   mFrameColorButton->setAllowOpacity( true );
   mFrameColorButton->setContext( QStringLiteral( "composer" ) );
 
+  if ( QgsLayout *layout = mItem->layout() )
+  {
+    // collect export groups from layout, so that we can offer auto completion in the PDF export group drop down
+    QList< QgsLayoutItem * > items;
+    layout->layoutItems( items );
+    QStringList existingGroups;
+    for ( const QgsLayoutItem *item : std::as_const( items ) )
+    {
+      if ( !item->exportLayerName().isEmpty() && !existingGroups.contains( item->exportLayerName() ) )
+        existingGroups.append( item->exportLayerName() );
+    }
+
+    std::sort( existingGroups.begin(), existingGroups.end(), [ = ]( const QString & a, const QString & b ) -> bool
+    {
+      return a.localeAwareCompare( b ) < 0;
+    } );
+
+    whileBlocking( mExportGroupNameCombo )->clear();
+    whileBlocking( mExportGroupNameCombo )->addItems( existingGroups );
+  }
+
   setValuesForGuiPositionElements();
   setValuesForGuiNonPositionElements();
   populateDataDefinedButtons();
@@ -833,6 +843,16 @@ void QgsLayoutItemPropertiesWidget::mItemIdLineEdit_editingFinished()
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Item ID" ), QgsLayoutItem::UndoSetId );
     mItem->setId( mItemIdLineEdit->text() );
     mItemIdLineEdit->setText( mItem->id() );
+    mItem->layout()->undoStack()->endCommand();
+  }
+}
+
+void QgsLayoutItemPropertiesWidget::exportGroupNameEditingFinished()
+{
+  if ( mItem )
+  {
+    mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Export Group Name" ), QgsLayoutItem::UndoExportLayerName );
+    mItem->setExportLayerName( mExportGroupNameCombo->currentText() );
     mItem->layout()->undoStack()->endCommand();
   }
 }

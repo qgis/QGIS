@@ -605,6 +605,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       component.mapLayerId = layerDetail.mapLayerId;
       component.opacity = layerDetail.opacity;
       component.compositionMode = layerDetail.compositionMode;
+      component.group = layerDetail.groupName;
       if ( !layerDetail.mapTheme.isEmpty() )
       {
         component.group = layerDetail.mapTheme;
@@ -1777,6 +1778,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
 
   int prevType = -1;
   QgsLayoutItem::ExportLayerBehavior prevItemBehavior = QgsLayoutItem::CanGroupWithAnyOtherItem;
+  QString previousItemGroup;
   unsigned int layerId = 1;
   QgsLayoutItem::ExportLayerDetail layerDetails;
   itemHider.hideAll();
@@ -1787,9 +1789,20 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
 
     bool canPlaceInExistingLayer = false;
+    QString thisItemExportGroupName;
     if ( layoutItem )
     {
-      switch ( layoutItem->exportLayerBehavior() )
+      QgsLayoutItem::ExportLayerBehavior itemExportBehavior = layoutItem->exportLayerBehavior();
+      thisItemExportGroupName = layoutItem->exportLayerName();
+      if ( !thisItemExportGroupName.isEmpty() )
+      {
+        if ( thisItemExportGroupName != previousItemGroup && !currentLayerItems.empty() )
+          itemExportBehavior = QgsLayoutItem::MustPlaceInOwnLayer;
+        else
+          layerDetails.groupName = thisItemExportGroupName;
+      }
+
+      switch ( itemExportBehavior )
       {
         case QgsLayoutItem::CanGroupWithAnyOtherItem:
         {
@@ -1838,12 +1851,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
           canPlaceInExistingLayer = false;
           break;
       }
-      prevItemBehavior = layoutItem->exportLayerBehavior();
+      prevItemBehavior = itemExportBehavior;
       prevType = layoutItem->type();
+      previousItemGroup = thisItemExportGroupName;
     }
     else
     {
       prevItemBehavior = QgsLayoutItem::MustPlaceInOwnLayer;
+      previousItemGroup.clear();
     }
 
     if ( canPlaceInExistingLayer )
@@ -1899,6 +1914,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
       {
         currentLayerItems << item;
       }
+      layerDetails.groupName = thisItemExportGroupName;
     }
   }
   if ( !currentLayerItems.isEmpty() )

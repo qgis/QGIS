@@ -234,6 +234,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMarginRight, //!< Right margin (since QGIS 3.30)
       UndoSetId, //!< Change item ID
       UndoRotation, //!< Rotation adjustment
+      UndoExportLayerName, //!< Export layer name (since QGIS 3.40)
       UndoShapeStyle, //!< Shape symbol style
       UndoShapeCornerRadius, //!< Shape corner radius
       UndoNodeMove, //!< Node move
@@ -464,12 +465,45 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     };
 
     /**
-     * Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+     * Returns the behavior of this item during exporting to layered exports (e.g. SVG or GeoPDF).
+     *
      * \see numberExportLayers()
      * \see exportLayerDetails()
+     * \see exportLayerName()
+     *
      * \since QGIS 3.10
      */
     virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    /**
+     * Returns the name for this item during exporting to layered exports (e.g. SVG or GeoPDF).
+     *
+     * By default this is an empty string, which indicates that the item does not need to be placed in any specific
+     * layer and will automatically be grouped with other items where possible.
+     *
+     * If the layer name is non-empty, then the item will be placed in a group with the corresponding name
+     * during layered exports.
+     *
+     * \see setExportLayerName()
+     * \see exportLayerBehavior()
+     * \since QGIS 3.40
+     */
+    QString exportLayerName() const;
+
+    /**
+     * Sets the \a name for this item during exporting to layered exports (e.g. SVG or GeoPDF).
+     *
+     * If \a name is an empty string then the item does not need to be placed in any specific
+     * layer and will automatically be grouped with other items where possible.
+     *
+     * If the layer \a name is non-empty, then the item will be placed in a group with the corresponding name
+     * during layered exports.
+     *
+     * \see exportLayerName()
+     * \see exportLayerBehavior()
+     * \since QGIS 3.40
+     */
+    void setExportLayerName( const QString &name );
 
     /**
      * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
@@ -540,6 +574,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
       //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
       QString mapTheme;
+
+      /**
+       * Associated group name, if this layer is associated with an export group.
+       *
+       * \since QGIS 3.40
+       */
+      QString groupName;
     };
 
     /**
@@ -1306,6 +1347,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Whether item should be excluded in exports
     bool mExcludeFromExports = false;
+
+    QString mExportLayerName;
 
     /**
      * Temporary evaluated item exclusion. Data defined properties may mean

@@ -182,6 +182,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoMarginRight,
       UndoSetId,
       UndoRotation,
+      UndoExportLayerName,
       UndoShapeStyle,
       UndoShapeCornerRadius,
       UndoNodeMove,
@@ -432,13 +433,49 @@ Sets the item's parent ``group``.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 %Docstring
-Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+Returns the behavior of this item during exporting to layered exports (e.g. SVG or GeoPDF).
 
 .. seealso:: :py:func:`numberExportLayers`
 
 .. seealso:: :py:func:`exportLayerDetails`
 
+.. seealso:: :py:func:`exportLayerName`
+
 .. versionadded:: 3.10
+%End
+
+    QString exportLayerName() const;
+%Docstring
+Returns the name for this item during exporting to layered exports (e.g. SVG or GeoPDF).
+
+By default this is an empty string, which indicates that the item does not need to be placed in any specific
+layer and will automatically be grouped with other items where possible.
+
+If the layer name is non-empty, then the item will be placed in a group with the corresponding name
+during layered exports.
+
+.. seealso:: :py:func:`setExportLayerName`
+
+.. seealso:: :py:func:`exportLayerBehavior`
+
+.. versionadded:: 3.40
+%End
+
+    void setExportLayerName( const QString &name );
+%Docstring
+Sets the ``name`` for this item during exporting to layered exports (e.g. SVG or GeoPDF).
+
+If ``name`` is an empty string then the item does not need to be placed in any specific
+layer and will automatically be grouped with other items where possible.
+
+If the layer ``name`` is non-empty, then the item will be placed in a group with the corresponding name
+during layered exports.
+
+.. seealso:: :py:func:`exportLayerName`
+
+.. seealso:: :py:func:`exportLayerBehavior`
+
+.. versionadded:: 3.40
 %End
 
  virtual int numberExportLayers() const /Deprecated/;
@@ -502,6 +539,8 @@ Moves to the next export part for a multi-layered export item, during a multi-la
       double opacity;
 
       QString mapTheme;
+
+      QString groupName;
     };
 
     virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
