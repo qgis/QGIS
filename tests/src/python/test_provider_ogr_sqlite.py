@@ -566,35 +566,10 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         f = None
         ds = None
 
-        # create bad 3D dataset (declared ZM but with 2.5d data)
-        tmpfile = os.path.join(self.basetestpath, 'points_with_bad_z.sqlite')
+        # create empty 3D dataset
+        tmpfile = os.path.join(self.basetestpath, 'points_z_empty.sqlite')
         ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPointZM, options=['FID=fid'])
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetFID(0)
-        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (0 0 -5)'))
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetFID(1)
-        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (1 1 -10)'))
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetFID(2)
-        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (2 2 -15)'))
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetFID(3)
-        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (3 3 5)'))
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetFID(4)
-        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (4 4 10)'))
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetFID(5)
-        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (5 5 15)'))
-        lyr.CreateFeature(f)
-        f = None
         ds = None
 
         # 2D points
@@ -647,7 +622,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertAlmostEqual(vl.extent3D().zMaximum(), 15.0, places=3)
         del vl
 
-        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points_with_bad_z.sqlite'), 'test', 'ogr')
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points_z_empty.sqlite'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertTrue(math.isnan(vl.extent().xMinimum()))
