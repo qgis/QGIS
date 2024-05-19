@@ -21,6 +21,7 @@ QgsLayoutItem.UndoMarginBottom = QgsLayoutItem.UndoCommand.UndoMarginBottom
 QgsLayoutItem.UndoMarginRight = QgsLayoutItem.UndoCommand.UndoMarginRight
 QgsLayoutItem.UndoSetId = QgsLayoutItem.UndoCommand.UndoSetId
 QgsLayoutItem.UndoRotation = QgsLayoutItem.UndoCommand.UndoRotation
+QgsLayoutItem.UndoExportLayerName = QgsLayoutItem.UndoCommand.UndoExportLayerName
 QgsLayoutItem.UndoShapeStyle = QgsLayoutItem.UndoCommand.UndoShapeStyle
 QgsLayoutItem.UndoShapeCornerRadius = QgsLayoutItem.UndoCommand.UndoShapeCornerRadius
 QgsLayoutItem.UndoNodeMove = QgsLayoutItem.UndoCommand.UndoNodeMove

@@ -272,6 +272,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     void mFrameJoinStyleCombo_currentIndexChanged( int index );
     void mBackgroundGroupBox_toggled( bool state );
     void mItemIdLineEdit_editingFinished();
+    void exportGroupNameEditingFinished();
 
     //adjust coordinates in line edits
     void mPageSpinBox_valueChanged( int );
