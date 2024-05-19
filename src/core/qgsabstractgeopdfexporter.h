@@ -302,6 +302,13 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        */
       QStringList layerTreeGroupOrder;
 
+      /**
+       * Contains a list of group names which should be considered as mutually exclusive.
+       *
+       * \since QGIS 3.40
+       */
+      QSet< QString > mutuallyExclusiveGroups;
+
     };
 
     /**
