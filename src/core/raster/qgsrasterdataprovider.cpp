@@ -197,7 +197,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         const qgssize tmpIndex = static_cast< qgssize >( tmpRow ) * static_cast< qgssize >( tmpWidth ) + tmpCol;
         const qgssize index = row * static_cast< qgssize >( width ) + col;
 
-        char *tmpBits = tmpBlock->bits( tmpIndex );
+        const char *tmpBits = tmpBlock->constBits( tmpIndex );
         char *bits = block->bits( index );
         if ( !tmpBits )
         {

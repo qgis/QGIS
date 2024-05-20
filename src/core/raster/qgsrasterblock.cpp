@@ -506,9 +506,35 @@ char *QgsRasterBlock::bits( qgssize index )
   {
     return reinterpret_cast< char * >( mData ) + index * mTypeSize;
   }
-  if ( mImage && mImage->bits() )
+  if ( mImage )
   {
-    return reinterpret_cast< char * >( mImage->bits() + index * 4 );
+    if ( uchar *data = mImage->bits() )
+    {
+      return reinterpret_cast< char * >( data + index * 4 );
+    }
+  }
+
+  return nullptr;
+}
+
+const char *QgsRasterBlock::constBits( qgssize index ) const
+{
+  // Not testing type to avoid too much overhead because this method is called per pixel
+  if ( index >= static_cast< qgssize >( mWidth )*mHeight )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ), 4 );
+    return nullptr;
+  }
+  if ( mData )
+  {
+    return reinterpret_cast< const char * >( mData ) + index * mTypeSize;
+  }
+  if ( mImage )
+  {
+    if ( const uchar *data = mImage->constBits() )
+    {
+      return reinterpret_cast< const char * >( data + index * 4 );
+    }
   }
 
   return nullptr;
@@ -525,9 +551,29 @@ char *QgsRasterBlock::bits()
   {
     return reinterpret_cast< char * >( mData );
   }
-  if ( mImage && mImage->bits() )
+  if ( mImage )
   {
-    return reinterpret_cast< char * >( mImage->bits() );
+    if ( uchar *data = mImage->bits() )
+    {
+      return reinterpret_cast< char * >( data );
+    }
+  }
+
+  return nullptr;
+}
+
+const char *QgsRasterBlock::constBits() const
+{
+  if ( mData )
+  {
+    return reinterpret_cast< const char * >( mData );
+  }
+  if ( mImage )
+  {
+    if ( const uchar *data = mImage->constBits() )
+    {
+      return reinterpret_cast< const char * >( data );
+    }
   }
 
   return nullptr;

@@ -529,7 +529,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         if ( destBlockList[ i - 1 ]->isEmpty() )
           continue;
 
-        if ( !partDestProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, 0, 0 ) )
+        if ( !partDestProvider->write( destBlockList[i - 1]->constBits( 0 ), i, iterCols, iterRows, 0, 0 ) )
         {
           return Qgis::RasterFileWriterResult::WriteError;
         }
@@ -545,7 +545,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         if ( destBlockList[ i - 1 ]->isEmpty() )
           continue;
 
-        if ( !destProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, iterLeft, iterTop ) )
+        if ( !destProvider->write( destBlockList[i - 1]->constBits( 0 ), i, iterCols, iterRows, iterLeft, iterTop ) )
         {
           return Qgis::RasterFileWriterResult::WriteError;
         }
