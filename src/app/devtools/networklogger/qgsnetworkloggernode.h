@@ -163,6 +163,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
     QUrl mUrl;
     int mRequestId = 0;
     QNetworkAccessManager::Operation mOperation;
+    QString mVerb;
     QElapsedTimer mTimer;
     qint64 mTotalTime = 0;
     int mHttpStatus = -1;
