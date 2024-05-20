@@ -64,6 +64,7 @@ QgsNetworkLoggerRequestGroup::QgsNetworkLoggerRequestGroup( const QgsNetworkRequ
   , mUrl( request.request().url() )
   , mRequestId( request.requestId() )
   , mOperation( request.operation() )
+  , mVerb( request.request().attribute( QNetworkRequest::CustomVerbAttribute ).toString() )
   , mData( request.content() )
 {
   const QList<QByteArray> headers = request.request().rawHeaderList();
@@ -84,7 +85,7 @@ QVariant QgsNetworkLoggerRequestGroup::data( int role ) const
   {
     case Qt::DisplayRole:
       return QStringLiteral( "%1 %2 %3" ).arg( QString::number( mRequestId ),
-             operationToString( mOperation ),
+             mOperation == QNetworkAccessManager::Operation::CustomOperation ? mVerb : operationToString( mOperation ),
              mUrl.url() );
 
     case Qt::ToolTipRole:
@@ -180,8 +181,40 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
     for ( const QPair< QString, QString > &header : std::as_const( mHeaders ) )
       curlHeaders += QStringLiteral( "-H '%1: %2' " ).arg( header.first, header.second );
 
+    switch ( mOperation )
+    {
+      case QNetworkAccessManager::GetOperation:
+        break;
+
+      case QNetworkAccessManager::PutOperation:
+        curlHeaders += QStringLiteral( "-X PUT" );
+        break;
+
+      case QNetworkAccessManager::PostOperation:
+        curlHeaders += QStringLiteral( "-X POST" );
+        break;
+
+      case QNetworkAccessManager::HeadOperation:
+        curlHeaders += QStringLiteral( "-X HEAD" );
+        break;
+
+      case QNetworkAccessManager::DeleteOperation:
+        curlHeaders += QStringLiteral( "-X DELETE" );
+        break;
+
+      case QNetworkAccessManager::CustomOperation:
+        curlHeaders += QStringLiteral( "-X %1" ).arg( mVerb );
+        break;
+
+      case QNetworkAccessManager::UnknownOperation:
+        if ( !mVerb.isEmpty() )
+          curlHeaders += QStringLiteral( "-X %1" ).arg( mVerb );
+        break;
+    }
+
     QString curlData;
-    if ( mOperation == QNetworkAccessManager::PostOperation || mOperation == QNetworkAccessManager::PutOperation )
+    if ( mOperation == QNetworkAccessManager::PostOperation || mOperation == QNetworkAccessManager::PutOperation
+         || ( mOperation == QNetworkAccessManager::CustomOperation && !mData.isEmpty() ) )
       curlData = QStringLiteral( "--data '%1' " ).arg( QString( mData ) );
 
     QString curlCmd = QStringLiteral( "curl '%1' %2 %3--compressed" ).arg(
@@ -347,7 +380,9 @@ QString QgsNetworkLoggerRequestGroup::cacheControlToString( QNetworkRequest::Cac
 QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const QgsNetworkRequestParameters &request )
   : QgsDevToolsModelGroup( QObject::tr( "Request" ) )
 {
-  addKeyValueNode( QObject::tr( "Operation" ), QgsNetworkLoggerRequestGroup::operationToString( request.operation() ) );
+  addKeyValueNode( QObject::tr( "Operation" ), request.operation() == QNetworkAccessManager::Operation::CustomOperation
+                   ? request.request().attribute( QNetworkRequest::CustomVerbAttribute ).toString()
+                   : QgsNetworkLoggerRequestGroup::operationToString( request.operation() ) );
   addKeyValueNode( QObject::tr( "Thread" ), request.originatingThreadId() );
   addKeyValueNode( QObject::tr( "Initiator" ), request.initiatorClassName().isEmpty() ? QObject::tr( "unknown" ) : request.initiatorClassName() );
   if ( request.initiatorRequestId().isValid() )
@@ -366,6 +401,10 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
 
   switch ( request.operation() )
   {
+    case QNetworkAccessManager::GetOperation:
+    case QNetworkAccessManager::HeadOperation:
+      break;
+
     case QNetworkAccessManager::PostOperation:
     case QNetworkAccessManager::PutOperation:
     {
@@ -374,12 +413,17 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
       break;
     }
 
-    case QNetworkAccessManager::GetOperation:
-    case QNetworkAccessManager::HeadOperation:
     case QNetworkAccessManager::DeleteOperation:
     case QNetworkAccessManager::UnknownOperation:
     case QNetworkAccessManager::CustomOperation:
+    {
+      if ( !request.content().isEmpty() )
+      {
+        std::unique_ptr< QgsNetworkLoggerPostContentGroup > postContentGroup = std::make_unique< QgsNetworkLoggerPostContentGroup >( request );
+        mPostContent = static_cast< QgsNetworkLoggerPostContentGroup * >( addChild( std::move( postContentGroup ) ) );
+      }
       break;
+    }
   }
 }
 
