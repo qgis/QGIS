@@ -349,7 +349,6 @@ class TestQgsServerWMTS(QgsServerTestBase):
             "TILECOL": "0",
             "I": "0",
             "J": "0",
-            #"INFOFORMAT": "text/plain"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
