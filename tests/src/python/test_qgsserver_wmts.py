@@ -333,6 +333,51 @@ class TestQgsServerWMTS(QgsServerTestBase):
         self.wmts_request_compare_project(project, 'GetCapabilities',
                                           reference_base_name='wmts_getcapabilities_config_3857')
 
+    def test_wmts_getfeatureinfo(self):
+        """Test regression issue GH #57441"""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeatureInfo",
+            "LAYER": "QGIS Server Hello World",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "I": "0",
+            "J": "0",
+            #"INFOFORMAT": "text/plain"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self.assertIn(b"RequestNotWellFormed\">InfoFormat is mandatory", r)
+
+        # Add INFOFORMAT
+        qs2 = qs + "&INFOFORMAT=text/plain"
+
+        r, h = self._result(self._execute_request(qs2))
+        self.assertNotIn(b"ormat is mandatory", r)
+        self.assertEqual(h['Content-Type'], "text/plain; charset=utf-8")
+
+        # Try json format
+        qs2 = qs + "&INFOFORMAT=application/json"
+
+        r, h = self._result(self._execute_request(qs2))
+        self.assertNotIn(b"ormat is mandatory", r)
+        self.assertEqual(h['Content-Type'], "application/json; charset=utf-8")
+
+        # For back-compatibility with previous versions let's be good and accept FORMAT as well
+
+        # Add FORMAT
+        qs2 = qs + "&FORMAT=application/json"
+
+        r, h = self._result(self._execute_request(qs2))
+        self.assertNotIn(b"ormat is mandatory", r)
+        self.assertEqual(h['Content-Type'], "application/json; charset=utf-8")
+
 
 if __name__ == '__main__':
     unittest.main()
