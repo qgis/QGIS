@@ -102,6 +102,34 @@ std::string MDAL::readFileToString( const std::string &filename )
   return "";
 }
 
+bool MDAL::deleteFile( const std::string &path )
+{
+  if ( MDAL::fileExists( path ) )
+  {
+#ifdef _MSC_VER
+    std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
+    std::wstring wStr = converter.from_bytes( path );
+    return DeleteFileW( wStr.c_str() ) != 0;
+#else
+    return std::remove( path.c_str() ) == 0;
+#endif
+  }
+
+  return false;
+}
+
+bool MDAL::renameFile( const std::string &from, const std::string &to )
+{
+#ifdef _MSC_VER
+  std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
+  std::wstring wFrom = converter.from_bytes( from );
+  std::wstring wTo = converter.from_bytes( to );
+  return _wrename( wFrom.c_str(), wTo.c_str() ) == 0;
+#else
+  return std::rename( from.c_str(), to.c_str() ) == 0;
+#endif
+}
+
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
   if ( ( str.size() < substr.size() ) || substr.empty() )
