@@ -3253,7 +3253,24 @@ QString QgsMapLayer::generalHtmlMetadata() const
         continue;
 
       const QVariant propValue = customProperty( key );
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
+      QString stringValue = QString();
+      if ( propValue.canConvert<QStringList>() && propValue.toStringList().count() > 1 )
+      {
+        for ( const QString &s : propValue.toStringList() )
+        {
+          stringValue += s.toHtmlEscaped() + QStringLiteral( "<br>" );
+        }
+      }
+      else if ( propValue.canConvert<QString>() || propValue.isNull() )
+      {
+        stringValue = propValue.toString().toHtmlEscaped();
+      }
+      else
+      {
+        stringValue = tr( "<i>cannot be represented</i>" );
+      }
+
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), stringValue );
     }
     metadata += QLatin1String( "</tbody></table>\n" );
     metadata += QLatin1String( "<br><br>\n" );
