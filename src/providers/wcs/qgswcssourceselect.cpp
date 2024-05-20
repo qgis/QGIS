@@ -113,7 +113,7 @@ QString QgsWCSSourceSelect::selectedIdentifier() const
 QString QgsWCSSourceSelect::selectedTitle() const
 {
   const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 ) return QString(); // should not happen
+  if ( selectionList.empty() ) return QString(); // should not happen
   QString title = selectionList.value( 0 )->data( 0, Qt::UserRole + 1 ).toString();
   QgsDebugMsgLevel( " title = " + title, 2 );
   return title;
