@@ -982,7 +982,7 @@ void MDAL::DriverSelafin::save( const std::string &fileName, const std::string &
   std::ofstream file = MDAL::openOutputFile( fileName.c_str(), std::ofstream::binary );
 
   std::string header( "Selafin file created by MDAL library" );
-  std::string remainingStr( " ", 72 - header.size() );
+  std::string remainingStr( 72 - header.size(), ' ' );
   header.append( remainingStr );
   header.append( "SERAFIND" );
   assert( header.size() == 80 );
@@ -1290,13 +1290,11 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
   if ( datasetGroup->uri() == mFileName )
     datasetGroup->mesh()->closeSource();
 
-  if ( std::remove( mFileName.c_str() ) != 0 )
+  if ( !MDAL::deleteFile( mFileName ) || !MDAL::renameFile( tempFileName, mFileName ) )
   {
-    std::remove( tempFileName.c_str() );
+    MDAL::deleteFile( tempFileName );
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, "Unable to write dataset in file" );
   }
-
-  std::rename( tempFileName.c_str(), mFileName.c_str() );
 
   parseFile();
 
