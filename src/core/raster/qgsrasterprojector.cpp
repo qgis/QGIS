@@ -882,8 +882,6 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   // we cannot fill output block with no data because we use memcpy for data, not setValue().
   const bool doNoData = !QgsRasterBlock::typeIsNumeric( input->dataType() ) && input->hasNoData() && !input->hasNoDataValue();
 
-  output->setIsNoData();
-
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
   {
@@ -899,7 +897,6 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && input->isNoData( srcRow, srcCol ) )
       {
-        output->setIsNoData( i, j );
         continue;
       }
 
