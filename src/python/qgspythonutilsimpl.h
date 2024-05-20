@@ -92,6 +92,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool canUninstallPlugin( const QString &packageName ) final;
     bool unloadPlugin( const QString &packageName ) final;
     bool isPluginEnabled( const QString &packageName ) const final;
+    void initGDAL() final;
 
   protected:
 
