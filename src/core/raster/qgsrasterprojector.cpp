@@ -901,8 +901,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       }
 
       const qgssize destIndex = static_cast< qgssize >( i ) * width + j;
-      char *srcBits = inputBlock->bits( srcIndex );
-      char *destBits = outputBlock->bits( destIndex );
+      const char *srcBits = inputBlock->constBits( srcIndex );
+      char *destBits = output->bits( destIndex );
       if ( !srcBits )
       {
         // QgsDebugError( QStringLiteral( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );

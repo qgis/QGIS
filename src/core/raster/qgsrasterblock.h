@@ -552,14 +552,38 @@ class CORE_EXPORT QgsRasterBlock
      * Returns a pointer to block data.
      * \param index data matrix index (long type in Python)
      * \note not available in Python bindings
+     *
+     * \see constBits()
      */
     char *bits( qgssize index ) SIP_SKIP;
 
     /**
      * Returns a pointer to block data.
      * \note not available in Python bindings
+     *
+     * \see constBits()
      */
     char *bits() SIP_SKIP;
+
+    /**
+     * Returns a const pointer to block data.
+     *
+     * \param index data matrix index (long type in Python)
+     * \note not available in Python bindings
+     *
+     * \see bits()
+     * \since QGIS 3.38
+     */
+    const char *constBits( qgssize index ) const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to block data.
+     * \note not available in Python bindings
+     *
+     * \see bits()
+     * \since QGIS 3.38
+     */
+    const char *constBits() const SIP_SKIP;
 
     /**
      * \brief Print double value with all necessary significant digits.
