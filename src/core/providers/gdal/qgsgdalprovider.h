@@ -204,7 +204,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool isEditable() const override;
     bool setEditable( bool enabled ) override;
-    bool write( void *data, int band, int width, int height, int xOffset, int yOffset ) override;
+    bool write( const void *data, int band, int width, int height, int xOffset, int yOffset ) override;
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;

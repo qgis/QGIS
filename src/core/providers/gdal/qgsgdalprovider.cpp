@@ -3973,7 +3973,7 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   return new QgsGdalProvider( uri, providerOptions, true, dataset.release() );
 }
 
-bool QgsGdalProvider::write( void *data, int band, int width, int height, int xOffset, int yOffset )
+bool QgsGdalProvider::write( const void *data, int band, int width, int height, int xOffset, int yOffset )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
@@ -3994,7 +3994,7 @@ bool QgsGdalProvider::write( void *data, int band, int width, int height, int xO
     gdalDataType = GDT_Float64;
 #endif
 
-  return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, gdalDataType, 0, 0 ) == CE_None;
+  return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None;
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
