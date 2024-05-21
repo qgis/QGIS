@@ -198,7 +198,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
 
   switch ( mColorRampShader.colorRampType() )
   {
-    case QgsColorRampShader::Interpolated:
+    case Qgis::ShaderInterpolationMethod::Linear:
       // for interpolated shaders we use a ramp legend node unless the settings flag
       // to use the continuous legend is not set, in that case we fall through
       if ( mColorRampShader.sourceColorRamp() && ( ! mColorRampShader.legendSettings() || mColorRampShader.legendSettings()->useContinuousLegend() ) )
@@ -210,8 +210,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
         break;
       }
       [[fallthrough]];
-    case QgsColorRampShader::Discrete:
-    case QgsColorRampShader::Exact:
+    case Qgis::ShaderInterpolationMethod::Discrete:
+    case Qgis::ShaderInterpolationMethod::Exact:
     {
       // for all others we use itemised lists
       QList< QPair< QString, QColor > > items;

@@ -19,14 +19,14 @@
 #define QGSCOLORRAMPSHADERWIDGET_H
 
 #include <QStyledItemDelegate>
+#include <QPointer>
 
 #include "qgis_sip.h"
-#include "qgscolorrampshader.h"
-#include "qgsrasterrenderer.h"
-#include "ui_qgscolorrampshaderwidgetbase.h"
 #include "qgis_gui.h"
-#include "qgsrasterrendererwidget.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgsrectangle.h"
+#include "qgscolorrampshader.h"
+#include "ui_qgscolorrampshaderwidgetbase.h"
 
 class QgsRasterDataProvider;
 class QgsLocaleAwareNumericLineEditDelegate;
@@ -51,6 +51,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
     //! Creates new color ramp shader widget
     QgsColorRampShaderWidget( QWidget *parent = nullptr );
+    ~QgsColorRampShaderWidget() override;
 
     //! Allows quantile classification mode for raster layers
     void initializeForUseWithRasterLayer();
@@ -90,7 +91,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void widgetChanged();
 
     //! Classification mode changed
-    void classificationModeChanged( QgsColorRampShader::ClassificationMode mode );
+    void classificationModeChanged( Qgis::ShaderClassificationMethod mode );
 
   public slots:
 
