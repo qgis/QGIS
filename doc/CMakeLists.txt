@@ -77,6 +77,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
+      ${CMAKE_SOURCE_DIR}/src/core/painting
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/pdf
       ${CMAKE_SOURCE_DIR}/src/core/plot
