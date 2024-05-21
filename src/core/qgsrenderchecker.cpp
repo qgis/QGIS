@@ -549,8 +549,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                                              "<tr>"
                                              "<td colspan=3>Compare %5 and %6</td>"
                                              "</tr>\n<tr>"
-                                             "<td align=center><img src=\"%1\"></td>\n"
                                              "<td align=center><img width=%3 height=%4 src=\"%2\"></td>\n"
+                                             "<td align=center><img src=\"%1\"></td>\n"
                                              "</tr>"
                                              "</table>\n" )
                                            .arg(
