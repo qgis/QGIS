@@ -120,7 +120,7 @@ void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader )
   mShader.reset( shader );
 }
 
-void QgsSingleBandPseudoColorRenderer::createShader( QgsColorRamp *colorRamp, QgsColorRampShader::Type colorRampType, QgsColorRampShader::ClassificationMode classificationMode, int classes, bool clip, const QgsRectangle &extent )
+void QgsSingleBandPseudoColorRenderer::createShader( QgsColorRamp *colorRamp, Qgis::ShaderInterpolationMethod colorRampType, Qgis::ShaderClassificationMethod classificationMode, int classes, bool clip, const QgsRectangle &extent )
 {
   if ( mBand == -1 || classificationMin() >= classificationMax() )
   {
@@ -391,13 +391,13 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
 
   switch ( rampShader->colorRampType() )
   {
-    case ( QgsColorRampShader::Exact ):
+    case ( Qgis::ShaderInterpolationMethod::Exact ):
       rampType = QStringLiteral( "values" );
       break;
-    case ( QgsColorRampShader::Discrete ):
+    case ( Qgis::ShaderInterpolationMethod::Discrete ):
       rampType = QStringLiteral( "intervals" );
       break;
-    case ( QgsColorRampShader::Interpolated ):
+    case ( Qgis::ShaderInterpolationMethod::Linear ):
       rampType = QStringLiteral( "ramp" );
       break;
   }
@@ -458,7 +458,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
 
   switch ( rampShader->colorRampType() )
   {
-    case QgsColorRampShader::Interpolated:
+    case Qgis::ShaderInterpolationMethod::Linear:
       // for interpolated shaders we use a ramp legend node unless the settings flag
       // to use the continuous legend is not set, in that case we fall through
       if ( ! rampShader->legendSettings() || rampShader->legendSettings()->useContinuousLegend() )
@@ -472,8 +472,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
         break;
       }
       [[fallthrough]];
-    case QgsColorRampShader::Discrete:
-    case QgsColorRampShader::Exact:
+    case Qgis::ShaderInterpolationMethod::Discrete:
+    case Qgis::ShaderInterpolationMethod::Exact:
     {
       // for all others we use itemised lists
       const QList< QPair< QString, QColor > > items = legendSymbologyItems();

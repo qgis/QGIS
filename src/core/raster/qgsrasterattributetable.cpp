@@ -1092,7 +1092,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
         switch ( shaderFunction->colorRampType() )
         {
 
-          case QgsColorRampShader::Type::Interpolated:
+          case Qgis::ShaderInterpolationMethod::Linear:
           {
             rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QVariant::Type::Double );
             rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QVariant::Type::Double );
@@ -1125,7 +1125,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             break;
           }
 
-          case QgsColorRampShader::Type::Discrete:
+          case Qgis::ShaderInterpolationMethod::Discrete:
           {
             rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QVariant::Type::Double );
             rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QVariant::Type::Double );
@@ -1154,7 +1154,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             break;
           }
 
-          case QgsColorRampShader::Type::Exact:
+          case Qgis::ShaderInterpolationMethod::Exact:
           {
             rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QVariant::Type::Double );
             rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
@@ -1530,7 +1530,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     pseudoColorRenderer->setClassificationMin( minimumValue() );
     pseudoColorRenderer->setClassificationMax( maximumValue() );
     // Use discrete for single colors, interpolated for ramps
-    pseudoColorRenderer->createShader( ramp, hasRamp() ? QgsColorRampShader::Type::Interpolated : QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
+    pseudoColorRenderer->createShader( ramp, hasRamp() ? Qgis::ShaderInterpolationMethod::Linear : Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::Continuous, ramp->stops().count() + 2, true );
     if ( pseudoColorRenderer->shader() )
     {
       pseudoColorRenderer->shader()->setMaximumValue( maximumValue() );

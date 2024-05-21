@@ -788,8 +788,8 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
       colorRampShader.setMaximumValue( colorRampItemlist.count() - 1 );
       scalarSettings.setClassificationMinimumMaximum( 0, colorRampItemlist.count() - 1 );
       colorRampShader.setColorRampItemList( colorRampItemlist );
-      colorRampShader.setColorRampType( QgsColorRampShader::Exact );
-      colorRampShader.setClassificationMode( QgsColorRampShader::EqualInterval );
+      colorRampShader.setColorRampType( Qgis::ShaderInterpolationMethod::Exact );
+      colorRampShader.setClassificationMode( Qgis::ShaderClassificationMethod::EqualInterval );
     }
 
     scalarSettings.setColorRampShader( colorRampShader );

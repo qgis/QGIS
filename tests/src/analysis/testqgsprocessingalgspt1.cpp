@@ -4363,7 +4363,7 @@ void TestQgsProcessingAlgsPt1::styleFromProject()
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
   QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setColorRampType( Qgis::ShaderInterpolationMethod::Linear );
   colorRampShader->setSourceColorRamp( new QgsGradientColorRamp( QColor( 255, 255, 0 ), QColor( 255, 0, 255 ) ) );
   rasterShader->setRasterShaderFunction( colorRampShader );
   QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( rl->dataProvider(), 1, rasterShader );

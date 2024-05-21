@@ -271,8 +271,8 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
   mat->addParameter( colorRampTextureParameter );
   Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
   mat->addParameter( colorRampCountParameter );
-  const int colorRampType = mColorRampShader.colorRampType();
-  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
+  const Qgis::ShaderInterpolationMethod colorRampType = mColorRampShader.colorRampType();
+  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", static_cast< int >( colorRampType ) );
   mat->addParameter( colorRampTypeParameter );
 }
 
@@ -557,8 +557,8 @@ QgsPointCloudCategoryList QgsClassificationPointCloud3DSymbol::getFilteredOutCat
 QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 {
   QgsColorRampShader colorRampShader;
-  colorRampShader.setColorRampType( QgsColorRampShader::Type::Exact );
-  colorRampShader.setClassificationMode( QgsColorRampShader::ClassificationMode::Continuous );
+  colorRampShader.setColorRampType( Qgis::ShaderInterpolationMethod::Exact );
+  colorRampShader.setClassificationMode( Qgis::ShaderClassificationMethod::Continuous );
   QList<QgsColorRampShader::ColorRampItem> colorRampItemList;
   for ( const QgsPointCloudCategory &category : mCategoriesList )
   {
@@ -593,8 +593,8 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *m
   mat->addParameter( colorRampTextureParameter );
   Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
   mat->addParameter( colorRampCountParameter );
-  const int colorRampType = mColorRampShader.colorRampType();
-  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
+  const Qgis::ShaderInterpolationMethod colorRampType = mColorRampShader.colorRampType();
+  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", static_cast< int >( colorRampType ) );
   mat->addParameter( colorRampTypeParameter );
 }
 

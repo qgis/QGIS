@@ -2136,7 +2136,7 @@ void TestQgsMeshLayer::symbologyConsistencyWithName()
     int index = nameToindex_1.value( name );
     QgsMeshRendererScalarSettings scalSettings = settings_1.scalarSettings( index );
     QgsColorRampShader cl = scalSettings.colorRampShader();
-    cl.setClassificationMode( QgsColorRampShader::EqualInterval );
+    cl.setClassificationMode( Qgis::ShaderClassificationMethod::EqualInterval );
     cl.classifyColorRamp( 10 + i, -1 );
     QCOMPARE( cl.colorRampItemList().count(), 10 + i );
     scalSettings.setColorRampShader( cl );
@@ -2152,7 +2152,7 @@ void TestQgsMeshLayer::symbologyConsistencyWithName()
     int index = nameToindex_2.value( name );
     QgsMeshRendererScalarSettings scalSettings = settings_2.scalarSettings( index );
     QgsColorRampShader cl = scalSettings.colorRampShader();
-    cl.setClassificationMode( QgsColorRampShader::EqualInterval );
+    cl.setClassificationMode( Qgis::ShaderClassificationMethod::EqualInterval );
     cl.classifyColorRamp( 30 + i, -1 );
     QCOMPARE( cl.colorRampItemList().count(), 30 + i );
     scalSettings.setColorRampShader( cl );

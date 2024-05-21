@@ -61,8 +61,8 @@ Returns the raster shader
 
 
     void createShader( QgsColorRamp *colorRamp /Transfer/ = 0,
-                       QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
-                       QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
+                       Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
+                       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
                        int classes = 0,
                        bool clip = false,
                        const QgsRectangle &extent = QgsRectangle() );

@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscolorramp.h"
-#include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
 
@@ -72,8 +71,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
      * \param extent extent used in classification (only used in quantile mode)
      */
     void createShader( QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
-                       QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
-                       QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
+                       Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
+                       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
                        int classes = 0,
                        bool clip = false,
                        const QgsRectangle &extent = QgsRectangle() );
