@@ -76,20 +76,19 @@ int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
 {
   // copy/paste from qpicture.cpp
   int val;
-  QRectF brect = mPaintEngine->maskPainterPath().boundingRect();
   switch ( m )
   {
     case PdmWidth:
-      val = brect.width();
+      val = mPaintEngine->maskPainterPath().boundingRect().width();
       break;
     case PdmHeight:
-      val = brect.height();
+      val = mPaintEngine->maskPainterPath().boundingRect().height();
       break;
     case PdmWidthMM:
-      val = int( 25.4 / qt_defaultDpiX() * brect.width() );
+      val = int( 25.4 / qt_defaultDpiX() * mPaintEngine->maskPainterPath().boundingRect().width() );
       break;
     case PdmHeightMM:
-      val = int( 25.4 / qt_defaultDpiY() * brect.height() );
+      val = int( 25.4 / qt_defaultDpiY() * mPaintEngine->maskPainterPath().boundingRect().height() );
       break;
     case PdmDpiX:
     case PdmPhysicalDpiX:
