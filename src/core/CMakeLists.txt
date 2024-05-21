@@ -253,6 +253,7 @@ set(QGIS_CORE_SRCS
   network/qgshttpheaders.cpp
   network/qgsrangerequestcache.cpp
 
+  painting/qgsgeometrypaintdevice.cpp
   painting/qgsmaskpaintdevice.cpp
   painting/qgsnullpainterdevice.cpp
   painting/qgspaintenginehack.cpp
@@ -1643,6 +1644,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshlayerlabeling.h
   mesh/qgsmeshlayerlabelprovider.h
 
+  painting/qgsgeometrypaintdevice.h
   painting/qgsmaskpaintdevice.h
   painting/qgsnullpainterdevice.h
   painting/qgspaintenginehack.h
