@@ -23,6 +23,10 @@
 
 bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod &type, QStringList &errors )
 {
+  type = Qgis::ShaderInterpolationMethod::Discrete;
+  errors.clear();
+  items.clear();
+
   QFile inputFile( path );
   if ( !inputFile.open( QFile::ReadOnly ) )
   {
