@@ -253,6 +253,11 @@ set(QGIS_CORE_SRCS
   network/qgshttpheaders.cpp
   network/qgsrangerequestcache.cpp
 
+  painting/qgsmaskpaintdevice.cpp
+  painting/qgsnullpainterdevice.cpp
+  painting/qgspaintenginehack.cpp
+  painting/qgspainting.cpp
+
   pdf/qgspdfrenderer.cpp
 
   processing/qgsprocessing.cpp
@@ -505,12 +510,10 @@ set(QGIS_CORE_SRCS
   qgsmaskidprovider.cpp
   qgsmatrix4x4.cpp
   qgsmbtiles.cpp
-  qgsmaskpaintdevice.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmultirenderchecker.cpp
-  qgsnullpainterdevice.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -518,8 +521,6 @@ set(QGIS_CORE_SRCS
   qgsogrutils.cpp
   qgsoptionalexpression.cpp
   qgsowsconnection.cpp
-  qgspaintenginehack.cpp
-  qgspainting.cpp
   qgspathresolver.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
@@ -1202,14 +1203,12 @@ set(QGIS_CORE_HDRS
   qgsmapunitscale.h
   qgsmargins.h
   qgsmaskidprovider.h
-  qgsmaskpaintdevice.h
   qgsmatrix4x4.h
   qgsmbtiles.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
-  qgsnullpainterdevice.h
   qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
@@ -1218,8 +1217,6 @@ set(QGIS_CORE_HDRS
   qgsoptional.h
   qgsoptionalexpression.h
   qgsowsconnection.h
-  qgspaintenginehack.h
-  qgspainting.h
   qgspathresolver.h
   qgspluginlayer.h
   qgspluginlayerregistry.h
@@ -1645,6 +1642,11 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshforcebypolylines.h
   mesh/qgsmeshlayerlabeling.h
   mesh/qgsmeshlayerlabelprovider.h
+
+  painting/qgsmaskpaintdevice.h
+  painting/qgsnullpainterdevice.h
+  painting/qgspaintenginehack.h
+  painting/qgspainting.h
 
   pal/costcalculator.h
   pal/feature.h
@@ -2332,6 +2334,7 @@ target_include_directories(qgis_core PUBLIC
   metadata
   network
   numericformats
+  painting
   pal
   pdf
   plot

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgspainting.h                                               *
+ * src/core/painting/qgspainting.h                                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -92,7 +92,7 @@ Returns ``True`` if the triangle could be rendered, or ``False`` if it could not
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgspainting.h                                               *
+ * src/core/painting/qgspainting.h                                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

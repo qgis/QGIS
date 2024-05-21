@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsnullpainterdevice.h                                      *
+ * src/core/painting/qgsmaskpaintdevice.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,21 +11,27 @@
 
 
 
-
-class QgsNullPaintDevice: QPaintDevice
+class QgsMaskPaintDevice: QPaintDevice
 {
 %Docstring(signature="appended")
-Null painter device that can be used for map renderer jobs which use custom painters.
+Mask painter device that can be used to register everything painted into a QPainterPath
+used later as clip path
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
-#include "qgsnullpainterdevice.h"
+#include "qgsmaskpaintdevice.h"
 %End
   public:
 
-    QgsNullPaintDevice();
+    QgsMaskPaintDevice( bool usePathStroker = false );
+%Docstring
+!
+Constructor
+If ``usePathStroker`` is ``True``, path will be considered with a stroke regarding QPainter
+pen configuration
+%End
 
     virtual QPaintEngine *paintEngine() const;
 
@@ -33,21 +39,18 @@ Null painter device that can be used for map renderer jobs which use custom pain
     virtual int metric( PaintDeviceMetric metric ) const;
 
 
-    void setOutputSize( const QSize &size );
+    QPainterPath maskPainterPath() const;
 %Docstring
-Sets the ``size`` of the device in pixels.
+Returns the mask painter path painted on this paint device
 %End
-    void setOutputDpi( const int dpi );
-%Docstring
-Sets the ``dpi`` of the device.
-%End
+
 };
 
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsnullpainterdevice.h                                      *
+ * src/core/painting/qgsmaskpaintdevice.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

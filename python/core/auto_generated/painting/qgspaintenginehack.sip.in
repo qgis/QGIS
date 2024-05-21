@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgspaintenginehack.h                                        *
+ * src/core/painting/qgspaintenginehack.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -29,7 +29,7 @@ Hack to workaround Qt #5114 by disabling PatternTransform
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgspaintenginehack.h                                        *
+ * src/core/painting/qgspaintenginehack.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
