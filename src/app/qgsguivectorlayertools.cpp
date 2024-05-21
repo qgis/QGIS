@@ -198,7 +198,7 @@ bool QgsGuiVectorLayerTools::avoidIntersection( QgsVectorLayer *layer, QgsFeatur
       if ( errorMsg )
       {
         *errorMsg = ( geom.isEmpty() ) ?
-                    tr( "The feature cannot be moved because the resulting geometry would be empty" ) :
+                    tr( "The feature cannot be moved because 1 or more resulting geometries would be empty" ) :
                     tr( "An error was reported during intersection removal" );
       }
 
