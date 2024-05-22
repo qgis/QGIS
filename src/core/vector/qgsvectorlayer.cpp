@@ -1373,6 +1373,11 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
       success = mJoinBuffer->addFeature( feature );
   }
 
+  if ( success && !mDefaultValueOnUpdateFields.isEmpty() )
+  {
+    updateDefaultValues( feature.id() );
+  }
+
   return success;
 }
 
