@@ -211,6 +211,8 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     void mouseMoveEvent( QMouseEvent *e ) override;
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseReleaseEvent( QMouseEvent *e ) override;
+
+    friend class TestQgsCompoundColorWidget;
 };
 
 

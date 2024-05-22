@@ -740,6 +740,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -760,6 +763,9 @@
               <widget class="QRadioButton" name="mSaturationRadio">
                <property name="text">
                 <string/>
+               </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -782,6 +788,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -802,6 +811,9 @@
               <widget class="QRadioButton" name="mRedRadio">
                <property name="text">
                 <string/>
+               </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -824,6 +836,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -844,6 +859,9 @@
               <widget class="QRadioButton" name="mBlueRadio">
                <property name="text">
                 <string/>
+               </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -887,6 +905,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -907,6 +928,9 @@
               <widget class="QRadioButton" name="mMagentaRadio">
                <property name="text">
                 <string/>
+               </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -929,6 +953,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -949,6 +976,9 @@
               <widget class="QRadioButton" name="mBlackRadio">
                <property name="text">
                 <string/>
+               </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
                </property>
               </widget>
              </item>

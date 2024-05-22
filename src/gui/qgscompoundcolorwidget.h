@@ -146,16 +146,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private slots:
 
-    void mHueRadio_toggled( bool checked );
-    void mSaturationRadio_toggled( bool checked );
-    void mValueRadio_toggled( bool checked );
-    void mRedRadio_toggled( bool checked );
-    void mGreenRadio_toggled( bool checked );
-    void mBlueRadio_toggled( bool checked );
-    void mCyanRadio_toggled( bool checked );
-    void mMagentaRadio_toggled( bool checked );
-    void mYellowRadio_toggled( bool checked );
-    void mBlackRadio_toggled( bool checked );
+    void onRgbButtonGroupToggled( int id, bool checked );
+    void onCmykButtonGroupToggled( int id, bool checked );
 
     void mAddColorToSchemeButton_clicked();
 
@@ -192,6 +184,9 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     bool mPickingColor = false;
 
     bool mDiscarded = false;
+
+    QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mRgbRadios;
+    QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mCmykRadios;
 
     /**
      * Saves all widget settings

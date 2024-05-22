@@ -215,6 +215,7 @@ Generates a checkboard pattern pixmap for use as a background to transparent col
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
+
 };
 
 

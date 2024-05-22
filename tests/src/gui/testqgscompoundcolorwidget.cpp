@@ -33,7 +33,10 @@ class TestQgsCompoundColorWidget : public QgsTest
     void cleanup();// will be called after every testfunction.
     void testCmykConversion();
     void testComponentChange();
+    void testComponentSettings_data();
+    void testComponentSettings();
     void testModelChange();
+    void testTabChange();
 };
 
 void TestQgsCompoundColorWidget::initTestCase()
@@ -91,6 +94,39 @@ void TestQgsCompoundColorWidget::testCmykConversion()
   QCOMPARE( w.color(), QColor::fromCmyk( 170, 85, 0, 225, 50 ) );
 }
 
+void TestQgsCompoundColorWidget::testComponentSettings_data()
+{
+  QTest::addColumn<int>( "settingsComponent" );
+  QTest::addColumn<QgsColorWidget::ColorComponent>( "expectedComponent" );
+
+  QTest::newRow( "hue" ) << 0 << QgsColorWidget::ColorComponent::Hue;
+  QTest::newRow( "saturation" ) << 1 << QgsColorWidget::ColorComponent::Saturation;
+  QTest::newRow( "value" ) << 2 << QgsColorWidget::ColorComponent::Value;
+  QTest::newRow( "red" ) << 3 << QgsColorWidget::ColorComponent::Red;
+  QTest::newRow( "green" ) << 4 << QgsColorWidget::ColorComponent::Green;
+  QTest::newRow( "blue" ) << 5 << QgsColorWidget::ColorComponent::Blue;
+  QTest::newRow( "cyan" ) << 0 << QgsColorWidget::ColorComponent::Cyan;
+  QTest::newRow( "magenta" ) << 1 << QgsColorWidget::ColorComponent::Magenta;
+  QTest::newRow( "yellow" ) << 2 << QgsColorWidget::ColorComponent::Yellow;
+  QTest::newRow( "black" ) << 3 << QgsColorWidget::ColorComponent::Black;
+}
+
+void TestQgsCompoundColorWidget::testComponentSettings()
+{
+  QFETCH( int, settingsComponent );
+  QFETCH( QgsColorWidget::ColorComponent, expectedComponent );
+
+  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
+                          QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), settingsComponent );
+
+  QgsCompoundColorWidget w( nullptr, QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
+                            QColor::fromCmyk( 1, 2, 3, 4 ) : QColor( 10, 20, 30, 50 ) );
+  w.setVisible( true );
+
+  QCOMPARE( w.mColorBox->component(), expectedComponent );
+  QCOMPARE( w.mVerticalRamp->component(), expectedComponent );
+}
+
 void TestQgsCompoundColorWidget::testComponentChange()
 {
   QgsSettings().setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 3 );
@@ -117,11 +153,13 @@ void TestQgsCompoundColorWidget::testComponentChange()
 
   for ( QPair<QRadioButton *, QgsColorWidget::ColorComponent> color : colors )
   {
+    if ( QgsColorWidget::colorSpec( color.second ) != w.mColorModel->currentData() )
+      w.mColorModel->setCurrentIndex( w.mColorModel->findData( QgsColorWidget::colorSpec( color.second ) ) );
+
     color.first->setChecked( true );
     QCOMPARE( w.mColorBox->component(), color.second );
     QCOMPARE( w.mVerticalRamp->component(),  color.second );
   }
-
 }
 
 void TestQgsCompoundColorWidget::testModelChange()
@@ -137,6 +175,35 @@ void TestQgsCompoundColorWidget::testModelChange()
   w.setColor( QColor( 1, 2, 3 ) );
   QCOMPARE( w.mColorModel->currentData(), QColor::Rgb );
 }
+
+void TestQgsCompoundColorWidget::testTabChange()
+{
+  QgsCompoundColorWidget w( nullptr, QColor( 10, 20, 30, 50 ) );
+  w.setVisible( true );
+
+  QCOMPARE( w.mTabWidget->currentIndex(), 0 );
+  QVERIFY( w.mRedRadio->isEnabled() );
+  QVERIFY( w.mBlueRadio->isEnabled() );
+  QVERIFY( w.mGreenRadio->isEnabled() );
+  QVERIFY( w.mHueRadio->isEnabled() );
+  QVERIFY( w.mSaturationRadio->isEnabled() );
+  QVERIFY( w.mCyanRadio->isEnabled() );
+  QVERIFY( w.mMagentaRadio->isEnabled() );
+  QVERIFY( w.mYellowRadio->isEnabled() );
+  QVERIFY( w.mBlackRadio->isEnabled() );
+
+  w.mTabWidget->setCurrentIndex( 1 );
+  QVERIFY( !w.mRedRadio->isEnabled() );
+  QVERIFY( !w.mBlueRadio->isEnabled() );
+  QVERIFY( !w.mGreenRadio->isEnabled() );
+  QVERIFY( !w.mHueRadio->isEnabled() );
+  QVERIFY( !w.mSaturationRadio->isEnabled() );
+  QVERIFY( !w.mCyanRadio->isEnabled() );
+  QVERIFY( !w.mMagentaRadio->isEnabled() );
+  QVERIFY( !w.mYellowRadio->isEnabled() );
+  QVERIFY( !w.mBlackRadio->isEnabled() );
+}
+
 
 
 QGSTEST_MAIN( TestQgsCompoundColorWidget )
