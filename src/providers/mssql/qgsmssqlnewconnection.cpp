@@ -156,11 +156,11 @@ void QgsMssqlNewConnection::accept()
     database = item->text();
   }
 
-  settings.setValue( baseKey + "/service", txtService->text() );
-  settings.setValue( baseKey + "/host", txtHost->text() );
+  settings.setValue( baseKey + "/service", txtService->text().trimmed() );
+  settings.setValue( baseKey + "/host", txtHost->text().trimmed() );
   settings.setValue( baseKey + "/database", database );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QString() );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QString() );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text().trimmed() : QString() );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text().trimmed() : QString() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
 
@@ -217,7 +217,7 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
   // Gross but needed to show the last message.
   qApp->processEvents();
 
-  if ( txtService->text().isEmpty() && txtHost->text().isEmpty() )
+  if ( txtService->text().trimmed().isEmpty() && txtHost->text().trimmed().isEmpty() )
   {
     bar->clearWidgets();
     bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified." ) );
@@ -313,7 +313,7 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlNewConnection::getDatabase( const QStr
 void QgsMssqlNewConnection::updateOkButtonState()
 {
   QListWidgetItem *item = listDatabase->currentItem();
-  const bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
+  const bool disabled = txtName->text().trimmed().isEmpty() || ( txtService->text().trimmed().isEmpty() && txtHost->text().trimmed().isEmpty() ) || !item;
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( disabled );
 }
 
