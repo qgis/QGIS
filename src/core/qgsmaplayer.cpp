@@ -3253,21 +3253,29 @@ QString QgsMapLayer::generalHtmlMetadata() const
         continue;
 
       const QVariant propValue = customProperty( key );
-      QString stringValue = QString();
-      if ( propValue.canConvert<QStringList>() && propValue.toStringList().count() > 1 )
+      QString stringValue;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      const QMetaType::Type propType = QgsVariantUtils::variantTypeToMetaType( propValue.type() );
+#else
+      const QMetaType::Type propType = propValue.metaType();
+#endif
+      if ( propType == QMetaType::QVariantList || propType == QMetaType::QStringList )
       {
-        for ( const QString &s : propValue.toStringList() )
+        const QStringList &stringList = propValue.toStringList();
+        for ( const QString &s : stringList )
         {
-          stringValue += s.toHtmlEscaped() + QStringLiteral( "<br>" );
+          stringValue += s.toHtmlEscaped();
+          if ( &s != &stringList.back() )
+            stringValue += QStringLiteral( "<br>" );
         }
-      }
-      else if ( propValue.canConvert<QString>() || propValue.isNull() )
-      {
-        stringValue = propValue.toString().toHtmlEscaped();
       }
       else
       {
-        stringValue = tr( "<i>cannot be represented</i>" );
+        stringValue = propValue.toString().toHtmlEscaped();
+
+        //if the result string is empty but propValue is not, the conversion has failed
+        if ( stringValue.isEmpty() && !QgsVariantUtils::isNull( propValue ) )
+          stringValue = tr( "<i>value cannot be displayed</i>" );
       }
 
       metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), stringValue );
