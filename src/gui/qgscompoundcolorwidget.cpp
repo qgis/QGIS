@@ -47,6 +47,10 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   connect( mRedRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mRedRadio_toggled );
   connect( mGreenRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mGreenRadio_toggled );
   connect( mBlueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mBlueRadio_toggled );
+  connect( mCyanRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mCyanRadio_toggled );
+  connect( mMagentaRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mMagentaRadio_toggled );
+  connect( mYellowRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mYellowRadio_toggled );
+  connect( mBlackRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mBlackRadio_toggled );
   connect( mAddColorToSchemeButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddColorToSchemeButton_clicked );
   connect( mAddCustomColorButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddCustomColorButton_clicked );
   connect( mSampleButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mSampleButton_clicked );
@@ -933,6 +937,42 @@ void QgsCompoundColorWidget::mBlueRadio_toggled( bool checked )
   {
     mColorBox->setComponent( QgsColorWidget::Blue );
     mVerticalRamp->setComponent( QgsColorWidget::Blue );
+  }
+}
+
+void QgsCompoundColorWidget::mCyanRadio_toggled( bool checked )
+{
+  if ( checked )
+  {
+    mColorBox->setComponent( QgsColorWidget::Cyan );
+    mVerticalRamp->setComponent( QgsColorWidget::Cyan );
+  }
+}
+
+void QgsCompoundColorWidget::mMagentaRadio_toggled( bool checked )
+{
+  if ( checked )
+  {
+    mColorBox->setComponent( QgsColorWidget::Magenta );
+    mVerticalRamp->setComponent( QgsColorWidget::Magenta );
+  }
+}
+
+void QgsCompoundColorWidget::mYellowRadio_toggled( bool checked )
+{
+  if ( checked )
+  {
+    mColorBox->setComponent( QgsColorWidget::Yellow );
+    mVerticalRamp->setComponent( QgsColorWidget::Yellow );
+  }
+}
+
+void QgsCompoundColorWidget::mBlackRadio_toggled( bool checked )
+{
+  if ( checked )
+  {
+    mColorBox->setComponent( QgsColorWidget::Black );
+    mVerticalRamp->setComponent( QgsColorWidget::Black );
   }
 }
 

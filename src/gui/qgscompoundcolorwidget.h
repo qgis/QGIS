@@ -152,6 +152,10 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void mRedRadio_toggled( bool checked );
     void mGreenRadio_toggled( bool checked );
     void mBlueRadio_toggled( bool checked );
+    void mCyanRadio_toggled( bool checked );
+    void mMagentaRadio_toggled( bool checked );
+    void mYellowRadio_toggled( bool checked );
+    void mBlackRadio_toggled( bool checked );
 
     void mAddColorToSchemeButton_clicked();
 

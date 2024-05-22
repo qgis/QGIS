@@ -16,6 +16,7 @@
 #include "qgstest.h"
 
 #include "qgscompoundcolorwidget.h"
+#include "qgssettings.h"
 
 class TestQgsCompoundColorWidget : public QgsTest
 {
@@ -31,6 +32,7 @@ class TestQgsCompoundColorWidget : public QgsTest
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testCmykConversion();
+    void testComponentChange();
 };
 
 void TestQgsCompoundColorWidget::initTestCase()
@@ -86,6 +88,39 @@ void TestQgsCompoundColorWidget::testCmykConversion()
   // edit color in RGB, the returned color is still CMYK
   w.mColorWheel->setColor( QColor( 10, 20, 30, 50 ),  true );
   QCOMPARE( w.color(), QColor::fromCmyk( 170, 85, 0, 225, 50 ) );
+}
+
+void TestQgsCompoundColorWidget::testComponentChange()
+{
+  QgsSettings().setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 3 );
+
+  QgsCompoundColorWidget w( nullptr, QColor( 10, 20, 30, 50 ) );
+  w.setVisible( true );
+
+  QCOMPARE( w.mColorBox->component(), QgsColorWidget::Red );
+  QCOMPARE( w.mVerticalRamp->component(),  QgsColorWidget::Red );
+
+  const QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> colors =
+  {
+    { w.mHueRadio, QgsColorWidget::Hue },
+    { w.mSaturationRadio, QgsColorWidget::Saturation },
+    { w.mValueRadio, QgsColorWidget::Value },
+    { w.mRedRadio, QgsColorWidget::Red },
+    { w.mGreenRadio, QgsColorWidget::Green },
+    { w.mBlueRadio, QgsColorWidget::Blue },
+    { w.mCyanRadio, QgsColorWidget::Cyan },
+    { w.mMagentaRadio, QgsColorWidget::Magenta },
+    { w.mYellowRadio, QgsColorWidget::Yellow },
+    { w.mBlackRadio, QgsColorWidget::Black }
+  };
+
+  for ( QPair<QRadioButton *, QgsColorWidget::ColorComponent> color : colors )
+  {
+    color.first->setChecked( true );
+    QCOMPARE( w.mColorBox->component(), color.second );
+    QCOMPARE( w.mVerticalRamp->component(),  color.second );
+  }
+
 }
 
 QGSTEST_MAIN( TestQgsCompoundColorWidget )

@@ -448,7 +448,7 @@
      <item row="0" column="0">
       <widget class="QTabWidget" name="mTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <property name="iconSize">
         <size>
@@ -701,18 +701,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="mColorModel">
-            <item>
-             <property name="text">
-              <string>RGB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>CMYK</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="mColorModel"/>
           </item>
           <item>
            <spacer name="horizontalSpacer_2">
@@ -894,7 +883,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0,1">
              <item>
-              <widget class="QRadioButton" name="mCyan">
+              <widget class="QRadioButton" name="mCyanRadio">
                <property name="text">
                 <string/>
                </property>
@@ -915,7 +904,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,1">
              <item>
-              <widget class="QRadioButton" name="mMagenta">
+              <widget class="QRadioButton" name="mMagentaRadio">
                <property name="text">
                 <string/>
                </property>
@@ -936,7 +925,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_26" stretch="0,0,1">
              <item>
-              <widget class="QRadioButton" name="mYellow">
+              <widget class="QRadioButton" name="mYellowRadio">
                <property name="text">
                 <string/>
                </property>
@@ -957,7 +946,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_27" stretch="0,0,1">
              <item>
-              <widget class="QRadioButton" name="mBlack">
+              <widget class="QRadioButton" name="mBlackRadio">
                <property name="text">
                 <string/>
                </property>
@@ -1092,15 +1081,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorBox</class>
