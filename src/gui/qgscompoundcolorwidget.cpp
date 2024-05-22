@@ -57,9 +57,12 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsCompoundColorWidget::mTabWidget_currentChanged );
   connect( mActionShowInButtons, &QAction::toggled, this, &QgsCompoundColorWidget::mActionShowInButtons_toggled );
 
-  connect( mColorModel, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index )
+  mColorModel->addItem( tr( "RGB" ), QColor::Spec::Rgb );
+  mColorModel->addItem( tr( "CMYK" ), QColor::Spec::Cmyk );
+  connect( mColorModel, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int )
   {
-    if ( index )
+    const QColor::Spec spec = static_cast< QColor::Spec >( mColorModel->currentData().toInt() );
+    if ( spec == QColor::Spec::Cmyk )
       setColor( this->color().toCmyk() );
     else
       setColor( this->color().toRgb() );
@@ -728,7 +731,8 @@ void QgsCompoundColorWidget::stopPicking( QPoint eventPos, const bool takeSample
 
 void QgsCompoundColorWidget::setColor( const QColor &color )
 {
-  mColorModel->setCurrentIndex( color.spec() == QColor::Cmyk ? 1 : 0 );
+  const QColor::Spec colorSpec = color.spec() == QColor::Cmyk ? QColor::Cmyk : QColor::Rgb;
+  mColorModel->setCurrentIndex( mColorModel->findData( colorSpec ) );
   mRGB->setVisible( color.spec() != QColor::Cmyk );
   mCMYK->setVisible( color.spec() == QColor::Cmyk );
   _setColor( color );

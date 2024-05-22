@@ -33,6 +33,7 @@ class TestQgsCompoundColorWidget : public QgsTest
     void cleanup();// will be called after every testfunction.
     void testCmykConversion();
     void testComponentChange();
+    void testModelChange();
 };
 
 void TestQgsCompoundColorWidget::initTestCase()
@@ -122,6 +123,21 @@ void TestQgsCompoundColorWidget::testComponentChange()
   }
 
 }
+
+void TestQgsCompoundColorWidget::testModelChange()
+{
+  QgsCompoundColorWidget w( nullptr, QColor( 10, 20, 30, 50 ) );
+  w.setVisible( true );
+
+  QCOMPARE( w.mColorModel->currentData(), QColor::Rgb );
+
+  w.mColorModel->setCurrentIndex( w.mColorModel->findData( QColor::Cmyk ) );
+  QCOMPARE( w.mColorModel->currentData(), QColor::Cmyk );
+
+  w.setColor( QColor( 1, 2, 3 ) );
+  QCOMPARE( w.mColorModel->currentData(), QColor::Rgb );
+}
+
 
 QGSTEST_MAIN( TestQgsCompoundColorWidget )
 #include "testqgscompoundcolorwidget.moc"
