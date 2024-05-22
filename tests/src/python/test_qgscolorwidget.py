@@ -18,7 +18,7 @@ from qgis.testing import start_app, QgisTestCase
 start_app()
 
 
-class TestQgsWidget(QgisTestCase):
+class TestQgsColorWidget(QgisTestCase):
 
     def testAlterColor(self):
         """
