@@ -800,6 +800,7 @@ class TestQgsProcessing: public QgsTest
     void asJsonMap();
     void tempUtils();
     void convertCompatible();
+    void convertCompatibleDuplicateFids();
     void create();
     void combineFields();
     void fieldNamesToIndices();
@@ -12446,6 +12447,44 @@ void TestQgsProcessing::convertCompatible()
   out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerName( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback, &layerName );
   QCOMPARE( out, QString( testDataDir + "points.shp" ) );
   QCOMPARE( layerName, QString() );
+}
+
+void TestQgsProcessing::convertCompatibleDuplicateFids()
+{
+  // Create a memory layer
+  QgsVectorLayer *layer = new QgsVectorLayer{"Point", "vl", "memory"};
+  // Add fields
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "fid" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
+  layer->dataProvider()->addAttributes( fields.toList() );
+  layer->updateFields();
+
+  // Add features with duplicate FIDs
+  for ( int i = 1; i <= 12; ++i )
+  {
+    QgsFeature f( fields, i );
+    f.setAttributes( {{ 123, QString::number( i ) }} );
+    f.setGeometry( QgsGeometry( new QgsPoint( i, i ) ) );
+    QVERIFY( layer->dataProvider()->addFeature( f ) );
+  }
+
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterFeatureSource( QStringLiteral( "source" ) ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "source" ), QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
+
+  QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "gpkg", QString( "gpkg" ), &feedback );
+  const QStringList logs( feedback.textLog().split( '\n', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
+  QCOMPARE( logs.size(), 11 );
+  QVERIFY( logs.first().startsWith( QStringLiteral( "Error writing feature # 2" ) ) );
+  QVERIFY( logs.last().startsWith( QStringLiteral( "There were 11 errors writing features" ) ) );
 }
 
 void TestQgsProcessing::create()
