@@ -1189,6 +1189,12 @@ bool QgsPostgresProvider::loadFields()
           }
         }
       }
+      else if ( fieldTypeName == QLatin1String( "money" ) )
+      {
+        fieldType = QVariant::Double;
+        fieldSize = -1;
+        fieldPrec = 2;
+      }
       else if ( fieldTypeName == QLatin1String( "varchar" ) )
       {
         fieldType = QVariant::String;
@@ -1231,7 +1237,6 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == QLatin1String( "cidr" ) ||
                 fieldTypeName == QLatin1String( "macaddr" ) ||
                 fieldTypeName == QLatin1String( "macaddr8" ) ||
-                fieldTypeName == QLatin1String( "money" ) ||
                 fieldTypeName == QLatin1String( "ltree" ) ||
                 fieldTypeName == QLatin1String( "uuid" ) ||
                 fieldTypeName == QLatin1String( "xml" ) ||

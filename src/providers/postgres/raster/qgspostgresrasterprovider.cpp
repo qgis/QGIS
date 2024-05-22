@@ -1815,6 +1815,12 @@ bool QgsPostgresRasterProvider::loadFields()
           }
         }
       }
+      else if ( fieldTypeName == QLatin1String( "money" ) )
+      {
+        fieldType = QVariant::Double;
+        fieldSize = -1;
+        fieldPrec = 2;
+      }
       else if ( fieldTypeName == QLatin1String( "varchar" ) )
       {
         fieldType = QVariant::String;
@@ -1854,7 +1860,6 @@ bool QgsPostgresRasterProvider::loadFields()
                 fieldTypeName == QLatin1String( "citext" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
-                fieldTypeName == QLatin1String( "money" ) ||
                 fieldTypeName == QLatin1String( "ltree" ) ||
                 fieldTypeName == QLatin1String( "uuid" ) ||
                 fieldTypeName == QLatin1String( "xml" ) ||
