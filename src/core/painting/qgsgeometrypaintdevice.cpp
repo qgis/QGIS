@@ -464,16 +464,16 @@ int QgsGeometryPaintDevice::metric( PaintDeviceMetric m ) const
   switch ( m )
   {
     case PdmWidth:
-      val = mPaintEngine->geometry().boundingBox().width();
+      val = static_cast< int >( mPaintEngine->geometry().boundingBox().width() );
       break;
     case PdmHeight:
-      val = mPaintEngine->geometry().boundingBox().height();
+      val = static_cast< int >( mPaintEngine->geometry().boundingBox().height() );
       break;
     case PdmWidthMM:
-      val = int( 25.4 / qt_defaultDpiX() * mPaintEngine->geometry().boundingBox().width() );
+      val = static_cast< int >( 25.4 / qt_defaultDpiX() * mPaintEngine->geometry().boundingBox().width() );
       break;
     case PdmHeightMM:
-      val = int( 25.4 / qt_defaultDpiY() * mPaintEngine->geometry().boundingBox().height() );
+      val = static_cast< int >( 25.4 / qt_defaultDpiY() * mPaintEngine->geometry().boundingBox().height() );
       break;
     case PdmDpiX:
     case PdmPhysicalDpiX:
@@ -493,7 +493,7 @@ int QgsGeometryPaintDevice::metric( PaintDeviceMetric m ) const
       val = 1;
       break;
     case PdmDevicePixelRatioScaled:
-      val = 1 * QPaintDevice::devicePixelRatioFScale();
+      val = static_cast< int >( 1 * QPaintDevice::devicePixelRatioFScale() );
       break;
     default:
       val = 0;
