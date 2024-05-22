@@ -126,6 +126,7 @@ QgsVectorTileLayer *QgsVectorTileLayer::clone() const
   const QgsVectorTileLayer::LayerOptions options( mTransformContext );
   QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name(), options );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
+  layer->setLabeling( labeling() ? labeling()->clone() : nullptr );
   return layer;
 }
 
