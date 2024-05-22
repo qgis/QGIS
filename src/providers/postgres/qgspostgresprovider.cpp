@@ -3895,9 +3895,6 @@ QgsBox3D QgsPostgresProvider::extent3D() const
   if ( !isValid() || mGeometryColumn.isNull() )
     return QgsBox3D();
 
-  if ( mSpatialColType == SctGeography )
-    return QgsBox3D( -180.0, -90.0, std::numeric_limits<double>::quiet_NaN(), 180.0, 90.0, std::numeric_limits<double>::quiet_NaN() );
-
   if ( mLayerExtent.isEmpty() )
   {
     QString sql;
@@ -3905,7 +3902,7 @@ QgsBox3D QgsPostgresProvider::extent3D() const
     QString ext;
 
     // get the extents
-    if ( !mIsQuery && mUseEstimatedMetadata )
+    if ( !mIsQuery && mUseEstimatedMetadata && mSpatialColType != SctGeography )
     {
       // do stats exists?
       sql = QStringLiteral( "SELECT count(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )
@@ -3962,7 +3959,7 @@ QgsBox3D QgsPostgresProvider::extent3D() const
       sql = QStringLiteral( "SELECT %1(%2%3) FROM %4%5" )
             .arg( connectionRO()->majorVersion() < 2 ? "extent" : "ST_3DExtent",
                   quotedIdentifier( mBoundingBoxColumn ),
-                  mSpatialColType == SctPcPatch ? "::geometry" : "",
+                  ( mSpatialColType == SctPcPatch || mSpatialColType == SctGeography ) ? "::geometry" : "",
                   mQuery,
                   filterWhereClause() );
 
