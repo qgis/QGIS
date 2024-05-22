@@ -70,9 +70,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mClearButton">
+      <widget class="QToolButton" name="mClearButton">
+       <property name="toolTip">
+        <string>Clear</string>
+       </property>
        <property name="text">
         <string>Clear</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/console/iconClearConsole.svg</normaloff>:/images/themes/default/console/iconClearConsole.svg</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -244,6 +254,8 @@
   <tabstop>mLayerNameLineEdit</tabstop>
   <tabstop>mLoadLayerPushButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
