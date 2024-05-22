@@ -771,6 +771,7 @@
 %Include auto_generated/vector/qgsvectorlayerselectionproperties.sip
 %Include auto_generated/vector/qgsvectorlayertemporalproperties.sip
 %Include auto_generated/vector/qgsvectorlayertools.sip
+%Include auto_generated/vector/qgsvectorlayertoolscontext.sip
 %Include auto_generated/vector/qgsvectorlayerundocommand.sip
 %Include auto_generated/vector/qgsvectorlayerundopassthroughcommand.sip
 %Include auto_generated/vector/qgsvectorlayerutils.sip

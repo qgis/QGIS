@@ -287,9 +287,14 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeatureList.first().attribute( fieldPair.referencedField() ) );
 
-    QgsExpressionContextScope *scope = QgsExpressionContextUtils::parentFormScope( mFeatureList.first(), mEditorContext.attributeFormModeString() );
+    QgsVectorLayerToolsContext context;
+    context.setParentWidget( this );
+    context.setShowModal( true );
+    context.setHideParent( true );
+    std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::parentFormScope( mFeatureList.first(), mEditorContext.attributeFormModeString() ) );
+    context.setAdditionalExpressionContextScope( scope.get() );
     QgsFeature linkFeature;
-    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, this, true, true, scope ) )
+    if ( !vlTools->addFeatureV2( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, context ) )
       return QgsFeatureIds();
 
     addedFeatureIds.insert( linkFeature.id() );

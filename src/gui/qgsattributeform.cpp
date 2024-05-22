@@ -44,6 +44,7 @@
 #include "qgstabwidget.h"
 #include "qgsscrollarea.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
@@ -463,8 +464,10 @@ bool QgsAttributeForm::saveEdits( QString *error )
           n++;
         }
 
-        QgsExpressionContext context = createExpressionContext( updatedFeature );
-        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, &context );
+        std::unique_ptr<QgsVectorLayerToolsContext> context = std::make_unique<QgsVectorLayerToolsContext>();
+        QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
+        context->setExpressionContext( &expressionContext );
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() );
 
         if ( success && n > 0 )
         {

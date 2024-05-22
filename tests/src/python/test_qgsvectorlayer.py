@@ -78,6 +78,7 @@ from qgis.core import (
     QgsVectorLayerJoinInfo,
     QgsVectorLayerSelectedFeatureSource,
     QgsVectorLayerSimpleLabeling,
+    QgsVectorLayerToolsContext,
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeTableModel, QgsGui
@@ -1162,8 +1163,10 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         layer.startEditing()
 
-        context = layer.createExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.parentFormScope(pf))
+        expressionContext = layer.createExpressionContext()
+        expressionContext.appendScope(QgsExpressionContextUtils.parentFormScope(pf))
+        context = QgsVectorLayerToolsContext()
+        context.setExpressionContext(expressionContext)
         self.assertTrue(layer.changeAttributeValues(fid, {1: 100}, {}, False, context))
 
         f = layer.getFeature(1)
