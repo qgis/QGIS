@@ -187,6 +187,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mRgbRadios;
     QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mCmykRadios;
+    QButtonGroup *mCmykGroup = nullptr;
+    QButtonGroup *mRgbGroup = nullptr;
 
     /**
      * Saves all widget settings

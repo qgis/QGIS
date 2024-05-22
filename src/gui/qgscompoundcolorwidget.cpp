@@ -60,18 +60,18 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
     { mBlackRadio, QgsColorWidget::ColorComponent::Black }
   };
 
-  QButtonGroup *rgbGroup = new QButtonGroup( this );
+  mRgbGroup = new QButtonGroup( this );
   int i = 0;
   for ( auto colorRadio : mRgbRadios )
-    rgbGroup->addButton( colorRadio.first, i++ );
+    mRgbGroup->addButton( colorRadio.first, i++ );
 
-  QButtonGroup *cmykGroup = new QButtonGroup( this );
+  mCmykGroup = new QButtonGroup( this );
   i = 0;
   for ( auto colorRadio : mCmykRadios )
-    cmykGroup->addButton( colorRadio.first, i++ );
+    mCmykGroup->addButton( colorRadio.first, i++ );
 
-  connect( rgbGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onRgbButtonGroupToggled );
-  connect( cmykGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onCmykButtonGroupToggled );
+  connect( mRgbGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onRgbButtonGroupToggled );
+  connect( mCmykGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onCmykButtonGroupToggled );
   connect( mAddColorToSchemeButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddColorToSchemeButton_clicked );
   connect( mAddCustomColorButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddCustomColorButton_clicked );
   connect( mSampleButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mSampleButton_clicked );
@@ -274,11 +274,11 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
   // restore active Rgb/Cmyk component radio button
   const int activeRgbRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 2 ).toInt();
-  if ( QAbstractButton *rgbRadio = rgbGroup->button( activeRgbRadio ) )
+  if ( QAbstractButton *rgbRadio = mRgbGroup->button( activeRgbRadio ) )
     rgbRadio->setChecked( true );
 
   const int activeCmykRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ), 0 ).toInt();
-  if ( QAbstractButton *cmykRadio = cmykGroup->button( activeCmykRadio ) )
+  if ( QAbstractButton *cmykRadio = mCmykGroup->button( activeCmykRadio ) )
     cmykRadio->setChecked( true );
 
   const int currentTab = settings.value( QStringLiteral( "Windows/ColorDialog/activeTab" ), 0 ).toInt();
@@ -668,21 +668,9 @@ void QgsCompoundColorWidget::saveSettings()
 
   QgsSettings settings;
 
-  //record active component
-  int activeRadio = 0;
-  if ( mHueRadio->isChecked() )
-    activeRadio = 0;
-  if ( mSaturationRadio->isChecked() )
-    activeRadio = 1;
-  if ( mValueRadio->isChecked() )
-    activeRadio = 2;
-  if ( mRedRadio->isChecked() )
-    activeRadio = 3;
-  if ( mGreenRadio->isChecked() )
-    activeRadio = 4;
-  if ( mBlueRadio->isChecked() )
-    activeRadio = 5;
-  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), activeRadio );
+  // record active component
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), mRgbGroup->checkedId() );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ), mCmykGroup->checkedId() );
 
   //record current scheme
   settings.setValue( QStringLiteral( "Windows/ColorDialog/activeScheme" ), mSchemeComboBox->currentIndex() );

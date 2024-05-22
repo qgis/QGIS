@@ -98,23 +98,27 @@ void TestQgsCompoundColorWidget::testComponentSettings_data()
 {
   QTest::addColumn<int>( "settingsComponent" );
   QTest::addColumn<QgsColorWidget::ColorComponent>( "expectedComponent" );
+  QTest::addColumn<QgsColorWidget::ColorComponent>( "newComponent" );
+  QTest::addColumn<int>( "newSettingsComponent" );
 
-  QTest::newRow( "hue" ) << 0 << QgsColorWidget::ColorComponent::Hue;
-  QTest::newRow( "saturation" ) << 1 << QgsColorWidget::ColorComponent::Saturation;
-  QTest::newRow( "value" ) << 2 << QgsColorWidget::ColorComponent::Value;
-  QTest::newRow( "red" ) << 3 << QgsColorWidget::ColorComponent::Red;
-  QTest::newRow( "green" ) << 4 << QgsColorWidget::ColorComponent::Green;
-  QTest::newRow( "blue" ) << 5 << QgsColorWidget::ColorComponent::Blue;
-  QTest::newRow( "cyan" ) << 0 << QgsColorWidget::ColorComponent::Cyan;
-  QTest::newRow( "magenta" ) << 1 << QgsColorWidget::ColorComponent::Magenta;
-  QTest::newRow( "yellow" ) << 2 << QgsColorWidget::ColorComponent::Yellow;
-  QTest::newRow( "black" ) << 3 << QgsColorWidget::ColorComponent::Black;
+  QTest::newRow( "hue" ) << 0 << QgsColorWidget::ColorComponent::Hue << QgsColorWidget::ColorComponent::Saturation << 1;
+  QTest::newRow( "saturation" ) << 1 << QgsColorWidget::ColorComponent::Saturation << QgsColorWidget::ColorComponent::Value << 2;
+  QTest::newRow( "value" ) << 2 << QgsColorWidget::ColorComponent::Value << QgsColorWidget::ColorComponent::Red << 3;
+  QTest::newRow( "red" ) << 3 << QgsColorWidget::ColorComponent::Red << QgsColorWidget::ColorComponent::Green << 4;
+  QTest::newRow( "green" ) << 4 << QgsColorWidget::ColorComponent::Green << QgsColorWidget::ColorComponent::Blue << 5;
+  QTest::newRow( "blue" ) << 5 << QgsColorWidget::ColorComponent::Blue << QgsColorWidget::ColorComponent::Hue << 0;
+  QTest::newRow( "cyan" ) << 0 << QgsColorWidget::ColorComponent::Cyan << QgsColorWidget::ColorComponent::Magenta << 1;
+  QTest::newRow( "magenta" ) << 1 << QgsColorWidget::ColorComponent::Magenta << QgsColorWidget::ColorComponent::Yellow << 2;
+  QTest::newRow( "yellow" ) << 2 << QgsColorWidget::ColorComponent::Yellow << QgsColorWidget::ColorComponent::Black << 3;
+  QTest::newRow( "black" ) << 3 << QgsColorWidget::ColorComponent::Black << QgsColorWidget::ColorComponent::Cyan << 0;
 }
 
 void TestQgsCompoundColorWidget::testComponentSettings()
 {
   QFETCH( int, settingsComponent );
   QFETCH( QgsColorWidget::ColorComponent, expectedComponent );
+  QFETCH( QgsColorWidget::ColorComponent, newComponent );
+  QFETCH( int, newSettingsComponent );
 
   QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
                           QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), settingsComponent );
@@ -125,6 +129,15 @@ void TestQgsCompoundColorWidget::testComponentSettings()
 
   QCOMPARE( w.mColorBox->component(), expectedComponent );
   QCOMPARE( w.mVerticalRamp->component(), expectedComponent );
+
+  ( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? w.mCmykRadios : w.mRgbRadios ).at( newSettingsComponent ).first->setChecked( true );
+  QCOMPARE( w.mColorBox->component(), newComponent );
+  QCOMPARE( w.mVerticalRamp->component(), newComponent );
+
+  w.saveSettings();
+  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
+                       QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), -1 ).toInt();
+  QCOMPARE( newValue, newSettingsComponent );
 }
 
 void TestQgsCompoundColorWidget::testComponentChange()
