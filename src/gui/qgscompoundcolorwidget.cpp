@@ -895,24 +895,25 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
 }
 
 
-void QgsCompoundColorWidget::onRgbButtonGroupToggled( int id, bool checked )
+void QgsCompoundColorWidget::onColorButtonGroupToggled( const QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> &colorRadios,
+    const QColor::Spec colorSpec, const int id, const bool checked )
 {
-  if ( checked && id >= 0 && id < mRgbRadios.count() && static_cast<QColor::Spec>( mColorModel->currentData().toInt() ) == QColor::Rgb )
+  if ( checked && id >= 0 && id < colorRadios.count() && static_cast<QColor::Spec>( mColorModel->currentData().toInt() ) == colorSpec )
   {
-    const QgsColorWidget::ColorComponent component = mRgbRadios.at( id ).second;
+    const QgsColorWidget::ColorComponent component = colorRadios.at( id ).second;
     mColorBox->setComponent( component );
     mVerticalRamp->setComponent( component );
   }
 }
 
+void QgsCompoundColorWidget::onRgbButtonGroupToggled( int id, bool checked )
+{
+  onColorButtonGroupToggled( mRgbRadios, QColor::Rgb, id, checked );
+}
+
 void QgsCompoundColorWidget::onCmykButtonGroupToggled( int id, bool checked )
 {
-  if ( checked && id >= 0 && id < mCmykRadios.count() && static_cast<QColor::Spec>( mColorModel->currentData().toInt() ) == QColor::Cmyk )
-  {
-    const QgsColorWidget::ColorComponent component = mCmykRadios.at( id ).second;
-    mColorBox->setComponent( component );
-    mVerticalRamp->setComponent( component );
-  }
+  onColorButtonGroupToggled( mCmykRadios, QColor::Cmyk, id, checked );
 }
 
 
