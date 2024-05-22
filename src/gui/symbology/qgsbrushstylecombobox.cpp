@@ -22,6 +22,7 @@
 #include <QBrush>
 #include <QPainter>
 #include <QPen>
+#include <QAbstractItemView>
 
 QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -76,7 +77,7 @@ QIcon QgsBrushStyleComboBox::iconForBrush( Qt::BrushStyle style )
   pix.fill( Qt::transparent );
 
   p.begin( &pix );
-  const QBrush brush( QColor( 100, 100, 100 ), style );
+  const QBrush brush( view()->palette().color( QPalette::Text ), style );
   p.setBrush( brush );
   const QPen pen( Qt::NoPen );
   p.setPen( pen );

@@ -21,6 +21,7 @@
 #include <QList>
 #include <QPair>
 
+#include <QAbstractItemView>
 #include <QPainter>
 #include <QPen>
 
@@ -66,6 +67,8 @@ QIcon QgsPenStyleComboBox::iconForPen( Qt::PenStyle style )
   p.begin( &pix );
   QPen pen( style );
   pen.setWidth( 2 );
+  pen.setColor( view()->palette().color( QPalette::Text ) );
+
   p.setPen( pen );
   const double mid = iconSize().height() / 2.0;
   p.drawLine( 0, mid, iconSize().width(), mid );
