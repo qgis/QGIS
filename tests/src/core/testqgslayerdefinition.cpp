@@ -102,8 +102,8 @@ void TestQgsLayerDefinition::testLoadTopOfTree()
   //test if new layers are on top
   QList<QgsMapLayer *> orderedLayers = QgsProject::instance()->layerTreeRoot()->layerOrder();
   QCOMPARE( orderedLayers.length(), 3 );
-  QVERIFY( orderedLayers.at( 1 )->name() == QStringLiteral( "rgb256x256" ) );
-  QVERIFY( orderedLayers.at( 0 )->name() == QStringLiteral( "memoryLayer" ) );
+  QVERIFY( orderedLayers.at( 1 )->name() == QLatin1String( "rgb256x256" ) );
+  QVERIFY( orderedLayers.at( 0 )->name() == QLatin1String( "memoryLayer" ) );
 }
 
 void TestQgsLayerDefinition::testExportDoesNotCrash()

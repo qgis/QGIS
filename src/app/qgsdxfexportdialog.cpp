@@ -1080,7 +1080,7 @@ void QgsDxfExportDialog::saveSettingsToFile()
   //ensure the user never omitted the extension from the file name
   if ( !outputFileName.endsWith( QStringLiteral( ".xml" ), Qt::CaseInsensitive ) )
   {
-    outputFileName += QStringLiteral( ".xml" );
+    outputFileName += QLatin1String( ".xml" );
   }
 
   QDomDocument domDocument;

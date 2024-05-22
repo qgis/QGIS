@@ -4725,7 +4725,7 @@ QString QgsGdalProviderMetadata::getLayerNameForStyle( const QString &uri, gdal:
     GDALDriverH driver = GDALGetDatasetDriver( ds.get() );
     if ( driver )
     {
-      if ( GDALGetDriverShortName( driver ) == QStringLiteral( "GPKG" ) )
+      if ( GDALGetDriverShortName( driver ) == QLatin1String( "GPKG" ) )
       {
         layerName = GDALGetMetadataItem( ds.get(), "IDENTIFIER", "" );
       }

@@ -187,19 +187,19 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
         break;
 
       case QNetworkAccessManager::PutOperation:
-        curlHeaders += QStringLiteral( "-X PUT" );
+        curlHeaders += QLatin1String( "-X PUT" );
         break;
 
       case QNetworkAccessManager::PostOperation:
-        curlHeaders += QStringLiteral( "-X POST" );
+        curlHeaders += QLatin1String( "-X POST" );
         break;
 
       case QNetworkAccessManager::HeadOperation:
-        curlHeaders += QStringLiteral( "-X HEAD" );
+        curlHeaders += QLatin1String( "-X HEAD" );
         break;
 
       case QNetworkAccessManager::DeleteOperation:
-        curlHeaders += QStringLiteral( "-X DELETE" );
+        curlHeaders += QLatin1String( "-X DELETE" );
         break;
 
       case QNetworkAccessManager::CustomOperation:
