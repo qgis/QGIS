@@ -10,6 +10,7 @@ __date__ = '21/05/2024'
 __copyright__ = 'Copyright 2024, The QGIS Project'
 
 import os
+import unittest
 
 from qgis.PyQt.QtCore import (
     Qt,
@@ -31,11 +32,9 @@ from qgis.PyQt.QtGui import (
     QPolygonF,
     QPainterPath
 )
-
 from qgis.core import (
     QgsGeometryPaintDevice
 )
-import unittest
 from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
 
@@ -79,10 +78,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (LineString (5.5 10.7, 6.8 12.9),LineString (15.5 12.7, 3.8 42.9),LineString (-4 -1, 2 3))')
 
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         19)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         43)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            19)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            43)
 
         # with transform
         device = QgsGeometryPaintDevice()
@@ -105,10 +106,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
 
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (LineString (11 32.1, 13.6 38.7),LineString (31 38.1, 7.6 128.7),LineString (-8 -3, 4 9))')
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         39)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         131)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            39)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            131)
 
     def test_stroked_lines(self):
         """
@@ -116,7 +119,7 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         """
         device = QgsGeometryPaintDevice(usePathStroker=True)
         painter = SafePainter(device)
-        pen = QPen(QColor(0,0 ,0 ))
+        pen = QPen(QColor(0, 0, 0))
         pen.setWidthF(1.5)
         pen.setCapStyle(Qt.PenCapStyle.FlatCap)
         painter.setPen(pen)
@@ -134,10 +137,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((6.15 10.32, 7.45 12.52, 6.15 13.28, 4.85 11.08, 6.15 10.32)),Polygon ((16.2 12.97, 4.5 43.17, 3.1 42.63, 14.8 12.43, 16.2 12.97)),Polygon ((-3.58 -1.62, 2.42 2.38, 1.58 3.62, -4.42 -0.38, -3.58 -1.62)))')
 
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         20)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         44)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            20)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            44)
 
         # with transform
         device = QgsGeometryPaintDevice(usePathStroker=True)
@@ -161,10 +166,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
 
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((12.29 30.96, 14.89 37.56, 12.31 39.84, 9.71 33.24, 12.29 30.96)),Polygon ((32.4 38.91, 9 129.51, 6.2 127.89, 29.6 37.29, 32.4 38.91)),Polygon ((-7.17 -4.87, 4.83 7.13, 3.17 10.87, -8.83 -1.13, -7.17 -4.87)))')
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         41)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         134)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            41)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            134)
 
     def test_points(self):
         """
@@ -245,10 +252,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((5.5 23.6, 12.3 23.6, 12.3 10.7, 5.5 10.7, 5.5 23.6)),Polygon ((15.5 55.6, 19.3 55.6, 19.3 12.7, 15.5 12.7, 15.5 55.6)),Polygon ((-4 1, -3 1, -3 -1, -4 -1, -4 1)))')
 
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         23)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         56)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            23)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            56)
 
         # with transform
         device = QgsGeometryPaintDevice()
@@ -269,10 +278,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
 
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((11 70.8, 24.6 70.8, 24.6 32.1, 11 32.1, 11 70.8)),Polygon ((31 166.8, 38.6 166.8, 38.6 38.1, 31 38.1, 31 166.8)),Polygon ((-8 3, -6 3, -6 -3, -8 -3, -8 3)))')
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         46)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         169)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            46)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            169)
 
     def test_polygons(self):
         """
@@ -296,10 +307,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((5.5 10.7, 6.8 12.9, 15.5 12.7, 5.5 10.7)),LineString (-4 -1, 2 3),LineString (14 11, 22 35))')
 
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         26)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         36)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            26)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            36)
 
         # with transform
         device = QgsGeometryPaintDevice()
@@ -322,10 +335,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
 
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((11 32.1, 13.6 38.7, 31 38.1, 11 32.1)),LineString (-8 -3, 4 9),LineString (28 33, 44 105))')
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         52)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         108)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            52)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            108)
 
     def test_stroked_polygons(self):
         """
@@ -333,7 +348,7 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         """
         device = QgsGeometryPaintDevice(usePathStroker=True)
         painter = SafePainter(device)
-        pen = QPen(QColor(0,0 ,0 ))
+        pen = QPen(QColor(0, 0, 0))
         pen.setWidthF(1.5)
         pen.setCapStyle(Qt.PenCapStyle.FlatCap)
         painter.setPen(pen)
@@ -353,10 +368,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((6.15 10.32, 7.45 12.52, 6.8 12.9, 6.78 12.15, 15.48 11.95, 15.5 12.7, 15.35 13.44, 5.35 11.44, 5.5 10.7, 6.15 10.32)),Polygon ((5.65 9.96, 15.65 11.96, 15.52 13.45, 6.82 13.65, 6.15 13.28, 4.85 11.08, 5.65 9.96)),Polygon ((-3.58 -1.62, 2.42 2.38, 1.58 3.62, -4.42 -0.38, -3.58 -1.62)),Polygon ((14.71 10.76, 22.71 34.76, 21.29 35.24, 13.29 11.24, 14.71 10.76)))')
 
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         27)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         36)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            27)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            36)
 
         # with transform
         device = QgsGeometryPaintDevice(usePathStroker=True)
@@ -380,10 +397,12 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
 
         self.assertEqual(device.geometry().asWkt(2),
                          'GeometryCollection (Polygon ((12.29 30.96, 14.89 37.56, 13.6 38.7, 13.57 36.45, 30.97 35.85, 31 38.1, 30.71 40.31, 10.71 34.31, 11 32.1, 12.29 30.96)),Polygon ((11.29 29.89, 31.29 35.89, 31.03 40.35, 13.63 40.95, 12.31 39.84, 9.71 33.24, 11.29 29.89)),Polygon ((-7.17 -4.87, 4.83 7.13, 3.17 10.87, -8.83 -1.13, -7.17 -4.87)),Polygon ((29.42 32.29, 45.42 104.29, 42.58 105.71, 26.58 33.71, 29.42 32.29)))')
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
-                         54)
-        self.assertEqual(device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
-                         110)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmWidth),
+            54)
+        self.assertEqual(
+            device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
+            110)
 
     def test_paths(self):
         """
@@ -438,7 +457,7 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         """
         device = QgsGeometryPaintDevice(usePathStroker=True)
         painter = SafePainter(device)
-        pen = QPen(QColor(0,0 ,0 ))
+        pen = QPen(QColor(0, 0, 0))
         pen.setWidthF(1.5)
         pen.setCapStyle(Qt.PenCapStyle.FlatCap)
         painter.setPen(pen)
