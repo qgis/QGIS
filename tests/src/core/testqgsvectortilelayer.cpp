@@ -61,6 +61,7 @@ class TestQgsVectorTileLayer : public QgsTest
     void test_render();
     void test_render_withClip();
     void test_labeling();
+    void test_labeling_clone();
 
     void testMbtilesProviderMetadata();
     void test_relativePathsMbTiles();
@@ -218,6 +219,17 @@ void TestQgsVectorTileLayer::test_labeling()
 
   QVERIFY( res1 );
   QVERIFY( res2 );
+}
+
+void TestQgsVectorTileLayer::test_labeling_clone()
+{
+  QgsVectorTileBasicLabeling *labeling = new QgsVectorTileBasicLabeling;
+  mLayer->setLabeling( labeling );
+
+  std::unique_ptr<QgsVectorTileLayer> vtlClone;
+  vtlClone.reset( mLayer->clone() );
+  QVERIFY( vtlClone->isValid() );
+  QVERIFY( vtlClone->labeling() != nullptr );
 }
 
 void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
