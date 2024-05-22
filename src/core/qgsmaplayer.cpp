@@ -3261,12 +3261,9 @@ QString QgsMapLayer::generalHtmlMetadata() const
 #endif
       if ( propType == QMetaType::QVariantList || propType == QMetaType::QStringList )
       {
-        const QStringList &stringList = propValue.toStringList();
-        for ( const QString &s : stringList )
+        for ( const QString &s : propValue.toStringList() )
         {
-          stringValue += s.toHtmlEscaped();
-          if ( &s != &stringList.back() )
-            stringValue += QStringLiteral( "<br>" );
+          stringValue += "<p style=\"margin: 0;\">" + s.toHtmlEscaped() + "</p>";
         }
       }
       else
