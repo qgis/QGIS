@@ -157,7 +157,7 @@ void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorCompo
   //clip value to sensible range
   const int clippedValue = std::min( std::max( 0, newValue ), componentRange( component ) );
 
-  if ( isCmyk( component ) )
+  if ( colorSpec( component ) == QColor::Spec::Cmyk )
   {
     int c, m, y, k, a;
     color.getCmyk( &c, &m, &y, &k, &a );
@@ -260,23 +260,34 @@ void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorCompo
   }
 }
 
-bool QgsColorWidget::isCmyk( QgsColorWidget::ColorComponent component )
+QColor::Spec QgsColorWidget::colorSpec( QgsColorWidget::ColorComponent component )
 {
   switch ( component )
   {
+    case Red:
+    case Green:
+    case Blue:
+      return QColor::Spec::Rgb;
+
+    case Hue:
+    case Saturation:
+    case Value:
+      return QColor::Spec::Hsv;
+
     case Cyan:
     case Magenta:
     case Yellow:
     case Black:
-      return true;
+      return QColor::Spec::Cmyk;
+
     default:
-      return false;
+      return QColor::Spec::Invalid;
   }
 }
 
-bool QgsColorWidget::isCmyk() const
+QColor::Spec QgsColorWidget::colorSpec() const
 {
-  return isCmyk( mComponent );
+  return colorSpec( mComponent );
 }
 
 const QPixmap &QgsColorWidget::transparentBackground()
@@ -378,8 +389,10 @@ void QgsColorWidget::setComponentValue( const int value )
 
     mCurrentColor.setHsv( h, s, v, a );
   }
-
-  alterColor( mCurrentColor, mComponent, value );
+  else
+  {
+    alterColor( mCurrentColor, mComponent, value );
+  }
 
   //update recorded hue
   if ( mCurrentColor.hue() >= 0 )

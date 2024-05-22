@@ -187,14 +187,14 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue );
 
     /**
-     * Returns true if the color widget component is either Cyan, Magenta, Yellow or Black
+     * Returns color widget type of color, either RGB, HSV, CMYK, or Invalid if this component value is Multiple or Alpha
      */
-    bool isCmyk() const;
+    QColor::Spec colorSpec() const;
 
     /**
-     * Returns true if \a component is either Cyan, Magenta, Yellow or Black
+     * Returns \a component type of color, either RGB, HSV, CMYK, or Invalid if \a component value is Multiple or Alpha
      */
-    static bool isCmyk( QgsColorWidget::ColorComponent component );
+    static QColor::Spec colorSpec( QgsColorWidget::ColorComponent component );
 
     /**
      * Generates a checkboard pattern pixmap for use as a background to transparent colors
