@@ -1948,7 +1948,7 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   expr = expr.arg( quotedIdentifier( fld.name() ) );
   if ( type == QLatin1String( "money" ) )
   {
-    return QStringLiteral( "cash_out(%1)::text" ).arg( expr );
+    return QStringLiteral( "%1::numeric::text" ).arg( expr );
   }
   else if ( type.startsWith( '_' ) )
   {
