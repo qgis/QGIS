@@ -389,10 +389,8 @@ void QgsColorWidget::setComponentValue( const int value )
 
     mCurrentColor.setHsv( h, s, v, a );
   }
-  else
-  {
-    alterColor( mCurrentColor, mComponent, value );
-  }
+
+  alterColor( mCurrentColor, mComponent, value );
 
   //update recorded hue
   if ( mCurrentColor.hue() >= 0 )
