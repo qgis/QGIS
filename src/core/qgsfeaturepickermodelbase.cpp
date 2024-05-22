@@ -606,7 +606,7 @@ void QgsFeaturePickerModelBase::setExtraValueDoesNotExist( bool extraValueDoesNo
     return;
 
   mExtraValueDoesNotExist = extraValueDoesNotExist;
-  emit extraValueDoesNotExistChanged();
+  emit extraValueDoesNotExistChanged( mExtraValueDoesNotExist );
 }
 
 

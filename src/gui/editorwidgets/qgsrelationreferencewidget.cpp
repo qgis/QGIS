@@ -628,7 +628,7 @@ void QgsRelationReferenceWidget::comboReferenceChanged()
   emitForeignKeysChanged( mComboBox->identifierValues() );
 }
 
-void QgsRelationReferenceWidget::comboReferenceFoundChanged()
+void QgsRelationReferenceWidget::comboReferenceFoundChanged( bool )
 {
   mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );
   highlightFeature( mFeature );

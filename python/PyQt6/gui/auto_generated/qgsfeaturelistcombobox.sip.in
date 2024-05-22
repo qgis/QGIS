@@ -242,9 +242,9 @@ Emitted when the current feature changes
 .. versionadded:: 3.16.5
 %End
 
-    void currentFeatureFoundChanged();
+    void currentFeatureFoundChanged( bool found );
 %Docstring
-Emitted when the feature picker model changes its feature found state
+Emitted when the feature picker model changes its feature ``found`` state
 
 .. versionadded:: 3.38
 %End

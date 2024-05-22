@@ -241,9 +241,9 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     void extraIdentifierValueIndexChanged( int index );
 
     /**
-     * Notification that the model has found a feature tied to the extraIdentifierValue.
+     * Notification whether the model has \a found a feature tied to the extraIdentifierValue or not.
      */
-    void extraValueDoesNotExistChanged();
+    void extraValueDoesNotExistChanged( bool found );
 
     /**
      * Notification that the model is about to be changed because a job was completed.

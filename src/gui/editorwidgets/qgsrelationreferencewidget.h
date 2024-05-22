@@ -294,7 +294,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void highlightActionTriggered( QAction *action );
     void deleteHighlight();
     void comboReferenceChanged();
-    void comboReferenceFoundChanged();
+    void comboReferenceFoundChanged( bool found );
     void featureIdentified( const QgsFeature &feature );
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
