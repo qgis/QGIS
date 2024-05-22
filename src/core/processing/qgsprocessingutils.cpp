@@ -664,14 +664,17 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
   if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
     return context.project()->crs();
 
+  // else CRS from string
+  const QgsCoordinateReferenceSystem crs( crsText );
+  if ( crs.isValid() )
+    return crs;
+
   // maybe a map layer reference
   if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
     return layer->crs();
 
-  // else CRS from string
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromString( crsText );
-  return crs;
+  // no luck!
+  return QgsCoordinateReferenceSystem();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )

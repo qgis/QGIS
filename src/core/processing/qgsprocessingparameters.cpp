@@ -3113,6 +3113,13 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
 
 QString QgsProcessingParameterCrs::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
+  if ( value.type() == QVariant::String )
+  {
+    const QgsCoordinateReferenceSystem crs( value.toString() );
+    if ( crs.isValid() )
+      return value.toString();
+  }
+
   return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
 }
 
