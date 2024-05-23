@@ -43,6 +43,10 @@ class TestQgsCompoundColorWidget : public QgsTest
 
 void TestQgsCompoundColorWidget::initTestCase()
 {
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 }
 
 void TestQgsCompoundColorWidget::cleanupTestCase()
