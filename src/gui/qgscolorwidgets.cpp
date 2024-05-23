@@ -102,6 +102,14 @@ int QgsColorWidget::componentValue( const QgsColorWidget::ColorComponent compone
       return mCurrentColor.value();
     case QgsColorWidget::Alpha:
       return mCurrentColor.alpha();
+    case QgsColorWidget::Cyan:
+      return mCurrentColor.cyan();
+    case QgsColorWidget::Yellow:
+      return mCurrentColor.yellow();
+    case QgsColorWidget::Magenta:
+      return mCurrentColor.magenta();
+    case QgsColorWidget::Black:
+      return mCurrentColor.black();
     default:
       return -1;
   }
@@ -112,7 +120,7 @@ int QgsColorWidget::componentRange() const
   return componentRange( mComponent );
 }
 
-int QgsColorWidget::componentRange( const QgsColorWidget::ColorComponent component ) const
+int QgsColorWidget::componentRange( const QgsColorWidget::ColorComponent component )
 {
   if ( component == QgsColorWidget::Multiple )
   {
@@ -144,40 +152,142 @@ int QgsColorWidget::hue() const
   }
 }
 
-void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const
+void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue )
 {
-  int h, s, v, a;
-  color.getHsv( &h, &s, &v, &a );
-
   //clip value to sensible range
   const int clippedValue = std::min( std::max( 0, newValue ), componentRange( component ) );
 
+  if ( colorSpec( component ) == QColor::Spec::Cmyk )
+  {
+    int c, m, y, k, a;
+    color.getCmyk( &c, &m, &y, &k, &a );
+
+    switch ( component )
+    {
+      case QgsColorWidget::Cyan:
+        if ( c == clippedValue )
+        {
+          return;
+        }
+        color.setCmyk( clippedValue, m, y, k, a );
+        break;
+      case QgsColorWidget::Magenta:
+        if ( m == clippedValue )
+        {
+          return;
+        }
+        color.setCmyk( c, clippedValue, y, k, a );
+        break;
+      case QgsColorWidget::Yellow:
+        if ( y == clippedValue )
+        {
+          return;
+        }
+        color.setCmyk( c, m, clippedValue, k, a );
+        break;
+      case QgsColorWidget::Black:
+        if ( k == clippedValue )
+        {
+          return;
+        }
+        color.setCmyk( c, m, y, clippedValue, a );
+        break;
+      default:
+        return;
+    }
+  }
+  else
+  {
+    int r, g, b, a;
+    color.getRgb( &r, &g, &b, &a );
+    int h, s, v;
+    color.getHsv( &h, &s, &v );
+
+    switch ( component )
+    {
+      case QgsColorWidget::Red:
+        if ( r == clippedValue )
+        {
+          return;
+        }
+        color.setRed( clippedValue );
+        break;
+      case QgsColorWidget::Green:
+        if ( g == clippedValue )
+        {
+          return;
+        }
+        color.setGreen( clippedValue );
+        break;
+      case QgsColorWidget::Blue:
+        if ( b == clippedValue )
+        {
+          return;
+        }
+        color.setBlue( clippedValue );
+        break;
+      case QgsColorWidget::Hue:
+        if ( h == clippedValue )
+        {
+          return;
+        }
+        color.setHsv( clippedValue, s, v, a );
+        break;
+      case QgsColorWidget::Saturation:
+        if ( s == clippedValue )
+        {
+          return;
+        }
+        color.setHsv( h, clippedValue, v, a );
+        break;
+      case QgsColorWidget::Value:
+        if ( v == clippedValue )
+        {
+          return;
+        }
+        color.setHsv( h, s, clippedValue, a );
+        break;
+      case QgsColorWidget::Alpha:
+        if ( a == clippedValue )
+        {
+          return;
+        }
+        color.setAlpha( clippedValue );
+        break;
+      default:
+        return;
+    }
+  }
+}
+
+QColor::Spec QgsColorWidget::colorSpec( QgsColorWidget::ColorComponent component )
+{
   switch ( component )
   {
-    case QgsColorWidget::Red:
-      color.setRed( clippedValue );
-      return;
-    case QgsColorWidget::Green:
-      color.setGreen( clippedValue );
-      return;
-    case QgsColorWidget::Blue:
-      color.setBlue( clippedValue );
-      return;
-    case QgsColorWidget::Hue:
-      color.setHsv( clippedValue, s, v, a );
-      return;
-    case QgsColorWidget::Saturation:
-      color.setHsv( h, clippedValue, v, a );
-      return;
-    case QgsColorWidget::Value:
-      color.setHsv( h, s, clippedValue, a );
-      return;
-    case QgsColorWidget::Alpha:
-      color.setAlpha( clippedValue );
-      return;
+    case Red:
+    case Green:
+    case Blue:
+      return QColor::Spec::Rgb;
+
+    case Hue:
+    case Saturation:
+    case Value:
+      return QColor::Spec::Hsv;
+
+    case Cyan:
+    case Magenta:
+    case Yellow:
+    case Black:
+      return QColor::Spec::Cmyk;
+
     default:
-      return;
+      return QColor::Spec::Invalid;
   }
+}
+
+QColor::Spec QgsColorWidget::colorSpec() const
+{
+  return colorSpec( mComponent );
 }
 
 const QPixmap &QgsColorWidget::transparentBackground()
@@ -269,71 +379,18 @@ void QgsColorWidget::setComponentValue( const int value )
     return;
   }
 
-  //clip value to valid range
-  int valueClipped = std::min( value, componentRange() );
-  valueClipped = std::max( valueClipped, 0 );
-
-  int r, g, b, a;
-  mCurrentColor.getRgb( &r, &g, &b, &a );
-  int h, s, v;
-  mCurrentColor.getHsv( &h, &s, &v );
   //overwrite hue with explicit hue if required
-  h = hue();
-
-  switch ( mComponent )
+  if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value )
   {
-    case QgsColorWidget::Red:
-      if ( r == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setRed( valueClipped );
-      break;
-    case QgsColorWidget::Green:
-      if ( g == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setGreen( valueClipped );
-      break;
-    case QgsColorWidget::Blue:
-      if ( b == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setBlue( valueClipped );
-      break;
-    case QgsColorWidget::Hue:
-      if ( h == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setHsv( valueClipped, s, v, a );
-      break;
-    case QgsColorWidget::Saturation:
-      if ( s == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setHsv( h, valueClipped, v, a );
-      break;
-    case QgsColorWidget::Value:
-      if ( v == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setHsv( h, s, valueClipped, a );
-      break;
-    case QgsColorWidget::Alpha:
-      if ( a == valueClipped )
-      {
-        return;
-      }
-      mCurrentColor.setAlpha( valueClipped );
-      break;
-    default:
-      return;
+    int h, s, v, a;
+    mCurrentColor.getHsv( &h, &s, &v, &a );
+
+    h = hue();
+
+    mCurrentColor.setHsv( h, s, v, a );
   }
+
+  alterColor( mCurrentColor, mComponent, value );
 
   //update recorded hue
   if ( mCurrentColor.hue() >= 0 )
@@ -839,30 +896,19 @@ void QgsColorBox::setComponent( const QgsColorWidget::ColorComponent component )
 void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
 {
   //check if we need to redraw the box image
-  if ( mComponent == QgsColorWidget::Red && mCurrentColor.red() != color.red() )
-  {
-    mDirty = true;
-  }
-  else if ( mComponent == QgsColorWidget::Green && mCurrentColor.green() != color.green() )
-  {
-    mDirty = true;
-  }
-  else if ( mComponent == QgsColorWidget::Blue && mCurrentColor.blue() != color.blue() )
-  {
-    mDirty = true;
-  }
-  else if ( mComponent == QgsColorWidget::Hue && color.hsvHue() >= 0 && hue() != color.hsvHue() )
-  {
-    mDirty = true;
-  }
-  else if ( mComponent == QgsColorWidget::Saturation && mCurrentColor.hsvSaturation() != color.hsvSaturation() )
-  {
-    mDirty = true;
-  }
-  else if ( mComponent == QgsColorWidget::Value && mCurrentColor.value() != color.value() )
-  {
-    mDirty = true;
-  }
+  mDirty |= (
+              ( mComponent == QgsColorWidget::Red && mCurrentColor.red() != color.red() ) ||
+              ( mComponent == QgsColorWidget::Green && mCurrentColor.green() != color.green() ) ||
+              ( mComponent == QgsColorWidget::Blue && mCurrentColor.blue() != color.blue() ) ||
+              ( mComponent == QgsColorWidget::Hue && color.hsvHue() >= 0 && hue() != color.hsvHue() ) ||
+              ( mComponent == QgsColorWidget::Saturation && mCurrentColor.hsvSaturation() != color.hsvSaturation() ) ||
+              ( mComponent == QgsColorWidget::Value && mCurrentColor.value() != color.value() ) ||
+              ( mComponent == QgsColorWidget::Cyan && mCurrentColor.cyan() != color.cyan() ) ||
+              ( mComponent == QgsColorWidget::Magenta && mCurrentColor.magenta() != color.magenta() ) ||
+              ( mComponent == QgsColorWidget::Yellow && mCurrentColor.yellow() != color.yellow() ) ||
+              ( mComponent == QgsColorWidget::Black && mCurrentColor.black() != color.black() )
+            );
+
   QgsColorWidget::setColor( color, emitSignals );
 }
 
@@ -949,14 +995,22 @@ QgsColorWidget::ColorComponent QgsColorBox::yComponent() const
   {
     case  QgsColorWidget::Red:
       return QgsColorWidget::Green;
-    case QgsColorWidget:: Green:
-    case QgsColorWidget:: Blue:
+    case QgsColorWidget::Green:
+    case QgsColorWidget::Blue:
       return QgsColorWidget::Red;
+
     case QgsColorWidget::Hue:
-      return QgsColorWidget:: Saturation;
-    case QgsColorWidget:: Saturation:
-    case QgsColorWidget:: Value:
-      return  QgsColorWidget::Hue;
+      return QgsColorWidget::Saturation;
+    case QgsColorWidget::Saturation:
+    case QgsColorWidget::Value:
+      return QgsColorWidget::Hue;
+
+    case  QgsColorWidget::Magenta:
+      return QgsColorWidget::Yellow;
+    case QgsColorWidget::Yellow:
+    case QgsColorWidget::Cyan:
+      return QgsColorWidget::Magenta;
+
     default:
       //should not occur
       return QgsColorWidget::Red;
@@ -972,16 +1026,24 @@ QgsColorWidget::ColorComponent QgsColorBox::xComponent() const
 {
   switch ( mComponent )
   {
-    case  QgsColorWidget::Red:
-    case QgsColorWidget:: Green:
+    case QgsColorWidget::Red:
+    case QgsColorWidget::Green:
       return QgsColorWidget::Blue;
-    case QgsColorWidget:: Blue:
+    case QgsColorWidget::Blue:
       return QgsColorWidget::Green;
+
     case QgsColorWidget::Hue:
-    case QgsColorWidget:: Saturation:
-      return QgsColorWidget:: Value;
-    case QgsColorWidget:: Value:
-      return  QgsColorWidget::Saturation;
+    case QgsColorWidget::Saturation:
+      return QgsColorWidget::Value;
+    case QgsColorWidget::Value:
+      return QgsColorWidget::Saturation;
+
+    case QgsColorWidget::Magenta:
+    case QgsColorWidget::Yellow:
+      return QgsColorWidget::Cyan;
+    case QgsColorWidget::Cyan:
+      return QgsColorWidget::Yellow;
+
     default:
       //should not occur
       return QgsColorWidget::Red;

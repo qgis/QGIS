@@ -22,6 +22,7 @@
 #include "qgsscreenhelper.h"
 #include "qgsguiutils.h"
 
+#include <QButtonGroup>
 #include <QHeaderView>
 #include <QPushButton>
 #include <QMenu>
@@ -41,17 +42,54 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
   mScreenHelper = new QgsScreenHelper( this );
 
-  connect( mHueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mHueRadio_toggled );
-  connect( mSaturationRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mSaturationRadio_toggled );
-  connect( mValueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mValueRadio_toggled );
-  connect( mRedRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mRedRadio_toggled );
-  connect( mGreenRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mGreenRadio_toggled );
-  connect( mBlueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mBlueRadio_toggled );
+  mRgbRadios =
+  {
+    { mHueRadio, QgsColorWidget::ColorComponent::Hue },
+    { mSaturationRadio, QgsColorWidget::ColorComponent::Saturation },
+    { mValueRadio, QgsColorWidget::ColorComponent::Value },
+    { mRedRadio, QgsColorWidget::ColorComponent::Red },
+    { mGreenRadio, QgsColorWidget::ColorComponent::Green },
+    { mBlueRadio, QgsColorWidget::ColorComponent::Blue }
+  };
+
+  mCmykRadios =
+  {
+    { mCyanRadio, QgsColorWidget::ColorComponent::Cyan },
+    { mMagentaRadio, QgsColorWidget::ColorComponent::Magenta },
+    { mYellowRadio, QgsColorWidget::ColorComponent::Yellow },
+    { mBlackRadio, QgsColorWidget::ColorComponent::Black }
+  };
+
+  mRgbGroup = new QButtonGroup( this );
+  int i = 0;
+  for ( auto colorRadio : mRgbRadios )
+    mRgbGroup->addButton( colorRadio.first, i++ );
+
+  mCmykGroup = new QButtonGroup( this );
+  i = 0;
+  for ( auto colorRadio : mCmykRadios )
+    mCmykGroup->addButton( colorRadio.first, i++ );
+
+  connect( mRgbGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onColorButtonGroupToggled );
+  connect( mCmykGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onColorButtonGroupToggled );
   connect( mAddColorToSchemeButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddColorToSchemeButton_clicked );
   connect( mAddCustomColorButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddCustomColorButton_clicked );
   connect( mSampleButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mSampleButton_clicked );
   connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsCompoundColorWidget::mTabWidget_currentChanged );
   connect( mActionShowInButtons, &QAction::toggled, this, &QgsCompoundColorWidget::mActionShowInButtons_toggled );
+
+  mColorModel->addItem( tr( "RGB" ), QColor::Spec::Rgb );
+  mColorModel->addItem( tr( "CMYK" ), QColor::Spec::Cmyk );
+  connect( mColorModel, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int )
+  {
+    const QColor::Spec spec = static_cast< QColor::Spec >( mColorModel->currentData().toInt() );
+    if ( spec == QColor::Spec::Cmyk )
+      setColor( this->color().toCmyk() );
+    else
+      setColor( this->color().toRgb() );
+
+    updateComponent();
+  } );
 
   if ( widgetLayout == LayoutVertical )
   {
@@ -112,7 +150,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSchemeToolButton->setMenu( schemeMenu );
 
   connect( mSchemeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCompoundColorWidget::schemeIndexChanged );
-  connect( mSchemeList, &QgsColorSchemeList::colorSelected, this, &QgsCompoundColorWidget::setColor );
+  connect( mSchemeList, &QgsColorSchemeList::colorSelected, this, &QgsCompoundColorWidget::_setColor );
 
   mOldColorLabel->hide();
 
@@ -127,6 +165,10 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSaturationSlider->setComponent( QgsColorWidget::Saturation );
   mValueSlider->setComponent( QgsColorWidget::Value );
   mAlphaSlider->setComponent( QgsColorWidget::Alpha );
+  mCyanSlider->setComponent( QgsColorWidget::Cyan );
+  mMagentaSlider->setComponent( QgsColorWidget::Magenta );
+  mYellowSlider->setComponent( QgsColorWidget::Yellow );
+  mBlackSlider->setComponent( QgsColorWidget::Black );
 
   mSwatchButton1->setShowMenu( false );
   mSwatchButton1->setBehavior( QgsColorButton::SignalOnly );
@@ -232,61 +274,51 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
     setColor( color );
   }
 
-  //restore active component radio button
-  const int activeRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 2 ).toInt();
-  switch ( activeRadio )
-  {
-    case 0:
-      mHueRadio->setChecked( true );
-      break;
-    case 1:
-      mSaturationRadio->setChecked( true );
-      break;
-    case 2:
-      mValueRadio->setChecked( true );
-      break;
-    case 3:
-      mRedRadio->setChecked( true );
-      break;
-    case 4:
-      mGreenRadio->setChecked( true );
-      break;
-    case 5:
-      mBlueRadio->setChecked( true );
-      break;
-  }
+  // restore active Rgb/Cmyk component radio button
+  const int activeRgbRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 2 ).toInt();
+  if ( QAbstractButton *rgbRadio = mRgbGroup->button( activeRgbRadio ) )
+    rgbRadio->setChecked( true );
+
+  const int activeCmykRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ), 0 ).toInt();
+  if ( QAbstractButton *cmykRadio = mCmykGroup->button( activeCmykRadio ) )
+    cmykRadio->setChecked( true );
+
   const int currentTab = settings.value( QStringLiteral( "Windows/ColorDialog/activeTab" ), 0 ).toInt();
   mTabWidget->setCurrentIndex( currentTab );
 
   //setup connections
-  connect( mColorBox, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mColorWheel, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mColorText, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mVerticalRamp, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mRedSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mGreenSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mBlueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mHueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mValueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mSaturationSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mAlphaSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mColorPreview, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton1, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton2, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton3, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton4, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton5, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton6, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton7, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton8, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton9, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton10, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton11, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton12, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton13, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton14, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton15, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
-  connect( mSwatchButton16, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::setColor );
+  connect( mColorBox, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mColorWheel, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mColorText, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mVerticalRamp, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mRedSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mGreenSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mBlueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mHueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mValueSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mCyanSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mMagentaSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mYellowSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mBlackSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSaturationSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mAlphaSlider, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mColorPreview, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton1, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton2, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton3, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton4, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton5, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton6, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton7, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton8, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton9, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton10, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton11, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton12, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton13, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton14, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton15, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+  connect( mSwatchButton16, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
 }
 
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
@@ -601,12 +633,9 @@ void QgsCompoundColorWidget::mTabWidget_currentChanged( int index )
 {
   //disable radio buttons if not using the first tab, as they have no meaning for other tabs
   const bool enabled = index == 0;
-  mRedRadio->setEnabled( enabled );
-  mBlueRadio->setEnabled( enabled );
-  mGreenRadio->setEnabled( enabled );
-  mHueRadio->setEnabled( enabled );
-  mSaturationRadio->setEnabled( enabled );
-  mValueRadio->setEnabled( enabled );
+  const QList<QRadioButton *> colorRadios{ mHueRadio, mSaturationRadio, mValueRadio, mRedRadio, mGreenRadio, mBlueRadio, mCyanRadio, mMagentaRadio, mYellowRadio, mBlackRadio };
+  for ( QRadioButton *colorRadio : colorRadios )
+    colorRadio->setEnabled( enabled );
 }
 
 void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
@@ -641,21 +670,9 @@ void QgsCompoundColorWidget::saveSettings()
 
   QgsSettings settings;
 
-  //record active component
-  int activeRadio = 0;
-  if ( mHueRadio->isChecked() )
-    activeRadio = 0;
-  if ( mSaturationRadio->isChecked() )
-    activeRadio = 1;
-  if ( mValueRadio->isChecked() )
-    activeRadio = 2;
-  if ( mRedRadio->isChecked() )
-    activeRadio = 3;
-  if ( mGreenRadio->isChecked() )
-    activeRadio = 4;
-  if ( mBlueRadio->isChecked() )
-    activeRadio = 5;
-  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), activeRadio );
+  // record active component
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), mRgbGroup->checkedId() );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ), mCmykGroup->checkedId() );
 
   //record current scheme
   settings.setValue( QStringLiteral( "Windows/ColorDialog/activeScheme" ), mSchemeComboBox->currentIndex() );
@@ -708,6 +725,15 @@ void QgsCompoundColorWidget::stopPicking( QPoint eventPos, const bool takeSample
 
 void QgsCompoundColorWidget::setColor( const QColor &color )
 {
+  const QColor::Spec colorSpec = color.spec() == QColor::Cmyk ? QColor::Cmyk : QColor::Rgb;
+  mColorModel->setCurrentIndex( mColorModel->findData( colorSpec ) );
+  mRGB->setVisible( color.spec() != QColor::Cmyk );
+  mCMYK->setVisible( color.spec() == QColor::Cmyk );
+  _setColor( color );
+}
+
+void QgsCompoundColorWidget::_setColor( const QColor &color )
+{
   if ( !color.isValid() )
   {
     return;
@@ -719,6 +745,12 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     //opacity disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
   }
+
+  if ( mColorModel->currentIndex() && fixedColor.spec() != QColor::Cmyk )
+  {
+    fixedColor = fixedColor.toCmyk();
+  }
+
   const QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();
   const auto constColorWidgets = colorWidgets;
   for ( QgsColorWidget *widget : constColorWidgets )
@@ -731,6 +763,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     widget->setColor( fixedColor );
     widget->blockSignals( false );
   }
+
+
   emit currentColorChanged( fixedColor );
 }
 
@@ -850,58 +884,26 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
   stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
 }
 
-void QgsCompoundColorWidget::mHueRadio_toggled( bool checked )
+
+void QgsCompoundColorWidget::updateComponent()
 {
-  if ( checked )
+  const bool isCmyk = mColorModel->currentData().toInt() == QColor::Spec::Cmyk;
+  const auto radios = isCmyk ? mCmykRadios : mRgbRadios;
+  const QButtonGroup *group = isCmyk ? mCmykGroup : mRgbGroup;
+
+  const int id = group->checkedId();
+  if ( id >= 0 && id < radios.count() )
   {
-    mColorBox->setComponent( QgsColorWidget::Hue );
-    mVerticalRamp->setComponent( QgsColorWidget::Hue );
+    const QgsColorWidget::ColorComponent component = radios.at( group->checkedId() ).second;
+    mColorBox->setComponent( component );
+    mVerticalRamp->setComponent( component );
   }
 }
 
-void QgsCompoundColorWidget::mSaturationRadio_toggled( bool checked )
+void QgsCompoundColorWidget::onColorButtonGroupToggled( int, bool checked )
 {
   if ( checked )
-  {
-    mColorBox->setComponent( QgsColorWidget::Saturation );
-    mVerticalRamp->setComponent( QgsColorWidget::Saturation );
-  }
-}
-
-void QgsCompoundColorWidget::mValueRadio_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mColorBox->setComponent( QgsColorWidget::Value );
-    mVerticalRamp->setComponent( QgsColorWidget::Value );
-  }
-}
-
-void QgsCompoundColorWidget::mRedRadio_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mColorBox->setComponent( QgsColorWidget::Red );
-    mVerticalRamp->setComponent( QgsColorWidget::Red );
-  }
-}
-
-void QgsCompoundColorWidget::mGreenRadio_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mColorBox->setComponent( QgsColorWidget::Green );
-    mVerticalRamp->setComponent( QgsColorWidget::Green );
-  }
-}
-
-void QgsCompoundColorWidget::mBlueRadio_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mColorBox->setComponent( QgsColorWidget::Blue );
-    mVerticalRamp->setComponent( QgsColorWidget::Blue );
-  }
+    updateComponent();
 }
 
 void QgsCompoundColorWidget::mAddColorToSchemeButton_clicked()
