@@ -1395,6 +1395,16 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection/items?POSTDATA={"geometry":null,"properties":{"cnt":null,"pk":null},"type":"Feature"}'), 'wb') as f:
             f.write(b"Location: /collections/mycollection/items/other_id\r\n")
 
+        new_id = {"type": "Feature", "id": "new_id", "properties": {"pk": 1, "cnt": 1234567890123},
+                  "geometry": {"type": "Point", "coordinates": [2, 49]}}
+        with open(sanitize(endpoint, '/collections/mycollection/items/new_id?' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(new_id).encode('UTF-8'))
+
+        other_id = {"type": "Feature", "id": "other_id", "properties": {"pk": 2, "cnt": 123},
+                    "geometry": None}
+        with open(sanitize(endpoint, '/collections/mycollection/items/other_id?' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(other_id).encode('UTF-8'))
+
         f = QgsFeature()
         f.setFields(vl.fields())
         f.setAttributes([None, 1, 1234567890123])
@@ -1405,10 +1415,16 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
         ret, fl = vl.dataProvider().addFeatures([f, f2])
         self.assertTrue(ret)
+
         self.assertEqual(fl[0].id(), 1)
-        self.assertEqual(fl[1].id(), 2)
         self.assertEqual(fl[0]["id"], "new_id")
+        self.assertEqual(fl[0]["pk"], 1)
+        self.assertEqual(fl[0]["cnt"], 1234567890123)
+
+        self.assertEqual(fl[1].id(), 2)
         self.assertEqual(fl[1]["id"], "other_id")
+        self.assertEqual(fl[1]["pk"], 2)
+        self.assertEqual(fl[1]["cnt"], 123)
 
         # Failed attempt
         self.assertFalse(vl.dataProvider().deleteFeatures([1]))

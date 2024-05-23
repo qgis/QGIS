@@ -29,6 +29,7 @@
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifoptionsrequest.h"
 #include "qgsoapifqueryablesrequest.h"
+#include "qgsoapifsingleitemrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
@@ -587,6 +588,31 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
          !mShared->mFoundIdInProperties && idFieldIdx >= 0 )
     {
       f.setAttribute( idFieldIdx, id );
+    }
+
+    // Refresh the feature content with its content from the server with a
+    // /items/{id} request.
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      QgsOapifSingleItemRequest itemRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QString( QStringLiteral( "/" ) + id ) ) );
+      if ( itemRequest.request( /*synchronous=*/ true, /*forceRefresh=*/ true ) &&
+           itemRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+      {
+        const QgsFeature &updatedFeature = itemRequest.feature();
+        if ( updatedFeature.isValid() )
+        {
+          int updatedFieldIdx = 0;
+          for ( const QgsField &updatedField : itemRequest.fields() )
+          {
+            const int srcFieldIdx = mShared->mFields.indexOf( updatedField.name() );
+            if ( srcFieldIdx >= 0 )
+            {
+              f.setAttribute( srcFieldIdx, updatedFeature.attribute( updatedFieldIdx ) );
+            }
+            updatedFieldIdx++;
+          }
+        }
+      }
     }
   }
 
