@@ -122,6 +122,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MultiLineHeight = 32,
       MultiLineAlignment = 33,
       TextOrientation = 110,
+      TabStopDistance = 120, //!< Tab stop distance, since QGIS 3.38
       DirSymbDraw = 34,
       DirSymbLeft = 35,
       DirSymbRight = 36,
