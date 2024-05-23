@@ -70,20 +70,30 @@ QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
   return document;
 }
 
+// Note -- must start and end with spaces, so that a tab character within
+// a html or css tag doesn't mess things up. Instead, Qt will just silently
+// ignore html attributes it doesn't know about, like this replacement string
+#define TAB_REPLACEMENT_MARKER " ignore_me_i_am_a_tab "
+
 QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
 {
-
   QgsTextDocument document;
 
   document.reserve( lines.size() );
 
-  for ( const QString &line : std::as_const( lines ) )
+  for ( const QString &l : std::as_const( lines ) )
   {
+    QString line = l;
     // QTextDocument is a very heavy way of parsing HTML + css (it's heavily geared toward an editable text document,
     // and includes a LOT of calculations we don't need, when all we're after is a HTML + CSS style parser).
     // TODO - try to find an alternative library we can use here
 
     QTextDocument sourceDoc;
+
+    // QTextDocument will replace tab characters with a space. We need to hack around this
+    // by first replacing it with a string which QTextDocument won't mess with, and then
+    // handle these markers as tab characters in the parsed HTML document.
+    line.replace( QString( '\t' ), QStringLiteral( TAB_REPLACEMENT_MARKER ) );
 
     sourceDoc.setHtml( line );
 
@@ -142,7 +152,28 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
           }
           else
           {
-            block.append( QgsTextFragment( fragment ) );
+            if ( fragment.text().contains( QStringLiteral( TAB_REPLACEMENT_MARKER ) ) )
+            {
+              // split line by tab characters, each tab should be a
+              // fragment by itself
+              QgsTextFragment tmpFragment( fragment );
+              const QStringList tabSplit = fragment.text().split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
+              int index = 0;
+              for ( const QString &part : tabSplit )
+              {
+                tmpFragment.setText( part );
+                block.append( tmpFragment );
+                if ( index != tabSplit.size() - 1 )
+                {
+                  block.append( QgsTextFragment( QString( '\t' ) ) );
+                }
+                index++;
+              }
+            }
+            else
+            {
+              block.append( QgsTextFragment( fragment ) );
+            }
           }
         }
         it++;
