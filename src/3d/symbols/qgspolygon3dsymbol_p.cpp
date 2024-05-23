@@ -314,9 +314,8 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
   materialContext.setSelectionColor( context.map().selectionColor() );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
-  Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ?
-                                    QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles,
-                                    materialContext );
+  const QgsMaterialSettingsRenderingTechnique technique = dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles;
+  Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( context.map(), technique, materialContext );
   applyCullingMode( symbol->cullingMode(), material );
   return material;
 }

@@ -50,7 +50,7 @@ QgsNullMaterialSettings *QgsNullMaterialSettings::clone() const
   return new QgsNullMaterialSettings( *this );
 }
 
-Qt3DRender::QMaterial *QgsNullMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const
+Qt3DRender::QMaterial *QgsNullMaterialSettings::toMaterial( const Qgs3DMapSettings &, QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const
 {
   return nullptr;
 }

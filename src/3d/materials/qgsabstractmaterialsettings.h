@@ -27,6 +27,7 @@ class QDomElement;
 class QgsReadWriteContext;
 class QgsLineMaterial;
 class QgsExpressionContext;
+class Qgs3DMapSettings;
 
 #ifndef SIP_RUN
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -179,7 +180,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * The \a technique argument specifies the rendering technique which will be used with the returned
      * material.
      */
-    virtual Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
+    virtual Qt3DRender::QMaterial *toMaterial( const Qgs3DMapSettings &mapSettings, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
 
     /**
      * Returns the parameters to be exported to .mtl file

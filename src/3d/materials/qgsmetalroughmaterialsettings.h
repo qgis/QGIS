@@ -103,7 +103,7 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
+    Qt3DRender::QMaterial *toMaterial( const Qgs3DMapSettings &mapSettings, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
 #endif
 
