@@ -86,6 +86,9 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
        || d->forcedBold != other.forcedBold()
        || d->forcedItalic != other.forcedItalic()
        || d->capitalization != other.capitalization()
+       || d->tabStopDistance != other.tabStopDistance()
+       || d->tabStopDistanceUnits != other.tabStopDistanceUnit()
+       || d->tabStopDistanceMapUnitScale != other.tabStopDistanceMapUnitScale()
        || mBufferSettings != other.mBufferSettings
        || mBackgroundSettings != other.mBackgroundSettings
        || mShadowSettings != other.mShadowSettings
@@ -374,6 +377,39 @@ void QgsTextFormat::setLineHeightUnit( Qgis::RenderUnit unit )
   d->multilineHeightUnits = unit;
 }
 
+double QgsTextFormat::tabStopDistance() const
+{
+  return d->tabStopDistance;
+}
+
+void QgsTextFormat::setTabStopDistance( double distance )
+{
+  d->isValid = true;
+  d->tabStopDistance = distance;
+}
+
+Qgis::RenderUnit QgsTextFormat::tabStopDistanceUnit() const
+{
+  return d->tabStopDistanceUnits;
+}
+
+void QgsTextFormat::setTabStopDistanceUnit( Qgis::RenderUnit unit )
+{
+  d->isValid = true;
+  d->tabStopDistanceUnits = unit;
+}
+
+QgsMapUnitScale QgsTextFormat::tabStopDistanceMapUnitScale() const
+{
+  return d->tabStopDistanceMapUnitScale;
+}
+
+void QgsTextFormat::setTabStopDistanceMapUnitScale( const QgsMapUnitScale &scale )
+{
+  d->isValid = true;
+  d->tabStopDistanceMapUnitScale = scale;
+}
+
 Qgis::TextOrientation QgsTextFormat::orientation() const
 {
   return d->orientation;
@@ -646,6 +682,10 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   bool ok = false;
   d->multilineHeightUnits = QgsUnitTypes::decodeRenderUnit( textStyleElem.attribute( QStringLiteral( "multilineHeightUnit" ), QStringLiteral( "percent" ) ), &ok );
 
+  d->tabStopDistance = textStyleElem.attribute( QStringLiteral( "tabStopDistance" ), QStringLiteral( "80" ) ).toDouble();
+  d->tabStopDistanceUnits = QgsUnitTypes::decodeRenderUnit( textStyleElem.attribute( QStringLiteral( "tabStopDistanceUnit" ), QStringLiteral( "Point" ) ), &ok );
+  d->tabStopDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textStyleElem.attribute( QStringLiteral( "tabStopDistanceMapUnitScale" ) ) );
+
   if ( textStyleElem.hasAttribute( QStringLiteral( "capitalization" ) ) )
     d->capitalization = static_cast< Qgis::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( Qgis::Capitalization::MixedCase ) ) ).toInt() );
   else
@@ -744,6 +784,10 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeightUnit" ), QgsUnitTypes::encodeUnit( d->multilineHeightUnits ) );
+
+  textStyleElem.setAttribute( QStringLiteral( "tabStopDistance" ), d->tabStopDistance );
+  textStyleElem.setAttribute( QStringLiteral( "tabStopDistanceUnit" ), QgsUnitTypes::encodeUnit( d->tabStopDistanceUnits ) );
+  textStyleElem.setAttribute( QStringLiteral( "tabStopDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->tabStopDistanceMapUnitScale ) );
 
   textStyleElem.setAttribute( QStringLiteral( "allowHtml" ), d->allowHtmlFormatting ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   textStyleElem.setAttribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( d->capitalization ) ) );
@@ -1088,6 +1132,16 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( val ) )
     {
       d->textFont.setWordSpacing( val.toDouble() );
+    }
+  }
+
+  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::TabStopDistance ) )
+  {
+    context.expressionContext().setOriginalValueVariable( d->tabStopDistance );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::Property::TabStopDistance, context.expressionContext(), d->tabStopDistance );
+    if ( !QgsVariantUtils::isNull( val ) )
+    {
+      d->tabStopDistance = val.toDouble();
     }
   }
 
