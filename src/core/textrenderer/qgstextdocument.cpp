@@ -42,7 +42,9 @@ QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
   QgsTextDocument document;
   document.reserve( lines.size() );
   for ( const QString &line : lines )
-    document.append( QgsTextBlock( QgsTextFragment( line ) ) );
+  {
+    document.append( QgsTextBlock::fromPlainText( line ) );
+  }
   return document;
 }
 

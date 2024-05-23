@@ -786,7 +786,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
       const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
       for ( const QString &line : multiLineList )
-        document.append( QgsTextBlock( QgsTextFragment( line, c ) ) );
+      {
+         document.append( QgsTextBlock::fromPlainText( line, c ) );
+      }
 
       QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
       metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );

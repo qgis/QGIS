@@ -57,6 +57,30 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(len(doc[2]), 1)
         self.assertEqual(doc[2][0].text(), 'e')
 
+    def testFromPlainTextWithTabs(self):
+        doc = QgsTextDocument.fromPlainText(['a', 'b c\td\t gah', 'e'])
+        self.assertEqual(len(doc), 3)
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'a')
+        self.assertEqual(len(doc[1]), 5)
+        self.assertEqual(doc[1][0].text(), 'b c')
+        self.assertTrue(doc[1][1].isTab())
+        self.assertEqual(doc[1][2].text(), 'd')
+        self.assertTrue(doc[1][3].isTab())
+        self.assertEqual(doc[1][4].text(), ' gah')
+        self.assertEqual(len(doc[2]), 1)
+        self.assertEqual(doc[2][0].text(), 'e')
+
+        doc = QgsTextDocument.fromPlainText(['b\t\tc\td'])
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 6)
+        self.assertEqual(doc[0][0].text(), 'b')
+        self.assertTrue(doc[0][1].isTab())
+        self.assertTrue(doc[0][2].isTab())
+        self.assertEqual(doc[0][3].text(), 'c')
+        self.assertTrue(doc[0][4].isTab())
+        self.assertEqual(doc[0][5].text(), 'd')
+
     def testFromHtml(self):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><b style="text-decoration: underline; font-style: italic; font-size: 15pt; font-family: Serif">def</b> ghi<div>jkl</div></div>', 'b c d', 'e'])
         self.assertEqual(len(doc), 5)

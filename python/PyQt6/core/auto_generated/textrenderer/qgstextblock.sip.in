@@ -36,6 +36,16 @@ Constructor for an empty text block.
 Constructor for a QgsTextBlock consisting of a single text ``fragment``.
 %End
 
+    static QgsTextBlock fromPlainText( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+%Docstring
+Constructor for QgsTextBlock consisting of a plain ``text``, and optional character ``format``.
+
+If ``text`` contains tab characters they will be appended as separate text fragments
+within the block, consisting of just the tab character.
+
+.. versionadded:: 3.38
+%End
+
     QString toPlainText() const;
 %Docstring
 Converts the block to plain text.
