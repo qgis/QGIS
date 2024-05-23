@@ -18,6 +18,8 @@
 #include "qgscompoundcolorwidget.h"
 #include "qgssettings.h"
 
+Q_DECLARE_METATYPE( QgsColorWidget::ColorComponent )
+
 class TestQgsCompoundColorWidget : public QgsTest
 {
     Q_OBJECT
