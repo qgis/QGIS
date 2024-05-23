@@ -616,7 +616,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
         const double yOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
         path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
 
-        xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode );
+        xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode ) * scaleFactor;
 
         fragmentIndex++;
       }
@@ -780,7 +780,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
     const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
     path.addText( xOffset, fragmentYOffset, fragmentFont, fragment.text() );
 
-    xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode );
+    xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode ) * scaleFactor;
     fragmentIndex++;
   }
 
