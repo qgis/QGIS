@@ -21,6 +21,8 @@
 #include "qgslogger.h"
 #include "qgssnappingutils.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometrycollection.h"
+#include "qgscurvepolygon.h"
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
@@ -302,6 +304,8 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // *****************************
   // ---- Line Extension Constraint
 
+  QgsPointXY lineExtensionPt1;
+  QgsPointXY lineExtensionPt2;
   if ( numberOfHardLock < 2 && ctx.lineExtensionConstraint.locked && ctx.lockedSnapVertices().length() != 0 )
   {
     const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
@@ -380,18 +384,32 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       };
 
       const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
-      const QgsGeometry geom = feature.geometry();
+      const QgsGeometry geometry = feature.geometry();
+      const QgsAbstractGeometry *geom = geometry.constGet();
 
-      bool checked = checkLineExtension( geom.vertexAt( snap.vertexIndex() - 1 ) );
-      if ( checked )
+      QgsVertexId vertexId;
+      geometry.vertexIdFromVertexNr( snap.vertexIndex(), vertexId );
+      if ( vertexId.isValid() )
       {
-        res.softLockLineExtension = Qgis::LineExtensionSide::BeforeVertex;
-      }
+        QgsVertexId previousVertexId;
+        QgsVertexId nextVertexId;
+        geom->adjacentVertices( vertexId, previousVertexId, nextVertexId );
 
-      checked = checkLineExtension( geom.vertexAt( snap.vertexIndex() + 1 ) );
-      if ( checked )
-      {
-        res.softLockLineExtension = Qgis::LineExtensionSide::AfterVertex;
+        bool checked = checkLineExtension( geom->vertexAt( previousVertexId ) );
+        if ( checked )
+        {
+          res.softLockLineExtension = Qgis::LineExtensionSide::BeforeVertex;
+          lineExtensionPt1 = snap.point();
+          lineExtensionPt2 = QgsPointXY( geom->vertexAt( previousVertexId ) );
+        }
+
+        checked = checkLineExtension( geom->vertexAt( nextVertexId ) );
+        if ( checked )
+        {
+          res.softLockLineExtension = Qgis::LineExtensionSide::AfterVertex;
+          lineExtensionPt1 = snap.point();
+          lineExtensionPt2 = QgsPointXY( geom->vertexAt( nextVertexId ) );
+        }
       }
     }
   }
@@ -440,23 +458,6 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     }
     else if ( res.softLockLineExtension != Qgis::LineExtensionSide::NoVertex )
     {
-      const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
-      const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
-      const QgsGeometry geom = feature.geometry();
-
-
-      const QgsPointXY lineExtensionPt1 = snap.point();
-
-      QgsPointXY lineExtensionPt2;
-      if ( res.softLockLineExtension == Qgis::LineExtensionSide::AfterVertex )
-      {
-        lineExtensionPt2 = QgsPointXY( geom.vertexAt( snap.vertexIndex() + 1 ) );
-      }
-      else
-      {
-        lineExtensionPt2 = QgsPointXY( geom.vertexAt( snap.vertexIndex() - 1 ) );
-      }
-
       const bool intersect = QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, lineExtensionPt1, lineExtensionPt2, point );
       if ( !intersect )
       {
