@@ -746,7 +746,6 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
         if ( iota > a360 - gamma1 )
           iota -= a360;
 
-        //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
         deltaY = -labelHeight + labelHeight * iota / ( 2 * gamma1 );
 
         quadrant = LabelPosition::QuadrantRight;
@@ -759,7 +758,6 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
       }
       else if ( angleToCandidate < a90 + gamma2 ) // top
       {
-        //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
         deltaX = -labelWidth * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
         deltaY = rayDistance;
         quadrant = LabelPosition::QuadrantAbove;
@@ -773,7 +771,6 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
       else if ( angleToCandidate < a180 + gamma1 ) // left
       {
         deltaX = -rayDistance - labelWidth;
-        //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
         deltaY = - ( angleToCandidate - a180 + gamma1 ) * labelHeight / ( 2 * gamma1 );
         quadrant = LabelPosition::QuadrantLeft;
       }
@@ -786,7 +783,6 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
       else if ( angleToCandidate < a270 + gamma2 ) // down
       {
         deltaY = -rayDistance - labelHeight;
-        //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
         deltaX = -labelWidth + ( angleToCandidate - a270 + gamma2 ) * labelWidth / ( 2 * gamma2 );
         quadrant = LabelPosition::QuadrantBelow;
       }
