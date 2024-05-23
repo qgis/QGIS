@@ -146,6 +146,56 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[2][1].characterFormat().textColor().name(), '#000000')
         self.assertEqual(doc[2][1].text(), 'd')
 
+        # with tabs
+        doc = QgsTextDocument.fromHtml(['<span\tstyle="color:red">a\t<span style="color:blue">b</span>\tc</span>d'])
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 6)
+
+        self.assertEqual(doc[0][0].text(), 'a')
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+
+        self.assertTrue(doc[0][1].isTab())
+
+        self.assertEqual(doc[0][2].text(), 'b')
+        self.assertEqual(doc[0][2].characterFormat().textColor().name(), '#0000ff')
+
+        self.assertTrue(doc[0][3].isTab())
+
+        self.assertEqual(doc[0][4].text(), 'c')
+        self.assertEqual(doc[0][4].characterFormat().textColor().name(), '#ff0000')
+
+        # combination tabs and brs
+        doc = QgsTextDocument.fromHtml(['<span style="color:red">aaaa aaa\t<span style="color:blue">b<br></span>c</span>d'])
+        self.assertEqual(len(doc), 2)
+
+        self.assertEqual(len(doc[0]), 3)
+        self.assertEqual(doc[0][0].text(), 'aaaa aaa')
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertTrue(doc[0][1].isTab())
+        self.assertEqual(doc[0][2].text(), 'b')
+        self.assertEqual(doc[0][2].characterFormat().textColor().name(), '#0000ff')
+
+        self.assertEqual(len(doc[1]), 2)
+        self.assertEqual(doc[1][0].text(), 'c')
+        self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[1][1].text(), 'd')
+        self.assertEqual(doc[1][1].characterFormat().textColor().name(), '#000000')
+
+        # Class || '\t' || 'a<br>b\tcdcd'
+        # combination tabs and newline, different string
+        doc = QgsTextDocument.fromHtml(['Class\ta<br>b\tcdcd'])
+        self.assertEqual(len(doc), 2)
+
+        self.assertEqual(len(doc[0]), 3)
+        self.assertEqual(doc[0][0].text(), 'Class')
+        self.assertTrue(doc[0][1].isTab())
+        self.assertEqual(doc[0][2].text(), 'a')
+
+        self.assertEqual(len(doc[1]), 3)
+        self.assertEqual(doc[1][0].text(), 'b')
+        self.assertTrue(doc[1][1].isTab())
+        self.assertEqual(doc[1][2].text(), 'cdcd')
+
     def testFromHtmlVerticalAlignment(self):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><sub>def<b>extra</b></sub> ghi</div><sup>sup</sup><span style="vertical-align: sub">css</span>'])
         self.assertEqual(len(doc), 3)

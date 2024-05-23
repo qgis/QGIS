@@ -48,20 +48,30 @@ QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
   return document;
 }
 
+// Note -- must start and end with spaces, so that a tab character within
+// a html or css tag doesn't mess things up. Instead, Qt will just silently
+// ignore html attributes it doesn't know about, like this replacement string
+#define TAB_REPLACEMENT_MARKER " ignore_me_i_am_a_tab "
+
 QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
 {
-
   QgsTextDocument document;
 
   document.reserve( lines.size() );
 
-  for ( const QString &line : std::as_const( lines ) )
+  for ( const QString &l : std::as_const( lines ) )
   {
+    QString line = l;
     // QTextDocument is a very heavy way of parsing HTML + css (it's heavily geared toward an editable text document,
     // and includes a LOT of calculations we don't need, when all we're after is a HTML + CSS style parser).
     // TODO - try to find an alternative library we can use here
 
     QTextDocument sourceDoc;
+
+    // QTextDocument will replace tab characters with a space. We need to hack around this
+    // by first replacing it with a string which QTextDocument won't mess with, and then
+    // handle these markers as tab characters in the parsed HTML document.
+    line.replace( QString( '\t' ), QStringLiteral( TAB_REPLACEMENT_MARKER ) );
 
     sourceDoc.setHtml( line );
 
@@ -85,9 +95,6 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
 
             for ( const QString &splitLine : std::as_const( splitLines ) )
             {
-              QgsTextFragment splitFragment( fragment );
-              splitFragment.setText( splitLine );
-
               const QgsTextCharacterFormat *previousFormat = nullptr;
 
               // If the splitLine is not the first, inherit style from previous fragment
@@ -96,18 +103,74 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
                 previousFormat = &document.at( document.size() - 1 ).at( 0 ).characterFormat();
               }
 
-              if ( previousFormat )
+              if ( splitLine.contains( QStringLiteral( TAB_REPLACEMENT_MARKER ) ) )
               {
-                // Apply overrides from previous fragment
-                QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
-                newFormat.overrideWith( *previousFormat );
-                splitFragment.setCharacterFormat( newFormat );
+                // split line by tab characters, each tab should be a
+                // fragment by itself
+                QgsTextFragment splitFragment( fragment );
+                if ( previousFormat )
+                {
+                  // Apply overrides from previous fragment
+                  QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
+                  newFormat.overrideWith( *previousFormat );
+                  splitFragment.setCharacterFormat( newFormat );
+                }
+
+                const QStringList tabSplit = splitLine.split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
+                int index = 0;
+                for ( const QString &part : tabSplit )
+                {
+                  if ( !part.isEmpty() )
+                  {
+                    splitFragment.setText( part );
+                    block.append( splitFragment );
+                  }
+                  if ( index != tabSplit.size() - 1 )
+                  {
+                    block.append( QgsTextFragment( QString( '\t' ) ) );
+                  }
+                  index++;
+                }
+              }
+              else
+              {
+                QgsTextFragment splitFragment( fragment );
+                splitFragment.setText( splitLine );
+
+                if ( previousFormat )
+                {
+                  // Apply overrides from previous fragment
+                  QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
+                  newFormat.overrideWith( *previousFormat );
+                  splitFragment.setCharacterFormat( newFormat );
+                }
+
+                block.append( splitFragment );
               }
 
-              block.append( splitFragment );
               document.append( block );
               block = QgsTextBlock();
-
+            }
+          }
+          else if ( fragmentText.contains( QStringLiteral( TAB_REPLACEMENT_MARKER ) ) )
+          {
+            // split line by tab characters, each tab should be a
+            // fragment by itself
+            QgsTextFragment tmpFragment( fragment );
+            const QStringList tabSplit = fragmentText.split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
+            int index = 0;
+            for ( const QString &part : tabSplit )
+            {
+              if ( !part.isEmpty() )
+              {
+                tmpFragment.setText( part );
+                block.append( tmpFragment );
+              }
+              if ( index != tabSplit.size() - 1 )
+              {
+                block.append( QgsTextFragment( QString( '\t' ) ) );
+              }
+              index++;
             }
           }
           else
