@@ -34,6 +34,32 @@ class TestQgsTextFragment(QgisTestCase):
         fragment.setText('ludicrous gibs!')
         self.assertEqual(fragment.text(), 'ludicrous gibs!')
 
+    def test_is_tab(self):
+        fragment = QgsTextFragment()
+        self.assertFalse(fragment.isTab())
+        fragment.setText('abc')
+        self.assertFalse(fragment.isTab())
+        fragment.setText('abc\tdef')
+        self.assertFalse(fragment.isTab())
+        fragment.setText('\t')
+        self.assertTrue(fragment.isTab())
+
+    def test_is_whitespace(self):
+        fragment = QgsTextFragment()
+        self.assertTrue(fragment.isWhitespace())
+        fragment.setText('abc')
+        self.assertFalse(fragment.isWhitespace())
+        fragment.setText(' a bc  ')
+        self.assertFalse(fragment.isWhitespace())
+        fragment.setText('abc\tdef')
+        self.assertFalse(fragment.isWhitespace())
+        fragment.setText('\t')
+        self.assertTrue(fragment.isWhitespace())
+        fragment.setText('    ')
+        self.assertTrue(fragment.isWhitespace())
+        fragment.setText('\t  ')
+        self.assertTrue(fragment.isWhitespace())
+
     def testSetCharacterFormat(self):
         fragment = QgsTextFragment('a')
 

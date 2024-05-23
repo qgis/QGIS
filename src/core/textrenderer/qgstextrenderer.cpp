@@ -610,11 +610,14 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
       {
         QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
 
-        if ( component.extraWordSpacing || component.extraLetterSpacing )
-          applyExtraSpacingForLineJustification( fragmentFont, component.extraWordSpacing, component.extraLetterSpacing );
+        if ( !fragment.isWhitespace() )
+        {
+          if ( component.extraWordSpacing || component.extraLetterSpacing )
+            applyExtraSpacingForLineJustification( fragmentFont, component.extraWordSpacing, component.extraLetterSpacing );
 
-        const double yOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
-        path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
+          const double yOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
+          path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
+        }
 
         xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode ) * scaleFactor;
 
@@ -775,10 +778,13 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   int fragmentIndex = 0;
   for ( const QgsTextFragment &fragment : component.block )
   {
-    const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
+    if ( !fragment.isWhitespace() )
+    {
+      const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
 
-    const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
-    path.addText( xOffset, fragmentYOffset, fragmentFont, fragment.text() );
+      const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
+      path.addText( xOffset, fragmentYOffset, fragmentFont, fragment.text() );
+    }
 
     xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode ) * scaleFactor;
     fragmentIndex++;
@@ -1876,22 +1882,25 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         for ( const QgsTextFragment &fragment : block )
         {
           // draw text, QPainterPath method
-          QPainterPath path;
-          path.setFillRule( Qt::WindingFill );
+          if ( !fragment.isWhitespace() )
+          {
+            QPainterPath path;
+            path.setFillRule( Qt::WindingFill );
 
-          QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
+            QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
-          if ( extraWordSpace || extraLetterSpace )
-            applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
+            if ( extraWordSpace || extraLetterSpace )
+              applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
-          const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
+            const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
 
-          path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
+            path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
 
-          QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-          textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
-          textp.setBrush( textColor );
-          textp.drawPath( path );
+            QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
+            textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
+            textp.setBrush( textColor );
+            textp.drawPath( path );
+          }
 
           xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
           fragmentIndex ++;
@@ -1933,23 +1942,26 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           int fragmentIndex = 0;
           for ( const QgsTextFragment &fragment : block )
           {
-            QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
+            if ( !fragment.isWhitespace() )
+            {
+              QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
-            if ( extraWordSpace || extraLetterSpace )
-              applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
+              if ( extraWordSpace || extraLetterSpace )
+                applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
-            const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
+              const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
 
-            QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-            textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
+              QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
+              textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
 
-            context.painter()->setPen( textColor );
-            context.painter()->setFont( fragmentFont );
-            context.painter()->setRenderHint( QPainter::TextAntialiasing );
+              context.painter()->setPen( textColor );
+              context.painter()->setFont( fragmentFont );
+              context.painter()->setRenderHint( QPainter::TextAntialiasing );
 
-            context.painter()->scale( 1 / fontScale, 1 / fontScale );
-            context.painter()->drawText( QPointF( xOffset, yOffset ), fragment.text() );
-            context.painter()->scale( fontScale, fontScale );
+              context.painter()->scale( 1 / fontScale, 1 / fontScale );
+              context.painter()->drawText( QPointF( xOffset, yOffset ), fragment.text() );
+              context.painter()->scale( fontScale, fontScale );
+            }
 
             xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
             fragmentIndex++;

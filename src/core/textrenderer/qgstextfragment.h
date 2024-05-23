@@ -61,6 +61,21 @@ class CORE_EXPORT QgsTextFragment
     void setText( const QString &text );
 
     /**
+     * Returns TRUE if the fragment consists of just a tab character.
+     *
+     * \since QGIS 3.38
+     */
+    bool isTab() const { return mText == '\t'; }
+
+    /**
+     * Returns TRUE if the fragment consists of just whitespace characters, and does not
+     * contain any content to render.
+     *
+     * \since QGIS 3.38
+     */
+    bool isWhitespace() const { return isTab() || mText.trimmed().isEmpty(); }
+
+    /**
      * Returns the character formatting for the fragment.
      *
      * \see setCharacterFormat()
