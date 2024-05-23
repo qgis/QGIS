@@ -50,6 +50,21 @@ Sets the ``text`` content of the fragment.
 .. seealso:: :py:func:`text`
 %End
 
+    bool isTab() const;
+%Docstring
+Returns ``True`` if the fragment consists of just a tab character.
+
+.. versionadded:: 3.38
+%End
+
+    bool isWhitespace() const;
+%Docstring
+Returns ``True`` if the fragment consists of just whitespace characters, and does not
+contain any content to render.
+
+.. versionadded:: 3.38
+%End
+
     const QgsTextCharacterFormat &characterFormat() const;
 %Docstring
 Returns the character formatting for the fragment.
