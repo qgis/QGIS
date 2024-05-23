@@ -146,8 +146,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private slots:
 
-    void onRgbButtonGroupToggled( int id, bool checked );
-    void onCmykButtonGroupToggled( int id, bool checked );
+    void onColorButtonGroupToggled( int, bool checked );
 
     void mAddColorToSchemeButton_clicked();
 
@@ -174,6 +173,12 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
   private:
 
     static QScreen *findScreenAt( QPoint pos );
+
+    /**
+     * Helper method to update current widget display with current component according to
+     * color model and selected color component radio button
+     */
+    void updateComponent();
 
     QgsScreenHelper *mScreenHelper = nullptr;
 
@@ -229,16 +234,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     //! Updates the state of actions for the current selected scheme
     void updateActionsForCurrentScheme();
-
-    /**
-     * Helper method to implement slots called when color radio button has been toggled
-     * \param colorRadios related to the toggled button
-     * \param colorSpec color type of the toggled button
-     * \param id of the toggled button
-     * \param checked TRUE is the button is checked
-     */
-    void onColorButtonGroupToggled( const QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> &colorRadios,
-                                    const QColor::Spec colorSpec, const int id, const bool checked );
 
     friend class TestQgsCompoundColorWidget;
 };

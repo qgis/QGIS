@@ -70,8 +70,8 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   for ( auto colorRadio : mCmykRadios )
     mCmykGroup->addButton( colorRadio.first, i++ );
 
-  connect( mRgbGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onRgbButtonGroupToggled );
-  connect( mCmykGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onCmykButtonGroupToggled );
+  connect( mRgbGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onColorButtonGroupToggled );
+  connect( mCmykGroup, &QButtonGroup::idToggled, this, &QgsCompoundColorWidget::onColorButtonGroupToggled );
   connect( mAddColorToSchemeButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddColorToSchemeButton_clicked );
   connect( mAddCustomColorButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddCustomColorButton_clicked );
   connect( mSampleButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mSampleButton_clicked );
@@ -87,6 +87,8 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
       setColor( this->color().toCmyk() );
     else
       setColor( this->color().toRgb() );
+
+    updateComponent();
   } );
 
   if ( widgetLayout == LayoutVertical )
@@ -883,27 +885,26 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
 }
 
 
-void QgsCompoundColorWidget::onColorButtonGroupToggled( const QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> &colorRadios,
-    const QColor::Spec colorSpec, const int id, const bool checked )
+void QgsCompoundColorWidget::updateComponent()
 {
-  if ( checked && id >= 0 && id < colorRadios.count() && static_cast<QColor::Spec>( mColorModel->currentData().toInt() ) == colorSpec )
+  const bool isCmyk = mColorModel->currentData().toInt() == QColor::Spec::Cmyk;
+  const auto radios = isCmyk ? mCmykRadios : mRgbRadios;
+  const QButtonGroup *group = isCmyk ? mCmykGroup : mRgbGroup;
+
+  const int id = group->checkedId();
+  if ( id >= 0 && id < radios.count() )
   {
-    const QgsColorWidget::ColorComponent component = colorRadios.at( id ).second;
+    const QgsColorWidget::ColorComponent component = radios.at( group->checkedId() ).second;
     mColorBox->setComponent( component );
     mVerticalRamp->setComponent( component );
   }
 }
 
-void QgsCompoundColorWidget::onRgbButtonGroupToggled( int id, bool checked )
+void QgsCompoundColorWidget::onColorButtonGroupToggled( int, bool checked )
 {
-  onColorButtonGroupToggled( mRgbRadios, QColor::Rgb, id, checked );
+  if ( checked )
+    updateComponent();
 }
-
-void QgsCompoundColorWidget::onCmykButtonGroupToggled( int id, bool checked )
-{
-  onColorButtonGroupToggled( mCmykRadios, QColor::Cmyk, id, checked );
-}
-
 
 void QgsCompoundColorWidget::mAddColorToSchemeButton_clicked()
 {
