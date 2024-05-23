@@ -3402,6 +3402,28 @@ class PyQgsTextRenderer(QgisTestCase):
         format.buffer().setSize(5)
         assert self.checkRenderPoint(format, 'text_dd_buffer_color', None, text=['test'], point=QPointF(50, 200))
 
+    def testDrawTabPercent(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(4)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Percentage)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_percentage',
+                                         text=['with\ttabs',' a\tb']))
+
+    def testDrawTabFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(40)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_fixed_size',
+                                         text=['with\ttabs',' a\tb']))
+
     def testHtmlFormatting(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -3412,6 +3434,30 @@ class PyQgsTextRenderer(QgisTestCase):
         assert self.checkRenderPoint(format, 'text_html_formatting', None, text=[
             '<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline">t</span></span>'],
             point=QPointF(50, 200))
+
+    def testHtmlTabPercent(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(4)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Percentage)
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_percentage_html',
+                                         text=['<span style="font-size: 15pt">with</span>\ttabs',' a\tb']))
+
+    def testHtmlTabFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(40)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_fixed_size_html',
+                                         text=['<span style="font-size: 15pt">with</span>\ttabs',' a\tb']))
 
     def testHtmlFormattingBuffer(self):
         """
