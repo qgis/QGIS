@@ -328,6 +328,12 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
       // already found that item, then we've found our target
       if ( ( ! belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
       {
+        // If ignoreLocked and item is part of a locked group, return the next item below
+        if ( ignoreLocked && layoutItem->parentGroup() &&  layoutItem->parentGroup()->isLocked() )
+        {
+          return layoutItemAt( position, layoutItem, ignoreLocked, searchTolerance );
+        }
+
         return layoutItem;
       }
       else
