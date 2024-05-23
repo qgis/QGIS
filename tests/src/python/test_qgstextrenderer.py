@@ -163,6 +163,18 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setTabStopDistance(3)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setTabStopDistanceUnit(Qgis.RenderUnit.Points)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setTabStopDistanceMapUnitScale(QgsMapUnitScale(5, 10))
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.setOrientation(QgsTextFormat.TextOrientation.VerticalOrientation)
         self.assertTrue(t.isValid())
 
@@ -743,6 +755,10 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setForcedBold(True)
         s.setForcedItalic(True)
 
+        s.setTabStopDistance(4.5)
+        s.setTabStopDistanceUnit(Qgis.RenderUnit.RenderInches)
+        s.setTabStopDistanceMapUnitScale(QgsMapUnitScale(11, 12))
+
         s.setStretchFactor(110)
 
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Bold, QgsProperty.fromExpression('1>2'))
@@ -862,6 +878,19 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setStretchFactor(120)
         self.assertNotEqual(s, s2)
 
+        s = self.createFormatSettings()
+        s.setTabStopDistance(120)
+        self.assertNotEqual(s, s2)
+
+        s = self.createFormatSettings()
+        s.setTabStopDistanceUnit(Qgis.RenderUnit.Points)
+        self.assertNotEqual(s, s2)
+
+        s = self.createFormatSettings()
+        s.setTabStopDistanceMapUnitScale(
+            QgsMapUnitScale(111, 122))
+        self.assertNotEqual(s, s2)
+
     def checkTextFormat(self, s):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())
@@ -891,6 +920,9 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Property.Bold).expressionString(), '1>2')
         self.assertTrue(s.forcedBold())
         self.assertTrue(s.forcedItalic())
+        self.assertEqual(s.tabStopDistance(), 4.5)
+        self.assertEqual(s.tabStopDistanceUnit(), Qgis.RenderUnit.Inches)
+        self.assertEqual(s.tabStopDistanceMapUnitScale(), QgsMapUnitScale(11, 12))
 
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
@@ -1380,6 +1412,10 @@ class PyQgsTextRenderer(QgisTestCase):
             f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.FontStretchFactor, QgsProperty.fromExpression("135"))
             f.updateDataDefinedProperties(context)
             self.assertEqual(f.stretchFactor(), 135)
+
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.TabStopDistance, QgsProperty.fromExpression("15"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.tabStopDistance(), 15)
 
     def testFontFoundFromLayer(self):
         layer = createEmptyLayer()

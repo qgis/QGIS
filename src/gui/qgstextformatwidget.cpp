@@ -181,6 +181,8 @@ void QgsTextFormatWidget::initWidget()
                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels
                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mTabDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels
+                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mFontLineHeightSpinBox->setClearValue( 100.0 );
   mShapeRotationDblSpnBx->setClearValue( 0.0 );
   mShapeOffsetXSpnBx->setClearValue( 0.0 );
@@ -195,6 +197,7 @@ void QgsTextFormatWidget::initWidget()
   mMaximumDistanceSpnBx->setMinimum( 0 );
   mMaximumDistanceSpnBx->setClearValue( 0.0, tr( "Not set" ) );
   mSpinStretch->setClearValue( 100 );
+  mTabStopDistanceSpin->setMinimum( 0 );
 
   connect( mLineHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
   {
@@ -502,7 +505,9 @@ void QgsTextFormatWidget::initWidget()
           << mMaskOpacityWidget
           << mCheckAllowLabelsOutsidePolygons
           << mHtmlFormattingCheckBox
-          << mPrioritizationComboBox;
+          << mPrioritizationComboBox
+          << mTabDistanceUnitWidget
+          << mTabStopDistanceSpin;
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
@@ -744,6 +749,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::Property::FontWordSpacing );
   registerDataDefinedButton( mFontBlendModeDDBtn, QgsPalLayerSettings::Property::FontBlendMode );
   registerDataDefinedButton( mFontStretchDDBtn, QgsPalLayerSettings::Property::FontStretchFactor );
+  registerDataDefinedButton( mTabDistanceDDBtn, QgsPalLayerSettings::Property::TabStopDistance );
 
   // text formatting
   registerDataDefinedButton( mWrapCharDDBtn, QgsPalLayerSettings::Property::MultiLineWrapChar );
@@ -970,6 +976,10 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
   whileBlocking( mKerningCheckBox )->setChecked( format.font().kerning() );
 
+  mTabDistanceUnitWidget->setUnit( format.tabStopDistanceUnit() );
+  mTabDistanceUnitWidget->setMapUnitScale( format.tabStopDistanceMapUnitScale() );
+  whileBlocking( mTabStopDistanceSpin )->setValue( format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage ? ( format.tabStopDistance() * 100 ) : format.tabStopDistance() );
+
   whileBlocking( mFontCapitalsComboBox )->setCurrentIndex( mFontCapitalsComboBox->findData( static_cast< int >( format.capitalization() ) ) );
   QgsFontUtils::updateFontViaStyle( mRefFont, format.namedStyle() );
   updateFont( mRefFont );
@@ -1110,6 +1120,9 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setOrientation( static_cast< Qgis::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
   format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
   format.setCapitalization( static_cast< Qgis::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
+  format.setTabStopDistance( mTabDistanceUnitWidget->unit() == Qgis::RenderUnit::Percentage ? ( mTabStopDistanceSpin->value() / 100 ) : mTabStopDistanceSpin->value() );
+  format.setTabStopDistanceUnit( mTabDistanceUnitWidget->unit() );
+  format.setTabStopDistanceMapUnitScale( mTabDistanceUnitWidget->getMapUnitScale() );
 
   // buffer
   QgsTextBufferSettings buffer;

@@ -507,6 +507,74 @@ Sets the ``unit`` for the line height for text.
 .. versionadded:: 3.28
 %End
 
+    double tabStopDistance() const;
+%Docstring
+Returns the distance for tab stops.
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. seealso:: :py:func:`setTabStopDistance`
+
+.. versionadded:: 3.38
+%End
+
+    void setTabStopDistance( double distance );
+%Docstring
+Sets the ``distance`` for tab stops. The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
+
+.. seealso:: :py:func:`tabStopDistance`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    Qgis::RenderUnit tabStopDistanceUnit() const;
+%Docstring
+Returns the units for the tab stop distance.
+
+.. seealso:: :py:func:`tabStopDistance`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    void setTabStopDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the tab stop distance.
+
+.. seealso:: :py:func:`setTabStopDistance`
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    QgsMapUnitScale tabStopDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale object for the tab stop distance. This is only used if the
+tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
+
+.. seealso:: :py:func:`setTabStopDistanceMapUnitScale`
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    void setTabStopDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` object for the tab stop distance. This is only used if the
+tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
+
+.. seealso:: :py:func:`tabStopDistanceMapUnitScale`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
     Qgis::TextOrientation orientation() const;
 %Docstring
 Returns the orientation of the text.
