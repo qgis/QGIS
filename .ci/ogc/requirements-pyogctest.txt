@@ -1,0 +1,11 @@
+certifi==2024.2.2
+charset-normalizer==3.3.2
+coloredlogs==15.0.1
+docker==7.0.0
+humanfriendly==10.0
+idna==3.7
+packaging==24.0
+-e git+https://github.com/pblottiere/pyogctest@2fbedb81d1354cb2340d7bd43f36b58b2795131f#egg=pyogctest
+requests==2.31
+six==1.16.0
+urllib3==2.2.1
