@@ -23,7 +23,7 @@ Convenience functions for geometry utils.
 
     static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring
-Returns the squared 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (``z2``, ``z2``).
+Returns the squared 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``z2``).
 
 .. warning::
 
@@ -34,7 +34,7 @@ Returns the squared 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (
 
     static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring
-Returns the 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (``z2``, ``z2``).
+Returns the 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``z2``).
 
 .. warning::
 
