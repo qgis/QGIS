@@ -1407,6 +1407,8 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(ret)
         self.assertEqual(fl[0].id(), 1)
         self.assertEqual(fl[1].id(), 2)
+        self.assertEqual(fl[0]["id"], "new_id")
+        self.assertEqual(fl[1]["id"], "other_id")
 
         # Failed attempt
         self.assertFalse(vl.dataProvider().deleteFeatures([1]))
