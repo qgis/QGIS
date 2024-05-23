@@ -657,10 +657,9 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
   newItem->setFlags( ( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
   //set initial color for diagram category
-  QRandomGenerator colorGenerator;
-  const int red = colorGenerator.bounded( 1, 256 );
-  const int green = colorGenerator.bounded( 1, 256 );
-  const int blue = colorGenerator.bounded( 1, 256 );
+  const int red = QRandomGenerator::global()->bounded( 1, 256 );
+  const int green = QRandomGenerator::global()->bounded( 1, 256 );
+  const int blue = QRandomGenerator::global()->bounded( 1, 256 );
   const QColor randomColor( red, green, blue );
   newItem->setData( ColumnColor, Qt::EditRole, randomColor );
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
