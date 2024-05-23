@@ -969,7 +969,7 @@ QString QgsApplication::resolvePkgPath()
       QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-      *sCfgIntDir() = prefix.split( '/', Qt::SkipEmptyParts ).last();
+      *sCfgIntDir() = prefix.replace('\\','/').split( '/', Qt::SkipEmptyParts ).last();
       qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
 #endif
     }
