@@ -23,6 +23,34 @@ QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
   mFragments.append( fragment );
 }
 
+QgsTextBlock QgsTextBlock::fromPlainText( const QString &text, const QgsTextCharacterFormat &format )
+{
+  if ( text.contains( '\t' ) )
+  {
+    // split line by tab characters, each tab should be a
+    // fragment by itself
+    QgsTextBlock block;
+    const QStringList tabSplit = text.split( '\t' );
+    int index = 0;
+    for ( const QString &part : tabSplit )
+    {
+      if ( !part.isEmpty() )
+        block.append( QgsTextFragment( part, format ) );
+      if ( index != tabSplit.size() - 1 )
+      {
+        block.append( QgsTextFragment( QString( '\t' ), format ) );
+      }
+
+      index++;
+    }
+    return block;
+  }
+  else
+  {
+    return QgsTextBlock( QgsTextFragment( text, format ) );
+  }
+}
+
 QString QgsTextBlock::toPlainText() const
 {
   QString res;

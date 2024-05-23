@@ -48,6 +48,16 @@ class CORE_EXPORT QgsTextBlock
     explicit QgsTextBlock( const QgsTextFragment &fragment );
 
     /**
+     * Constructor for QgsTextBlock consisting of a plain \a text, and optional character \a format.
+     *
+     * If \a text contains tab characters they will be appended as separate text fragments
+     * within the block, consisting of just the tab character.
+     *
+     * \since QGIS 3.38
+     */
+    static QgsTextBlock fromPlainText( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+
+    /**
      * Converts the block to plain text.
      *
      * \since QGIS 3.16

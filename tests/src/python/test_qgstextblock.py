@@ -11,8 +11,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
+from qgis.PyQt.QtGui import QColor
 
-from qgis.core import QgsStringUtils, QgsTextBlock, QgsTextFragment
+from qgis.core import (
+    QgsStringUtils,
+    QgsTextBlock,
+    QgsTextFragment,
+    QgsTextCharacterFormat
+)
+
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -32,6 +39,37 @@ class TestQgsTextBlock(QgisTestCase):
         self.assertEqual(len(block), 1)
         self.assertEqual(block[0].text(), fragment.text())
         self.assertEqual(block.toPlainText(), 'ludicrous gibs!')
+
+    def testFromPlainText(self):
+        block = QgsTextBlock.fromPlainText('abc def')
+        self.assertEqual(len(block), 1)
+        self.assertEqual(block[0].text(), 'abc def')
+
+        # with format
+        char_format = QgsTextCharacterFormat()
+        char_format.setTextColor(QColor(255, 0, 0))
+        block = QgsTextBlock.fromPlainText('abc def', char_format)
+        self.assertEqual(len(block), 1)
+        self.assertEqual(block[0].text(), 'abc def')
+        self.assertTrue(block[0].characterFormat().textColor().isValid())
+        self.assertEqual(block[0].characterFormat().textColor().name(), '#ff0000')
+
+    def testFromPlainTextWithTabs(self):
+        block = QgsTextBlock.fromPlainText('b c\td\t gah')
+        self.assertEqual(block[0].text(), 'b c')
+        self.assertTrue(block[1].isTab())
+        self.assertEqual(block[2].text(), 'd')
+        self.assertTrue(block[3].isTab())
+        self.assertEqual(block[4].text(), ' gah')
+
+        block = QgsTextBlock.fromPlainText('b\t\tc\td')
+        self.assertEqual(len(block), 6)
+        self.assertEqual(block[0].text(), 'b')
+        self.assertTrue(block[1].isTab())
+        self.assertTrue(block[2].isTab())
+        self.assertEqual(block[3].text(), 'c')
+        self.assertTrue(block[4].isTab())
+        self.assertEqual(block[5].text(), 'd')
 
     def testAppend(self):
         block = QgsTextBlock()

@@ -57,11 +57,17 @@ class CORE_EXPORT QgsTextDocument
 
     /**
      * Constructor for QgsTextDocument consisting of a set of plain text \a lines.
+     *
+     * If any line contains tab characters they will be appended as separate text fragments
+     * within the document, consisting of just the tab character.
      */
     static QgsTextDocument fromPlainText( const QStringList &lines );
 
     /**
      * Constructor for QgsTextDocument consisting of a set of HTML formatted \a lines.
+     *
+     * If the HTML contains tab characters they will be appended as separate text fragments
+     * within the document, consisting of just the tab character.
      */
     static QgsTextDocument fromHtml( const QStringList &lines );
 
