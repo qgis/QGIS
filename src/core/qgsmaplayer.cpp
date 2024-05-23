@@ -3254,12 +3254,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
 
       const QVariant propValue = customProperty( key );
       QString stringValue;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-      const QMetaType::Type propType = QgsVariantUtils::variantTypeToMetaType( propValue.type() );
-#else
-      const QMetaType::Type propType = propValue.metaType();
-#endif
-      if ( propType == QMetaType::QVariantList || propType == QMetaType::QStringList )
+      if ( propValue.type() == QVariant::List || propValue.type() == QVariant::StringList )
       {
         for ( const QString &s : propValue.toStringList() )
         {
