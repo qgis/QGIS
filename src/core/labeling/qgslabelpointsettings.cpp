@@ -21,6 +21,9 @@
 
 void QgsLabelPointSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
+  // TODO -- ideally quadrant and ordered positions would also be evaluated here,
+  // but they have been left in their original evaluation location for now to avoid
+  // any unforeseen unwanted side effects...
   if ( properties.isActive( QgsPalLayerSettings::Property::MaximumDistance ) )
   {
     context.setOriginalValueVariable( mMaximumDistance );
