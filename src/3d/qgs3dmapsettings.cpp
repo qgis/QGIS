@@ -469,11 +469,7 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
   mExtent = extent;
   const QgsPointXY center = mExtent.center();
   setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
-  if ( mTerrainGenerator )
-  {
-    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
-    mTerrainGenerator->setExtent( terrainExtent );
-  }
+  updateTerrainGeneratorExtent();
   emit extentChanged();
 }
 
@@ -675,9 +671,8 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
-  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
-  gen->setExtent( terrainExtent );
   mTerrainGenerator.reset( gen );
+  updateTerrainGeneratorExtent();
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 
   emit terrainGeneratorChanged();
@@ -1018,4 +1013,13 @@ void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
 
   mShowExtentIn2DView = show;
   emit showExtentIn2DViewChanged();
+}
+
+void Qgs3DMapSettings::updateTerrainGeneratorExtent()
+{
+  if ( mTerrainGenerator )
+  {
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
+    mTerrainGenerator->setExtent( terrainExtent );
+  }
 }
