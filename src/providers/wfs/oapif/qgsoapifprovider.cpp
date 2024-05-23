@@ -568,6 +568,7 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
   const bool hasAxisInverted = mShared->mSourceCrs.hasAxisInverted();
+  const int idFieldIdx = mShared->mFields.indexOf( "id" );
   for ( QgsFeature &f : flist )
   {
     QgsOapifCreateFeatureRequest req( uri );
@@ -578,6 +579,15 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       return false;
     }
     jsonIds.append( id );
+
+    // If there's no feature["properties"]["id"] field in the JSON returned by the
+    // /items request, but there's a "id" field, it means that feature["id"]
+    // is non-numeric. Thus set the one returned by the createFeature() request
+    if ( !( flags & QgsFeatureSink::FastInsert ) &&
+         !mShared->mFoundIdInProperties && idFieldIdx >= 0 )
+    {
+      f.setAttribute( idFieldIdx, id );
+    }
   }
 
   QStringList::const_iterator idIt = jsonIds.constBegin();
