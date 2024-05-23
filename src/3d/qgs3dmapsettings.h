@@ -911,6 +911,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Connects the various changed signals of this widget to the settingsChanged signal
     void connectChangedSignalsToSettingsChanged();
 
+    //! Updates the terrain generator extent when the extent of the scene has changed
+    void updateTerrainGeneratorExtent();
+
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
