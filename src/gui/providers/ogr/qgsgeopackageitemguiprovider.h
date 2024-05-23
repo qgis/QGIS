@@ -54,6 +54,7 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
     //! Compacts (VACUUM) a geopackage database
     void vacuumGeoPackageDbAction( const QString &path, const QString &name, QgsDataItemGuiContext context );
     void createDatabase( const QPointer< QgsGeoPackageRootItem > &item );
+    void createDatabaseAndLayer( const QPointer< QgsGeoPackageRootItem > &item );
 
   protected slots:
     void renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
