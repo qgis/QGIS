@@ -42,7 +42,31 @@ QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
   QgsTextDocument document;
   document.reserve( lines.size() );
   for ( const QString &line : lines )
-    document.append( QgsTextBlock( QgsTextFragment( line ) ) );
+  {
+    if ( line.contains( '\t' ) )
+    {
+      // split line by tab characters, each tab should be a
+      // fragment by itself
+      QgsTextBlock block;
+      const QStringList tabSplit = line.split( '\t' );
+      int index = 0;
+      for ( const QString &part : tabSplit )
+      {
+        block.append( QgsTextFragment( part ) );
+        if ( index != tabSplit.size() - 1 )
+        {
+          block.append( QgsTextFragment( QString( '\t' ) ) );
+        }
+
+        index++;
+      }
+      document.append( block );
+    }
+    else
+    {
+      document.append( QgsTextBlock( QgsTextFragment( line ) ) );
+    }
+  }
   return document;
 }
 
