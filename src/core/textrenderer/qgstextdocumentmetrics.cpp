@@ -39,6 +39,10 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   // for absolute line heights
   const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
 
+  const double tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
+      ? format.tabStopDistance() * font.pixelSize() / scaleFactor
+      : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
+
   double width = 0;
   double heightLabelMode = 0;
   double heightPointRectMode = 0;
@@ -95,114 +99,134 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
     QFont previousNonSuperSubScriptFont;
 
+    bool isFirstNonTabFragment = true;
+
     for ( int fragmentIndex = 0; fragmentIndex < fragmentSize; ++fragmentIndex )
     {
       const QgsTextFragment &fragment = block.at( fragmentIndex );
-      const QgsTextCharacterFormat &fragmentFormat = fragment.characterFormat();
-
-      double fragmentHeightForVerticallyOffsetText = 0;
-      double fragmentYMaxAdjust = 0;
-
-      QFont updatedFont = font;
-      fragmentFormat.updateFontForFormat( updatedFont, context, scaleFactor );
-
-      QFontMetricsF fm( updatedFont );
-
-      if ( fragmentIndex == 0 )
-        previousNonSuperSubScriptFont = updatedFont;
-
-      double fragmentVerticalOffset = 0;
-      if ( fragmentFormat.hasVerticalAlignmentSet() )
+      if ( fragment.isTab() )
       {
-        switch ( fragmentFormat.verticalAlignment() )
-        {
-          case Qgis::TextCharacterVerticalAlignment::Normal:
-            previousNonSuperSubScriptFont = updatedFont;
-            break;
+        // special handling for tab characters
+        const double nextTabStop = ( std::floor( blockXMax / tabStopDistancePainterUnits ) + 1 ) * tabStopDistancePainterUnits;
+        const double fragmentWidth = nextTabStop - blockXMax;
 
-          case Qgis::TextCharacterVerticalAlignment::SuperScript:
-          {
-            const QFontMetricsF previousFM( previousNonSuperSubScriptFont );
+        blockWidth += fragmentWidth;
+        blockXMax += fragmentWidth;
 
-            if ( fragmentFormat.fontPointSize() < 0 )
-            {
-              // if fragment has no explicit font size set, then we scale the inherited font size to 60% of base font size
-              // this allows for easier use of super/subscript in labels as "my text<sup>2</sup>" will automatically render
-              // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
-              // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
-              // which we should respect
-              updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
-              fm = QFontMetricsF( updatedFont );
-            }
-
-            // to match Qt behavior in QTextLine::draw
-            fragmentVerticalOffset = -( previousFM.ascent() + previousFM.descent() ) * SUPERSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR / scaleFactor;
-
-            // note -- this should really be fm.ascent(), not fm.capHeight() -- but in practice the ascent of most fonts is too large
-            // and causes unnecessarily large bounding boxes of vertically offset text!
-            fragmentHeightForVerticallyOffsetText = -fragmentVerticalOffset + fm.capHeight() / scaleFactor;
-            break;
-          }
-
-          case Qgis::TextCharacterVerticalAlignment::SubScript:
-          {
-            const QFontMetricsF previousFM( previousNonSuperSubScriptFont );
-
-            if ( fragmentFormat.fontPointSize() < 0 )
-            {
-              // see above!!
-              updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
-              fm = QFontMetricsF( updatedFont );
-            }
-
-            // to match Qt behavior in QTextLine::draw
-            fragmentVerticalOffset = ( previousFM.ascent() + previousFM.descent() ) * SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR / scaleFactor;
-
-            fragmentYMaxAdjust = fragmentVerticalOffset + fm.descent() / scaleFactor;
-            break;
-          }
-        }
+        fragmentVerticalOffsets << 0;
+        fragmentHorizontalAdvance << fragmentWidth;
+        fragmentFonts << QFont();
       }
       else
       {
-        previousNonSuperSubScriptFont = updatedFont;
+        const QgsTextCharacterFormat &fragmentFormat = fragment.characterFormat();
+
+        double fragmentHeightForVerticallyOffsetText = 0;
+        double fragmentYMaxAdjust = 0;
+
+        QFont updatedFont = font;
+        fragmentFormat.updateFontForFormat( updatedFont, context, scaleFactor );
+
+        QFontMetricsF fm( updatedFont );
+
+        if ( isFirstNonTabFragment )
+          previousNonSuperSubScriptFont = updatedFont;
+
+        double fragmentVerticalOffset = 0;
+        if ( fragmentFormat.hasVerticalAlignmentSet() )
+        {
+          switch ( fragmentFormat.verticalAlignment() )
+          {
+            case Qgis::TextCharacterVerticalAlignment::Normal:
+              previousNonSuperSubScriptFont = updatedFont;
+              break;
+
+            case Qgis::TextCharacterVerticalAlignment::SuperScript:
+            {
+              const QFontMetricsF previousFM( previousNonSuperSubScriptFont );
+
+              if ( fragmentFormat.fontPointSize() < 0 )
+              {
+                // if fragment has no explicit font size set, then we scale the inherited font size to 60% of base font size
+                // this allows for easier use of super/subscript in labels as "my text<sup>2</sup>" will automatically render
+                // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
+                // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
+                // which we should respect
+                updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+                fm = QFontMetricsF( updatedFont );
+              }
+
+              // to match Qt behavior in QTextLine::draw
+              fragmentVerticalOffset = -( previousFM.ascent() + previousFM.descent() ) * SUPERSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR / scaleFactor;
+
+              // note -- this should really be fm.ascent(), not fm.capHeight() -- but in practice the ascent of most fonts is too large
+              // and causes unnecessarily large bounding boxes of vertically offset text!
+              fragmentHeightForVerticallyOffsetText = -fragmentVerticalOffset + fm.capHeight() / scaleFactor;
+              break;
+            }
+
+            case Qgis::TextCharacterVerticalAlignment::SubScript:
+            {
+              const QFontMetricsF previousFM( previousNonSuperSubScriptFont );
+
+              if ( fragmentFormat.fontPointSize() < 0 )
+              {
+                // see above!!
+                updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+                fm = QFontMetricsF( updatedFont );
+              }
+
+              // to match Qt behavior in QTextLine::draw
+              fragmentVerticalOffset = ( previousFM.ascent() + previousFM.descent() ) * SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR / scaleFactor;
+
+              fragmentYMaxAdjust = fragmentVerticalOffset + fm.descent() / scaleFactor;
+              break;
+            }
+          }
+        }
+        else
+        {
+          previousNonSuperSubScriptFont = updatedFont;
+        }
+        fragmentVerticalOffsets << fragmentVerticalOffset;
+
+        const double fragmentWidth = fm.horizontalAdvance( fragment.text() ) / scaleFactor;
+
+        fragmentHorizontalAdvance << fragmentWidth;
+
+        const double fragmentHeightUsingAscentDescent = ( fm.ascent() + fm.descent() ) / scaleFactor;
+        const double fragmentHeightUsingLineSpacing = fm.lineSpacing() / scaleFactor;
+
+        blockWidth += fragmentWidth;
+        blockXMax += fragmentWidth;
+        blockHeightUsingAscentDescent = std::max( blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
+
+        blockHeightUsingLineSpacing = std::max( blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
+        maxBlockAscent = std::max( maxBlockAscent, fm.ascent() / scaleFactor );
+
+        maxBlockCapHeight = std::max( maxBlockCapHeight, fm.capHeight() / scaleFactor );
+
+        blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( maxBlockAscent, fragmentHeightForVerticallyOffsetText ), blockHeightUsingAscentAccountingForVerticalOffset );
+
+        maxBlockDescent = std::max( maxBlockDescent, fm.descent() / scaleFactor );
+        maxBlockMaxWidth = std::max( maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
+
+        blockYMaxAdjustLabel = std::max( blockYMaxAdjustLabel, fragmentYMaxAdjust );
+
+        if ( ( fm.lineSpacing() / scaleFactor ) > maxLineSpacing )
+        {
+          maxLineSpacing = fm.lineSpacing() / scaleFactor;
+          maxBlockLeading = fm.leading() / scaleFactor;
+        }
+
+        fragmentFonts << updatedFont;
+
+        const double verticalOrientationFragmentHeight = isFirstNonTabFragment ? ( fm.ascent() / scaleFactor * fragment.text().size() + ( fragment.text().size() - 1 ) * updatedFont.letterSpacing() / scaleFactor )
+            : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
+        blockHeightVerticalOrientation += verticalOrientationFragmentHeight;
+
+        isFirstNonTabFragment = false;
       }
-      fragmentVerticalOffsets << fragmentVerticalOffset;
-
-      const double fragmentWidth = fm.horizontalAdvance( fragment.text() ) / scaleFactor;
-
-      fragmentHorizontalAdvance << fragmentWidth;
-
-      const double fragmentHeightUsingAscentDescent = ( fm.ascent() + fm.descent() ) / scaleFactor;
-      const double fragmentHeightUsingLineSpacing = fm.lineSpacing() / scaleFactor;
-
-      blockWidth += fragmentWidth;
-      blockXMax += fragmentWidth;
-      blockHeightUsingAscentDescent = std::max( blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
-
-      blockHeightUsingLineSpacing = std::max( blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
-      maxBlockAscent = std::max( maxBlockAscent, fm.ascent() / scaleFactor );
-
-      maxBlockCapHeight = std::max( maxBlockCapHeight, fm.capHeight() / scaleFactor );
-
-      blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( maxBlockAscent, fragmentHeightForVerticallyOffsetText ), blockHeightUsingAscentAccountingForVerticalOffset );
-
-      maxBlockDescent = std::max( maxBlockDescent, fm.descent() / scaleFactor );
-      maxBlockMaxWidth = std::max( maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
-
-      blockYMaxAdjustLabel = std::max( blockYMaxAdjustLabel, fragmentYMaxAdjust );
-
-      if ( ( fm.lineSpacing() / scaleFactor ) > maxLineSpacing )
-      {
-        maxLineSpacing = fm.lineSpacing() / scaleFactor;
-        maxBlockLeading = fm.leading() / scaleFactor;
-      }
-
-      fragmentFonts << updatedFont;
-
-      const double verticalOrientationFragmentHeight = fragmentIndex == 0 ? ( fm.ascent() / scaleFactor * fragment.text().size() + ( fragment.text().size() - 1 ) * updatedFont.letterSpacing() / scaleFactor )
-          : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
-      blockHeightVerticalOrientation += verticalOrientationFragmentHeight;
     }
 
     if ( blockIndex == 0 )
