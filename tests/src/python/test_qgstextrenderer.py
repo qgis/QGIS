@@ -3411,7 +3411,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setTabStopDistanceUnit(Qgis.RenderUnit.Percentage)
         self.assertTrue(self.checkRender(format,
                                          'text_tab_percentage',
-                                         text=['with\ttabs', ' a\tb']))
+                                         text=['with\ttabs', 'a\tb']))
 
     def testDrawTabFixedSize(self):
         format = QgsTextFormat()
@@ -3422,7 +3422,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
         self.assertTrue(self.checkRender(format,
                                          'text_tab_fixed_size',
-                                         text=['with\ttabs', ' a\tb']))
+                                         text=['with\ttabs', 'a\tb']))
 
     def testHtmlFormatting(self):
         format = QgsTextFormat()
