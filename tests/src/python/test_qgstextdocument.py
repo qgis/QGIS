@@ -120,6 +120,20 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(len(doc[4]), 1)
         self.assertEqual(doc[4][0].text(), 'e')
 
+        # with one line break
+        doc = QgsTextDocument.fromHtml(['<span style="color:red">a <span style="color:blue">b<br></span>c</span>d'])
+        self.assertEqual(len(doc), 2)
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[0][0].text(), 'a ')
+        self.assertEqual(doc[0][1].characterFormat().textColor().name(), '#0000ff')
+        self.assertEqual(doc[0][1].text(), 'b')
+        self.assertEqual(len(doc[1]), 2)
+        self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[1][0].text(), 'c')
+        self.assertEqual(doc[1][1].characterFormat().textColor().name(), '#000000')
+        self.assertEqual(doc[1][1].text(), 'd')
+
+        # with two line breaks
         doc = QgsTextDocument.fromHtml(['<span style="color:red">a<br><span style="color:blue">b<br></span>c</span>d'])
         self.assertEqual(len(doc), 3)
         self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')

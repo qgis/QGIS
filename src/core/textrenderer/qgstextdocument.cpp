@@ -77,23 +77,14 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
         if ( fragment.isValid() )
         {
           // Search for line breaks in the fragment
-          if ( fragment.text().contains( QStringLiteral( "\u2028" ) ) )
+          const QString fragmentText = fragment.text();
+          if ( fragmentText.contains( QStringLiteral( "\u2028" ) ) )
           {
-
-            // Flush last block
-            if ( !block.empty() )
-            {
-              document.append( block );
-              block.clear();
-            }
-
             // Split fragment text into lines
-            const QStringList splitLines = fragment.text().split( QStringLiteral( "\u2028" ), Qt::SplitBehaviorFlags::SkipEmptyParts );
+            const QStringList splitLines = fragmentText.split( QStringLiteral( "\u2028" ), Qt::SplitBehaviorFlags::SkipEmptyParts );
 
             for ( const QString &splitLine : std::as_const( splitLines ) )
             {
-              QgsTextBlock splitLineBlock;
-
               QgsTextFragment splitFragment( fragment );
               splitFragment.setText( splitLine );
 
@@ -113,8 +104,9 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
                 splitFragment.setCharacterFormat( newFormat );
               }
 
-              splitLineBlock.append( splitFragment );
-              document.append( splitLineBlock );
+              block.append( splitFragment );
+              document.append( block );
+              block = QgsTextBlock();
 
             }
           }
