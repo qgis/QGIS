@@ -488,6 +488,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.compareApi(request, project,
                         'test_wfs3_collection_testlayer_èé.json')
 
+    def test_wfs3_collection_shortname_json(self):
+        """Test WFS3 API collection with short name"""
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name')
+        self.compareApi(request, project,
+                        'test_wfs3_collection_layer1_with_short_name.json')
+
     def test_wfs3_collection_temporal_extent_json(self):
         """Test collection with timefilter"""
         project = QgsProject()
