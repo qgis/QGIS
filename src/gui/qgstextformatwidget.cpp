@@ -1307,8 +1307,11 @@ void QgsTextFormatWidget::updateFont( const QFont &font )
   // NOTE: QgsFontUtils::fontMatchOnSystem may fail here, just crosscheck family
   mFontMissingLabel->setVisible( !QgsFontUtils::fontFamilyMatchOnSystem( mRefFont.family() ) );
 
-  mDirectSymbLeftLineEdit->setFont( mRefFont );
-  mDirectSymbRightLineEdit->setFont( mRefFont );
+  if ( mDirectSymbolsFrame->isVisible() )
+  {
+    mDirectSymbLeftLineEdit->setFont( mRefFont );
+    mDirectSymbRightLineEdit->setFont( mRefFont );
+  }
 
   blockFontChangeSignals( true );
   mFontFamilyCmbBx->setCurrentFont( mRefFont );
