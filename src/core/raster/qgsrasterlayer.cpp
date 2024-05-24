@@ -168,10 +168,10 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   {
     options.transformContext = mDataProvider->transformContext();
   }
-  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
-  QgsMapLayer::clone( layer );
+  std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( source(), name(), mProviderKey, options );
+  QgsMapLayer::clone( layer.get() );
   layer->mElevationProperties = mElevationProperties->clone();
-  layer->mElevationProperties->setParent( layer );
+  layer->mElevationProperties->setParent( layer.get() );
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setMapTipsEnabled( mapTipsEnabled() );
 
@@ -182,8 +182,14 @@ QgsRasterLayer *QgsRasterLayer::clone() const
       layer->pipe()->set( mPipe->at( i )->clone() );
   }
   layer->pipe()->setDataDefinedProperties( mPipe->dataDefinedProperties() );
+  layer->setResamplingStage( mPipe->resamplingStage() );
+  if ( mDataProvider && layer->dataProvider() )
+  {
+    layer->dataProvider()->setZoomedInResamplingMethod( mDataProvider->zoomedInResamplingMethod() );
+    layer->dataProvider()->setZoomedOutResamplingMethod( mDataProvider->zoomedOutResamplingMethod() );
+  }
 
-  return layer;
+  return layer.release();
 }
 
 QgsAbstractProfileGenerator *QgsRasterLayer::createProfileGenerator( const QgsProfileRequest &request )
