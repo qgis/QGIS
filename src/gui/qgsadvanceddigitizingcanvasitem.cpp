@@ -28,6 +28,7 @@ QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *
   , mSnapPen( QPen( QColor( 127, 0, 0, 150 ), 1 ) )
   , mSnapLinePen( QPen( QColor( 127, 0, 0, 150 ), 1, Qt::DashLine ) )
   , mCursorPen( QPen( QColor( 127, 127, 127, 255 ), 1 ) )
+  , mConstructionGuidesPen( QPen( QColor( 20, 210, 150 ), 1, Qt::DashLine ) )
   , mAdvancedDigitizingDockWidget( cadDockWidget )
 {
 }
@@ -36,6 +37,27 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
 {
   if ( !mAdvancedDigitizingDockWidget->cadEnabled() )
     return;
+
+  painter->setRenderHint( QPainter::Antialiasing );
+  painter->setCompositionMode( QPainter::CompositionMode_Difference );
+
+  // Draw construction guides
+  if ( mAdvancedDigitizingDockWidget->showConstructionGuides() )
+  {
+    if ( QgsVectorLayer *constructionGuidesLayer = mAdvancedDigitizingDockWidget->constructionGuidesLayer() )
+    {
+      QgsFeatureIterator it = constructionGuidesLayer->getFeatures( QgsFeatureRequest().setNoAttributes().setFilterRect( mMapCanvas->mapSettings().visibleExtent() ) );
+      QgsFeature feature;
+      painter->setPen( mConstructionGuidesPen );
+      while ( it.nextFeature( feature ) )
+      {
+        QgsGeometry geom = feature.geometry();
+        geom.mapToPixel( *mMapCanvas->getCoordinateTransform() );
+        const QPolygonF polygon = geom.asQPolygonF();
+        painter->drawPolyline( polygon );
+      }
+    }
+  }
 
   // Use visible polygon rather than extent to properly handle rotated maps
   QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
@@ -82,9 +104,6 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     snapSegmentPix1 = toCanvasCoordinates( snappedSegment[0] );
     snapSegmentPix2 = toCanvasCoordinates( snappedSegment[1] );
   }
-
-  painter->setRenderHint( QPainter::Antialiasing );
-  painter->setCompositionMode( QPainter::CompositionMode_Difference );
 
   // Draw point snap
   if ( curPointExist && snappedToVertex )
@@ -226,7 +245,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
   }
 
-  // Draw constr
+  // Draw constraints
   if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() == Qgis::BetweenLineConstraint::NoConstraint )
   {
     if ( curPointExist && previousPointExist )

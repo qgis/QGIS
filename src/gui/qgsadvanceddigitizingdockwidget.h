@@ -305,8 +305,35 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void setEnabledM( bool enable );
 
-    //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
+    /**
+     * Returns whether the construction mode is activated. The construction mode is used to draw intermediate
+     * points that will not be part of a geometry being digitized.
+     */
     bool constructionMode() const { return mConstructionMode; }
+
+    /**
+     * Returns the vector layer within which construction guides are stored.
+     * \since QGIS 3.40
+     */
+    QgsVectorLayer *constructionGuidesLayer() const { return mConstructionGuidesLayer.get(); }
+
+    /**
+     * Returns whether the construction guides are visible.
+     * \since QGIS 3.40
+     */
+    bool showConstructionGuides() const;
+
+    /**
+     * Returns whether points should snap to construction guides.
+     * \since QGIS 3.40
+     */
+    bool snapToConstructionGuides() const;
+
+    /**
+     * Returns whether construction guides are being recorded.
+     * \since QGIS 3.40
+     */
+    bool recordConstructionGuides() const;
 
     /**
      * Returns the between line constraints which are used to place
@@ -1013,13 +1040,23 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Updates values of constraints that are not locked based on the current point
     void updateUnlockedConstraintValues( const QgsPoint &point );
 
-
     /**
      * Adds or removes the snap match if it is already in the locked snap queue or not.
      * \param snapMatch the snap match to add or remove.
      * \param previouslySnap the previous snap match to avoid toggling the same match.
      */
     void toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap );
+
+    /**
+     * Resets the vector layer and point locator objects handling construction guides.
+     */
+    void resetConstructionGuides();
+
+    /**
+     * Updates the construction guides layer CRS to match the map canvas' destination CRS
+     * and reproject pre-existing construction guides.
+     */
+    void updateConstructionGuidesCrs();
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
@@ -1053,19 +1090,29 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Flag that controls whether snapping to features has priority over common angle
     bool mSnappingPrioritizeFeatures = false;
 
-    // point list and current snap point / segment
+    // Point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
 
     bool mSessionActive = false;
 
-    // error message
+    // Construction path history
+    std::unique_ptr<QgsVectorLayer> mConstructionGuidesLayer;
+    QgsFeatureId mConstructionGuideId;
+    QgsLineString mConstructionGuideLine;
+    bool mDeferredUpdateConstructionGuidesCrs = false;
+
+    // Error message
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
     QMap< double, QAction *> mCommonAngleActions; // map the common angle actions with their angle values
-    QAction *mLineExtensionAction;
-    QAction *mXyVertexAction;
+    QAction *mLineExtensionAction = nullptr;
+    QAction *mXyVertexAction = nullptr;
+    QAction *mRecordConstructionGuides = nullptr;
+    QAction *mShowConstructionGuides = nullptr;
+    QAction *mSnapToConstructionGuides = nullptr;
+    QAction *mClearConstructionGuides = nullptr;
 
     // Snap indicator
     QgsPointLocator::Match mSnapMatch;
@@ -1088,6 +1135,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QMenu *mFloaterActionsMenu = nullptr;
 
     static const QgsSettingsEntryBool *settingsCadSnappingPriorityPrioritizeFeature;
+    static const QgsSettingsEntryBool *settingsCadRecordConstructionGuides;
+    static const QgsSettingsEntryBool *settingsCadShowConstructionGuides;
+    static const QgsSettingsEntryBool *settingsCadSnapToConstructionGuides;
 
     friend class TestQgsAdvancedDigitizing;
     friend class TestQgsAdvancedDigitizingDockWidget;
