@@ -277,7 +277,36 @@ Sets whether M is enabled
 
     bool constructionMode() const;
 %Docstring
-construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
+Returns whether the construction mode is activated. The construction mode is used to draw intermediate
+points that will not be part of a geometry being digitized.
+%End
+
+    QgsVectorLayer *constructionGuidesLayer() const;
+%Docstring
+Returns the vector layer within which construction guides are stored.
+
+.. versionadded:: 3.40
+%End
+
+    bool showConstructionGuides() const;
+%Docstring
+Returns whether the construction guides are visible.
+
+.. versionadded:: 3.40
+%End
+
+    bool snapToConstructionGuides() const;
+%Docstring
+Returns whether points should snap to construction guides.
+
+.. versionadded:: 3.40
+%End
+
+    bool recordConstructionGuides() const;
+%Docstring
+Returns whether construction guides are being recorded.
+
+.. versionadded:: 3.40
 %End
 
     Qgis::BetweenLineConstraint betweenLineConstraint() const;

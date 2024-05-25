@@ -48,8 +48,8 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   res.softLockX = std::numeric_limits<double>::quiet_NaN();
   res.softLockY = std::numeric_limits<double>::quiet_NaN();
 
-  // try to snap to anything
-  const QgsPointLocator::Match snapMatch = ctx.snappingUtils->snapToMap( originalMapPoint, nullptr, true );
+  // try to snap to project layer(s) as well as visible construction guides
+  QgsPointLocator::Match snapMatch = ctx.snappingUtils->snapToMap( originalMapPoint, nullptr, true );
   res.snapMatch = snapMatch;
   QgsPointXY point = snapMatch.isValid() ? snapMatch.point() : originalMapPoint;
   QgsPointXY edgePt0, edgePt1;
