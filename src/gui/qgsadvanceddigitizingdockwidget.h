@@ -24,6 +24,7 @@
 #include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingtools.h"
 #include "qgsdockwidget.h"
 #include "qgsmessagebaritem.h"
 #include "qgspointxy.h"
@@ -33,10 +34,12 @@
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsAdvancedDigitizingFloater;
+class QgsAdvancedDigitizingTool;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapMouseEvent;
+class QgsUserInputWidget;
 
 /**
  * \ingroup gui
@@ -248,8 +251,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Create an advanced digitizing dock widget
      * \param canvas The map canvas on which the widget operates
      * \param parent The parent
+     * \param userInputWidget The user input widget on which tools can add widget overlays on top of the map canvas (since QGIS 3.40)
      */
-    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
+    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr, QgsUserInputWidget *userInputWidget = nullptr );
+    ~QgsAdvancedDigitizingDockWidget();
 
     /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
@@ -270,6 +275,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
      */
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+
+    bool processCanvasPressEvent( QgsMapMouseEvent *e );
+    bool processCanvasMoveEvent( QgsMapMouseEvent *e );
+    bool processCanvasReleaseEvent( QgsMapMouseEvent *e );
+
+    /**
+     * Sets an advanced digitizing tool which will take over digitizing until the tool is close.
+     * \since QGIS 3.40
+     */
+    void setTool( QgsAdvancedDigitizingTool *tool );
+
+    /**
+     * Returns the current advanced digitizing tool. Returns NULLPTR if not set.
+     * \since QGIS 3.40
+     */
+    QgsAdvancedDigitizingTool *tool() const;
 
     /**
      * unlock all constraints
@@ -946,6 +967,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Sets the between line constraint by clicking on the perpendicular/parallel buttons
     void betweenLineConstraintClicked( bool activated );
 
+    //! Activate the circles intersection tool
+    void circlesIntersectionClicked();
+
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
 
@@ -1059,6 +1083,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateConstructionGuidesCrs();
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsUserInputWidget *mUserInputWidget = nullptr;
+
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
     //! Snapping indicator
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
@@ -1123,6 +1149,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     double mSoftLockX;
     double mSoftLockY;
     QQueue< QgsPointLocator::Match > mLockedSnapVertices;
+
+    // Advanced digitizing tool
+    QPointer<QgsAdvancedDigitizingTool> mCurrentTool;
 
 #ifdef SIP_RUN
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

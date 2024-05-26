@@ -1186,7 +1186,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   // Advanced Digitizing dock
   startProfile( tr( "Advanced digitize panel" ) );
-  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this, mUserInputDockWidget );
   mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
 
