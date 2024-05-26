@@ -84,7 +84,7 @@ QVariantMap QgsAttributeIndexAlgorithm::processAlgorithm( const QVariantMap &par
   QgsVectorDataProvider *provider = layer->dataProvider();
 
   const int fieldIndex = layer->fields().lookupField( field );
-  if ( fieldIndex < 0 || layer->fields().fieldOrigin( fieldIndex ) != QgsFields::OriginProvider )
+  if ( fieldIndex < 0 || layer->fields().fieldOrigin( fieldIndex ) != Qgis::FieldOrigin::Provider )
   {
     feedback->pushInfo( QObject::tr( "Can not create attribute index on %1" ).arg( field ) );
   }

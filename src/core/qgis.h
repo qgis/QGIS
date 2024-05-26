@@ -1342,6 +1342,23 @@ class CORE_EXPORT Qgis
     Q_ENUM( SublayerPromptMode )
 
     /**
+     * Field origin.
+     *
+     * \note Prior to QGIS 3.38 this was available as QgsFields::FieldOrigin
+     *
+     * \since QGIS 3.38
+    */
+    enum class FieldOrigin SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFields, FieldOrigin ) : int
+      {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( OriginUnknown ), //!< The field origin has not been specified
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( OriginProvider ), //!< Field originates from the underlying data provider of the vector layer
+      Join SIP_MONKEYPATCH_COMPAT_NAME( OriginJoin ), //!< Field originates from a joined layer
+      Edit SIP_MONKEYPATCH_COMPAT_NAME( OriginEdit ), //!< Field has been temporarily added in editing mode
+      Expression SIP_MONKEYPATCH_COMPAT_NAME( OriginExpression ) //!< Field is calculated from an expression
+    };
+    Q_ENUM( FieldOrigin )
+
+    /**
      * Configuration flags for fields
      * These flags are meant to be user-configurable
      * and are not describing any information from the data provider.

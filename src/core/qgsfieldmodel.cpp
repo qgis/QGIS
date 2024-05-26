@@ -17,10 +17,6 @@
 #include <QIcon>
 
 #include "qgsfieldmodel.h"
-#include "qgsmaplayermodel.h"
-#include "qgsmaplayerproxymodel.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 
@@ -376,7 +372,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx < 0 && !isEmpty )
       {
-        if ( mLayer && mFields.fieldOrigin( index.row() - fieldOffset ) == QgsFields::OriginJoin )
+        if ( mLayer && mFields.fieldOrigin( index.row() - fieldOffset ) == Qgis::FieldOrigin::Join )
         {
           int srcFieldIndex;
           const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( index.row() - fieldOffset, mLayer->fields(), srcFieldIndex );
@@ -506,7 +502,7 @@ QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVec
   if ( fieldIdx < 0 )
     return QString();
 
-  const QString expressionString = fields.fieldOrigin( fieldIdx ) == QgsFields::OriginExpression
+  const QString expressionString = fields.fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression
                                    ? layer->expressionField( fieldIdx )
                                    : QString();
 

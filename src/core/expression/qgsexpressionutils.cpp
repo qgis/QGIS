@@ -351,7 +351,7 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
   const QgsFields fields = layer->fields();
   for ( int i = 0; i < fields.count(); i++ )
   {
-    if ( fields.fieldOrigin( i ) != QgsFields::OriginExpression )
+    if ( fields.fieldOrigin( i ) != Qgis::FieldOrigin::Expression )
       attributes << i;
   }
   request.setSubsetOfAttributes( attributes );

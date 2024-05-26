@@ -61,8 +61,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   connect( mWidgetTypeComboBox, static_cast< void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::onCurrentWidgetChanged );
 
-  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
-       vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
+  if ( vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Join ||
+       vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression )
   {
     isFieldEditableCheckBox->setEnabled( false );
   }

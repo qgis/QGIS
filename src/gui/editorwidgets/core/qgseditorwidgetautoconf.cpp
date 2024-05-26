@@ -95,7 +95,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
   if ( fieldIndex >= 0 )
   {
 
-    if ( vl->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
+    if ( vl->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Provider )
     {
       // important check - for provider fields, we CANNOT use auto configured widgets if the field
       // uses a default value clause - otherwise the widget will obliterate the default value clause

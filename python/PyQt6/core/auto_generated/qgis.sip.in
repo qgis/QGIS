@@ -792,6 +792,15 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldOrigin /BaseType=IntEnum/
+      {
+      Unknown,
+      Provider,
+      Join,
+      Edit,
+      Expression
+    };
+
     enum class FieldConfigurationFlag /BaseType=IntFlag/
     {
       NoFlag,

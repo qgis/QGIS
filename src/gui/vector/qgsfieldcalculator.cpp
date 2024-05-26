@@ -491,16 +491,16 @@ void QgsFieldCalculator::populateFields()
   {
     switch ( fields.fieldOrigin( idx ) )
     {
-      case QgsFields::OriginExpression:
-      case QgsFields::OriginUnknown:
+      case Qgis::FieldOrigin::Expression:
+      case Qgis::FieldOrigin::Unknown:
 
         continue; // can't be edited
 
-      case QgsFields::OriginProvider:
-      case QgsFields::OriginEdit:
+      case Qgis::FieldOrigin::Provider:
+      case Qgis::FieldOrigin::Edit:
         break; // can always be edited
 
-      case QgsFields::OriginJoin:
+      case Qgis::FieldOrigin::Join:
       {
         // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
         // This enables them to be bulk field-calculated when a user needs to, but hides them by default

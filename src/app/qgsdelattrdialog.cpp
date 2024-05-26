@@ -20,7 +20,6 @@
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
@@ -38,11 +37,11 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
       QListWidgetItem *item = new QListWidgetItem( layerAttributes.at( idx ).name(), listBox2 );
       switch ( vl->fields().fieldOrigin( idx ) )
       {
-        case QgsFields::OriginExpression:
+        case Qgis::FieldOrigin::Expression:
           item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
           break;
 
-        case QgsFields::OriginJoin:
+        case Qgis::FieldOrigin::Join:
           item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
           item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           break;
