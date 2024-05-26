@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingtools.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAdvancedDigitizingTool : QWidget
+{
+%Docstring(signature="appended")
+An abstract class for advanced digitizing tools.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsadvanceddigitizingtools.h"
+%End
+  public:
+
+    explicit QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+The advanced digitizing tool constructor.
+
+:param canvas: The map canvas on which the widget operates
+:param cadDockWidget: The cadDockWidget to which the floater belongs
+%End
+
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas associated with the tool.
+%End
+
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
+%Docstring
+Returns the advanced digitizing widget associated with the tool.
+%End
+
+    virtual void paint( QPainter *painter );
+%Docstring
+Paints tool content onto the advanced digitizing canvas item.
+%End
+
+    virtual bool canvasPressEvent( QgsMapMouseEvent *event );
+%Docstring
+Handles canvas press event. If ``True`` is returned, the tool will have
+blocked the event for propagating.
+%End
+
+    virtual bool canvasMoveEvent( QgsMapMouseEvent *event );
+%Docstring
+Handles canvas press move. If ``True`` is returned, the tool will have
+blocked the event for propagating.
+%End
+
+    virtual bool canvasReleaseEvent( QgsMapMouseEvent *event );
+%Docstring
+Handles canvas release event. If ``True`` is returned, the tool will have
+blocked the event for propagating.
+%End
+
+  signals:
+
+    void paintRequested();
+%Docstring
+Requests a new painting event to the advanced digitizing canvas item.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingtools.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

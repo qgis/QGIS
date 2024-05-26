@@ -59,6 +59,13 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
   }
 
+  // Draw current intersection tool
+  if ( mAdvancedDigitizingDockWidget->tool() )
+  {
+    mAdvancedDigitizingDockWidget->tool()->paint( painter );
+    return;
+  }
+
   // Use visible polygon rather than extent to properly handle rotated maps
   QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
   const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();

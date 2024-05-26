@@ -204,13 +204,15 @@ Removes unit suffix from the constraint text.
 
     };
 
-    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
+    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0, QgsUserInputWidget *userInputWidget = 0 );
 %Docstring
 Create an advanced digitizing dock widget
 
 :param canvas: The map canvas on which the widget operates
 :param parent: The parent
+:param userInputWidget: The user input widget on which tools can add widget overlays on top of the map canvas (since QGIS 3.40)
 %End
+    ~QgsAdvancedDigitizingDockWidget();
 
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 %Docstring
@@ -232,6 +234,24 @@ apply the CAD constraints. The will modify the position of the map event in map 
 %Docstring
 align to segment for between line constraint.
 If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
+%End
+
+    bool processCanvasPressEvent( QgsMapMouseEvent *e );
+    bool processCanvasMoveEvent( QgsMapMouseEvent *e );
+    bool processCanvasReleaseEvent( QgsMapMouseEvent *e );
+
+    void setTool( QgsAdvancedDigitizingTool *tool );
+%Docstring
+Sets an advanced digitizing tool which will take over digitizing until the tool is close.
+
+.. versionadded:: 3.40
+%End
+
+    QgsAdvancedDigitizingTool *tool() const;
+%Docstring
+Returns the current advanced digitizing tool. Returns ``None`` if not set.
+
+.. versionadded:: 3.40
 %End
 
     void releaseLocks( bool releaseRepeatingLocks = true );
