@@ -618,7 +618,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
         const QgsColorRampShader shader = settings.colorRampShader();
         switch ( shader.colorRampType() )
         {
-          case Qgis::ShaderInterpolationMethod::Interpolated:
+          case Qgis::ShaderInterpolationMethod::Linear:
             if ( !shader.legendSettings() || shader.legendSettings()->useContinuousLegend() )
             {
               // for interpolated shaders we use a ramp legend node
