@@ -194,8 +194,8 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
-                                 && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
+      const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == Qgis::FieldOrigin::Join
+                                 && vlayer->fields().fieldOrigin( yCol ) == Qgis::FieldOrigin::Join;
       if ( !usesAuxFields && !vlayer->isEditable() )
       {
         if ( vlayer->startEditing() )
@@ -366,8 +366,8 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( ( isCurvedOrLine && lineAnchorPercentCol >= 0 ) || ( xCol >= 0 && yCol >= 0 ) )
       {
         const bool usesAuxFields =
-          ( isCurvedOrLine && lineAnchorPercentCol >= 0 && vlayer->fields().fieldOrigin( lineAnchorPercentCol ) == QgsFields::OriginJoin ) ||
-          ( vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin );
+          ( isCurvedOrLine && lineAnchorPercentCol >= 0 && vlayer->fields().fieldOrigin( lineAnchorPercentCol ) == Qgis::FieldOrigin::Join ) ||
+          ( vlayer->fields().fieldOrigin( xCol ) == Qgis::FieldOrigin::Join && vlayer->fields().fieldOrigin( yCol ) == Qgis::FieldOrigin::Join );
         if ( !usesAuxFields && !vlayer->isEditable() )
         {
           if ( vlayer->startEditing() )

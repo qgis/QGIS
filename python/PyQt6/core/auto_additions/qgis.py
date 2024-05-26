@@ -1420,6 +1420,31 @@ Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__ = "Never ask users to select sub
 Qgis.SublayerPromptMode.__doc__ = "Specifies how to handle layer sources with multiple sublayers.\n\n.. versionadded:: 3.22\n\n" + '* ``AlwaysAsk``: ' + Qgis.SublayerPromptMode.AlwaysAsk.__doc__ + '\n' + '* ``AskExcludingRasterBands``: ' + Qgis.SublayerPromptMode.AskExcludingRasterBands.__doc__ + '\n' + '* ``NeverAskSkip``: ' + Qgis.SublayerPromptMode.NeverAskSkip.__doc__ + '\n' + '* ``NeverAskLoadAll``: ' + Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__
 # --
 Qgis.SublayerPromptMode.baseClass = Qgis
+QgsFields.FieldOrigin = Qgis.FieldOrigin
+# monkey patching scoped based enum
+QgsFields.OriginUnknown = Qgis.FieldOrigin.Unknown
+QgsFields.FieldOrigin.OriginUnknown = Qgis.FieldOrigin.Unknown
+QgsFields.OriginUnknown.is_monkey_patched = True
+QgsFields.OriginUnknown.__doc__ = "The field origin has not been specified"
+QgsFields.OriginProvider = Qgis.FieldOrigin.Provider
+QgsFields.FieldOrigin.OriginProvider = Qgis.FieldOrigin.Provider
+QgsFields.OriginProvider.is_monkey_patched = True
+QgsFields.OriginProvider.__doc__ = "Field originates from the underlying data provider of the vector layer"
+QgsFields.OriginJoin = Qgis.FieldOrigin.Join
+QgsFields.FieldOrigin.OriginJoin = Qgis.FieldOrigin.Join
+QgsFields.OriginJoin.is_monkey_patched = True
+QgsFields.OriginJoin.__doc__ = "Field originates from a joined layer"
+QgsFields.OriginEdit = Qgis.FieldOrigin.Edit
+QgsFields.FieldOrigin.OriginEdit = Qgis.FieldOrigin.Edit
+QgsFields.OriginEdit.is_monkey_patched = True
+QgsFields.OriginEdit.__doc__ = "Field has been temporarily added in editing mode"
+QgsFields.OriginExpression = Qgis.FieldOrigin.Expression
+QgsFields.FieldOrigin.OriginExpression = Qgis.FieldOrigin.Expression
+QgsFields.OriginExpression.is_monkey_patched = True
+QgsFields.OriginExpression.__doc__ = "Field is calculated from an expression"
+Qgis.FieldOrigin.__doc__ = "Field origin.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsFields`.FieldOrigin\n\n.. versionadded:: 3.38\n\n" + '* ``OriginUnknown``: ' + Qgis.FieldOrigin.Unknown.__doc__ + '\n' + '* ``OriginProvider``: ' + Qgis.FieldOrigin.Provider.__doc__ + '\n' + '* ``OriginJoin``: ' + Qgis.FieldOrigin.Join.__doc__ + '\n' + '* ``OriginEdit``: ' + Qgis.FieldOrigin.Edit.__doc__ + '\n' + '* ``OriginExpression``: ' + Qgis.FieldOrigin.Expression.__doc__
+# --
+Qgis.FieldOrigin.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.FieldConfigurationFlag.NoFlag.__doc__ = "No flag is defined"
 Qgis.FieldConfigurationFlag.NotSearchable.__doc__ = "Defines if the field is searchable (used in the locator search for instance)"

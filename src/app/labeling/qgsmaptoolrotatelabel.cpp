@@ -128,7 +128,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
         case PropertyStatus::Valid:
         {
-          const bool usesAuxField = mCurrentLabel.layer->fields().fieldOrigin( rotationCol ) == QgsFields::OriginJoin;
+          const bool usesAuxField = mCurrentLabel.layer->fields().fieldOrigin( rotationCol ) == Qgis::FieldOrigin::Join;
           if ( !usesAuxField && !mCurrentLabel.layer->isEditable() )
           {
             if ( mCurrentLabel.layer->startEditing() )

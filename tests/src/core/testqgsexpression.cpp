@@ -4687,7 +4687,7 @@ class TestQgsExpression: public QObject
       f.setFields( fields );
 
       //also add a joined field - this will not be available in feature's field collection
-      fields.append( QgsField( QStringLiteral( "j1" ), QVariant::String ), QgsFields::OriginJoin, 1 );
+      fields.append( QgsField( QStringLiteral( "j1" ), QVariant::String ), Qgis::FieldOrigin::Join, 1 );
 
       f.setAttributes( QgsAttributes() << QVariant( "f1" ) << QVariant( "j1" ) );
       f.setValid( true );

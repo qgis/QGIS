@@ -41,10 +41,10 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
     return true;
   }
 
-  const QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
+  const Qgis::FieldOrigin origin = static_cast< Qgis::FieldOrigin >( originVariant.toInt() );
   switch ( origin )
   {
-    case QgsFields::OriginJoin:
+    case Qgis::FieldOrigin::Join:
     {
       // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
       // This enables them to be bulk field-calculated when a user needs to, but hides them by default
@@ -55,13 +55,13 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
       return !sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::JoinedFieldIsEditable ) ).toBool();
     }
 
-    case QgsFields::OriginUnknown:
-    case QgsFields::OriginExpression:
+    case Qgis::FieldOrigin::Unknown:
+    case Qgis::FieldOrigin::Expression:
       //read only
       return true;
 
-    case QgsFields::OriginEdit:
-    case QgsFields::OriginProvider:
+    case Qgis::FieldOrigin::Edit:
+    case Qgis::FieldOrigin::Provider:
     {
       if ( !sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldIsWidgetEditable ) ).toBool() )
       {
@@ -87,16 +87,16 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
   if ( mFilters.testFlag( QgsFieldProxyModel::OriginProvider ) )
   {
-    const QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldOrigin ) ).toInt() );
+    const Qgis::FieldOrigin origin = static_cast< Qgis::FieldOrigin >( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldOrigin ) ).toInt() );
     switch ( origin )
     {
-      case QgsFields::OriginUnknown:
-      case QgsFields::OriginJoin:
-      case QgsFields::OriginEdit:
-      case QgsFields::OriginExpression:
+      case Qgis::FieldOrigin::Unknown:
+      case Qgis::FieldOrigin::Join:
+      case Qgis::FieldOrigin::Edit:
+      case Qgis::FieldOrigin::Expression:
         return false;
 
-      case QgsFields::OriginProvider:
+      case Qgis::FieldOrigin::Provider:
         break;
     }
   }

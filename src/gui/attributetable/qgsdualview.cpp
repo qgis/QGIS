@@ -1163,7 +1163,7 @@ QgsAttributeList QgsDualView::requiredAttributes( const QgsVectorLayer *layer )
   const QSet<int> colAttrs { attributes };
   for ( const int attrIdx : std::as_const( colAttrs ) )
   {
-    if ( layer->fields().fieldOrigin( attrIdx ) == QgsFields::FieldOrigin::OriginExpression )
+    if ( layer->fields().fieldOrigin( attrIdx ) == Qgis::FieldOrigin::Expression )
     {
       attributes += QgsExpression( layer->expressionField( attrIdx ) ).referencedAttributeIndexes( layer->fields() );
     }

@@ -56,12 +56,12 @@ void QgsFields::clear()
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsFields::append( const QgsField &field, FieldOrigin origin, int originIndex )
+bool QgsFields::append( const QgsField &field, Qgis::FieldOrigin origin, int originIndex )
 {
   if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
-  if ( originIndex == -1 && origin == OriginProvider )
+  if ( originIndex == -1 && origin == Qgis::FieldOrigin::Provider )
     originIndex = d->fields.count();
   d->fields.append( Field( field, origin, originIndex ) );
 
@@ -92,7 +92,7 @@ bool QgsFields::appendExpressionField( const QgsField &field, int originIndex )
   if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
-  d->fields.append( Field( field, OriginExpression, originIndex ) );
+  d->fields.append( Field( field, Qgis::FieldOrigin::Expression, originIndex ) );
 
   d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
   return true;
@@ -186,10 +186,10 @@ QgsField QgsFields::operator[]( int i ) const
   return d->fields[i].field;
 }
 
-QgsFields::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
+Qgis::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
 {
   if ( !exists( fieldIdx ) )
-    return OriginUnknown;
+    return Qgis::FieldOrigin::Unknown;
 
   return d->fields[fieldIdx].origin;
 }
@@ -278,10 +278,10 @@ QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
   {
     switch ( fieldOrigin( fieldIdx ) )
     {
-      case QgsFields::OriginExpression:
+      case Qgis::FieldOrigin::Expression:
         return QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) );
 
-      case QgsFields::OriginJoin:
+      case Qgis::FieldOrigin::Join:
         return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) );
 
       default:

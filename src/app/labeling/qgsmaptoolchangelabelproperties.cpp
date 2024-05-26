@@ -143,7 +143,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
       bool needsEdit = false;
       for ( auto it = changes.constBegin(); it != changes.constEnd(); ++it )
       {
-        if ( vlayer->fields().fieldOrigin( it.key() ) != QgsFields::OriginJoin )
+        if ( vlayer->fields().fieldOrigin( it.key() ) != Qgis::FieldOrigin::Join )
         {
           needsEdit = true;
           break;

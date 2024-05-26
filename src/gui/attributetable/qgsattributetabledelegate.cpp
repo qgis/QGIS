@@ -26,7 +26,6 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureselectionmodel.h"
-#include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsactionmanager.h"
 #include "qgsgui.h"
@@ -80,9 +79,9 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   w->setAutoFillBackground( true );
   w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
 
-  const int fieldOrigin = vl->fields().fieldOrigin( fieldIdx );
+  const Qgis::FieldOrigin fieldOrigin = vl->fields().fieldOrigin( fieldIdx );
   bool readOnly = true;
-  if ( fieldOrigin == QgsFields::OriginJoin )
+  if ( fieldOrigin == Qgis::FieldOrigin::Join )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = vl->joinBuffer()->joinForFieldIndex( fieldIdx, vl->fields(), srcFieldIndex );

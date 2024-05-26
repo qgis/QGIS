@@ -17,24 +17,16 @@
 #include <QMessageBox>
 
 #include "qgsorganizetablecolumnsdialog.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
-#include "qgsdockwidget.h"
 
 #include "qgsapplication.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 
 #include "qgssearchquerybuilder.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsmessagebar.h"
-#include "qgsexpressionselectiondialog.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsrubberband.h"
 #include "qgsfields.h"
 #include "qgseditorwidgetregistry.h"
@@ -75,11 +67,11 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
         switch ( vl->fields().fieldOrigin( idx ) )
         {
-          case QgsFields::OriginExpression:
+          case Qgis::FieldOrigin::Expression:
             item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
             break;
 
-          case QgsFields::OriginJoin:
+          case Qgis::FieldOrigin::Join:
             item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
             break;
 

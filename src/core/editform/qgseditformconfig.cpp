@@ -235,8 +235,8 @@ bool QgsEditFormConfig::readOnly( int idx ) const
 {
   if ( idx >= 0 && idx < d->mFields.count() )
   {
-    if ( d->mFields.fieldOrigin( idx ) == QgsFields::OriginJoin
-         || d->mFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
+    if ( d->mFields.fieldOrigin( idx ) == Qgis::FieldOrigin::Join
+         || d->mFields.fieldOrigin( idx ) == Qgis::FieldOrigin::Expression )
       return true;
     return !d->mFieldEditables.value( d->mFields.at( idx ).name(), true );
   }

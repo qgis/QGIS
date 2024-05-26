@@ -163,7 +163,7 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
     return false;
 
   // If it's a joined field search the value in the source layer
-  if ( fields.fieldOrigin( fieldIndex ) == QgsFields::FieldOrigin::OriginJoin )
+  if ( fields.fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *joinInfo { layer->joinBuffer()->joinForFieldIndex( fieldIndex, fields, srcFieldIndex ) };
@@ -431,7 +431,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) ) )
   {
     bool exempt = false;
-    if ( fields.fieldOrigin( attributeIndex ) == QgsFields::OriginProvider
+    if ( fields.fieldOrigin( attributeIndex ) == Qgis::FieldOrigin::Provider
          && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
     {
       int providerIdx = fields.fieldOriginIndex( attributeIndex );
@@ -459,7 +459,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
          && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) ) )
     {
       bool exempt = false;
-      if ( fields.fieldOrigin( attributeIndex ) == QgsFields::OriginProvider
+      if ( fields.fieldOrigin( attributeIndex ) == Qgis::FieldOrigin::Provider
            && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       {
         int providerIdx = fields.fieldOriginIndex( attributeIndex );
@@ -571,7 +571,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
       if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
              && checkUniqueValue( idx, v ) ) )
-           && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+           && fields.fieldOrigin( idx ) == Qgis::FieldOrigin::Provider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
         QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
@@ -587,7 +587,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       if ( ( QgsVariantUtils::isNull( v ) || ( checkUnique
              && hasUniqueConstraint
              && checkUniqueValue( idx, v ) ) )
-           && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+           && fields.fieldOrigin( idx ) == Qgis::FieldOrigin::Provider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
         v = layer->dataProvider()->defaultValue( providerIndex );
@@ -898,7 +898,7 @@ bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFea
 
 bool QgsVectorLayerUtils::fieldIsReadOnly( const QgsVectorLayer *layer, int fieldIndex )
 {
-  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  if ( layer->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );
@@ -926,7 +926,7 @@ bool QgsVectorLayerUtils::fieldIsReadOnly( const QgsVectorLayer *layer, int fiel
 bool QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( const QgsVectorLayer *layer, int fieldIndex )
 {
   // editability will vary feature-by-feature only for joined fields
-  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  if ( layer->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );
@@ -946,7 +946,7 @@ bool QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( const QgsVectorLayer
 
 bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )
 {
-  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  if ( layer->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );

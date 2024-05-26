@@ -81,7 +81,7 @@ void QgsVectorLayerEditBuffer::updateFields( QgsFields &fields )
   // add new fields
   for ( int i = 0; i < mAddedAttributes.count(); ++i )
   {
-    fields.append( mAddedAttributes.at( i ), QgsFields::OriginEdit, i );
+    fields.append( mAddedAttributes.at( i ), Qgis::FieldOrigin::Edit, i );
   }
 }
 
@@ -291,8 +291,8 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
   }
 
   if ( field < 0 || field >= L->fields().count() ||
-       L->fields().fieldOrigin( field ) == QgsFields::OriginJoin ||
-       L->fields().fieldOrigin( field ) == QgsFields::OriginExpression )
+       L->fields().fieldOrigin( field ) == Qgis::FieldOrigin::Join ||
+       L->fields().fieldOrigin( field ) == Qgis::FieldOrigin::Expression )
     return false;
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
@@ -332,13 +332,13 @@ bool QgsVectorLayerEditBuffer::deleteAttribute( int index )
     return false;
 
   // find out source of the field
-  QgsFields::FieldOrigin origin = L->fields().fieldOrigin( index );
+  Qgis::FieldOrigin origin = L->fields().fieldOrigin( index );
   int originIndex = L->fields().fieldOriginIndex( index );
 
-  if ( origin == QgsFields::OriginProvider && mDeletedAttributeIds.contains( originIndex ) )
+  if ( origin == Qgis::FieldOrigin::Provider && mDeletedAttributeIds.contains( originIndex ) )
     return false;
 
-  if ( origin == QgsFields::OriginJoin )
+  if ( origin == Qgis::FieldOrigin::Join )
     return false;
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandDeleteAttribute( this, index ) );

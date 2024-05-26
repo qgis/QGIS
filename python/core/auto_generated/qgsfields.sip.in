@@ -33,15 +33,6 @@ In addition to storing a list of :py:class:`QgsField` instances, it also:
 
   public:
 
-    enum FieldOrigin
-    {
-      OriginUnknown,
-      OriginProvider,
-      OriginJoin,
-      OriginEdit,
-      OriginExpression
-    };
-
 
     QgsFields() /HoldGIL/;
 %Docstring
@@ -61,9 +52,17 @@ Copy constructor
 Removes all fields
 %End
 
-    bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 ) /HoldGIL/;
+    bool append( const QgsField &field, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider, int originIndex = -1 ) /HoldGIL/;
 %Docstring
-Appends a field. The field must have unique name, otherwise it is rejected (returns ``False``)
+Appends a ``field``.
+
+The field must have a unique name, otherwise it is rejected (returns ``False``).
+
+The ``originIndex`` argument must be set to a value corresponding to the ``origin`` type:
+
+- :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the index in provider's fields.
+- :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
+- :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the list of added attributes
 %End
 
     bool rename( int fieldIdx, const QString &name ) /HoldGIL/;
@@ -225,7 +224,7 @@ Returns the field with matching name.
 %End
 
 
-    FieldOrigin fieldOrigin( int fieldIdx ) const /HoldGIL/;
+    Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const /HoldGIL/;
 %Docstring
 Returns the field's origin (value from an enumeration).
 
@@ -247,6 +246,10 @@ Returns the field's origin (value from an enumeration).
     int fieldOriginIndex( int fieldIdx ) const /HoldGIL/;
 %Docstring
 Returns the field's origin index (its meaning is specific to each type of origin).
+
+- :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the index in provider's fields.
+- :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
+- :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the list of added attributes
 
 :raises KeyError: if no field exists at the specified index
 %End
