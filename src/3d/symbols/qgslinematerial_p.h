@@ -30,6 +30,8 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QCamera>
 
+class Qgs3DMapSettings;
+
 #define SIP_NO_FILE
 
 /**
@@ -55,7 +57,7 @@ class QgsLineMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
   public:
-    QgsLineMaterial();
+    QgsLineMaterial( const Qgs3DMapSettings &mapSettings );
 
     void setLineColor( const QColor &color );
     QColor lineColor() const;
