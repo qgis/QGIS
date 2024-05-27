@@ -457,7 +457,11 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent,
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 {
-  return mModel->data( mModel->index( mCrsComboBox->currentIndex(), 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+  const int idx = mCrsComboBox->currentIndex();
+  if ( idx >= 0 && idx < mModel->rowCount() )
+    return mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+  else
+    return QgsCoordinateReferenceSystem();
 }
 
 void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectionWidget::CrsOption option, const bool visible )
@@ -720,19 +724,23 @@ void QgsProjectionSelectionWidget::setShowAccuracyWarnings( bool show )
 
 void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
-  const QgsCoordinateReferenceSystem crs = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
-  const QVariant optionData = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption );
-  if ( !optionData.isValid() || static_cast< CrsOption >( optionData.toInt() ) != QgsProjectionSelectionWidget::CrsNotSet )
+  if ( idx >= 0 && idx < mModel->rowCount() )
   {
-    // RoleOption is only available for items from the standard coordinate reference system model, but we
-    // are using a combined model which also has items from QgsRecentCoordinateReferenceSystemsModel
-    emit crsChanged( crs );
+    const QgsCoordinateReferenceSystem crs = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+    const QVariant optionData = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption );
+    if ( !optionData.isValid() || static_cast< CrsOption >( optionData.toInt() ) != QgsProjectionSelectionWidget::CrsNotSet )
+    {
+      // RoleOption is only available for items from the standard coordinate reference system model, but we
+      // are using a combined model which also has items from QgsRecentCoordinateReferenceSystemsModel
+      emit crsChanged( crs );
+    }
+    else
+    {
+      emit cleared();
+      emit crsChanged( QgsCoordinateReferenceSystem() );
+    }
   }
-  else
-  {
-    emit cleared();
-    emit crsChanged( QgsCoordinateReferenceSystem() );
-  }
+
   updateTooltip();
 }
 
@@ -873,4 +881,3 @@ QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData
   }
   return nullptr;
 }
-
