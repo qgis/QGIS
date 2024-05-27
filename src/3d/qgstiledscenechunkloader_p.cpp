@@ -47,7 +47,7 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
 
 ///
 
-QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset )
+QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset, const Qgs3DMapSettings &mapSettings )
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mIndex( index )
@@ -56,7 +56,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QgsChunkNodeId tileId = node->tileId();
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset]
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, mapSettings]
   {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
@@ -100,7 +100,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
 
     QStringList errors;
-    mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
+    mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, mapSettings, &errors );
 
     if ( mEntity )
       mEntity->moveToThread( QgsApplication::instance()->thread() );
@@ -147,7 +147,7 @@ QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMap
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsTiledSceneChunkLoader( node, mIndex, *this, mZValueScale, mZValueOffset );
+  return new QgsTiledSceneChunkLoader( node, mIndex, *this, mZValueScale, mZValueOffset, mMap );
 }
 
 // converts box from map coordinates to world coords (also flips [X,Y] to [X,-Z])

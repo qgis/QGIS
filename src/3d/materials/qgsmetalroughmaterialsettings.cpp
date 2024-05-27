@@ -68,7 +68,7 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsMetalRoughMaterialSettings::toMaterial( const Qgs3DMapSettings &, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+Qt3DRender::QMaterial *QgsMetalRoughMaterialSettings::toMaterial( const Qgs3DMapSettings &mapSettings, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -77,7 +77,7 @@ Qt3DRender::QMaterial *QgsMetalRoughMaterialSettings::toMaterial( const Qgs3DMap
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
-      QgsMetalRoughMaterial *material  = new QgsMetalRoughMaterial;
+      QgsMetalRoughMaterial *material  = new QgsMetalRoughMaterial( mapSettings );
       material->setBaseColor( context.isSelected() ? context.selectionColor() : mBaseColor );
       material->setMetalness( mMetalness );
       material->setRoughness( mRoughness );

@@ -38,6 +38,8 @@ namespace Qt3DRender
 
 } // namespace Qt3DRender
 
+class Qgs3DMapSettings;
+
 ///@cond PRIVATE
 
 /**
@@ -53,7 +55,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     /**
      * Constructor for QgsMetalRoughMaterial, with the specified \a parent node.
      */
-    explicit QgsMetalRoughMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsMetalRoughMaterial( const Qgs3DMapSettings &mapSettings, Qt3DCore::QNode *parent = nullptr );
     ~QgsMetalRoughMaterial() override;
 
     QVariant baseColor() const;
