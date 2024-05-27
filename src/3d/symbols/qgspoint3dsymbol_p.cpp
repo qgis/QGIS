@@ -229,7 +229,7 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
   shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/instanced.vert" ) ) ) );
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/phongConstant.frag" ) ) ) );
+  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/phong.frag" ) ) ) );
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
   renderPass->setShaderProgram( shaderProgram );
