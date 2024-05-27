@@ -85,6 +85,8 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
   mButtonDiv->setProperty( "expression", " div " );
   mButtonMod->setToolTip( tr( "Modulo" ) );
   mButtonMod->setProperty( "expression", " mod " );
+  mButtonNow->setToolTip( tr( "Current datetime" ) );
+  mButtonNow->setProperty( "expression", " now() " );
 
   if ( mLayer )
     lblDataUri->setText( tr( "Set filter on %1" ).arg( mLayer->name() ) );
@@ -112,7 +114,8 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
           mButtonSub,
           mButtonMul,
           mButtonDiv,
-          mButtonMod
+          mButtonMod,
+          mButtonNow
         } )
   {
     connect( button, &QPushButton::clicked, this, [this, button]
