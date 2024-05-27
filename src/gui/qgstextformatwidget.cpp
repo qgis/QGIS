@@ -1295,12 +1295,12 @@ void QgsTextFormatWidget::changeTextColor( const QColor &color )
   updatePreview();
 }
 
-void QgsTextFormatWidget::updateFont( const QFont &font )
+void QgsTextFormatWidget::updateFont( const QFont &newFont )
 {
   // update background reference font
-  if ( font != mRefFont )
+  if ( newFont != mRefFont )
   {
-    mRefFont = font;
+    mRefFont = newFont;
   }
 
   // test if font is actually available
@@ -1309,8 +1309,10 @@ void QgsTextFormatWidget::updateFont( const QFont &font )
 
   if ( mDirectSymbolsFrame->isVisible() )
   {
-    mDirectSymbLeftLineEdit->setFont( mRefFont );
-    mDirectSymbRightLineEdit->setFont( mRefFont );
+    QFont symbolFont = mRefFont;
+    symbolFont.setPointSize( font().pointSize() );
+    mDirectSymbLeftLineEdit->setFont( symbolFont );
+    mDirectSymbRightLineEdit->setFont( symbolFont );
   }
 
   blockFontChangeSignals( true );
