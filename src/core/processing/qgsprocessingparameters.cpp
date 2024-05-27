@@ -3077,6 +3077,17 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &v, QgsPr
     return true;
   }
 
+  if ( input.type() == QVariant::String )
+  {
+    const QString string = input.toString();
+    if ( string.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+      return true;
+
+    const QgsCoordinateReferenceSystem crs( string );
+    if ( crs.isValid() )
+      return true;
+  }
+
   // direct map layer value
   if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
     return true;
@@ -3103,6 +3114,17 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
+  if ( value.type() == QVariant::String )
+  {
+    const QString string = value.toString();
+    if ( string.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+      return QgsProcessingUtils::stringToPythonLiteral( string );
+
+    const QgsCoordinateReferenceSystem crs( string );
+    if ( crs.isValid() )
+      return QgsProcessingUtils::stringToPythonLiteral( string );
+  }
+
   QVariantMap p;
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
@@ -3116,9 +3138,13 @@ QString QgsProcessingParameterCrs::valueAsString( const QVariant &value, QgsProc
 {
   if ( value.type() == QVariant::String )
   {
-    const QgsCoordinateReferenceSystem crs( value.toString() );
+    const QString string = value.toString();
+    if ( string.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+      return string;
+
+    const QgsCoordinateReferenceSystem crs( string );
     if ( crs.isValid() )
-      return value.toString();
+      return string;
   }
 
   return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
@@ -3126,6 +3152,17 @@ QString QgsProcessingParameterCrs::valueAsString( const QVariant &value, QgsProc
 
 QVariant QgsProcessingParameterCrs::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( value.type() == QVariant::String )
+  {
+    const QString string = value.toString();
+    if ( string.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+      return string;
+
+    const QgsCoordinateReferenceSystem crs( string );
+    if ( crs.isValid() )
+      return string;
+  }
+
   return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
