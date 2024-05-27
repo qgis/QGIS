@@ -76,7 +76,8 @@ class QgsSensorThingsExpansionsDelegate : public QStyledItemDelegate
 
   public:
 
-    QgsSensorThingsExpansionsDelegate( QObject *parent, Qgis::SensorThingsEntity baseEntityType );
+    QgsSensorThingsExpansionsDelegate( QObject *parent );
+    void setBaseEntityType( Qgis::SensorThingsEntity type );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
@@ -105,24 +106,6 @@ class QgsSensorThingsRemoveExpansionDelegate : public QStyledItemDelegate SIP_SK
 };
 
 
-class QgsSensorThingsConfigureExpansionsDialog : public QDialog
-{
-    Q_OBJECT
-
-  public:
-
-    QgsSensorThingsConfigureExpansionsDialog( Qgis::SensorThingsEntity baseEntityType, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
-    void setExpansions( const QList< QgsSensorThingsExpansionDefinition> &expansions );
-    QList< QgsSensorThingsExpansionDefinition> expansions() const;
-
-  private:
-
-    Qgis::SensorThingsEntity mBaseEntityType = Qgis::SensorThingsEntity::Invalid;
-    QgsSensorThingsExpansionsModel *mModel = nullptr;
-    QTableView *mTable = nullptr;
-
-};
-
 class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui::QgsSensorThingsSourceWidgetBase
 {
     Q_OBJECT
@@ -150,14 +133,15 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
     void validate();
     void retrieveTypes();
     void connectionPropertiesTaskCompleted();
-    void configureExpansions();
+
   private:
     void setCurrentEntityType( Qgis::SensorThingsEntity type );
     void setCurrentGeometryTypeFromString( const QString &geometryType );
 
     QgsExtentWidget *mExtentWidget = nullptr;
+    QgsSensorThingsExpansionsModel *mExpansionsModel = nullptr;
+    QgsSensorThingsExpansionsDelegate *mExpansionsTableDelegate = nullptr;
     QVariantMap mSourceParts;
-    QList< QgsSensorThingsExpansionDefinition> mExpansions;
     bool mIsValid = false;
     QPointer< QgsSensorThingsConnectionPropertiesTask > mPropertiesTask;
 };
