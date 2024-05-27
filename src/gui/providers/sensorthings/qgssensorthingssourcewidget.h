@@ -46,7 +46,8 @@ class QgsSensorThingsExpansionsModel : public QAbstractItemModel
       Limit = 1,
       OrderBy = 2,
       SortOrder = 3,
-      Actions = 4,
+      Filter = 4,
+      Actions = 5,
     };
 
     QgsSensorThingsExpansionsModel( QObject *parent );
@@ -67,6 +68,29 @@ class QgsSensorThingsExpansionsModel : public QAbstractItemModel
   private:
 
     QList< QgsSensorThingsExpansionDefinition> mExpansions;
+};
+
+class QgsSensorThingsFilterWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsSensorThingsFilterWidget( QWidget *parent, Qgis::SensorThingsEntity entity );
+    void setFilter( const QString &filter );
+    QString filter() const;
+
+  signals:
+    void filterChanged();
+
+  private slots:
+
+    void setQuery();
+
+  private:
+
+    QString mFilter;
+    Qgis::SensorThingsEntity mEntity = Qgis::SensorThingsEntity::Invalid;
+
 };
 
 
