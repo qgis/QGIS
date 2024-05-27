@@ -319,6 +319,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   if ( hasCachedAllFeatures() || mCachedExtent.contains( extentGeom ) )
   {
     // all features cached locally, rely on local spatial index
+    nextPage.clear();
     return qgis::listToSet( mSpatialIndex.intersects( requestExtent ) );
   }
 

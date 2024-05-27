@@ -192,7 +192,8 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
                                         const QString &orderBy = QString(),
                                         Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT );
+                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+                                        const QString &filter = QString() );
 
     /**
      * Returns TRUE if the definition is valid.
@@ -264,6 +265,20 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     void setLimit( int limit );
 
     /**
+     * Returns the the string filter to filter expanded child entities by.
+     *
+     * \see setFilter()
+     */
+    QString filter() const;
+
+    /**
+     * Returns the the string \a filter to filter expanded child entities by.
+     *
+     * \see filter()
+     */
+    void setFilter( const QString &filter );
+
+    /**
      * Returns a string encapsulation of the expansion definition.
      *
      * \see fromString()
@@ -310,6 +325,13 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
         else
           innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
       }
+      if ( !sipCpp->filter().isEmpty() )
+      {
+        if ( !innerDefinition.isEmpty() )
+          innerDefinition = QStringLiteral( "%1, filter '%2'" ).arg( innerDefinition ).arg( sipCpp->filter() );
+        else
+          innerDefinition = QStringLiteral( "filter '%1'" ).arg( sipCpp->filter() );
+      }
 
       QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -323,6 +345,8 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     QString mOrderBy;
     Qt::SortOrder mSortOrder = Qt::SortOrder::AscendingOrder;
     int mLimit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT;
+    QString mFilter;
+
 };
 Q_DECLARE_METATYPE( QgsSensorThingsExpansionDefinition )
 

@@ -244,6 +244,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertTrue(expansion.isValid())
         self.assertEqual(expansion.childEntity(), Qgis.SensorThingsEntity.ObservedProperty)
         self.assertEqual(expansion.limit(), 100)
+        self.assertFalse(expansion.filter())
         self.assertEqual(repr(expansion), '<QgsSensorThingsExpansionDefinition: ObservedProperty limit 100>')
         self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Datastream), '$expand=ObservedProperty($top=100)')
         self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Datastream, ['$expand=Locations($top=101)']),
@@ -295,6 +296,15 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
                          '$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))')
 
+        expansion.setFilter('result eq 1')
+        self.assertEqual(expansion.filter(), 'result eq 1')
+        self.assertEqual(repr(expansion),
+                         '<QgsSensorThingsExpansionDefinition: Location by id (desc), limit 3, filter \'result eq 1\'>')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing),
+                         '$expand=Locations($orderby=id desc;$top=3;$filter=result eq 1)')
+        self.assertEqual(expansion.asQueryString(Qgis.SensorThingsEntity.Thing, ['$expand=Datastreams($top=101)']),
+                         '$expand=Locations($orderby=id desc;$top=3;$filter=result eq 1;$expand=Datastreams($top=101))')
+
         # test equality
         expansion1 = QgsSensorThingsExpansionDefinition(
             Qgis.SensorThingsEntity.ObservedProperty)
@@ -324,6 +334,11 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         expansion2.setLimit(33)
         self.assertNotEqual(expansion1, expansion2)
         expansion2.setLimit(100)
+        self.assertEqual(expansion1, expansion2)
+
+        expansion2.setFilter('result eq 1')
+        self.assertNotEqual(expansion1, expansion2)
+        expansion2.setFilter('')
         self.assertEqual(expansion1, expansion2)
 
         # test to/from string
@@ -376,6 +391,12 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(res.childEntity(), Qgis.SensorThingsEntity.Sensor)
         self.assertFalse(res.orderBy())
         self.assertEqual(res.limit(), 5)
+
+        expansion.setFilter('request eq 1:2')
+        string = expansion.toString()
+        res = QgsSensorThingsExpansionDefinition.fromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.filter(), expansion.filter())
 
     def test_expansions_as_query_string(self):
         """
