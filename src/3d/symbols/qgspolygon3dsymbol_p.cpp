@@ -230,7 +230,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   // add entity for edges
   if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() )
   {
-    QgsLineMaterial *mat = new QgsLineMaterial;
+    QgsLineMaterial *mat = new QgsLineMaterial( context.map() );
     mat->setLineColor( mSymbol->edgeColor() );
     mat->setLineWidth( mSymbol->edgeWidth() );
 

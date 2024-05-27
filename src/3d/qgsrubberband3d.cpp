@@ -68,7 +68,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
 
   mLineEntity->addComponent( mGeomRenderer );
 
-  mLineMaterial = new QgsLineMaterial;
+  mLineMaterial = new QgsLineMaterial( map );
   mLineMaterial->setLineWidth( 3 );
   mLineMaterial->setLineColor( Qt::red );
 

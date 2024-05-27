@@ -1,5 +1,7 @@
 #version 150
 
+uniform mat4 inverseViewProjectionMatrix;
+
 uniform float	THICKNESS;		// the thickness of the line in pixels
 uniform float	MITER_LIMIT;	// 1.0: always miter, -1.0: never miter, 0.75: default
 uniform vec2	WIN_SCALE;		// the size of the viewport in pixels
@@ -15,6 +17,8 @@ out VertexData{
     vec2 mTexCoord;
     vec3 mColor;
 } VertexOut;
+
+#pragma include clipplane.inc
 
 vec2 toScreenSpace( vec4 vertex )
 {
@@ -36,6 +40,8 @@ vec4 clip_near_plane(vec4 pt1, vec4 pt2)
 
 void main( void )
 {
+    vec3 worldPosition;
+
     vec4 px0 = gl_in[0].gl_Position;
     vec4 px1 = gl_in[1].gl_Position;
     vec4 px2 = gl_in[2].gl_Position;
@@ -109,16 +115,22 @@ void main( void )
             VertexOut.mTexCoord = vec2( 0, 0 );
             VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 + THICKNESS * n1 ) / WIN_SCALE, p1z, 1.0 );
+            worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+            setClipDistance(worldPosition);
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 0 );
             VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 + THICKNESS * n0 ) / WIN_SCALE, p1z, 1.0 );
+            worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+            setClipDistance(worldPosition);
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 0.5 );
             VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( p1 / WIN_SCALE, p1z, 1.0 );
+            worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+            setClipDistance(worldPosition);
             EmitVertex();
 
             EndPrimitive();
@@ -127,16 +139,22 @@ void main( void )
             VertexOut.mTexCoord = vec2( 0, 1 );
             VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 - THICKNESS * n0 ) / WIN_SCALE, p1z, 1.0 );
+            worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+            setClipDistance(worldPosition);
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 1 );
             VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 - THICKNESS * n1 ) / WIN_SCALE, p1z, 1.0 );
+            worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+            setClipDistance(worldPosition);
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 0.5 );
             VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( p1 / WIN_SCALE, p1z, 1.0 );
+            worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+            setClipDistance(worldPosition);
             EmitVertex();
 
             EndPrimitive();
@@ -152,21 +170,29 @@ void main( void )
     VertexOut.mTexCoord = vec2( 0, 0 );
     VertexOut.mColor = VertexIn[1].mColor;
     gl_Position = vec4( ( p1 + length_a * miter_a ) / WIN_SCALE, p1z, 1.0 );
+    worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+    setClipDistance(worldPosition);
     EmitVertex();
 
     VertexOut.mTexCoord = vec2( 0, 1 );
     VertexOut.mColor = VertexIn[1].mColor;
     gl_Position = vec4( ( p1 - length_a * miter_a ) / WIN_SCALE, p1z, 1.0 );
+    worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+    setClipDistance(worldPosition);
     EmitVertex();
 
     VertexOut.mTexCoord = vec2( 0, 0 );
     VertexOut.mColor = VertexIn[2].mColor;
     gl_Position = vec4( ( p2 + length_b * miter_b ) / WIN_SCALE, p2z, 1.0 );
+    worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+    setClipDistance(worldPosition);
     EmitVertex();
 
     VertexOut.mTexCoord = vec2( 0, 1 );
     VertexOut.mColor = VertexIn[2].mColor;
     gl_Position = vec4( ( p2 - length_b * miter_b ) / WIN_SCALE, p2z, 1.0 );
+    worldPosition = vec3(inverseViewProjectionMatrix * gl_Position);
+    setClipDistance(worldPosition);
     EmitVertex();
 
     EndPrimitive();

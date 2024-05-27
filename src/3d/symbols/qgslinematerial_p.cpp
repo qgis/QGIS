@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslinematerial_p.h"
+#include "qgs3dutils.h"
 
 #include <QColor>
 #include <QSizeF>
@@ -32,7 +33,7 @@
 /// @cond PRIVATE
 
 
-QgsLineMaterial::QgsLineMaterial()
+QgsLineMaterial::QgsLineMaterial( const Qgs3DMapSettings &mapSettings )
   : mParameterThickness( new Qt3DRender::QParameter( "THICKNESS", 10, this ) )
   , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) )  // 0.75
   , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QColor( 0, 255, 0 ), this ) )
@@ -70,6 +71,7 @@ QgsLineMaterial::QgsLineMaterial()
   technique->graphicsApiFilter()->setMinorVersion( 1 );
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( this );
+  Qgs3DUtils::addBoundingBoxParametersToEffect( effect, mapSettings );
   effect->addTechnique( technique );
 
   setEffect( effect );
