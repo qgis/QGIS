@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterial.h"
+#include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
@@ -25,7 +26,7 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 
 ///@cond PRIVATE
-QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
+QgsMetalRoughMaterial::QgsMetalRoughMaterial( const Qgs3DMapSettings &, QNode *parent )
   : QMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColor" ), QColor( "grey" ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( QStringLiteral( "metalness" ), 0.0f, this ) )
