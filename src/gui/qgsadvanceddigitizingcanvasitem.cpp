@@ -261,7 +261,15 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().constLast();
     const QPointF snappedPoint = toCanvasCoordinates( snap.point() );
 
-    const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
+    QgsFeatureRequest req;
+    req.setFilterFid( snap.featureId() );
+    req.setNoAttributes();
+    req.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
+    QgsFeatureIterator featureIt = snap.layer()->getFeatures( req );
+
+    QgsFeature feature;
+    featureIt.nextFeature( feature );
+
     const QgsGeometry geometry = feature.geometry();
     const QgsAbstractGeometry *geom = geometry.constGet();
 
