@@ -5131,6 +5131,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( SensorThingsEntity )
 
     /**
+     * Color model types
+     *
+     * \since QGIS 3.40
+     */
+    enum class ColorModel : int
+    {
+      Rgb,
+      Cmyk
+    };
+    Q_ENUM( ColorModel )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

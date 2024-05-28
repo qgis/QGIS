@@ -18,10 +18,11 @@
 #include "qgscolorutils.h"
 
 #include <QColor>
+#include <QColorSpace>
 #include <QDomDocument>
+#include <QFile>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-
 
 void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QDomDocument &document, QDomElement &element, const QgsReadWriteContext & )
 {
@@ -353,3 +354,57 @@ QColor QgsColorUtils::colorFromString( const QString &string )
   }
   return QColor();
 }
+
+QColorSpace QgsColorUtils::iccProfile( const QString &iccProfileFilePath, QString &errorMsg )
+{
+  if ( iccProfileFilePath.isEmpty() )
+    return QColorSpace();
+
+  QFile file( iccProfileFilePath );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    errorMsg = QObject::tr( "Failed to open ICC Profile: %1" ).arg( iccProfileFilePath );
+    return QColorSpace();
+  }
+
+  QColorSpace colorSpace = QColorSpace::fromIccProfile( file.readAll() );
+  if ( !colorSpace.isValid() )
+  {
+    errorMsg = QObject::tr( "Invalid ICC Profile: %1" ).arg( iccProfileFilePath );
+    return colorSpace;
+  }
+
+  return colorSpace;
+}
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel, bool *ok )
+{
+  bool lok;
+  Qgis::ColorModel res;
+  switch ( colorModel )
+  {
+    case QColorSpace::ColorModel::Cmyk:
+      lok = true;
+      res = Qgis::ColorModel::Cmyk;
+      break;
+
+    case QColorSpace::ColorModel::Rgb:
+      lok = true;
+      res = Qgis::ColorModel::Rgb;
+      break;
+
+    case QColorSpace::ColorModel::Undefined:
+    case QColorSpace::ColorModel::Gray: // not supported
+      lok = false;
+      res = Qgis::ColorModel::Rgb;
+  }
+
+  if ( ok )
+    *ok = lok;
+
+  return res;
+}
+
+#endif

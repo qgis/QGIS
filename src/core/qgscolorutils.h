@@ -24,6 +24,7 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QColorSpace>
 
 class QgsReadWriteContext;
 
@@ -93,6 +94,23 @@ class CORE_EXPORT QgsColorUtils
      * \see colorToString()
      */
     static QColor colorFromString( const QString &string );
+
+    /**
+     * Load \a iccProfileFilePath and returns associated color space.
+     * If an error occurred, an invalid color space is returned and \a errorMsg is updated with error
+     * message
+     */
+    static QColorSpace iccProfile( const QString &iccProfileFilePath, QString &errorMsg );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+    /**
+     * Convert and returns Qt \a colorModel to Qgis::ColorModel. \a ok is set to true if \a colorModel
+     * is a valid Qgis::ColorModel.
+     */
+    static Qgis::ColorModel toColorModel( QColorSpace::ColorModel colorModel, bool *ok = nullptr ) SIP_SKIP;
+
+#endif
 
 };
 

@@ -81,6 +81,16 @@ An invalid color will be returned if the color could not be read.
 .. seealso:: :py:func:`colorToString`
 %End
 
+    static QColorSpace iccProfile( const QString &iccProfileFilePath, QString &errorMsg );
+%Docstring
+Load ``iccProfileFilePath`` and returns associated color space.
+If an error occurred, an invalid color space is returned and ``errorMsg`` is updated with error
+message
+%End
+
+
+
+
 };
 
 /************************************************************************

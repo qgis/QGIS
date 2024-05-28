@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscolorutils.h"
 #include "qgsprojectstylesettings.h"
 #include "qgis.h"
 #include "qgsproject.h"
@@ -25,6 +26,7 @@
 #include "qgstextformat.h"
 #include "qgsstyle.h"
 #include "qgscombinedstylemodel.h"
+#include "qgsxmlutils.h"
 
 #include <QDomElement>
 
@@ -170,6 +172,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
 {
   mRandomizeDefaultSymbolColor = element.attribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), QStringLiteral( "0" ) ).toInt();
   mDefaultSymbolOpacity = element.attribute( QStringLiteral( "DefaultSymbolOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
+  mColorModel = QgsXmlUtils::readFlagAttribute( element, QStringLiteral( "colorModel" ), Qgis::ColorModel::Rgb );
 
   QDomElement elem = element.firstChildElement( QStringLiteral( "markerSymbol" ) );
   if ( !elem.isNull() )
@@ -259,6 +262,15 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
     }
   }
 
+  const QString iccProfileId = element.attribute( QStringLiteral( "iccProfileId" ) );
+  mIccProfileFilePath = mProject ? mProject->resolveAttachmentIdentifier( iccProfileId ) : QString();
+  if ( !mIccProfileFilePath.isEmpty() )
+  {
+    QString errorMsg;
+    QColorSpace colorSpace = QgsColorUtils::iccProfile( mIccProfileFilePath, errorMsg );
+    setColorSpace( colorSpace );
+  }
+
   emit styleDatabasesChanged();
 
   return true;
@@ -270,6 +282,10 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
 
   element.setAttribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), mRandomizeDefaultSymbolColor ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "DefaultSymbolOpacity" ), QString::number( mDefaultSymbolOpacity ) );
+
+  const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::ColorModel>();
+  const QString colorModel( metaEnum.valueToKeys( static_cast<int>( mColorModel ) ) );
+  element.setAttribute( QStringLiteral( "colorModel" ), colorModel );
 
   if ( mDefaultMarkerSymbol )
   {
@@ -319,6 +335,8 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
   {
     element.setAttribute( QStringLiteral( "projectStyleId" ), mProject->attachmentIdentifier( mProjectStyle->fileName() ) );
   }
+
+  element.setAttribute( QStringLiteral( "iccProfileId" ), mProject->attachmentIdentifier( mIccProfileFilePath ) );
 
   return element;
 }
@@ -440,7 +458,66 @@ QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
   return mCombinedStyleModel;
 }
 
+void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
+{
+  mColorModel = colorModel;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  if ( mColorSpace.isValid() && QgsColorUtils::toColorModel( mColorSpace.colorModel() ) != colorModel )
+  {
+    setColorSpace( QColorSpace() );
+  }
+#endif
+}
 
+Qgis::ColorModel QgsProjectStyleSettings::colorModel() const
+{
+  return mColorModel;
+}
+
+void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
+{
+  if ( !mProject )
+  {
+    QgsDebugError( "Impossible to attach ICC profile, no project defined" );
+    return;
+  }
+
+  auto clearIccProfile = [this]()
+  {
+    mProject->removeAttachedFile( mIccProfileFilePath );
+    mIccProfileFilePath.clear();
+    mColorSpace = QColorSpace();
+  };
+
+  if ( !mIccProfileFilePath.isEmpty() )
+    clearIccProfile();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  bool ok;
+  Qgis::ColorModel colorModel = QgsColorUtils::toColorModel( colorSpace.colorModel(), &ok );
+  mColorSpace = ok ? colorSpace : QColorSpace();
+#else
+  mColorSpace = colorSpace;
+#endif
+
+  if ( !mColorSpace.isValid() )
+    return;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  if ( colorModel != mColorModel )
+    mColorModel = colorModel;
+#endif
+
+  mIccProfileFilePath = mProject->createAttachedFile( QStringLiteral( "profile.icc" ) );
+  QFile file( mIccProfileFilePath );
+  if ( !file.open( QIODevice::WriteOnly ) || file.write( colorSpace.iccProfile() ) < 0 )
+    clearIccProfile();
+}
+
+QColorSpace QgsProjectStyleSettings::colorSpace() const
+{
+  return mColorSpace;
+}
 
 
 //
