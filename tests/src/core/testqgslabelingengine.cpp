@@ -119,6 +119,7 @@ class TestQgsLabelingEngine : public QgsTest
     void testVerticalOrientation();
     void testVerticalOrientationLetterLineSpacing();
     void testRotationBasedOrientationPoint();
+    void testRotationBasedOrientationPointHtmlLabel();
     void testRotationBasedOrientationLine();
     void testMapUnitLetterSpacing();
     void testMapUnitWordSpacing();
@@ -4938,6 +4939,55 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPoint()
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "\"Heading\"" ) ) );
   QgsTextFormat format = settings.format();
   format.setOrientation( Qgis::TextOrientation::RotationBased );
+  settings.setFormat( format );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "labeling_rotation_based_orientation_point", img, 20 ) );
+
+  vl->setLabeling( nullptr );
+}
+
+void TestQgsLabelingEngine::testRotationBasedOrientationPointHtmlLabel()
+{
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'<span style=\"font-size: 12.3pt\">' || \"Class\" || '</span>'" );
+  settings.isExpression = true;
+  setDefaultLabelParams( settings );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "\"Heading\"" ) ) );
+  QgsTextFormat format = settings.format();
+  format.setSize( 26 );
+  format.setOrientation( Qgis::TextOrientation::RotationBased );
+  format.setAllowHtmlFormatting( true );
   settings.setFormat( format );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!

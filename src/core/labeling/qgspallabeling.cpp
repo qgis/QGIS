@@ -1708,9 +1708,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
 
     *documentMetrics = QgsTextDocumentMetrics::calculateMetrics( *document, mFormat, *rc );
-    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation );
+    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
     w = size.width();
     h = size.height();
+
+    if ( orientation == Qgis::TextOrientation::RotationBased )
+    {
+      const QSizeF rotatedSize = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, Qgis::TextOrientation::Vertical );
+      rh = rotatedSize.width();
+      rw = rotatedSize.height();
+    }
   }
   else
   {
