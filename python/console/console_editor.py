@@ -318,7 +318,7 @@ class Editor(QgsCodeEditorPython):
             self.showMessage(msg)
         else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.showMessage(msg + request.erroMessage(),
+            self.showMessage(msg + request.errorMessage(),
                              level=Qgis.MessageLevel.Warning)
 
     def hideEditor(self):
