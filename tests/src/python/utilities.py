@@ -300,7 +300,7 @@ def loadTestFonts():
 
     global FONTSLOADED  # pylint: disable=W0603
     if FONTSLOADED is False:
-        QgsFontUtils.loadStandardTestFonts(['Roman', 'Bold'])
+        QgsFontUtils.loadStandardTestFonts(['Roman', 'Bold', 'Deja Bold'])
         msg = getTestFontFamily() + ' base test font styles could not be loaded'
         res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman') and
                QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))

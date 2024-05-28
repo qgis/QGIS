@@ -1895,6 +1895,180 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setForcedItalic(True)
         assert self.checkRender(format, 'forced_italic', text=['Forced italic'])
 
+    def testDrawRTL(self):
+        """
+        Test drawing with simple rtl text
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl', text=['مرحبا بالعالم'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLHTML(self):
+        """
+        Test drawing with rtl text with HTML formatting
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_html', text=['<span style="font-size:50pt; color:green">بالعالم</span> مرحبا'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLRightAlign(self):
+        """
+        Test drawing with rtl text with right align
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRender(format, 'rtl_right_align', text=['مرحبا بالعالم'],
+                                         rect=QRectF(5, 100, 350, 250),
+                                         alignment=QgsTextRenderer.HAlignment.AlignRight))
+
+    def testDrawRTLBuffer(self):
+        """
+        Test drawing with right to left text with buffer
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_buffer', text=['مرحبا بالعالم'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLShadow(self):
+        """
+        Test drawing with right to left text with shadow
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setColor(
+            QColor(255, 255, 0))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowPlacement.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_shadow', text=['مرحبا بالعالم'],
+                                              point=QPointF(5, 200)))
+
+    @unittest.skip('broken')
+    def testDrawTextOnLineRTL(self):
+        """
+        Test drawing right to left text on line
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(25)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
+        painter.drawPolygon(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        QgsTextRenderer.drawTextOnLine(line, 'مرحبا بالعالم', context, format, 0)
+
+        painter.end()
+        self.assertTrue(self.image_check('text_on_line_at_start', 'text_on_line_at_start', image, 'text_on_line_at_start'))
+
+    def testDrawRTLLTRMixed(self):
+        """
+        Test drawing with mixed right to left and left to right text
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed', text=['hello באמת abc'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLLTRMixedHtml(self):
+        """
+        Test drawing with right to left marker, html mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed_html', text=['<i>hello באמת </i>abc'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLLTRMixedRect(self):
+        """
+        Test drawing with right to left marker in rect mode, right aligned
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRender(format, 'rtl_mixed_right_align', text=['hello באמת abc'],
+                                         rect=QRectF(5, 100, 350, 250),
+                                         alignment=QgsTextRenderer.HAlignment.AlignRight))
+
+    def testDrawRTLLTRMixedBuffer(self):
+        """
+        Test drawing with right to left marker with buffer
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed_buffer', text=['hello באמת abc'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLLTRMixedShadow(self):
+        """
+        Test drawing with right to left marker with shadow
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setColor(
+            QColor(255, 255, 0))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowPlacement.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed_shadow', text=['hello באמת abc'],
+                                              point=QPointF(5, 200)))
+
     @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
     def testDrawSmallCaps(self):
         format = QgsTextFormat()
