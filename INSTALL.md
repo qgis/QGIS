@@ -1085,6 +1085,9 @@ CMake option:
 This will flood your terminal or system log with lots of useful output from
 QgsDebugMsg() calls in source code.
 
+Those lines can be reduced or augmented by setting the QGIS_DEBUG
+runtime environment variable between 0 (no messages) and 5 (all messages).
+
 If you would like to run the test suite, you will need to do so from the build
 directory, as it will not work with the installed/bundled app. First set the
 CMake option to enable tests:
