@@ -275,7 +275,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const Qg
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
   //Load shader programs
-  const QUrl urlVert( QStringLiteral( "qrc:/shaders/phongConstant.vert" ) );
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/default.vert" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
   const QUrl urlFrag( QStringLiteral( "qrc:/shaders/phongConstant.frag" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
@@ -286,8 +286,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const Qg
   const QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
   const QColor diffuse = context.isSelected() ? context.selectionColor() : mDiffuse;
 
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ),  static_cast< float >( mShininess ) ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ),  static_cast< float >( mOpacity ) ) );
+  eff->addParameter( new Qt3DRender::QParameter(  QStringLiteral( "shininess" ), static_cast< float >( mShininess ) ) );
+  eff->addParameter( new Qt3DRender::QParameter(  QStringLiteral( "opacity" ), static_cast< float >( mOpacity ) ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ),
                      QColor::fromRgbF( ambient.redF() * mAmbientCoefficient,
                                        ambient.greenF() * mAmbientCoefficient,
