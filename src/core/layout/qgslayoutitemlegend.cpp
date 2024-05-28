@@ -1016,10 +1016,12 @@ void QgsLayoutItemLegend::updateFilterByMapAndRedraw()
 void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &overrides )
 {
   mLegendModel->setLayerStyleOverrides( overrides );
-  const QList< QgsLayerTreeLayer * > layers =  mLegendModel->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *nodeLayer : layers )
-    mLegendModel->refreshLayerLegend( nodeLayer );
-
+  if ( QgsLayerTree *rootGroup = mLegendModel->rootGroup() )
+  {
+    const QList< QgsLayerTreeLayer * > layers =  rootGroup->findLayers();
+    for ( QgsLayerTreeLayer *nodeLayer : layers )
+      mLegendModel->refreshLayerLegend( nodeLayer );
+  }
 }
 
 void QgsLayoutItemLegend::clearLegendCachedData()
