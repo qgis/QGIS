@@ -486,7 +486,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
         if ( QgsOwsConnection::settingsHeaders->exists( {service.toLower(), connection} ) )
         {
           Q_NOWARN_DEPRECATED_PUSH
-          const QgsHttpHeaders headers = QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) );
+          const QgsHttpHeaders headers = QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), connection} ) );
           settings->beginGroup( QStringLiteral( "qgis/connections-%1/%2" ).arg( service.toLower(), connection ) );
           headers.updateSettings( *settings );
           settings->endGroup();
