@@ -483,7 +483,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
         QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {service.toLower(), connection} );
         QgsOwsConnection::settingsInvertAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection} );
 
-        if ( QgsOwsConnection::settingsHeaders->exists( connection ) )
+        if ( QgsOwsConnection::settingsHeaders->exists( {service.toLower(), connection} ) )
         {
           Q_NOWARN_DEPRECATED_PUSH
           const QgsHttpHeaders headers = QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) );
