@@ -26,7 +26,12 @@ if (ENABLE_TESTS)
       set_tests_properties(${TESTNAME} PROPERTIES LABELS ${ARG_QGIS_TEST_LABELS})
     endif()
 
-    set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+    # TODO: put the temp dir and custom config path under the build dir
+    set_tests_properties(${TESTNAME} PROPERTIES
+      FIXTURES_REQUIRED SOURCETREE
+      ENVIRONMENT "QGIS_CUSTOM_CONFIG_PATH=${CMAKE_BINARY_DIR}/tmp/qgis-tests/config"
+    )
+
     target_compile_definitions(${TESTNAME} PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   endmacro()
 
