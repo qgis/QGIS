@@ -33,7 +33,6 @@
         <file>shaders/ssao_factor_blur.frag</file>
         <file>shaders/ssao_factor_blur.vert</file>
         <file>shaders/phongConstant.frag</file>
-        <file>shaders/phongConstant.vert</file>
         <file>shaders/metalrough.frag</file>
         <file>shaders/default.vert</file>
     </qresource>
