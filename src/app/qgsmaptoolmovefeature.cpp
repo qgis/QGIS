@@ -266,8 +266,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         deleteRubberband();
         mSnapIndicator->setMatch( QgsPointLocator::Match() );
         cadDockWidget()->clear();
-
-        vlayer->endEditCommand();
         break;
       }
       case CopyMove:
@@ -282,10 +280,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           vlayer->deleteFeatures( request.filterFids() );
           vlayer->destroyEditCommand();
           mSnapIndicator->setMatch( QgsPointLocator::Match() );
-        }
-        else
-        {
-          vlayer->endEditCommand();
+          return;
         }
         if ( !childrenInfoMsg.isEmpty() )
         {
@@ -294,6 +289,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         break;
     }
 
+    vlayer->endEditCommand();
     vlayer->triggerRepaint();
   }
 }
