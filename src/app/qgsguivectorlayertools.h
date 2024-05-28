@@ -96,11 +96,9 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      */
     bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const override;
 
-  protected:
-    virtual bool avoidIntersection( QgsVectorLayer *layer, QgsFeatureRequest &request, QString *errorMsg = nullptr ) const;
-
   private:
     void commitError( QgsVectorLayer *vlayer ) const;
+    bool avoidIntersection( QgsVectorLayer *layer, QgsFeatureRequest &request, QString *errorMsg = nullptr ) const;
 
 };
 
