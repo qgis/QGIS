@@ -2127,15 +2127,45 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   QgsTextDocument doc;
   QgsTextDocumentMetrics documentMetrics;
   QRectF outerBounds;
-  if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
+
+  switch ( placement )
   {
-    doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-    // also applies the line split to doc and calculates document metrics!
-    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, &doc, &documentMetrics, &outerBounds );
-  }
-  else
-  {
-    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, nullptr, nullptr, &outerBounds );
+    case Qgis::LabelPlacement::PerimeterCurved:
+    case Qgis::LabelPlacement::Curved:
+    {
+      // avoid calculating document and metrics if we don't require them for curved labels
+      if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
+      {
+        doc = QgsTextDocument::fromHtml( QStringList() << labelText );
+        calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, &doc, &documentMetrics, &outerBounds );
+      }
+      else
+      {
+        calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, nullptr, nullptr, &outerBounds );
+      }
+      break;
+    }
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+    {
+      // non-curved labels always require document and metrics
+      if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
+      {
+        doc = QgsTextDocument::fromHtml( QStringList() << labelText );
+      }
+      else
+      {
+        doc = QgsTextDocument::fromPlainText( { labelText } );
+      }
+      calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, &doc, &documentMetrics, &outerBounds );
+      break;
+    }
   }
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
