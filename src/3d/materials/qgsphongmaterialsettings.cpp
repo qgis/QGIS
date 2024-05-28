@@ -275,7 +275,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const Qg
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
   //Load shader programs
-  const QUrl urlVert( QStringLiteral( "qrc:/shaders/phongConstant.vert" ) );
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/default.vert" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
   const QUrl urlFrag( QStringLiteral( "qrc:/shaders/phongConstant.frag" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
