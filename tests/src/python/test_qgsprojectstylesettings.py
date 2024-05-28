@@ -11,12 +11,14 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
+    QDir,
     QEvent,
     QModelIndex,
     Qt,
     QTemporaryDir,
+    QTemporaryFile
 )
-from qgis.PyQt.QtGui import QColor, QFont
+from qgis.PyQt.QtGui import QColor, QColorSpace, QFont
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -32,7 +34,9 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
+
 import unittest
+import os
 from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
@@ -409,7 +413,8 @@ class TestQgsProjectViewSettings(QgisTestCase):
             QgsStyle.defaultStyle())
 
     def testReadWrite(self):
-        p = QgsProjectStyleSettings()
+        project = QgsProject()
+        p = QgsProjectStyleSettings(project)
 
         line = QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.LineGeometry)
         p.setDefaultSymbol(Qgis.SymbolType.Line, line)
@@ -442,6 +447,60 @@ class TestQgsProjectViewSettings(QgisTestCase):
 
         self.assertEqual(p2.styleDatabasePaths(),
                          [unitTestDataPath() + '/style1.db', unitTestDataPath() + '/style2.db'])
+
+    def testColorSettings(self):
+        """
+        Test ICC profile attachment
+        """
+        project = QgsProject()
+        settings = project.styleSettings()
+
+        self.assertEqual(settings.colorModel(), Qgis.ColorModel.Rgb)
+        self.assertFalse(settings.colorSpace().isValid())
+
+        # set Cmyk color model and color space
+
+        settings.setColorModel(Qgis.ColorModel.Cmyk)
+        self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
+
+        with open(os.path.join(TEST_DATA_DIR, "sRGB2014.icc"), mode='rb') as f:
+            colorSpace = QColorSpace.fromIccProfile(f.read())
+
+        self.assertTrue(colorSpace.isValid())
+
+        settings.setColorSpace(colorSpace)
+        self.assertTrue(settings.colorSpace().isValid())
+        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.SRgb)
+        self.assertEqual(len(project.attachedFiles()), 2)
+
+        # save and restore
+        projectFile = QTemporaryFile(QDir.temp().absoluteFilePath("testCmykSettings.qgz"))
+        projectFile.open()
+        self.assertTrue(project.write(projectFile.fileName()))
+
+        project = QgsProject()
+        self.assertTrue(project.read(projectFile.fileName()))
+        settings = project.styleSettings()
+        self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
+        self.assertTrue(settings.colorSpace().isValid())
+        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.SRgb)
+        self.assertEqual(len(project.attachedFiles()), 2)
+
+        # clear color space
+        settings.setColorSpace(QColorSpace())
+        self.assertFalse(settings.colorSpace().isValid())
+        self.assertEqual(len(project.attachedFiles()), 1)
+
+        # save and restore cleared
+        projectFile = QTemporaryFile(QDir.temp().absoluteFilePath("testCmykSettingsCleared.qgz"))
+        projectFile.open()
+        self.assertTrue(project.write(projectFile.fileName()))
+
+        project = QgsProject()
+        self.assertTrue(project.read(projectFile.fileName()))
+        settings = project.styleSettings()
+        self.assertFalse(settings.colorSpace().isValid())
+        self.assertEqual(len(project.attachedFiles()), 1)
 
 
 if __name__ == '__main__':

@@ -22,6 +22,7 @@
 
 #include <memory.h>
 #include <QAbstractListModel>
+#include <QColorSpace>
 #include <QSortFilterProxyModel>
 #include <QPointer>
 
@@ -143,6 +144,67 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \see setProjectStyle()
      */
     QgsStyle *projectStyle();
+
+    /**
+     * Set project \a colorModel
+     *
+     * It would serve as default color model when selecting a color in the whole application.
+     * Any color defined in a different color model than the one specified here will be converted to
+     * this color model when exporting a layout.
+     *
+     * If a color space has already been set and its color model differs from \a colorModel, project
+     * color space is set to invalid one. \see setColorSpace() colorSpace()
+     *
+     * defaults to Qgis::ColorModel::Rgb
+     *
+     * \see colorModel()
+     * \since QGIS 3.40
+     */
+    void setColorModel( Qgis::ColorModel colorModel );
+
+    /**
+     * Returns project color model
+     *
+     * Used as default color model when selecting a color in the whole application.
+     * Any color defined in a different color model than the returned will be converted to
+     * this color model when exporting a layout
+     *
+     * defaults to Qgis::ColorModel::Rgb
+     *
+     * \see setColorModel()
+     * \since QGIS 3.40
+     */
+    Qgis::ColorModel colorModel() const;
+
+    /**
+     * Set project current \a colorSpace. \a colorSpace must be a valid RGB or CMYK color space.
+     * Color space ICC profile will be added as a project attached file.
+     *
+     * Project color space will be added to PDF layout export if defined (meaning different from
+     * the default invalid QColorSpace).
+     *
+     * If a color model has already been set and it differs from \a colorSpace color model, project
+     * color model is set to \a colorSpace one. \see setColorModel() colorModel()
+     *
+     * defaults to invalid color space
+     *
+     * \see colorSpace()
+     * \since QGIS 3.40
+     */
+    void setColorSpace( const QColorSpace &colorSpace );
+
+    /**
+     * Returns current project color space.
+     *
+     * Project color space will be added to PDF layout export if defined (meaning different from
+     * the default invalid QColorSpace).
+     *
+     * defaults to invalid color space
+     *
+     * \see setColorSpace()
+     * \since QGIS 3.40
+     */
+    QColorSpace colorSpace() const;
 
     /**
      * Reads the settings's state from a DOM element.
@@ -283,10 +345,14 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     QList< QPointer< QgsStyle > > mStyles;
 
     QgsCombinedStyleModel *mCombinedStyleModel = nullptr;
+    Qgis::ColorModel mColorModel = Qgis::ColorModel::Rgb;
+    QColorSpace mColorSpace;
+    QString mIccProfileFilePath;
 
     void loadStyleAtPath( const QString &path );
     void clearStyles();
 
+    friend class TestQgsProjectProperties;
 };
 
 /**

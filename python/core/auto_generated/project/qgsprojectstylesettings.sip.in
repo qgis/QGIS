@@ -141,6 +141,71 @@ Returns the style database to use for project specific styles.
 .. seealso:: :py:func:`setProjectStyle`
 %End
 
+    void setColorModel( Qgis::ColorModel colorModel );
+%Docstring
+Set project ``colorModel``
+
+It would serve as default color model when selecting a color in the whole application.
+Any color defined in a different color model than the one specified here will be converted to
+this color model when exporting a layout.
+
+If a color space has already been set and its color model differs from ``colorModel``, project
+color space is set to invalid one. :py:func:`setColorSpace` colorSpace()
+
+defaults to :py:class:`Qgis`.ColorModel.Rgb
+
+.. seealso:: :py:func:`colorModel`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::ColorModel colorModel() const;
+%Docstring
+Returns project color model
+
+Used as default color model when selecting a color in the whole application.
+Any color defined in a different color model than the returned will be converted to
+this color model when exporting a layout
+
+defaults to :py:class:`Qgis`.ColorModel.Rgb
+
+.. seealso:: :py:func:`setColorModel`
+
+.. versionadded:: 3.40
+%End
+
+    void setColorSpace( const QColorSpace &colorSpace );
+%Docstring
+Set project current ``colorSpace``. ``colorSpace`` must be a valid RGB or CMYK color space.
+Color space ICC profile will be added as a project attached file.
+
+Project color space will be added to PDF layout export if defined (meaning different from
+the default invalid QColorSpace).
+
+If a color model has already been set and it differs from ``colorSpace`` color model, project
+color model is set to ``colorSpace`` one. :py:func:`setColorModel` colorModel()
+
+defaults to invalid color space
+
+.. seealso:: :py:func:`colorSpace`
+
+.. versionadded:: 3.40
+%End
+
+    QColorSpace colorSpace() const;
+%Docstring
+Returns current project color space.
+
+Project color space will be added to PDF layout export if defined (meaning different from
+the default invalid QColorSpace).
+
+defaults to invalid color space
+
+.. seealso:: :py:func:`setColorSpace`
+
+.. versionadded:: 3.40
+%End
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Reads the settings's state from a DOM element.

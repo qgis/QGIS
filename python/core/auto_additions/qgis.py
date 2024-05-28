@@ -5062,6 +5062,12 @@ Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a co
 Qgis.SensorThingsEntity.__doc__ = "OGC SensorThings API entity types.\n\n.. versionadded:: 3.36\n\n" + '* ``Invalid``: ' + Qgis.SensorThingsEntity.Invalid.__doc__ + '\n' + '* ``Thing``: ' + Qgis.SensorThingsEntity.Thing.__doc__ + '\n' + '* ``Location``: ' + Qgis.SensorThingsEntity.Location.__doc__ + '\n' + '* ``HistoricalLocation``: ' + Qgis.SensorThingsEntity.HistoricalLocation.__doc__ + '\n' + '* ``Datastream``: ' + Qgis.SensorThingsEntity.Datastream.__doc__ + '\n' + '* ``Sensor``: ' + Qgis.SensorThingsEntity.Sensor.__doc__ + '\n' + '* ``ObservedProperty``: ' + Qgis.SensorThingsEntity.ObservedProperty.__doc__ + '\n' + '* ``Observation``: ' + Qgis.SensorThingsEntity.Observation.__doc__ + '\n' + '* ``FeatureOfInterest``: ' + Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ + '\n' + '* ``MultiDatastream``: ' + Qgis.SensorThingsEntity.MultiDatastream.__doc__
 # --
 Qgis.SensorThingsEntity.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ColorModel.Rgb.__doc__ = ""
+Qgis.ColorModel.Cmyk.__doc__ = ""
+Qgis.ColorModel.__doc__ = "Color model types\n\n.. versionadded:: 3.40\n\n" + '* ``Rgb``: ' + Qgis.ColorModel.Rgb.__doc__ + '\n' + '* ``Cmyk``: ' + Qgis.ColorModel.Cmyk.__doc__
+# --
+Qgis.ColorModel.baseClass = Qgis
 from enum import Enum
 
 
