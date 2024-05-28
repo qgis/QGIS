@@ -475,25 +475,54 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 if ( !json.contains( tag ) )
                   return QVariant();
 
-                const auto &jObj = json[tag];
-                if ( jObj.is_number_integer() )
+                std::function< QString( const basic_json<> &obj, bool &ok ) > objToString;
+                objToString = [&objToString]( const basic_json<> &obj, bool & ok ) -> QString
                 {
-                  return QString::number( jObj.get<int>() );
-                }
-                else if ( jObj.is_number_unsigned() )
-                {
-                  return QString::number( jObj.get<unsigned>() );
-                }
-                else if ( jObj.is_boolean() )
-                {
-                  return QString::number( jObj.get<bool>() );
-                }
-                else if ( jObj.is_number_float() )
-                {
-                  return QString::number( jObj.get<double>() );
-                }
+                  ok = true;
+                  if ( obj.is_number_integer() )
+                  {
+                    return QString::number( obj.get<int>() );
+                  }
+                  else if ( obj.is_number_unsigned() )
+                  {
+                    return QString::number( obj.get<unsigned>() );
+                  }
+                  else if ( obj.is_boolean() )
+                  {
+                    return QString::number( obj.get<bool>() );
+                  }
+                  else if ( obj.is_number_float() )
+                  {
+                    return QString::number( obj.get<double>() );
+                  }
+                  else if ( obj.is_array() )
+                  {
+                    QStringList results;
+                    results.reserve( obj.size() );
+                    for ( const auto &item : obj )
+                    {
+                      bool itemOk = false;
+                      const QString itemString = objToString( item, itemOk );
+                      if ( itemOk )
+                        results.push_back( itemString );
+                    }
+                    return results.join( ',' );
+                  }
+                  else if ( obj.is_string() )
+                  {
+                    return QString::fromStdString( obj.get<std::string >() );
+                  }
 
-                return QString::fromStdString( json[tag].get<std::string >() );
+                  ok = false;
+                  return QString();
+                };
+
+                const auto &jObj = json[tag];
+                bool ok = false;
+                const QString r = objToString( jObj, ok );
+                if ( ok )
+                  return r;
+                return QVariant();
               };
 
               auto getDateTime = []( const basic_json<> &json, const char *tag ) -> QVariant
