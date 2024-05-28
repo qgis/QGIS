@@ -488,6 +488,52 @@ class TestQgsLayout(QgisTestCase):
         item2.setLocked(True)
         self.assertEqual(l.layoutItemAt(QPointF(9, 13), item3, True), item1)
 
+    def testLayoutItemAtLockedGroup(self):
+        """Test issue #57331 - layoutItemAt should not return locked groups
+           when ignoreLocked is True"""
+
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(0, 0, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(10, 10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        l.addLayoutItem(item1)
+
+        item2 = QgsLayoutItemMap(l)
+        item2.attemptMove(QgsLayoutPoint(5, 0, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        item2.attemptResize(QgsLayoutSize(10, 5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        l.addLayoutItem(item2)
+
+        item3 = QgsLayoutItemMap(l)
+        item3.attemptMove(QgsLayoutPoint(5, 5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        item3.attemptResize(QgsLayoutSize(10, 5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        l.addLayoutItem(item3)
+
+        self.assertEqual(l.layoutItemAt(QPointF(2, 2), True), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 2), True), item2)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 7), True), item3)
+
+        group = QgsLayoutItemGroup(l)
+        group.addItem(item2)
+        group.addItem(item3)
+        l.addLayoutItem(group)
+
+        self.assertEqual(l.layoutItemAt(QPointF(2, 2)), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 2)), group)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 7)), group)
+
+        self.assertEqual(l.layoutItemAt(QPointF(2, 2), True), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 2), True), group)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 7), True), group)
+
+        group.setLocked(True)
+
+        self.assertEqual(l.layoutItemAt(QPointF(2, 2), True), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 2), True), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(7, 7), True), item1)
+
     def testStacking(self):
         p = QgsProject()
         l = QgsLayout(p)
