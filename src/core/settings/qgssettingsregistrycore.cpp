@@ -271,7 +271,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       QgsOwsConnection::settingsInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection}, true );
 
       Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( service );
+      settings.beginGroup( connection );
       QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), {service.toLower(), connection} );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
