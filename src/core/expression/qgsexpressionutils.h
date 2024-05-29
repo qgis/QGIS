@@ -94,17 +94,20 @@ class CORE_EXPORT QgsExpressionUtils
         return Unknown;
 
       //handle some special cases
-      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+      if ( value.type() == QVariant::UserType )
       {
-        //geom is false if empty
-        const QgsGeometry geom = value.value<QgsGeometry>();
-        return geom.isNull() ? False : True;
-      }
-      else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
-      {
-        //feat is false if non-valid
-        const QgsFeature feat = value.value<QgsFeature>();
-        return feat.isValid() ? True : False;
+        if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+        {
+          //geom is false if empty
+          const QgsGeometry geom = value.value<QgsGeometry>();
+          return geom.isNull() ? False : True;
+        }
+        else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+        {
+          //feat is false if non-valid
+          const QgsFeature feat = value.value<QgsFeature>();
+          return feat.isValid() ? True : False;
+        }
       }
 
       if ( value.type() == QVariant::Int )
