@@ -1307,16 +1307,13 @@ void QgsTextFormatWidget::updateFont( const QFont &newFont )
   // NOTE: QgsFontUtils::fontMatchOnSystem may fail here, just crosscheck family
   mFontMissingLabel->setVisible( !QgsFontUtils::fontFamilyMatchOnSystem( mRefFont.family() ) );
 
-  if ( mDirectSymbolsFrame->isVisible() )
-  {
-    QFont symbolFont = mRefFont;
-    symbolFont.setPointSize( font().pointSize() );
-    mDirectSymbLeftLineEdit->setFont( symbolFont );
-    mDirectSymbRightLineEdit->setFont( symbolFont );
-  }
+  QFont symbolFont = mRefFont;
+  symbolFont.setPointSize( font().pointSize() );
+  mDirectSymbLeftLineEdit->setFont( symbolFont );
+  mDirectSymbRightLineEdit->setFont( symbolFont );
 
   blockFontChangeSignals( true );
-  mFontFamilyCmbBx->setCurrentFont( mRefFont );
+  mFontFamilyCmbBx->setCurrentFont( symbolFont );
   populateFontStyleComboBox();
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
