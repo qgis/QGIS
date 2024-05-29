@@ -1481,11 +1481,15 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
 
   QgsLegendStyle::Style currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
 
+  QActionGroup *styleGroup = new QActionGroup{ mWidget };
+  styleGroup->setExclusive( true );
+
   QList<QgsLegendStyle::Style> lst;
   lst << QgsLegendStyle::Hidden << QgsLegendStyle::Group << QgsLegendStyle::Subgroup;
   for ( QgsLegendStyle::Style style : std::as_const( lst ) )
   {
     QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, &QgsLayoutLegendWidget::setCurrentNodeStyleFromAction );
+    action->setActionGroup( styleGroup );
     action->setCheckable( true );
     action->setChecked( currentStyle == style );
     action->setData( static_cast< int >( style ) );
