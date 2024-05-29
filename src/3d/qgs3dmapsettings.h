@@ -68,17 +68,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void resolveReferences( const QgsProject &project );
 
     /**
-     * Returns the 3D scene's 2D extent in project's CRS
+     * Returns the 3D scene's 2D extent in the 3D scene's CRS
+     *
+     * \see crs()
      * \since QGIS 3.30
      */
     QgsRectangle extent() const { return mExtent; }
 
     /**
-     * Sets the 3D scene's 2D \a extent in project's CRS, while also setting the scene's origin to the extent's center
+     * Sets the 3D scene's 2D \a extent in the 3D scene's CRS, while also setting the scene's origin to the extent's center
      * This needs to be called during initialization, as terrain will only be generated
      * within this extent and layer 3D data will only be loaded within this extent too.
      *
      * \see setOrigin()
+     * \see setCrs()
      * \since QGIS 3.30
      */
     void setExtent( const QgsRectangle &extent );
