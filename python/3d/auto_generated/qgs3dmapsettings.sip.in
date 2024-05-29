@@ -48,18 +48,22 @@ Resolves references to other objects (map layers) after the call to :py:func:`~Q
 
     QgsRectangle extent() const;
 %Docstring
-Returns the 3D scene's 2D extent in project's CRS
+Returns the 3D scene's 2D extent in the 3D scene's CRS
+
+.. seealso:: :py:func:`crs`
 
 .. versionadded:: 3.30
 %End
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Sets the 3D scene's 2D ``extent`` in project's CRS, while also setting the scene's origin to the extent's center
+Sets the 3D scene's 2D ``extent`` in the 3D scene's CRS, while also setting the scene's origin to the extent's center
 This needs to be called during initialization, as terrain will only be generated
 within this extent and layer 3D data will only be loaded within this extent too.
 
 .. seealso:: :py:func:`setOrigin`
+
+.. seealso:: :py:func:`setCrs`
 
 .. versionadded:: 3.30
 %End
