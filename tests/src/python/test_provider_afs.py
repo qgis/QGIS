@@ -39,6 +39,8 @@ from qgis.core import (
     QgsVectorDataProviderTemporalCapabilities,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsGraduatedSymbolRenderer,
+    QgsSymbol,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1122,8 +1124,8 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.fields().at(1).name(), 'second')
         self.assertFalse(vl.fields().at(1).alias())
 
-    def testRenderer(self):
-        """ Test that renderer is correctly acquired from provider """
+    def testCategorizedRenderer(self):
+        """ Test that the categorized renderer is correctly acquired from provider """
 
         endpoint = self.basetestpath + '/renderer_fake_qgis_http_endpoint'
         with open(sanitize(endpoint, '?f=json'), 'wb') as f:
@@ -1222,6 +1224,178 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(len(vl.renderer().categories()), 2)
         self.assertEqual(vl.renderer().categories()[0].value(), 'US')
         self.assertEqual(vl.renderer().categories()[1].value(), 'Canada')
+
+    def testGraduatedRenderer(self):
+        """ Test that the graduated renderer is correctly acquired from provider """
+
+        endpoint = self.basetestpath + '/renderer_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write(b"""{
+      "currentVersion": 11.2,
+      "id": 0,
+      "name": "Test graduated renderer",
+      "type": "Feature Layer",
+      "useStandardizedQueries": true,
+      "geometryType": "esriGeometryPolygon",
+      "minScale": 0,
+      "maxScale": 1155581,
+      "extent": {
+        "xmin": -17771274.9623,
+        "ymin": 2175061.919500001,
+        "xmax": -7521909.497300002,
+        "ymax": 9988155.384400003,
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "drawingInfo": {
+        "renderer": {
+          "visualVariables": [
+            {
+              "type": "colorInfo",
+              "field": "SUM",
+              "valueExpression": null,
+              "stops": [
+                {
+                  "value": 10151,
+                  "color": [
+                    255,
+                    196,
+                    174,
+                    255
+                  ],
+                  "label": "< 10,151"
+                },
+                {
+                  "value": 632613.25,
+                  "color": [
+                    249,
+                    129,
+                    108,
+                    255
+                  ],
+                  "label": null
+                },
+                {
+                  "value": 1255075.5,
+                  "color": [
+                    236,
+                    82,
+                    68,
+                    255
+                  ],
+                  "label": "1,255,075"
+                },
+                {
+                  "value": 1877537.75,
+                  "color": [
+                    194,
+                    61,
+                    51,
+                    255
+                  ],
+                  "label": null
+                },
+                {
+                  "value": 2500000,
+                  "color": [
+                    123,
+                    66,
+                    56,
+                    255
+                  ],
+                  "label": "> 2,500,000"
+                }
+              ]
+            },
+            {
+              "type": "sizeInfo",
+              "target": "outline",
+              "expression": "view.scale",
+              "valueExpression": "$view.scale",
+              "stops": [
+                {
+                  "size": 1.5,
+                  "value": 3468153
+                },
+                {
+                  "size": 0.75,
+                  "value": 10837979
+                },
+                {
+                  "size": 0.375,
+                  "value": 43351915
+                },
+                {
+                  "size": 0,
+                  "value": 86703831
+                }
+              ]
+            }
+          ],
+          "authoringInfo": {
+            "visualVariables": [
+              {
+                "type": "colorInfo",
+                "minSliderValue": 10151,
+                "maxSliderValue": 15185477,
+                "theme": "high-to-low"
+              }
+            ]
+          },
+          "type": "classBreaks",
+          "field": "SUM",
+          "minValue": -9007199254740991,
+          "classBreakInfos": [
+            {
+              "symbol": {
+                "color": [
+                  170,
+                  170,
+                  170,
+                  255
+                ],
+                "outline": {
+                  "color": [
+                    194,
+                    194,
+                    194,
+                    64
+                  ],
+                  "width": 0.75,
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid"
+                },
+                "type": "esriSFS",
+                "style": "esriSFSSolid"
+              },
+              "classMaxValue": 9007199254740991
+            }
+          ]
+        },
+        "transparency": 20
+      },
+      "allowGeometryUpdates": true
+    }""")
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write(b"""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1
+         ]
+        }
+        """)
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:3857'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertIsNotNone(vl.dataProvider().createRenderer())
+        self.assertIsInstance(vl.renderer(), QgsGraduatedSymbolRenderer)
+        self.assertIsInstance(vl.renderer().sourceSymbol(), QgsSymbol)
+
 
     def testBboxRestriction(self):
         """
