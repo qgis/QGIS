@@ -33,8 +33,6 @@ namespace Qt3DRender
   class QCameraSelector;
   class QClearBuffers;
   class QRenderAspect;
-  class QRenderCapture;
-  class QRenderCaptureReply;
   class QRenderTarget;
   class QRenderTargetSelector;
   class QRenderTargetOutput;

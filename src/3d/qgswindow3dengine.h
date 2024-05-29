@@ -21,11 +21,6 @@
 #include "qgsabstract3dengine.h"
 
 
-namespace Qt3DRender
-{
-  class QRenderCapture;
-}
-
 namespace Qt3DExtras
 {
   class QForwardRenderer;
