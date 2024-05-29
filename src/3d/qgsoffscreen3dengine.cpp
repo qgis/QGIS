@@ -28,7 +28,6 @@
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QRenderCapture>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderTarget>
 #include <Qt3DRender/QRenderTargetOutput>
