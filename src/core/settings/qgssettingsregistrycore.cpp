@@ -262,7 +262,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       QgsOwsConnection::settingsInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection}, true );
 
       Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( service );
+      settings.beginGroup( connection );
       QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), {service.toLower(), connection} );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
@@ -463,9 +463,9 @@ void QgsSettingsRegistryCore::backwardCompatibility()
         QgsOwsConnection::settingsInvertAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection} );
 
         Q_NOWARN_DEPRECATED_PUSH
-        settings.beginGroup( service );
-        if ( QgsOwsConnection::settingsHeaders->exists( connection ) )
-          QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) ).updateSettings( settings );
+        settings.beginGroup( connection );
+        if ( QgsOwsConnection::settingsHeaders->exists( {service.toLower(), connection} ) )
+          QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), connection} ) ).updateSettings( settings );
         settings.endGroup();
         Q_NOWARN_DEPRECATED_POP
 
