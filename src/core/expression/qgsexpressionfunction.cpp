@@ -6170,33 +6170,33 @@ static QVariant fncSetColorPart( const QVariantList &values, const QgsExpression
   QString part = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   int value = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
   if ( part.compare( QLatin1String( "red" ), Qt::CaseInsensitive ) == 0 )
-    color.setRed( value );
+    color.setRed( std::clamp( value, 0, 255 ) );
   else if ( part.compare( QLatin1String( "green" ), Qt::CaseInsensitive ) == 0 )
-    color.setGreen( value );
+    color.setGreen( std::clamp( value, 0, 255 ) );
   else if ( part.compare( QLatin1String( "blue" ), Qt::CaseInsensitive ) == 0 )
-    color.setBlue( value );
+    color.setBlue( std::clamp( value, 0, 255 ) );
   else if ( part.compare( QLatin1String( "alpha" ), Qt::CaseInsensitive ) == 0 )
-    color.setAlpha( value );
+    color.setAlpha( std::clamp( value, 0, 255 ) );
   else if ( part.compare( QLatin1String( "hue" ), Qt::CaseInsensitive ) == 0 )
-    color.setHsv( value, color.hsvSaturation(), color.value(), color.alpha() );
+    color.setHsv( std::clamp( value, 0, 359 ), color.hsvSaturation(), color.value(), color.alpha() );
   else if ( part.compare( QLatin1String( "saturation" ), Qt::CaseInsensitive ) == 0 )
-    color.setHsvF( color.hsvHueF(), value / 100.0, color.valueF(), color.alphaF() );
+    color.setHsvF( color.hsvHueF(), std::clamp( value, 0, 100 ) / 100.0, color.valueF(), color.alphaF() );
   else if ( part.compare( QLatin1String( "value" ), Qt::CaseInsensitive ) == 0 )
-    color.setHsvF( color.hsvHueF(), color.hsvSaturationF(), value / 100.0, color.alphaF() );
+    color.setHsvF( color.hsvHueF(), color.hsvSaturationF(), std::clamp( value, 0, 100 ) / 100.0, color.alphaF() );
   else if ( part.compare( QLatin1String( "hsl_hue" ), Qt::CaseInsensitive ) == 0 )
-    color.setHsl( value, color.hslSaturation(), color.lightness(), color.alpha() );
+    color.setHsl( std::clamp( value, 0, 359 ), color.hslSaturation(), color.lightness(), color.alpha() );
   else if ( part.compare( QLatin1String( "hsl_saturation" ), Qt::CaseInsensitive ) == 0 )
-    color.setHslF( color.hslHueF(), value / 100.0, color.lightnessF(), color.alphaF() );
+    color.setHslF( color.hslHueF(), std::clamp( value, 0, 100 ) / 100.0, color.lightnessF(), color.alphaF() );
   else if ( part.compare( QLatin1String( "lightness" ), Qt::CaseInsensitive ) == 0 )
-    color.setHslF( color.hslHueF(), color.hslSaturationF(), value / 100.0, color.alphaF() );
+    color.setHslF( color.hslHueF(), color.hslSaturationF(), std::clamp( value, 0, 100 ) / 100.0, color.alphaF() );
   else if ( part.compare( QLatin1String( "cyan" ), Qt::CaseInsensitive ) == 0 )
-    color.setCmykF( value / 100.0, color.magentaF(), color.yellowF(), color.blackF(), color.alphaF() );
+    color.setCmykF( std::clamp( value, 0, 100 ) / 100.0, color.magentaF(), color.yellowF(), color.blackF(), color.alphaF() );
   else if ( part.compare( QLatin1String( "magenta" ), Qt::CaseInsensitive ) == 0 )
-    color.setCmykF( color.cyanF(), value / 100.0, color.yellowF(), color.blackF(), color.alphaF() );
+    color.setCmykF( color.cyanF(), std::clamp( value, 0, 100 ) / 100.0, color.yellowF(), color.blackF(), color.alphaF() );
   else if ( part.compare( QLatin1String( "yellow" ), Qt::CaseInsensitive ) == 0 )
-    color.setCmykF( color.cyanF(), color.magentaF(), value / 100.0, color.blackF(), color.alphaF() );
+    color.setCmykF( color.cyanF(), color.magentaF(), std::clamp( value, 0, 100 ) / 100.0, color.blackF(), color.alphaF() );
   else if ( part.compare( QLatin1String( "black" ), Qt::CaseInsensitive ) == 0 )
-    color.setCmykF( color.cyanF(), color.magentaF(), color.yellowF(), value / 100.0, color.alphaF() );
+    color.setCmykF( color.cyanF(), color.magentaF(), color.yellowF(), std::clamp( value, 0, 100 ) / 100.0, color.alphaF() );
   else
   {
     parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
