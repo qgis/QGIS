@@ -47,6 +47,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QActionGroup>
 
 ///@cond PRIVATE
 
