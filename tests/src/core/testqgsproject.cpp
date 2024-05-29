@@ -1083,6 +1083,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
   int layersCount = layers.count();
 
   project->addMapLayers( layers );
+  project->writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "Absolute" ), true );
 
   QCOMPARE( project->mapLayers( true ).count(), layersCount - 2 );
   QCOMPARE( project->mapLayers( false ).count(), layersCount );
