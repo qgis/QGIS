@@ -1026,7 +1026,7 @@ void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &
   if ( QgsLayerTree *rootGroup = mLegendModel->rootGroup() )
   {
     const QList< QgsLayerTreeLayer * > layers =  rootGroup->findLayers();
-    for ( QgsLayerTreeLayer *nodeLayer : layers )
+    for ( QgsLayerTreeLayer *nodeLayer : std::as_const( layers ) )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
 }
