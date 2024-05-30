@@ -111,6 +111,10 @@ QString QgsField::displayNameWithAlias() const
 QString QgsField::displayType( const bool showConstraints ) const
 {
   QString typeStr = typeName();
+  if ( typeStr.isEmpty() )
+  {
+    typeStr = QgsVariantUtils::typeToDisplayString( type(), subType() );
+  }
 
   if ( length() > 0 && precision() > 0 )
     typeStr += QStringLiteral( "(%1, %2)" ).arg( length() ).arg( precision() );
