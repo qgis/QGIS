@@ -599,7 +599,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
 QVariant QgsVariantUtils::createVariant( QMetaType::Type metaType )
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  return QgsVariantUtils::metaTypeToVariantType( metaType );
+  return QVariant( QgsVariantUtils::metaTypeToVariantType( metaType ) );
 #else
   return QVariant( QMetaType( metaType ) );
 #endif
