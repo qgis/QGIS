@@ -650,6 +650,11 @@ bool QgsSensorThingsExpansionsModel::setData( const QModelIndex &index, const QV
           else
           {
             expansion.setChildEntity( value.value< Qgis::SensorThingsEntity >() );
+            if ( wasInvalid )
+            {
+              expansion = QgsSensorThingsExpansionDefinition::defaultDefinitionForEntity( expansion.childEntity() );
+              emit dataChanged( createIndex( index.row(), 0 ), createIndex( index.row(), columnCount() ) );
+            }
           }
           emit dataChanged( index, index, QVector<int>() << role );
           if ( wasInvalid )

@@ -196,6 +196,12 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
                                         const QString &filter = QString() );
 
     /**
+     * Returns an expansion definition for the specified \a entity type, populated with reasonable
+     * defaults which make sense for that entity type.
+     */
+    static QgsSensorThingsExpansionDefinition defaultDefinitionForEntity( Qgis::SensorThingsEntity entity );
+
+    /**
      * Returns TRUE if the definition is valid.
      */
     bool isValid() const;
