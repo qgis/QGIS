@@ -256,7 +256,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       if ( QgsVariantUtils::isNull( attribute ) )
       {
         // ensure that null values are mapped correctly for PyQGIS
-        attribute = QgsVariantUtils::createVariant( QMetaType::Type::Int );
+        attribute = QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
       }
 
       // date/datetime fields must be converted

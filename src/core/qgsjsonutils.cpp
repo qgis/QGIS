@@ -381,7 +381,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
       else if ( item.is_null() )
       {
         // Fallback to int
-        v = QgsVariantUtils::createVariant( type == QMetaType::Type::UnknownType ? QMetaType::Type::Int : type );
+        v = QgsVariantUtils::createNullVariant( type == QMetaType::Type::UnknownType ? QMetaType::Type::Int : type );
       }
 
       // If a destination type was specified (it's not invalid), try to convert

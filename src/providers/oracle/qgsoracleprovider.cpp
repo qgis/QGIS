@@ -1267,7 +1267,7 @@ QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, con
 {
   if ( value.isEmpty() )
   {
-    return QgsVariantUtils::createVariant( fieldType );
+    return QgsVariantUtils::createNullVariant( fieldType );
   }
 
   QgsOracleConn *conn = connectionRO();
@@ -3040,7 +3040,7 @@ bool QgsOracleProvider::createSpatialIndex()
 
 
       if ( !LoggedExecStatic( qry, sql,
-                              QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createVariant( QMetaType::Type::Int ) : mSrid )
+                              QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSrid )
                               << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum(), mUri.uri() )
          )
       {

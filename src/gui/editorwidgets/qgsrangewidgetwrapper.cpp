@@ -240,7 +240,7 @@ QVariant QgsRangeWidgetWrapper::value() const
 
     if ( value == mDoubleSpinBox->minimum() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
-      value = QgsVariantUtils::createVariant( fieldType );
+      value = QgsVariantUtils::createNullVariant( fieldType );
     }
   }
   else if ( mIntSpinBox )
@@ -248,7 +248,7 @@ QVariant QgsRangeWidgetWrapper::value() const
     value = mIntSpinBox->value();
     if ( value == mIntSpinBox->minimum() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
-      value = QgsVariantUtils::createVariant( field().type() );
+      value = QgsVariantUtils::createNullVariant( field().type() );
     }
   }
   else if ( mQgsDial )

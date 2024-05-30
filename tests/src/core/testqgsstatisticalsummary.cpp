@@ -297,7 +297,7 @@ void TestQgsStatisticSummary::countMissing()
   s.addVariant( 6 );
   s.addVariant( QVariant() );
   s.addVariant( 7 );
-  s.addVariant( QgsVariantUtils::createVariant( QMetaType::Type::Double ) );
+  s.addVariant( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   s.addVariant( 9 );
   s.addVariant( "Asdasdsad" );
   s.finalize();

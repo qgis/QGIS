@@ -187,19 +187,19 @@ void TestQgsDateTimeEdit::focus()
   QgsDateTimeEdit *dateedit1 = qobject_cast<QgsDateTimeEdit *>( widget1->createWidget( &w ) );
   QVERIFY( dateedit1 );
   widget1->initWidget( dateedit1 );
-  widget1->setValue( QgsVariantUtils::createVariant( QMetaType::Type::QDate ) );
+  widget1->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ) );
 
   widget2->setConfig( cfg );
   QgsDateTimeEdit *dateedit2 = qobject_cast<QgsDateTimeEdit *>( widget2->createWidget( &w ) );
   QVERIFY( dateedit2 );
   widget2->initWidget( dateedit2 );
-  widget2->setValue( QgsVariantUtils::createVariant( QMetaType::Type::QDate ) );
+  widget2->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ) );
 
   widget3->setConfig( cfg );
   QgsDateTimeEdit *dateedit3 = qobject_cast<QgsDateTimeEdit *>( widget3->createWidget( &w ) );
   QVERIFY( dateedit3 );
   widget3->initWidget( dateedit3 );
-  widget3->setValue( QgsVariantUtils::createVariant( QMetaType::Type::QDate ) );
+  widget3->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ) );
 
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );

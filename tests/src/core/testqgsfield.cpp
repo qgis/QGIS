@@ -435,7 +435,7 @@ void TestQgsField::displayString()
 
   //test NULL
   QgsApplication::setNullRepresentation( QStringLiteral( "TEST NULL" ) );
-  const QVariant nullString = QgsVariantUtils::createVariant( QMetaType::Type::QString );
+  const QVariant nullString = QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 
   //test int value in string type
@@ -454,7 +454,7 @@ void TestQgsField::displayString()
   QCOMPARE( longField.displayString( 599999898999LL ), QString( "599,999,898,999" ) );
 
   //test NULL int
-  const QVariant nullInt = QgsVariantUtils::createVariant( QMetaType::Type::Int );
+  const QVariant nullInt = QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   QCOMPARE( intField.displayString( nullInt ), QString( "TEST NULL" ) );
 
   //test double value
@@ -499,7 +499,7 @@ void TestQgsField::displayString()
   QCOMPARE( doubleFieldNoPrec.displayString( ( "(1+2)" ) ), QString( "(1+2)" ) );
 
   //test NULL double
-  const QVariant nullDouble = QgsVariantUtils::createVariant( QMetaType::Type::Double );
+  const QVariant nullDouble = QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   QCOMPARE( doubleField.displayString( nullDouble ), QString( "TEST NULL" ) );
 
   //test double value with German locale
@@ -587,7 +587,7 @@ void TestQgsField::convertCompatible()
   QVariant stringVar( "test string" );
   QVERIFY( stringField.convertCompatible( stringVar ) );
   QCOMPARE( stringVar.toString(), QString( "test string" ) );
-  QVariant nullString = QgsVariantUtils::createVariant( QMetaType::Type::QString );
+  QVariant nullString = QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
   QVERIFY( stringField.convertCompatible( nullString ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullString.userType() ), QMetaType::Type::QString );
   QVERIFY( nullString.isNull() );
@@ -595,7 +595,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( stringField.convertCompatible( intVar ) );
   QCOMPARE( static_cast<QMetaType::Type>( intVar.userType() ), QMetaType::Type::QString );
   QCOMPARE( intVar, QVariant( "5" ) );
-  QVariant nullInt = QgsVariantUtils::createVariant( QMetaType::Type::Int );
+  QVariant nullInt = QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   QVERIFY( stringField.convertCompatible( nullInt ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullInt.userType() ), QMetaType::Type::QString );
   QVERIFY( nullInt.isNull() );
@@ -603,7 +603,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( stringField.convertCompatible( doubleVar ) );
   QCOMPARE( static_cast<QMetaType::Type>( doubleVar.userType() ), QMetaType::Type::QString );
   QCOMPARE( doubleVar, QVariant( "1.25" ) );
-  QVariant nullDouble = QgsVariantUtils::createVariant( QMetaType::Type::Double );
+  QVariant nullDouble = QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   QVERIFY( stringField.convertCompatible( nullDouble ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::QString );
   QVERIFY( nullDouble.isNull() );
@@ -619,7 +619,7 @@ void TestQgsField::convertCompatible()
   stringVar = QVariant( "test string" );
   QVERIFY( !doubleField.convertCompatible( stringVar ) );
   QVERIFY( stringVar.isNull() );
-  nullString = QgsVariantUtils::createVariant( QMetaType::Type::QString );
+  nullString = QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
   QVERIFY( doubleField.convertCompatible( nullString, &error ) );
   QVERIFY( error.isEmpty() );
   QCOMPARE( static_cast<QMetaType::Type>( nullString.userType() ), QMetaType::Type::Double );
@@ -628,7 +628,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( doubleField.convertCompatible( intVar ) );
   QCOMPARE( static_cast<QMetaType::Type>( intVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( intVar, QVariant( 5.0 ) );
-  nullInt = QgsVariantUtils::createVariant( QMetaType::Type::Int );
+  nullInt = QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   QVERIFY( doubleField.convertCompatible( nullInt ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullInt.userType() ), QMetaType::Type::Double );
   QVERIFY( nullInt.isNull() );
@@ -636,7 +636,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( doubleField.convertCompatible( doubleVar ) );
   QCOMPARE( static_cast<QMetaType::Type>( doubleVar.userType() ), QMetaType::Type::Double );
   QCOMPARE( doubleVar, QVariant( 1.25 ) );
-  nullDouble = QgsVariantUtils::createVariant( QMetaType::Type::Double );
+  nullDouble = QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   QVERIFY( doubleField.convertCompatible( nullDouble ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::Double );
   QVERIFY( nullDouble.isNull() );

@@ -116,7 +116,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
         if ( str.isNull() || str->empty() )
-          return QgsVariantUtils::createVariant( QMetaType::Type::QChar );
+          return QgsVariantUtils::createNullVariant( QMetaType::Type::QChar );
         else
           return QVariant( QChar( str->at( 0 ) ) );
       }
@@ -129,7 +129,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
         if ( str.isNull() || str->empty() )
-          return QgsVariantUtils::createVariant( QMetaType::Type::QChar );
+          return QgsVariantUtils::createNullVariant( QMetaType::Type::QChar );
         else
           return QVariant( QChar( str->at( 0 ) ) );
       }

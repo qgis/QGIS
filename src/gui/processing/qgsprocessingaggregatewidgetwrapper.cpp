@@ -130,12 +130,12 @@ void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
   {
     const QVariantMap map = field.toMap();
     const QgsField f( map.value( QStringLiteral( "name" ) ).toString(),
-                      static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), QgsVariantUtils::createVariant( QMetaType::Type::UnknownType ) ).toInt() ),
-                      map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), QgsVariantUtils::createVariant( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
+                      static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ),
+                      map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
                       map.value( QStringLiteral( "length" ), 0 ).toInt(),
                       map.value( QStringLiteral( "precision" ), 0 ).toInt(),
                       QString(),
-                      static_cast< QMetaType::Type >( map.value( QStringLiteral( "sub_type" ), QgsVariantUtils::createVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
+                      static_cast< QMetaType::Type >( map.value( QStringLiteral( "sub_type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
 
     QgsAggregateMappingModel::Aggregate aggregate;
     aggregate.field = f;

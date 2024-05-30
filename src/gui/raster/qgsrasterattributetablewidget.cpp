@@ -427,7 +427,7 @@ void QgsRasterAttributeTableWidget::addRow()
     QList<QgsRasterAttributeTable::Field> fields { mAttributeTableBuffer->fields() };
     for ( const QgsRasterAttributeTable::Field &field : std::as_const( fields ) )
     {
-      rowData.push_back( QgsVariantUtils::createVariant( field.type ) );
+      rowData.push_back( QgsVariantUtils::createNullVariant( field.type ) );
     }
 
     result = mModel->insertRow( position, rowData, &errorMessage );

@@ -488,7 +488,7 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
 
   // set a null foreign key
-  w.setForeignKeys( QVariantList() << QgsVariantUtils::createVariant( QMetaType::Type::Int ) );
+  w.setForeignKeys( QVariantList() << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
   QCOMPARE( cbs[0]->isEnabled(), true );
   QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );

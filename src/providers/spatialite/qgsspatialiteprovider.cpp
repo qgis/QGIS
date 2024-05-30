@@ -3884,7 +3884,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
   }
   catch ( SLFieldNotFound )
   {
-    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   }
 }
 
@@ -3948,7 +3948,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
   }
   catch ( SLFieldNotFound )
   {
-    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   }
 }
 
@@ -4035,7 +4035,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
             break;
           }
           default:
-            uniqueValues.insert( QgsVariantUtils::createVariant( mAttributeFields.at( index ).type() ) );
+            uniqueValues.insert( QgsVariantUtils::createNullVariant( mAttributeFields.at( index ).type() ) );
             break;
         }
       }

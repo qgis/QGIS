@@ -269,10 +269,10 @@ void TestQgis::qVariantCompare_data()
 
   QTest::newRow( "invalid to value" ) << QVariant() << QVariant( 2 ) << true << false;
   QTest::newRow( "invalid to value 2" ) << QVariant( 2 ) << QVariant() << false << true;
-  QTest::newRow( "invalid to null" ) << QVariant() << QgsVariantUtils::createVariant( QMetaType::Type::QString ) << true << false;
-  QTest::newRow( "invalid to null2 " ) << QgsVariantUtils::createVariant( QMetaType::Type::QString ) << QVariant() << false << true;
-  QTest::newRow( "null to value" ) <<  QgsVariantUtils::createVariant( QMetaType::Type::QString ) << QVariant( "a" ) << true << false;
-  QTest::newRow( "null to value 2" ) << QVariant( "a" ) << QgsVariantUtils::createVariant( QMetaType::Type::QString ) << false << true;
+  QTest::newRow( "invalid to null" ) << QVariant() << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << true << false;
+  QTest::newRow( "invalid to null2 " ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant() << false << true;
+  QTest::newRow( "null to value" ) <<  QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant( "a" ) << true << false;
+  QTest::newRow( "null to value 2" ) << QVariant( "a" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << false << true;
 
   QTest::newRow( "int" ) << QVariant( 1 ) << QVariant( 2 ) << true << false;
   QTest::newRow( "int 2" ) << QVariant( 1 ) << QVariant( -2 ) << false << true;
@@ -419,20 +419,20 @@ void TestQgis::testQgsVariantEqual()
 
   // This is what we actually wanted to fix with qgsVariantEqual
   // zero != NULL
-  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QgsVariantUtils::createVariant( QMetaType::Type::Int ) ) );
-  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QgsVariantUtils::createVariant( QMetaType::Type::Double ) ) );
-  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QgsVariantUtils::createVariant( QMetaType::Type::Int ) ) );
-  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QgsVariantUtils::createVariant( QMetaType::Type::Double ) ) );
-  QVERIFY( QVariant( 0 ) == QgsVariantUtils::createVariant( QMetaType::Type::Int ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( QVariant( 0 ) == QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   // NULL identities
-  QVERIFY( qgsVariantEqual( QgsVariantUtils::createVariant( QMetaType::Type::Int ), QgsVariantUtils::createVariant( QMetaType::Type::Int ) ) );
-  QVERIFY( qgsVariantEqual( QgsVariantUtils::createVariant( QMetaType::Type::Double ), QgsVariantUtils::createVariant( QMetaType::Type::Double ) ) );
-  QVERIFY( qgsVariantEqual( QgsVariantUtils::createVariant( QMetaType::Type::Int ), QgsVariantUtils::createVariant( QMetaType::Type::Double ) ) );
-  QVERIFY( qgsVariantEqual( QgsVariantUtils::createVariant( QMetaType::Type::Int ), QgsVariantUtils::createVariant( QMetaType::Type::QString ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) ) );
 
   // NULL should not be equal to invalid
-  QVERIFY( !qgsVariantEqual( QVariant(), QgsVariantUtils::createVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( !qgsVariantEqual( QVariant(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
 }
 
 void TestQgis::testQgsEnumMapList()

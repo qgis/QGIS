@@ -675,7 +675,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
 
           mRelation.referencingLayer()->changeAttributeValue( fid,
               referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
-              QgsVariantUtils::createVariant( referencingLayer->fields().field( polyRel.referencedLayerField() ).type() ) );
+              QgsVariantUtils::createNullVariant( referencingLayer->fields().field( polyRel.referencedLayerField() ).type() ) );
           break;
         }
         case Qgis::RelationshipType::Normal:
@@ -686,7 +686,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       while ( it.hasNext() )
       {
         it.next();
-        mRelation.referencingLayer()->changeAttributeValue( fid, it.key(), QgsVariantUtils::createVariant( it.value().type() ) );
+        mRelation.referencingLayer()->changeAttributeValue( fid, it.key(), QgsVariantUtils::createNullVariant( it.value().type() ) );
       }
     }
   }

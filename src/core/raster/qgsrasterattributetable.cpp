@@ -303,7 +303,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
 
   for ( auto it = mData.begin(); it != mData.end(); ++it )
   {
-    QVariant defaultValue = QgsVariantUtils::createVariant( field.type );
+    QVariant defaultValue = QgsVariantUtils::createNullVariant( field.type );
     // Set default values
     switch ( field.type )
     {

@@ -736,7 +736,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   }
   else
   {
-    value = QgsVariantUtils::createVariant( field.type() );
+    value = QgsVariantUtils::createNullVariant( field.type() );
   }
 
   return value;

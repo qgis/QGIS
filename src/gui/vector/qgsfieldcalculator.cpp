@@ -281,7 +281,7 @@ void QgsFieldCalculator::accept()
     const bool newField = !mUpdateExistingGroupBox->isChecked();
     QVariant emptyAttribute;
     if ( newField )
-      emptyAttribute = QgsVariantUtils::createVariant( field.type() );
+      emptyAttribute = QgsVariantUtils::createNullVariant( field.type() );
 
     QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry );
     QSet< QString > referencedColumns = exp.referencedColumns();

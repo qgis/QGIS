@@ -728,7 +728,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         const int fieldIndex = fieldIds[i];
         const AttributeField &field = mAttributeFields.at( fieldIndex );
-        QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QgsVariantUtils::createVariant( QMetaType::Type::LongLong );
+        QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
         if ( pkFields[i] )
         {
           hasIdValue = hasIdValue || !attrValue.isNull();
