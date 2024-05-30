@@ -269,7 +269,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>10</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -298,8 +298,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>971</height>
+                <width>673</width>
+                <height>852</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -317,7 +317,7 @@
                  <property name="title">
                   <string>General Settings</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
@@ -578,7 +578,7 @@
                  <property name="title">
                   <string>Measurements</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
@@ -647,7 +647,7 @@
                  <property name="title">
                   <string>Coordinate and Bearing Display</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
@@ -797,7 +797,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="mCoordinateCrs">
+                   <widget class="QgsProjectionSelectionWidget" name="mCoordinateCrs" native="true">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -901,7 +901,7 @@
              <property name="checked">
               <bool>false</bool>
              </property>
-             <property name="syncGroup">
+             <property name="syncGroup" stdset="0">
               <string notr="true">projgeneral</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1042,8 +1042,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>340</width>
-                <height>57</height>
+                <width>279</width>
+                <height>52</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1107,8 +1107,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>634</width>
-                <height>90</height>
+                <width>523</width>
+                <height>80</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1179,8 +1179,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>344</width>
-                <height>817</height>
+                <width>673</width>
+                <height>846</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1,1">
@@ -1201,7 +1201,7 @@
                  <property name="title">
                   <string>Default Symbols</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1219,7 +1219,7 @@
                    </widget>
                   </item>
                   <item row="3" column="0">
-                   <widget class="QSvgWidget" name="pixStyleColorRamp">
+                   <widget class="QSvgWidget" name="pixStyleColorRamp" native="true">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1353,7 +1353,7 @@
                    </widget>
                   </item>
                   <item row="4" column="0">
-                   <widget class="QSvgWidget" name="pixStyleTextFormat">
+                   <widget class="QSvgWidget" name="pixStyleTextFormat" native="true">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1393,32 +1393,74 @@
                  <property name="title">
                   <string>Options</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_18">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,1">
-                    <item>
-                     <widget class="QLabel" name="label_27">
-                      <property name="text">
-                       <string>Opacity</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget">
-                      <property name="focusPolicy">
-                       <enum>Qt::StrongFocus</enum>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
+                 <layout class="QGridLayout" name="gridLayout_4">
+                  <item row="6" column="0" colspan="3">
                    <widget class="QCheckBox" name="cbxStyleRandomColors">
                     <property name="text">
                      <string>Assign random colors to symbols</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>Color model</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QToolButton" name="mRemoveIccProfile">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="mColorSpaceName">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_27">
+                    <property name="text">
+                     <string>Opacity</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="mIccProfileLabel">
+                    <property name="text">
+                     <string>ICC Profile</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QToolButton" name="mAddIccProfile">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="3">
+                   <widget class="QComboBox" name="mColorModel"/>
+                  </item>
+                  <item row="3" column="1" colspan="3">
+                   <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
                     </property>
                    </widget>
                   </item>
@@ -1554,7 +1596,7 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
@@ -1852,8 +1894,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>176</width>
-                <height>45</height>
+                <width>151</width>
+                <height>42</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1935,8 +1977,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>679</width>
-                <height>1515</height>
+                <width>673</width>
+                <height>1503</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1990,13 +2032,13 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed">
+                       <property name="collapsed" stdset="0">
                         <bool>false</bool>
                        </property>
-                       <property name="syncGroup">
+                       <property name="syncGroup" stdset="0">
                         <string notr="true">projowsserver</string>
                        </property>
-                       <property name="saveCollapsedState">
+                       <property name="saveCollapsedState" stdset="0">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_6">
@@ -2692,10 +2734,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed">
+                       <property name="collapsed" stdset="0">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState">
+                       <property name="saveCollapsedState" stdset="0">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout">

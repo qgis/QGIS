@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgis.h"
+#include "qgscolorutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
@@ -134,6 +135,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::newStyleDatabase );
   connect( mCoordinateDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateGuiForCoordinateType(); } );
   connect( mCoordinateCrs, &QgsProjectionSelectionWidget::crsChanged, this, [ = ]( const QgsCoordinateReferenceSystem & ) { updateGuiForCoordinateCrs(); } );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  connect( mAddIccProfile, &QToolButton::clicked, this, static_cast<void ( QgsProjectProperties::* )()>( &QgsProjectProperties::addIccProfile ) );
+  connect( mRemoveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::removeIccProfile );
+#endif
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -1025,6 +1030,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Random colors
   cbxStyleRandomColors->setChecked( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() );
 
+  mColorModel->addItem( tr( "RGB" ), QVariant::fromValue( Qgis::ColorModel::Rgb ) );
+  mColorModel->addItem( tr( "CMYK" ), QVariant::fromValue( Qgis::ColorModel::Cmyk ) );
+  mColorModel->setCurrentIndex( mColorModel->findData( QVariant::fromValue( QgsProject::instance()->styleSettings()->colorModel() ) ) );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  mColorSpace = QgsProject::instance()->styleSettings()->colorSpace();
+  updateColorSpaceWidget();
+#else
+  mIccProfileLabel->setVisible( false );
+  mColorSpaceName->setVisible( false );
+  mAddIccProfile->setVisible( false );
+  mRemoveIccProfile->setVisible( false );
+#endif
   // Default alpha transparency
   mDefaultOpacityWidget->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
 
@@ -1733,6 +1751,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->styleSettings()->setDefaultTextFormat( mStyleTextFormat->textFormat() );
   QgsProject::instance()->styleSettings()->setRandomizeDefaultSymbolColor( cbxStyleRandomColors->isChecked() );
   QgsProject::instance()->styleSettings()->setDefaultSymbolOpacity( mDefaultOpacityWidget->opacity() );
+  QgsProject::instance()->styleSettings()->setColorModel( mColorModel->currentData().value<Qgis::ColorModel>() );
+  QgsProject::instance()->styleSettings()->setColorSpace( mColorSpace );
 
   {
     QStringList styleDatabasePaths;
@@ -2679,6 +2699,50 @@ void QgsProjectProperties::removeStyleDatabase()
   int currentRow = mListStyleDatabases->currentRow();
   delete mListStyleDatabases->takeItem( currentRow );
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+void QgsProjectProperties::addIccProfile()
+{
+  const QString iccProfileFilePath = QFileDialog::getOpenFileName(
+                                       this,
+                                       tr( "Load ICC Profile" ),
+                                       QDir::homePath(),
+                                       tr( "Style databases" ) + tr( "ICC Profile" ) + QStringLiteral( " (*.icc)" ) );
+
+  addIccProfile( iccProfileFilePath );
+}
+
+void QgsProjectProperties::addIccProfile( const QString &iccProfileFilePath )
+{
+  if ( iccProfileFilePath.isEmpty() )
+    return;
+
+  QString errorMsg;
+  QColorSpace colorSpace = QgsColorUtils::iccProfile( iccProfileFilePath, errorMsg );
+  if ( !colorSpace.isValid() )
+  {
+    QMessageBox::warning( this, tr( "Load ICC Profile" ), errorMsg );
+    return;
+  }
+
+  mColorSpace = colorSpace;
+  updateColorSpaceWidget();
+}
+
+void QgsProjectProperties::removeIccProfile()
+{
+  mColorSpace = QColorSpace();
+  updateColorSpaceWidget();
+}
+
+void QgsProjectProperties::updateColorSpaceWidget()
+{
+  mColorSpaceName->setText( mColorSpace.isValid() ? mColorSpace.description() : tr( "<i>None</i>" ) );
+  mRemoveIccProfile->setEnabled( mColorSpace.isValid() );
+}
+
+#endif
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const double newScaleDenominator )
 {
