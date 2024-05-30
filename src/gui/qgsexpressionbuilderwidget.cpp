@@ -17,7 +17,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
-#include <QInputDialog>
 #include <QComboBox>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
@@ -49,6 +48,7 @@
 #include "qgsexpressionstoredialog.h"
 #include "qgsexpressiontreeview.h"
 #include "qgscodeeditorwidget.h"
+#include "qgsexpressionaddfunctionfiledialog.h"
 
 
 bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
@@ -428,7 +428,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString(), &ok );
   if ( ok )
   {
-    QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
+    QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
     item->setData( Qt::UserRole, QStringLiteral( "project" ) );
     cmbFileNames->insertItem( 0, item );
   }
@@ -466,15 +466,19 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
 
 void QgsExpressionBuilderWidget::btnNewFile_pressed()
 {
-  bool ok;
-  QString text = QInputDialog::getText( this, tr( "New File" ),
-                                        tr( "New file name:" ), QLineEdit::Normal,
-                                        QString(), &ok );
-  if ( ok && !text.isEmpty() )
+  // If a project has an entry for functions, then we should
+  // already have a 'Project functions' item in the file list.
+  // Since only one item should correspond to 'Project functions',
+  // we'll disable this option in the 'add function file' dialog.
+  bool ok = false;
+  mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString(), &ok );
+
+  QgsExpressionAddFunctionFileDialog dlg {!ok, this};
+  if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
-    if ( text.contains( QStringLiteral( "project" ) ) )
+    if ( dlg.createProjectFunctions() )
     {
-      QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
+      QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
       item->setData( Qt::UserRole, QStringLiteral( "project" ) );
       cmbFileNames->insertItem( 0, item );
       cmbFileNames->setCurrentRow( 0 );
@@ -486,9 +490,8 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
     }
     else
     {
-      newFunctionFile( text );
+      newFunctionFile( dlg.fileName() );
     }
-
     btnRemoveFile->setEnabled( cmbFileNames->count() > 0 );
   }
 }
