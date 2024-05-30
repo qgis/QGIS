@@ -114,7 +114,7 @@ class CORE_EXPORT QgsField
                                 int len = 0,
                                 int prec = 0,
                                 const QString &comment = QString(),
-                                QVariant::Type subType = QVariant::Invalid ) SIP_DEPRECATED;
+                                QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL SIP_DEPRECATED;
 
     /**
      * Copy constructor
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsField
      * Set variant \a type.
      * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
-    Q_DECL_DEPRECATED void setType( QVariant::Type type ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void setType( QVariant::Type type ) SIP_HOLDGIL SIP_DEPRECATED;
 
     /**
      * If the field is a collection, set its element's type.
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsField
      * QVariant::Invalid.
      * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
      */
-    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_HOLDGIL  SIP_DEPRECATED;
 
     /**
      * Set the field type.
