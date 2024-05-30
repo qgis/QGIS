@@ -12640,8 +12640,8 @@ void TestQgsProcessing::convertCompatibleDuplicateFids()
   QgsVectorLayer *layer = new QgsVectorLayer{"Point", "vl", "memory"};
   // Add fields
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "fid" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "fid" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
   layer->dataProvider()->addAttributes( fields.toList() );
   layer->updateFields();
 
