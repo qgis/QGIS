@@ -61,6 +61,7 @@
 %Include auto_generated/qgsdoublevalidator.sip
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
+%Include auto_generated/qgsexpressionaddfunctionfiledialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
 %Include auto_generated/qgsexpressionstoredialog.sip
 %Include auto_generated/qgsexpressionbuilderwidget.sip

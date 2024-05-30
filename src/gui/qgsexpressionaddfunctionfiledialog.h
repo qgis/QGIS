@@ -30,6 +30,15 @@ class GUI_EXPORT QgsExpressionAddFunctionFileDialog : public QDialog, private Ui
 {
     Q_OBJECT
   public:
+
+    /**
+     * Creates a QgsExpressionAddFunctionFileDialog to create function files or to set the current
+     * project as a function container.
+     * \a enableProjectFunctions defines whether the dialog will enable the 'Project function' option
+     * or not, which is useful to avoid the creation of multiple 'Project Functions' items in the
+     * Function Editor file list.
+     * \a parent is the parent widget.
+     */
     QgsExpressionAddFunctionFileDialog( const bool enableProjectFunctions, QWidget *parent );
 
     /**
