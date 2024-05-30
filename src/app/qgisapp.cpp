@@ -6569,13 +6569,20 @@ bool QgisApp::addProject( const QString &projectFile )
     QgsSettings settings;
 
 #ifdef WITH_BINDINGS
-    // does the project have any macros?
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
+      // does the project have any macros?
       if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
       {
         auto lambda = []() {QgisApp::instance()->enableProjectMacros();};
         QgsGui::pythonMacroAllowed( lambda, mInfoBar );
+      }
+
+      // does the project have expression functions?
+      QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
+      if ( !projectFunctions.isEmpty() )
+      {
+        QgsPythonRunner::run( projectFunctions );
       }
     }
 #endif
