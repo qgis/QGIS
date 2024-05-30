@@ -50,7 +50,7 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox1">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -102,17 +102,17 @@ p, li { white-space: pre-wrap; }
       <property name="bottomMargin">
        <number>11</number>
       </property>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="mButtonOr">
+      <item row="3" column="3">
+       <widget class="QPushButton" name="mButtonNow">
         <property name="text">
-         <string>or</string>
+         <string>now()</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="mButtonGt">
+      <item row="1" column="0">
+       <widget class="QPushButton" name="mButtonEq">
         <property name="text">
-         <string>gt</string>
+         <string>eq</string>
         </property>
        </widget>
       </item>
@@ -130,100 +130,10 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mButtonEq">
+      <item row="2" column="3" colspan="3">
+       <widget class="QLabel" name="mLabelLogical_2">
         <property name="text">
-         <string>eq</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mButtonNe">
-        <property name="text">
-         <string>ne</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QPushButton" name="mButtonNot">
-        <property name="text">
-         <string>not</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="6">
-       <widget class="QLabel" name="mLabelComparisons">
-        <property name="text">
-         <string>Comparisons</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QPushButton" name="mButtonAdd">
-        <property name="text">
-         <string>add</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="mButtonGe">
-        <property name="text">
-         <string>ge</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="mButtonLt">
-        <property name="text">
-         <string>lt</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="4" column="0" colspan="6">
-       <widget class="QLabel" name="mLabelArithmetic">
-        <property name="text">
-         <string>Arithmetic</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QPushButton" name="mButtonSub">
-        <property name="text">
-         <string>sub</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QPushButton" name="mButtonMul">
-        <property name="text">
-         <string>mul</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="QPushButton" name="mButtonDiv">
-        <property name="text">
-         <string>div</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="4">
-       <widget class="QPushButton" name="mButtonMod">
-        <property name="text">
-         <string>mod</string>
+         <string>Date</string>
         </property>
        </widget>
       </item>
@@ -234,17 +144,94 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="3" colspan="3">
-       <widget class="QLabel" name="mLabelLogical_2">
+      <item row="5" column="0">
+       <widget class="QPushButton" name="mButtonAdd">
         <property name="text">
-         <string>Date</string>
+         <string>add</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
-       <widget class="QPushButton" name="mButtonNow">
+      <item row="1" column="2">
+       <widget class="QPushButton" name="mButtonGt">
         <property name="text">
-         <string>now()</string>
+         <string>gt</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="mButtonGe">
+        <property name="text">
+         <string>ge</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="6">
+       <widget class="QLabel" name="mLabelArithmetic">
+        <property name="text">
+         <string>Arithmetic</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QPushButton" name="mButtonDiv">
+        <property name="text">
+         <string>div</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="mButtonLt">
+        <property name="text">
+         <string>lt</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QPushButton" name="mButtonSub">
+        <property name="text">
+         <string>sub</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="mButtonNot">
+        <property name="text">
+         <string>not</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="4">
+       <widget class="QPushButton" name="mButtonMod">
+        <property name="text">
+         <string>mod</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="6">
+       <widget class="QLabel" name="mLabelComparisons">
+        <property name="text">
+         <string>Comparisons</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QPushButton" name="mButtonMul">
+        <property name="text">
+         <string>mul</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="mButtonNe">
+        <property name="text">
+         <string>ne</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="mButtonOr">
+        <property name="text">
+         <string>or</string>
         </property>
        </widget>
       </item>
