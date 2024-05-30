@@ -82,7 +82,7 @@ class CORE_EXPORT QgsVariantUtils
     // TODO QGIS 4 remove this method
 
     /**
-     * Helper method to properly create a QVariant from a \a metaType
+     * Helper method to properly create a null QVariant from a \a metaType
      * Returns the created QVariant
      */
     static QVariant createVariant( QMetaType::Type metaType ) SIP_SKIP;
