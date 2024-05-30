@@ -423,6 +423,16 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
     QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), info.baseName() );
     cmbFileNames->addItem( item );
   }
+
+  bool ok = false;
+  mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString(), &ok );
+  if ( ok )
+  {
+    QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
+    item->setData( Qt::UserRole, QStringLiteral( "project" ) );
+    cmbFileNames->insertItem( 0, item );
+  }
+
   if ( !cmbFileNames->currentItem() )
   {
     cmbFileNames->setCurrentRow( 0 );
@@ -520,7 +530,7 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
     whileBlocking( cmbFileNames )->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
     if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
     {
-      loadFunctionCode( mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) ) );
+      loadCodeFromProjectFunctions();
     }
     else
     {
@@ -539,11 +549,26 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
 {
   if ( lastitem )
   {
-    QString filename = lastitem->text();
-    saveFunctionFile( filename );
+    if ( lastitem->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+    {
+      saveProjectFunctionsEntry();
+    }
+    else
+    {
+      QString filename = lastitem->text();
+      saveFunctionFile( filename );
+    }
   }
-  QString path = mFunctionsPath + QDir::separator() + item->text();
-  loadCodeFromFile( path );
+
+  if ( item->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  {
+    loadCodeFromProjectFunctions();
+  }
+  else
+  {
+    QString path = mFunctionsPath + QDir::separator() + item->text();
+    loadCodeFromFile( path );
+  }
 }
 
 void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
@@ -552,6 +577,11 @@ void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
     path.append( ".py" );
 
   txtPython->loadScript( path );
+}
+
+void QgsExpressionBuilderWidget::loadCodeFromProjectFunctions()
+{
+  loadFunctionCode( mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) ) );
 }
 
 void QgsExpressionBuilderWidget::loadFunctionCode( const QString &code )

@@ -273,6 +273,13 @@ Saves the current function editor text to the given file.
 Loads code from the given file into the function editor
 %End
 
+    void loadCodeFromProjectFunctions();
+%Docstring
+Loads code from the project into the function editor
+
+.. versionadded:: 3.40
+%End
+
     void loadFunctionCode( const QString &code );
 %Docstring
 Loads code into the function editor
@@ -286,6 +293,8 @@ Updates the list of function files found at the given path
     void saveProjectFunctionsEntry();
 %Docstring
 Saves the current function editor text to a project entry.
+
+.. versionadded:: 3.40
 %End
 
  QStandardItemModel *model() /Deprecated/;

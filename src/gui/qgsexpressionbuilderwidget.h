@@ -269,6 +269,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadCodeFromFile( QString path );
 
     /**
+     * Loads code from the project into the function editor
+     *
+     * \since QGIS 3.40
+     */
+    void loadCodeFromProjectFunctions();
+
+    /**
      * Loads code into the function editor
      */
     void loadFunctionCode( const QString &code );
@@ -280,6 +287,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Saves the current function editor text to a project entry.
+     *
+     * \since QGIS 3.40
      */
     void saveProjectFunctionsEntry();
 
