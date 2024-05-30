@@ -133,8 +133,8 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
   {
     const QVariantMap map = field.toMap();
     QgsField f( map.value( QStringLiteral( "name" ) ).toString(),
-                static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ),
-                map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
+                static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), static_cast< int >( QMetaType::Type::UnknownType ) ).toInt() ),
+                map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), static_cast< int >( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
                 map.value( QStringLiteral( "length" ), 0 ).toInt(),
                 map.value( QStringLiteral( "precision" ), 0 ).toInt(),
                 QString(),
