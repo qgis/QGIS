@@ -221,7 +221,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
     mComboBox->addItem( tr( "Please Select" ), QVariant() ); // creates an invalid to allow selecting all features
     if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
     {
-      mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createVariant( layer()->fields().at( mFieldIdx ).type() ) );
+      mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createNullVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
     const auto constMCache = mCache;

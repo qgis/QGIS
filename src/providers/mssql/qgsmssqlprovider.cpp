@@ -733,10 +733,10 @@ QVariant QgsMssqlProvider::convertTimeValue( const QVariant &value )
       const int seconds = ba.at( 4 );
       QVariant t = QTime( hours, mins, seconds );
       if ( !t.isValid() ) // can't handle it
-        t = QgsVariantUtils::createVariant( QMetaType::Type::QTime );
+        t = QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
       return t;
     }
-    return QgsVariantUtils::createVariant( QMetaType::Type::QTime );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
   }
   return value;
 }
@@ -1351,9 +1351,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         // binding null values
         if ( type == QMetaType::Type::QDate || type == QMetaType::Type::QDateTime )
-          query.addBindValue( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
+          query.addBindValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
         else
-          query.addBindValue( QgsVariantUtils::createVariant( type ) );
+          query.addBindValue( QgsVariantUtils::createNullVariant( type ) );
       }
       else if ( type == QMetaType::Type::Int )
       {
@@ -1642,9 +1642,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       {
         // binding null values
         if ( type == QMetaType::Type::QDate || type == QMetaType::Type::QDateTime )
-          query.addBindValue( QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
+          query.addBindValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
         else
-          query.addBindValue( QgsVariantUtils::createVariant( type ) );
+          query.addBindValue( QgsVariantUtils::createNullVariant( type ) );
       }
       else if ( type == QMetaType::Type::Int )
       {

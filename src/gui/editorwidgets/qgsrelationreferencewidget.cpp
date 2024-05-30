@@ -313,7 +313,7 @@ QVariant QgsRelationReferenceWidget::foreignKey() const
 {
   QVariantList fkeys;
   if ( fkeys.isEmpty() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   else
     return fkeys.at( 0 );
 }
@@ -420,7 +420,7 @@ void QgsRelationReferenceWidget::init()
         QVariantList uniqueValues = qgis::setToList( mReferencedLayer->uniqueValues( idx ) );
         cb->addItem( mReferencedLayer->attributeDisplayName( idx ) );
         QVariant nullValue = QgsApplication::nullRepresentation();
-        cb->addItem( nullValue.toString(), QgsVariantUtils::createVariant( mReferencedLayer->fields().at( idx ).type() ) );
+        cb->addItem( nullValue.toString(), QgsVariantUtils::createNullVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
         const auto constUniqueValues = uniqueValues;

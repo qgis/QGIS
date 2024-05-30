@@ -215,7 +215,7 @@ QString QgsHanaUtils::toQString( const String &str )
 QVariant QgsHanaUtils::toVariant( const Boolean &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Bool );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Bool );
   else
     return QVariant( *value );
 }
@@ -223,7 +223,7 @@ QVariant QgsHanaUtils::toVariant( const Boolean &value )
 QVariant QgsHanaUtils::toVariant( const Byte &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   else
     return QVariant( static_cast<int>( *value ) );
 }
@@ -231,7 +231,7 @@ QVariant QgsHanaUtils::toVariant( const Byte &value )
 QVariant QgsHanaUtils::toVariant( const UByte &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::UInt );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::UInt );
   else
     return QVariant( static_cast<uint>( *value ) );
 }
@@ -239,7 +239,7 @@ QVariant QgsHanaUtils::toVariant( const UByte &value )
 QVariant QgsHanaUtils::toVariant( const Short &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   else
     return QVariant( static_cast<int>( *value ) );
 }
@@ -247,7 +247,7 @@ QVariant QgsHanaUtils::toVariant( const Short &value )
 QVariant QgsHanaUtils::toVariant( const UShort &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::UInt );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::UInt );
   else
     return QVariant( static_cast<uint>( *value ) );
 }
@@ -255,7 +255,7 @@ QVariant QgsHanaUtils::toVariant( const UShort &value )
 QVariant QgsHanaUtils::toVariant( const Int &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   else
     return QVariant( static_cast<int>( *value ) );
 }
@@ -263,7 +263,7 @@ QVariant QgsHanaUtils::toVariant( const Int &value )
 QVariant QgsHanaUtils::toVariant( const UInt &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::UInt );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::UInt );
   else
     return QVariant( static_cast<uint>( *value ) );
 }
@@ -271,7 +271,7 @@ QVariant QgsHanaUtils::toVariant( const UInt &value )
 QVariant QgsHanaUtils::toVariant( const Long &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::LongLong );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
   else
     return QVariant( static_cast<qlonglong>( *value ) );
 }
@@ -279,7 +279,7 @@ QVariant QgsHanaUtils::toVariant( const Long &value )
 QVariant QgsHanaUtils::toVariant( const ULong &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::ULongLong );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::ULongLong );
   else
     return QVariant( static_cast<qulonglong>( *value ) );
 }
@@ -287,7 +287,7 @@ QVariant QgsHanaUtils::toVariant( const ULong &value )
 QVariant QgsHanaUtils::toVariant( const Float &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Double );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   else
     return QVariant( static_cast<double>( *value ) );
 }
@@ -295,7 +295,7 @@ QVariant QgsHanaUtils::toVariant( const Float &value )
 QVariant QgsHanaUtils::toVariant( const Double &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Double );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   else
     return QVariant( *value );
 }
@@ -303,7 +303,7 @@ QVariant QgsHanaUtils::toVariant( const Double &value )
 QVariant QgsHanaUtils::toVariant( const Date &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::QDate );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QDate );
   else
     return QVariant( QDate( value->year(), value->month(), value->day() ) );
 }
@@ -311,7 +311,7 @@ QVariant QgsHanaUtils::toVariant( const Date &value )
 QVariant QgsHanaUtils::toVariant( const Time &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::QTime );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
   else
     return QVariant( QTime( value->hour(), value->minute(), value->second(), 0 ) );
 }
@@ -319,7 +319,7 @@ QVariant QgsHanaUtils::toVariant( const Time &value )
 QVariant QgsHanaUtils::toVariant( const Timestamp &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::QDateTime );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QDateTime );
   else
     return QVariant( QDateTime( QDate( value->year(), value->month(), value->day() ),
                                 QTime( value->hour(), value->minute(), value->second(), value->milliseconds() ) ) );
@@ -328,7 +328,7 @@ QVariant QgsHanaUtils::toVariant( const Timestamp &value )
 QVariant QgsHanaUtils::toVariant( const String &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::QString );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
   else
     return QVariant( QString::fromUtf8( value->c_str() ) );
 }
@@ -336,7 +336,7 @@ QVariant QgsHanaUtils::toVariant( const String &value )
 QVariant QgsHanaUtils::toVariant( const NString &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::QString );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
   else
     return QVariant( QString::fromStdU16String( *value ) );
 }
@@ -344,7 +344,7 @@ QVariant QgsHanaUtils::toVariant( const NString &value )
 QVariant QgsHanaUtils::toVariant( const Binary &value )
 {
   if ( value.isNull() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::QByteArray );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray );
 
   if ( value->size() > static_cast<size_t>( std::numeric_limits<int>::max() ) )
     throw QgsHanaException( "Binary size is larger than maximum integer value" );

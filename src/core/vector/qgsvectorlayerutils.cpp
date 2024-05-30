@@ -736,7 +736,7 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
     for ( const QgsField &field : fields )
     {
       int index = feature.fields().lookupField( field.name() );
-      attributes.append( index >= 0 ? feature.attribute( index ) : QgsVariantUtils::createVariant( field.type() ) );
+      attributes.append( index >= 0 ? feature.attribute( index ) : QgsVariantUtils::createNullVariant( field.type() ) );
     }
     feature.setAttributes( attributes );
   }
@@ -757,7 +757,7 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
       attributes.reserve( fields.count() );
       for ( int i = feature.attributes().count(); i < fields.count(); ++i )
       {
-        attributes.append( QgsVariantUtils::createVariant( fields.at( i ).type() ) );
+        attributes.append( QgsVariantUtils::createNullVariant( fields.at( i ).type() ) );
       }
       feature.setAttributes( attributes );
     }

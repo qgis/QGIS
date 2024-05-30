@@ -2540,7 +2540,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         for ( int i = 0; i < flist.size(); i++ )
         {
           QgsAttributes attrs2 = flist[i].attributes();
-          QVariant v2 = attrs2.value( idx, QgsVariantUtils::createVariant( QMetaType::Type::Int ) );
+          QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
           // a PK field with a sequence val is auto populate by QGIS with this default
           // we are only interested in non default values
           if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue )
@@ -2573,7 +2573,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // e.g. for defaults
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      QVariant v = attributevec.value( idx, QgsVariantUtils::createVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
+      QVariant v = attributevec.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
       if ( skipSinglePKField && idx == mPrimaryKeyAttrs[0] )
         continue;
       if ( fieldId.contains( idx ) )
@@ -2601,7 +2601,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( i = 1; i < flist.size(); i++ )
       {
         QgsAttributes attrs2 = flist[i].attributes();
-        QVariant v2 = attrs2.value( idx, QgsVariantUtils::createVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
+        QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
 
         if ( v2 != v )
           break;
@@ -2726,7 +2726,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( int i = 0; i < fieldId.size(); i++ )
       {
         int attrIdx = fieldId[i];
-        QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createVariant( QMetaType::Type::Int );
+        QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
 
         QString v;
         if ( QgsVariantUtils::isNull( value ) )
@@ -5111,7 +5111,7 @@ QVariant QgsPostgresProvider::parseArray( const QString &txt, QMetaType::Type ty
   {
     if ( !txt.isEmpty() )
       QgsMessageLog::logMessage( tr( "Error parsing array, missing curly braces: %1" ).arg( txt ), tr( "PostGIS" ) );
-    return QgsVariantUtils::createVariant( type );
+    return QgsVariantUtils::createNullVariant( type );
   }
   QString inner = txt.mid( 1, txt.length() - 2 );
   if ( ( type == QMetaType::Type::QStringList || type == QMetaType::Type::QVariantList ) && inner.startsWith( "{" ) )
@@ -5148,7 +5148,7 @@ QVariant QgsPostgresProvider::convertValue( QMetaType::Type type, QMetaType::Typ
       else if ( value == QChar( 'f' ) )
         result = false;
       else
-        result = QgsVariantUtils::createVariant( type );
+        result = QgsVariantUtils::createNullVariant( type );
       break;
     case QMetaType::Type::User:
       result = fromEwkt( value, conn );
@@ -5157,7 +5157,7 @@ QVariant QgsPostgresProvider::convertValue( QMetaType::Type type, QMetaType::Typ
     default:
       result = value;
       if ( !result.convert( type ) || value.isNull() )
-        result = QgsVariantUtils::createVariant( type );
+        result = QgsVariantUtils::createNullVariant( type );
       break;
   }
 

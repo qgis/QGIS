@@ -397,7 +397,7 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
   QgsFeature f5;
   f5.setFields( fields, true );
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
-  f5.setAttribute( "ZValue", QgsVariantUtils::createVariant( QMetaType::Type::Double ) ); //NULL value has to be ignore
+  f5.setAttribute( "ZValue", QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ); //NULL value has to be ignore
   QgsFeature f6;
   f6.setFields( fields, true );
   f6.setGeometry( QgsGeometry::fromWkt( wkt6 ) );

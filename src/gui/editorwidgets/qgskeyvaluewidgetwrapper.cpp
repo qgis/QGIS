@@ -24,7 +24,7 @@ QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *layer, int f
 
 QVariant QgsKeyValueWidgetWrapper::value() const
 {
-  if ( !mWidget ) return QgsVariantUtils::createVariant( QMetaType::Type::QVariantMap );
+  if ( !mWidget ) return QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantMap );
   return mWidget->map();
 }
 

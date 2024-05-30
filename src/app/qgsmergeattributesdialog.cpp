@@ -449,7 +449,7 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
     return f.attributes().at( fieldIdx );
   }
 
-  return QgsVariantUtils::createVariant( mVectorLayer->fields().at( fieldIdx ).type() );
+  return QgsVariantUtils::createNullVariant( mVectorLayer->fields().at( fieldIdx ).type() );
 }
 
 void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId featureId )
@@ -493,13 +493,13 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, Qgis::Statistic stat 
 
   if ( values.isEmpty() )
   {
-    return QgsVariantUtils::createVariant( mVectorLayer->fields().at( col ).type() );
+    return QgsVariantUtils::createNullVariant( mVectorLayer->fields().at( col ).type() );
   }
 
   summary.calculate( values );
 
   double val = summary.statistic( stat );
-  return std::isnan( val ) ? QgsVariantUtils::createVariant( QMetaType::Type::Double ) : val;
+  return std::isnan( val ) ? QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) : val;
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )

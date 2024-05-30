@@ -140,7 +140,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
         whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
                       .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
 
-        args << ( mSource->mSrid < 1 ? QgsVariantUtils::createVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+        args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
         if ( ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) != 0
              && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox )
@@ -151,7 +151,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
             whereClause += QStringLiteral( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
                            .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ),
                                  bbox );
-            args << ( mSource->mSrid < 1 ? QgsVariantUtils::createVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+            args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
           }
           else
           {
@@ -436,7 +436,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         }
         else
         {
-          v = QgsVariantUtils::createVariant( QMetaType::Type::QString );
+          v = QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
         }
       }
       else if ( v.userType() != fld.type() )

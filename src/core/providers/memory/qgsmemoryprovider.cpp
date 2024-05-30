@@ -440,7 +440,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       QgsAttributes attributes = it->attributes();
       for ( int i = it->attributes().count(); i < mFields.count(); ++i )
       {
-        attributes.append( QgsVariantUtils::createVariant( mFields.at( i ).type() ) );
+        attributes.append( QgsVariantUtils::createNullVariant( mFields.at( i ).type() ) );
       }
       it->setAttributes( attributes );
     }

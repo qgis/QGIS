@@ -479,7 +479,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( d->type == QMetaType::Type::Int && v.toInt() != v.toLongLong() )
   {
-    v = QgsVariantUtils::createVariant( d->type );
+    v = QgsVariantUtils::createNullVariant( d->type );
     if ( errorMessage )
       *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toLongLong() );
     return false;
@@ -556,7 +556,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     if ( !ok )
     {
       //couldn't convert to number
-      v = QgsVariantUtils::createVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
 
       if ( errorMessage )
         *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
@@ -568,7 +568,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     if ( round  > std::numeric_limits<int>::max() || round < -std::numeric_limits<int>::max() )
     {
       //double too large to fit in int
-      v = QgsVariantUtils::createVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
 
       if ( errorMessage )
         *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toDouble() );
@@ -592,7 +592,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       if ( !ok )
       {
         //couldn't convert to number
-        v = QgsVariantUtils::createVariant( d->type );
+        v = QgsVariantUtils::createNullVariant( d->type );
 
         if ( errorMessage )
           *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
@@ -604,7 +604,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       if ( round  > static_cast<double>( std::numeric_limits<long long>::max() ) || round < static_cast<double>( -std::numeric_limits<long long>::max() ) )
       {
         //double too large to fit in longlong
-        v = QgsVariantUtils::createVariant( d->type );
+        v = QgsVariantUtils::createNullVariant( d->type );
 
         if ( errorMessage )
           *errorMessage = QObject::tr( "Value \"%1\" is too large for long long field" ).arg( original.toDouble() );
@@ -626,7 +626,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
         v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
         return true;
       }
-      v = QgsVariantUtils::createVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
       return false;
     }
     else if ( d->type == QMetaType::Type::QVariantMap )
@@ -635,7 +635,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       {
         return true;
       }
-      v = QgsVariantUtils::createVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
       return false;
     }
   }
@@ -649,7 +649,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( ( d->type == QMetaType::Type::QStringList || d->type == QMetaType::Type::QVariantList ) && !( v.userType() == QMetaType::Type::QStringList || v.userType() == QMetaType::Type::QVariantList ) )
   {
-    v = QgsVariantUtils::createVariant( d->type );
+    v = QgsVariantUtils::createNullVariant( d->type );
 
     if ( errorMessage )
       *errorMessage = QObject::tr( "Could not convert value \"%1\" to target list type" ).arg( original.toString() );
@@ -663,7 +663,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
     if ( geom.isNull() )
     {
-      v = QgsVariantUtils::createVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
     }
     else
     {
@@ -690,7 +690,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
   else if ( !v.convert( d->type ) )
   {
-    v = QgsVariantUtils::createVariant( d->type );
+    v = QgsVariantUtils::createNullVariant( d->type );
 
     if ( errorMessage )
       *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )

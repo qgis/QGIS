@@ -86,7 +86,7 @@ QVariant QgsExternalResourceWidget::documentPath( QMetaType::Type type ) const
   const QString path = mFileWidget->filePath();
   if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
-    return QgsVariantUtils::createVariant( type );
+    return QgsVariantUtils::createNullVariant( type );
   }
   else
   {

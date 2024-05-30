@@ -941,7 +941,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
       const QVariant &v = srcFeature.attributes().value( idx );
       const QMetaType::Type fieldType = fields.at( i ).type();
       if ( QgsVariantUtils::isNull( v ) )
-        dstFeature.setAttribute( i, QgsVariantUtils::createVariant( fieldType ) );
+        dstFeature.setAttribute( i, QgsVariantUtils::createNullVariant( fieldType ) );
       else if ( QgsWFSUtils::isCompatibleType( static_cast<QMetaType::Type>( v.userType() ), fieldType ) )
         dstFeature.setAttribute( i, v );
       else if ( fieldType == QMetaType::Type::QDateTime && !QgsVariantUtils::isNull( v ) )

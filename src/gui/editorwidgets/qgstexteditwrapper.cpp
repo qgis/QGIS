@@ -71,7 +71,7 @@ QVariant QgsTextEditWrapper::value() const
                           || field().type() == QMetaType::Type::QDate ) )
        || v == QgsApplication::nullRepresentation() )
   {
-    return QgsVariantUtils::createVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
   }
 
   if ( !QgsVariantUtils::isNull( defaultValue() ) && v == defaultValue().toString() )
@@ -122,7 +122,7 @@ QVariant QgsTextEditWrapper::value() const
   }
   else
   {
-    return QgsVariantUtils::createVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
   }
 }
 

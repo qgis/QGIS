@@ -38,7 +38,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
   if ( mLineEdit )
   {
     if ( mLineEdit->text() == QgsApplication::nullRepresentation() )
-      value = QgsVariantUtils::createVariant( field().type() );
+      value = QgsVariantUtils::createNullVariant( field().type() );
     else
       value = mLineEdit->text();
   }

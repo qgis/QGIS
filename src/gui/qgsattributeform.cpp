@@ -1368,7 +1368,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    attrs.insert( idx, QgsVariantUtils::createVariant( layer()->fields().at( idx ).type() ) );
+    attrs.insert( idx, QgsVariantUtils::createNullVariant( layer()->fields().at( idx ).type() ) );
     mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
@@ -1414,7 +1414,7 @@ void QgsAttributeForm::onUpdatedFields()
       }
       else
       {
-        attrs[i] = QgsVariantUtils::createVariant( layer()->fields().at( i ).type() );
+        attrs[i] = QgsVariantUtils::createNullVariant( layer()->fields().at( i ).type() );
       }
     }
     mFeature.setFields( layer()->fields() );

@@ -101,7 +101,7 @@ QVariant QgsListModel::data( const QModelIndex &index, int role ) const
        ( role != Qt::DisplayRole && role != Qt::EditRole ) ||
        index.column() != 0 )
   {
-    return QgsVariantUtils::createVariant( mSubType );
+    return QgsVariantUtils::createNullVariant( mSubType );
   }
   return mLines.at( index.row() );
 }
@@ -138,7 +138,7 @@ bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
-    mLines.insert( position, QgsVariantUtils::createVariant( mSubType ) );
+    mLines.insert( position, QgsVariantUtils::createNullVariant( mSubType ) );
   }
   endInsertRows();
   return true;

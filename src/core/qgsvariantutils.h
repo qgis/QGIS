@@ -85,7 +85,7 @@ class CORE_EXPORT QgsVariantUtils
      * Helper method to properly create a null QVariant from a \a metaType
      * Returns the created QVariant
      */
-    static QVariant createVariant( QMetaType::Type metaType ) SIP_SKIP;
+    static QVariant createNullVariant( QMetaType::Type metaType ) SIP_SKIP;
 
 };
 

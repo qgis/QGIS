@@ -304,11 +304,11 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Out of range
   widget1->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor1->value( ), editor1->minimum() );
-  QCOMPARE( widget1->value( ), QgsVariantUtils::createVariant( QMetaType::Type::Double ) );
+  QCOMPARE( widget1->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   widget1->setFeature( QgsFeature( vl->fields() ) );
   // Null
   QCOMPARE( editor1->value( ), editor1->minimum() );
-  QCOMPARE( widget1->value( ), QgsVariantUtils::createVariant( QMetaType::Type::Double ) );
+  QCOMPARE( widget1->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   QCOMPARE( editor1->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
   editor1->mLineEdit->setText( QString( "151%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget1->value( ).toInt(), 151 );
@@ -323,11 +323,11 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Out of range
   widget0->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor0->value( ), editor0->minimum() );
-  QCOMPARE( widget0->value( ), QgsVariantUtils::createVariant( QMetaType::Type::Int ) );
+  QCOMPARE( widget0->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   widget0->setFeature( QgsFeature( vl->fields() ) );
   // Null
   QCOMPARE( editor0->value( ), editor0->minimum() );
-  QCOMPARE( widget0->value( ), QgsVariantUtils::createVariant( QMetaType::Type::Int ) );
+  QCOMPARE( widget0->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   QCOMPARE( editor0->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
 
   editor0->mLineEdit->setText( QString( "150%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
@@ -385,21 +385,21 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
-  widget1->setValue( QgsVariantUtils::createVariant( QMetaType::Type::Double ) );
+  widget1->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsDoubleSpinBox
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
-  widget2->setValue( QgsVariantUtils::createVariant( QMetaType::Type::Double ) );
+  widget2->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsSpinBox
   widget3->setConfig( cfg );
   QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( w ) );
   QVERIFY( editor3 );
   widget3->initWidget( editor3 );
-  widget3->setValue( QgsVariantUtils::createVariant( QMetaType::Type::Int ) );
+  widget3->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );

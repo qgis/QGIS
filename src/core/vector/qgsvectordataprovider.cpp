@@ -748,7 +748,7 @@ QVariant QgsVectorDataProvider::convertValue( QMetaType::Type type, const QStrin
   QVariant v( value );
 
   if ( !v.convert( type ) || value.isNull() )
-    v = QgsVariantUtils::createVariant( type );
+    v = QgsVariantUtils::createNullVariant( type );
 
   return v;
 }

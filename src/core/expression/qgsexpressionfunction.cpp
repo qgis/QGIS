@@ -587,7 +587,7 @@ static QVariant fcnExponentialScale( const QVariantList &values, const QgsExpres
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariant result = QgsVariantUtils::createVariant( QMetaType::Type::Double );
+  QVariant result = QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   double maxVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
@@ -611,7 +611,7 @@ static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *
 
 static QVariant fcnMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariant result = QgsVariantUtils::createVariant( QMetaType::Type::Double );
+  QVariant result = QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   double minVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
@@ -2337,13 +2337,13 @@ static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionCo
     QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
     if ( !layer || !feature.isValid() )
     {
-      return QgsVariantUtils::createVariant( QMetaType::Type::Bool );
+      return QgsVariantUtils::createNullVariant( QMetaType::Type::Bool );
     }
 
     return layer->selectedFeatureIds().contains( feature.id() );
   }, foundLayer );
   if ( !foundLayer )
-    return  QgsVariantUtils::createVariant( QMetaType::Type::Bool );
+    return  QgsVariantUtils::createNullVariant( QMetaType::Type::Bool );
   else
     return res;
 }
@@ -2368,13 +2368,13 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
     QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
     if ( !layer )
     {
-      return QgsVariantUtils::createVariant( QMetaType::Type::LongLong );
+      return QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
     }
 
     return layer->selectedFeatureCount();
   }, foundLayer );
   if ( !foundLayer )
-    return  QgsVariantUtils::createVariant( QMetaType::Type::LongLong );
+    return  QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
   else
     return res;
 }
@@ -4491,7 +4491,7 @@ static QVariant fcnZMax( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( max == std::numeric_limits< double >::lowest() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Double );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
 
   return QVariant( max );
 }
@@ -4517,7 +4517,7 @@ static QVariant fcnZMin( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( min == std::numeric_limits< double >::max() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Double );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
 
   return QVariant( min );
 }
@@ -4543,7 +4543,7 @@ static QVariant fcnMMin( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( min == std::numeric_limits< double >::max() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Double );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
 
   return QVariant( min );
 }
@@ -4569,7 +4569,7 @@ static QVariant fcnMMax( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( max == std::numeric_limits< double >::lowest() )
-    return QgsVariantUtils::createVariant( QMetaType::Type::Double );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
 
   return QVariant( max );
 }

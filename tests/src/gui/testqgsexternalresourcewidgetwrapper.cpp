@@ -271,12 +271,12 @@ void TestQgsExternalResourceWidgetWrapper::testSetNullValues()
 
   ww.updateValues( QVariant() );
   QCOMPARE( ww.mLineEdit->text(), QgsApplication::nullRepresentation() );
-  QCOMPARE( ww.mQgsWidget->documentPath(), QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
+  QCOMPARE( ww.mQgsWidget->documentPath(), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
   QCOMPARE( spy.count(), 2 );
 
   ww.updateValues( QgsApplication::nullRepresentation() );
   QCOMPARE( ww.mLineEdit->text(), QgsApplication::nullRepresentation() );
-  QCOMPARE( ww.mQgsWidget->documentPath(), QgsVariantUtils::createVariant( QMetaType::Type::QString ) );
+  QCOMPARE( ww.mQgsWidget->documentPath(), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
   QCOMPARE( spy.count(), 2 );
 
   delete widget;

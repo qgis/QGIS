@@ -528,7 +528,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
       }
       else
       {
-        val = QgsVariantUtils::createVariant( QMetaType::Type::Bool );
+        val = QgsVariantUtils::createNullVariant( QMetaType::Type::Bool );
       }
       break;
     }
@@ -541,7 +541,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
       if ( ok )
         val = QVariant( ivalue );
       else
-        val = QgsVariantUtils::createVariant( mSource->mFields.at( fieldIdx ).type() );
+        val = QgsVariantUtils::createNullVariant( mSource->mFields.at( fieldIdx ).type() );
       break;
     }
     case QMetaType::Type::LongLong:
@@ -552,12 +552,12 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
         val = value.toLongLong( &ok );
         if ( ! ok )
         {
-          val = QgsVariantUtils::createVariant( mSource->mFields.at( fieldIdx ).type() );
+          val = QgsVariantUtils::createNullVariant( mSource->mFields.at( fieldIdx ).type() );
         }
       }
       else
       {
-        val = QgsVariantUtils::createVariant( mSource->mFields.at( fieldIdx ).type() );
+        val = QgsVariantUtils::createNullVariant( mSource->mFields.at( fieldIdx ).type() );
       }
       break;
     }
@@ -582,7 +582,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
       }
       else
       {
-        val = QgsVariantUtils::createVariant( mSource->mFields.at( fieldIdx ).type() );
+        val = QgsVariantUtils::createNullVariant( mSource->mFields.at( fieldIdx ).type() );
       }
       break;
     }

@@ -139,9 +139,9 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
       if ( !dateTime.isValid() || dateTime.isNull() )
       {
         Q_NOWARN_DEPRECATED_PUSH
-        emit valueChanged( QgsVariantUtils::createVariant( field().type() ) );
+        emit valueChanged( QgsVariantUtils::createNullVariant( field().type() ) );
         Q_NOWARN_DEPRECATED_POP
-        emit valuesChanged( QgsVariantUtils::createVariant( field().type() ) );
+        emit valuesChanged( QgsVariantUtils::createNullVariant( field().type() ) );
       }
       else
       {
@@ -169,7 +169,7 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
 QVariant QgsDateTimeEditWrapper::value() const
 {
   if ( !mQDateTimeEdit )
-    return QgsVariantUtils::createVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
 
   QDateTime dateTime;
   if ( mQgsDateTimeEdit )
@@ -182,7 +182,7 @@ QVariant QgsDateTimeEditWrapper::value() const
   }
 
   if ( dateTime.isNull() )
-    return QgsVariantUtils::createVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
 
   switch ( field().type() )
   {

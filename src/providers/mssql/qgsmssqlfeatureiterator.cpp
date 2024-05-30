@@ -505,7 +505,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
           const int seconds = ba.at( 4 );
           v = QTime( hours, mins, seconds );
           if ( !v.isValid() ) // can't handle it
-            v = QgsVariantUtils::createVariant( QMetaType::Type::QTime );
+            v = QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
         }
       }
 

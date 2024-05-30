@@ -252,7 +252,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       v = mComboBox->currentData();
       if ( QgsVariantUtils::isNull( v ) )
-        v = QgsVariantUtils::createVariant( field().type() );
+        v = QgsVariantUtils::createNullVariant( field().type() );
     }
   }
   else if ( mTableWidget )
@@ -262,7 +262,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     // If there is no selection and allow NULL is not checked return NULL.
     if ( selection.isEmpty() && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
     {
-      return QgsVariantUtils::createVariant( QMetaType::Type::QVariantList );
+      return QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList );
     }
 
     QVariantList vl;
@@ -570,7 +570,7 @@ void QgsValueRelationWidgetWrapper::populate()
     const bool allowNull = config( QStringLiteral( "AllowNull" ) ).toBool();
     if ( allowNull )
     {
-      mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createVariant( field().type( ) ) );
+      mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createNullVariant( field().type( ) ) );
     }
 
     if ( !mCache.isEmpty() )

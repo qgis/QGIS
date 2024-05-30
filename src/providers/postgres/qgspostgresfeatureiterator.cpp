@@ -1024,7 +1024,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
       //special handling for binary field values
       if ( ::PQgetisnull( queryResult.result(), row, col ) )
       {
-        v = QgsVariantUtils::createVariant( QMetaType::Type::QByteArray );
+        v = QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray );
       }
       else
       {
@@ -1033,7 +1033,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
         unsigned char *data = ::PQunescapeBytea( reinterpret_cast<const unsigned char *>( value ), &returnedLength );
         if ( returnedLength == 0 )
         {
-          v = QgsVariantUtils::createVariant( QMetaType::Type::QByteArray );
+          v = QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray );
         }
         else
         {
@@ -1047,7 +1047,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     {
       if ( ::PQgetisnull( queryResult.result(), row, col ) )
       {
-        v = QgsVariantUtils::createVariant( QMetaType::Type::LongLong );
+        v = QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
       }
       else
       {
