@@ -995,6 +995,14 @@ void TestQgsField::displayType()
   constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
   field.setConstraints( constraints );
   QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
+
+  // test field without an explicit type name, we should use the field type
+  QgsField field2;
+  field2.setType( QMetaType::Type::QString );
+  QCOMPARE( field2.displayType( false ), QString( "Text (string)" ) );
+  QCOMPARE( field2.displayType( true ), QString( "Text (string) NULL" ) );
+  field2.setType( QMetaType::Type::Int );
+  QCOMPARE( field2.displayType( false ), QString( "Integer (32 bit)" ) );
 }
 
 void TestQgsField::friendlyTypeString()
