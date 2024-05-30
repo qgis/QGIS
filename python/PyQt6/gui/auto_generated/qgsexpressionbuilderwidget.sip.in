@@ -12,6 +12,7 @@
 
 
 
+
 class QgsExpressionBuilderWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -280,6 +281,11 @@ Loads code into the function editor
     void updateFunctionFileList( const QString &path );
 %Docstring
 Updates the list of function files found at the given path
+%End
+
+    void saveProjectFunctionsEntry();
+%Docstring
+Saves the current function editor text to a project entry.
 %End
 
  QStandardItemModel *model() /Deprecated/;

@@ -34,6 +34,10 @@ class QgsExpressionHighlighter;
 class QgsRelation;
 class QgsCodeEditorExpression;
 
+#ifndef SIP_RUN
+static const QString DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME = QStringLiteral( "[Project Functions]" );
+#endif
+
 /**
  * \ingroup gui
  * \brief A reusable widget that can be used to build a expression string.
@@ -273,6 +277,11 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Updates the list of function files found at the given path
      */
     void updateFunctionFileList( const QString &path );
+
+    /**
+     * Saves the current function editor text to a project entry.
+     */
+    void saveProjectFunctionsEntry();
 
     /**
      * Returns a pointer to the dialog's function item model.
