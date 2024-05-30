@@ -176,6 +176,12 @@ Encapsulates information about how relationships in a SensorThings API service s
 Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
 %End
 
+    static QgsSensorThingsExpansionDefinition defaultDefinitionForEntity( Qgis::SensorThingsEntity entity );
+%Docstring
+Returns an expansion definition for the specified ``entity`` type, populated with reasonable
+defaults which make sense for that entity type.
+%End
+
     bool isValid() const;
 %Docstring
 Returns ``True`` if the definition is valid.

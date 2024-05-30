@@ -42,6 +42,42 @@ QgsSensorThingsExpansionDefinition::QgsSensorThingsExpansionDefinition( Qgis::Se
 
 }
 
+QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDefinitionForEntity( Qgis::SensorThingsEntity entity )
+{
+  switch ( entity )
+  {
+    case Qgis::SensorThingsEntity::Invalid:
+      return QgsSensorThingsExpansionDefinition();
+
+    case Qgis::SensorThingsEntity::Thing:
+    case Qgis::SensorThingsEntity::Location:
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+    case Qgis::SensorThingsEntity::Sensor:
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+      // no special defaults for these entities
+      return QgsSensorThingsExpansionDefinition(
+               entity
+             );
+
+    case Qgis::SensorThingsEntity::Observation:
+      // default to descending sort by phenomenonTime
+      return QgsSensorThingsExpansionDefinition(
+               Qgis::SensorThingsEntity::Observation,
+               QStringLiteral( "phenomenonTime" ), Qt::SortOrder::DescendingOrder
+             );
+
+    case Qgis::SensorThingsEntity::Datastream:
+    case Qgis::SensorThingsEntity::MultiDatastream:
+    case Qgis::SensorThingsEntity::ObservedProperty:
+      // use smaller limit by default
+      return QgsSensorThingsExpansionDefinition(
+               entity,
+               QString(), Qt::SortOrder::AscendingOrder, 10
+             );
+  }
+  BUILTIN_UNREACHABLE
+}
+
 bool QgsSensorThingsExpansionDefinition::isValid() const
 {
   return mChildEntity != Qgis::SensorThingsEntity::Invalid;
