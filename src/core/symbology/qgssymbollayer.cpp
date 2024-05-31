@@ -957,21 +957,45 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   mClipPath.clear();
 
   const QgsRenderContext &renderContext = context.renderContext();
-  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( id() );
-  if ( !clipPaths.isEmpty() )
+
+  const QVector<QgsGeometry> clipGeometries = renderContext.symbolLayerClipGeometries( id() );
+  if ( !clipGeometries.empty() )
   {
-    QPainterPath mergedPaths;
-    mergedPaths.setFillRule( Qt::WindingFill );
-    for ( const QPainterPath &path : clipPaths )
+    QVector< QgsGeometry > fixed;
+    for ( const QgsGeometry &geometry : clipGeometries )
     {
-      mergedPaths.addPath( path );
+      fixed << geometry.makeValid( Qgis::MakeValidMethod::Structure );
     }
 
-    if ( !mergedPaths.isEmpty() )
+    const QgsGeometry mergedGeom = QgsGeometry::unaryUnion( fixed );
+    if ( !mergedGeom.isEmpty() )
     {
-      mClipPath.addRect( 0, 0, renderContext.outputSize().width(),
-                         renderContext.outputSize().height() );
-      mClipPath = mClipPath.subtracted( mergedPaths );
+      const QgsGeometry exterior = QgsGeometry::fromRect(
+                                     QgsRectangle( 0, 0,
+                                         renderContext.outputSize().width(),
+                                         renderContext.outputSize().height() ) );
+      const QgsGeometry maskGeom = exterior.difference( mergedGeom );
+      mClipPath = maskGeom.constGet()->asQPainterPath();
+    }
+  }
+  else
+  {
+    const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( id() );
+    if ( !clipPaths.isEmpty() )
+    {
+      QPainterPath mergedPaths;
+      mergedPaths.setFillRule( Qt::WindingFill );
+      for ( const QPainterPath &path : clipPaths )
+      {
+        mergedPaths.addPath( path );
+      }
+
+      if ( !mergedPaths.isEmpty() )
+      {
+        mClipPath.addRect( 0, 0, renderContext.outputSize().width(),
+                           renderContext.outputSize().height() );
+        mClipPath = mClipPath.subtracted( mergedPaths );
+      }
     }
   }
 }

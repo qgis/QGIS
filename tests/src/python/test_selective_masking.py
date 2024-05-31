@@ -16,7 +16,7 @@ import os
 import subprocess
 import tempfile
 
-from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid
+from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
@@ -48,7 +48,8 @@ from qgis.core import (
     QgsSymbolLayerUtils,
     QgsUnitTypes,
     QgsWkbTypes,
-    QgsFontUtils
+    QgsFontUtils,
+    QgsSettings
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -77,14 +78,9 @@ def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
     return (job.renderedImage(), job.renderingTime())
 
 
-class TestSelectiveMasking(QgisTestCase):
-
-    @classmethod
-    def control_path_prefix(cls):
-        return "selective_masking"
+class SelectiveMaskingTestBase():
 
     def setUp(self):
-
         self.map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem('epsg:4326')
         extent = QgsRectangle(-123.0, 22.7, -76.4, 46.9)
@@ -1350,6 +1346,45 @@ class TestSelectiveMasking(QgisTestCase):
         self.check_layout_export("layout_export_svg_marker_masking", 0, [self.points_layer, self.lines_layer])
 
 
+class TestSelectiveMaskingQPainterPathBackend(QgisTestCase, SelectiveMaskingTestBase):
+    """
+    Test selective masking with the QPainterPath backend
+    """
+    @classmethod
+    def control_path_prefix(cls):
+        return "selective_masking"
+
+    @classmethod
+    def setUpClass(cls):
+        QgsSettings().setValue('map/maskBackend', 'qpainterpath')
+        QgisTestCase.setUpClass()
+
+    def setUp(self):
+        SelectiveMaskingTestBase.setUp(self)
+
+
+class TestSelectiveMaskingGeometryBackend(QgisTestCase, SelectiveMaskingTestBase):
+    """
+    Test selective masking with the QgsGeometry backend
+    """
+    @classmethod
+    def control_path_prefix(cls):
+        return "selective_masking"
+
+    @classmethod
+    def setUpClass(cls):
+        QgsSettings().setValue('map/maskBackend', 'geometry')
+        QgisTestCase.setUpClass()
+
+    def setUp(self):
+        SelectiveMaskingTestBase.setUp(self)
+
+
 if __name__ == '__main__':
+    QCoreApplication.setOrganizationName("QGIS_Test")
+    QCoreApplication.setOrganizationDomain("SelectiveMaskingTestBase.com")
+    QCoreApplication.setApplicationName("SelectiveMaskingTestBase")
+    QgsSettings().clear()
+
     start_app()
     unittest.main()

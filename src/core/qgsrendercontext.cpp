@@ -83,6 +83,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mFrameRate( rh.mFrameRate )
   , mCurrentFrame( rh.mCurrentFrame )
   , mSymbolLayerClipPaths( rh.mSymbolLayerClipPaths )
+  , mSymbolLayerClippingGeometries( rh.mSymbolLayerClippingGeometries )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -134,6 +135,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFrameRate = rh.mFrameRate;
   mCurrentFrame = rh.mCurrentFrame;
   mSymbolLayerClipPaths = rh.mSymbolLayerClipPaths;
+  mSymbolLayerClippingGeometries = rh.mSymbolLayerClippingGeometries;
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
@@ -730,6 +732,16 @@ void QgsRenderContext::addSymbolLayerClipPath( const QString &symbolLayerId, QPa
 QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QString &symbolLayerId ) const
 {
   return mSymbolLayerClipPaths[ symbolLayerId ];
+}
+
+void QgsRenderContext::addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry )
+{
+  mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry );
+}
+
+QVector<QgsGeometry> QgsRenderContext::symbolLayerClipGeometries( const QString &symbolLayerId ) const
+{
+  return mSymbolLayerClippingGeometries[ symbolLayerId ];
 }
 
 void QgsRenderContext::setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers )
