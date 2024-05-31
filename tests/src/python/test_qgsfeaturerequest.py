@@ -411,6 +411,86 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertEqual(req2.distanceWithin(), 1.2)
         self.assertEqual(req2.filterRect(), QgsRectangle(-1.2, -1.2, 12.2, 3.2))
 
+    def test_compare(self):
+
+        req1 = QgsFeatureRequest().setFilterFids([8, 9]).setFilterRect(QgsRectangle(1, 2, 3, 4)).setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid).setLimit(6).setFlags(QgsFeatureRequest.Flag.ExactIntersect).setSubsetOfAttributes([1, 4]).setTimeout(6).setRequestMayBeNested(True)
+        req2 = QgsFeatureRequest(req1)
+        self.assertTrue(req1.compare(req1))
+        self.assertTrue(req1.compare(req2))
+
+        req3 = QgsFeatureRequest(req2)
+        self.assertTrue(req3.compare(req2))
+        self.assertTrue(req3.compare(req1))
+        req3.setFilterFids([8, 9, 10])
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setFilterRect(QgsRectangle(1, 2, 3, 5))
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck)
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setLimit(7)
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setSubsetOfAttributes([1, 4, 5])
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setTimeout(7)
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        req3.setRequestMayBeNested(False)
+        self.assertFalse(req3.compare(req1))
+
+        req3 = QgsFeatureRequest(req2)
+        orderClause = QgsFeatureRequest.OrderByClause('a', False)
+        order = QgsFeatureRequest.OrderBy([orderClause])
+        req3.setOrderBy(order)
+        self.assertFalse(req3.compare(req1))
+        req4 = QgsFeatureRequest(req2)
+        orderClause = QgsFeatureRequest.OrderByClause('a', False)
+        order2 = QgsFeatureRequest.OrderBy([orderClause])
+        req4.setOrderBy(order2)
+        self.assertTrue(req4.compare(req3))
+        self.assertTrue(order == order2)
+
+        # Expression Context is not checked
+        req3 = QgsFeatureRequest(req2)
+        context = QgsExpressionContext()
+        scope = QgsExpressionContextScope()
+        scope.setVariable('a', 6)
+        context.appendScope(scope)
+        req3.setExpressionContext(context)
+        self.assertTrue(req3.compare(req1))
+
+    def test_order_by_equality(self):
+
+        orderClause1 = QgsFeatureRequest.OrderByClause('a', False)
+        orderClause2 = QgsFeatureRequest.OrderByClause('a', False)
+        self.assertTrue(orderClause1 == orderClause2)
+        orderClause2 = QgsFeatureRequest.OrderByClause('b', False)
+        self.assertFalse(orderClause1 == orderClause2)
+        orderClause2 = QgsFeatureRequest.OrderByClause('a', True)
+        self.assertFalse(orderClause1 == orderClause2)
+
+        order1 = QgsFeatureRequest.OrderBy([orderClause1])
+        order2 = QgsFeatureRequest.OrderBy([orderClause1])
+        self.assertTrue(order1 == order2)
+        order2 = QgsFeatureRequest.OrderBy([orderClause2])
+        self.assertFalse(order1 == order2)
+        order2 = QgsFeatureRequest.OrderBy([orderClause1, orderClause2])
+        self.assertFalse(order1 == order2)
+
 
 if __name__ == '__main__':
     unittest.main()
