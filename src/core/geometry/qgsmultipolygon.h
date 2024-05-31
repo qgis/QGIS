@@ -36,6 +36,23 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      */
     QgsMultiPolygon() SIP_HOLDGIL;
 
+    /**
+     * Constructor for a multipolygon containing the specified \a polygons.
+     *
+     * The \a polygons will be internally cloned.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiPolygon( const QList< QgsPolygon > &polygons ) SIP_HOLDGIL;
+
+    /**
+     * Constructor for a multipolygon containing the specified \a polygons.
+     *
+     * Ownership of the \a polygons will be transferred to the multipolygon.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiPolygon( const QList< QgsPolygon * > &polygons SIP_TRANSFER ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
