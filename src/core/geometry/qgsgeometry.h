@@ -908,24 +908,54 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
+     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
-    Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY );
+    Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY ) SIP_DEPRECATED;
+
+    /**
+     * Adds a new part to a the geometry.
+     * \param points points describing part to add
+     * \param wkbType default WKB type to create if no existing geometry
+     * \returns OperationResult a result code: success or reason of failure
+     * \since QGIS 3.38
+     */
+    Qgis::GeometryOperationResult addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) SIP_PYNAME( addPointsXYV2 );
 
     /**
      * Adds a new part to a the geometry.
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
+     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
-    Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints );
+    Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints ) SIP_DEPRECATED;
+
+    /**
+     * Adds a new part to a the geometry.
+     * \param points points describing part to add
+     * \param wkbType default WKB type to create if no existing geometry
+     * \returns OperationResult a result code: success or reason of failure
+     * \since QGIS 3.38
+     */
+    Qgis::GeometryOperationResult addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) SIP_PYNAME( addPointsV2 );
 
     /**
      * Adds a new part to this geometry.
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
+     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
-    Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
+    Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_DEPRECATED;
+
+    /**
+     * Adds a new part to this geometry.
+     * \param part part to add (ownership is transferred)
+     * \param wkbType default WKB type to create if no existing geometry
+     * \returns OperationResult a result code: success or reason of failure
+     * \since QGIS 3.38
+     */
+    Qgis::GeometryOperationResult addPartV2( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
 
     /**
      * Adds a new island polygon to a multipolygon feature

@@ -841,7 +841,7 @@ Adds a new ring to this geometry. This makes only sense for polygon and multipol
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY/;
+ Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -849,9 +849,24 @@ Adds a new part to a the geometry.
 :param geomType: default geometry type to create if no existing geometry
 
 :return: OperationResult a result code: success or reason of failure
+
+.. deprecated:: QGIS 3.38
+   - will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
-    Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints/;
+    Qgis::GeometryOperationResult addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsXYV2/;
+%Docstring
+Adds a new part to a the geometry.
+
+:param points: points describing part to add
+:param wkbType: default WKB type to create if no existing geometry
+
+:return: OperationResult a result code: success or reason of failure
+
+.. versionadded:: 3.38
+%End
+
+ Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -859,9 +874,24 @@ Adds a new part to a the geometry.
 :param geomType: default geometry type to create if no existing geometry
 
 :return: OperationResult a result code: success or reason of failure
+
+.. deprecated:: QGIS 3.38
+   - will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
-    Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
+    Qgis::GeometryOperationResult addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsV2/;
+%Docstring
+Adds a new part to a the geometry.
+
+:param points: points describing part to add
+:param wkbType: default WKB type to create if no existing geometry
+
+:return: OperationResult a result code: success or reason of failure
+
+.. versionadded:: 3.38
+%End
+
+ Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated/;
 %Docstring
 Adds a new part to this geometry.
 
@@ -869,6 +899,21 @@ Adds a new part to this geometry.
 :param geomType: default geometry type to create if no existing geometry
 
 :return: OperationResult a result code: success or reason of failure
+
+.. deprecated:: QGIS 3.38
+   - will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+%End
+
+    Qgis::GeometryOperationResult addPartV2( QgsAbstractGeometry *part /Transfer/, Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
+%Docstring
+Adds a new part to this geometry.
+
+:param part: part to add (ownership is transferred)
+:param wkbType: default WKB type to create if no existing geometry
+
+:return: OperationResult a result code: success or reason of failure
+
+.. versionadded:: 3.38
 %End
 
     Qgis::GeometryOperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;

@@ -278,7 +278,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSe
     geometry = f.geometry();
   }
 
-  Qgis::GeometryOperationResult errorCode = geometry.addPart( points,  mLayer->geometryType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( points,  mLayer->wkbType() );
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
@@ -317,7 +317,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
       ring = ring->reversed();
     }
   }
-  Qgis::GeometryOperationResult errorCode = geometry.addPart( ring, mLayer->geometryType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( ring, mLayer->wkbType() );
 
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
