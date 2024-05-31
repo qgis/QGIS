@@ -42,6 +42,7 @@
 #include "qgsvectorlayerrenderer.h"
 #include "qgsrendereditemresults.h"
 #include "qgsmaskpaintdevice.h"
+#include "qgsgeometrypaintdevice.h"
 #include "qgsrasterrenderer.h"
 #include "qgselevationmap.h"
 #include "qgssettingsentryimpl.h"
@@ -51,6 +52,7 @@
 #include "qgsmeshlayerlabeling.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
+const QgsSettingsEntryString *QgsMapRendererJob::settingsMaskBackend = new QgsSettingsEntryString( QStringLiteral( "maskBackend" ), QgsSettingsTree::sTreeMap, QString(), QStringLiteral( "Backend engine to use for selective masking" ) );
 
 ///@cond PRIVATE
 
@@ -683,6 +685,8 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
 
 std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vector< LayerRenderJob > &firstPassJobs, LabelRenderJob &labelJob )
 {
+  const bool useGeometryBackend = settingsMaskBackend->value().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0;
+
   std::vector< LayerRenderJob > secondPassJobs;
 
   // We will need to quickly access the associated rendering job of a layer
@@ -812,7 +816,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     if ( forceVector && !labelHasEffects[ maskId ] )
     {
       // set a painter to get all masking instruction in order to later clip masked symbol layer
-      maskPaintDevice = new QgsMaskPaintDevice( true );
+      maskPaintDevice = useGeometryBackend ? dynamic_cast< QPaintDevice *>( new QgsGeometryPaintDevice( true ) ) : dynamic_cast< QPaintDevice * >( new QgsMaskPaintDevice( true ) );
       maskPainter = new QPainter( maskPaintDevice );
     }
     else
@@ -887,7 +891,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       if ( forceVector && !maskLayerHasEffects[ job.layerId ] )
       {
         // set a painter to get all masking instruction in order to later clip masked symbol layer
-        maskPaintDevice = new QgsMaskPaintDevice();
+        maskPaintDevice = useGeometryBackend ? dynamic_cast< QPaintDevice *>( new QgsGeometryPaintDevice( true ) ) : dynamic_cast< QPaintDevice * >( new QgsMaskPaintDevice( true ) );
         maskPainter = new QPainter( maskPaintDevice );
       }
       else
@@ -990,10 +994,23 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
     for ( const QPair<LayerRenderJob *, int> &p : std::as_const( job.maskJobs ) )
     {
       QPainter *maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[p.second].get();
-      QPainterPath path = static_cast<QgsMaskPaintDevice *>( maskPainter->device() )->maskPainterPath();
-      for ( const QString &symbolLayerId : job.context()->disabledSymbolLayersV2() )
+
+      const QSet<QString> layers = job.context()->disabledSymbolLayersV2();
+      if ( QgsMaskPaintDevice *maskDevice = dynamic_cast<QgsMaskPaintDevice *>( maskPainter->device() ) )
       {
-        job.context()->addSymbolLayerClipPath( symbolLayerId, path );
+        QPainterPath path = maskDevice->maskPainterPath();
+        for ( const QString &symbolLayerId : layers )
+        {
+          job.context()->addSymbolLayerClipPath( symbolLayerId, path );
+        }
+      }
+      else if ( QgsGeometryPaintDevice *geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
+      {
+        const QgsGeometry geometry( geometryDevice->geometry().clone() );
+        for ( const QString &symbolLayerId : layers )
+        {
+          job.context()->addSymbolLayerClipGeometry( symbolLayerId, geometry );
+        }
       }
     }
 

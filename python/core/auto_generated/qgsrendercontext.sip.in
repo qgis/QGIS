@@ -955,6 +955,8 @@ rendering using QBrush objects.
 %Docstring
 Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
 
+.. seealso:: :py:func:`addSymbolLayerClipGeometry`
+
 .. versionadded:: 3.26
 %End
 
@@ -962,7 +964,27 @@ Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
 %Docstring
 Returns clip paths to be applied to the ``symbolLayer`` before rendering
 
+.. seealso:: :py:func:`symbolLayerClipGeometries`
+
 .. versionadded:: 3.26
+%End
+
+    void addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry );
+%Docstring
+Add a clip ``geometry`` to be applied to the ``symbolLayer`` before rendering.
+
+.. seealso:: :py:func:`symbolLayerClipGeometries`
+
+.. versionadded:: 3.38
+%End
+
+    QVector<QgsGeometry> symbolLayerClipGeometries( const QString &symbolLayerId ) const;
+%Docstring
+Returns clipping geometries to be applied to the ``symbolLayer`` before rendering
+
+.. seealso:: :py:func:`addSymbolLayerClipGeometry`
+
+.. versionadded:: 3.38
 %End
 
     QgsDoubleRange zRange() const;
