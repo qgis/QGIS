@@ -210,6 +210,10 @@ Create a new empty order by
 Create a new order by from a list of clauses
 %End
 
+        bool operator==( const OrderBy &v ) const;
+
+        bool operator!=( const OrderBy &v ) const;
+
         QList<QgsFeatureRequest::OrderByClause> list() const;
 %Docstring
 Gets a copy as a list of OrderByClauses
@@ -281,6 +285,17 @@ construct a request with a filter expression
     QgsFeatureRequest( const QgsFeatureRequest &rh );
 %Docstring
 copy constructor
+%End
+
+    bool compare( const QgsFeatureRequest &other ) const;
+%Docstring
+Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
+
+:param other: the other request
+
+:return: true if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+
+.. versionadded:: 3.38
 %End
 
     ~QgsFeatureRequest();
