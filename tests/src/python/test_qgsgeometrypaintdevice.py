@@ -183,8 +183,8 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         painter = SafePainter(device)
 
         painter.drawPoints(
-            [QPointF(5.5, 10.7),
-             QPointF(6.8, 12.9)]
+            QPolygonF([QPointF(5.5, 10.7),
+                       QPointF(6.8, 12.9)])
         )
         painter.drawPoint(
             QPointF(15.5, 12.7)
@@ -215,8 +215,8 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         )
 
         painter.drawPoints(
-            [QPointF(5.5, 10.7),
-             QPointF(6.8, 12.9)]
+            QPolygonF([QPointF(5.5, 10.7),
+                       QPointF(6.8, 12.9)])
         )
         painter.drawPoint(
             QPointF(15.5, 12.7)
@@ -302,10 +302,10 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         painter = SafePainter(device)
 
         painter.drawPolygon(
-            [QPointF(5.5, 10.7), QPointF(6.8, 12.9),
-             QPointF(15.5, 12.7), QPointF(5.5, 10.7)])
+            QPolygonF([QPointF(5.5, 10.7), QPointF(6.8, 12.9),
+                       QPointF(15.5, 12.7), QPointF(5.5, 10.7)]))
         painter.drawPolyline(
-            [QPointF(-4, -1), QPointF(2, 3)]
+            QPolygonF([QPointF(-4, -1), QPointF(2, 3)])
         )
         painter.drawPolyline(
             QPolygon([QPoint(14, 11), QPoint(22, 35)])
@@ -332,10 +332,10 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         )
 
         painter.drawPolygon(
-            [QPointF(5.5, 10.7), QPointF(6.8, 12.9),
-             QPointF(15.5, 12.7), QPointF(5.5, 10.7)])
+            QPolygonF([QPointF(5.5, 10.7), QPointF(6.8, 12.9),
+                       QPointF(15.5, 12.7), QPointF(5.5, 10.7)]))
         painter.drawPolyline(
-            [QPointF(-4, -1), QPointF(2, 3)]
+            QPolygonF([QPointF(-4, -1), QPointF(2, 3)])
         )
         painter.drawPolyline(
             QPolygon([QPoint(14, 11), QPoint(22, 35)])
@@ -365,10 +365,10 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         painter.setPen(pen)
 
         painter.drawPolygon(
-            [QPointF(5.5, 10.7), QPointF(6.8, 12.9),
-             QPointF(15.5, 12.7), QPointF(5.5, 10.7)])
+            QPolygonF([QPointF(5.5, 10.7), QPointF(6.8, 12.9),
+                       QPointF(15.5, 12.7), QPointF(5.5, 10.7)]))
         painter.drawPolyline(
-            [QPointF(-4, -1), QPointF(2, 3)]
+            QPolygonF([QPointF(-4, -1), QPointF(2, 3)])
         )
         painter.drawPolyline(
             QPolygon([QPoint(14, 11), QPoint(22, 35)])
@@ -396,10 +396,10 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         painter.setPen(pen)
 
         painter.drawPolygon(
-            [QPointF(5.5, 10.7), QPointF(6.8, 12.9),
-             QPointF(15.5, 12.7), QPointF(5.5, 10.7)])
+            QPolygonF([QPointF(5.5, 10.7), QPointF(6.8, 12.9),
+                       QPointF(15.5, 12.7), QPointF(5.5, 10.7)]))
         painter.drawPolyline(
-            [QPointF(-4, -1), QPointF(2, 3)]
+            QPolygonF([QPointF(-4, -1), QPointF(2, 3)])
         )
         painter.drawPolyline(
             QPolygon([QPoint(14, 11), QPoint(22, 35)])
