@@ -17,6 +17,8 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsgeos.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultilinestring.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
@@ -327,6 +329,10 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
   QVector< double > currentX;
   QVector< double > currentY;
   const int count = path.elementCount();
+
+  // polygon parts get queued and post-processed before adding them to the collection
+  std::vector< std::unique_ptr< QgsPolygon > > queuedPolygons;
+
   for ( int i = 0; i < count; ++i )
   {
     const QPainterPath::Element &e = path.elementAt( i );
@@ -339,11 +345,11 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
           std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
           if ( line->isClosed() )
           {
-            collection.addGeometry( new QgsPolygon( new QgsLineString( currentX, currentY ) ) );
+            queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
           }
           else
           {
-            collection.addGeometry( new QgsLineString( currentX, currentY ) );
+            collection.addGeometry( line.release() );
           }
         }
         currentX.resize( 0 );
@@ -417,12 +423,35 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
     std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
     if ( line->isClosed() )
     {
-      collection.addGeometry( new QgsPolygon( new QgsLineString( currentX, currentY ) ) );
+      queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
     }
     else
     {
-      collection.addGeometry( new QgsLineString( currentX, currentY ) );
+      collection.addGeometry( line.release() );
     }
+  }
+
+  if ( queuedPolygons.empty() )
+    return;
+
+  collection.reserve( collection.numGeometries() + queuedPolygons.size() );
+
+  QgsMultiPolygon tempMultiPolygon;
+  tempMultiPolygon.reserve( queuedPolygons.size() );
+  for ( auto &part : queuedPolygons )
+  {
+    tempMultiPolygon.addGeometry( part.release() );
+  }
+
+  // ensure holes are holes, not overlapping polygons
+  QgsGeos geosCollection( &tempMultiPolygon );
+  std::unique_ptr< QgsAbstractGeometry > g = geosCollection.makeValid( Qgis::MakeValidMethod::Linework );
+  if ( !g )
+    return;
+
+  for ( auto it = g->const_parts_begin(); it != g->const_parts_end(); ++it )
+  {
+    collection.addGeometry( ( *it )->clone() );
   }
 }
 
