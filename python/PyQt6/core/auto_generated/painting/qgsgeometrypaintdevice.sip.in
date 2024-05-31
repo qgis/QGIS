@@ -11,6 +11,7 @@
 
 
 
+
 class QgsGeometryPaintDevice: QPaintDevice
 {
 %Docstring(signature="appended")

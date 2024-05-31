@@ -48,8 +48,12 @@ QPaintEngine::Type QgsGeometryPaintEngine::type() const
   return QPaintEngine::User;
 }
 
-void QgsGeometryPaintEngine::updateState( const QPaintEngineState & )
+void QgsGeometryPaintEngine::updateState( const QPaintEngineState &state )
 {
+  if ( mUsePathStroker && state.state().testFlag( QPaintEngine::DirtyFlag::DirtyPen ) )
+  {
+    mPen = state.pen();
+  }
 }
 
 void QgsGeometryPaintEngine::drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags )
@@ -320,11 +324,75 @@ void QgsGeometryPaintEngine::drawPolygon( const QPointF *points, int pointCount,
   }
 }
 
+void QgsGeometryPaintEngine::addStrokedLine( const QgsLineString *line, double penWidth, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, const QTransform *matrix )
+{
+  QgsGeos geos( line );
+
+  std::unique_ptr< QgsAbstractGeometry > buffered( geos.buffer( penWidth / 2, mStrokedPathsSegments, endCapStyle, joinStyle, miterLimit ) );
+  if ( !buffered )
+    return;
+
+  if ( matrix )
+    buffered->transform( *matrix );
+
+  if ( QgsGeometryCollection *bufferedCollection = qgsgeometry_cast< QgsGeometryCollection * >( buffered.get() ) )
+  {
+    mGeometry.addGeometries( bufferedCollection->takeGeometries() );
+  }
+  else if ( buffered )
+  {
+    mGeometry.addGeometry( buffered.release() );
+  }
+}
+
+Qgis::EndCapStyle QgsGeometryPaintEngine::penStyleToCapStyle( Qt::PenCapStyle style )
+{
+  switch ( style )
+  {
+    case Qt::FlatCap:
+      return Qgis::EndCapStyle::Flat;
+    case Qt::SquareCap:
+      return Qgis::EndCapStyle::Square;
+    case Qt::RoundCap:
+      return Qgis::EndCapStyle::Round;
+    case Qt::MPenCapStyle:
+      // undocumented?
+      break;
+  }
+
+  return Qgis::EndCapStyle::Round;
+}
+
+Qgis::JoinStyle QgsGeometryPaintEngine::penStyleToJoinStyle( Qt::PenJoinStyle style )
+{
+  switch ( style )
+  {
+    case Qt::MiterJoin:
+    case Qt::SvgMiterJoin:
+      return Qgis::JoinStyle::Miter;
+    case Qt::BevelJoin:
+      return Qgis::JoinStyle::Bevel;
+    case Qt::RoundJoin:
+      return Qgis::JoinStyle::Round;
+    case Qt::MPenJoinStyle:
+      // undocumented?
+      break;
+  }
+  return Qgis::JoinStyle::Round;
+}
+
 // based on QPainterPath::toSubpathPolygons()
-void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath &path, const QTransform &matrix )
+void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, const QTransform &matrix )
 {
   if ( path.isEmpty() )
     return;
+
+  const bool transformIsIdentity = matrix.isIdentity();
+
+  const Qgis::EndCapStyle endCapStyle = penStyleToCapStyle( mPen.capStyle() );
+  const Qgis::JoinStyle joinStyle = penStyleToJoinStyle( mPen.joinStyle() );
+  const double penWidth = mPen.widthF() <= 0 ? 1 : mPen.widthF();
+  const double miterLimit = mPen.miterLimit();
 
   QVector< double > currentX;
   QVector< double > currentY;
@@ -343,13 +411,21 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
         if ( currentX.size() > 1 )
         {
           std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
-          if ( line->isClosed() )
+          if ( mUsePathStroker )
           {
+            addStrokedLine( line.get(), penWidth, endCapStyle, joinStyle, miterLimit, transformIsIdentity ? nullptr : &matrix );
+          }
+          else if ( line->isClosed() )
+          {
+            if ( !transformIsIdentity )
+              line->transform( matrix );
             queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
           }
           else
           {
-            collection.addGeometry( line.release() );
+            if ( !transformIsIdentity )
+              line->transform( matrix );
+            mGeometry.addGeometry( line.release() );
           }
         }
         currentX.resize( 0 );
@@ -357,19 +433,15 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
 
         currentX.reserve( 16 );
         currentY.reserve( 16 );
-        double tx, ty;
-        matrix.map( e.x, e.y, &tx, &ty );
-        currentX << tx;
-        currentY << ty;
+        currentX << e.x;
+        currentY << e.y;
         break;
       }
 
       case QPainterPath::LineToElement:
       {
-        double tx, ty;
-        matrix.map( e.x, e.y, &tx, &ty );
-        currentX << tx;
-        currentY << ty;
+        currentX << e.x;
+        currentY << e.y;
         break;
       }
 
@@ -381,30 +453,18 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
         const double x1 = path.elementAt( i - 1 ).x;
         const double y1 = path.elementAt( i - 1 ).y;
 
-        double tx1, ty1;
-        matrix.map( x1, y1, &tx1, &ty1 );
-
-        double tx2, ty2;
-        matrix.map( e.x, e.y, &tx2, &ty2 );
-
         const double x3 = path.elementAt( i + 1 ).x;
         const double y3 = path.elementAt( i + 1 ).y;
-
-        double tx3, ty3;
-        matrix.map( x3, y3, &tx3, &ty3 );
 
         const double x4 = path.elementAt( i + 2 ).x;
         const double y4 = path.elementAt( i + 2 ).y;
 
-        double tx4, ty4;
-        matrix.map( x4, y4, &tx4, &ty4 );
-
         // TODO -- we could likely reduce the number of segmented points here!
         std::unique_ptr< QgsLineString> bezier( QgsLineString::fromBezierCurve(
-            QgsPoint( tx1, ty1 ),
-            QgsPoint( tx2, ty2 ),
-            QgsPoint( tx3, ty3 ),
-            QgsPoint( tx4, ty4 ) ) );
+            QgsPoint( x1, y1 ),
+            QgsPoint( e.x, e.y ),
+            QgsPoint( x3, y3 ),
+            QgsPoint( x4, y4 ) ) );
 
         currentX << bezier->xVector();
         currentY << bezier->yVector();
@@ -421,20 +481,28 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
   if ( currentX.size() > 1 )
   {
     std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
-    if ( line->isClosed() )
+    if ( mUsePathStroker )
     {
+      addStrokedLine( line.get(), penWidth, endCapStyle, joinStyle, miterLimit, transformIsIdentity ? nullptr : &matrix );
+    }
+    else if ( line->isClosed() )
+    {
+      if ( !transformIsIdentity )
+        line->transform( matrix );
       queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
     }
     else
     {
-      collection.addGeometry( line.release() );
+      if ( !transformIsIdentity )
+        line->transform( matrix );
+      mGeometry.addGeometry( line.release() );
     }
   }
 
   if ( queuedPolygons.empty() )
     return;
 
-  collection.reserve( collection.numGeometries() + queuedPolygons.size() );
+  mGeometry.reserve( mGeometry.numGeometries() + queuedPolygons.size() );
 
   QgsMultiPolygon tempMultiPolygon;
   tempMultiPolygon.reserve( queuedPolygons.size() );
@@ -451,24 +519,14 @@ void addSubpathGeometries( QgsGeometryCollection &collection, const QPainterPath
 
   for ( auto it = g->const_parts_begin(); it != g->const_parts_end(); ++it )
   {
-    collection.addGeometry( ( *it )->clone() );
+    mGeometry.addGeometry( ( *it )->clone() );
   }
 }
 
 void QgsGeometryPaintEngine::drawPath( const QPainterPath &path )
 {
-  QPainterPath realPath = path;
-  if ( mUsePathStroker )
-  {
-    QPen pen = painter()->pen();
-    QPainterPathStroker stroker( pen );
-    QPainterPath strokedPath = stroker.createStroke( path );
-    realPath = strokedPath;
-  }
-
-  QTransform transform = painter()->combinedTransform();
-
-  addSubpathGeometries( mGeometry, realPath, transform );
+  const QTransform transform = painter()->combinedTransform();
+  addSubpathGeometries( path, transform );
 }
 
 //
