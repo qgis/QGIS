@@ -25,12 +25,13 @@ from qgis.core import (
     QgsGeometry,
     QgsMemoryProviderUtils,
     QgsPointXY,
+    QgsPoint,
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerCache,
     QgsVectorLayerExporter,
 )
-from qgis.gui import QgsAttributeTableModel, QgsEditorWidgetFactory, QgsGui
+from qgis.gui import QgsAttributeTableModel, QgsAttributeTableFilterModel, QgsEditorWidgetFactory, QgsGui
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -400,6 +401,44 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
         self.assertEqual(twf.widgetLoaded, 2)
         twf.widgetLoaded = 0
+
+    def test_sort_requires_geometry(self):
+        layer = QgsVectorLayer("Linestring?field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        features = list()
+        f = QgsFeature(layer.fields())
+        f.setAttributes([2])
+        f.setGeometry(QgsGeometry.fromPolyline([QgsPoint(0, 0), QgsPoint(1, 1)]))
+        features.append(f)
+
+        f = QgsFeature(layer.fields())
+        f.setAttributes([1])
+        f.setGeometry(QgsGeometry.fromPolyline([QgsPoint(0, 0), QgsPoint(2, 2)]))
+        features.append(f)
+
+        self.assertTrue(pr.addFeatures(features))
+        cache = QgsVectorLayerCache(layer, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+
+        fm = QgsAttributeTableFilterModel(None, am, am)
+
+        fm.sort('"fldint"', Qt.SortOrder.AscendingOrder)
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '1')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '2')
+
+        fm.sort('"fldint"', Qt.SortOrder.DescendingOrder)
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '2')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '1')
+
+        fm.sort('$length', Qt.SortOrder.DescendingOrder)
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '1')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '2')
+
+        fm.sort('$length', Qt.SortOrder.AscendingOrder)
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '2')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '1')
 
 
 if __name__ == '__main__':
