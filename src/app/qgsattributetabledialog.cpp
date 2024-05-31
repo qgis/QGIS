@@ -221,16 +221,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   {
     request.setFilterExpression( filterExpression );
   }
+
+  // If sort expression requires geometry, we'll need to fetch it
+  needsGeom |= mLayer && QgsExpression( mLayer->attributeTableConfig().sortExpression() ).needsGeometry();
   if ( !needsGeom )
     request.setFlags( QgsFeatureRequest::NoGeometry );
-
 
   // Initialize dual view
   if ( mLayer )
   {
     request.setSubsetOfAttributes( mMainView->requiredAttributes( mLayer ) );
     mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), request, editorContext, false );
-    QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+    const QgsAttributeTableConfig config = mLayer->attributeTableConfig();
     mMainView->setAttributeTableConfig( config );
     mFeatureFilterWidget->init( mLayer, editorContext, mMainView, QgisApp::instance()->messageBar(), QgsMessageBar::defaultMessageTimeout() );
   }
