@@ -28,6 +28,34 @@ QgsMultiPolygon::QgsMultiPolygon()
   mWkbType = Qgis::WkbType::MultiPolygon;
 }
 
+QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon> &polygons )
+{
+  if ( polygons.empty() )
+    return;
+
+  mGeometries.reserve( polygons.size() );
+  for ( const QgsPolygon &poly : polygons )
+  {
+    mGeometries.append( poly.clone() );
+  }
+
+  setZMTypeFromSubGeometry( &polygons.at( 0 ), Qgis::WkbType::MultiPolygon );
+}
+
+QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon *> &polygons )
+{
+  if ( polygons.empty() )
+    return;
+
+  mGeometries.reserve( polygons.size() );
+  for ( QgsPolygon *poly : polygons )
+  {
+    mGeometries.append( poly );
+  }
+
+  setZMTypeFromSubGeometry( polygons.at( 0 ), Qgis::WkbType::MultiPolygon );
+}
+
 QgsPolygon *QgsMultiPolygon::polygonN( int index )
 {
   return qgsgeometry_cast< QgsPolygon * >( geometryN( index ) );

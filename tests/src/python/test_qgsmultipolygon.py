@@ -20,6 +20,31 @@ start_app()
 
 class TestQgsMultiPolygon(QgisTestCase):
 
+    def test_constructor(self):
+        p = QgsMultiPolygon([])
+        self.assertTrue(p.isEmpty())
+
+        value = QgsPolygon(QgsLineString([[1,2 ], [10,2 ], [10, 10], [1,2 ]]))
+        p = QgsMultiPolygon([value])
+        self.assertEqual(p.asWkt(), 'MultiPolygon (((1 2, 10 2, 10 10, 1 2)))')
+        # constructor should have made internal copy
+        del value
+        self.assertEqual(p.asWkt(), 'MultiPolygon (((1 2, 10 2, 10 10, 1 2)))')
+
+        p = QgsMultiPolygon([QgsPolygon(QgsLineString([[1,2 ], [10,2 ], [10, 10], [1,2 ]])),
+                             QgsPolygon(QgsLineString([[100,2 ], [110,2 ], [110, 10], [100,2 ]]))])
+        self.assertEqual(p.asWkt(), 'MultiPolygon (((1 2, 10 2, 10 10, 1 2)),((100 2, 110 2, 110 10, 100 2)))')
+
+        # with z
+        p = QgsMultiPolygon([QgsPolygon(QgsLineString([[1,2 , 3], [10,2 , 3], [10, 10, 3], [1,2 , 3]])),
+                             QgsPolygon(QgsLineString([[100,2 ,4 ], [110,2 , 4], [110, 10, 4], [100,2 , 4]]))])
+        self.assertEqual(p.asWkt(), 'MultiPolygonZ (((1 2 3, 10 2 3, 10 10 3, 1 2 3)),((100 2 4, 110 2 4, 110 10 4, 100 2 4)))')
+
+        # with zm
+        p = QgsMultiPolygon([QgsPolygon(QgsLineString([[1,2 , 3, 5], [10,2 , 3, 5], [10, 10, 3, 5], [1,2 , 3, 5]])),
+                             QgsPolygon(QgsLineString([[100,2 ,4 , 6], [110,2 , 4, 6], [110, 10, 4, 6], [100,2 , 4, 6]]))])
+        self.assertEqual(p.asWkt(), 'MultiPolygonZM (((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5)),((100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6)))')
+
     def testFuzzyComparisons(self):
         ######
         # 2D #
