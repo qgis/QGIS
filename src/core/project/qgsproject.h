@@ -124,6 +124,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( Qgis::DistanceUnit distanceUnits READ distanceUnits WRITE setDistanceUnits NOTIFY distanceUnitsChanged )
     Q_PROPERTY( Qgis::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
     Q_PROPERTY( QgsProjectDisplaySettings *displaySettings READ displaySettings CONSTANT )
+    Q_PROPERTY( Qgis::TransactionMode transactionMode READ transactionMode WRITE setTransactionMode NOTIFY transactionModeChanged )
 
   public:
 
@@ -1920,6 +1921,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when datum transforms stored in the project are not available locally.
      */
     void missingDatumTransforms( const QStringList &missingTransforms );
+
+    /**
+     * Emitted when the transaction mode has changed.
+     * \since QGIS 3.38
+     */
+    void transactionModeChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a

@@ -1907,6 +1907,13 @@ Emitted when the project :py:func:`~QgsProject.transformContext` is changed.
 Emitted when datum transforms stored in the project are not available locally.
 %End
 
+    void transactionModeChanged();
+%Docstring
+Emitted when the transaction mode has changed.
+
+.. versionadded:: 3.38
+%End
+
     void transactionGroupsChanged();
 %Docstring
 Emitted whenever a new transaction group has been created or a
