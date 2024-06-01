@@ -264,7 +264,7 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Equality operator
-         * \since QGIS 3.8
+         * \since QGIS 3.38
          */
         CORE_EXPORT bool operator==( const OrderBy &v ) const;
 
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
      * \param other the other request
-     * \return true if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+     * \return TRUE if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
      * \since QGIS 3.38
      */
     bool compare( const QgsFeatureRequest &other ) const;
