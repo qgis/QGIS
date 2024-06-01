@@ -293,7 +293,7 @@ Compare two requests for equality, ignoring Expression Context, Transform Error 
 
 :param other: the other request
 
-:return: true if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+:return: ``True`` if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
 
 .. versionadded:: 3.38
 %End
