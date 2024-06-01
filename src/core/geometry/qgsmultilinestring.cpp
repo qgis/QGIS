@@ -31,6 +31,34 @@ QgsMultiLineString::QgsMultiLineString()
   mWkbType = Qgis::WkbType::MultiLineString;
 }
 
+QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString> &linestrings )
+{
+  if ( linestrings.empty() )
+    return;
+
+  mGeometries.reserve( linestrings.size() );
+  for ( const QgsLineString &line : linestrings )
+  {
+    mGeometries.append( line.clone() );
+  }
+
+  setZMTypeFromSubGeometry( &linestrings.at( 0 ), Qgis::WkbType::MultiLineString );
+}
+
+QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString *> &linestrings )
+{
+  if ( linestrings.empty() )
+    return;
+
+  mGeometries.reserve( linestrings.size() );
+  for ( QgsLineString *line : linestrings )
+  {
+    mGeometries.append( line );
+  }
+
+  setZMTypeFromSubGeometry( linestrings.at( 0 ), Qgis::WkbType::MultiLineString );
+}
+
 QgsLineString *QgsMultiLineString::lineStringN( int index )
 {
   return qgsgeometry_cast< QgsLineString * >( geometryN( index ) );

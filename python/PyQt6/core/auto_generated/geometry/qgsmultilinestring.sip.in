@@ -25,6 +25,23 @@ Multi line string geometry collection.
 Constructor for an empty multilinestring geometry.
 %End
 
+    QgsMultiLineString( const QList< QgsLineString > &linestrings ) /HoldGIL/;
+%Docstring
+Constructor for a multilinestring containing the specified ``linestrings``.
+
+The ``linestrings`` will be internally cloned.
+
+.. versionadded:: 3.38
+%End
+
+    QgsMultiLineString( const QList< QgsLineString * > &linestrings /Transfer/ ) /HoldGIL/;
+%Docstring
+Constructor for a multilinestring containing the specified ``linestrings``.
+
+Ownership of the ``linestrings`` will be transferred to the multilinestring.
+
+.. versionadded:: 3.38
+%End
 
 
     SIP_PYOBJECT lineStringN( int index ) /TypeHint="QgsLineString"/;
