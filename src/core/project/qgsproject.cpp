@@ -4439,9 +4439,9 @@ void QgsProject::setAutoTransaction( bool autoTransaction )
     return;
 
   if ( autoTransaction )
-    mTransactionMode = Qgis::TransactionMode::AutomaticGroups;
+    setTransactionMode( Qgis::TransactionMode::AutomaticGroups );
   else
-    mTransactionMode = Qgis::TransactionMode::Disabled;
+    setTransactionMode( Qgis::TransactionMode::Disabled );
 
   updateTransactionGroups();
 }
@@ -4473,6 +4473,7 @@ bool QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
 
   mTransactionMode = transactionMode;
   updateTransactionGroups();
+  emit transactionModeChanged();
   return true;
 }
 
