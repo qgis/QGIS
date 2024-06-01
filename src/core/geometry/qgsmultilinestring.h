@@ -36,6 +36,23 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      */
     QgsMultiLineString() SIP_HOLDGIL;
 
+    /**
+     * Constructor for a multilinestring containing the specified \a linestrings.
+     *
+     * The \a linestrings will be internally cloned.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiLineString( const QList< QgsLineString > &linestrings ) SIP_HOLDGIL;
+
+    /**
+     * Constructor for a multilinestring containing the specified \a linestrings.
+     *
+     * Ownership of the \a linestrings will be transferred to the multilinestring.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiLineString( const QList< QgsLineString * > &linestrings SIP_TRANSFER ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 

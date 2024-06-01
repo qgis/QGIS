@@ -30,6 +30,32 @@ class TestQgsMultiLineString(QgisTestCase):
         self.assertEqual(line.startPoint(), QgsPoint(1, 2))
         self.assertEqual(line.endPoint(), QgsPoint(3, 4))
 
+        p = QgsMultiLineString([])
+        self.assertTrue(p.isEmpty())
+
+        value = QgsLineString([[1, 2], [10, 2], [10, 10]])
+        p = QgsMultiLineString([value])
+        self.assertEqual(p.asWkt(), 'MultiLineString ((1 2, 10 2, 10 10))')
+        # constructor should have made internal copy
+        del value
+        self.assertEqual(p.asWkt(), 'MultiLineString ((1 2, 10 2, 10 10))')
+
+        p = QgsMultiLineString([QgsLineString([[1, 2], [10, 2], [10, 10], [1, 2]]),
+                                QgsLineString([[100, 2], [110, 2], [110, 10], [100, 2]])])
+        self.assertEqual(p.asWkt(), 'MultiLineString ((1 2, 10 2, 10 10, 1 2),(100 2, 110 2, 110 10, 100 2))')
+
+        # with z
+        p = QgsMultiLineString([QgsLineString([[1, 2, 3], [10, 2, 3], [10, 10, 3], [1, 2, 3]]),
+                                QgsLineString([[100, 2, 4], [110, 2, 4], [110, 10, 4], [100, 2, 4]])])
+        self.assertEqual(p.asWkt(),
+                         'MultiLineStringZ ((1 2 3, 10 2 3, 10 10 3, 1 2 3),(100 2 4, 110 2 4, 110 10 4, 100 2 4))')
+
+        # with zm
+        p = QgsMultiLineString([QgsLineString([[1, 2, 3, 5], [10, 2, 3, 5], [10, 10, 3, 5], [1, 2, 3, 5]]),
+                                QgsLineString([[100, 2, 4, 6], [110, 2, 4, 6], [110, 10, 4, 6], [100, 2, 4, 6]])])
+        self.assertEqual(p.asWkt(),
+                         'MultiLineStringZM ((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5),(100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6))')
+
     def testMeasureLine(self):
         multiline = QgsMultiLineString()
         m_line = multiline.measuredLine(10, 20)
