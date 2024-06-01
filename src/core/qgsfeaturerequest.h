@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Inequality operator
-         * \since QGIS 3.8
+         * \since QGIS 3.38
          */
         CORE_EXPORT bool operator!=( const OrderBy &v ) const;
 
