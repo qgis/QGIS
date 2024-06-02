@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsabout.h"
 #include "qgsapplication.h"
 #include "qgsauthmethodregistry.h"
@@ -275,8 +276,8 @@ void QgsAbout::setPluginInfo()
 
 void QgsAbout::btnCopyToClipboard_clicked()
 {
-  QString markdown = txtVersion->toHtml();
-  QGuiApplication::clipboard()->setText( markdown );
+  const QString versionString = QgisApp::instance()->getVersionString();
+  QGuiApplication::clipboard()->setText( versionString );
 }
 
 void QgsAbout::btnQgisUser_clicked()
