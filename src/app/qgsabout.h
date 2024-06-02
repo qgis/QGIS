@@ -38,6 +38,7 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
     void init();
 
   private slots:
+    void btnCopyToClipboard_clicked();
     void btnQgisUser_clicked();
     void btnQgisHome_clicked();
     void openUrl( const QUrl &url );
