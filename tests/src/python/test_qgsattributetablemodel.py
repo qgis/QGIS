@@ -425,20 +425,20 @@ class TestQgsAttributeTableModel(QgisTestCase):
         fm = QgsAttributeTableFilterModel(None, am, am)
 
         fm.sort('"fldint"', Qt.SortOrder.AscendingOrder)
-        self.assertEqual(fm.data(fm.index(0, 0), Qt.DisplayRole), '1')
-        self.assertEqual(fm.data(fm.index(1, 0), Qt.DisplayRole), '2')
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '1')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '2')
 
         fm.sort('"fldint"', Qt.SortOrder.DescendingOrder)
-        self.assertEqual(fm.data(fm.index(0, 0), Qt.DisplayRole), '2')
-        self.assertEqual(fm.data(fm.index(1, 0), Qt.DisplayRole), '1')
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '2')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '1')
 
         fm.sort('$length', Qt.SortOrder.DescendingOrder)
-        self.assertEqual(fm.data(fm.index(0, 0), Qt.DisplayRole), '1')
-        self.assertEqual(fm.data(fm.index(1, 0), Qt.DisplayRole), '2')
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '1')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '2')
 
         fm.sort('$length', Qt.SortOrder.AscendingOrder)
-        self.assertEqual(fm.data(fm.index(0, 0), Qt.DisplayRole), '2')
-        self.assertEqual(fm.data(fm.index(1, 0), Qt.DisplayRole), '1')
+        self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), '2')
+        self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), '1')
 
 
 if __name__ == '__main__':
