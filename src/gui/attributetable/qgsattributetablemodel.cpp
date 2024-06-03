@@ -1053,12 +1053,9 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     widgetData = getWidgetData( cache.sortFieldIndex );
   }
 
-  QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
-                              .setSubsetOfAttributes( cache.sortCacheAttributes );
-
-  // If expression does not need geometry set NoGeometry flag
-  if ( !cache.sortCacheExpression.needsGeometry() )
-    request.setFlags( request.flags() | Qgis::FeatureRequestFlag::NoGeometry );
+  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
+                                    .setFlags( cache.sortCacheExpression.needsGeometry() ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry )
+                                    .setSubsetOfAttributes( cache.sortCacheAttributes );
 
   QgsFeatureIterator it = mLayerCache->getFeatures( request );
 
