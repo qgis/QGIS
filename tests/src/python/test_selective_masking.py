@@ -1356,7 +1356,7 @@ class TestSelectiveMaskingQPainterPathBackend(QgisTestCase, SelectiveMaskingTest
 
     @classmethod
     def setUpClass(cls):
-        QgsSettings().setValue('map/maskBackend', 'qpainterpath')
+        QgsSettings().setValue('map/mask-backend', 'qpainterpath')
         QgisTestCase.setUpClass()
 
     def setUp(self):
@@ -1373,7 +1373,7 @@ class TestSelectiveMaskingGeometryBackend(QgisTestCase, SelectiveMaskingTestBase
 
     @classmethod
     def setUpClass(cls):
-        QgsSettings().setValue('map/maskBackend', 'geometry')
+        QgsSettings().setValue('map/mask-backend', 'geometry')
         QgisTestCase.setUpClass()
 
     def setUp(self):
