@@ -328,102 +328,15 @@ bool QgsLineString::isValid( QString &error, Qgis::GeometryValidityFlags flags )
 
 QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
-  const int length = numPoints();
-  if ( length < 2 )
+  // prepare result
+  std::unique_ptr<QgsLineString> result { createEmptyWithSameType() };
+
+  bool res = snapToGridPrivate( hSpacing, vSpacing, dSpacing, mSpacing, mX, mY, mZ, mM,
+                                result->mX, result->mY, result->mZ, result->mM, removeRedundantPoints );
+  if ( res )
+    return result.release();
+  else
     return nullptr;
-
-  const bool hasZ = is3D();
-  const bool hasM = isMeasure();
-
-  QVector< double > outX;
-  outX.reserve( length );
-  QVector< double > outY;
-  outY.reserve( length );
-  QVector< double > outZ;
-  if ( hasZ )
-    outZ.reserve( length );
-  QVector< double > outM;
-  if ( hasM )
-    outM.reserve( length );
-
-  const double *xIn = mX.constData();
-  const double *yIn = mY.constData();
-  const double *zIn = hasZ ? mZ.constData() : nullptr;
-  const double *mIn = hasM ? mM.constData() : nullptr;
-
-  double previousX = 0;
-  double previousY = 0;
-  double previousZ = 0;
-  double previousM = 0;
-  int outSize = 0;
-  for ( int i = 0; i < length; ++i )
-  {
-    const double currentX = *xIn++;
-    const double currentY = *yIn++;
-    const double currentZ = zIn ? *zIn++ : 0;
-    const double currentM = mIn ? *mIn++ : 0;
-
-    const double roundedX = hSpacing > 0 ? ( std::round( currentX / hSpacing ) * hSpacing ) : currentX;
-    const double roundedY = vSpacing > 0 ? ( std::round( currentY / vSpacing ) * vSpacing ) : currentY;
-    const double roundedZ = hasZ && dSpacing > 0 ? ( std::round( currentZ / dSpacing ) * dSpacing ) : currentZ;
-    const double roundedM = hasM && mSpacing > 0 ? ( std::round( currentM / mSpacing ) * mSpacing ) : currentM;
-
-    if ( i > 0 )
-    {
-      const bool isPointEqual = qgsDoubleNear( roundedX, previousX )
-                                && qgsDoubleNear( roundedY, previousY )
-                                && ( !hasZ || dSpacing <= 0 || qgsDoubleNear( roundedZ, previousZ ) )
-                                && ( !hasM || mSpacing <= 0 || qgsDoubleNear( roundedM, previousM ) );
-      if ( isPointEqual )
-        continue;
-
-      // maybe previous point is redundant and is just a midpoint on a straight line -- let's check
-      bool previousPointRedundant = false;
-      if ( outSize > 1 && !hasZ && !hasM )
-      {
-        previousPointRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( outSize - 1 ),
-                                 outY.at( outSize - 1 ),
-                                 outX.at( outSize - 2 ),
-                                 outY.at( outSize - 2 ),
-                                 roundedX, roundedY ) == 0;
-      }
-      if ( previousPointRedundant )
-      {
-        outX[ outSize - 1 ] = roundedX;
-        outY[ outSize - 1 ] = roundedY;
-      }
-      else
-      {
-        outX.append( roundedX );
-        outY.append( roundedY );
-        if ( hasZ )
-          outZ.append( roundedZ );
-        if ( hasM )
-          outM.append( roundedM );
-        outSize++;
-      }
-    }
-    else
-    {
-      outX.append( roundedX );
-      outY.append( roundedY );
-      if ( hasZ )
-        outZ.append( roundedZ );
-      if ( hasM )
-        outM.append( roundedM );
-      outSize++;
-    }
-
-    previousX = roundedX;
-    previousY = roundedY;
-    previousZ = roundedZ;
-    previousM = roundedM;
-  }
-
-  if ( outSize < 2 || ( isClosed() && outSize < 4 ) )
-    return nullptr;
-
-  return new QgsLineString( outX, outY, outZ, outM );
 }
 
 bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
