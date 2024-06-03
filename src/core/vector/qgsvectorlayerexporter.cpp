@@ -337,16 +337,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
 
   Qgis::WkbType wkbType = layer->wkbType();
 
-  // Special handling for Shapefiles
-  if ( layer->providerType() == QLatin1String( "ogr" ) && layer->storageType() == QLatin1String( "ESRI Shapefile" ) )
-  {
-    // convert field names to lowercase
-    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
-    {
-      fields.rename( fldIdx, fields.at( fldIdx ).name().toLower() );
-    }
-  }
-
   bool convertGeometryToSinglePart = false;
   if ( forceSinglePartGeom && QgsWkbTypes::isMultiType( wkbType ) )
   {
