@@ -242,6 +242,14 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     % End
 #endif
 
+    /**
+     * Removes all geometries from the collection, returning them and their ownership
+     * to the caller.
+     *
+     * \since QGIS 3.38
+     */
+    QVector< QgsAbstractGeometry * > takeGeometries() SIP_TRANSFER;
+
     void normalize() final SIP_HOLDGIL;
     void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;

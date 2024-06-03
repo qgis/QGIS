@@ -255,6 +255,14 @@ bool QgsGeometryCollection::removeGeometry( int nr )
   return true;
 }
 
+QVector<QgsAbstractGeometry *> QgsGeometryCollection::takeGeometries()
+{
+  QVector< QgsAbstractGeometry * > results = mGeometries;
+  mGeometries.clear();
+  clearCache();
+  return results;
+}
+
 void QgsGeometryCollection::normalize()
 {
   for ( QgsAbstractGeometry *geometry : std::as_const( mGeometries ) )
