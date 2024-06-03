@@ -81,6 +81,7 @@ class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     void moveDown();
     void remove();
     void insert();
+    void duplicate();
     void addDefaultActions();
     void itemDoubleClicked( QTableWidgetItem *item );
     void updateButtons();
