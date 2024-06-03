@@ -408,6 +408,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
 
+    const bool autoSize = settings.value( QStringLiteral( "qgis/autosizeAttributeTable" ), false ).toBool();
+    if ( autoSize )
+    {
+      mMainView->tableView()->resizeColumnsToContents();
+    }
+
     connect( mActionToggleMultiEdit, &QAction::toggled, mMainView, &QgsDualView::setMultiEditEnabled );
     connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
     updateMultiEditButtonState();
