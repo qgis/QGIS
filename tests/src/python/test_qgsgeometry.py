@@ -2454,6 +2454,211 @@ class TestQgsGeometry(QgisTestCase):
         geometry = QgsGeometry.collectGeometry([QgsGeometry.fromWkt('Point (0 0)')])
         assert geometry.isMultipart(), "Expected collected geometry to be multipart"
 
+    def testAddPartV2(self):
+        #   2-3 6-+-7
+        #   | | |   |
+        # 0-1 4 5   8-9
+        line_points = [
+            [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ],
+            [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
+        ]
+        def polyline1_geom(): return QgsGeometry.fromPolylineXY(line_points[0]) # noqa: E704,E261
+        def polyline2_geom(): return QgsGeometry.fromPolylineXY(line_points[1]) # noqa: E704,E261
+
+        # 5-+-4 0-+-9
+        # |   | |   |
+        # | 2-3 1-2 |
+        # | |     | |
+        # 0-1     7-8
+        poly_points = [
+            [[QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2),
+              QgsPointXY(0, 2), QgsPointXY(0, 0), ]],
+            [[QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(5, 2), QgsPointXY(3, 2), QgsPointXY(3, 1),
+              QgsPointXY(4, 1), QgsPointXY(4, 0), ]]
+        ]
+        def polygon1_geom(): return QgsGeometry.fromPolygonXY(poly_points[0]) # noqa: E704,E261
+        def polygon2_geom(): return QgsGeometry.fromPolygonXY(poly_points[1]) # noqa: E704,E261
+        def multi_polygon_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points) # noqa: E704,E261
+        def multi_polygon1_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[:1]) # noqa: E704,E261
+        def multi_polygon2_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[1:]) # noqa: E704,E261
+
+        def multi_surface_geom():
+            ms = QgsMultiSurface()
+            p = polygon1_geom()
+            ms.addGeometry(p.constGet().clone())
+            return QgsGeometry(ms)
+
+        def curve():
+            cs = QgsCircularString()
+            cs.setPoints([QgsPoint(31, 32), QgsPoint(34, 36), QgsPoint(37, 39)])
+            return cs.toCurveType()
+
+        circle = QgsCircle(QgsPoint(10, 10), 5)
+
+        def circle_polygon():
+            p = QgsPolygon()
+            p.setExteriorRing(circle.toCircularString())
+            return p
+
+        def circle_curvepolygon():
+            p = QgsCurvePolygon()
+            p.setExteriorRing(circle.toCircularString())
+            return p
+
+        geoms = {}  # initial geometry
+        parts = {}  # part to add
+        expec = {}  # expected WKT result
+        types = {}  # optional geometry types for points added
+        resul = {}  # expected GeometryOperationResult
+
+        T = 'point_add_point'
+        geoms[T] = QgsGeometry.fromPointXY(QgsPointXY(0, 0))
+        parts[T] = [QgsPointXY(1, 0)]
+        expec[T] = "MultiPoint ((0 0), (1 0))"
+
+        T = 'point_add_point_with_Z'
+        geoms[T] = QgsGeometry(QgsPoint(0, 0, 4))
+        parts[T] = [QgsPoint(1, 0, 3, wkbType=QgsWkbTypes.Type.PointZ)]
+        expec[T] = "MultiPointZ ((0 0 4), (1 0 3))"
+
+        T = 'line_add_1_point_fails'
+        geoms[T] = polyline1_geom()
+        parts[T] = line_points[1][0:1]
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
+
+        T = 'line_add_2_point'
+        geoms[T] = polyline1_geom()
+        parts[T] = line_points[1][0:2]
+        expec[T] = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
+
+        T = 'add_point_with_more_points'
+        geoms[T] = polyline1_geom()
+        parts[T] = line_points[1]
+        expec[T] = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+
+        T = 'line_add_points_with_Z'
+        geoms[T] = polyline1_geom()
+        geoms[T].get().addZValue(4.0)
+        parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.Type.PointZ) for p in line_points[1]]
+        expec[T] = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
+
+        T = 'linestring_add_curve'
+        geoms[T] = polyline1_geom()
+        parts[T] = curve()
+        expec[T] = f"MultiLineString ({polyline1_geom().asWkt()[len('LineString '):]},{curve().curveToLine().asWkt()[len('LineString '):]})"
+
+        T = 'polygon_add_ring_1_point'
+        geoms[T] = polygon1_geom()
+        parts[T] = poly_points[1][0][0:1]
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
+
+        T = 'polygon_add_ring_2_points'
+        geoms[T] = polygon1_geom()
+        parts[T] = poly_points[1][0][0:2]
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
+
+        T = 'polygon_add_ring_3_points'
+        geoms[T] = polygon1_geom()
+        parts[T] = poly_points[1][0][0:3]
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
+
+        T = 'polygon_add_ring_3_points_closed'
+        geoms[T] = polygon1_geom()
+        parts[T] = [QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
+
+        T = 'polygon_add_polygon'
+        geoms[T] = polygon1_geom()
+        parts[T] = poly_points[1][0]
+        expec[T] = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+
+        T = 'multipolygon_add_polygon'
+        geoms[T] = multi_polygon1_geom()
+        parts[T] = polygon2_geom()
+        expec[T] = multi_polygon_geom().asWkt()
+
+        T = 'multipolygon_add_multipolygon'
+        geoms[T] = multi_polygon1_geom()
+        parts[T] = multi_polygon2_geom()
+        expec[T] = multi_polygon_geom().asWkt()
+
+        T = 'polygon_add_point_with_Z'
+        geoms[T] = polygon1_geom()
+        geoms[T].get().addZValue(4.0)
+        parts[T] = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.Type.PointZ) for pi in poly_points[1][0]]
+        expec[T] = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
+
+        T = 'multisurface_add_curvepolygon'
+        geoms[T] = QgsGeometry.fromWkt('MultiSurface(((0 0,0 1,1 1,0 0)))')
+        parts[T] = QgsGeometry.fromWkt('CurvePolygon ((0 0,0 1,1 1,0 0))')
+        expec[T] = 'MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+
+        T = 'multisurface_add_multisurface'
+        geoms[T] = QgsGeometry.fromWkt('MultiSurface(((20 0,20 1,21 1,20 0)))')
+        parts[T] = QgsGeometry.fromWkt('MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))')
+        expec[T] = 'MultiSurface (Polygon ((20 0, 20 1, 21 1, 20 0)),Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+
+        T = 'empty_geom_add_point_with_no_default_type'
+        # if not default type specified, addPart should fail
+        geoms[T] = QgsGeometry()
+        parts[T] = [QgsPointXY(4, 0)]
+        resul[T] = Qgis.GeometryOperationResult.AddPartNotMultiGeometry
+
+        T = 'empty_geom_add_point'
+        geoms[T] = QgsGeometry()
+        parts[T] = [QgsPointXY(4, 0)]
+        types[T] = QgsWkbTypes.Type.Point
+        expec[T] = 'MultiPoint ((4 0))'
+
+        T = 'empty_geom_add_line'
+        geoms[T] = QgsGeometry()
+        parts[T] = poly_points[0][0]
+        types[T] = QgsWkbTypes.Type.LineString
+        expec[T] = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))'
+
+        T = 'empty_geom_add_polygon'
+        geoms[T] = QgsGeometry()
+        parts[T] = poly_points[0][0]
+        types[T] = QgsWkbTypes.Type.Polygon
+        expec[T] = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))'
+
+        T = 'multipolygon_add_curvepolygon'
+        geoms[T] = multi_polygon1_geom()
+        parts[T] = circle_curvepolygon()
+        expec[T] = f"MultiPolygon ({polygon1_geom().asWkt()[len('Polygon '):]},{circle_polygon().asWkt()[len('Polygon '):]})"
+
+        T = 'multisurface_add_curvepolygon'
+        geoms[T] = multi_surface_geom()
+        parts[T] = circle_curvepolygon()
+        expec[T] = 'MultiSurface (Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),CurvePolygon (CircularString (10 15, 15 10, 10 5, 5 10, 10 15)))'
+
+        for t in parts.keys():
+            with self.subTest(t=t):
+                expected_result = resul.get(t, Qgis.GeometryOperationResult.Success)
+                geom_type = types.get(t, QgsWkbTypes.Type.Unknown)
+                message = '\n' + t
+                if expected_result != Qgis.MessageLevel.Success:
+                    message += ' unexpectedly succeeded'
+                else:
+                    message += ' failed'
+                message_with_wkt = message + f'\nOriginal geom: {geoms[t].asWkt()}'
+                if type(parts[t]) is list:
+                    if type(parts[t][0]) == QgsPointXY:
+                        self.assertEqual(geoms[t].addPointsXYV2(parts[t], geom_type), expected_result, message_with_wkt)
+                    elif type(parts[t][0]) == QgsPoint:
+                        self.assertEqual(geoms[t].addPointsV2(parts[t]), expected_result, message_with_wkt)
+                    else:
+                        self.fail(message_with_wkt + '\n could not detect what Python method to use for add part')
+                else:
+                    if type(parts[t]) == QgsGeometry:
+                        self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
+                    else:
+                        self.assertEqual(geoms[t].addPartV2(parts[t], geom_type), expected_result, message_with_wkt)
+
+                if expected_result == Qgis.GeometryOperationResult.Success:
+                    wkt = geoms[t].asWkt()
+                    assert compareWkt(expec[t], wkt), message + f"\nExpected:\n{expec[t]}\nGot:\n{wkt}\n"
+
     def testAddPart(self):
         #   2-3 6-+-7
         #   | | |   |
