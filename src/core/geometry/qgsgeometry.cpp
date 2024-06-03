@@ -940,7 +940,7 @@ Qgis::GeometryOperationResult QgsGeometry::addPartWkbType( QgsAbstractGeometry *
   std::unique_ptr< QgsAbstractGeometry > p( part );
   if ( !d->geometry )
   {
-    switch ( QgsWkbTypes::flatType( wkbType ) )
+    switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
     {
       case Qgis::WkbType::Point:
         reset( std::make_unique< QgsMultiPoint >() );
@@ -949,12 +949,14 @@ Qgis::GeometryOperationResult QgsGeometry::addPartWkbType( QgsAbstractGeometry *
         reset( std::make_unique< QgsMultiLineString >() );
         break;
       case Qgis::WkbType::Polygon:
+      case Qgis::WkbType::Triangle:
         reset( std::make_unique< QgsMultiPolygon >() );
         break;
       case Qgis::WkbType::CurvePolygon:
         reset( std::make_unique< QgsMultiSurface >() );
         break;
       case Qgis::WkbType::CompoundCurve:
+      case Qgis::WkbType::CircularString:
         reset( std::make_unique< QgsMultiCurve >() );
         break;
       default:
