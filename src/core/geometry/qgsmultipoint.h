@@ -337,6 +337,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     int nCoordinates() const override SIP_HOLDGIL;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) final;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;

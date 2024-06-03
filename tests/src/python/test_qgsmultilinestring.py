@@ -11,7 +11,12 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsMultiLineString, QgsLineString, QgsPoint
+from qgis.core import (
+    QgsMultiLineString,
+    QgsLineString,
+    QgsPoint,
+    QgsRectangle
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -188,6 +193,45 @@ class TestQgsMultiLineString(QgisTestCase):
         epsilon *= 10
         self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
         self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+    def test_add_geometries(self):
+        """
+        Test adding multiple geometries
+        """
+        # empty collection
+        collection = QgsMultiLineString()
+        self.assertTrue(collection.addGeometries([]))
+        self.assertEqual(collection.asWkt(), 'MultiLineString EMPTY')
+        self.assertEqual(collection.boundingBox(), QgsRectangle())
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsLineString([[1, 2, 3], [3, 4, 3], [1, 4, 3], [1, 2, 3]]),
+                QgsLineString(
+                    [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]])])
+        )
+        self.assertEqual(collection.asWkt(),
+                         'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+
+        # can't add non-linestrings
+        self.assertFalse(
+            collection.addGeometries([
+                QgsPoint(100, 200)]
+            ))
+        self.assertEqual(collection.asWkt(),
+                         'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsLineString([[100, 2, 3], [300, 4, 3]])])
+        )
+        self.assertEqual(collection.asWkt(), 'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33),(100 2 3, 300 4 3))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 300, 22))
 
 
 if __name__ == '__main__':

@@ -123,6 +123,15 @@ reallocations and memory fragmentation.
 Adds a geometry and takes ownership. Returns ``True`` in case of success.
 %End
 
+    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ );
+%Docstring
+Adds a list of geometries to the collection, transferring ownership to the collection.
+
+Returns ``True`` in case of success.
+
+.. versionadded:: 3.38
+%End
+
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 %Docstring
 Inserts a geometry before a specified index and takes ownership. Returns ``True`` in case of success.
