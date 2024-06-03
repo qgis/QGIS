@@ -947,7 +947,9 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QVector<QgsPointXY> &p
 {
   QgsPointSequence l;
   convertPointList( points, l );
+  Q_NOWARN_DEPRECATED_PUSH
   return addPart( l, geomType );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType )
@@ -970,7 +972,9 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &poin
     ringLine->setPoints( points );
     partGeom = std::move( ringLine );
   }
+  Q_NOWARN_DEPRECATED_PUSH
   return addPart( partGeom.release(), geomType );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType )
