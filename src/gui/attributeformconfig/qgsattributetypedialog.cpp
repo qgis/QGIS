@@ -352,6 +352,7 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
       << QgsExpressionContextUtils::layerScope( mLayer )
       << QgsExpressionContextUtils::formScope( )
+      << QgsExpressionContextUtils::parentFormScope( QgsFeature() )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
 
   return context;

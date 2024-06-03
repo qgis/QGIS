@@ -26,19 +26,20 @@
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayertoolscontext.h"
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat, QWidget *parentWidget, bool showModal, bool hideParent ) const
+bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {
-  QgsFeature *f = feat;
-  if ( !feat )
+  QgsFeature *f = feature;
+  if ( !feature )
     f = new QgsFeature();
 
   f->setGeometry( defaultGeometry );
-  QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, parentWidget );
+  QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, context.parentWidget() );
   a->setForceSuppressFormPopup( forceSuppressFormPopup() );
   connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
-  const QgsFeatureAction::AddFeatureResult result = a->addFeature( defaultValues, showModal, nullptr, hideParent );
-  if ( !feat )
+  const QgsFeatureAction::AddFeatureResult result = a->addFeature( defaultValues, context.showModal(), std::unique_ptr<QgsExpressionContextScope>( context.additionalExpressionContextScope() ? new QgsExpressionContextScope( *context.additionalExpressionContextScope() ) : nullptr ), context.hideParent() );
+  if ( !feature )
     delete f;
 
   switch ( result )

@@ -44,6 +44,7 @@
 #include "qgstabwidget.h"
 #include "qgsscrollarea.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
@@ -353,7 +354,9 @@ bool QgsAttributeForm::saveEdits( QString *error )
     // An add dialog should perform an action by default
     // and not only if attributes have "changed"
     if ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::FixAttributeMode )
+    {
       doUpdate = true;
+    }
 
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
@@ -461,7 +464,10 @@ bool QgsAttributeForm::saveEdits( QString *error )
           n++;
         }
 
-        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues );
+        std::unique_ptr<QgsVectorLayerToolsContext> context = std::make_unique<QgsVectorLayerToolsContext>();
+        QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
+        context->setExpressionContext( &expressionContext );
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() );
 
         if ( success && n > 0 )
         {
@@ -569,6 +575,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
         continue;
 
       QgsExpressionContext context = createExpressionContext( updatedFeature );
+
       const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
       eww->setValue( value );
       mCurrentFormFeature.setAttribute( eww->field().name(), value );
@@ -983,7 +990,13 @@ QgsExpressionContext QgsAttributeForm::createExpressionContext( const QgsFeature
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   context.appendScope( QgsExpressionContextUtils::formScope( feature, mContext.attributeFormModeString() ) );
   if ( mExtraContextScope )
+  {
     context.appendScope( new QgsExpressionContextScope( *mExtraContextScope.get() ) );
+  }
+  if ( mContext.parentFormFeature().isValid() )
+  {
+    context.appendScope( QgsExpressionContextUtils::parentFormScope( mContext.parentFormFeature() ) );
+  }
   context.setFeature( feature );
   return context;
 }

@@ -33,6 +33,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
@@ -1735,6 +1736,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * If \a skipDefaultValues is set to TRUE, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
+     * If \a context is provided, it will be used when updating default values (since QGIS 3.38).
+     *
      * \returns TRUE if the feature's attribute was successfully changed.
      *
      * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
@@ -1747,7 +1750,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see updateFeature()
      */
-    Q_INVOKABLE bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
+    Q_INVOKABLE bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false,  QgsVectorLayerToolsContext *context = nullptr );
 
     /**
      * Changes attributes' values for a feature (but does not immediately
@@ -1768,6 +1771,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * be updated. This can be used to override default field value
      * expressions.
      *
+     * If \a context is provided, it will be used when updating default values (since QGIS 3.38).
+     *
      * \returns TRUE if feature's attributes was successfully changed.
      *
      * \note Calls to changeAttributeValues() are only valid for layers in
@@ -1783,7 +1788,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeAttributeValue()
      *
      */
-    Q_INVOKABLE bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
+    Q_INVOKABLE bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false, QgsVectorLayerToolsContext *context = nullptr );
 
     /**
      * Add an attribute field (but does not commit it)
@@ -2794,7 +2799,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onAfterCommitChangesDependency();
 
   private:
-    void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
+    void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature(), QgsExpressionContext *context = nullptr );
 
     /**
      * Returns TRUE if the layer is in read-only mode
