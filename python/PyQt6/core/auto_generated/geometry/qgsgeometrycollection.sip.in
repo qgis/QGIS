@@ -153,6 +153,14 @@ Removes a geometry from the collection by index.
     }
 %End
 
+    QVector< QgsAbstractGeometry * > takeGeometries() /Transfer/;
+%Docstring
+Removes all geometries from the collection, returning them and their ownership
+to the caller.
+
+.. versionadded:: 3.38
+%End
+
     void normalize() final /HoldGIL/;
     virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
 

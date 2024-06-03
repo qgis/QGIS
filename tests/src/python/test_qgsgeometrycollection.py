@@ -19,7 +19,8 @@ from qgis.core import (
     QgsPolygon,
     QgsMultiPoint,
     QgsMultiLineString,
-    QgsMultiPolygon
+    QgsMultiPolygon,
+    QgsRectangle
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -526,6 +527,37 @@ class TestQgsGeometryCollection(QgisTestCase):
             mp.extractPartsByType(
                 Qgis.WkbType.Point).asWkt(),
             'MultiPoint EMPTY'
+        )
+
+    def test_take_geometries(self):
+        """
+        Test taking geometries
+        """
+        # empty collection
+        collection = QgsGeometryCollection()
+        self.assertFalse(collection.takeGeometries())
+        self.assertEqual(collection.asWkt(), 'GeometryCollection EMPTY')
+
+        collection.addGeometry(
+            QgsPolygon(
+                QgsLineString([[1, 2, 3], [3, 4, 3], [1, 4, 3], [1, 2, 3]])))
+        collection.addGeometry(QgsPolygon(
+            QgsLineString(
+                [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]])))
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+
+        geometries = collection.takeGeometries()
+        # should be nothing left
+        self.assertEqual(collection.asWkt(), 'GeometryCollection EMPTY')
+        self.assertEqual(collection.boundingBox(), QgsRectangle())
+
+        del collection
+
+        self.assertEqual(
+            [p.asWkt() for p in geometries],
+            ['PolygonZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3))',
+             'PolygonZ ((11 22 33, 13 14 33, 11 14 33, 11 22 33))']
         )
 
 
