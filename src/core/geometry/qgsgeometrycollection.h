@@ -205,6 +205,15 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
 
     /**
+     * Adds a list of geometries to the collection, transferring ownership to the collection.
+     *
+     * Returns TRUE in case of success.
+     *
+     * \since QGIS 3.38
+     */
+    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER );
+
+    /**
      * Inserts a geometry before a specified index and takes ownership. Returns TRUE in case of success.
      * \param g geometry to insert. Ownership is transferred to the collection.
      * \param index position to insert geometry before

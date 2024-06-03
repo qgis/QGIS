@@ -79,6 +79,7 @@ Returns the polygon with the specified ``index``.
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
+    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ ) final;
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
 

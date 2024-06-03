@@ -59,6 +59,8 @@ Returns the curve with the specified ``index``.
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
+    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ );
+
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
 

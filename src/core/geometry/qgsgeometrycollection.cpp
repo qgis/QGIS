@@ -229,6 +229,13 @@ bool QgsGeometryCollection::addGeometry( QgsAbstractGeometry *g )
   return true;
 }
 
+bool QgsGeometryCollection::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  mGeometries.append( geometries );
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
 bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g )

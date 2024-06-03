@@ -11,7 +11,12 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsMultiPoint, QgsPoint
+from qgis.core import (
+    QgsMultiPoint,
+    QgsPoint,
+    QgsRectangle,
+    QgsLineString
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -104,6 +109,44 @@ class TestQgsMultiPoint(QgisTestCase):
         epsilon *= 10
         self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
         self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+    def test_add_geometries(self):
+        """
+        Test adding multiple geometries
+        """
+        # empty collection
+        collection = QgsMultiPoint()
+        self.assertTrue(collection.addGeometries([]))
+        self.assertEqual(collection.asWkt(), 'MultiPoint EMPTY')
+        self.assertEqual(collection.boundingBox(), QgsRectangle())
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsPoint(1, 2, 3),
+                QgsPoint(11, 22, 33)])
+        )
+        self.assertEqual(collection.asWkt(),
+                         'MultiPointZ ((1 2 3),(11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 11, 22))
+
+        # can't add non-points
+        self.assertFalse(
+            collection.addGeometries([
+                QgsLineString([[100, 200], [200, 200]])]
+            ))
+        self.assertEqual(collection.asWkt(),
+                         'MultiPointZ ((1 2 3),(11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 11, 22))
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsPoint(100, 2, 3)])
+        )
+        self.assertEqual(collection.asWkt(), 'MultiPointZ ((1 2 3),(11 22 33),(100 2 3))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 100, 22))
 
 
 if __name__ == '__main__':
