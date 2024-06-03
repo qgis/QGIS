@@ -96,6 +96,8 @@ jobs:
         run: |
           cmake --build "${{ github.workspace }}/build" --target bundle --config Release
 
+      - uses: m-kuhn/action-tmate@patch-1
+
       - name: 📦 Create SDK
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
