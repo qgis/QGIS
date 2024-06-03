@@ -52,6 +52,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &acti
   connect( mMoveDownButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::moveDown );
   connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::remove );
   connect( mAddButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::insert );
+  connect( mDuplicateButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::duplicate );
   connect( mAddDefaultActionsButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::addDefaultActions );
 
   init( actions, mLayer->attributeTableConfig() );
@@ -296,6 +297,35 @@ void QgsAttributeActionDialog::insert()
   }
 }
 
+void QgsAttributeActionDialog::duplicate()
+{
+  // Add the action details as a new row in the table.
+  const int pos = mAttributeActionTable->rowCount();
+  const int row = mAttributeActionTable->currentRow();
+
+  QgsAttributeActionPropertiesDialog dlg(
+    static_cast<Qgis::AttributeActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
+    mAttributeActionTable->item( row, Description )->text(),
+    mAttributeActionTable->item( row, ShortTitle )->text(),
+    mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
+    mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
+    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+    mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(),
+    mAttributeActionTable->item( row, NotificationMessage )->text(),
+    mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->checkState() == Qt::Checked,
+    mLayer
+  );
+
+  dlg.setWindowTitle( tr( "Duplicate Action" ) );
+
+  if ( dlg.exec() )
+  {
+    const QString name = uniqueName( dlg.description() );
+
+    insertRow( pos, dlg.type(), name, dlg.actionText(), dlg.iconPath(), dlg.capture(), dlg.shortTitle(), dlg.actionScopes(), dlg.notificationMessage(), dlg.isEnabledOnlyWhenEditable() );
+  }
+}
+
 void QgsAttributeActionDialog::updateButtons()
 {
   QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
@@ -314,6 +344,7 @@ void QgsAttributeActionDialog::updateButtons()
   }
 
   mRemoveButton->setEnabled( hasSelection );
+  mDuplicateButton->setEnabled( hasSelection );
 }
 
 void QgsAttributeActionDialog::addDefaultActions()
