@@ -551,7 +551,7 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
   }
 }
 
-QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   if ( !mExteriorRing )
     return nullptr;
@@ -560,7 +560,7 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
   std::unique_ptr< QgsCurvePolygon > polygon( createEmptyWithSameType() );
 
   // exterior ring
-  auto exterior = std::unique_ptr<QgsCurve> { static_cast< QgsCurve *>( mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) };
+  auto exterior = std::unique_ptr<QgsCurve> { static_cast< QgsCurve *>( mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) };
 
   if ( !exterior )
     return nullptr;
@@ -573,7 +573,7 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
     if ( !interior )
       continue;
 
-    QgsCurve *gridifiedInterior = static_cast< QgsCurve * >( interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
+    QgsCurve *gridifiedInterior = static_cast< QgsCurve * >( interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) );
 
     if ( !gridifiedInterior )
       continue;
