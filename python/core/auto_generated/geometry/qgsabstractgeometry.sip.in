@@ -604,7 +604,7 @@ E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPo
 :return: the converted geometry. Caller takes ownership
 %End
 
-    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const = 0 /Factory/;
 %Docstring
 Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
 Ownership is transferred to the caller.
@@ -626,6 +626,7 @@ In this case, it can be thought like rounding the x and y of all the points/vert
 :param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
 :param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
 :param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+:param removeRedundantPoints: if ``True``, then points which are redundant (e.g. they represent mid points on a straight line segment) will be skipped (since QGIS 3.38)
 %End
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;

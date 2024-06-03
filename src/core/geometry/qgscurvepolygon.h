@@ -137,7 +137,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     double perimeter() const override SIP_HOLDGIL;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 

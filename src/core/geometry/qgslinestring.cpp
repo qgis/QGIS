@@ -326,7 +326,7 @@ bool QgsLineString::isValid( QString &error, Qgis::GeometryValidityFlags flags )
   return QgsCurve::isValid( error, flags );
 }
 
-QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   const int length = numPoints();
   if ( length < 2 )
@@ -355,6 +355,7 @@ QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, d
   double previousY = 0;
   double previousZ = 0;
   double previousM = 0;
+  int outSize = 0;
   for ( int i = 0; i < length; ++i )
   {
     const double currentX = *xIn++;
@@ -375,14 +376,43 @@ QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, d
                                 && ( !hasM || mSpacing <= 0 || qgsDoubleNear( roundedM, previousM ) );
       if ( isPointEqual )
         continue;
-    }
 
-    outX.append( roundedX );
-    outY.append( roundedY );
-    if ( hasZ )
-      outZ.append( roundedZ );
-    if ( hasM )
-      outM.append( roundedM );
+      // maybe previous point is redundant and is just a midpoint on a straight line -- let's check
+      bool previousPointRedundant = false;
+      if ( outSize > 1 && !hasZ && !hasM )
+      {
+        previousPointRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( outSize - 1 ),
+                                 outY.at( outSize - 1 ),
+                                 outX.at( outSize - 2 ),
+                                 outY.at( outSize - 2 ),
+                                 roundedX, roundedY ) == 0;
+      }
+      if ( previousPointRedundant )
+      {
+        outX[ outSize - 1 ] = roundedX;
+        outY[ outSize - 1 ] = roundedY;
+      }
+      else
+      {
+        outX.append( roundedX );
+        outY.append( roundedY );
+        if ( hasZ )
+          outZ.append( roundedZ );
+        if ( hasM )
+          outM.append( roundedM );
+        outSize++;
+      }
+    }
+    else
+    {
+      outX.append( roundedX );
+      outY.append( roundedY );
+      if ( hasZ )
+        outZ.append( roundedZ );
+      if ( hasM )
+        outM.append( roundedM );
+      outSize++;
+    }
 
     previousX = roundedX;
     previousY = roundedY;
@@ -390,7 +420,7 @@ QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, d
     previousM = roundedM;
   }
 
-  if ( outX.length() < 2 || ( isClosed() && outX.length() < 4 ) )
+  if ( outSize < 2 || ( isClosed() && outSize < 4 ) )
     return nullptr;
 
   return new QgsLineString( outX, outY, outZ, outM );

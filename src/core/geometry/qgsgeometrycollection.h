@@ -184,7 +184,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int dimension() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
     void clear() override;
-    QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;

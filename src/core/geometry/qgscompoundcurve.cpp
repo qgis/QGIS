@@ -465,13 +465,13 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
   return line;
 }
 
-QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   std::unique_ptr<QgsCompoundCurve> result( createEmptyWithSameType() );
 
   for ( QgsCurve *curve : mCurves )
   {
-    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) );
+    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
     if ( gridified )
     {
       result->mCurves.append( gridified.release() );

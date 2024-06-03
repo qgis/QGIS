@@ -92,13 +92,13 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
-QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   std::unique_ptr<QgsGeometryCollection> result;
 
   for ( auto geom : mGeometries )
   {
-    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) };
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) };
     if ( gridified )
     {
       if ( !result )
