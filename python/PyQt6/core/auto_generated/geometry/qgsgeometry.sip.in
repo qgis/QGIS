@@ -902,6 +902,16 @@ Adds a new part to this geometry.
 :return: OperationResult a result code: success or reason of failure
 %End
 
+    Qgis::GeometryOperationResult addPartWkbType( QgsAbstractGeometry *part /Transfer/, Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
+%Docstring
+Adds a new part to this geometry.
+
+:param part: part to add (ownership is transferred)
+:param wkbType: default WKB type to create if no existing geometry
+
+:return: OperationResult a result code: success or reason of failure
+%End
+
     Qgis::GeometryOperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
 %Docstring
 Adds a new island polygon to a multipolygon feature

@@ -935,6 +935,42 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &poin
   return addPart( partGeom.release(), geomType );
 }
 
+Qgis::GeometryOperationResult QgsGeometry::addPartWkbType( QgsAbstractGeometry *part, Qgis::WkbType wkbType )
+{
+  std::unique_ptr< QgsAbstractGeometry > p( part );
+  if ( !d->geometry )
+  {
+    switch ( QgsWkbTypes::flatType( wkbType ) )
+    {
+      case Qgis::WkbType::Point:
+        reset( std::make_unique< QgsMultiPoint >() );
+        break;
+      case Qgis::WkbType::LineString:
+        reset( std::make_unique< QgsMultiLineString >() );
+        break;
+      case Qgis::WkbType::Polygon:
+        reset( std::make_unique< QgsMultiPolygon >() );
+        break;
+      case Qgis::WkbType::CurvePolygon:
+        reset( std::make_unique< QgsMultiSurface >() );
+        break;
+      case Qgis::WkbType::CompoundCurve:
+        reset( std::make_unique< QgsMultiCurve >() );
+        break;
+      default:
+        reset( nullptr );
+        return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
+    }
+  }
+  else
+  {
+    detach();
+  }
+
+  convertToMultiType();
+  return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( p ) );
+}
+
 Qgis::GeometryOperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qgis::GeometryType geomType )
 {
   std::unique_ptr< QgsAbstractGeometry > p( part );

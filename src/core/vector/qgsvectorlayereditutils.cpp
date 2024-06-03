@@ -306,7 +306,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
     geometry = f.geometry();
   }
 
-  Qgis::GeometryOperationResult errorCode = geometry.addPart( ring, mLayer->geometryType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartWkbType( ring, mLayer->wkbType() );
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
