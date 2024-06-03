@@ -140,10 +140,13 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   // create an empty form to find out if it needs geometry or not
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
 
+  const QgsExpression sortingExpression = QgsExpression( mConfig.sortExpression() );
+
   const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry() ||
                              !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
                              || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
-                             || emptyForm.needsGeometry();
+                             || emptyForm.needsGeometry()
+                             || sortingExpression.needsGeometry();
 
   initLayerCache( needsGeometry );
   initModels( mapCanvas, request, loadFeatures );
@@ -1330,10 +1333,13 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
   mFilterModel->setAttributeTableConfig( mConfig );
   mTableView->setAttributeTableConfig( mConfig );
   const QgsAttributeList attributes { requiredAttributes( mLayer ) };
-  // Determine if the sort expression needs geometry
-  const bool newSortExpressionNeedsGeometry { QgsExpression( config.sortExpression() ).needsGeometry() };
   QgsFeatureRequest request = mMasterModel->request();
-  request.setFlags( request.flags().setFlag( Qgis::FeatureRequestFlag::NoGeometry, !newSortExpressionNeedsGeometry ) );
+  // if the sort expression needs geometry reset the flag
+  if ( QgsExpression( config.sortExpression() ).needsGeometry() )
+  {
+    mLayerCache->setCacheGeometry( true );
+    request.setFlags( request.flags().setFlag( Qgis::FeatureRequestFlag::NoGeometry, false ) );
+  }
   request.setSubsetOfAttributes( attributes );
   mMasterModel->setRequest( request );
   mLayerCache->setCacheSubsetOfAttributes( attributes );
