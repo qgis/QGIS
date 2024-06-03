@@ -37,7 +37,6 @@
 #include "qgsrasterpyramid.h"
 #include "qgspointxy.h"
 #include "qgssettings.h"
-#include "qgsogrutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
@@ -4562,8 +4561,8 @@ int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, Q
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
     return -1;
   }
-  QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
-  QString layerName = uriParts["layerName"].toString();
+
+  QString layerName = getLayerNameForStyle( uri, ds );
   return QgsOgrUtils::listStyles( ds.get(), layerName, "", ids, names, descriptions, errCause );
 }
 
@@ -4576,8 +4575,8 @@ bool QgsGdalProviderMetadata::styleExists( const QString &uri, const QString &st
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
     return false;
   }
-  QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
-  QString layerName = uriParts["layerName"] .toString();
+
+  QString layerName = getLayerNameForStyle( uri, ds );
   return QgsOgrUtils::styleExists( ds.get(), layerName, "", styleId, errCause );
 }
 
@@ -4616,8 +4615,8 @@ bool QgsGdalProviderMetadata::saveStyle( const QString &uri, const QString &qmlS
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
     return false;
   }
-  QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
-  QString layerName = uriParts["layerName"].toString();
+
+  QString layerName = getLayerNameForStyle( uri, ds );
   return QgsOgrUtils::saveStyle( ds.get(), layerName, "", qmlStyle, sldStyle, styleName, styleDescription, uiFileContent, useAsDefault, errCause );
 }
 
@@ -4636,9 +4635,27 @@ QString QgsGdalProviderMetadata::loadStoredStyle( const QString &uri, QString &s
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
     return QString();
   }
+
+  QString layerName = getLayerNameForStyle( uri, ds );
+  return QgsOgrUtils::loadStoredStyle( ds.get(), layerName, "", styleName, errCause );
+}
+
+QString QgsGdalProviderMetadata::getLayerNameForStyle( const QString &uri, gdal::dataset_unique_ptr &ds )
+{
   QVariantMap uriParts = QgsGdalProviderBase::decodeGdalUri( uri );
   QString layerName = uriParts["layerName"].toString();
-  return QgsOgrUtils::loadStoredStyle( ds.get(), layerName, "", styleName, errCause );
+  if ( layerName.isEmpty() )
+  {
+    GDALDriverH driver = GDALGetDatasetDriver( ds.get() );
+    if ( driver )
+    {
+      if ( GDALGetDriverShortName( driver ) == QStringLiteral( "GPKG" ) )
+      {
+        layerName = GDALGetMetadataItem( ds.get(), "IDENTIFIER", "" );
+      }
+    }
+  }
+  return layerName;
 }
 
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():
