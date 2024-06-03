@@ -1051,9 +1051,9 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
   else
   {
     detach();
+    convertToMultiType();
   }
 
-  convertToMultiType();
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( p ) );
 }
 
