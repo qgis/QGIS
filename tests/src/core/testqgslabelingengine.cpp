@@ -5159,7 +5159,6 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPointHtmlLabel()
   QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
-  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
 
   p.end();
