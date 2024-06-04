@@ -269,6 +269,14 @@ class TestQgsMapLayer(QgisTestCase):
         self.assertFalse(rl.mapTipTemplate())
         self.assertFalse(rl.hasMapTips())
 
+    def testError(self):
+        """
+        Test error reporting methods
+        """
+        vl = QgsVectorLayer("ErrorString", "test", "error")
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.error().summary(), "")
+
 
 if __name__ == '__main__':
     unittest.main()
