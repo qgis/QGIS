@@ -1337,7 +1337,7 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
   if ( conn.isNull() )
     return QgsRectangle();
 
-  if ( QgsHanaUtils::toHANAVersion(conn->getDatabaseVersion()).majorVersion() < 2 )
+  if ( QgsHanaUtils::toHANAVersion( conn->getDatabaseVersion() ).majorVersion() < 2 )
     useEstimatedMetadata = false;
 
   try
@@ -1349,10 +1349,11 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
       sql = ::buildQuery(
               "SYS.M_ST_GEOMETRY_COLUMNS",
               "MIN_X,MIN_Y,MAX_X,MAX_Y",
-              QStringLiteral( "SCHEMA_NAME=%1 AND TABLE_NAME=%2" )
+              QStringLiteral( "SCHEMA_NAME=%1 AND TABLE_NAME=%2 AND COLUMN_NAME=%3" )
               .arg(
                 QgsHanaUtils::quotedString( mSchemaName ),
-                QgsHanaUtils::quotedString( mTableName ) ), QString(), 1 );
+                QgsHanaUtils::quotedString( mTableName ),
+                QgsHanaUtils::quotedString( mGeometryColumn ) ), QString(), 1 );
     }
     else
     {
@@ -1394,7 +1395,8 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
   }
   catch ( const QgsHanaException &ex )
   {
-    if ( useEstimatedMetadata ) {
+    if ( useEstimatedMetadata )
+    {
       // Try again without fast extent estimation
       return estimateExtent( false );
     }
