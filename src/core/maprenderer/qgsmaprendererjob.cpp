@@ -891,7 +891,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       if ( forceVector && !maskLayerHasEffects[ job.layerId ] )
       {
         // set a painter to get all masking instruction in order to later clip masked symbol layer
-        maskPaintDevice = useGeometryBackend ? dynamic_cast< QPaintDevice *>( new QgsGeometryPaintDevice( true ) ) : dynamic_cast< QPaintDevice * >( new QgsMaskPaintDevice( true ) );
+        maskPaintDevice = useGeometryBackend ? dynamic_cast< QPaintDevice *>( new QgsGeometryPaintDevice() ) : dynamic_cast< QPaintDevice * >( new QgsMaskPaintDevice() );
         maskPainter = new QPainter( maskPaintDevice );
       }
       else
