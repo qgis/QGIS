@@ -276,9 +276,23 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 
-    bool processCanvasPressEvent( QgsMapMouseEvent *e );
-    bool processCanvasMoveEvent( QgsMapMouseEvent *e );
-    bool processCanvasReleaseEvent( QgsMapMouseEvent *e );
+    /**
+     * Processes the canvas press \a event.
+     * \returns Returns TRUE if the event has been 'eaten' and should not propagate further.
+     */
+    bool processCanvasPressEvent( QgsMapMouseEvent *event );
+
+    /**
+     * Processes the canvas move \a event.
+     * \returns Returns TRUE if the event has been 'eaten' and should not propagate further.
+     */
+    bool processCanvasMoveEvent( QgsMapMouseEvent *event );
+
+    /**
+     * Processes the canvas release \a event.
+     * \returns Returns TRUE if the event has been 'eaten' and should not propagate further.
+     */
+    bool processCanvasReleaseEvent( QgsMapMouseEvent *event );
 
     /**
      * Sets an advanced digitizing tool which will take over digitizing until the tool is close.

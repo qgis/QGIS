@@ -108,12 +108,23 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QWidget
 
 #ifndef SIP_RUN
 
+/**
+ * \ingroup gui
+ * \brief A advanced digitizing tools to handle the selection of a point at the intersection
+ * of two circles.
+ * \since QGIS 3.40
+ */
 class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvancedDigitizingTool
 {
     Q_OBJECT
 
   public:
 
+    /**
+     * The advanced digitizing's circles intersection tool constructor.
+     * \param canvas The map canvas on which the widget operates
+     * \param cadDockWidget The cadDockWidget to which the floater belongs
+     */
     explicit QgsAdvancedDigitizingCirclesIntersectionTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void paint( QPainter *painter ) override;

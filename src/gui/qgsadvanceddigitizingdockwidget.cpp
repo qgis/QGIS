@@ -1545,25 +1545,25 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   return segment;
 }
 
-bool QgsAdvancedDigitizingDockWidget::processCanvasPressEvent( QgsMapMouseEvent *e )
+bool QgsAdvancedDigitizingDockWidget::processCanvasPressEvent( QgsMapMouseEvent *event )
 {
   if ( mCurrentTool )
   {
-    mCurrentTool->canvasPressEvent( e );
+    mCurrentTool->canvasPressEvent( event );
   }
 
   return constructionMode();
 }
 
-bool QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *e )
+bool QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *event )
 {
   // perpendicular/parallel constraint
   // do a soft lock when snapping to a segment
-  alignToSegment( e, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+  alignToSegment( event, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
 
   if ( mCurrentTool )
   {
-    mCurrentTool->canvasMoveEvent( e );
+    mCurrentTool->canvasMoveEvent( event );
   }
 
   updateCadPaintItem();
@@ -1571,23 +1571,23 @@ bool QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *
   return false;
 }
 
-bool QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEvent *e )
+bool QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEvent *event )
 {
-  if ( alignToSegment( e ) )
+  if ( alignToSegment( event ) )
   {
     return true;
   }
 
   if ( mCurrentTool )
   {
-    if ( mCurrentTool->canvasReleaseEvent( e ) )
+    if ( mCurrentTool->canvasReleaseEvent( event ) )
     {
       return true;
     }
     else
     {
       // update the point list
-      QgsPoint point( e->mapPoint() );
+      QgsPoint point( event->mapPoint() );
       point.setZ( QgsMapToolEdit::defaultZValue() );
       point.setM( QgsMapToolEdit::defaultMValue() );
 
@@ -1603,7 +1603,7 @@ bool QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEven
     }
   }
 
-  addPoint( e->mapPoint() );
+  addPoint( event->mapPoint() );
   releaseLocks( false );
 
   return constructionMode();
