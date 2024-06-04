@@ -406,6 +406,23 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
     previousM = roundedM;
   }
 
+  if ( removeRedundantPoints && isClosed() && outSize > 4 && !hasZ && !hasM )
+  {
+    // maybe first/last vertex is redundant, let's try to remove that too
+    const bool firstVertexIsRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( 0 ),
+                                        outY.at( 0 ),
+                                        outX.at( outSize - 2 ),
+                                        outY.at( outSize - 2 ),
+                                        outX.at( 1 ), outY.at( 1 ) ) == 0;
+    if ( firstVertexIsRedundant )
+    {
+      outX.removeAt( 0 );
+      outY.removeAt( 0 );
+      outX[ outSize - 2 ] = outX.at( 0 );
+      outY[ outSize - 2 ] = outY.at( 0 );
+    }
+  }
+
   // we previously reserved size based on a worst case scenario, let's free
   // unnecessary memory reservation now
   outX.squeeze();
