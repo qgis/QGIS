@@ -932,7 +932,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                        const QString &provider );
 
     /**
-     * Returns the html formated string with current versions of the libraries and the active plugins
+     * Returns the html formatted string with current versions of the libraries and the active plugins
      */
     QString getVersionString();
 
