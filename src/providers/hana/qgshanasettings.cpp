@@ -118,6 +118,7 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 
   mUserTablesOnly = true;
   mAllowGeometrylessTables = false;
+  mUseEstimatedMetadata = false;
   mSaveUserName = false;
   mSavePassword = false;
   mAuthcfg = QString();
@@ -126,6 +127,8 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
     mUserTablesOnly = QVariant( uri.param( QStringLiteral( "userTablesOnly" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "allowGeometrylessTables" ) ) )
     mAllowGeometrylessTables = QVariant( uri.param( QStringLiteral( "allowGeometrylessTables" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "estimatedmetadata" ) ) )
+    mUseEstimatedMetadata = QVariant( uri.param( QStringLiteral( "estimatedmetadata" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "saveUsername" ) ) )
     mSaveUserName = QVariant( uri.param( QStringLiteral( "saveUsername" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "savePassword" ) ) )
@@ -137,6 +140,7 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 {
   QgsDataSourceUri uri;
+  uri.setUseEstimatedMetadata( mUseEstimatedMetadata );
   uri.setParam( "connectionType", QString::number( static_cast<uint>( mConnectionType ) ) );
   switch ( mConnectionType )
   {
@@ -215,6 +219,7 @@ void QgsHanaSettings::load()
     mPassword = settings.value( key + "/password" ).toString();
   mUserTablesOnly = settings.value( key + "/userTablesOnly", true ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
+  mUseEstimatedMetadata = settings.value( key + "/estimatedmetadata", false ).toBool();
 
   // SSL parameters
   mSslEnabled = settings.value( key + "/sslEnabled", false ).toBool();
@@ -284,6 +289,7 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/password", mSavePassword ? mPassword : QString( ) );
   settings.setValue( key + "/userTablesOnly", mUserTablesOnly );
   settings.setValue( key + "/allowGeometrylessTables", mAllowGeometrylessTables );
+  settings.setValue( key + "/estimatedmetadata", mUseEstimatedMetadata );
   settings.setValue( key + "/sslEnabled", mSslEnabled );
   settings.setValue( key + "/sslCryptoProvider", mSslCryptoProvider );
   settings.setValue( key + "/sslKeyStore", mSslKeyStore );
@@ -333,6 +339,7 @@ void QgsHanaSettings::removeConnection( const QString &name )
   settings.remove( key + "/schema" );
   settings.remove( key + "/userTablesOnly" );
   settings.remove( key + "/allowGeometrylessTables" );
+  settings.remove( key + "/estimatedmetadata" );
   settings.remove( key + "/username" );
   settings.remove( key + "/password" );
   settings.remove( key + "/saveUsername" );

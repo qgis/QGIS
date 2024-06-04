@@ -298,6 +298,7 @@ void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
   settings.setSavePassword( mAuthSettings->storePasswordIsChecked() );
   settings.setUserTablesOnly( chkUserTablesOnly->isChecked() );
   settings.setAllowGeometrylessTables( chkAllowGeometrylessTables->isChecked() );
+  settings.setUseEstimatedMetadata( chkUseEstimatedMetadata->isChecked() );
   settings.setEnableSsl( chkEnableSSL->isChecked() );
   settings.setSslCryptoProvider( cbxCryptoProvider->currentData().toString() );
   settings.setSslKeyStore( txtKeyStore->text() );
@@ -351,6 +352,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   txtSchema->setText( settings.schema() );
   chkUserTablesOnly->setChecked( settings.userTablesOnly() );
   chkAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
+  chkUseEstimatedMetadata->setChecked( settings.useEstimatedMetadata() );
 
   if ( settings.saveUserName() )
   {
