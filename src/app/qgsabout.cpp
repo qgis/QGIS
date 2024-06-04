@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsabout.h"
 #include "qgsapplication.h"
 #include "qgsauthmethodregistry.h"
@@ -227,6 +226,7 @@ void QgsAbout::setVersion( const QString &v )
   txtVersion->setBackgroundRole( QPalette::NoRole );
   txtVersion->setAutoFillBackground( true );
   txtVersion->setHtml( v );
+  mVersionString = v;
 }
 
 void QgsAbout::setWhatsNew()
@@ -276,8 +276,7 @@ void QgsAbout::setPluginInfo()
 
 void QgsAbout::btnCopyToClipboard_clicked()
 {
-  const QString versionString = QgisApp::instance()->getVersionString();
-  QGuiApplication::clipboard()->setText( versionString );
+  QGuiApplication::clipboard()->setText( mVersionString );
 }
 
 void QgsAbout::btnQgisUser_clicked()
