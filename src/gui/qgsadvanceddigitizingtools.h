@@ -108,6 +108,12 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QWidget
 
 #ifndef SIP_RUN
 
+/**
+ * \ingroup gui
+ * \brief A advanced digitizing tools to handle the selection of a poin at the intersection
+ * of two circles.
+ * \since QGIS 3.40
+ */
 class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvancedDigitizingTool
 {
     Q_OBJECT

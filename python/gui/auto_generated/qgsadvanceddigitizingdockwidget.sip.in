@@ -236,9 +236,26 @@ align to segment for between line constraint.
 If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
 %End
 
-    bool processCanvasPressEvent( QgsMapMouseEvent *e );
-    bool processCanvasMoveEvent( QgsMapMouseEvent *e );
-    bool processCanvasReleaseEvent( QgsMapMouseEvent *e );
+    bool processCanvasPressEvent( QgsMapMouseEvent *event );
+%Docstring
+Processes the canvas press ``event``.
+
+:return: Returns ``True`` if the event has been 'eaten' and should not propagate further.
+%End
+
+    bool processCanvasMoveEvent( QgsMapMouseEvent *event );
+%Docstring
+Processes the canvas move ``event``.
+
+:return: Returns ``True`` if the event has been 'eaten' and should not propagate further.
+%End
+
+    bool processCanvasReleaseEvent( QgsMapMouseEvent *event );
+%Docstring
+Processes the canvas release ``event``.
+
+:return: Returns ``True`` if the event has been 'eaten' and should not propagate further.
+%End
 
     void setTool( QgsAdvancedDigitizingTool *tool );
 %Docstring
