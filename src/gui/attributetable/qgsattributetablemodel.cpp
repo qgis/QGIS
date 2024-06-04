@@ -1053,9 +1053,8 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     widgetData = getWidgetData( cache.sortFieldIndex );
   }
 
-  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
-                                    .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                    .setSubsetOfAttributes( cache.sortCacheAttributes );
+  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest ).setFlags( cache.sortCacheExpression.needsGeometry() ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( cache.sortCacheAttributes );
+
   QgsFeatureIterator it = mLayerCache->getFeatures( request );
 
   QgsFeature f;
@@ -1094,9 +1093,17 @@ QString QgsAttributeTableModel::sortCacheExpression( unsigned long cacheIndex ) 
 
 void QgsAttributeTableModel::setRequest( const QgsFeatureRequest &request )
 {
-  mFeatureRequest = request;
-  if ( mLayer && !mLayer->isSpatial() )
-    mFeatureRequest.setFlags( mFeatureRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
+  if ( ! mFeatureRequest.compare( request ) )
+  {
+    mFeatureRequest = request;
+    if ( mLayer && !mLayer->isSpatial() )
+      mFeatureRequest.setFlags( mFeatureRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
+    // Prefetch data for sorting, resetting all caches
+    for ( unsigned long i = 0; i < mSortCaches.size(); ++i )
+    {
+      prefetchSortData( sortCacheExpression( i ), i );
+    }
+  }
 }
 
 const QgsFeatureRequest &QgsAttributeTableModel::request() const

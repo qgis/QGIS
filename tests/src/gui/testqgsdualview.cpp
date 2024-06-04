@@ -344,6 +344,17 @@ void TestQgsDualView::testNoGeom()
   model = dv->masterModel();
   QVERIFY( !model->layerCache()->cacheGeometry() );
   QVERIFY( ( model->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
+
+  // request with NO geometry but with an ordering expression which does
+  req = QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+  dv.reset( new QgsDualView() );
+  dv->init( mPointsLayer, mCanvas, req );
+  auto config = mPointsLayer->attributeTableConfig();
+  config.setSortExpression( "$x" );
+  dv->setAttributeTableConfig( config );
+  model = dv->masterModel();
+  QVERIFY( model->layerCache()->cacheGeometry() );
+  QVERIFY( !( model->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 }
 
 #ifdef WITH_QTWEBKIT
