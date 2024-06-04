@@ -124,6 +124,10 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
         horizontalHeader()->setSortIndicatorShown( true );
         horizontalHeader()->setSortIndicator( columns.value( refCols.constFirst() ), config.sortOrder() );
       }
+      else
+      {
+        horizontalHeader()->setSortIndicatorShown( false );
+      }
     }
   }
   mSortExpression = config.sortExpression();
