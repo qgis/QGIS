@@ -5184,8 +5184,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     "       a.attname as column_name, "
     "       fk.constraint_schema, "
     "       referenced_table as table_name, "
-    "       af.attname as column_name, "
-    "       fk.confkey as ordinal_position "
+    "       af.attname as column_name "
     "FROM foreign_keys fk "
     "JOIN pg_attribute af ON af.attnum = fk.confkey "
     "AND af.attrelid = fk.confrelid "
@@ -5219,13 +5218,11 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
       refSchema = refSchema.mid( 1, refSchema.length() - 2 );
     }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
-    const QString position = sqlResult.PQgetvalue( row, 5 );
-    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
-    if ( ( position == QLatin1String( "1" ) ) || ( !refTableFound.contains( refTable ) ) )
+    // try to find if we have layers for the referenced table
+    const auto foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
+    if ( !refTableFound.contains( refTable ) )
     {
-      // first reference field => try to find if we have layers for the referenced table
-      const auto constFoundLayers = foundLayers;
-      for ( const QgsVectorLayer *foundLayer : constFoundLayers )
+      for ( const QgsVectorLayer *foundLayer : foundLayers )
       {
         QgsRelation relation;
         relation.setName( name );
