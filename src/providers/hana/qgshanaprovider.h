@@ -110,7 +110,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QString buildQuery( const QString &columns, const QString &where ) const;
     QString buildQuery( const QString &columns ) const;
     bool checkPermissionsAndSetCapabilities( QgsHanaConnection &conn );
-    QgsRectangle estimateExtent() const;
+    QgsRectangle estimateExtent( bool useEstimatedMetadata ) const;
     void readAttributeFields( QgsHanaConnection &conn );
     void readGeometryType( QgsHanaConnection &conn );
     void readMetadata( QgsHanaConnection &conn );
@@ -130,6 +130,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     int mSrid = -1;
     // Flag that shows the presence of a planar equivalent in a database
     bool mHasSrsPlanarEquivalent = false;
+    // Flag that shows whether estimated metadata should be used
+    bool mUseEstimatedMetadata = false;
     // Name of the table with no schema
     QString mTableName;
     // Name of the schema

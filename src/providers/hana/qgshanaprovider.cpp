@@ -367,6 +367,7 @@ QgsHanaProvider::QgsHanaProvider(
   mSrid = ( !mUri.srid().isEmpty() ) ? mUri.srid().toInt() : -1;
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
   mHasSrsPlanarEquivalent = false;
+  mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
   auto appendError = [this]( const QString & message )
   {
@@ -456,7 +457,7 @@ QgsVectorDataProvider::Capabilities QgsHanaProvider::capabilities() const
 QgsRectangle QgsHanaProvider::extent() const
 {
   if ( mLayerExtent.isEmpty() )
-    mLayerExtent = estimateExtent();
+    mLayerExtent = estimateExtent( mUseEstimatedMetadata );
   return mLayerExtent;
 }
 
@@ -1327,7 +1328,7 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
   return true;
 }
 
-QgsRectangle QgsHanaProvider::estimateExtent() const
+QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
 {
   if ( mGeometryColumn.isEmpty() )
     return QgsRectangle();
@@ -1336,19 +1337,36 @@ QgsRectangle QgsHanaProvider::estimateExtent() const
   if ( conn.isNull() )
     return QgsRectangle();
 
+  if ( QgsHanaUtils::toHANAVersion(conn->getDatabaseVersion()).majorVersion() < 2 )
+    useEstimatedMetadata = false;
+
   try
   {
     QString sql;
-    if ( isSrsRoundEarth( *conn, mSrid ) )
+
+    if ( useEstimatedMetadata )
     {
-      QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) :
-                           QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
-      sql = buildQuery( QStringLiteral( "MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax())" ).arg( geomColumn ) );
+      sql = ::buildQuery(
+              "SYS.M_ST_GEOMETRY_COLUMNS",
+              "MIN_X,MIN_Y,MAX_X,MAX_Y",
+              QStringLiteral( "SCHEMA_NAME=%1 AND TABLE_NAME=%2" )
+              .arg(
+                QgsHanaUtils::quotedString( mSchemaName ),
+                QgsHanaUtils::quotedString( mTableName ) ), QString(), 1 );
     }
     else
     {
-      QString subQuery = buildQuery( QStringLiteral( "ST_EnvelopeAggr(%1) AS ext" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ) ) );
-      sql = QStringLiteral( "SELECT ext.ST_XMin(),ext.ST_YMin(),ext.ST_XMax(),ext.ST_YMax() FROM (%1)" ).arg( subQuery );
+      if ( isSrsRoundEarth( *conn, mSrid ) )
+      {
+        QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) :
+                             QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
+        sql = buildQuery( QStringLiteral( "MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax())" ).arg( geomColumn ) );
+      }
+      else
+      {
+        QString subQuery = buildQuery( QStringLiteral( "ST_EnvelopeAggr(%1) AS ext" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ) ) );
+        sql = QStringLiteral( "SELECT ext.ST_XMin(),ext.ST_YMin(),ext.ST_XMax(),ext.ST_YMax() FROM (%1)" ).arg( subQuery );
+      }
     }
 
     QgsHanaResultSetRef rsExtent = conn->executeQuery( sql );
@@ -1363,12 +1381,24 @@ QgsRectangle QgsHanaProvider::estimateExtent() const
         ret.setXMaximum( rsExtent->getValue( 3 ).toDouble() );
         ret.setYMaximum( rsExtent->getValue( 4 ).toDouble() );
       }
+      else if ( useEstimatedMetadata )
+      {
+        rsExtent->close();
+
+        // In this case it is very likely that the fast extent is not yet available, try again without using cached data
+        return estimateExtent( false );
+      }
     }
     rsExtent->close();
     return ret;
   }
   catch ( const QgsHanaException &ex )
   {
+    if ( useEstimatedMetadata ) {
+      // Try again without fast extent estimation
+      return estimateExtent( false );
+    }
+
     pushError( tr( "Failed to estimate the data extent: %1" ).arg( ex.what() ) );
   }
 

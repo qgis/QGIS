@@ -152,6 +152,15 @@ class QgsHanaSettings
     }
 
     /**
+     * Specifies whether estimated metadata from e.g. an index can be used or not.
+     */
+    bool useEstimatedMetadata() const { return mUseEstimatedMetadata; }
+    void setUseEstimatedMetadata( bool useEstimatedMetadata )
+    {
+      mUseEstimatedMetadata = useEstimatedMetadata;
+    }
+
+    /**
      * Enables or disables TLS 1.1 – TLS1.2 encryption.
      */
     bool enableSsl() const { return mSslEnabled; }
@@ -317,6 +326,7 @@ class QgsHanaSettings
     bool mSavePassword = false;
     bool mUserTablesOnly = true;
     bool mAllowGeometrylessTables = false;
+    bool mUseEstimatedMetadata = false;
     QMap<QString, QMap<QString, QStringList>> mKeyColumns;
     // SSL parameters
     bool mSslEnabled = false;
