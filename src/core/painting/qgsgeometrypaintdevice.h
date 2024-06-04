@@ -92,7 +92,7 @@ class QgsGeometryPaintEngine: public QPaintEngine
     bool mUsePathStroker = false;
     QPen mPen;
     QgsGeometryCollection mGeometry;
-    int mStrokedPathsSegments = 8;
+    static constexpr int mStrokedPathsSegments = 8;
 };
 
 #endif
