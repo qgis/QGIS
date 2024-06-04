@@ -502,10 +502,10 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
   if ( queuedPolygons.empty() )
     return;
 
-  mGeometry.reserve( mGeometry.numGeometries() + queuedPolygons.size() );
+  mGeometry.reserve( static_cast< int >( mGeometry.numGeometries() + queuedPolygons.size() ) );
 
   QgsMultiPolygon tempMultiPolygon;
-  tempMultiPolygon.reserve( queuedPolygons.size() );
+  tempMultiPolygon.reserve( static_cast< int >( queuedPolygons.size() ) );
   for ( auto &part : queuedPolygons )
   {
     tempMultiPolygon.addGeometry( part.release() );
