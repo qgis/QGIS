@@ -218,10 +218,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     request.setFilterExpression( filterExpression );
   }
 
-  if ( !needsGeom && ( !mLayer || !QgsExpression( mLayer->attributeTableConfig().sortExpression() ).needsGeometry() ) )
-  {
+  // If sort expression requires geometry, we'll need to fetch it
+  needsGeom |= mLayer && QgsExpression( mLayer->attributeTableConfig().sortExpression() ).needsGeometry();  
+  if ( !needsGeom )
     request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  }
 
   // Initialize dual view
   if ( mLayer )
