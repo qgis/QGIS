@@ -354,7 +354,17 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
     const double roundedZ = hasZ && dSpacing > 0 ? ( std::round( currentZ / dSpacing ) * dSpacing ) : currentZ;
     const double roundedM = hasM && mSpacing > 0 ? ( std::round( currentM / mSpacing ) * mSpacing ) : currentM;
 
-    if ( i > 0 )
+    if ( i == 0 )
+    {
+      outX.append( roundedX );
+      outY.append( roundedY );
+      if ( hasZ )
+        outZ.append( roundedZ );
+      if ( hasM )
+        outM.append( roundedM );
+      outSize++;
+    }
+    else
     {
       const bool isPointEqual = qgsDoubleNear( roundedX, previousX )
                                 && qgsDoubleNear( roundedY, previousY )
@@ -388,16 +398,6 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
           outM.append( roundedM );
         outSize++;
       }
-    }
-    else
-    {
-      outX.append( roundedX );
-      outY.append( roundedY );
-      if ( hasZ )
-        outZ.append( roundedZ );
-      if ( hasM )
-        outM.append( roundedM );
-      outSize++;
     }
 
     previousX = roundedX;
