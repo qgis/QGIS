@@ -219,7 +219,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   }
 
   // If sort expression requires geometry, we'll need to fetch it
-  needsGeom |= mLayer && QgsExpression( mLayer->attributeTableConfig().sortExpression() ).needsGeometry();  
+  needsGeom |= mLayer && QgsExpression( mLayer->attributeTableConfig().sortExpression() ).needsGeometry();
   if ( !needsGeom )
     request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
