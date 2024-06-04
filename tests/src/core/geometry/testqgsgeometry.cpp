@@ -2608,6 +2608,14 @@ void TestQgsGeometry::snappedToGrid()
     curve = curve.densifyByCount( 1000 );
     snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
     QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68 415, 68 505, 27 505)" ) );
+
+    // closed linestring, where the first vertex becomes redundant
+    curve = QgsGeometry::fromWkt( "LineString( 68.1 415.2, 90.1 415.2, 90.1 505.2, 27.1 505.2, 27.3 414.9, 68.1 415.2 )" );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (90 415, 90 505, 27 505, 27 415, 90 415)" ) );
+    curve = curve.densifyByCount( 10 );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (90 415, 90 505, 27 505, 27 415, 90 415)" ) );
   }
 
   //compound curve
