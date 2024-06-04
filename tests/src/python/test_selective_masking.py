@@ -174,7 +174,7 @@ class SelectiveMaskingTestBase():
                     renderMapToImageWithTime(map_settings, parallel=do_parallel, cache=cache)
                 img, t = renderMapToImageWithTime(map_settings, parallel=do_parallel, cache=cache)
 
-                suffix = ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
+                suffix = "_" + self.suite_id() + ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
                 res = self.image_check(
                     control_name + suffix,
                     control_name,
@@ -237,7 +237,8 @@ class SelectiveMaskingTestBase():
                             "-png", "-r", "300", "-singlefile"])
 
             rendered_image = QImage(image_result_filename)
-            res = self.image_check(control_name,
+            suffix = "_" + self.suite_id()
+            res = self.image_check(control_name + suffix,
                                    control_name,
                                    rendered_image,
                                    control_name,
@@ -1355,6 +1356,10 @@ class TestSelectiveMaskingQPainterPathBackend(QgisTestCase, SelectiveMaskingTest
         return "selective_masking"
 
     @classmethod
+    def suite_id(cls):
+        return "qpainterpath"
+
+    @classmethod
     def setUpClass(cls):
         QgsSettings().setValue('map/mask-backend', 'qpainterpath')
         QgisTestCase.setUpClass()
@@ -1370,6 +1375,10 @@ class TestSelectiveMaskingGeometryBackend(QgisTestCase, SelectiveMaskingTestBase
     @classmethod
     def control_path_prefix(cls):
         return "selective_masking"
+
+    @classmethod
+    def suite_id(cls):
+        return "geometry"
 
     @classmethod
     def setUpClass(cls):
