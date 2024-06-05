@@ -3403,7 +3403,7 @@ static QVariant fcnSimplifyVW( const QVariantList &values, const QgsExpressionCo
 
   double tolerance = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
 
-  QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, QgsMapToPixelSimplifier::Visvalingam );
+  QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, Qgis::VectorSimplificationAlgorithm::Visvalingam );
 
   QgsGeometry simplified = simplifier.simplify( geom );
   if ( simplified.isNull() )

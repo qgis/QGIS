@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsimplify.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE
+
+QgsSimplifyAlgorithm::~QgsSimplifyAlgorithm() = default;
 
 QString QgsSimplifyAlgorithm::name() const
 {
@@ -93,8 +96,8 @@ bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
   if ( mDynamicTolerance )
     mToleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value< QgsProperty >();
 
-  mMethod = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
-  if ( mMethod != QgsMapToPixelSimplifier::Distance )
+  mMethod = static_cast< Qgis::VectorSimplificationAlgorithm >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  if ( mMethod != Qgis::VectorSimplificationAlgorithm::Distance )
     mSimplifier.reset( new QgsMapToPixelSimplifier( QgsMapToPixelSimplifier::SimplifyGeometry, mTolerance, mMethod ) );
 
   return true;
@@ -107,7 +110,7 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
   {
     const QgsGeometry inputGeometry = f.geometry();
     QgsGeometry outputGeometry;
-    if ( mMethod == QgsMapToPixelSimplifier::Distance )
+    if ( mMethod == Qgis::VectorSimplificationAlgorithm::Distance )
     {
       double tolerance = mTolerance;
       if ( mDynamicTolerance )
