@@ -898,15 +898,15 @@ QString QgsPostgresRasterProvider::lastError()
   return mError;
 }
 
-int QgsPostgresRasterProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsPostgresRasterProvider::capabilities() const
 {
-  const int capability = QgsRasterDataProvider::Identify
-                         | QgsRasterDataProvider::IdentifyValue
-                         | QgsRasterDataProvider::Size
-                         // TODO:| QgsRasterDataProvider::BuildPyramids
-                         | QgsRasterDataProvider::Create
-                         | QgsRasterDataProvider::Remove
-                         | QgsRasterDataProvider::Prefetch;
+  const Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
+      | Qgis::RasterInterfaceCapability::IdentifyValue
+      | Qgis::RasterInterfaceCapability::Size
+      // TODO:| QgsRasterDataProvider::BuildPyramids
+      | Qgis::RasterInterfaceCapability::Create
+      | Qgis::RasterInterfaceCapability::Remove
+      | Qgis::RasterInterfaceCapability::Prefetch;
   return capability;
 }
 

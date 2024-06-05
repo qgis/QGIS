@@ -124,7 +124,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
       // resampling here. A real fix would be to do resampling during reprojection
       // however.
       if ( !( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
-           ( provider->capabilities() & QgsRasterDataProvider::Size ) )
+           ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         mMaxSrcXRes = provider->extent().width() / provider->xSize();
         mMaxSrcYRes = provider->extent().height() / provider->ySize();

@@ -62,7 +62,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     virtual QString htmlMetadata() const override;
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
-    int capabilities() const override;
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
 
     static QString providerKey();
 

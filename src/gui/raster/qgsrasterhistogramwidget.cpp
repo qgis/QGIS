@@ -303,7 +303,7 @@ static int getBinCount( QgsRasterInterface *rasterInterface,
   xRes = yRes = std::sqrt( ( static_cast<double>( extent.width( ) ) * extent.height() ) / sampleSize );
 
   // But limit by physical resolution
-  if ( rasterInterface->capabilities() & QgsRasterInterface::Size )
+  if ( rasterInterface->capabilities() & Qgis::RasterInterfaceCapability::Size )
   {
     const double srcXRes = extent.width() / rasterInterface->xSize();
     const double srcYRes = extent.height() / rasterInterface->ySize();

@@ -1230,16 +1230,16 @@ bool QgsWcsProvider::calculateExtent() const
 }
 
 
-int QgsWcsProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsWcsProvider::capabilities() const
 {
-  int capability = NoCapabilities;
-  capability |= QgsRasterDataProvider::Identify;
-  capability |= QgsRasterDataProvider::IdentifyValue;
-  capability |= QgsRasterDataProvider::Prefetch;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::NoCapabilities;
+  capability |= Qgis::RasterInterfaceCapability::Identify;
+  capability |= Qgis::RasterInterfaceCapability::IdentifyValue;
+  capability |= Qgis::RasterInterfaceCapability::Prefetch;
 
   if ( mHasSize )
   {
-    capability |= QgsRasterDataProvider::Size;
+    capability |= Qgis::RasterInterfaceCapability::Size;
   }
 
   return capability;

@@ -609,7 +609,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Converts a raster identify \a format to a capability.
      */
-    static Capability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
+    static Qgis::RasterInterfaceCapability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
 
     /**
      * Step width for raster iterations.

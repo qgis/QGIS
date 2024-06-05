@@ -293,7 +293,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     // TODO: Get the table name associated with this provider instance
 
-    int capabilities() const override;
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;

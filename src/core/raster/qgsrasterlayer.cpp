@@ -421,7 +421,7 @@ QString QgsRasterLayer::htmlMetadata() const
 
                 // Raster Width
                 QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Width" ) % QStringLiteral( "</td><td>" );
-  if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+  if ( dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
     myMetadata += QString::number( width() );
   else
     myMetadata += tr( "n/a" );
@@ -429,7 +429,7 @@ QString QgsRasterLayer::htmlMetadata() const
 
                 // Raster height
                 QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Height" ) + QStringLiteral( "</td><td>" );
-  if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+  if ( dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
     myMetadata += QString::number( height() );
   else
     myMetadata += tr( "n/a" );
@@ -654,7 +654,7 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 // horisontal one.
 
   if ( mDataProvider &&
-       mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
+       mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
   }
@@ -666,7 +666,7 @@ double QgsRasterLayer::rasterUnitsPerPixelY() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( mDataProvider &&
-       mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
+       mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
   {
     return mDataProvider->extent().height() / mDataProvider->ySize();
   }
@@ -990,22 +990,22 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   mPipe->set( projector );
 
   // Set default identify format - use the richest format available
-  const int capabilities = mDataProvider->capabilities();
+  const Qgis::RasterInterfaceCapabilities capabilities = mDataProvider->capabilities();
   Qgis::RasterIdentifyFormat identifyFormat = Qgis::RasterIdentifyFormat::Undefined;
-  if ( capabilities & QgsRasterInterface::IdentifyHtml )
+  if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyHtml )
   {
     // HTML is usually richest
     identifyFormat = Qgis::RasterIdentifyFormat::Html;
   }
-  else if ( capabilities & QgsRasterInterface::IdentifyFeature )
+  else if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyFeature )
   {
     identifyFormat = Qgis::RasterIdentifyFormat::Feature;
   }
-  else if ( capabilities & QgsRasterInterface::IdentifyText )
+  else if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyText )
   {
     identifyFormat = Qgis::RasterIdentifyFormat::Text;
   }
-  else if ( capabilities & QgsRasterInterface::IdentifyValue )
+  else if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyValue )
   {
     identifyFormat = Qgis::RasterIdentifyFormat::Value;
   }

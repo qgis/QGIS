@@ -361,6 +361,14 @@ QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }
 
 QString QgsAmsProvider::providerKey() { return AMS_PROVIDER_KEY; }
 
+Qgis::RasterInterfaceCapabilities QgsAmsProvider::capabilities() const
+{
+  return Qgis::RasterInterfaceCapability::Identify
+         | Qgis::RasterInterfaceCapability::IdentifyText
+         | Qgis::RasterInterfaceCapability::IdentifyFeature
+         | Qgis::RasterInterfaceCapability::Prefetch;
+}
+
 QString QgsAmsProvider::description() const { return AMS_PROVIDER_DESCRIPTION; }
 
 QStringList QgsAmsProvider::subLayerStyles() const

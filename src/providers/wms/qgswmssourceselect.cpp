@@ -522,7 +522,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     return;
   }
 
-  mFeatureCount->setEnabled( caps.identifyCapabilities() != QgsRasterInterface::NoCapabilities );
+  mFeatureCount->setEnabled( caps.identifyCapabilities() != Qgis::RasterInterfaceCapabilities( Qgis::RasterInterfaceCapability::NoCapabilities ) );
 
   populateLayerList( caps );
 }
