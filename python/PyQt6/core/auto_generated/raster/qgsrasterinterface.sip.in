@@ -181,9 +181,10 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 Clone itself, create deep copy
 %End
 
+
     virtual Qgis::RasterInterfaceCapabilities capabilities() const;
 %Docstring
-Returns a bitmask containing the supported capabilities
+Returns the capabilities supported by the interface.
 %End
 
  QString capabilitiesString() const /Deprecated/;
