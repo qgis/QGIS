@@ -611,16 +611,6 @@ QString QgsRasterInterface::capabilitiesString() const
     abilitiesList += tr( "Identify" );
   }
 
-  if ( abilities & Qgis::RasterInterfaceCapability::Create )
-  {
-    abilitiesList += tr( "Create Datasources" );
-  }
-
-  if ( abilities & Qgis::RasterInterfaceCapability::Remove )
-  {
-    abilitiesList += tr( "Remove Datasources" );
-  }
-
   if ( abilities & Qgis::RasterInterfaceCapability::BuildPyramids )
   {
     abilitiesList += tr( "Build Pyramids" );

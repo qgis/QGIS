@@ -904,8 +904,6 @@ Qgis::RasterInterfaceCapabilities QgsPostgresRasterProvider::capabilities() cons
       | Qgis::RasterInterfaceCapability::IdentifyValue
       | Qgis::RasterInterfaceCapability::Size
       // TODO:| QgsRasterDataProvider::BuildPyramids
-      | Qgis::RasterInterfaceCapability::Create
-      | Qgis::RasterInterfaceCapability::Remove
       | Qgis::RasterInterfaceCapability::Prefetch;
   return capability;
 }

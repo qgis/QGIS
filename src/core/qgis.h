@@ -4175,8 +4175,8 @@ class CORE_EXPORT Qgis
     {
       NoCapabilities = 0,
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create = 1 << 2, //!< Create new datasets
-      Remove = 1 << 3, //!< Delete datasets
+      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
+      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
       BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews)
       Identify = 1 << 5, //!< At least one identify format supported
       IdentifyValue = 1 << 6, //!< Numerical values
