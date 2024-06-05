@@ -4181,7 +4181,7 @@ class CORE_EXPORT Qgis
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
       Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
       Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
-      BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews)
+      BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
       Identify = 1 << 5, //!< At least one identify format supported
       IdentifyValue = 1 << 6, //!< Numerical values
       IdentifyText = 1 << 7, //!< WMS text
@@ -4218,6 +4218,7 @@ class CORE_EXPORT Qgis
       ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
       DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
       NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table (since QGIS 3.30)
+      BuildPyramids = 1 << 8, //!< Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability::BuildPyramids)
     };
     Q_ENUM( RasterProviderCapability )
 
