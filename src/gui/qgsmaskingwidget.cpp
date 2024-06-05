@@ -37,6 +37,9 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
   QgsPanelWidget( parent )
 {
   setupUi( this );
+
+  connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
+  connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
 }
 
 void QgsMaskingWidget::onSelectionChanged()
@@ -57,29 +60,6 @@ void QgsMaskingWidget::onSelectionChanged()
 
   emit widgetChanged();
 }
-
-void QgsMaskingWidget::showEvent( QShowEvent *event )
-{
-  Q_UNUSED( event );
-
-  // populate is quite long, so we delay it when the widget is first shown
-  if ( mMustPopulate )
-  {
-    disconnect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
-    disconnect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
-
-    mMustPopulate = false;
-    populate();
-
-    connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
-    connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
-
-    onSelectionChanged();
-  }
-}
-
-
-
 
 /**
  * Symbol layer masks collector. It is an enhanced version of QgsVectorLayerUtils::symbolLayerMasks.
@@ -107,15 +87,15 @@ QList<QPair<QString, QList<QgsSymbolLayerReference>>> symbolLayerMasks( const Qg
 
 void QgsMaskingWidget::setLayer( QgsVectorLayer *layer )
 {
-  if ( mLayer != layer )
-  {
-    mLayer = layer;
-    mMustPopulate = true;
-  }
+  mLayer = layer;
+  populate();
 }
 
 void QgsMaskingWidget::populate()
 {
+  mMaskSourcesWidget->blockSignals( true );
+  mMaskTargetsWidget->blockSignals( true );
+
   mMaskSourcesWidget->update();
   mMaskTargetsWidget->setLayer( mLayer );
 
@@ -175,6 +155,9 @@ void QgsMaskingWidget::populate()
 
   mMaskSourcesWidget->setSelection( maskSources );
   mMaskTargetsWidget->setSelection( maskedSymbolLayers );
+
+  mMaskSourcesWidget->blockSignals( false );
+  mMaskTargetsWidget->blockSignals( false );
 }
 
 void QgsMaskingWidget::apply()
@@ -274,11 +257,6 @@ void QgsMaskingWidget::apply()
     QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
     layer->triggerRepaint();
   }
-}
-
-bool QgsMaskingWidget::hasBeenPopulated()
-{
-  return !mMustPopulate;
 }
 
 SymbolLayerVisitor::SymbolLayerVisitor( SymbolLayerVisitor::SymbolLayerCallback callback ) :

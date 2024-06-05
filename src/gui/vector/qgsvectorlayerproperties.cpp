@@ -759,7 +759,7 @@ void QgsVectorLayerProperties::apply()
   mMetadataFilled = false;
 
   // save masking settings
-  if ( mMaskingWidget && mMaskingWidget->hasBeenPopulated() )
+  if ( mMaskingWidget )
     mMaskingWidget->apply();
 
   // set up the scale based layer visibility stuff....
