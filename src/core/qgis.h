@@ -3936,8 +3936,7 @@ class CORE_EXPORT Qgis
     /**
      * Legend JSON export flags.
      *
-     * Flags to co
-    *    Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorSimplifyMethod::SimplifyHints )ntrol JSON attributes when exporting a legend in JSON format.
+     * Flags to control JSON attributes when exporting a legend in JSON format.
      *
      * \since QGIS 3.36
      */
