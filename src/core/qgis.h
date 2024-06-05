@@ -2532,6 +2532,48 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextCharacterVerticalAlignment )
 
     /**
+     * Simplification algorithms for vector features.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsVectorSimplifyMethod::SimplifyAlgorithm
+     *
+     * \since QGIS 3.28
+     */
+    enum class VectorSimplificationAlgorithm SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorSimplifyMethod, SimplifyAlgorithm ) : int
+      {
+      Distance = 0, //!< The simplification uses the distance between points to remove duplicate points
+      SnapToGrid = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
+      Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
+      SnappedToGridGlobal = 3, //!< Snap to a global grid based on the tolerance. Good for consistent results for incoming vertices, regardless of their feature
+    };
+    Q_ENUM( VectorSimplificationAlgorithm )
+
+    /**
+     * Simplification flags for vector feature rendering.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsVectorSimplifyMethod::SimplifyHint
+     *
+     * \since QGIS 3.36
+     */
+    enum class VectorRenderingSimplificationFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorSimplifyMethod, SimplifyHint ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoSimplification           = 0, //!< No simplification can be applied
+      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+    };
+    Q_ENUM( VectorRenderingSimplificationFlag )
+
+    /**
+     * Simplification flags for vector feature rendering.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsVectorSimplifyMethod::SimplifyHints
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( VectorRenderingSimplificationFlags, VectorRenderingSimplificationFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsVectorSimplifyMethod, SimplifyHints )
+    Q_FLAG( VectorRenderingSimplificationFlags )
+
+    /**
      * Rendering subcomponent properties.
      *
      * \since QGIS 3.22
@@ -3894,7 +3936,8 @@ class CORE_EXPORT Qgis
     /**
      * Legend JSON export flags.
      *
-     * Flags to control JSON attributes when exporting a legend in JSON format.
+     * Flags to co
+    *    Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorSimplifyMethod::SimplifyHints )ntrol JSON attributes when exporting a legend in JSON format.
      *
      * \since QGIS 3.36
      */
@@ -5156,7 +5199,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorRenderingSimplificationFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

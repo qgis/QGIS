@@ -96,7 +96,7 @@ void TestQgsLayoutAtlas::initTestCase()
                                       QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 }
 
