@@ -255,7 +255,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
       *attributeTable = *mAttributeTableBuffer;
       QString errorMessage;
       QString newPath { attributeTable->filePath() };
-      const bool nativeRatSupported = mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable );
+      const bool nativeRatSupported = mRasterLayer->dataProvider()->providerCapabilities().testFlag( Qgis::RasterProviderCapability::NativeRasterAttributeTable );
       bool saveToNative { false };
 
       if ( newPath.isEmpty() && ! nativeRatSupported )

@@ -821,9 +821,9 @@ QgsPostgresRasterProvider *QgsPostgresRasterProvider::clone() const
   return provider;
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsPostgresRasterProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsPostgresRasterProvider::providerCapabilities() const
 {
-  return QgsRasterDataProvider::ProviderCapability::ReadLayerMetadata;
+  return Qgis::RasterProviderCapability::ReadLayerMetadata;
 }
 
 

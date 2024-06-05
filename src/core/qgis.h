@@ -4196,6 +4196,36 @@ class CORE_EXPORT Qgis
     Q_FLAG( RasterInterfaceCapabilities )
 
     /**
+     * Raster data provider capabilities.
+     *
+     * \note Prior to QGIS 3.38 this was available as QgsRasterDataProvider::ProviderCapability
+     *
+     * \since QGIS 3.38
+     */
+    enum class RasterProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProvider, ProviderCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoProviderCapabilities = 0, //!< Provider has no capabilities
+      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
+      WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
+      ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)
+      ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
+      ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
+      DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
+      NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table (since QGIS 3.30)
+    };
+    Q_ENUM( RasterProviderCapability )
+
+    /**
+     * Raster data provider capabilities.
+     *
+     * \note Prior to QGIS 3.38 this was available as QgsRasterDataProvider::ProviderCapabilities
+     *
+     * \since QGIS 3.38
+     */
+    Q_DECLARE_FLAGS( RasterProviderCapabilities, RasterProviderCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRasterDataProvider, ProviderCapabilities )
+    Q_FLAG( RasterProviderCapabilities )
+
+    /**
      * Methods used to select the elevation when two elevation maps are combined
      *
      * \since QGIS 3.30
@@ -5224,6 +5254,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DateTimeStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterInterfaceCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )

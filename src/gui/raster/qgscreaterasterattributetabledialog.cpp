@@ -30,7 +30,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   // Apparently, some drivers (HFA) ignore Min/Max fields and set them to generic,
   // for this reason we disable the native support for thematic RATs (later in the loop)
-  bool nativeRatSupported { mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable ) };
+  bool nativeRatSupported { mRasterLayer->dataProvider()->providerCapabilities().testFlag( Qgis::RasterProviderCapability::NativeRasterAttributeTable ) };
 
   connect( mNativeRadioButton, &QRadioButton::toggled, this, &QgsCreateRasterAttributeTableDialog::updateButtons );
   connect( mDbfRadioButton, &QRadioButton::toggled, this, &QgsCreateRasterAttributeTableDialog::updateButtons );

@@ -1617,9 +1617,9 @@ QString  QgsWcsProvider::description() const
   return WCS_DESCRIPTION;
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsWcsProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsWcsProvider::providerCapabilities() const
 {
-  return ProviderCapability::ReloadData;
+  return Qgis::RasterProviderCapability::ReloadData;
 }
 
 void QgsWcsProvider::reloadProviderData()
