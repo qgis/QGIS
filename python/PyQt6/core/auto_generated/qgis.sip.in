@@ -2322,6 +2322,7 @@ The development version
       Feature,
     };
 
+
     enum class RasterInterfaceCapability /BaseType=IntFlag/
     {
       NoCapabilities,
@@ -2338,6 +2339,7 @@ The development version
     };
 
     typedef QFlags<Qgis::RasterInterfaceCapability> RasterInterfaceCapabilities;
+
 
 
     enum class RasterProviderCapability /BaseType=IntFlag/

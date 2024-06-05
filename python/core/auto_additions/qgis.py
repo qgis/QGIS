@@ -3905,7 +3905,7 @@ QgsRasterInterface.Capability = Qgis.RasterInterfaceCapability
 # monkey patching scoped based enum
 QgsRasterInterface.NoCapabilities = Qgis.RasterInterfaceCapability.NoCapabilities
 QgsRasterInterface.NoCapabilities.is_monkey_patched = True
-QgsRasterInterface.NoCapabilities.__doc__ = ""
+QgsRasterInterface.NoCapabilities.__doc__ = "No capabilities"
 QgsRasterInterface.Size = Qgis.RasterInterfaceCapability.Size
 QgsRasterInterface.Size.is_monkey_patched = True
 QgsRasterInterface.Size.__doc__ = "Original data source size (and thus resolution) is known, it is not always available, for example for WMS"
