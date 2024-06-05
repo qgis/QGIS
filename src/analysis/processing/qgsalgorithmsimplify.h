@@ -22,8 +22,9 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsapplication.h"
+
+class QgsMapToPixelSimplifier;
 
 ///@cond PRIVATE
 
@@ -36,6 +37,7 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsSimplifyAlgorithm() = default;
+    ~QgsSimplifyAlgorithm() override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
     QString name() const override;
@@ -58,7 +60,7 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mTolerance = 1.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
-    QgsMapToPixelSimplifier::SimplifyAlgorithm mMethod = QgsMapToPixelSimplifier::Distance;
+    Qgis::VectorSimplificationAlgorithm mMethod = Qgis::VectorSimplificationAlgorithm::Distance;
     std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
 
 };

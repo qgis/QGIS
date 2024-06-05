@@ -1446,7 +1446,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       {
         const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
         const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
-            static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( context.vectorSimplifyMethod().simplifyAlgorithm() ) );
+            context.vectorSimplifyMethod().simplifyAlgorithm() );
 
         std::unique_ptr< QgsAbstractGeometry > simplified( simplifier.simplify( processedGeometry ) );
         if ( simplified )

@@ -99,6 +99,11 @@ QgsSymbol.PreviewFlags = Qgis.SymbolPreviewFlags
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
 QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
 
+QgsMapToPixelSimplifier.Distance = Qgis.VectorSimplificationAlgorithm.Distance
+QgsMapToPixelSimplifier.SnapToGrid = Qgis.VectorSimplificationAlgorithm.SnapToGrid
+QgsMapToPixelSimplifier.Visvalingam = Qgis.VectorSimplificationAlgorithm.Visvalingam
+QgsMapToPixelSimplifier.SnappedToGridGlobal = Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal
+
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
 
