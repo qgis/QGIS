@@ -1791,7 +1791,8 @@ Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
          Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling |
          Qgis::RasterProviderCapability::ReloadData |
          Qgis::RasterProviderCapability::NativeRasterAttributeTable |
-         Qgis::RasterProviderCapability::ReadLayerMetadata;
+         Qgis::RasterProviderCapability::ReadLayerMetadata |
+         Qgis::RasterProviderCapability::BuildPyramids;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )

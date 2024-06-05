@@ -309,7 +309,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( provider && provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids )
+  if ( provider &&
+       ( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
+         || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
@@ -773,7 +775,8 @@ void QgsRasterLayerProperties::sync()
   }
 
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
-  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids ) )
+  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
+          || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids )
     {

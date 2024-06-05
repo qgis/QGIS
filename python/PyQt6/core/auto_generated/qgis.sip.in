@@ -2352,6 +2352,7 @@ The development version
       ReloadData,
       DpiDependentData,
       NativeRasterAttributeTable,
+      BuildPyramids,
     };
 
     typedef QFlags<Qgis::RasterProviderCapability> RasterProviderCapabilities;

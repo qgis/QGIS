@@ -110,7 +110,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( mDataProvider && mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids )
+  if ( mDataProvider && ( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
+                          || mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     // setup pyramids option widget
     // mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
