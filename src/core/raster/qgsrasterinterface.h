@@ -212,7 +212,12 @@ class CORE_EXPORT QgsRasterInterface
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
-    //! Returns a bitmask containing the supported capabilities
+    // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
+    // (which inherits this class)
+
+    /**
+     * Returns the capabilities supported by the interface.
+     */
     virtual Qgis::RasterInterfaceCapabilities capabilities() const;
 
     /**
