@@ -71,6 +71,7 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
 
     QPointer<QgsMessageBarItem> mMessageBarItem;
     bool mMustPopulate = false;
+    friend class TestQgsMaskingWidget;
 };
 
 
