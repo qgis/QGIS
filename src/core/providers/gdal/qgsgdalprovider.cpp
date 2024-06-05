@@ -1618,22 +1618,22 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   return static_cast< double >( value ) * bandScale( band ) + bandOffset( band );
 }
 
-int QgsGdalProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsGdalProvider::capabilities() const
 {
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
-    return 0;
+    return Qgis::RasterInterfaceCapabilities();
 
-  int capability = QgsRasterDataProvider::Identify
-                   | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::Size
-                   | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Create
-                   | QgsRasterDataProvider::Remove
-                   | QgsRasterDataProvider::Prefetch;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
+      | Qgis::RasterInterfaceCapability::IdentifyValue
+      | Qgis::RasterInterfaceCapability::Size
+      | Qgis::RasterInterfaceCapability::BuildPyramids
+      | Qgis::RasterInterfaceCapability::Create
+      | Qgis::RasterInterfaceCapability::Remove
+      | Qgis::RasterInterfaceCapability::Prefetch;
   if ( mDriverName != QLatin1String( "WMS" ) )
   {
-    capability |= QgsRasterDataProvider::Size;
+    capability |= Qgis::RasterInterfaceCapability::Size;
   }
   return capability;
 }

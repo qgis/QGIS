@@ -2534,9 +2534,9 @@ class CORE_EXPORT Qgis
     /**
      * Simplification algorithms for vector features.
      *
-     * \note Prior to QGIS 3.28 this was available as QgsVectorSimplifyMethod::SimplifyAlgorithm
+     * \note Prior to QGIS 3.38 this was available as QgsVectorSimplifyMethod::SimplifyAlgorithm
      *
-     * \since QGIS 3.28
+     * \since QGIS 3.38
      */
     enum class VectorSimplificationAlgorithm SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorSimplifyMethod, SimplifyAlgorithm ) : int
       {
@@ -2550,9 +2550,9 @@ class CORE_EXPORT Qgis
     /**
      * Simplification flags for vector feature rendering.
      *
-     * \note Prior to QGIS 3.36 this was available as QgsVectorSimplifyMethod::SimplifyHint
+     * \note Prior to QGIS 3.38 this was available as QgsVectorSimplifyMethod::SimplifyHint
      *
-     * \since QGIS 3.36
+     * \since QGIS 3.38
      */
     enum class VectorRenderingSimplificationFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorSimplifyMethod, SimplifyHint ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -2566,9 +2566,9 @@ class CORE_EXPORT Qgis
     /**
      * Simplification flags for vector feature rendering.
      *
-     * \note Prior to QGIS 3.36 this was available as QgsVectorSimplifyMethod::SimplifyHints
+     * \note Prior to QGIS 3.38 this was available as QgsVectorSimplifyMethod::SimplifyHints
      *
-     * \since QGIS 3.36
+     * \since QGIS 3.38
      */
     Q_DECLARE_FLAGS( VectorRenderingSimplificationFlags, VectorRenderingSimplificationFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsVectorSimplifyMethod, SimplifyHints )
     Q_FLAG( VectorRenderingSimplificationFlags )
@@ -4165,6 +4165,37 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterIdentifyFormat )
 
     /**
+     * Raster interface capabilities.
+     *
+     * \note Prior to QGIS 3.38 this was available as QgsRasterInterface::Capability
+     *
+     * \since QGIS 3.38
+     */
+    enum class RasterInterfaceCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterInterface, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoCapabilities = 0,
+      Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
+      Create = 1 << 2, //!< Create new datasets
+      Remove = 1 << 3, //!< Delete datasets
+      BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews)
+      Identify = 1 << 5, //!< At least one identify format supported
+      IdentifyValue = 1 << 6, //!< Numerical values
+      IdentifyText = 1 << 7, //!< WMS text
+      IdentifyHtml = 1 << 8, //!< WMS HTML
+      IdentifyFeature = 1 << 9, //!< WMS GML -> feature
+      Prefetch = 1 << 10, //!< Allow prefetching of out-of-view images
+    };
+    Q_ENUM( RasterInterfaceCapability )
+
+    /**
+     * Raster interface capabilities.
+     *
+     * \since QGIS 3.38
+     */
+    Q_DECLARE_FLAGS( RasterInterfaceCapabilities, RasterInterfaceCapability )
+    Q_FLAG( RasterInterfaceCapabilities )
+
+    /**
      * Methods used to select the elevation when two elevation maps are combined
      *
      * \since QGIS 3.30
@@ -5192,6 +5223,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Statistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DateTimeStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterInterfaceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )

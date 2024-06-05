@@ -2346,9 +2346,9 @@ bool QgsWmsProvider::calculateExtent() const
 }
 
 
-int QgsWmsProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsWmsProvider::capabilities() const
 {
-  int capability = NoCapabilities;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::NoCapabilities;
   bool canIdentify = false;
 
   if ( mSettings.mTiled && mTileLayer )
@@ -2382,14 +2382,14 @@ int QgsWmsProvider::capabilities() const
     capability = mCaps.identifyCapabilities();
     if ( capability )
     {
-      capability |= Capability::Identify;
+      capability |= Qgis::RasterInterfaceCapability::Identify;
     }
   }
 
   bool enablePrefetch = QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching->value();
   if ( mSettings.mXyz || enablePrefetch )
   {
-    capability |= Capability::Prefetch;
+    capability |= Qgis::RasterInterfaceCapability::Prefetch;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );

@@ -15492,7 +15492,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
            && dprovider->dataType( 1 ) != Qgis::DataType::ARGB32
            && dprovider->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied )
       {
-        if ( dprovider->capabilities() & QgsRasterDataProvider::Size )
+        if ( dprovider->capabilities() & Qgis::RasterInterfaceCapability::Size )
         {
           mActionFullHistogramStretch->setEnabled( true );
         }
@@ -15590,7 +15590,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         if ( dprovider )
         {
           // does provider allow the identify map tool?
-          if ( dprovider->capabilities() & QgsRasterDataProvider::Identify )
+          if ( dprovider->capabilities() & Qgis::RasterInterfaceCapability::Identify )
           {
             mActionIdentify->setEnabled( true );
           }

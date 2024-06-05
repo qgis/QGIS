@@ -2322,6 +2322,24 @@ The development version
       Feature,
     };
 
+    enum class RasterInterfaceCapability /BaseType=IntFlag/
+    {
+      NoCapabilities,
+      Size,
+      Create,
+      Remove,
+      BuildPyramids,
+      Identify,
+      IdentifyValue,
+      IdentifyText,
+      IdentifyHtml,
+      IdentifyFeature,
+      Prefetch,
+    };
+
+    typedef QFlags<Qgis::RasterInterfaceCapability> RasterInterfaceCapabilities;
+
+
     enum class ElevationMapCombineMethod /BaseType=IntEnum/
     {
       HighestElevation,
@@ -3017,6 +3035,8 @@ QFlags<Qgis::DateTimeStatistic> operator|(Qgis::DateTimeStatistic f1, QFlags<Qgi
 QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::StringStatistic> f2);
 
 QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
+
+QFlags<Qgis::RasterInterfaceCapability> operator|(Qgis::RasterInterfaceCapability f1, QFlags<Qgis::RasterInterfaceCapability> f2);
 
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 

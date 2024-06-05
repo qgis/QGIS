@@ -543,7 +543,7 @@ Converts a string ``formatName`` to a raster identify format.
 Converts a raster identify ``format`` to a translated string label.
 %End
 
-    static Capability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
+    static Qgis::RasterInterfaceCapability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
 %Docstring
 Converts a raster identify ``format`` to a capability.
 %End

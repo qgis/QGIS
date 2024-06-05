@@ -994,8 +994,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   if ( !dprovider )
     return false;
 
-  int capabilities = dprovider->capabilities();
-  if ( !( capabilities & QgsRasterDataProvider::Identify ) )
+  const Qgis::RasterInterfaceCapabilities capabilities = dprovider->capabilities();
+  if ( !( capabilities & Qgis::RasterInterfaceCapability::Identify ) )
     return false;
 
   if ( identifyContext.isTemporal() )
@@ -1033,15 +1033,15 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   Qgis::RasterIdentifyFormat format = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
 
   // check if the format is really supported otherwise use first supported format
-  if ( !( QgsRasterDataProvider::identifyFormatToCapability( format ) & capabilities ) )
+  if ( !( capabilities & QgsRasterDataProvider::identifyFormatToCapability( format ) ) )
   {
-    if ( capabilities & QgsRasterInterface::IdentifyFeature )
+    if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyFeature )
       format = Qgis::RasterIdentifyFormat::Feature;
-    else if ( capabilities & QgsRasterInterface::IdentifyValue )
+    else if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyValue )
       format = Qgis::RasterIdentifyFormat::Value;
-    else if ( capabilities & QgsRasterInterface::IdentifyHtml )
+    else if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyHtml )
       format = Qgis::RasterIdentifyFormat::Html;
-    else if ( capabilities & QgsRasterInterface::IdentifyText )
+    else if ( capabilities & Qgis::RasterInterfaceCapability::IdentifyText )
       format = Qgis::RasterIdentifyFormat::Text;
     else return false;
   }
@@ -1139,7 +1139,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   const double yres = layer->rasterUnitsPerPixelY();
   QgsRectangle pixelRect;
   // Don't derive clicked column/row for providers that serve dynamically rendered map images
-  if ( ( dprovider->capabilities() & QgsRasterDataProvider::Size ) && !qgsDoubleNear( xres, 0 ) && !qgsDoubleNear( yres, 0 ) )
+  if ( ( dprovider->capabilities() & Qgis::RasterInterfaceCapability::Size ) && !qgsDoubleNear( xres, 0 ) && !qgsDoubleNear( yres, 0 ) )
   {
     // Try to determine the clicked column/row (0-based) in the raster
     const QgsRectangle extent = dprovider->extent();

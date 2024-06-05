@@ -94,7 +94,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
 
     /* Inherited from QgsRasterInterface */
     int bandCount() const override { return 1; }
-    int capabilities() const override { return Identify | IdentifyText | IdentifyFeature | Prefetch; }
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
 
     /* Inherited from QgsRasterDataProvider */
     QgsRectangle extent() const override { return mExtent; }

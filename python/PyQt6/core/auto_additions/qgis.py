@@ -2559,7 +2559,7 @@ QgsVectorSimplifyMethod.Visvalingam.__doc__ = "The simplification gives each poi
 QgsVectorSimplifyMethod.SnappedToGridGlobal = Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal
 QgsVectorSimplifyMethod.SnappedToGridGlobal.is_monkey_patched = True
 QgsVectorSimplifyMethod.SnappedToGridGlobal.__doc__ = "Snap to a global grid based on the tolerance. Good for consistent results for incoming vertices, regardless of their feature"
-Qgis.VectorSimplificationAlgorithm.__doc__ = "Simplification algorithms for vector features.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsVectorSimplifyMethod`.SimplifyAlgorithm\n\n.. versionadded:: 3.28\n\n" + '* ``Distance``: ' + Qgis.VectorSimplificationAlgorithm.Distance.__doc__ + '\n' + '* ``SnapToGrid``: ' + Qgis.VectorSimplificationAlgorithm.SnapToGrid.__doc__ + '\n' + '* ``Visvalingam``: ' + Qgis.VectorSimplificationAlgorithm.Visvalingam.__doc__ + '\n' + '* ``SnappedToGridGlobal``: ' + Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal.__doc__
+Qgis.VectorSimplificationAlgorithm.__doc__ = "Simplification algorithms for vector features.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsVectorSimplifyMethod`.SimplifyAlgorithm\n\n.. versionadded:: 3.38\n\n" + '* ``Distance``: ' + Qgis.VectorSimplificationAlgorithm.Distance.__doc__ + '\n' + '* ``SnapToGrid``: ' + Qgis.VectorSimplificationAlgorithm.SnapToGrid.__doc__ + '\n' + '* ``Visvalingam``: ' + Qgis.VectorSimplificationAlgorithm.Visvalingam.__doc__ + '\n' + '* ``SnappedToGridGlobal``: ' + Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal.__doc__
 # --
 Qgis.VectorSimplificationAlgorithm.baseClass = Qgis
 QgsVectorSimplifyMethod.SimplifyHint = Qgis.VectorRenderingSimplificationFlag
@@ -2576,7 +2576,7 @@ QgsVectorSimplifyMethod.AntialiasingSimplification.__doc__ = "The geometries can
 QgsVectorSimplifyMethod.FullSimplification = Qgis.VectorRenderingSimplificationFlag.FullSimplification
 QgsVectorSimplifyMethod.FullSimplification.is_monkey_patched = True
 QgsVectorSimplifyMethod.FullSimplification.__doc__ = "All simplification hints can be applied ( Geometry + AA-disabling )"
-Qgis.VectorRenderingSimplificationFlag.__doc__ = "Simplification flags for vector feature rendering.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsVectorSimplifyMethod`.SimplifyHint\n\n.. versionadded:: 3.36\n\n" + '* ``NoSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.NoSimplification.__doc__ + '\n' + '* ``GeometrySimplification``: ' + Qgis.VectorRenderingSimplificationFlag.GeometrySimplification.__doc__ + '\n' + '* ``AntialiasingSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.AntialiasingSimplification.__doc__ + '\n' + '* ``FullSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.FullSimplification.__doc__
+Qgis.VectorRenderingSimplificationFlag.__doc__ = "Simplification flags for vector feature rendering.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsVectorSimplifyMethod`.SimplifyHint\n\n.. versionadded:: 3.38\n\n" + '* ``NoSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.NoSimplification.__doc__ + '\n' + '* ``GeometrySimplification``: ' + Qgis.VectorRenderingSimplificationFlag.GeometrySimplification.__doc__ + '\n' + '* ``AntialiasingSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.AntialiasingSimplification.__doc__ + '\n' + '* ``FullSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.FullSimplification.__doc__
 # --
 Qgis.VectorRenderingSimplificationFlag.baseClass = Qgis
 Qgis.VectorRenderingSimplificationFlags = lambda flags=0: Qgis.VectorRenderingSimplificationFlag(flags)
@@ -3968,6 +3968,47 @@ QgsRaster.IdentifyFormatFeature.__doc__ = "WMS GML/JSON -> feature"
 Qgis.RasterIdentifyFormat.__doc__ = "Raster identify formats.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsRaster`.IdentifyFormat\n\n.. versionadded:: 3.30\n\n" + '* ``IdentifyFormatUndefined``: ' + Qgis.RasterIdentifyFormat.Undefined.__doc__ + '\n' + '* ``IdentifyFormatValue``: ' + Qgis.RasterIdentifyFormat.Value.__doc__ + '\n' + '* ``IdentifyFormatText``: ' + Qgis.RasterIdentifyFormat.Text.__doc__ + '\n' + '* ``IdentifyFormatHtml``: ' + Qgis.RasterIdentifyFormat.Html.__doc__ + '\n' + '* ``IdentifyFormatFeature``: ' + Qgis.RasterIdentifyFormat.Feature.__doc__
 # --
 Qgis.RasterIdentifyFormat.baseClass = Qgis
+QgsRasterInterface.Capability = Qgis.RasterInterfaceCapability
+# monkey patching scoped based enum
+QgsRasterInterface.NoCapabilities = Qgis.RasterInterfaceCapability.NoCapabilities
+QgsRasterInterface.NoCapabilities.is_monkey_patched = True
+QgsRasterInterface.NoCapabilities.__doc__ = ""
+QgsRasterInterface.Size = Qgis.RasterInterfaceCapability.Size
+QgsRasterInterface.Size.is_monkey_patched = True
+QgsRasterInterface.Size.__doc__ = "Original data source size (and thus resolution) is known, it is not always available, for example for WMS"
+QgsRasterInterface.Create = Qgis.RasterInterfaceCapability.Create
+QgsRasterInterface.Create.is_monkey_patched = True
+QgsRasterInterface.Create.__doc__ = "Create new datasets"
+QgsRasterInterface.Remove = Qgis.RasterInterfaceCapability.Remove
+QgsRasterInterface.Remove.is_monkey_patched = True
+QgsRasterInterface.Remove.__doc__ = "Delete datasets"
+QgsRasterInterface.BuildPyramids = Qgis.RasterInterfaceCapability.BuildPyramids
+QgsRasterInterface.BuildPyramids.is_monkey_patched = True
+QgsRasterInterface.BuildPyramids.__doc__ = "Supports building of pyramids (overviews)"
+QgsRasterInterface.Identify = Qgis.RasterInterfaceCapability.Identify
+QgsRasterInterface.Identify.is_monkey_patched = True
+QgsRasterInterface.Identify.__doc__ = "At least one identify format supported"
+QgsRasterInterface.IdentifyValue = Qgis.RasterInterfaceCapability.IdentifyValue
+QgsRasterInterface.IdentifyValue.is_monkey_patched = True
+QgsRasterInterface.IdentifyValue.__doc__ = "Numerical values"
+QgsRasterInterface.IdentifyText = Qgis.RasterInterfaceCapability.IdentifyText
+QgsRasterInterface.IdentifyText.is_monkey_patched = True
+QgsRasterInterface.IdentifyText.__doc__ = "WMS text"
+QgsRasterInterface.IdentifyHtml = Qgis.RasterInterfaceCapability.IdentifyHtml
+QgsRasterInterface.IdentifyHtml.is_monkey_patched = True
+QgsRasterInterface.IdentifyHtml.__doc__ = "WMS HTML"
+QgsRasterInterface.IdentifyFeature = Qgis.RasterInterfaceCapability.IdentifyFeature
+QgsRasterInterface.IdentifyFeature.is_monkey_patched = True
+QgsRasterInterface.IdentifyFeature.__doc__ = "WMS GML -> feature"
+QgsRasterInterface.Prefetch = Qgis.RasterInterfaceCapability.Prefetch
+QgsRasterInterface.Prefetch.is_monkey_patched = True
+QgsRasterInterface.Prefetch.__doc__ = "Allow prefetching of out-of-view images"
+Qgis.RasterInterfaceCapability.__doc__ = "Raster interface capabilities.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsRasterInterface`.Capability\n\n.. versionadded:: 3.38\n\n" + '* ``NoCapabilities``: ' + Qgis.RasterInterfaceCapability.NoCapabilities.__doc__ + '\n' + '* ``Size``: ' + Qgis.RasterInterfaceCapability.Size.__doc__ + '\n' + '* ``Create``: ' + Qgis.RasterInterfaceCapability.Create.__doc__ + '\n' + '* ``Remove``: ' + Qgis.RasterInterfaceCapability.Remove.__doc__ + '\n' + '* ``BuildPyramids``: ' + Qgis.RasterInterfaceCapability.BuildPyramids.__doc__ + '\n' + '* ``Identify``: ' + Qgis.RasterInterfaceCapability.Identify.__doc__ + '\n' + '* ``IdentifyValue``: ' + Qgis.RasterInterfaceCapability.IdentifyValue.__doc__ + '\n' + '* ``IdentifyText``: ' + Qgis.RasterInterfaceCapability.IdentifyText.__doc__ + '\n' + '* ``IdentifyHtml``: ' + Qgis.RasterInterfaceCapability.IdentifyHtml.__doc__ + '\n' + '* ``IdentifyFeature``: ' + Qgis.RasterInterfaceCapability.IdentifyFeature.__doc__ + '\n' + '* ``Prefetch``: ' + Qgis.RasterInterfaceCapability.Prefetch.__doc__
+# --
+Qgis.RasterInterfaceCapability.baseClass = Qgis
+Qgis.RasterInterfaceCapabilities = lambda flags=0: Qgis.RasterInterfaceCapability(flags)
+Qgis.RasterInterfaceCapabilities.baseClass = Qgis
+RasterInterfaceCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ElevationMapCombineMethod.HighestElevation.__doc__ = "Keep the highest elevation if it is not null"
 Qgis.ElevationMapCombineMethod.NewerElevation.__doc__ = "Keep the new elevation regardless of its value if it is not null"

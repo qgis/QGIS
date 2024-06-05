@@ -452,7 +452,7 @@ bool QgsRasterLayerRenderer::render()
   // Skip rendering of out of view tiles (xyz)
   if ( !mRasterViewPort || ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) &&
                              !( mInterfaceCapabilities &
-                                QgsRasterInterface::Capability::Prefetch ) ) )
+                                Qgis::RasterInterfaceCapability::Prefetch ) ) )
     return true;
 
   mPipe->moveToThread( QThread::currentThread() );
@@ -617,7 +617,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
       if ( mPipe->resampleFilter() )
         overSampling = mPipe->resampleFilter()->maxOversampling();
 
-      if ( dataProvider->capabilities() & QgsRasterDataProvider::Size )
+      if ( dataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size )
       {
         // If the dataprovider has size capability, we calculate the requested resolution to provider
         double providerXResol = dataProvider->extent().width() / dataProvider->xSize();

@@ -85,7 +85,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   double tmpXRes, tmpYRes;
   double providerXRes = 0;
   double providerYRes = 0;
-  if ( capabilities() & Size )
+  if ( capabilities() & Qgis::RasterInterfaceCapability::Size )
   {
     providerXRes = extent().width() / xSize();
     providerYRes = extent().height() / ySize();
@@ -275,7 +275,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   QMap<int, QVariant> results;
 
-  if ( format != Qgis::RasterIdentifyFormat::Value || !( capabilities() & IdentifyValue ) )
+  if ( format != Qgis::RasterIdentifyFormat::Value || !( capabilities() & Qgis::RasterInterfaceCapability::IdentifyValue ) )
   {
     QgsDebugError( QStringLiteral( "Format not supported" ) );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
@@ -297,11 +297,11 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
 
   if ( width == 0 )
   {
-    width = capabilities() & Size ? xSize() : 1000;
+    width = ( capabilities() & Qgis::RasterInterfaceCapability::Size ) ? xSize() : 1000;
   }
   if ( height == 0 )
   {
-    height = capabilities() & Size ? ySize() : 1000;
+    height = ( capabilities() & Qgis::RasterInterfaceCapability::Size ) ? ySize() : 1000;
   }
 
   // Calculate the row / column where the point falls
@@ -523,22 +523,22 @@ Qgis::RasterIdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const 
   return Qgis::RasterIdentifyFormat::Undefined;
 }
 
-QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( Qgis::RasterIdentifyFormat format )
+Qgis::RasterInterfaceCapability QgsRasterDataProvider::identifyFormatToCapability( Qgis::RasterIdentifyFormat format )
 {
   switch ( format )
   {
     case Qgis::RasterIdentifyFormat::Value:
-      return IdentifyValue;
+      return Qgis::RasterInterfaceCapability::IdentifyValue;
     case Qgis::RasterIdentifyFormat::Text:
-      return IdentifyText;
+      return Qgis::RasterInterfaceCapability::IdentifyText;
     case Qgis::RasterIdentifyFormat::Html:
-      return IdentifyHtml;
+      return Qgis::RasterInterfaceCapability::IdentifyHtml;
     case Qgis::RasterIdentifyFormat::Feature:
-      return IdentifyFeature;
+      return Qgis::RasterInterfaceCapability::IdentifyFeature;
     case Qgis::RasterIdentifyFormat::Undefined:
       break;
   }
-  return NoCapabilities;
+  return Qgis::RasterInterfaceCapability::NoCapabilities;
 }
 
 QList<double> QgsRasterDataProvider::nativeResolutions() const

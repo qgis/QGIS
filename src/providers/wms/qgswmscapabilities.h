@@ -962,7 +962,7 @@ class QgsWmsCapabilities
     bool shouldInvertAxisOrientation( const QString &ogcCrs );
 
     //! Find out identify capabilities
-    int identifyCapabilities() const;
+    Qgis::RasterInterfaceCapabilities identifyCapabilities() const;
 
   protected:
     bool parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );

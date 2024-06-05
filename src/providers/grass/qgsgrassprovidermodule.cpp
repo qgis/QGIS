@@ -816,7 +816,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       int newXSize;
       int newYSize;
       bool useSrcRegion = true;
-      if ( rasterProvider->capabilities() & QgsRasterInterface::Size )
+      if ( rasterProvider->capabilities() & Qgis::RasterInterfaceCapability::Size )
       {
         newXSize = rasterProvider->xSize();
         newYSize = rasterProvider->ySize();

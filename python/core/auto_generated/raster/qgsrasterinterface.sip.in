@@ -171,20 +171,6 @@ Base class for processing filters like renderers, reprojector, resampler etc.
       sipType = 0;
 %End
   public:
-    enum Capability
-    {
-      NoCapabilities,
-      Size,
-      Create,
-      Remove,
-      BuildPyramids,
-      Identify,
-      IdentifyValue,
-      IdentifyText,
-      IdentifyHtml,
-      IdentifyFeature,
-      Prefetch,
-    };
 
     QgsRasterInterface( QgsRasterInterface *input = 0 );
 
@@ -195,7 +181,7 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 Clone itself, create deep copy
 %End
 
-    virtual int capabilities() const;
+    virtual Qgis::RasterInterfaceCapabilities capabilities() const;
 %Docstring
 Returns a bitmask containing the supported capabilities
 %End

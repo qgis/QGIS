@@ -968,7 +968,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most information.
-    const int capabilities = layer->dataProvider()->capabilities();
+    const Qgis::RasterInterfaceCapabilities capabilities = layer->dataProvider()->capabilities();
     static const QList<Qgis::RasterIdentifyFormat> formats
     {
       Qgis::RasterIdentifyFormat::Html,
@@ -977,7 +977,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       Qgis::RasterIdentifyFormat::Value };
     for ( const auto &f : formats )
     {
-      if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
+      if ( !( capabilities & QgsRasterDataProvider::identifyFormatToCapability( f ) ) )
         continue;
       formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), QVariant::fromValue( f ) );
       formatCombo->setItemData( formatCombo->count() - 1, QVariant::fromValue( qobject_cast<QObject *>( layer ) ), Qt::UserRole + 1 );
