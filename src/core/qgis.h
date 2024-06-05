@@ -4164,6 +4164,10 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RasterIdentifyFormat )
 
+    // TODO QGIS 4 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
+    // remove deprecated members
+    // Remove "Identify" member, and replace with combinations of IdentifyValue/IdentifyText/etc
+
     /**
      * Raster interface capabilities.
      *
@@ -4173,7 +4177,7 @@ class CORE_EXPORT Qgis
      */
     enum class RasterInterfaceCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterInterface, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoCapabilities = 0,
+      NoCapabilities = 0, //!< No capabilities
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
       Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
       Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
@@ -4194,6 +4198,8 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( RasterInterfaceCapabilities, RasterInterfaceCapability )
     Q_FLAG( RasterInterfaceCapabilities )
+
+    // TODO QGIS 4 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
 
     /**
      * Raster data provider capabilities.
