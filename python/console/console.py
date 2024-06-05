@@ -18,6 +18,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 import os
+import subprocess
 
 from qgis.PyQt.QtCore import Qt, QTimer, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
@@ -588,10 +589,21 @@ class PythonConsoleWidget(QWidget):
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
         path = tabWidget.path
-        import subprocess
-        try:
-            subprocess.Popen([os.environ['EDITOR'], path])
-        except KeyError:
+
+        editor_command = os.environ.get('EDITOR')
+        if editor_command:
+            child = subprocess.Popen([os.environ['EDITOR'], path])
+            try:
+                # let's see if the EDITOR drops out immediately....
+                child.wait(0.01)
+                rc = child.poll()
+                if rc:
+                    # editor failed, use backup approach
+                    QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+            except subprocess.TimeoutExpired:
+                # looks like EDITOR started up successfully, all is good
+                pass
+        else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
     def openScriptFile(self):
