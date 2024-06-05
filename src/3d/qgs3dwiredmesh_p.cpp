@@ -29,6 +29,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #endif
 
+#include "qgsaabb.h"
+
 
 ///@cond PRIVATE
 
@@ -70,6 +72,15 @@ void Qgs3DWiredMesh::setVertices( const QList<QVector3D> &vertices )
 
   mVertexBuffer->setData( vertexBufferData );
   setVertexCount( vertices.count() );
+}
+
+void Qgs3DWiredMesh::setVertices( const QList<QgsAABB> &bboxes )
+{
+  QList<QVector3D> vertices;
+  for ( const QgsAABB &bbox : bboxes )
+    vertices << bbox.verticesForLines();
+
+  setVertices( vertices );
 }
 
 /// @endcond

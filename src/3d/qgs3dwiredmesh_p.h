@@ -36,6 +36,8 @@
 #endif
 #include <Qt3DRender/QGeometryRenderer>
 
+class QgsAABB;
+
 #define SIP_NO_FILE
 
 /**
@@ -60,6 +62,11 @@ class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
      * \brief add or replace mesh vertices coordinates
      */
     void setVertices( const QList<QVector3D> &vertices );
+
+    /**
+     * \brief add or replace mesh vertices coordinates from QgsAABB coordinates
+     */
+    void setVertices( const QList<QgsAABB> &bboxes );
 
   private:
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
