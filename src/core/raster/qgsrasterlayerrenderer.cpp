@@ -85,6 +85,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
   , mProviderCapabilities( layer->dataProvider()->providerCapabilities() )
+  , mInterfaceCapabilities( layer->dataProvider()->capabilities() )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
   , mEnableProfile( rendererContext.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
@@ -450,7 +451,7 @@ bool QgsRasterLayerRenderer::render()
 
   // Skip rendering of out of view tiles (xyz)
   if ( !mRasterViewPort || ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) &&
-                             !( mProviderCapabilities &
+                             !( mInterfaceCapabilities &
                                 QgsRasterInterface::Capability::Prefetch ) ) )
     return true;
 
