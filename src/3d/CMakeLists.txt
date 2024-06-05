@@ -17,6 +17,7 @@ set(QGIS_3D_SRCS
   qgs3dmapcanvas.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
+  qgs3dwiredmesh_p.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
@@ -121,6 +122,7 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
+  qgs3dwiredmesh_p.h
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h

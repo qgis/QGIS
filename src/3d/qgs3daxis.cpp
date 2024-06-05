@@ -16,19 +16,6 @@
 #include "qgs3daxis.h"
 
 #include <Qt3DCore/QTransform>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QGeometry>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QConeMesh>
@@ -54,6 +41,7 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgscoordinatereferencesystem.h"
 #include "qgswindow3dengine.h"
 #include "qgsraycastingutils_p.h"
+#include "qgs3dwiredmesh_p.h"
 
 Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas,
                       Qt3DCore::QEntity *parent3DScene,
@@ -1214,48 +1202,4 @@ void Qgs3DAxis::onTextZChanged( const QString &text )
   mTextZ->setFont( f );
   mTextZ->setWidth( mAxisScaleFactor * mFontSize * text.length() );
   mTextZ->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
-}
-
-//
-// Qgs3DWiredMesh
-//
-
-Qgs3DWiredMesh::Qgs3DWiredMesh( Qt3DCore::QNode *parent )
-  : Qt3DRender::QGeometryRenderer( parent )
-  , mPositionAttribute( new Qt3DQAttribute( this ) )
-  , mVertexBuffer( new Qt3DQBuffer( this ) )
-{
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
-  mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
-  mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-
-  mGeom = new Qt3DQGeometry( this );
-  mGeom->addAttribute( mPositionAttribute );
-
-  setInstanceCount( 1 );
-  setIndexOffset( 0 );
-  setFirstInstance( 0 );
-  setPrimitiveType( Qt3DRender::QGeometryRenderer::Lines );
-  setGeometry( mGeom );
-}
-
-Qgs3DWiredMesh::~Qgs3DWiredMesh() = default;
-
-void Qgs3DWiredMesh::setVertices( const QList<QVector3D> &vertices )
-{
-  QByteArray vertexBufferData;
-  vertexBufferData.resize( vertices.size() * 3 * sizeof( float ) );
-  float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
-  int idx = 0;
-  for ( const QVector3D &v : std::as_const( vertices ) )
-  {
-    rawVertexArray[idx++] = v.x();
-    rawVertexArray[idx++] = v.y();
-    rawVertexArray[idx++] = v.z();
-  }
-
-  mVertexBuffer->setData( vertexBufferData );
-  setVertexCount( vertices.count() );
 }
