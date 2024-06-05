@@ -78,6 +78,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testStreamTolerance();
     void testWithTopologicalEditingDifferentCanvasCrs();
     void testWithTopologicalEditingWIthDiffLayerWithDiffCrs();
+    void testWithTopologicalEditingWithMoreThanOneLayer();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -94,8 +95,13 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerSelfSnapLine = nullptr;
     QgsVectorLayer *mLayerCRS3946Line = nullptr;
     QgsVectorLayer *mLayerCRS3945Line = nullptr;
+    QgsVectorLayer *mLayerTopo1 = nullptr;
+    QgsVectorLayer *mLayerTopo2 = nullptr;
+    QgsVectorLayer *mLayerTopo3 = nullptr;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidCurvedF1 = 0;
+    QgsFeatureId mFidTopoLineF1 = 0;
+    QgsFeatureId mFidTopoLineF2 = 0;
 };
 
 TestQgsMapToolAddFeatureLine::TestQgsMapToolAddFeatureLine() = default;
@@ -228,8 +234,44 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3945Line );
   mLayerCRS3945Line->startEditing();
 
+  // make layers with overlapping features to test topo editing
+  mLayerTopo1 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line topo1" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerTopo1 ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo1 );
+  mLayerTopo1->startEditing();
+
+  QgsFeature topoLineF1;
+  topoLineF1.setGeometry( QgsGeometry::fromWkt( "LineString (1 6, 1 7, 2 7, 2 6)" ) );
+
+  mLayerTopo1->addFeature( topoLineF1 );
+  mFidTopoLineF1 = topoLineF1.id();
+  QCOMPARE( mLayerTopo1->featureCount(), ( long )1 );
+
+  // just one added feature
+  QCOMPARE( mLayerTopo1->undoStack()->index(), 1 );
+
+  mLayerTopo2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line topo2" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerTopo2 ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo2 );
+  mLayerTopo2->startEditing();
+
+  QgsFeature topoLineF2;
+  topoLineF2.setGeometry( QgsGeometry::fromWkt( "LineString (0 7, 3 7)" ) );
+
+  mLayerTopo2->addFeature( topoLineF2 );
+  mFidTopoLineF2 = topoLineF2.id();
+  QCOMPARE( mLayerTopo2->featureCount(), ( long )1 );
+
+  // just one added feature
+  QCOMPARE( mLayerTopo2->undoStack()->index(), 1 );
+
+  mLayerTopo3 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line topo3" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerTopo3 ->isValid() );
+  mLayerTopo3->startEditing();
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo3 );
+
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line << mLayerTopo1 << mLayerTopo2 );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -1070,6 +1112,44 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWIthDiffLayerWithDi
   snapConfig.project()->setTopologicalEditing( topologicalEditing );
 }
 
+void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWithMoreThanOneLayer()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerTopo3 );
+  mCaptureTool->setLayer( mLayerTopo3 );
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Segment );
+  bool topologicalEditing = snapConfig.project()->topologicalEditing();
+  snapConfig.project()->setTopologicalEditing( true );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  utils.mouseMove( 2, 5 );
+  utils.mouseClick( 2, 5, Qt::LeftButton );
+  utils.mouseMove( 1.5, 7 );
+  utils.mouseClick( 1.5, 7, Qt::LeftButton );
+  utils.mouseClick( 1.5, 7, Qt::RightButton );
+
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  const QString wkt1 = "LineString (1 6, 1 7, 1.5 7, 2 7, 2 6)";
+  QCOMPARE( mLayerTopo1->getFeature( mFidTopoLineF1 ).geometry(), QgsGeometry::fromWkt( wkt1 ) );
+
+  const QString wkt2 = "LineString (0 7, 1.5 7, 3 7)";
+  QCOMPARE( mLayerTopo2->getFeature( mFidTopoLineF2 ).geometry(), QgsGeometry::fromWkt( wkt2 ) );
+
+  const QString wkt3 = "LineString (2 5, 1.5 7)";
+  QCOMPARE( mLayerTopo3->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt3 ) );
+
+  mLayerTopo1->undoStack()->undo();
+  mLayerTopo2->undoStack()->undo();
+  mLayerTopo3->undoStack()->undo();
+  snapConfig.project()->setTopologicalEditing( topologicalEditing );
+}
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
 #include "testqgsmaptooladdfeatureline.moc"
