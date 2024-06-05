@@ -19,7 +19,6 @@
 #define SIP_NO_FILE
 
 #include "qgsmaplayerrenderer.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsmapclippingregion.h"
 
 class QPainter;
@@ -83,7 +82,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     double mLayerOpacity = 1.0;
     std::unique_ptr<QgsRasterPipe> mPipe;
 
-    QgsRasterDataProvider::ProviderCapabilities mProviderCapabilities;
+    Qgis::RasterProviderCapabilities mProviderCapabilities;
     Qgis::RasterInterfaceCapabilities mInterfaceCapabilities;
 
     //! feedback class for cancellation and preview generation

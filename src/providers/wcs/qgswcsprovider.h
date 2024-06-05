@@ -187,7 +187,7 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString lastErrorFormat() override;
     QString name() const override;
     QString description() const override;
-    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+    Qgis::RasterProviderCapabilities providerCapabilities() const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     static QString providerKey();

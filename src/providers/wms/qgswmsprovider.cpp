@@ -4020,19 +4020,19 @@ QgsCoordinateReferenceSystem QgsWmsProvider::crs() const
   return mCrs;
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsWmsProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsWmsProvider::providerCapabilities() const
 {
-  QgsRasterDataProvider::ProviderCapabilities capabilities;
+  Qgis::RasterProviderCapabilities capabilities;
   if ( mConverter )
-    capabilities = ProviderCapability::ReadLayerMetadata |
-                   ProviderCapability::ProviderHintBenefitsFromResampling |
-                   ProviderCapability::ProviderHintCanPerformProviderResampling;
+    capabilities = Qgis::RasterProviderCapability::ReadLayerMetadata |
+                   Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling |
+                   Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling;
   else
-    capabilities = ProviderCapability::ReadLayerMetadata;
+    capabilities = Qgis::RasterProviderCapability::ReadLayerMetadata;
 
   if ( mSettings.mTiled || mSettings.mXyz )
   {
-    capabilities |= DpiDependentData;
+    capabilities |= Qgis::RasterProviderCapability::DpiDependentData;
   }
 
   return capabilities;

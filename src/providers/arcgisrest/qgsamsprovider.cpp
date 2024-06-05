@@ -352,9 +352,9 @@ Qgis::DataProviderFlags QgsAmsProvider::flags() const
   return Qgis::DataProviderFlag::FastExtent2D;
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsAmsProvider::providerCapabilities() const
 {
-  return ProviderCapability::ReadLayerMetadata | ProviderCapability::ReloadData;
+  return Qgis::RasterProviderCapability::ReadLayerMetadata | Qgis::RasterProviderCapability::ReloadData;
 }
 
 QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }

@@ -4009,6 +4009,39 @@ Qgis.RasterInterfaceCapability.baseClass = Qgis
 Qgis.RasterInterfaceCapabilities = lambda flags=0: Qgis.RasterInterfaceCapability(flags)
 Qgis.RasterInterfaceCapabilities.baseClass = Qgis
 RasterInterfaceCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsRasterDataProvider.ProviderCapability = Qgis.RasterProviderCapability
+# monkey patching scoped based enum
+QgsRasterDataProvider.NoProviderCapabilities = Qgis.RasterProviderCapability.NoProviderCapabilities
+QgsRasterDataProvider.NoProviderCapabilities.is_monkey_patched = True
+QgsRasterDataProvider.NoProviderCapabilities.__doc__ = "Provider has no capabilities"
+QgsRasterDataProvider.ReadLayerMetadata = Qgis.RasterProviderCapability.ReadLayerMetadata
+QgsRasterDataProvider.ReadLayerMetadata.is_monkey_patched = True
+QgsRasterDataProvider.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider.layerMetadata()"
+QgsRasterDataProvider.WriteLayerMetadata = Qgis.RasterProviderCapability.WriteLayerMetadata
+QgsRasterDataProvider.WriteLayerMetadata.is_monkey_patched = True
+QgsRasterDataProvider.WriteLayerMetadata.__doc__ = "Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider.writeLayerMetadata()"
+QgsRasterDataProvider.ProviderHintBenefitsFromResampling = Qgis.RasterProviderCapability.ProviderHintBenefitsFromResampling
+QgsRasterDataProvider.ProviderHintBenefitsFromResampling.is_monkey_patched = True
+QgsRasterDataProvider.ProviderHintBenefitsFromResampling.__doc__ = "Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)"
+QgsRasterDataProvider.ProviderHintCanPerformProviderResampling = Qgis.RasterProviderCapability.ProviderHintCanPerformProviderResampling
+QgsRasterDataProvider.ProviderHintCanPerformProviderResampling.is_monkey_patched = True
+QgsRasterDataProvider.ProviderHintCanPerformProviderResampling.__doc__ = "Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)"
+QgsRasterDataProvider.ReloadData = Qgis.RasterProviderCapability.ReloadData
+QgsRasterDataProvider.ReloadData.is_monkey_patched = True
+QgsRasterDataProvider.ReloadData.__doc__ = "Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider.reloadProviderData()"
+QgsRasterDataProvider.DpiDependentData = Qgis.RasterProviderCapability.DpiDependentData
+QgsRasterDataProvider.DpiDependentData.is_monkey_patched = True
+QgsRasterDataProvider.DpiDependentData.__doc__ = ""
+QgsRasterDataProvider.NativeRasterAttributeTable = Qgis.RasterProviderCapability.NativeRasterAttributeTable
+QgsRasterDataProvider.NativeRasterAttributeTable.is_monkey_patched = True
+QgsRasterDataProvider.NativeRasterAttributeTable.__doc__ = "Indicates that the provider supports native raster attribute table (since QGIS 3.30)"
+Qgis.RasterProviderCapability.__doc__ = "Raster data provider capabilities.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsRasterDataProvider`.ProviderCapability\n\n.. versionadded:: 3.38\n\n" + '* ``NoProviderCapabilities``: ' + Qgis.RasterProviderCapability.NoProviderCapabilities.__doc__ + '\n' + '* ``ReadLayerMetadata``: ' + Qgis.RasterProviderCapability.ReadLayerMetadata.__doc__ + '\n' + '* ``WriteLayerMetadata``: ' + Qgis.RasterProviderCapability.WriteLayerMetadata.__doc__ + '\n' + '* ``ProviderHintBenefitsFromResampling``: ' + Qgis.RasterProviderCapability.ProviderHintBenefitsFromResampling.__doc__ + '\n' + '* ``ProviderHintCanPerformProviderResampling``: ' + Qgis.RasterProviderCapability.ProviderHintCanPerformProviderResampling.__doc__ + '\n' + '* ``ReloadData``: ' + Qgis.RasterProviderCapability.ReloadData.__doc__ + '\n' + '* ``DpiDependentData``: ' + Qgis.RasterProviderCapability.DpiDependentData.__doc__ + '\n' + '* ``NativeRasterAttributeTable``: ' + Qgis.RasterProviderCapability.NativeRasterAttributeTable.__doc__
+# --
+Qgis.RasterProviderCapability.baseClass = Qgis
+Qgis.RasterProviderCapabilities = lambda flags=0: Qgis.RasterProviderCapability(flags)
+QgsRasterDataProvider.ProviderCapabilities = Qgis.RasterProviderCapabilities
+Qgis.RasterProviderCapabilities.baseClass = Qgis
+RasterProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ElevationMapCombineMethod.HighestElevation.__doc__ = "Keep the highest elevation if it is not null"
 Qgis.ElevationMapCombineMethod.NewerElevation.__doc__ = "Keep the new elevation regardless of its value if it is not null"

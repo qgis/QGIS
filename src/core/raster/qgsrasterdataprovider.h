@@ -91,24 +91,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
   public:
 
-    /**
-     * Enumeration with capabilities that raster providers might implement.
-     */
-    enum ProviderCapability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoProviderCapabilities = 0,       //!< Provider has no capabilities
-      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
-      WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
-      ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)
-      ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
-      ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
-      DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
-      NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table (since QGIS 3.30)
-    };
-
-    //! Provider capabilities
-    Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
-
     QgsRasterDataProvider();
 
     /**
@@ -128,7 +110,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Returns flags containing the supported capabilities of the data provider.
      */
-    virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
+    virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ) return false; }
@@ -912,8 +894,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     std::map<int, std::unique_ptr<QgsRasterAttributeTable>> mAttributeTables;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRasterDataProvider::ProviderCapabilities )
 
 // clazy:excludeall=qstring-allocations
 

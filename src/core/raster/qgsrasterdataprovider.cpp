@@ -250,11 +250,11 @@ QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const Provider
 {
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsRasterDataProvider::NoProviderCapabilities;
+  return Qgis::RasterProviderCapability::NoProviderCapabilities;
 }
 
 Qgis::RasterColorInterpretation QgsRasterDataProvider::colorInterpretation( int bandNo ) const

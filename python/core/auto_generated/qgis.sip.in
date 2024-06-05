@@ -2340,6 +2340,21 @@ The development version
     typedef QFlags<Qgis::RasterInterfaceCapability> RasterInterfaceCapabilities;
 
 
+    enum class RasterProviderCapability
+    {
+      NoProviderCapabilities,
+      ReadLayerMetadata,
+      WriteLayerMetadata,
+      ProviderHintBenefitsFromResampling,
+      ProviderHintCanPerformProviderResampling,
+      ReloadData,
+      DpiDependentData,
+      NativeRasterAttributeTable,
+    };
+
+    typedef QFlags<Qgis::RasterProviderCapability> RasterProviderCapabilities;
+
+
     enum class ElevationMapCombineMethod
     {
       HighestElevation,
@@ -3037,6 +3052,8 @@ QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::S
 QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
 
 QFlags<Qgis::RasterInterfaceCapability> operator|(Qgis::RasterInterfaceCapability f1, QFlags<Qgis::RasterInterfaceCapability> f2);
+
+QFlags<Qgis::RasterProviderCapability> operator|(Qgis::RasterProviderCapability f1, QFlags<Qgis::RasterProviderCapability> f2);
 
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 

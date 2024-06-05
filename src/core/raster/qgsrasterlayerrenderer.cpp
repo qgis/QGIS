@@ -223,7 +223,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
   const double dpi = 25.4 * rendererContext.scaleFactor();
-  if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
+  if ( mProviderCapabilities & Qgis::RasterProviderCapability::DpiDependentData
        && rendererContext.dpiTarget() >= 0.0 )
   {
     const double dpiScaleFactor = rendererContext.dpiTarget() / dpi;
@@ -491,7 +491,7 @@ bool QgsRasterLayerRenderer::render()
   if ( projector )
   {
     // Force provider resampling if reprojection is needed
-    if ( ( mPipe->provider()->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+    if ( ( mPipe->provider()->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
          mRasterViewPort->mSrcCRS != mRasterViewPort->mDestCRS &&
          oldResamplingState != Qgis::RasterResamplingStage::Provider )
     {

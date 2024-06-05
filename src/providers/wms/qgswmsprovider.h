@@ -224,7 +224,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
-    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+    Qgis::RasterProviderCapabilities providerCapabilities() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server

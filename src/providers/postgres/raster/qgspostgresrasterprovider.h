@@ -67,7 +67,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     Qgis::RasterInterfaceCapabilities capabilities() const override;
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
-    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+    Qgis::RasterProviderCapabilities providerCapabilities() const override;
 
     // QgsRasterInterface interface
     int xSize() const override;

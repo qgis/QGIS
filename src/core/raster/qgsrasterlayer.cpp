@@ -369,7 +369,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   {
     // Force provider resampling if reprojection is needed
     if ( mDataProvider != nullptr &&
-         ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+         ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
          rasterViewPort->mSrcCRS != rasterViewPort->mDestCRS &&
          oldResamplingState != Qgis::RasterResamplingStage::Provider )
     {
@@ -761,7 +761,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     return;
   }
 
-  if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ReadLayerMetadata )
+  if ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
     QgsDebugMsgLevel( QStringLiteral( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
@@ -949,7 +949,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
   mPipe->set( resampleFilter );
 
-  if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintBenefitsFromResampling )
+  if ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling )
   {
     const QgsSettings settings;
     QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
@@ -974,7 +974,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     resampleFilter->setMaxOversampling( maxOversampling );
     mDataProvider->setMaxOversampling( maxOversampling );
 
-    if ( ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+    if ( ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
          QgsRasterLayer::settingsRasterDefaultEarlyResampling->value() )
     {
       setResamplingStage( Qgis::RasterResamplingStage::Provider );

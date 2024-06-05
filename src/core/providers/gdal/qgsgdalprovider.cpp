@@ -1787,13 +1787,13 @@ Qgis::DataProviderFlags QgsGdalProvider::flags() const
   return Qgis::DataProviderFlag::FastExtent2D;
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
-  return ProviderCapability::ProviderHintBenefitsFromResampling |
-         ProviderCapability::ProviderHintCanPerformProviderResampling |
-         ProviderCapability::ReloadData |
-         ProviderCapability::NativeRasterAttributeTable |
-         ProviderCapability::ReadLayerMetadata;
+  return Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling |
+         Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling |
+         Qgis::RasterProviderCapability::ReloadData |
+         Qgis::RasterProviderCapability::NativeRasterAttributeTable |
+         Qgis::RasterProviderCapability::ReadLayerMetadata;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
