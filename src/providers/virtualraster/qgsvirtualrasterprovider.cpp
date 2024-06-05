@@ -359,8 +359,6 @@ Qgis::RasterInterfaceCapabilities QgsVirtualRasterProvider::capabilities() const
       | Qgis::RasterInterfaceCapability::IdentifyValue
       | Qgis::RasterInterfaceCapability::Size
       //| Qgis::RasterInterfaceCapability::BuildPyramids
-      | Qgis::RasterInterfaceCapability::Create
-      | Qgis::RasterInterfaceCapability::Remove
       | Qgis::RasterInterfaceCapability::Prefetch;
   return capability;
 }

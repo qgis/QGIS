@@ -1628,8 +1628,6 @@ Qgis::RasterInterfaceCapabilities QgsGdalProvider::capabilities() const
       | Qgis::RasterInterfaceCapability::IdentifyValue
       | Qgis::RasterInterfaceCapability::Size
       | Qgis::RasterInterfaceCapability::BuildPyramids
-      | Qgis::RasterInterfaceCapability::Create
-      | Qgis::RasterInterfaceCapability::Remove
       | Qgis::RasterInterfaceCapability::Prefetch;
   if ( mDriverName != QLatin1String( "WMS" ) )
   {
