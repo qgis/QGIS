@@ -216,9 +216,11 @@ class CORE_EXPORT QgsRasterInterface
     virtual Qgis::RasterInterfaceCapabilities capabilities() const;
 
     /**
-     *  Returns the raster interface capabilities in friendly format.
+     * Returns the raster interface capabilities in friendly format.
+     *
+     * \deprecated will be removed in QGIS 4.0
      */
-    QString capabilitiesString() const;
+    Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
     //! Returns data type for the band specified by number
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
