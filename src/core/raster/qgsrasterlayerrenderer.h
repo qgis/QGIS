@@ -84,6 +84,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     std::unique_ptr<QgsRasterPipe> mPipe;
 
     QgsRasterDataProvider::ProviderCapabilities mProviderCapabilities;
+    int mInterfaceCapabilities = 0;
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
