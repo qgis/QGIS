@@ -2461,7 +2461,7 @@ Sets the simplification settings for fast rendering of features
 Returns the simplification settings for fast rendering of features
 %End
 
-    bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, Qgis::VectorRenderingSimplificationFlag simplifyHint ) const;
 %Docstring
 Returns whether the VectorLayer can apply the specified simplification hint
 

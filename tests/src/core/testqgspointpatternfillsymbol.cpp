@@ -110,7 +110,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
@@ -199,7 +199,7 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   layer->setSimplifyMethod( simplifyMethod );
 
   //setup gradient fill
@@ -225,7 +225,7 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   layer->setSimplifyMethod( simplifyMethod );
 
   //setup gradient fill

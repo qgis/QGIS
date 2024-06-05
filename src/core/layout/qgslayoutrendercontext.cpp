@@ -22,7 +22,7 @@ QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
   , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
   , mLayout( layout )
 {
-  mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  mSimplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::NoSimplification );
 }
 
 void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags )

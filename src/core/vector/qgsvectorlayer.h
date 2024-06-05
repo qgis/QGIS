@@ -34,7 +34,6 @@
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayertoolscontext.h"
-#include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
 #include "qgsaggregatecalculator.h"
@@ -43,6 +42,7 @@
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsabstractprofilesource.h"
+#include "qgsvectorsimplifymethod.h"
 
 class QPainter;
 class QImage;
@@ -414,8 +414,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     static const QgsSettingsEntryDouble *settingsSimplifyMaxScale SIP_SKIP;
     static const QgsSettingsEntryDouble *settingsSimplifyDrawingTol SIP_SKIP;
-    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
-    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHints> *settingsSimplifyDrawingHints SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qgis::VectorSimplificationAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qgis::VectorRenderingSimplificationFlags> *settingsSimplifyDrawingHints SIP_SKIP;
 
     /**
      * Setting options for loading vector layers.
@@ -2330,7 +2330,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns whether the VectorLayer can apply the specified simplification hint
      * \note Do not use in 3rd party code - may be removed in future version!
      */
-    bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, Qgis::VectorRenderingSimplificationFlag simplifyHint ) const;
 
     /**
      * Returns the conditional styles that are set for this layer. Style information is

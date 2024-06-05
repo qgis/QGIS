@@ -2545,6 +2545,44 @@ Qgis.TextCharacterVerticalAlignment.SubScript.__doc__ = "Characters are placed b
 Qgis.TextCharacterVerticalAlignment.__doc__ = "Text vertical alignment for characters.\n\nThis enum controls vertical alignment of individual characters within a block\nof text.\n\n.. versionadded:: 3.30\n\n" + '* ``Normal``: ' + Qgis.TextCharacterVerticalAlignment.Normal.__doc__ + '\n' + '* ``SuperScript``: ' + Qgis.TextCharacterVerticalAlignment.SuperScript.__doc__ + '\n' + '* ``SubScript``: ' + Qgis.TextCharacterVerticalAlignment.SubScript.__doc__
 # --
 Qgis.TextCharacterVerticalAlignment.baseClass = Qgis
+QgsVectorSimplifyMethod.SimplifyAlgorithm = Qgis.VectorSimplificationAlgorithm
+# monkey patching scoped based enum
+QgsVectorSimplifyMethod.Distance = Qgis.VectorSimplificationAlgorithm.Distance
+QgsVectorSimplifyMethod.Distance.is_monkey_patched = True
+QgsVectorSimplifyMethod.Distance.__doc__ = "The simplification uses the distance between points to remove duplicate points"
+QgsVectorSimplifyMethod.SnapToGrid = Qgis.VectorSimplificationAlgorithm.SnapToGrid
+QgsVectorSimplifyMethod.SnapToGrid.is_monkey_patched = True
+QgsVectorSimplifyMethod.SnapToGrid.__doc__ = "The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points"
+QgsVectorSimplifyMethod.Visvalingam = Qgis.VectorSimplificationAlgorithm.Visvalingam
+QgsVectorSimplifyMethod.Visvalingam.is_monkey_patched = True
+QgsVectorSimplifyMethod.Visvalingam.__doc__ = "The simplification gives each point in a line an importance weighting, so that least important points are removed first"
+QgsVectorSimplifyMethod.SnappedToGridGlobal = Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal
+QgsVectorSimplifyMethod.SnappedToGridGlobal.is_monkey_patched = True
+QgsVectorSimplifyMethod.SnappedToGridGlobal.__doc__ = "Snap to a global grid based on the tolerance. Good for consistent results for incoming vertices, regardless of their feature"
+Qgis.VectorSimplificationAlgorithm.__doc__ = "Simplification algorithms for vector features.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsVectorSimplifyMethod`.SimplifyAlgorithm\n\n.. versionadded:: 3.28\n\n" + '* ``Distance``: ' + Qgis.VectorSimplificationAlgorithm.Distance.__doc__ + '\n' + '* ``SnapToGrid``: ' + Qgis.VectorSimplificationAlgorithm.SnapToGrid.__doc__ + '\n' + '* ``Visvalingam``: ' + Qgis.VectorSimplificationAlgorithm.Visvalingam.__doc__ + '\n' + '* ``SnappedToGridGlobal``: ' + Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal.__doc__
+# --
+Qgis.VectorSimplificationAlgorithm.baseClass = Qgis
+QgsVectorSimplifyMethod.SimplifyHint = Qgis.VectorRenderingSimplificationFlag
+# monkey patching scoped based enum
+QgsVectorSimplifyMethod.NoSimplification = Qgis.VectorRenderingSimplificationFlag.NoSimplification
+QgsVectorSimplifyMethod.NoSimplification.is_monkey_patched = True
+QgsVectorSimplifyMethod.NoSimplification.__doc__ = "No simplification can be applied"
+QgsVectorSimplifyMethod.GeometrySimplification = Qgis.VectorRenderingSimplificationFlag.GeometrySimplification
+QgsVectorSimplifyMethod.GeometrySimplification.is_monkey_patched = True
+QgsVectorSimplifyMethod.GeometrySimplification.__doc__ = "The geometries can be simplified using the current map2pixel context state"
+QgsVectorSimplifyMethod.AntialiasingSimplification = Qgis.VectorRenderingSimplificationFlag.AntialiasingSimplification
+QgsVectorSimplifyMethod.AntialiasingSimplification.is_monkey_patched = True
+QgsVectorSimplifyMethod.AntialiasingSimplification.__doc__ = "The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'"
+QgsVectorSimplifyMethod.FullSimplification = Qgis.VectorRenderingSimplificationFlag.FullSimplification
+QgsVectorSimplifyMethod.FullSimplification.is_monkey_patched = True
+QgsVectorSimplifyMethod.FullSimplification.__doc__ = "All simplification hints can be applied ( Geometry + AA-disabling )"
+Qgis.VectorRenderingSimplificationFlag.__doc__ = "Simplification flags for vector feature rendering.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsVectorSimplifyMethod`.SimplifyHint\n\n.. versionadded:: 3.36\n\n" + '* ``NoSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.NoSimplification.__doc__ + '\n' + '* ``GeometrySimplification``: ' + Qgis.VectorRenderingSimplificationFlag.GeometrySimplification.__doc__ + '\n' + '* ``AntialiasingSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.AntialiasingSimplification.__doc__ + '\n' + '* ``FullSimplification``: ' + Qgis.VectorRenderingSimplificationFlag.FullSimplification.__doc__
+# --
+Qgis.VectorRenderingSimplificationFlag.baseClass = Qgis
+Qgis.VectorRenderingSimplificationFlags = lambda flags=0: Qgis.VectorRenderingSimplificationFlag(flags)
+QgsVectorSimplifyMethod.SimplifyHints = Qgis.VectorRenderingSimplificationFlags
+Qgis.VectorRenderingSimplificationFlags.baseClass = Qgis
+VectorRenderingSimplificationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.RenderSubcomponentProperty.Generic.__doc__ = "Generic subcomponent property"
 Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ = "Shadow offset"
@@ -3683,7 +3721,7 @@ Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
-Qgis.LegendJsonRenderFlag.__doc__ = "Legend JSON export flags.\n\nFlags to control JSON attributes when exporting a legend in JSON format.\n\n.. versionadded:: 3.36\n\n" + '* ``ShowRuleDetails``: ' + Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__
+Qgis.LegendJsonRenderFlag.__doc__ = "Legend JSON export flags.\n\nFlags to co\nQ_DECLARE_OPERATORS_FOR_FLAGS( :py:class:`QgsVectorSimplifyMethod`.SimplifyHints )ntrol JSON attributes when exporting a legend in JSON format.\n\n.. versionadded:: 3.36\n\n" + '* ``ShowRuleDetails``: ' + Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__
 # --
 Qgis.LegendJsonRenderFlag.baseClass = Qgis
 Qgis.LegendJsonRenderFlags = lambda flags=0: Qgis.LegendJsonRenderFlag(flags)

@@ -22,9 +22,6 @@
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgssettingsentry.h"
 
-#include "qgsvectorsimplifymethod.h"
-
-
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif
@@ -57,8 +54,8 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingType>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::TilePixelRatio>() );
 
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsVectorSimplifyMethod::SimplifyAlgorithm>() );
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsVectorSimplifyMethod::SimplifyHints>() );
+  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::VectorSimplificationAlgorithm>() );
+  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::VectorRenderingSimplificationFlags>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qt::TimeSpec>() );
 
   // flags

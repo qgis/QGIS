@@ -32,7 +32,6 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgstemporalrangeobject.h"
 #include "qgsfontutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
@@ -880,23 +879,23 @@ void TestQgsLayoutMap::testSimplificationMethod()
   l.renderContext().mIsPreviewRender = false;
   QgsMapSettings settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
   // should default to no simplification during exports
-  QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QCOMPARE( settings.simplifyMethod().simplifyHints(), Qgis::VectorRenderingSimplificationFlags() );
   QVERIFY( !( settings.flags() & Qgis::MapSettingsFlag::UseRenderingOptimization ) );
   // set a simplification method to use
   QgsVectorSimplifyMethod method;
-  method.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  method.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
   l.renderContext().setSimplifyMethod( method );
 
   // should still have no simplification override for preview renders
   l.renderContext().mIsPreviewRender = true;
   settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
-  QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QCOMPARE( settings.simplifyMethod().simplifyHints(), Qgis::VectorRenderingSimplificationFlags() );
   QVERIFY( settings.flags() & Qgis::MapSettingsFlag::UseRenderingOptimization );
 
   // for exports, we respect the layout context's simplify method
   l.renderContext().mIsPreviewRender = false;
   settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
-  QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
+  QCOMPARE( settings.simplifyMethod().simplifyHints(), Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
   QVERIFY( settings.flags() & Qgis::MapSettingsFlag::UseRenderingOptimization );
 }
 

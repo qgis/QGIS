@@ -1466,6 +1466,25 @@ The development version
       SubScript,
     };
 
+    enum class VectorSimplificationAlgorithm /BaseType=IntEnum/
+      {
+      Distance,
+      SnapToGrid,
+      Visvalingam,
+      SnappedToGridGlobal,
+    };
+
+    enum class VectorRenderingSimplificationFlag /BaseType=IntFlag/
+    {
+      NoSimplification,
+      GeometrySimplification,
+      AntialiasingSimplification,
+      FullSimplification,
+    };
+
+    typedef QFlags<Qgis::VectorRenderingSimplificationFlag> VectorRenderingSimplificationFlags;
+
+
     enum class RenderSubcomponentProperty /BaseType=IntEnum/
     {
       Generic,
@@ -3011,6 +3030,7 @@ QFlags<Qgis::ProcessingParameterFlag> operator|(Qgis::ProcessingParameterFlag f1
 
 QFlags<Qgis::DataItemProviderCapability> operator|(Qgis::DataItemProviderCapability f1, QFlags<Qgis::DataItemProviderCapability> f2);
 
+QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingSimplificationFlag f1, QFlags<Qgis::VectorRenderingSimplificationFlag> f2);
 
 
 
