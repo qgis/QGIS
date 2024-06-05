@@ -3721,7 +3721,7 @@ Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
-Qgis.LegendJsonRenderFlag.__doc__ = "Legend JSON export flags.\n\nFlags to co\nQ_DECLARE_OPERATORS_FOR_FLAGS( :py:class:`QgsVectorSimplifyMethod`.SimplifyHints )ntrol JSON attributes when exporting a legend in JSON format.\n\n.. versionadded:: 3.36\n\n" + '* ``ShowRuleDetails``: ' + Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__
+Qgis.LegendJsonRenderFlag.__doc__ = "Legend JSON export flags.\n\nFlags to control JSON attributes when exporting a legend in JSON format.\n\n.. versionadded:: 3.36\n\n" + '* ``ShowRuleDetails``: ' + Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__
 # --
 Qgis.LegendJsonRenderFlag.baseClass = Qgis
 Qgis.LegendJsonRenderFlags = lambda flags=0: Qgis.LegendJsonRenderFlag(flags)
