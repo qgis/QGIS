@@ -186,9 +186,12 @@ Clone itself, create deep copy
 Returns a bitmask containing the supported capabilities
 %End
 
-    QString capabilitiesString() const;
+ QString capabilitiesString() const /Deprecated/;
 %Docstring
 Returns the raster interface capabilities in friendly format.
+
+.. deprecated::
+   will be removed in QGIS 4.0
 %End
 
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
