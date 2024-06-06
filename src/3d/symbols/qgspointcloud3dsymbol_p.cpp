@@ -727,8 +727,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
         alreadyPrintedDebug = true;
       }
     }
-    QgsVector3D point( x, y, z );
-    point = context.map().mapToWorldCoordinates( point );
+    QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( point.x(), point.y(), point.z() ) );
 
     if ( attrIsX )
@@ -847,8 +846,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point( x, y, z );
-    const QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    const QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
 
@@ -1012,8 +1010,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point( x, y, z );
-    const QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    const QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     float iParam = 0.0f;
     if ( attrIsX )
       iParam = x;
