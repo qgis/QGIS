@@ -20,7 +20,6 @@
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
-#include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgsgeometrytransformer.h"
 #include "qgsbox3d.h"
@@ -126,6 +125,11 @@ QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpa
 
   // return the new object
   return new QgsPoint( mWkbType, x, y, z, m );
+}
+
+QgsPoint *QgsPoint::simplifyByDistance( double ) const
+{
+  return clone();
 }
 
 bool QgsPoint::removeDuplicateNodes( double, bool )

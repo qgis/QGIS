@@ -85,6 +85,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
+    QgsMultiCurve *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
     /**
      * Returns a copy of the multi curve, where each component curve has had its line direction reversed.

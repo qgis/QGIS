@@ -224,6 +224,17 @@ bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
   return QgsMultiCurve::insertGeometry( g, index );
 }
 
+QgsMultiLineString *QgsMultiLineString::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+  result->reserve( mGeometries.size() );
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    result->addGeometry( mGeometries.at( i )->simplifyByDistance( tolerance ) );
+  }
+  return result.release();
+}
+
 QgsMultiCurve *QgsMultiLineString::toCurveType() const
 {
   QgsMultiCurve *multiCurve = new QgsMultiCurve();

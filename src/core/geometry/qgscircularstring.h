@@ -260,6 +260,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QgsPoint endPoint() const override SIP_HOLDGIL;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
+    QgsAbstractGeometry *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     void draw( QPainter &p ) const override;

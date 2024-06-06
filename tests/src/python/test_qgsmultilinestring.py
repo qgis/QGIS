@@ -233,6 +233,14 @@ class TestQgsMultiLineString(QgisTestCase):
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 300, 22))
 
+    def test_simplify_by_distance(self):
+        """
+        test simplifyByDistance
+        """
+        p = QgsMultiLineString()
+        p.fromWkt('MultiLineString( (0 0, 50 0, 70 0, 80 0, 100 0), (0 0, 50 1, 60 1, 100 0) )')
+        self.assertEqual(p.simplifyByDistance(10).asWkt(), 'MultiLineString ((0 0, 100 0),(0 0, 100 0))')
+
 
 if __name__ == '__main__':
     unittest.main()

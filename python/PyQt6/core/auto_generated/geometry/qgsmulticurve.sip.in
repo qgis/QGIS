@@ -63,6 +63,8 @@ Returns the curve with the specified ``index``.
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
+    virtual QgsMultiCurve *simplifyByDistance( double tolerance ) const /Factory/;
+
 
     QgsMultiCurve *reversed() const /Factory/;
 %Docstring

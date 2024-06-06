@@ -638,6 +638,12 @@ QgsCircularString *QgsCircularString::snappedToGrid( double hSpacing, double vSp
     return nullptr;
 }
 
+QgsAbstractGeometry *QgsCircularString::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsLineString > line( curveToLine() );
+  return line->simplifyByDistance( tolerance );
+}
+
 bool QgsCircularString::removeDuplicateNodes( double epsilon, bool useZValues )
 {
   if ( mX.count() <= 3 )

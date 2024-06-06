@@ -236,3 +236,14 @@ QgsAbstractGeometry *QgsMultiSurface::boundary() const
   }
   return multiCurve.release();
 }
+
+QgsMultiSurface *QgsMultiSurface::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsMultiSurface > res = std::make_unique< QgsMultiSurface >();
+  res->reserve( mGeometries.size() );
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    res->addGeometry( mGeometries.at( i )->simplifyByDistance( tolerance ) );
+  }
+  return res.release();
+}

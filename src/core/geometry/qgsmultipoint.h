@@ -343,6 +343,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override SIP_HOLDGIL;
+    QgsMultiPoint *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

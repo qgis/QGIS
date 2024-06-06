@@ -167,6 +167,16 @@ class TestQgsPoint(QgisTestCase):
         self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
         self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
+    def test_simplify_by_distance(self):
+        """
+        test simplifyByDistance
+        """
+        # for points this is just a clone
+        p = QgsPoint(1.1,2 .2)
+        self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1,2 .2))
+        p = QgsPoint(1.1, 2.2, 3.3, 4.4)
+        self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1, 2.2, 3.3, 4.4))
+
 
 if __name__ == '__main__':
     unittest.main()

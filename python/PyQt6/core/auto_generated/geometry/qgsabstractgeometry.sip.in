@@ -629,6 +629,20 @@ In this case, it can be thought like rounding the x and y of all the points/vert
 :param removeRedundantPoints: if ``True``, then points which are redundant (e.g. they represent mid points on a straight line segment) will be skipped (since QGIS 3.38)
 %End
 
+    virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const = 0 /Factory/;
+%Docstring
+Simplifies the geometry by applying the Douglas Peucker simplification by distance
+algorithm.
+
+The caller takes ownership of the returned geometry. Curved geometries will be segmentized prior to simplification.
+
+If a simplified geometry cannot be calculated ``None`` will be returned.
+
+The returned geometry may be invalid and contain self-intersecting rings.
+
+.. versionadded:: 3.38
+%End
+
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
 %Docstring
 Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a

@@ -585,6 +585,37 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
 
 }
 
+QgsCurvePolygon *QgsCurvePolygon::simplifyByDistance( double tolerance ) const
+{
+  if ( !mExteriorRing )
+    return nullptr;
+
+  // exterior ring
+  std::unique_ptr< QgsAbstractGeometry > exterior( mExteriorRing->simplifyByDistance( tolerance ) );
+  if ( !qgsgeometry_cast< QgsLineString * >( exterior.get() ) )
+    return nullptr;
+
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( qgis::down_cast< QgsLineString * >( exterior.release() ) );
+
+  //interior rings
+  for ( const QgsCurve *interior : mInteriorRings )
+  {
+    if ( !interior )
+      continue;
+
+    std::unique_ptr< QgsAbstractGeometry > simplifiedRing( interior->simplifyByDistance( tolerance ) );
+    if ( !simplifiedRing )
+      return nullptr;
+
+    if ( !qgsgeometry_cast< QgsLineString * >( simplifiedRing.get() ) )
+      return nullptr;
+
+    polygon->mInteriorRings.append( qgis::down_cast< QgsLineString * >( simplifiedRing.release() ) );
+  }
+
+  return polygon.release();
+}
+
 bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
 {
   bool result = false;

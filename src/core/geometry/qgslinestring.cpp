@@ -620,6 +620,125 @@ QPolygonF QgsLineString::asQPolygonF() const
   return points;
 }
 
+
+void simplifySection( int i, int j, const double *x, const double *y, std::vector< bool > &usePoint, const double distanceToleranceSquared, const double epsilon )
+{
+  if ( i + 1 == j )
+  {
+    return;
+  }
+
+  double maxDistanceSquared = -1.0;
+
+  int maxIndex = i;
+  double mx, my;
+
+  for ( int k = i + 1; k < j; k++ )
+  {
+    const double distanceSquared = QgsGeometryUtilsBase::sqrDistToLine(
+                                     x[k], y[k], x[i], y[i], x[j], y[j], mx, my, epsilon );
+
+    if ( distanceSquared > maxDistanceSquared )
+    {
+      maxDistanceSquared = distanceSquared;
+      maxIndex = k;
+    }
+  }
+  if ( maxDistanceSquared <= distanceToleranceSquared )
+  {
+    for ( int k = i + 1; k < j; k++ )
+    {
+      usePoint[k] = false;
+    }
+  }
+  else
+  {
+    simplifySection( i, maxIndex, x, y, usePoint, distanceToleranceSquared, epsilon );
+    simplifySection( maxIndex, j, x, y, usePoint, distanceToleranceSquared, epsilon );
+  }
+};
+
+QgsLineString *QgsLineString::simplifyByDistance( double tolerance ) const
+{
+  if ( mX.empty() )
+  {
+    return new QgsLineString();
+  }
+
+  // ported from GEOS DouglasPeuckerLineSimplifier::simplify
+
+  const double distanceToleranceSquared = tolerance * tolerance;
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
+  const double *zData = mZ.constData();
+  const double *mData = mM.constData();
+
+  const int size = mX.size();
+
+  std::vector< bool > usePoint( size, true );
+
+  constexpr double epsilon = 4 * std::numeric_limits<double>::epsilon();
+  simplifySection( 0, size - 1, xData, yData, usePoint, distanceToleranceSquared, epsilon );
+
+  QVector< double > newX;
+  newX.reserve( size );
+  QVector< double > newY;
+  newY.reserve( size );
+
+  const bool hasZ = is3D();
+  const bool hasM = isMeasure();
+  QVector< double > newZ;
+  if ( hasZ )
+    newZ.reserve( size );
+  QVector< double > newM;
+  if ( hasM )
+    newM.reserve( size );
+
+  for ( int i = 0, n = size; i < n; ++i )
+  {
+    if ( usePoint[i] || i == n - 1 )
+    {
+      newX.append( xData[i ] );
+      newY.append( yData[i ] );
+      if ( hasZ )
+        newZ.append( zData[i] );
+      if ( hasM )
+        newM.append( mData[i] );
+    }
+  }
+
+  const bool simplifyRing = isRing();
+  const int newSize = newX.size();
+  if ( simplifyRing && newSize > 3 )
+  {
+    double mx, my;
+    const double distanceSquared = QgsGeometryUtilsBase::sqrDistToLine(
+                                     newX[0], newY[ 0],
+                                     newX[ newSize - 2], newY[ newSize - 2 ],
+                                     newX[ 1 ], newY[ 1], mx, my, epsilon );
+
+    if ( distanceSquared <= distanceToleranceSquared )
+    {
+      newX.removeFirst();
+      newX.last() = newX.first();
+      newY.removeFirst();
+      newY.last() = newY.first();
+      if ( hasZ )
+      {
+        newZ.removeFirst();
+        newZ.last() = newZ.first();
+      }
+      if ( hasM )
+      {
+        newM.removeFirst();
+        newM.last() = newM.first();
+      }
+    }
+  }
+
+  return new QgsLineString( newX, newY, newZ, newM );
+}
+
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )

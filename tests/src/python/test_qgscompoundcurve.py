@@ -234,6 +234,18 @@ class TestQgsCompoundCurve(QgisTestCase):
         self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
         self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
+    def test_simplify_by_distance(self):
+        """
+        test simplifyByDistance
+        """
+        p = QgsCompoundCurve()
+        p.fromWkt('CompoundCurve (CircularString (4.40660981021897413 0.93610259854013833, 11.01953454014598321 23.6382050218978037, 34.67607970802919226 28.41041874452553984),(34.67607970802919226 28.41041874452553984, 46.06121816058393392 30.38747871532845934, 61.74134896350363988 29.02398908029196178))')
+        self.assertEqual(p.simplifyByDistance(0.5).asWkt(3), 'LineString (4.407 0.936, 3.765 8.905, 5.88 16.615, 10.217 22.855, 16.706 27.525, 21.235 29.154, 26.003 29.808, 34.676 28.41, 46.061 30.387, 61.741 29.024)')
+        self.assertEqual(p.simplifyByDistance(0.75).asWkt(3),
+                         'LineString (4.407 0.936, 3.765 8.905, 5.88 16.615, 10.217 22.855, 16.706 27.525, 26.003 29.808, 34.676 28.41, 46.061 30.387, 61.741 29.024)')
+        self.assertEqual(p.simplifyByDistance(1).asWkt(3),
+                         'LineString (4.407 0.936, 3.765 8.905, 5.88 16.615, 10.217 22.855, 16.706 27.525, 26.003 29.808, 34.676 28.41, 46.061 30.387, 61.741 29.024)')
+
 
 if __name__ == '__main__':
     unittest.main()
