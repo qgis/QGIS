@@ -26,13 +26,16 @@ from qgis.core import (
     QgsLayoutItemMap,
     QgsLayoutItemPage,
     QgsLayoutSize,
+    QgsLineSymbol,
     QgsMapRendererCache,
     QgsMapRendererCustomPainterJob,
     QgsMapRendererParallelJob,
     QgsMapRendererSequentialJob,
     QgsMapSettings,
+    QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
     QgsMaskMarkerSymbolLayer,
+    QgsNullSymbolRenderer,
     QgsOuterGlowEffect,
     QgsPalLayerSettings,
     QgsPathResolver,
@@ -1345,6 +1348,30 @@ class SelectiveMaskingTestBase():
 
         # no rasters
         self.check_layout_export("layout_export_svg_marker_masking", 0, [self.points_layer, self.lines_layer])
+
+    def test_markerline_masked(self):
+        """
+        Test a layout export where a QgsMarkerLineSymbolLayer is masked
+        """
+
+        sl = QgsMarkerLineSymbolLayer(True, 7)
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '3'})
+        sl.setSubSymbol(circle_symbol)
+
+        self.lines_layer.setRenderer(QgsSingleSymbolRenderer(QgsLineSymbol([sl])))
+        self.polys_layer.setRenderer(QgsNullSymbolRenderer())
+
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(4.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([QgsSymbolLayerReference(self.lines_layer.id(), sl.id())])
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.check_layout_export("layout_export_markerline_masked", 0, [self.polys_layer, self.lines_layer])
 
 
 class TestSelectiveMaskingQPainterPathBackend(QgisTestCase, SelectiveMaskingTestBase):

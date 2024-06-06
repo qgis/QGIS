@@ -1535,8 +1535,10 @@ bool QgsTemplatedLineSymbolLayerBase::canCauseArtifactsBetweenAdjacentTiles() co
          || ( mPlacements & Qgis::MarkerLinePlacement::SegmentCenter );
 }
 
-void QgsTemplatedLineSymbolLayerBase::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+void QgsTemplatedLineSymbolLayerBase::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
+  installMasks( context, true );
+
   mRenderingFeature = true;
   mHasRenderedFirstPart = false;
 }
@@ -4099,4 +4101,3 @@ Qgis::RenderUnit QgsFilledLineSymbolLayer::outputUnit() const
   }
   return Qgis::RenderUnit::Unknown;
 }
-
