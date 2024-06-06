@@ -972,6 +972,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QPolygonF asQPolygonF() const override;
 
+    QgsLineString *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 

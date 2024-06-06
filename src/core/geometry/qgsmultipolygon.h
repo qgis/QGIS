@@ -107,6 +107,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) final;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
+    QgsMultiPolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
     /**
      * Returns the geometry converted to the more generic curve type QgsMultiSurface

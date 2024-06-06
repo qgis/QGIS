@@ -148,6 +148,15 @@ class TestQgsMultiPoint(QgisTestCase):
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 100, 22))
 
+    def test_simplify_by_distance(self):
+        """
+        test simplifyByDistance
+        """
+        p = QgsMultiPoint()
+        p.fromWkt('MultiPoint( 0 0, 50 0, 70 0, 80 0, 100 0)')
+        # this is just a clone
+        self.assertEqual(p.simplifyByDistance(10).asWkt(), 'MultiPoint ((0 0),(50 0),(70 0),(80 0),(100 0))')
+
 
 if __name__ == '__main__':
     unittest.main()

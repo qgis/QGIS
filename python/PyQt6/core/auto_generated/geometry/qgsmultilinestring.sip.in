@@ -82,6 +82,8 @@ Returns the line string with the specified ``index``.
     bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ ) final;
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
+    virtual QgsMultiLineString *simplifyByDistance( double tolerance ) const /Factory/;
+
 
     virtual QgsMultiCurve *toCurveType() const /Factory/;
 

@@ -484,6 +484,12 @@ QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpac
     return result.release();
 }
 
+QgsAbstractGeometry *QgsCompoundCurve::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsLineString > line( curveToLine() );
+  return line->simplifyByDistance( tolerance );
+}
+
 bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
 {
   bool result = false;

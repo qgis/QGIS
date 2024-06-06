@@ -619,6 +619,8 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
     virtual QPolygonF asQPolygonF() const;
 
 
+    virtual QgsLineString *simplifyByDistance( double tolerance ) const /Factory/;
+
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
     virtual bool fromWkt( const QString &wkt );

@@ -588,6 +588,14 @@ class TestQgsGeometryCollection(QgisTestCase):
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 100, 200))
 
+    def test_simplify_by_distance(self):
+        """
+        test simplifyByDistance
+        """
+        p = QgsGeometryCollection()
+        p.fromWkt('GeometryCollection( LineString(0 0, 50 0, 70 0, 80 0, 100 0), LineString(0 0, 50 1, 60 1, 100 0) )')
+        self.assertEqual(p.simplifyByDistance(10).asWkt(), 'GeometryCollection (LineString (0 0, 100 0),LineString (0 0, 100 0))')
+
 
 if __name__ == '__main__':
     unittest.main()

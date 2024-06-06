@@ -1074,6 +1074,17 @@ const QgsAbstractGeometry *QgsGeometryCollection::simplifiedTypeRef() const
     return this;
 }
 
+QgsGeometryCollection *QgsGeometryCollection::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsGeometryCollection > res = std::make_unique< QgsGeometryCollection >();
+  res->reserve( mGeometries.size() );
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    res->addGeometry( mGeometries.at( i )->simplifyByDistance( tolerance ) );
+  }
+  return res.release();
+}
+
 bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   if ( !transformer )

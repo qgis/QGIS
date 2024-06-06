@@ -92,6 +92,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsMultiSurface *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
 #ifndef SIP_RUN
 

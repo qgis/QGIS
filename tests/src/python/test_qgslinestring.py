@@ -219,6 +219,27 @@ class TestQgsLineString(QgisTestCase):
         # 3d distance
         self.assertEqual(line.interpolateM(True).asWkt(2), 'LineStringZM (5 10 15 17, 6 11 16 17, 20 10 5 17, 30 10 12 19.05, 30 40 17 25, 20 40 19 27, 20 50 21 27, 25 50 22 27, 25 55 22 27)')
 
+    def test_simplify_by_distance(self):
+        """
+        test simplifyByDistance
+        """
+        p = QgsLineString()
+        # should never become < 2 vertices
+        p.fromWkt('LineString(1 1, 1.001 1.001)')
+        self.assertEqual(p.simplifyByDistance(0.5).asWkt(3), 'LineString (1 1, 1.001 1.001)')
+        p.fromWkt('LineString (4.40700000000000003 0.93600000000000005, 3.76500000000000012 8.90499999999999936, 5.87999999999999989 16.61499999999999844, 10.21700000000000053 22.85500000000000043, 16.70599999999999952 27.52499999999999858, 26.00300000000000011 29.80799999999999983, 34.67600000000000193 28.41000000000000014, 46.06099999999999994 30.38700000000000045, 61.74099999999999966 29.02400000000000091)')
+        self.assertEqual(p.simplifyByDistance(0.75).asWkt(3),
+                         'LineString (4.407 0.936, 3.765 8.905, 5.88 16.615, 10.217 22.855, 16.706 27.525, 26.003 29.808, 34.676 28.41, 46.061 30.387, 61.741 29.024)')
+        self.assertEqual(p.simplifyByDistance(2).asWkt(3),
+                         'LineString (4.407 0.936, 5.88 16.615, 16.706 27.525, 61.741 29.024)')
+        # ported geos tests
+        p.fromWkt('LINESTRING (0 5, 1 5, 2 5, 5 5)')
+        self.assertEqual(p.simplifyByDistance(10).asWkt(),
+                         'LineString (0 5, 5 5)')
+        p.fromWkt('LINESTRING (1 0, 2 0, 2 2, 0 2, 0 0, 1 0)')
+        self.assertEqual(p.simplifyByDistance(0).asWkt(),
+                         'LineString (2 0, 2 2, 0 2, 0 0, 2 0)')
+
 
 if __name__ == '__main__':
     unittest.main()

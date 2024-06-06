@@ -70,6 +70,8 @@ Returns the surface with the specified ``index``.
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual QgsMultiSurface *simplifyByDistance( double tolerance ) const /Factory/;
+
 
 
     virtual QgsMultiSurface *createEmptyWithSameType() const /Factory/;
