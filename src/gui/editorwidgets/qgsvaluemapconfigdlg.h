@@ -59,14 +59,6 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     void updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull );
 
     /**
-     * Validates a value against the maximum allowed field length and trims it is necessary.
-     * \param value
-     * \return the validated field value trimmed if necessary
-     * \since QGIS 3.38
-     */
-    QString checkValueLength( const QString &value );
-
-    /**
      * Updates the displayed table with the values from a CSV file.
      * \param filePath the absolute file path of the CSV file.
      * \since QGIS 3.24
@@ -85,6 +77,14 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
 
   private:
     void setRow( int row, const QString &value, const QString &description );
+
+    /**
+     * Validates a value against the maximum allowed field length and trims it is necessary.
+     * \param value
+     * \return the validated field value trimmed if necessary
+     */
+    QString checkValueLength( const QString &value );
+
 
   private slots:
     void copySelectionToClipboard();

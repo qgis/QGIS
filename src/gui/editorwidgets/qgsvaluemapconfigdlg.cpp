@@ -93,13 +93,13 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   }
 
   QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
-  QList<QPair<QString, QVariant>> orderedMap;
+  QList<QPair<QString, QVariant>> orderedList;
 
   if ( valueList.count() > 0 )
   {
     for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
     {
-      orderedMap.append( qMakePair( valueList[i].toMap().constBegin().key(), valueList[i].toMap().constBegin().value() ) );
+      orderedList.append( qMakePair( valueList[i].toMap().constBegin().key(), valueList[i].toMap().constBegin().value() ) );
     }
   }
   else
@@ -109,13 +109,13 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
     {
       if ( QgsVariantUtils::isNull( mit.value() ) )
-        orderedMap.append( qMakePair( mit.key(), QVariant() ) );
+        orderedList.append( qMakePair( mit.key(), QVariant() ) );
       else
-        orderedMap.append( qMakePair( mit.key(), mit.value() ) );
+        orderedList.append( qMakePair( mit.key(), mit.value() ) );
     }
   }
 
-  updateMap( orderedMap, false );
+  updateMap( orderedList, false );
 
 }
 
@@ -127,18 +127,21 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
     tableWidget->insertRow( row + 1 );
   } //else check type
 
-  // check cell value
-  QTableWidgetItem *item = tableWidget->item( row, 0 );
-  if ( item )
+  if ( layer()->fields().exists( field() ) )
   {
-    const QString validValue = checkValueLength( item->text() );
-    if ( validValue.length() != item->text().length() )
+    // check cell value
+    QTableWidgetItem *item = tableWidget->item( row, 0 );
+    if ( item )
     {
-      const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                   .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
-      item->setText( validValue );
-      mValueMapErrorsLabel->setVisible( true );
-      mValueMapErrorsLabel->setText( QStringLiteral( "%1<br>%2" ).arg( errorMessage, mValueMapErrorsLabel->text() ) );
+      const QString validValue = checkValueLength( item->text() );
+      if ( validValue.length() != item->text().length() )
+      {
+        const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" )
+                                     .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
+        item->setText( validValue );
+        mValueMapErrorsLabel->setVisible( true );
+        mValueMapErrorsLabel->setText( QStringLiteral( "%1<br>%2" ).arg( errorMessage, mValueMapErrorsLabel->text() ) );
+      }
     }
   }
 
@@ -201,7 +204,8 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
   constexpr int maxOverflowErrors { 5 };
   QStringList reportedErrors;
-  const QgsField mappedField { layer()->fields().field( field() ) };
+  const bool hasField { layer()->fields().exists( field() ) };
+  const QgsField mappedField { hasField ? layer()->fields().field( field() ) : QgsField() };
 
   for ( const auto &pair : list )
   {
@@ -211,7 +215,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
     {
       const QString value { pair.first };
       // Check value
-      const QString validValue = checkValueLength( value );
+      const QString validValue = checkValueLength( value ) ;
 
       if ( validValue.length() != value.length() )
       {
@@ -243,10 +247,13 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
 QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 {
-  const QgsField mappedField { layer()->fields().field( field() ) };
-  if ( mappedField.length() > 0 && value.length() > mappedField.length() )
+  if ( layer()->fields().exists( field() ) )
   {
-    return value.mid( 0, mappedField.length() );
+    const QgsField mappedField { layer()->fields().field( field() ) };
+    if ( mappedField.length() > 0 && value.length() > mappedField.length() )
+    {
+      return value.mid( 0, mappedField.length() );
+    }
   }
   return value;
 }
