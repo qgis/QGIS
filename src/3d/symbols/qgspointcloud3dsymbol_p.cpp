@@ -607,7 +607,6 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point( x, y, z );
     const QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
   }
