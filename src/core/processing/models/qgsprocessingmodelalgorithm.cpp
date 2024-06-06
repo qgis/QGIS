@@ -524,9 +524,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
             break;
         }
 
-        if ( !results.value( outputIt->childOutputName() ).toString().isEmpty() )
+        const QString outputLayer = results.value( outputIt->childOutputName() ).toString();
+        if ( !outputLayer.isEmpty() && context.willLoadLayerOnCompletion( outputLayer ) )
         {
-          QgsProcessingContext::LayerDetails &details = context.layerToLoadOnCompletionDetails( results.value( outputIt->childOutputName() ).toString() );
+          QgsProcessingContext::LayerDetails &details = context.layerToLoadOnCompletionDetails( outputLayer );
           details.groupName = mOutputGroup;
           if ( outputSortKey > 0 )
             details.layerSortKey = outputSortKey;
