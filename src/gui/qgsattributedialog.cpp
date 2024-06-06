@@ -88,6 +88,13 @@ void QgsAttributeDialog::show()
 {
   QDialog::show();
 
+  raise();
+  activateWindow();
+}
+
+void QgsAttributeDialog::showEvent( QShowEvent *event )
+{
+  QDialog::showEvent( event );
   // We cannot call restoreGeometry() in the constructor or init because the dialog is not yet visible
   // and the geometry restoration will not take the window decorations (frame) into account.
   if ( mFirstShow )
@@ -95,8 +102,6 @@ void QgsAttributeDialog::show()
     mFirstShow = false;
     restoreGeometry();
   }
-  raise();
-  activateWindow();
 }
 
 void QgsAttributeDialog::reject()
