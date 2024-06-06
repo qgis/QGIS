@@ -810,6 +810,33 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   return relation( geom, RelationIntersects, errorMsg );
 }
 
+bool QgsGeos::intersects( double x, double y, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+  // special optimised case for point intersects
+  if ( mGeosPrepared ) //use faster version with prepared geometry
+  {
+    try
+    {
+      return GEOSPreparedIntersectsXY_r( QgsGeosContext::get(), mGeosPrepared.get(), x, y ) == 1;
+    }
+
+    catch ( GEOSException &e )
+    {
+      logError( QStringLiteral( "GEOS" ), e.what() );
+      if ( errorMsg )
+      {
+        *errorMsg = e.what();
+      }
+      return false;
+    }
+  }
+#endif
+
+  QgsPoint point( x, y );
+  return relation( &point, RelationIntersects, errorMsg );
+}
+
 bool QgsGeos::touches( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
   return relation( geom, RelationTouches, errorMsg );

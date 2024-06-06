@@ -230,6 +230,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool contains( double x, double y, QString *errorMsg = nullptr ) const;
 
     /**
+     * Returns TRUE if the geometry intersects the point at (\a x, \a y).
+     *
+     * \since QGIS 3.40
+     */
+    bool intersects( double x, double y, QString *errorMsg = nullptr ) const;
+
+    /**
      * Returns the minimum distance from the geometry to the point at (\a x, \a y).
      *
      * This method is more efficient than creating a temporary QgsPoint object to test distance.
