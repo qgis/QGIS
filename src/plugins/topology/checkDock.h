@@ -118,6 +118,13 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
     void filterErrors();
 
   private:
+
+    /**
+     * Update check table model according to current errors
+     * \since QGIS 3.38
+     */
+    void updateModel();
+
     rulesDialog *mConfigureDialog = nullptr;
 
     QObjectUniquePtr<QgsRubberBand> mRBConflict;
