@@ -1191,7 +1191,7 @@ bool QgsPostgresProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "money" ) )
       {
-        fieldType = QVariant::Double;
+        fieldType = QMetaType::Type::Double;
         fieldSize = -1;
         fieldPrec = 2;
       }
