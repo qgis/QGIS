@@ -82,9 +82,9 @@ if test -d ${QGIS_BUILDDIR} -a "${FORCE_REBUILD}" = "no"; then
   echo "--=[ Testing against pre-existing build directory ${QGIS_BUILDDIR}. To rebuild use --force-rebuild or move it away"
 else
   echo "--=[ Building qgis inside the dependencies container"
-  VOLUMES="-v ${QGIS_WORKSPACE}:${QGIS_WORKSPACE}"
+  VOLUMES="-v ${QGIS_WORKSPACE}:${QGIS_WORKSPACE}:z"
   if test "${QGIS_WORKSPACE}" != "${QGIS_COMMON_GIT_DIR}"; then
-    VOLUMES="${VOLUMES} -v ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}"
+    VOLUMES="${VOLUMES} -v ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}:z"
   fi
   docker run -t --name qgis_container \
     --rm \
