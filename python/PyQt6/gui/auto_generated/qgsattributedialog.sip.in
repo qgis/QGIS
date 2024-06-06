@@ -75,6 +75,9 @@ Intercept window activate/deactivate events to show/hide the highlighted feature
 :return: The same as the parent QDialog
 %End
 
+    virtual void showEvent( QShowEvent *event );
+
+
     void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
 %Docstring
 Sets ``extraScope`` as an additional expression context scope to be used
