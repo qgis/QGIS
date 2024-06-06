@@ -245,6 +245,13 @@ Set the limit of fetched features (0 means all features)
 .. versionadded:: 3.32
 %End
 
+    QgsAttributeForm *referencedAttributeForm();
+%Docstring
+Returns the referenced attribute form
+
+.. versionadded:: 3.38
+%End
+
 
   public slots:
     void openForm();

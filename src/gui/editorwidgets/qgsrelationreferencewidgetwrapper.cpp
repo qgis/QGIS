@@ -108,6 +108,15 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
+  QgsAttributeForm *refForm = mWidget->referencedAttributeForm();
+  if ( refForm )
+  {
+    QgsVectorLayer *refFormLayer = refForm->layer();
+    if ( refFormLayer && refFormLayer->isEditable() )
+    {
+      connect( refForm, &QgsAttributeForm::widgetValueChanged, [ = ]( const QString & attribute, const QVariant & value, bool attributeChanged ) { if ( attributeChanged ) {refFormLayer->changeAttributeValue( refForm->currentFormFeature().id(), refFormLayer->fields().indexFromName( attribute ), value );} } );
+    }
+  }
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value() const
