@@ -133,6 +133,8 @@ void QgsAppGpsLogging::setGpkgLogFile( const QString &filename )
     {
       mGpkgLogger->endCurrentTrack();
       mGpkgLogger.reset();
+      mGpkgTracksLayer.reset();
+      mGpkgPointsLayer.reset();
 
       QgisApp::instance()->messageBar()->pushInfo( QString(), tr( "GPS logging stopped" ) );
     }
@@ -217,6 +219,10 @@ void QgsAppGpsLogging::stopNmeaLogging()
 
 void QgsAppGpsLogging::createGpkgLogger()
 {
+  mGpkgLogger.reset();
+  mGpkgPointsLayer.reset();
+  mGpkgTracksLayer.reset();
+
   mGpkgLogger = std::make_unique< QgsVectorLayerGpsLogger >( mConnection->connection() );
   mGpkgLogger->setTransformContext( QgsProject::instance()->transformContext() );
   mGpkgLogger->setEllipsoid( QgsProject::instance()->ellipsoid() );
