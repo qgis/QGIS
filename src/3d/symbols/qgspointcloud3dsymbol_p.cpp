@@ -727,7 +727,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
         alreadyPrintedDebug = true;
       }
     }
-    QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
 
     if ( attrIsX )
