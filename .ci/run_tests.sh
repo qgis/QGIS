@@ -8,7 +8,7 @@ command -v docker > /dev/null || {
 	exit 1
 }
 
-IMAGE_BUILD_DEPS=qgis/qgis3-build-deps:latest
+IMAGE_BUILD_DEPS=docker.io/qgis/qgis3-build-deps:latest
 UPDATE_IMAGES=yes
 INTERACTIVE=no
 FORCE_REBUILD=no
