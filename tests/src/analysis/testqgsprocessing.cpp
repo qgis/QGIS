@@ -12668,8 +12668,8 @@ void TestQgsProcessing::convertCompatibleDuplicateFids()
   QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "gpkg", QString( "gpkg" ), &feedback );
   const QStringList logs( feedback.textLog().split( '\n', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
   QCOMPARE( logs.size(), 11 );
-  QVERIFY( logs.first().startsWith( QStringLiteral( "Error writing feature # 2" ) ) );
-  QVERIFY( logs.last().startsWith( QStringLiteral( "There were 11 errors writing features" ) ) );
+  QVERIFY( logs.first().startsWith( QLatin1String( "Error writing feature # 2" ) ) );
+  QVERIFY( logs.last().startsWith( QLatin1String( "There were 11 errors writing features" ) ) );
 }
 
 void TestQgsProcessing::create()

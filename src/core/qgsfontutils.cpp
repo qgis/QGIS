@@ -274,8 +274,8 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
       continue;
     }
 
-    const QString fontFamily = !f.key().startsWith( QStringLiteral( "Deja" ) ) ? standardTestFontFamily() : QStringLiteral( "QGIS DejaVu Sans" );
-    const QString fontstyle  = !f.key().startsWith( QStringLiteral( "Deja" ) ) ?  f.key() : f.key().mid( 5 );
+    const QString fontFamily = !f.key().startsWith( QLatin1String( "Deja" ) ) ? standardTestFontFamily() : QStringLiteral( "QGIS DejaVu Sans" );
+    const QString fontstyle  = !f.key().startsWith( QLatin1String( "Deja" ) ) ?  f.key() : f.key().mid( 5 );
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
@@ -318,8 +318,8 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 
 QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
 {
-  const QString fontFamily = !style.startsWith( QStringLiteral( "Deja" ) ) ? standardTestFontFamily() : QStringLiteral( "QGIS DejaVu Sans" );
-  const QString fontStyle  = !style.startsWith( QStringLiteral( "Deja" ) ) ?  style : style.mid( 5 );
+  const QString fontFamily = !style.startsWith( QLatin1String( "Deja" ) ) ? standardTestFontFamily() : QStringLiteral( "QGIS DejaVu Sans" );
+  const QString fontStyle  = !style.startsWith( QLatin1String( "Deja" ) ) ?  style : style.mid( 5 );
 
   if ( ! fontFamilyHasStyle( fontFamily, fontStyle ) )
   {

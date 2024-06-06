@@ -137,7 +137,7 @@ QString QgsSensorThingsExpansionDefinition::toString() const
   if ( !mFilter.trimmed().isEmpty() )
   {
     QString escapedFilter = mFilter;
-    escapedFilter.replace( ':', QStringLiteral( "\\colon" ) );
+    escapedFilter.replace( ':', QLatin1String( "\\colon" ) );
     parts.append( QStringLiteral( "filter=%1" ).arg( escapedFilter ) );
   }
   return parts.join( ':' );
@@ -177,7 +177,7 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::fromStrin
     if ( filterMatch.hasMatch() )
     {
       QString filter = filterMatch.captured( 1 );
-      filter.replace( QStringLiteral( "\\colon" ), QStringLiteral( ":" ) );
+      filter.replace( QLatin1String( "\\colon" ), QLatin1String( ":" ) );
       definition.setFilter( filter );
       continue;
     }
