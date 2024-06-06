@@ -2253,9 +2253,9 @@ void TestQgsProcessingModelAlgorithm::modelOutputs()
   p.addMapLayer( layer3111 );
   context.setProject( &p );
   params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "v1" ) );
-  params.insert( QStringLiteral( "cx2:a" ), QgsProcessing::TEMPORARY_OUTPUT );
-  params.insert( QStringLiteral( "cx3:b" ), QgsProcessing::TEMPORARY_OUTPUT );
-  params.insert( QStringLiteral( "cx4:c" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "cx2:a" ), QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT, &p ) );
+  params.insert( QStringLiteral( "cx3:b" ), QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT, &p ) );
+  params.insert( QStringLiteral( "cx4:c" ), QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT, &p ) );
 
   QVariantMap results = m.run( params, context, &feedback );
   const QString destA = results.value( QStringLiteral( "cx2:a" ) ).toString();
@@ -2272,6 +2272,32 @@ void TestQgsProcessingModelAlgorithm::modelOutputs()
   QVERIFY( !destC.isEmpty() );
   QCOMPARE( context.layerToLoadOnCompletionDetails( destC ).groupName, QStringLiteral( "output group" ) );
   QCOMPARE( context.layerToLoadOnCompletionDetails( destC ).layerSortKey, 1 );
+
+  // not all layers are set to load in project
+  QgsProcessingContext context2;
+  context2.setProject( &p );
+  params.clear();
+  params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "v1" ) );
+  // should not be loaded on completion:
+  params.insert( QStringLiteral( "cx2:a" ), QgsProcessing::TEMPORARY_OUTPUT );
+  // should be loaded on completion:
+  params.insert( QStringLiteral( "cx3:b" ), QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT, &p ) );
+  params.insert( QStringLiteral( "cx4:c" ), QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT, &p ) );
+
+  QVariantMap results2 = m.run( params, context2, &feedback );
+  const QString destA2 = results2.value( QStringLiteral( "cx2:a" ) ).toString();
+  QVERIFY( !destA2.isEmpty() );
+  QVERIFY( !context2.willLoadLayerOnCompletion( destA2 ) );
+
+  const QString destB2 = results2.value( QStringLiteral( "cx3:b" ) ).toString();
+  QVERIFY( !destB2.isEmpty() );
+  QCOMPARE( context2.layerToLoadOnCompletionDetails( destB2 ).groupName, QStringLiteral( "output group" ) );
+  QCOMPARE( context2.layerToLoadOnCompletionDetails( destB2 ).layerSortKey, 0 );
+
+  const QString destC2 = results2.value( QStringLiteral( "cx4:c" ) ).toString();
+  QVERIFY( !destC2.isEmpty() );
+  QCOMPARE( context2.layerToLoadOnCompletionDetails( destC2 ).groupName, QStringLiteral( "output group" ) );
+  QCOMPARE( context2.layerToLoadOnCompletionDetails( destC2 ).layerSortKey, 1 );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()
