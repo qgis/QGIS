@@ -155,9 +155,9 @@ void QgsAppGpsLogging::gpsConnected()
   {
     startNmeaLogging();
   }
-  if ( mGpkgLogger )
+  if ( !mGpkgLogFile.isEmpty() )
   {
-    mGpkgLogger->setConnection( mConnection->connection() );
+    setGpkgLogFile( mGpkgLogFile );
   }
 }
 
@@ -167,7 +167,9 @@ void QgsAppGpsLogging::gpsDisconnected()
   if ( mGpkgLogger )
   {
     mGpkgLogger->endCurrentTrack();
-    mGpkgLogger->setConnection( nullptr );
+    mGpkgLogger.reset();
+    mGpkgTracksLayer.reset();
+    mGpkgPointsLayer.reset();
   }
 }
 
