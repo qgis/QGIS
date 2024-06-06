@@ -52,7 +52,7 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mFixButton->hide();
   mFixBox->hide();
 
-  mErrorListModel = new DockFilterModel( mErrorList, parent );
+  mErrorListModel = new DockFilterModel( parent );
   mErrorListModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
   mErrorTableView->setModel( mErrorListModel );
   mErrorTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -156,10 +156,15 @@ void checkDock::deleteErrors()
   updateFilterComboBox();
 
   mErrorList.clear();
-  mErrorListModel->resetModel();
+  updateModel();
 
   qDeleteAll( mRbErrorMarkers );
   mRbErrorMarkers.clear();
+}
+
+void checkDock::updateModel()
+{
+  mErrorListModel->setErrors( mErrorList );
 }
 
 void checkDock::parseErrorListByLayer( const QString &layerId )
@@ -179,7 +184,7 @@ void checkDock::parseErrorListByLayer( const QString &layerId )
       ++it;
   }
 
-  mErrorListModel->resetModel();
+  updateModel();
   mComment->setText( tr( "No errors were found" ) );
 }
 
@@ -200,7 +205,7 @@ void checkDock::parseErrorListByFeature( int featureId )
   }
 
   mComment->setText( tr( "No errors were found" ) );
-  mErrorListModel->resetModel();
+  updateModel();
 }
 
 void checkDock::configure()
@@ -323,7 +328,7 @@ void checkDock::fix()
   if ( mErrorList.at( row )->fix( fixName ) )
   {
     mErrorList.removeAt( row );
-    mErrorListModel->resetModel();
+    updateModel();
     //parseErrorListByFeature();
     mComment->setText( tr( "%n error(s) were found", nullptr, mErrorList.count() ) );
     qgsInterface->mapCanvas()->refresh();
@@ -402,7 +407,7 @@ void checkDock::runTests( ValidateType type )
   updateFilterComboBox();
 
   mToggleRubberband->setChecked( true );
-  mErrorListModel->resetModel();
+  updateModel();
 }
 
 void checkDock::updateFilterComboBox()
