@@ -55,7 +55,7 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
     if ( featureIt.nextFeature( f ) )
     {
       // Get attribute value and check if it is a valid JSON object
-      const QVariant value { f.attribute( fieldIdx ) };
+      const QVariant value( f.attribute( fieldIdx ) );
       switch ( value.type() )
       {
         case QVariant::Type::List:
