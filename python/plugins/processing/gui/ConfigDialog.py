@@ -370,6 +370,11 @@ class SettingDelegate(QStyledItemDelegate):
             combo = QComboBox(parent)
             combo.addItems(setting.options)
             return combo
+        elif setting.valuetype == Setting.SELECTION_STORE_STRING:
+            combo = QComboBox(parent)
+            for option in setting.options:
+                combo.addItem(option, option)
+            return combo
         elif setting.valuetype == Setting.MULTIPLE_FOLDERS:
             return MultipleDirectorySelector(parent, setting.placeholder)
         else:
@@ -393,6 +398,8 @@ class SettingDelegate(QStyledItemDelegate):
         setting = index.model().data(index, Qt.ItemDataRole.UserRole)
         if setting.valuetype == Setting.SELECTION:
             editor.setCurrentIndex(editor.findText(value))
+        elif setting.valuetype == Setting.SELECTION_STORE_STRING:
+            editor.setCurrentIndex(editor.findData(value))
         elif setting.valuetype in (Setting.FLOAT, Setting.INT):
             editor.setValue(value)
         else:
@@ -403,6 +410,8 @@ class SettingDelegate(QStyledItemDelegate):
         setting = index.model().data(index, Qt.ItemDataRole.UserRole)
         if setting.valuetype == Setting.SELECTION:
             model.setData(index, editor.currentText(), Qt.ItemDataRole.EditRole)
+        elif setting.valuetype == Setting.SELECTION_STORE_STRING:
+            model.setData(index, editor.currentData(), Qt.ItemDataRole.EditRole)
         else:
             if isinstance(value, str):
                 model.setData(index, editor.text(), Qt.ItemDataRole.EditRole)

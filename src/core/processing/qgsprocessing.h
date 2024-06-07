@@ -117,9 +117,9 @@ class CORE_EXPORT QgsProcessing
     //! Settings entry temp path
     static const QgsSettingsEntryString *settingsTempPath;
     //! Settings entry default output vector layer ext
-    static const QgsSettingsEntryInteger *settingsDefaultOutputVectorLayerExt;
+    static const QgsSettingsEntryString *settingsDefaultOutputVectorLayerExt;
     //! Settings entry default output raster layer ext
-    static const QgsSettingsEntryInteger *settingsDefaultOutputRasterLayerExt;
+    static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerExt;
 #endif
 };
 
