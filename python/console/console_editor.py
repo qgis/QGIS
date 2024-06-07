@@ -568,6 +568,9 @@ class EditorTab(QWidget):
     def file_path(self) -> Optional[str]:
         return self._editor_code_widget.filePath()
 
+    def open_in_external_editor(self):
+        self._editor_code_widget.openInExternalEditor()
+
     def modified(self, modified):
         self.tab_widget.tabModified(self, modified)
 

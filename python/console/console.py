@@ -588,23 +588,7 @@ class PythonConsoleWidget(QWidget):
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
-        path = tabWidget.file_path()
-
-        editor_command = os.environ.get('EDITOR')
-        if editor_command:
-            child = subprocess.Popen([os.environ['EDITOR'], path])
-            try:
-                # let's see if the EDITOR drops out immediately....
-                child.wait(0.01)
-                rc = child.poll()
-                if rc:
-                    # editor failed, use backup approach
-                    QDesktopServices.openUrl(QUrl.fromLocalFile(path))
-            except subprocess.TimeoutExpired:
-                # looks like EDITOR started up successfully, all is good
-                pass
-        else:
-            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+        tabWidget.open_in_external_editor()
 
     def openScriptFile(self):
         settings = QgsSettings()

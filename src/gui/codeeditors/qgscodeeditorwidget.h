@@ -164,6 +164,15 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     void setFilePath( const QString &path );
 
+    /**
+     * Attempts to opens the script from the editor in an external text editor.
+     *
+     * This requires that the widget has an associated filePath() set.
+     *
+     * \returns TRUE if the file was opened successfully.
+     */
+    bool openInExternalEditor();
+
   signals:
 
     /**

@@ -26,6 +26,10 @@
 #include <QCheckBox>
 #include <QShortcut>
 #include <QGridLayout>
+#include <QDesktopServices>
+#include <QProcess>
+#include <QFileInfo>
+#include <QDir>
 
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,
@@ -344,6 +348,39 @@ void QgsCodeEditorWidget::setFilePath( const QString &path )
 
   mFilePath = path;
   emit filePathChanged( mFilePath );
+}
+
+bool QgsCodeEditorWidget::openInExternalEditor()
+{
+  if ( mFilePath.isEmpty() )
+    return false;
+
+  const QDir dir = QFileInfo( mFilePath ).dir();
+
+  bool useFallback = true;
+
+  const QString editorCommand = qgetenv( "EDITOR" );
+  if ( !editorCommand.isEmpty() )
+  {
+    const QFileInfo fi( editorCommand );
+    if ( fi.exists( ) )
+    {
+      const QString command = fi.fileName();
+      const bool isTerminalEditor = command.compare( QLatin1String( "nano" ), Qt::CaseInsensitive ) == 0
+                                    || command.contains( QLatin1String( "vim" ), Qt::CaseInsensitive );
+
+      if ( !isTerminalEditor && QProcess::startDetached( editorCommand, {mFilePath}, dir.absolutePath() ) )
+      {
+        useFallback = false;
+      }
+    }
+  }
+
+  if ( useFallback )
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( mFilePath ) );
+  }
+  return true;
 }
 
 bool QgsCodeEditorWidget::findNext()
