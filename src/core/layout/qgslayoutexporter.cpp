@@ -337,6 +337,7 @@ class LayoutContextSettingsRestorer
       , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
       , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
+      , mPreviousMaskSettings( layout->renderContext().maskSettings() )
       , mExportThemes( layout->renderContext().exportThemes() )
       , mPredefinedScales( layout->renderContext().predefinedScales() )
     {
@@ -352,6 +353,7 @@ class LayoutContextSettingsRestorer
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
       Q_NOWARN_DEPRECATED_POP
       mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
+      mLayout->renderContext().setMaskSettings( mPreviousMaskSettings );
       mLayout->renderContext().setExportThemes( mExportThemes );
       mLayout->renderContext().setPredefinedScales( mPredefinedScales );
     }
@@ -366,6 +368,7 @@ class LayoutContextSettingsRestorer
     Qgis::TextRenderFormat mPreviousTextFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
+    QgsMaskRenderSettings mPreviousMaskSettings;
     QStringList mExportThemes;
     QVector< double > mPredefinedScales;
 

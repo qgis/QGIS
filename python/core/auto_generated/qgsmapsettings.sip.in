@@ -829,6 +829,27 @@ The default is to use no global simplification, and fallback to individual layer
 .. versionadded:: 3.10
 %End
 
+
+    QgsMaskRenderSettings &maskSettings();
+%Docstring
+Returns a reference to the mask render settings, which control how masks
+are drawn and behave during the map render.
+
+.. seealso:: :py:func:`setMaskSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+%Docstring
+Sets the mask render ``settings``, which control how masks
+are drawn and behave during the map render.
+
+.. seealso:: :py:func:`maskSettings`
+
+.. versionadded:: 3.38
+%End
+
     void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
 %Docstring
 Adds a rendered feature ``handler`` to use while rendering the map settings.
@@ -954,6 +975,7 @@ Sets the shading ``renderer`` used to render shading on the entire map
 %End
 
   protected:
+
 
 
 

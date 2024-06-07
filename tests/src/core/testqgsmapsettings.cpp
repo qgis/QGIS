@@ -66,6 +66,7 @@ class TestQgsMapSettings: public QObject
     void testComputeExtentForScale();
     void testComputeScaleForExtent();
     void testLayersWithGroupLayers();
+    void testMaskRenderSettings();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -770,6 +771,24 @@ void TestQgsMapSettings::testLayersWithGroupLayers()
   QCOMPARE( settings.layerIds( true ).at( 0 ), vlA->id() );
   QCOMPARE( settings.layerIds( true ).at( 1 ), vlB->id() );
   QCOMPARE( settings.layerIds( true ).at( 2 ), vlC->id() );
+}
+
+void TestQgsMapSettings::testMaskRenderSettings()
+{
+  QgsMapSettings settings;
+  settings.maskSettings().setSimplificationTolerance( 10 );
+  QCOMPARE( settings.maskSettings().simplifyTolerance(), 10 );
+
+  QgsMaskRenderSettings maskSettings;
+  maskSettings.setSimplificationTolerance( 11 );
+  settings.setMaskSettings( maskSettings );
+  QCOMPARE( settings.maskSettings().simplifyTolerance(), 11 );
+
+  QgsMapSettings settings2 = settings;
+  QCOMPARE( settings2.maskSettings().simplifyTolerance(), 11 );
+
+  QgsMapSettings settings3( settings );
+  QCOMPARE( settings3.maskSettings().simplifyTolerance(), 11 );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

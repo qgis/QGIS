@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsmaskrendersettings.h"
 #include "qgis.h"
 #include <QtGlobal>
 #include <QColor>
@@ -265,6 +266,33 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during map renders.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    const QgsMaskRenderSettings &maskSettings() const SIP_SKIP { return mMaskRenderSettings; }
+
+    /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during map renders.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    QgsMaskRenderSettings &maskSettings() { return mMaskRenderSettings; }
+
+    /**
+     * Sets the mask render \a settings, which control how masks
+     * are drawn and behave during map renders.
+     *
+     * \see maskSettings()
+     * \since QGIS 3.38
+     */
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+
+    /**
      * Returns a list of map themes to use during the export.
      *
      * Items which handle layered exports (e.g. maps) may utilize this list to export different
@@ -367,6 +395,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QVector<qreal> mPredefinedScales;
 
     QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
+
+    QgsMaskRenderSettings mMaskRenderSettings;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

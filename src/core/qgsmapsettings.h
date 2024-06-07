@@ -36,6 +36,7 @@
 #include "qgsmapclippingregion.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsmaskrendersettings.h"
 
 class QPainter;
 
@@ -752,6 +753,33 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during the map render.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    const QgsMaskRenderSettings &maskSettings() const SIP_SKIP { return mMaskRenderSettings; }
+
+    /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during the map render.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    QgsMaskRenderSettings &maskSettings() { return mMaskRenderSettings; }
+
+    /**
+     * Sets the mask render \a settings, which control how masks
+     * are drawn and behave during the map render.
+     *
+     * \see maskSettings()
+     * \since QGIS 3.38
+     */
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+
+    /**
      * Adds a rendered feature \a handler to use while rendering the map settings.
      *
      * Ownership of \a handler is NOT transferred, and it is the caller's responsibility to ensure
@@ -925,6 +953,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     double mFrameRate = -1;
     long long mCurrentFrame = -1;
+
+    QgsMaskRenderSettings mMaskRenderSettings;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

@@ -116,6 +116,11 @@ void QgsLayoutRenderContext::setPagesVisible( bool visible )
   mPagesVisible = visible;
 }
 
+void QgsLayoutRenderContext::setMaskSettings( const QgsMaskRenderSettings &settings )
+{
+  mMaskRenderSettings = settings;
+}
+
 QStringList QgsLayoutRenderContext::exportThemes() const
 {
   return mExportThemes;
