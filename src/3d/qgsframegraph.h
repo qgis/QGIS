@@ -319,6 +319,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
+    // clip planes render state
+    Qt3DRender::QRenderStateSet *mClipRenderStateSet = nullptr;
+
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
