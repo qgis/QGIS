@@ -33,6 +33,16 @@ QgsGeometryPaintEngine::QgsGeometryPaintEngine( bool usePathStroker )
 {
 }
 
+void QgsGeometryPaintEngine::setStrokedPathSegments( int segments )
+{
+  mStrokedPathsSegments = segments;
+}
+
+void QgsGeometryPaintEngine::setSimplificationTolerance( double tolerance )
+{
+  mSimplifyTolerance = tolerance;
+}
+
 bool QgsGeometryPaintEngine::begin( QPaintDevice * )
 {
   return true;
@@ -233,7 +243,7 @@ void QgsGeometryPaintEngine::drawRects( const QRect *rects, int rectCount )
 }
 
 template <typename T>
-void drawPolygonImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *points, int pointCount, QPaintEngine::PolygonDrawMode mode )
+void drawPolygonImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *points, int pointCount, QPaintEngine::PolygonDrawMode mode, double simplifyTolerance )
 {
   QVector< double > x;
   QVector< double > y;
@@ -267,13 +277,19 @@ void drawPolygonImp( const QTransform &transform, QgsGeometryCollection &geometr
   switch ( mode )
   {
     case QPaintEngine::PolylineMode:
-      geometry.addGeometry( new QgsLineString( x, y ) );
+      if ( simplifyTolerance > 0 )
+        geometry.addGeometry( QgsLineString( x, y ).simplifyByDistance( simplifyTolerance ) );
+      else
+        geometry.addGeometry( new QgsLineString( x, y ) );
       break;
 
     case QPaintEngine::OddEvenMode:
     case QPaintEngine::WindingMode:
     case QPaintEngine::ConvexMode:
-      geometry.addGeometry( new QgsPolygon( new QgsLineString( x, y ) ) );
+      if ( simplifyTolerance > 0 )
+        geometry.addGeometry( new QgsPolygon( QgsLineString( x, y ).simplifyByDistance( simplifyTolerance ) ) );
+      else
+        geometry.addGeometry( new QgsPolygon( new QgsLineString( x, y ) ) );
       break;
   }
 }
@@ -297,7 +313,7 @@ void QgsGeometryPaintEngine::drawPolygon( const QPoint *points, int pointCount, 
   else
   {
     const QTransform transform = painter()->combinedTransform();
-    drawPolygonImp( transform, mGeometry, points, pointCount, mode );
+    drawPolygonImp( transform, mGeometry, points, pointCount, mode, mSimplifyTolerance );
   }
 }
 
@@ -320,7 +336,7 @@ void QgsGeometryPaintEngine::drawPolygon( const QPointF *points, int pointCount,
   else
   {
     const QTransform transform = painter()->combinedTransform();
-    drawPolygonImp( transform, mGeometry, points, pointCount, mode );
+    drawPolygonImp( transform, mGeometry, points, pointCount, mode, mSimplifyTolerance );
   }
 }
 
@@ -337,11 +353,28 @@ void QgsGeometryPaintEngine::addStrokedLine( const QgsLineString *line, double p
 
   if ( QgsGeometryCollection *bufferedCollection = qgsgeometry_cast< QgsGeometryCollection * >( buffered.get() ) )
   {
-    mGeometry.addGeometries( bufferedCollection->takeGeometries() );
+    if ( mSimplifyTolerance > 0 )
+    {
+      for ( auto it = bufferedCollection->const_parts_begin(); it != bufferedCollection->const_parts_end(); ++it )
+      {
+        mGeometry.addGeometry( ( *it )->simplifyByDistance( mSimplifyTolerance ) );
+      }
+    }
+    else
+    {
+      mGeometry.addGeometries( bufferedCollection->takeGeometries() );
+    }
   }
   else if ( buffered )
   {
-    mGeometry.addGeometry( buffered.release() );
+    if ( mSimplifyTolerance > 0 )
+    {
+      mGeometry.addGeometry( buffered->simplifyByDistance( mSimplifyTolerance ) );
+    }
+    else
+    {
+      mGeometry.addGeometry( buffered.release() );
+    }
   }
 }
 
@@ -419,13 +452,30 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
           {
             if ( !transformIsIdentity )
               line->transform( matrix );
-            queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
+
+            if ( mSimplifyTolerance > 0 )
+            {
+              queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line->simplifyByDistance( mSimplifyTolerance ) ) );
+              line.reset();
+            }
+            else
+            {
+              queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
+            }
           }
           else
           {
             if ( !transformIsIdentity )
               line->transform( matrix );
-            mGeometry.addGeometry( line.release() );
+            if ( mSimplifyTolerance > 0 )
+            {
+              mGeometry.addGeometry( line->simplifyByDistance( mSimplifyTolerance ) );
+              line.reset();
+            }
+            else
+            {
+              mGeometry.addGeometry( line.release() );
+            }
           }
         }
         currentX.resize( 0 );
@@ -489,13 +539,29 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
     {
       if ( !transformIsIdentity )
         line->transform( matrix );
-      queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
+      if ( mSimplifyTolerance > 0 )
+      {
+        queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line->simplifyByDistance( mSimplifyTolerance ) ) );
+        line.reset();
+      }
+      else
+      {
+        queuedPolygons.emplace_back( std::make_unique< QgsPolygon >( line.release() ) );
+      }
     }
     else
     {
       if ( !transformIsIdentity )
         line->transform( matrix );
-      mGeometry.addGeometry( line.release() );
+      if ( mSimplifyTolerance > 0 )
+      {
+        mGeometry.addGeometry( line->simplifyByDistance( mSimplifyTolerance ) );
+        line.reset();
+      }
+      else
+      {
+        mGeometry.addGeometry( line.release() );
+      }
     }
   }
 
@@ -536,6 +602,18 @@ void QgsGeometryPaintEngine::drawPath( const QPainterPath &path )
 QgsGeometryPaintDevice::QgsGeometryPaintDevice( bool usePathStroker )
 {
   mPaintEngine = std::make_unique<QgsGeometryPaintEngine>( usePathStroker );
+}
+
+void QgsGeometryPaintDevice::setStrokedPathSegments( int segments )
+{
+  if ( mPaintEngine )
+    mPaintEngine->setStrokedPathSegments( segments );
+}
+
+void QgsGeometryPaintDevice::setSimplificationTolerance( double tolerance )
+{
+  if ( mPaintEngine )
+    mPaintEngine->setSimplificationTolerance( tolerance );
 }
 
 QPaintEngine *QgsGeometryPaintDevice::paintEngine() const
