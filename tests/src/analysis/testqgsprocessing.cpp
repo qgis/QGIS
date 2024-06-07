@@ -8060,19 +8060,21 @@ void TestQgsProcessing::parameterVectorOut()
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
   DummyProvider3 provider;
   QString error;
+  context.setLayersToLoadOnCompletion( {} );
   QVERIFY( provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) ); // optional
   QVERIFY( provider.isSupportedOutputValue( QString(), def.get(), context, error ) ); // optional
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.shp", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.SHP", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "ogr:d:/test.shp", def.get(), context, error ) );
-  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.SHP" ), def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.SHP", &p ), def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "d:/test.mif", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "d:/test.MIF", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "ogr:d:/test.MIF", def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF" ), def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF", &p ), def.get(), context, error ) );
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
   QVERIFY( !provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) ); // non-optional
   QVERIFY( !provider.isSupportedOutputValue( QString(), def.get(), context, error ) ); // non-optional
+  QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
 
   provider.loadAlgorithms();
   def->mOriginalProvider = &provider;
