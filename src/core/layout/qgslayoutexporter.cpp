@@ -552,6 +552,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
+  mLayout->renderContext().setMaskSettings( createExportMaskSettings() );
 
   if ( settings.simplifyGeometries )
   {
@@ -777,6 +778,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
 
     iterator->layout()->renderContext().setFlags( settings.flags );
     iterator->layout()->renderContext().setPredefinedScales( settings.predefinedMapScales );
+    iterator->layout()->renderContext().setMaskSettings( createExportMaskSettings() );
 
     if ( settings.simplifyGeometries )
     {
@@ -1026,6 +1028,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
+  mLayout->renderContext().setMaskSettings( createExportMaskSettings() );
 
   if ( settings.simplifyGeometries )
   {
@@ -1909,6 +1912,15 @@ QgsVectorSimplifyMethod QgsLayoutExporter::createExportSimplifyMethod()
   simplifyMethod.setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm::SnappedToGridGlobal );
   simplifyMethod.setThreshold( 0.1f ); // (pixels). We are quite conservative here. This could possibly be bumped all the way up to 1. But let's play it safe.
   return simplifyMethod;
+}
+
+QgsMaskRenderSettings QgsLayoutExporter::createExportMaskSettings()
+{
+  QgsMaskRenderSettings settings;
+  // this is quite a conservative setting -- I think we could make this more aggressive and get smaller file sizes
+  // without too much loss of quality...
+  settings.setSimplificationTolerance( 0.5 );
+  return settings;
 }
 
 void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const
