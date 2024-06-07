@@ -588,7 +588,7 @@ class PythonConsoleWidget(QWidget):
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
-        path = tabWidget.path
+        path = tabWidget.file_path()
 
         editor_command = os.environ.get('EDITOR')
         if editor_command:
@@ -616,7 +616,7 @@ class PythonConsoleWidget(QWidget):
             for pyFile in fileList:
                 for i in range(self.tabEditorWidget.count()):
                     tabWidget = self.tabEditorWidget.widget(i)
-                    if tabWidget.path == pyFile:
+                    if tabWidget.file_path() == pyFile:
                         self.tabEditorWidget.setCurrentWidget(tabWidget)
                         break
                 else:
@@ -633,7 +633,7 @@ class PythonConsoleWidget(QWidget):
             tabWidget.save()
         except (IOError, OSError) as error:
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
+                                                 'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.file_path(),
                                                                                                               error.strerror)
             self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
 
@@ -641,13 +641,13 @@ class PythonConsoleWidget(QWidget):
         tabWidget = self.tabEditorWidget.currentWidget()
         if not index:
             index = self.tabEditorWidget.currentIndex()
-        if not tabWidget.path:
+        if not tabWidget.file_path():
             fileName = self.tabEditorWidget.tabText(index).replace('*', '') + '.py'
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:
-            pathFileName = tabWidget.path
+            pathFileName = tabWidget.file_path()
             fileNone = False
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
         filename, filter = QFileDialog.getSaveFileName(self,
@@ -660,13 +660,13 @@ class PythonConsoleWidget(QWidget):
                 tabWidget.save(filename)
             except (IOError, OSError) as error:
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
+                                                     'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.file_path(),
                                                                                                                   error.strerror)
                 self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
                 if fileNone:
-                    tabWidget.path = None
+                    tabWidget.set_file_path(None)
                 else:
-                    tabWidget.path = pathFileName
+                    tabWidget.set_file_path(pathFileName)
                 return
 
             if not fileNone:

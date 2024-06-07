@@ -106,6 +106,14 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     void clearWarnings();
 
+    /**
+     * Returns the widget's associated file path.
+     *
+     * \see setFilePath()
+     * \see filePathChanged()
+     */
+    QString filePath() const { return mFilePath; }
+
   public slots:
 
     /**
@@ -148,12 +156,28 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     void triggerFind();
 
+    /**
+     * Sets the widget's associated file \a path.
+     *
+     * \see filePathChanged()
+     * \see filePath()
+     */
+    void setFilePath( const QString &path );
+
   signals:
 
     /**
      * Emitted when the visibility of the search bar is changed.
      */
     void searchBarToggled( bool visible );
+
+    /**
+     * Emitted when the widget's associated file path is changed.
+     *
+     * \see setFilePath()
+     * \see filePath()
+     */
+    void filePathChanged( const QString &path );
 
   private slots:
 
@@ -196,6 +220,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;
+    QString mFilePath;
 };
 
 #endif // QGSCODEEDITORWIDGET_H
