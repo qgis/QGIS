@@ -1540,18 +1540,34 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 
 QString QgsProcessingUtils::defaultVectorExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt->value();
-  if ( setting == -1 )
+  QString setting = QgsProcessing::settingsDefaultOutputVectorLayerExt->value().trimmed();
+  if ( setting.isEmpty() )
     return QStringLiteral( "gpkg" );
-  return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
+
+  if ( setting.startsWith( '.' ) )
+    setting = setting.mid( 1 );
+
+  const QStringList supportedFormats = QgsVectorFileWriter::supportedFormatExtensions();
+  if ( !supportedFormats.contains( setting, Qt::CaseInsensitive ) )
+    return QStringLiteral( "gpkg" );
+
+  return setting;
 }
 
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value();
-  if ( setting == -1 )
+  QString setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value().trimmed();
+  if ( setting.isEmpty() )
     return QStringLiteral( "tif" );
-  return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
+
+  if ( setting.startsWith( '.' ) )
+    setting = setting.mid( 1 );
+
+  const QStringList supportedFormats = QgsRasterFileWriter::supportedFormatExtensions();
+  if ( !supportedFormats.contains( setting, Qt::CaseInsensitive ) )
+    return QStringLiteral( "tif" );
+
+  return setting;
 }
 
 QString QgsProcessingUtils::defaultPointCloudExtension()

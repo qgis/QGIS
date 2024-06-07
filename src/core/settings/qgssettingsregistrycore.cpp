@@ -142,8 +142,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
   QgsProcessing::settingsTempPath->copyValueFromKey( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueFromKey( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueFromKey( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
 
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
 
@@ -397,8 +395,6 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
   QgsProcessing::settingsTempPath->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
 
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueToKeyIfChanged( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
 
