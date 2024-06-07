@@ -155,6 +155,14 @@ Sets the widget's associated file ``path``.
 
 .. seealso:: :py:func:`filePath`
 %End
+
+    bool openInExternalEditor();
+%Docstring
+Attempts to opens the script from the editor in an external text editor.
+
+This requires that the widget has an associated :py:func:`~QgsCodeEditorWidget.filePath` set.
+
+:return: ``True`` if the file was opened successfully.
 %End
 
   signals:
