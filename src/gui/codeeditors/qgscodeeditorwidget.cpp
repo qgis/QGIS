@@ -337,6 +337,15 @@ void QgsCodeEditorWidget::triggerFind()
   showSearchBar();
 }
 
+void QgsCodeEditorWidget::setFilePath( const QString &path )
+{
+  if ( mFilePath == path )
+    return;
+
+  mFilePath = path;
+  emit filePathChanged( mFilePath );
+}
+
 bool QgsCodeEditorWidget::findNext()
 {
   return findText( true, false );

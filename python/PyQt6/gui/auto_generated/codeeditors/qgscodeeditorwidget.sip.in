@@ -92,6 +92,15 @@ highlights from the widget scrollbars at the warning locations.
 .. seealso:: :py:func:`addWarning`
 %End
 
+    QString filePath() const;
+%Docstring
+Returns the widget's associated file path.
+
+.. seealso:: :py:func:`setFilePath`
+
+.. seealso:: :py:func:`filePathChanged`
+%End
+
   public slots:
 
     void showSearchBar();
@@ -138,11 +147,30 @@ This will automatically open the search bar and start a find operation using
 the default behavior, e.g. searching for any selected text in the code editor.
 %End
 
+    void setFilePath( const QString &path );
+%Docstring
+Sets the widget's associated file ``path``.
+
+.. seealso:: :py:func:`filePathChanged`
+
+.. seealso:: :py:func:`filePath`
+%End
+%End
+
   signals:
 
     void searchBarToggled( bool visible );
 %Docstring
 Emitted when the visibility of the search bar is changed.
+%End
+
+    void filePathChanged( const QString &path );
+%Docstring
+Emitted when the widget's associated file path is changed.
+
+.. seealso:: :py:func:`setFilePath`
+
+.. seealso:: :py:func:`filePath`
 %End
 
 };
