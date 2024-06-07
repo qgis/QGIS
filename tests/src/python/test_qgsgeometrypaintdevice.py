@@ -181,6 +181,32 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
             device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
             134)
 
+        # with on the fly simplification
+        device = QgsGeometryPaintDevice(usePathStroker=True)
+        device.setSimplificationTolerance(5)
+        painter = SafePainter(device)
+        painter.setPen(pen)
+        painter.setTransform(
+            QTransform.fromScale(2, 3)
+        )
+
+        painter.drawLine(
+            QLineF(5.5, 10.7, 6.8, 12.9)
+        )
+        painter.drawLine(
+            QLineF(15.5, 12.7, 3.8, 42.9)
+        )
+        painter.drawLine(
+            QLine(-4, -1, 2, 3)
+        )
+
+        painter.end()
+
+        result = device.geometry().clone()
+        result.normalize()
+        self.assertEqual(result.asWkt(2),
+                         'GeometryCollection (Polygon ((12.29 30.96, 12.31 39.84, 12.29 30.96)),Polygon ((6.2 127.89, 29.6 37.29, 6.2 127.89)),Polygon ((-7.17 -4.87, 3.17 10.87, -7.17 -4.87)))')
+
     def test_points(self):
         """
         Test drawing points
@@ -359,6 +385,30 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
             device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
             108)
 
+        # with on the fly simplification
+        device = QgsGeometryPaintDevice()
+        device.setSimplificationTolerance(10)
+        painter = SafePainter(device)
+        painter.setTransform(
+            QTransform.fromScale(2, 3)
+        )
+
+        painter.drawPolygon(
+            QPolygonF([QPointF(5.5, 10.7), QPointF(6.8, 12.9),
+                       QPointF(15.5, 12.7), QPointF(5.5, 10.7)]))
+        painter.drawPolyline(
+            QPolygonF([QPointF(-4, -1), QPointF(2, 3)])
+        )
+        painter.drawPolyline(
+            QPolygon([QPoint(14, 11), QPoint(22, 35)])
+        )
+
+        painter.end()
+        result = device.geometry().clone()
+        result.normalize()
+        self.assertEqual(result.asWkt(2),
+                         'GeometryCollection (Polygon ((11 32.1, 31 38.1, 11 32.1)),LineString (28 33, 44 105),LineString (-8 -3, 4 9))')
+
     def test_stroked_polygons(self):
         """
         Test drawing stroked polygons
@@ -423,6 +473,31 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
             device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
             110)
 
+        # with on the fly simplification
+        device = QgsGeometryPaintDevice(usePathStroker=True)
+        device.setSimplificationTolerance(10)
+        painter = SafePainter(device)
+        painter.setTransform(
+            QTransform.fromScale(2, 3)
+        )
+        painter.setPen(pen)
+
+        painter.drawPolygon(
+            QPolygonF([QPointF(5.5, 10.7), QPointF(6.8, 12.9),
+                       QPointF(15.5, 12.7), QPointF(5.5, 10.7)]))
+        painter.drawPolyline(
+            QPolygonF([QPointF(-4, -1), QPointF(2, 3)])
+        )
+        painter.drawPolyline(
+            QPolygon([QPoint(14, 11), QPoint(22, 35)])
+        )
+
+        painter.end()
+        result = device.geometry().clone()
+        result.normalize()
+        self.assertEqual(result.asWkt(2),
+                         'GeometryCollection (Polygon ((29.42 32.29, 42.58 105.71, 29.42 32.29)),Polygon ((11.29 29.89, 31.03 40.35, 11.29 29.89),(14 35.29, 14 35.29)),Polygon ((-7.17 -4.87, 3.17 10.87, -7.17 -4.87)))')
+
     def test_paths(self):
         """
         Test drawing QPainterPaths
@@ -471,6 +546,22 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(
             device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
             36)
+
+        # with on the fly simplification
+        device = QgsGeometryPaintDevice()
+        device.setSimplificationTolerance(10)
+        painter = SafePainter(device)
+        painter.setTransform(
+            QTransform.fromScale(2, 3)
+        )
+
+        painter.drawPath(path)
+
+        painter.end()
+        result = device.geometry().clone()
+        result.normalize()
+        self.assertEqual(result.asWkt(2),
+                         'GeometryCollection (Polygon ((11 32.1, 31 38.1, 20.46 1.21, 11 32.1)))')
 
     def test_stroked_paths(self):
         """
@@ -526,6 +617,23 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
             device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
             40)
 
+        # with on the fly simplification
+        device = QgsGeometryPaintDevice(usePathStroker=True)
+        device.setSimplificationTolerance(10)
+        painter = SafePainter(device)
+        painter.setPen(pen)
+        painter.setTransform(
+            QTransform.fromScale(2, 3)
+        )
+
+        painter.drawPath(path)
+
+        painter.end()
+        result = device.geometry().clone()
+        result.normalize()
+        self.assertEqual(result.asWkt(2),
+                         'GeometryCollection (Polygon ((9.64 31.16, 32.45 37.53, 21.33 -0.62, 9.64 31.16),(13.16 30.45, 21.03 4.73, 28.94 35.19, 13.16 30.45)))')
+
     def test_text(self):
         """
         Test drawing text.
@@ -550,6 +658,19 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         self.assertEqual(
             device.metric(QPaintDevice.PaintDeviceMetric.PdmHeight),
             30)
+
+        # with on the fly simplification
+        device = QgsGeometryPaintDevice()
+        device.setSimplificationTolerance(2)
+        painter = SafePainter(device)
+        font = getTestFont('bold')
+        font.setPixelSize(40)
+        painter.setFont(font)
+        painter.drawText(0, 0, 'abc')
+        painter.end()
+        result = device.geometry().clone()
+        result.normalize()
+        self.assertEqual(result.asWkt(2), 'GeometryCollection (Polygon ((2.25 -3.7, 7.63 0.42, 16.8 -3.25, 16.8 0, 23.84 0, 23.84 -12.48, 19.35 -21.26, 3.64 -21.3, 3.64 -15.95, 13.54 -17.61, 16.8 -14, 4.19 -12.08, 2.25 -3.7),(9.12 -8.33, 16.8 -9.84, 16.14 -6.42, 10.04 -4.56, 9.12 -8.33)),Polygon ((57.39 -9.52, 61.13 -2.08, 76.64 -0.64, 76.64 -6.38, 68.2 -4.87, 64.61 -10.92, 68.2 -16.98, 76.64 -15.48, 76.64 -21.19, 66.61 -22.13, 59.65 -18.29, 57.39 -9.52)),Polygon ((30.34 -30.39, 30.34 0, 37.34 0, 37.34 -3.17, 42.56 0.37, 49.12 -0.73, 53.64 -8.35, 51.87 -18.31, 44.85 -22.4, 37.34 -18.67, 37.34 -30.39, 30.34 -30.39),(37.34 -10.92, 41.98 -17.33, 46.59 -10.92, 41.98 -4.52, 37.34 -10.92)))')
 
 
 if __name__ == '__main__':
