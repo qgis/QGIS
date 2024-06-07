@@ -27,6 +27,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
+#include "qgsgeos.h"
 
 #include <QSize>
 #include <QPainter>
@@ -967,7 +968,18 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
       fixed << geometry.makeValid( Qgis::MakeValidMethod::Structure );
     }
 
-    const QgsGeometry mergedGeom = QgsGeometry::unaryUnion( fixed );
+    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( fixed );
+    if ( context.renderContext().maskSettings().simplifyTolerance() > 0 )
+    {
+      QgsGeos geos( mergedGeom.constGet() );
+      mergedGeom = QgsGeometry( geos.simplify( context.renderContext().maskSettings().simplifyTolerance() ) );
+    }
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+    // structure would be better, but too old GEOS
+    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework );
+#else
+    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Structure );
+#endif
     if ( !mergedGeom.isEmpty() )
     {
       const QgsGeometry exterior = QgsGeometry::fromRect(
