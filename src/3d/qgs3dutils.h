@@ -314,6 +314,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.40
      */
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Insert clip plane equation as uniform into a an effect.
+     *
+     * \param effect effect used in a material which needs to use gl_ClipDistance
+     * \param mapSettings 3D Scene configuration
+     *
+     * \since QGIS 3.40
+     */
+    static void addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings );
 };
 
 #endif // QGS3DUTILS_H
