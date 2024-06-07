@@ -816,7 +816,17 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     if ( forceVector && !labelHasEffects[ maskId ] )
     {
       // set a painter to get all masking instruction in order to later clip masked symbol layer
-      maskPaintDevice = useGeometryBackend ? dynamic_cast< QPaintDevice *>( new QgsGeometryPaintDevice( true ) ) : dynamic_cast< QPaintDevice * >( new QgsMaskPaintDevice( true ) );
+      if ( useGeometryBackend )
+      {
+        std::unique_ptr< QgsGeometryPaintDevice > geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( true );
+        geomPaintDevice->setStrokedPathSegments( 4 );
+        geomPaintDevice->setSimplificationTolerance( labelJob.context.maskSettings().simplifyTolerance() );
+        maskPaintDevice = geomPaintDevice.release();
+      }
+      else
+      {
+        maskPaintDevice = new QgsMaskPaintDevice( true );
+      }
       maskPainter = new QPainter( maskPaintDevice );
     }
     else
@@ -891,7 +901,18 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       if ( forceVector && !maskLayerHasEffects[ job.layerId ] )
       {
         // set a painter to get all masking instruction in order to later clip masked symbol layer
-        maskPaintDevice = useGeometryBackend ? dynamic_cast< QPaintDevice *>( new QgsGeometryPaintDevice() ) : dynamic_cast< QPaintDevice * >( new QgsMaskPaintDevice() );
+        if ( useGeometryBackend )
+        {
+          std::unique_ptr< QgsGeometryPaintDevice > geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( );
+          geomPaintDevice->setStrokedPathSegments( 4 );
+          geomPaintDevice->setSimplificationTolerance( job.context()->maskSettings().simplifyTolerance() );
+          maskPaintDevice = geomPaintDevice.release();
+        }
+        else
+        {
+          maskPaintDevice = new QgsMaskPaintDevice();
+        }
+
         maskPainter = new QPainter( maskPaintDevice );
       }
       else
