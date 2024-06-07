@@ -20,6 +20,8 @@
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgs3dutils.h"
+
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
@@ -155,6 +157,8 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( const Qgs3D
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+
+      Qgs3DUtils::addBoundingBoxParametersToEffect( effect, mapSettings );
 
       // TODO : if ( context.isSelected() ) dampen the color of diffuse texture
       // with context.map().selectionColor()

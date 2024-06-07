@@ -16,11 +16,13 @@
 #include "qgs3dutils.h"
 
 #include "qgslinestring.h"
+#include "qgsorientedbox3d.h"
 #include "qgspolygon.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
+#include "qgsvector3d.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -47,6 +49,7 @@
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QShaderData>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
@@ -921,4 +924,52 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
   int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
   newShaderCode.insert( insertionIndex, definesText.toLatin1() );
   return newShaderCode;
+}
+
+void Qgs3DUtils::addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings )
+{
+  // Compute the equation of the clip planes along the X and Y axis. A plane can be defined by:
+  // - its normal as a unit vector
+  // - its distance to the origin
+  const QgsRectangle extent = mapSettings.extent();
+  QList<QgsVector3D> bounds2D;
+
+  if ( extent.isNull() )
+  {
+    // If the extent is not defined, set the clip plane at a very great distance.
+    bounds2D =
+    {
+      QgsVector3D( std::numeric_limits<float>::max(), mapSettings.origin().y(), mapSettings.origin().z() ),
+      QgsVector3D( mapSettings.origin().x(), std::numeric_limits<float>::max(), mapSettings.origin().z() )
+    };
+  }
+  else
+  {
+    // Define the bounds (X,Y) of the scene in the map coordinates
+    bounds2D =
+    {
+      QgsVector3D( extent.xMaximum(), mapSettings.origin().y(), mapSettings.origin().z() ),
+      QgsVector3D( mapSettings.origin().x(), extent.yMaximum(), mapSettings.origin().z() )
+    };
+  }
+  QVariantList clipPlaneValues = QVariantList();
+  for ( const QgsVector3D boundMap : bounds2D )
+  {
+    // Compute the normal of the plane in the world coordinates
+    const QgsVector3D boundWorld = mapSettings.mapToWorldCoordinates( boundMap );
+
+    // Define the normal as a unit vector
+    const QVector3D normal = boundWorld.toVector3D().normalized();
+
+    // The distance is the dot product between the normal and a point on the plane
+    const float distance = QVector3D::dotProduct( normal, boundWorld.toVector3D() );
+
+    // Define 2 equations. One at each end of the scene.
+    const QVector4D  equation1( normal, distance );
+    const QVector4D  equation2( -normal, distance );
+    clipPlaneValues << equation1 << equation2;
+  }
+
+  Qt3DRender::QParameter *clipPlane = new Qt3DRender::QParameter( QStringLiteral( "clipPlane[0]" ), clipPlaneValues );
+  effect->addParameter( clipPlane );
 }

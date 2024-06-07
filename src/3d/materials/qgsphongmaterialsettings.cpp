@@ -103,7 +103,7 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
 }
 
 
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( const Qgs3DMapSettings &, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( const Qgs3DMapSettings &mapSettings, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -114,7 +114,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( const Qgs3DMapSetti
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
-      return buildMaterial( context );
+      return buildMaterial( mapSettings, context );
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
@@ -253,7 +253,7 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
   dataBuffer->setData( data );
 }
 
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
+Qt3DRender::QMaterial *QgsPhongMaterialSettings::buildMaterial( const Qgs3DMapSettings &mapSettings, const QgsMaterialContext &context ) const
 {
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
 
@@ -311,6 +311,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMateria
 
   effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ),  static_cast< float >( mShininess ) ) );
   effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ),  static_cast< float >( mOpacity ) ) );
+
+  Qgs3DUtils::addBoundingBoxParametersToEffect( effect, mapSettings );
 
   effect->addTechnique( technique );
   material->setEffect( effect );
