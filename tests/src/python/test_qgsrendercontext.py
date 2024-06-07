@@ -249,6 +249,22 @@ class TestQgsRenderContext(QgisTestCase):
         rc2 = QgsRenderContext(rc)
         self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification)
 
+    def test_mask_settings(self):
+        """
+        Test mask settings handling
+        """
+        rc = QgsRenderContext()
+        self.assertEqual(rc.maskSettings().simplifyTolerance(), 0)
+
+        ms = QgsMapSettings()
+        ms.maskSettings().setSimplificationTolerance(11)
+
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.maskSettings().simplifyTolerance(), 11)
+
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.maskSettings().simplifyTolerance(), 11)
+
     def testRenderedFeatureHandlers(self):
         rc = QgsRenderContext()
         self.assertFalse(rc.renderedFeatureHandlers())

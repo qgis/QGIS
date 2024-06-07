@@ -49,6 +49,7 @@ class TestQgsLayoutContext: public QgsTest
     void geometry();
     void scales();
     void simplifyMethod();
+    void maskRenderSettings();
 
 };
 
@@ -258,6 +259,17 @@ void TestQgsLayoutContext::simplifyMethod()
   simplify.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
   context.setSimplifyMethod( simplify );
   QCOMPARE( context.simplifyMethod().simplifyHints(), Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
+}
+
+void TestQgsLayoutContext::maskRenderSettings()
+{
+  QgsLayout l( QgsProject::instance() );
+  QgsLayoutRenderContext context( &l );
+  QCOMPARE( context.maskSettings().simplifyTolerance(), 0 );
+  QgsMaskRenderSettings settings2;
+  settings2.setSimplificationTolerance( 11 );
+  context.setMaskSettings( settings2 );
+  QCOMPARE( context.maskSettings().simplifyTolerance(), 11 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

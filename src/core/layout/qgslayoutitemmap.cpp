@@ -1722,6 +1722,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     //if outputting layout, we disable optimisations like layer simplification by default, UNLESS the context specifically tells us to use them
     jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) );
     jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
+    jobMapSettings.setMaskSettings( mLayout->renderContext().maskSettings() );
     jobMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
   }
   else

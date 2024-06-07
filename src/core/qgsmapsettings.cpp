@@ -836,6 +836,11 @@ QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const
   return mClippingRegions;
 }
 
+void QgsMapSettings::setMaskSettings( const QgsMaskRenderSettings &settings )
+{
+  mMaskRenderSettings = settings;
+}
+
 void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
 {
   mRenderedFeatureHandlers.append( handler );

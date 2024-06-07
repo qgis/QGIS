@@ -269,6 +269,27 @@ The default is to use no simplification.
 .. versionadded:: 3.10
 %End
 
+
+    QgsMaskRenderSettings &maskSettings();
+%Docstring
+Returns a reference to the mask render settings, which control how masks
+are drawn and behave during map renders.
+
+.. seealso:: :py:func:`setMaskSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+%Docstring
+Sets the mask render ``settings``, which control how masks
+are drawn and behave during map renders.
+
+.. seealso:: :py:func:`maskSettings`
+
+.. versionadded:: 3.38
+%End
+
     QStringList exportThemes() const;
 %Docstring
 Returns a list of map themes to use during the export.

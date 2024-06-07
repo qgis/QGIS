@@ -84,6 +84,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mCurrentFrame( rh.mCurrentFrame )
   , mSymbolLayerClipPaths( rh.mSymbolLayerClipPaths )
   , mSymbolLayerClippingGeometries( rh.mSymbolLayerClippingGeometries )
+  , mMaskRenderSettings( rh.mMaskRenderSettings )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -136,6 +137,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mCurrentFrame = rh.mCurrentFrame;
   mSymbolLayerClipPaths = rh.mSymbolLayerClipPaths;
   mSymbolLayerClippingGeometries = rh.mSymbolLayerClippingGeometries;
+  mMaskRenderSettings = rh.mMaskRenderSettings;
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
@@ -286,6 +288,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setImageFormat( mapSettings.outputImageFormat() );
 
   ctx.mClippingRegions = mapSettings.clippingRegions();
+
+  ctx.setMaskSettings( mapSettings.maskSettings() );
 
   ctx.mRendererUsage = mapSettings.rendererUsage();
   ctx.mFrameRate = mapSettings.frameRate();
@@ -657,6 +661,11 @@ QPointF QgsRenderContext::textureOrigin() const
 void QgsRenderContext::setTextureOrigin( const QPointF &origin )
 {
   mTextureOrigin = origin;
+}
+
+void QgsRenderContext::setMaskSettings( const QgsMaskRenderSettings &settings )
+{
+  mMaskRenderSettings = settings;
 }
 
 QgsDoubleRange QgsRenderContext::zRange() const

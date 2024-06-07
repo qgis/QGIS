@@ -951,6 +951,27 @@ rendering using QBrush objects.
 .. versionadded:: 3.16
 %End
 
+
+    QgsMaskRenderSettings &maskSettings();
+%Docstring
+Returns a reference to the mask render settings, which control how masks
+are drawn and behave during render operations.
+
+.. seealso:: :py:func:`setMaskSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+%Docstring
+Sets the mask render ``settings``, which control how masks
+are drawn and behave during render operations.
+
+.. seealso:: :py:func:`maskSettings`
+
+.. versionadded:: 3.38
+%End
+
     void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path );
 %Docstring
 Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
