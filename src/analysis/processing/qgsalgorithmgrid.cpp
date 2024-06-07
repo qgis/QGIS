@@ -59,8 +59,8 @@ void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HSPACING" ), QObject::tr( "Horizontal spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VSPACING" ), QObject::tr( "Vertical spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0 ) );
 
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY" ), QObject::tr( "Horizontal overlay" ), 0, QStringLiteral( "CRS" ), false, 0, 1000000000.0 ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY" ), QObject::tr( "Vertical overlay" ), 0, QStringLiteral( "CRS" ), false, 0, 1000000000.0 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY" ), QObject::tr( "Horizontal overlay" ), 0, QStringLiteral( "CRS" ), false ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY" ), QObject::tr( "Vertical overlay" ), 0, QStringLiteral( "CRS" ), false ) );
 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Grid CRS" ), QStringLiteral( "ProjectCrs" ) ) );
 
@@ -110,8 +110,8 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   if ( mGridExtent.height() < mVSpacing ) //check if grid extent is smaller than vertical spacing
     throw QgsProcessingException( QObject::tr( "Vertical spacing is too large for the covered area." ) );
 
-  if ( mHSpacing <= mHOverlay || mVSpacing <= mVOverlay )
-    throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'" ).arg( mHOverlay ).arg( mVOverlay ) );
+  // if ( mHSpacing <= mHOverlay || mVSpacing <= mVOverlay )
+  //   throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'" ).arg( mHOverlay ).arg( mVOverlay ) );
 
   QgsFields fields = QgsFields();
   fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
