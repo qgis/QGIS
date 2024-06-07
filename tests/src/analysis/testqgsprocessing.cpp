@@ -8028,6 +8028,11 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::Vector );
 
+  // if we set testOnly = true, then layer should not be loaded on completion
+  context.setLayersToLoadOnCompletion( {} );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), QVariant::fromValue( fs ), context, true ), QStringLiteral( "test.shp" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().size(), 0 );
+
   // with name overloading
   QgsProcessingContext context2;
   fs = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.shp" ) );

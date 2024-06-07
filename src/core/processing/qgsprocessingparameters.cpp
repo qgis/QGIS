@@ -936,7 +936,7 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   return parameterAsOutputLayer( definition, val, context );
 }
 
-QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly )
 {
   QVariant val = value;
 
@@ -991,7 +991,8 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
     else if ( definition && definition->type() == QgsProcessingParameterVectorTileDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::VectorTile;
 
-    context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
+    if ( !testOnly )
+      context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
   }
 
   return dest;
