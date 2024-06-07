@@ -50,6 +50,7 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QShaderData>
+#include <limits>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
@@ -928,33 +929,28 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
 
 void Qgs3DUtils::addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings )
 {
-  const QgsRectangle extent = mapSettings.extent();
-  QList<QgsVector3D> bounds2D;
+  QgsOrientedBox3D box = mapSettings.box();
+  // If the extent is not defined, set the clip plane at a very great distance.
+  if ( box.isNull() )
+  {
+    QList<QgsVector3D> maxHalfAxes =
+    {
+      QgsVector3D( std::numeric_limits<float>::max(), 0.0, 0.0 ),
+      QgsVector3D( 0.0, std::numeric_limits<float>::max(), 0.0 ),
+      QgsVector3D( 0.0, 0.0, std::numeric_limits<float>::max() )
+    };
+    box = QgsOrientedBox3D( QgsVector3D( 0.0, 0.0, 0.0 ), maxHalfAxes );
+  }
 
-  if ( extent.isNull() )
-  {
-    // If the extent is not defined, set the clip plane at a very great distance.
-    bounds2D =
-    {
-      QgsVector3D( std::numeric_limits<float>::max(), mapSettings.origin().y(), mapSettings.origin().z() ),
-      QgsVector3D( mapSettings.origin().x(), std::numeric_limits<float>::max(), mapSettings.origin().z() )
-    };
-  }
-  else
-  {
-    bounds2D =
-    {
-      QgsVector3D( extent.xMaximum(), mapSettings.origin().y(), mapSettings.origin().z() ),
-      QgsVector3D( mapSettings.origin().x(), extent.yMaximum(), mapSettings.origin().z() )
-    };
-  }
+  const double *halfAxes = box.halfAxes();
   QVariantList clipPlaneValues = QVariantList();
-  for ( const QgsVector3D boundMap : bounds2D )
+  for ( int i = 0, idx = 0; i < 2; ++i, idx += 3 )
   {
-    const QgsVector3D boundWorld = mapSettings.mapToWorldCoordinates( boundMap );
+    const QgsVector3D axeMap = mapSettings.origin() + QgsVector3D( static_cast<float>( halfAxes[idx] ), static_cast<float>( halfAxes[idx + 1] ), static_cast<float>( halfAxes[idx + 2] ) );
+    const QgsVector3D axeWorld = mapSettings.mapToWorldCoordinates( axeMap );
 
-    const QVector3D normal = boundWorld.toVector3D().normalized();
-    const float distance = QVector3D::dotProduct( normal, boundWorld.toVector3D() );
+    const QVector3D normal = axeWorld.toVector3D().normalized();
+    const float distance = QVector3D::dotProduct( normal, axeWorld.toVector3D() );
     const QVector4D  equation1( normal, distance );
     const QVector4D  equation2( -normal, distance );
     clipPlaneValues << equation1 << equation2;
