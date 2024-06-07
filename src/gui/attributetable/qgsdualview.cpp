@@ -1339,7 +1339,7 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
   if ( QgsExpression( config.sortExpression() ).needsGeometry() )
   {
     mLayerCache->setCacheGeometry( true );
-    request.setFlags( request.flags().setFlag( Qgis::FeatureRequestFlag::NoGeometry, false ) );
+    request.setFlags( request.flags().setFlag( QgsFeatureRequest::NoGeometry, false ) );
   }
   request.setSubsetOfAttributes( attributes );
   mMasterModel->setRequest( request );
