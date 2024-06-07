@@ -779,6 +779,7 @@ class CORE_EXPORT QgsLayoutExporter
     ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc );
 
     static QgsVectorSimplifyMethod createExportSimplifyMethod();
+    static QgsMaskRenderSettings createExportMaskSettings();
     friend class TestQgsLayout;
     friend class TestQgsLayoutExporter;
 
