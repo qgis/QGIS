@@ -292,7 +292,7 @@ class Editor(QgsCodeEditorPython):
 
         URL = "https://api.github.com/gists"
 
-        path = self.tab_widget.currentWidget().file_path()
+        path = self.code_editor_widget.filePath()
         filename = os.path.basename(path) if path else None
         filename = filename if filename else "pyqgis_snippet.py"
 
