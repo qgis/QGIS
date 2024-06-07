@@ -130,7 +130,7 @@ QStringList QgsProcessingProvider::supportedOutputTableExtensions() const
 bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error ) const
 {
   error.clear();
-  QString outputPath = QgsProcessingParameters::parameterAsOutputLayer( parameter, outputValue, context ).trimmed();
+  QString outputPath = QgsProcessingParameters::parameterAsOutputLayer( parameter, outputValue, context, true ).trimmed();
 
   if ( outputPath.isEmpty() )
   {
