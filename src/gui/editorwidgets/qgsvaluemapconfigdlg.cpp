@@ -99,7 +99,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   {
     for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
     {
-      orderedList.append( qMakePair( valueList[i].toMap().constBegin().key(), valueList[i].toMap().constBegin().value() ) );
+      orderedList.append( qMakePair( valueList[i].toMap().constBegin().value().toString(), valueList[i].toMap().constBegin().key() ) );
     }
   }
   else
@@ -111,7 +111,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
       if ( QgsVariantUtils::isNull( mit.value() ) )
         orderedList.append( qMakePair( mit.key(), QVariant() ) );
       else
-        orderedList.append( qMakePair( mit.key(), mit.value() ) );
+        orderedList.append( qMakePair( mit.value().toString(), mit.key() ) );
     }
   }
 
