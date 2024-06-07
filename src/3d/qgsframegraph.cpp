@@ -20,6 +20,7 @@
 #include "qgs3dutils.h"
 #include "qgsambientocclusionrenderentity.h"
 #include "qgsambientocclusionblurentity.h"
+#include "qgsorientedbox3d.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
@@ -47,6 +48,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QClipPlane>
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructTexturesPreviewPass()
 {
@@ -76,6 +78,10 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   //                                  |
   //                         +-----------------+
   //                         |  QLayerFilter   |  (using mForwardRenderLayer)
+  //                         +-----------------+
+  //                                  |
+  //                         +-----------------+
+  //                         | QRenderStateSet |  define clip planes
   //                         +-----------------+
   //                                  |
   //                      +-----------------------+
@@ -108,6 +114,14 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
   mForwardRenderLayerFilter->addLayer( mForwardRenderLayer );
 
+  mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mForwardRenderLayerFilter );
+  for ( int i = 0; i < 4; ++i )
+  {
+    Qt3DRender::QClipPlane *clipPlane = new Qt3DRender::QClipPlane;
+    clipPlane->setPlaneIndex( i );
+    mClipRenderStateSet->addRenderState( clipPlane );
+  }
+
   mForwardColorTexture = new Qt3DRender::QTexture2D;
   mForwardColorTexture->setWidth( mSize.width() );
   mForwardColorTexture->setHeight( mSize.height() );
@@ -138,7 +152,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   forwardRenderTargetColorOutput->setTexture( mForwardColorTexture );
   forwardRenderTarget->addOutput( forwardRenderTargetColorOutput );
 
-  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mForwardRenderLayerFilter );
+  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mClipRenderStateSet );
   mForwardRenderTargetSelector->setTarget( forwardRenderTarget );
 
   // first branch: opaque layer filter
