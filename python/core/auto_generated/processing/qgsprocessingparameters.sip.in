@@ -1220,9 +1220,12 @@ need to handle deletion of the returned layer.
 Evaluates the parameter with matching ``definition`` to a output layer destination.
 %End
 
-    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly = false );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a output layer destination.
+
+Since QGIS 3.38 the ``testOnly`` argument can be set to ``True`` to evaluate the parameter to an output layer destination for advance testing only. This
+prevents default behavior such as output post-processing which would otherwise occur.
 
 .. versionadded:: 3.4
 %End

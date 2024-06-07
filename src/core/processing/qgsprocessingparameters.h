@@ -1331,9 +1331,13 @@ class CORE_EXPORT QgsProcessingParameters
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a output layer destination.
+     *
+     * Since QGIS 3.38 the \a testOnly argument can be set to TRUE to evaluate the parameter to an output layer destination for advance testing only. This
+     * prevents default behavior such as output post-processing which would otherwise occur.
+     *
      * \since QGIS 3.4
      */
-    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly = false );
 
     /**
      * Evaluates the parameter with matching \a definition to a file based output destination.
