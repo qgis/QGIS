@@ -92,7 +92,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     void textureScaleChanged( float textureScale );
 
   private:
-    void init();
+    void init( const Qgs3DMapSettings &mapSettings );
 
     void handleTextureScaleChanged( const QVariant &var );
     void updateFragmentShader();

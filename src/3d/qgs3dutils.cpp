@@ -16,11 +16,13 @@
 #include "qgs3dutils.h"
 
 #include "qgslinestring.h"
+#include "qgsorientedbox3d.h"
 #include "qgspolygon.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
+#include "qgsvector3d.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -47,6 +49,7 @@
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QShaderData>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
@@ -921,4 +924,28 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
   int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
   newShaderCode.insert( insertionIndex, definesText.toLatin1() );
   return newShaderCode;
+}
+
+void Qgs3DUtils::addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings )
+{
+  const QgsRectangle extent = mapSettings.extent();
+  const QList<QgsVector3D> bounds2D =
+  {
+    QgsVector3D( extent.xMaximum(), mapSettings.origin().y(), mapSettings.origin().z() ),
+    QgsVector3D( mapSettings.origin().x(), extent.yMaximum(), mapSettings.origin().z() )
+  };
+  QVariantList clipPlaneValues = QVariantList();
+  for ( const QgsVector3D boundMap : bounds2D )
+  {
+    const QgsVector3D boundWorld = mapSettings.mapToWorldCoordinates( boundMap );
+
+    const QVector3D normal = boundWorld.toVector3D().normalized();
+    const float distance = QVector3D::dotProduct( normal, boundWorld.toVector3D() );
+    const QVector4D  equation1( normal, distance );
+    const QVector4D  equation2( -normal, distance );
+    clipPlaneValues << equation1 << equation2;
+  }
+
+  Qt3DRender::QParameter *clipPlane = new Qt3DRender::QParameter( QStringLiteral( "clipPlane[0]" ), clipPlaneValues );
+  effect->addParameter( clipPlane );
 }

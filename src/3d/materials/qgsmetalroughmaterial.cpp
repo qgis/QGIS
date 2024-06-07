@@ -26,7 +26,7 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 
 ///@cond PRIVATE
-QgsMetalRoughMaterial::QgsMetalRoughMaterial( const Qgs3DMapSettings &, QNode *parent )
+QgsMetalRoughMaterial::QgsMetalRoughMaterial( const Qgs3DMapSettings &mapSettings, QNode *parent )
   : QMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColor" ), QColor( "grey" ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( QStringLiteral( "metalness" ), 0.0f, this ) )
@@ -43,7 +43,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( const Qgs3DMapSettings &, QNode *p
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
 {
-  init();
+  init( mapSettings );
 }
 
 QgsMetalRoughMaterial::~QgsMetalRoughMaterial() = default;
@@ -200,7 +200,7 @@ void QgsMetalRoughMaterial::setTextureScale( float textureScale )
   mTextureScaleParameter->setValue( textureScale );
 }
 
-void QgsMetalRoughMaterial::init()
+void QgsMetalRoughMaterial::init( const Qgs3DMapSettings &mapSettings )
 {
   QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged,
                     this, &QgsMetalRoughMaterial::baseColorChanged );
@@ -242,6 +242,8 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mMetalnessParameter );
   mMetalRoughEffect->addParameter( mRoughnessParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
+
+  Qgs3DUtils::addBoundingBoxParametersToEffect( mMetalRoughEffect, mapSettings );
 
   setEffect( mMetalRoughEffect );
 }
