@@ -230,3 +230,20 @@ tests:
       OUTPUT:
         name: expected/simplify_coverage.gml
         type: vector
+
+  - algorithm: native:creategrid
+    name: Create rectangle grid with negative overlay
+    params:
+      CRS: EPSG:3857
+      EXTENT: 738054.729300000,738373.195700000,5770010.104900000,5770208.287300000
+        [EPSG:3857]
+      HOVERLAY: 0.0
+      HSPACING: 10.0
+      TYPE: 2
+      VOVERLAY: -10.0
+      VSPACING: 10.0
+    results:
+      OUTPUT:
+        name: expected/create_grid_negative_overlay.gml
+        type: vector
+
