@@ -172,8 +172,10 @@ class TestQgsPoint(QgisTestCase):
         test simplifyByDistance
         """
         # for points this is just a clone
-        p = QgsPoint(1.1,2 .2)
-        self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1,2 .2))
+        p = QgsPoint(1.1,
+                     2.2)
+        self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1,
+                                                             2.2))
         p = QgsPoint(1.1, 2.2, 3.3, 4.4)
         self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1, 2.2, 3.3, 4.4))
 
