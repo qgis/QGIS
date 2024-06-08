@@ -34,9 +34,6 @@ jobs:
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
-        with:
-          # See https://github.com/actions/runner-images/issues/9398
-          toolset: 14.39
 
       - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
