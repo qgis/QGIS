@@ -99,8 +99,8 @@ jobs:
       - name: 📦 Create SDK
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
-          vcpkg.exe export --zip --output-dir=./sdk --x-install-root=$( cygpath "${{ github.workspace }}/build" )/vcpkg_installed --x-manifest-dir=vcpkg
-        
+          vcpkg.exe export --zip --output-dir=./sdk --x-install-root=$( cygpath "${{ github.workspace }}/build" )/vcpkg_installed --x-manifest-root=vcpkg
+
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v4
