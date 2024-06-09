@@ -404,14 +404,6 @@ namespace Qgs3DSymbolImpl
     else
       return new QgsBufferedLine3DSymbolHandler( lineSymbol, layer->selectedFeatureIds() );
   }
-
-  Qt3DCore::QEntity *entityForLine3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
-  {
-    QgsFeature3DHandler *handler = handlerForLine3DSymbol( layer, &symbol );
-    Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
-    delete handler;
-    return e;
-  }
 }
 
 /// @endcond
