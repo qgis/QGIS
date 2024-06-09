@@ -94,11 +94,12 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
         float length = 0.0f;
         float radius = 0.0f;
+        float size = 0.0f;
         QVector<QVector3D> positions;
 
         bool operator==( const PointData &other ) const
         {
-          return length == other.length && radius == other.radius;
+          return length == other.length && radius == other.radius && size == other.size;
         }
     };
 
@@ -147,12 +148,20 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
     radius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::Radius, context.expressionContext(), radius ) );
   }
 
+  const bool hasDDSize = ddp.isActive( QgsAbstract3DSymbol::Property::Size );
+  float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+  if ( hasDDSize )
+  {
+    size = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::Size, context.expressionContext(), size ) );
+  }
+
   QVector<QVector3D> positions;
   Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol->altitudeClamping(), positions );
 
   PointData newPointData;
   newPointData.length = length;
   newPointData.radius = radius;
+  newPointData.size = size;
 
   PointData *existingPointData = std::find( out.begin(), out.end(), newPointData );
   if ( existingPointData == out.end() )
@@ -252,9 +261,21 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Cube:
     {
-      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
-      mZMin -= size * 0.5f;
-      mZMax += size * 0.5f;
+      float sizeMax = 0.0;
+      for ( const PointData &pointData : outNormal )
+      {
+        if ( pointData.size > sizeMax )
+          sizeMax = pointData.size;
+      }
+
+      for ( const PointData &pointData : outSelected )
+      {
+        if ( pointData.size > sizeMax )
+          sizeMax = pointData.size;
+      }
+
+      mZMin -= sizeMax * 0.5f;
+      mZMax += sizeMax * 0.5f;
       break;
     }
 
@@ -282,9 +303,21 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
     {
       // worst case scenario -- even though planes are usually rotated so that they are flat,
       // let's account for possible overridden rotation
-      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
-      mZMin -= size * 0.5f;
-      mZMax += size * 0.5f;
+      float sizeMax = 0.0;
+      for ( const PointData &pointData : outNormal )
+      {
+        if ( pointData.size > sizeMax )
+          sizeMax = pointData.size;
+      }
+
+      for ( const PointData &pointData : outSelected )
+      {
+        if ( pointData.size > sizeMax )
+          sizeMax = pointData.size;
+      }
+
+      mZMin -= sizeMax * 0.5f;
+      mZMax += sizeMax * 0.5f;
       break;
     }
 
@@ -445,12 +478,11 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Cube:
     {
-      const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
-      Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
-      g->setXExtent( size );
-      g->setYExtent( size );
-      g->setZExtent( size );
-      return g;
+      Qt3DExtras::QCuboidGeometry *geometry = new Qt3DExtras::QCuboidGeometry;
+      geometry->setXExtent( pointData.size );
+      geometry->setYExtent( pointData.size );
+      geometry->setZExtent( pointData.size );
+      return geometry;
     }
 
     case Qgis::Point3DShape::Torus:
@@ -464,11 +496,10 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Plane:
     {
-      const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
-      Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
-      g->setWidth( size );
-      g->setHeight( size );
-      return g;
+      Qt3DExtras::QPlaneGeometry *geometry = new Qt3DExtras::QPlaneGeometry;
+      geometry->setWidth( pointData.size );
+      geometry->setHeight( pointData.size );
+      return geometry;
     }
 
     case Qgis::Point3DShape::ExtrudedText:
