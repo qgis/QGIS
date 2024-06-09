@@ -46,6 +46,7 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
   {
     { static_cast< int >( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::Radius ), QgsPropertyDefinition( "radius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 
 }
