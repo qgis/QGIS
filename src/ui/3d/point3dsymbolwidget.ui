@@ -370,6 +370,13 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnMinorRadiusOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="7" column="0">
       <widget class="QLabel" name="labelModel">
        <property name="text">
@@ -506,6 +513,7 @@
   <tabstop>spinRadius</tabstop>
   <tabstop>mBtnRadiusOverride</tabstop>
   <tabstop>spinMinorRadius</tabstop>
+  <tabstop>mBtnMinorRadiusOverride</tabstop>
   <tabstop>spinTopRadius</tabstop>
   <tabstop>mBtnTopRadiusOverride</tabstop>
   <tabstop>spinBottomRadius</tabstop>
