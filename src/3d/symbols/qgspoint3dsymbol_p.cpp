@@ -95,6 +95,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
         float length = 0.0f;
         float radius = 0.0f;
         float bottomRadius = 0.0f;
+        float minorRadius = 0.0f;
         float topRadius = 0.0f;
         float size = 0.0f;
         QVector<QVector3D> positions;
@@ -102,8 +103,8 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
         bool operator==( const PointData &other ) const
         {
           return ( length == other.length && radius == other.radius
-                   && bottomRadius == other.bottomRadius && topRadius == other.topRadius
-                   && size == other.size );
+                   && bottomRadius == other.bottomRadius && minorRadius == other.minorRadius
+                   && topRadius == other.topRadius && size == other.size );
         }
     };
 
@@ -159,6 +160,13 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
     bottomRadius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::BottomRadius, context.expressionContext(), bottomRadius ) );
   }
 
+  const bool hasDDMinorRadius = ddp.isActive( QgsAbstract3DSymbol::Property::MinorRadius );
+  float minorRadius = mSymbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toFloat();
+  if ( hasDDMinorRadius )
+  {
+    minorRadius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::MinorRadius, context.expressionContext(), minorRadius ) );
+  }
+
   const bool hasDDTopRadius = ddp.isActive( QgsAbstract3DSymbol::Property::TopRadius );
   float topRadius = mSymbol->shapeProperty( QStringLiteral( "topRadius" ) ).toFloat();
   if ( hasDDTopRadius )
@@ -180,6 +188,7 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   newPointData.length = length;
   newPointData.radius = radius;
   newPointData.bottomRadius = bottomRadius;
+  newPointData.minorRadius = minorRadius;
   newPointData.topRadius = topRadius;
   newPointData.size = size;
 
@@ -504,10 +513,9 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Torus:
     {
-      const float minorRadius = symbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toFloat();
       Qt3DExtras::QTorusGeometry *geometry = new Qt3DExtras::QTorusGeometry;
       geometry->setRadius( pointData.radius );
-      geometry->setMinorRadius( minorRadius );
+      geometry->setMinorRadius( pointData.minorRadius );
       return geometry;
     }
 
