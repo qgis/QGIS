@@ -68,6 +68,7 @@ Returns the list of the vector layer geometry types which are compatible with th
       Length,
       Radius,
       BottomRadius,
+      MinorRadius,
       TopRadius,
       Size,
     };

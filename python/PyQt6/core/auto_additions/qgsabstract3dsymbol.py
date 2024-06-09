@@ -20,6 +20,10 @@ QgsAbstract3DSymbol.PropertyHeight = QgsAbstract3DSymbol.Property.BottomRadius
 QgsAbstract3DSymbol.Property.PropertyHeight = QgsAbstract3DSymbol.Property.BottomRadius
 QgsAbstract3DSymbol.PropertyHeight.is_monkey_patched = True
 QgsAbstract3DSymbol.PropertyHeight.__doc__ = "Bottom Radius"
+QgsAbstract3DSymbol.PropertySize = QgsAbstract3DSymbol.Property.MinorRadius
+QgsAbstract3DSymbol.Property.PropertySize = QgsAbstract3DSymbol.Property.MinorRadius
+QgsAbstract3DSymbol.PropertySize.is_monkey_patched = True
+QgsAbstract3DSymbol.PropertySize.__doc__ = "Minor Radius"
 QgsAbstract3DSymbol.PropertyHeight = QgsAbstract3DSymbol.Property.TopRadius
 QgsAbstract3DSymbol.Property.PropertyHeight = QgsAbstract3DSymbol.Property.TopRadius
 QgsAbstract3DSymbol.PropertyHeight.is_monkey_patched = True
@@ -28,5 +32,5 @@ QgsAbstract3DSymbol.PropertySize = QgsAbstract3DSymbol.Property.Size
 QgsAbstract3DSymbol.Property.PropertySize = QgsAbstract3DSymbol.Property.Size
 QgsAbstract3DSymbol.PropertySize.is_monkey_patched = True
 QgsAbstract3DSymbol.PropertySize.__doc__ = "Size"
-QgsAbstract3DSymbol.Property.__doc__ = "Data definable properties.\n\n" + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.Height.__doc__ + '\n' + '* ``PropertyExtrusionHeight``: ' + QgsAbstract3DSymbol.Property.ExtrusionHeight.__doc__ + '\n' + '* ``PropertyLength``: ' + QgsAbstract3DSymbol.Property.Length.__doc__ + '\n' + '* ``PropertyRadius``: ' + QgsAbstract3DSymbol.Property.Radius.__doc__ + '\n' + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.BottomRadius.__doc__ + '\n' + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.TopRadius.__doc__ + '\n' + '* ``PropertySize``: ' + QgsAbstract3DSymbol.Property.Size.__doc__
+QgsAbstract3DSymbol.Property.__doc__ = "Data definable properties.\n\n" + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.Height.__doc__ + '\n' + '* ``PropertyExtrusionHeight``: ' + QgsAbstract3DSymbol.Property.ExtrusionHeight.__doc__ + '\n' + '* ``PropertyLength``: ' + QgsAbstract3DSymbol.Property.Length.__doc__ + '\n' + '* ``PropertyRadius``: ' + QgsAbstract3DSymbol.Property.Radius.__doc__ + '\n' + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.BottomRadius.__doc__ + '\n' + '* ``PropertySize``: ' + QgsAbstract3DSymbol.Property.MinorRadius.__doc__ + '\n' + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.TopRadius.__doc__ + '\n' + '* ``PropertySize``: ' + QgsAbstract3DSymbol.Property.Size.__doc__
 # --

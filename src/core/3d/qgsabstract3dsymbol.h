@@ -73,6 +73,7 @@ class CORE_EXPORT QgsAbstract3DSymbol
       Length SIP_MONKEYPATCH_COMPAT_NAME( PropertyLength ), //!< Length
       Radius SIP_MONKEYPATCH_COMPAT_NAME( PropertyRadius ), //!< Radius
       BottomRadius SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ), //!< Bottom Radius
+      MinorRadius SIP_MONKEYPATCH_COMPAT_NAME( PropertySize ), //!< Minor Radius
       TopRadius SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ), //!< Top Radius
       Size SIP_MONKEYPATCH_COMPAT_NAME( PropertySize ), //!< Size
     };
