@@ -277,7 +277,7 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
 Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions )
 {
   const int count = positions.count();
-  const int byteCount = positions.count() * sizeof( QVector3D );
+  const int byteCount = static_cast<int>( count * sizeof( QVector3D ) );
   QByteArray ba;
   ba.resize( byteCount );
   memcpy( ba.data(), positions.constData(), byteCount );
