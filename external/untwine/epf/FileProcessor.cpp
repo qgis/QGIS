@@ -133,6 +133,8 @@ void FileProcessor::run()
     pdal::Options opts;
     opts.add("filename", m_fi.filename);
     opts.add("count", m_fi.numPoints);
+    if (m_fi.driver == "readers.las")
+        opts.add("nosrs", m_fi.no_srs);
 #ifdef PDAL_LAS_START
     if (m_fi.driver == "readers.las")
         opts.add("start", m_fi.start);

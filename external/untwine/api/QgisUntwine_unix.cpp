@@ -65,7 +65,7 @@ bool QgisUntwine::stop()
     if (!m_running)
         return false;
     ::kill(m_pid, SIGINT);
-    (void)waitpid(m_pid, nullptr, 0);
+    (void)waitpid(m_pid, &m_exitCode, 0);
     m_pid = 0;
     return true;
 }
@@ -78,7 +78,7 @@ void QgisUntwine::childStopped()
 
 bool QgisUntwine::running()
 {
-    if (m_running && (::waitpid(m_pid, nullptr, WNOHANG) != 0))
+    if (m_running && (::waitpid(m_pid, &m_exitCode, WNOHANG) != 0))
         childStopped();
     return m_running;
 }
