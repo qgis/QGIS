@@ -319,6 +319,13 @@
        </property>
       </widget>
      </item>
+     <item row="6" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnLengthOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="cboShape"/>
      </item>
@@ -482,6 +489,7 @@
   <tabstop>spinBottomRadius</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>spinLength</tabstop>
+  <tabstop>mBtnLengthOverride</tabstop>>
   <tabstop>spinBillboardHeight</tabstop>
   <tabstop>btnChangeSymbol</tabstop>
   <tabstop>cboAltClamping</tabstop>
