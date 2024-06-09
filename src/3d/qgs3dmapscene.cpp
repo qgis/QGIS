@@ -293,18 +293,6 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
   return err;
 }
 
-Qgs3DMapSceneEntity::SceneContext Qgs3DMapScene::buildSceneContext( ) const
-{
-  Qt3DRender::QCamera *camera = mEngine->camera();
-  Qgs3DMapSceneEntity::SceneContext sceneContext;
-  sceneContext.cameraFov = camera->fieldOfView();
-  sceneContext.cameraPos = camera->position();
-  const QSize size = mEngine->size();
-  sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
-  sceneContext.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
-  return sceneContext;
-}
-
 void Qgs3DMapScene::onCameraChanged()
 {
   if ( mMap.projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
@@ -337,7 +325,15 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   if ( forceUpdate )
     QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
-  Qgs3DMapSceneEntity::SceneContext sceneContext = buildSceneContext();
+  Qgs3DMapSceneEntity::SceneContext sceneContext;
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  sceneContext.cameraFov = camera->fieldOfView();
+  sceneContext.cameraPos = camera->position();
+  const QSize size = mEngine->size();
+  sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  sceneContext.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
+
+
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
     if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
