@@ -234,6 +234,13 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnSizeOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="9" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -488,6 +495,7 @@
   <tabstop>spinTopRadius</tabstop>
   <tabstop>spinBottomRadius</tabstop>
   <tabstop>spinSize</tabstop>
+  <tabstop>mBtnSizeOverride</tabstop>
   <tabstop>spinLength</tabstop>
   <tabstop>mBtnLengthOverride</tabstop>>
   <tabstop>spinBillboardHeight</tabstop>
