@@ -85,17 +85,27 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
   private:
 
-    static Qt3DRender::QMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
-    static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions );
-    static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
-
     //! temporary data we will pass to the tessellator
-    struct PointData
+    class PointData
     {
-      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
+      public:
+
+        PointData() = default;
+
+        float radius = 0.0f;
+        QVector<QVector3D> positions;
+
+        bool operator==( const PointData &other ) const
+        {
+          return radius == other.radius;
+        }
     };
 
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+    static Qt3DRender::QMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
+    static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const PointData &pointData );
+    static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol, const PointData &pointData );
+
+    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QVector<PointData> &out, bool selected );
 
     // input specific for this class
     std::unique_ptr< QgsPoint3DSymbol > mSymbol;
@@ -103,26 +113,49 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     QgsFeatureIds mSelectedIds;
 
     // outputs
-    PointData outNormal;  //!< Features that are not selected
-    PointData outSelected;  //!< Features that are selected
+    QVector<PointData> outNormal;  //!< Features that are not selected
+    QVector<PointData> outSelected;  //!< Features that are selected
 };
-
 
 bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context )
-  Q_UNUSED( attributeNames )
+  QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
+  attributeNames.unite( attrs );
   return true;
 }
 
 void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context )
 {
-  PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
+  QVector<PointData> &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
 
   if ( feature.geometry().isNull() )
     return;
 
-  Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol->altitudeClamping(), out.positions );
+  const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
+  const bool hasDDRadius = ddp.isActive( QgsAbstract3DSymbol::Property::Radius );
+  float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+  if ( hasDDRadius )
+  {
+    radius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::Radius, context.expressionContext(), radius ) );
+  }
+
+  QVector<QVector3D> positions;
+  Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol->altitudeClamping(), positions );
+
+  PointData newPointData;
+  newPointData.radius = radius;
+
+  PointData *existingPointData = std::find( out.begin(), out.end(), newPointData );
+  if ( existingPointData == out.end() )
+  {
+    newPointData.positions = QVector<QVector3D> {positions[0]};
+    out.append( newPointData );
+  }
+  else
+  {
+    existingPointData->positions.append( positions[0] );
+  }
+
   mFeatureCount++;
 }
 
@@ -131,8 +164,15 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
 
-  updateZRangeFromPositions( outNormal.positions );
-  updateZRangeFromPositions( outSelected.positions );
+  for ( PointData &pointData : outNormal )
+  {
+    updateZRangeFromPositions( pointData.positions );
+  }
+
+  for ( PointData &pointData : outSelected )
+  {
+    updateZRangeFromPositions( pointData.positions );
+  }
 
   // the elevation offset is applied in the vertex shader so let's account for it as well
   const float symbolOffset = mSymbol->transform().data()[13];
@@ -151,9 +191,21 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Sphere:
     {
-      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      mZMin -= radius;
-      mZMax += radius;
+      float radiusMax = 0.0;
+      for ( const PointData &pointData : outNormal )
+      {
+        if ( pointData.radius > radiusMax )
+          radiusMax = pointData.radius;
+      }
+
+      for ( const PointData &pointData : outSelected )
+      {
+        if ( pointData.radius > radiusMax )
+          radiusMax = pointData.radius;
+      }
+
+      mZMin -= radiusMax;
+      mZMax += radiusMax;
       break;
     }
 
@@ -175,9 +227,21 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Torus:
     {
-      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      mZMin -= radius;
-      mZMax += radius;
+      float radiusMax = 0.0;
+      for ( const PointData &pointData : outNormal )
+      {
+        if ( pointData.radius > radiusMax )
+          radiusMax = pointData.radius;
+      }
+
+      for ( const PointData &pointData : outSelected )
+      {
+        if ( pointData.radius > radiusMax )
+          radiusMax = pointData.radius;
+      }
+
+      mZMin -= radiusMax;
+      mZMax += radiusMax;
       break;
     }
 
@@ -201,7 +265,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   mZMax += symbolOffset;
 }
 
-void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QVector<PointData> &out, bool selected )
 {
   // build the default material
   QgsMaterialContext materialContext;
@@ -210,10 +274,13 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   Qt3DRender::QMaterial *mat = material( mSymbol.get(), materialContext );
 
   // build the entity
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
-  entity->addComponent( renderer( mSymbol.get(), out.positions ) );
-  entity->addComponent( mat );
-  entity->setParent( parent );
+  for ( const PointData *pointData = out.cbegin(), *end = out.cend(); pointData != end; ++pointData )
+  {
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    entity->addComponent( renderer( mSymbol.get(), *pointData ) );
+    entity->addComponent( mat );
+    entity->setParent( parent );
+  }
 
 // cppcheck wrongly believes entity will leak
 // cppcheck-suppress memleak
@@ -274,8 +341,9 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   return material;
 }
 
-Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions )
+Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const PointData &pointData )
 {
+  const QVector<QVector3D> positions = pointData.positions;
   const int count = positions.count();
   const int byteCount = static_cast<int>( count * sizeof( QVector3D ) );
   QByteArray ba;
@@ -296,7 +364,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   instanceDataAttribute->setCount( count );
   instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
-  Qt3DQGeometry *geometry = symbolGeometry( symbol );
+  Qt3DQGeometry *geometry = symbolGeometry( symbol, pointData );
   geometry->addAttribute( instanceDataAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
 
@@ -307,28 +375,26 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   return renderer;
 }
 
-Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol )
+Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol, const PointData &pointData )
 {
   switch ( symbol->shape() )
   {
     case Qgis::Point3DShape::Cylinder:
     {
-      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
-      Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
-      //g->setRings(2);  // how many vertices vertically
-      //g->setSlices(8); // how many vertices on circumference
-      g->setRadius( radius );
-      g->setLength( length );
-      return g;
+      Qt3DExtras::QCylinderGeometry *geometry = new Qt3DExtras::QCylinderGeometry;
+      // geometry->setRings(2);  // how many vertices vertically
+      // geometry->setSlices(8); // how many vertices on circumference
+      geometry->setRadius( pointData.radius );
+      geometry->setLength( length );
+      return geometry;
     }
 
     case Qgis::Point3DShape::Sphere:
     {
-      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
-      g->setRadius( radius );
-      return g;
+      Qt3DExtras::QSphereGeometry *geometry = new Qt3DExtras::QSphereGeometry;
+      geometry->setRadius( pointData.radius );
+      return geometry;
     }
 
     case Qgis::Point3DShape::Cone:
@@ -358,12 +424,11 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Torus:
     {
-      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       const float minorRadius = symbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toFloat();
-      Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
-      g->setRadius( radius );
-      g->setMinorRadius( minorRadius );
-      return g;
+      Qt3DExtras::QTorusGeometry *geometry = new Qt3DExtras::QTorusGeometry;
+      geometry->setRadius( pointData.radius );
+      geometry->setMinorRadius( minorRadius );
+      return geometry;
     }
 
     case Qgis::Point3DShape::Plane:
