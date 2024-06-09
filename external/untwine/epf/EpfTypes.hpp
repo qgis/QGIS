@@ -17,6 +17,7 @@
 #include <pdal/SpatialReference.hpp>
 #include <pdal/util/Bounds.hpp>
 
+#include <array>
 #include <cstdint>
 #include <memory>
 #include <unordered_map>
@@ -47,6 +48,7 @@ struct FileInfo
 
     std::string filename;
     std::string driver;
+    bool no_srs;
     DimInfoList dimInfo;
     uint64_t numPoints;
     uint64_t start;
@@ -55,6 +57,7 @@ struct FileInfo
     int untwineBitsOffset;
     // Currently only set for LAS files.
     int fileVersion;
+    std::array<double, 3> offsets {};     // X, Y, Z offsets
 
     bool valid() const
     { return filename.size(); }

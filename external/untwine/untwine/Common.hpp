@@ -49,6 +49,7 @@ struct Options
     StringList dimNames;
     bool stats;
     std::string a_srs;
+    bool no_srs;
     bool metadata;
     bool dummy;
 };

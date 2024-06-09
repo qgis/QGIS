@@ -52,14 +52,12 @@ MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_
         return ctx;
     }
 
-#ifndef _WIN32
-    ctx.m_fd = ::open(filename.data(), readOnly ? O_RDONLY : O_RDWR);
-#else
-#ifdef _MSC_VER
+#if defined(_MSC_VER)  // Windows
     ctx.m_fd = ::_wopen(toNative(filename).data(), readOnly ? _O_RDONLY : _O_RDWR);
-#else
+#elif defined(_WIN32)  // MinGW
     ctx.m_fd = ::_open(toNative(filename).data(), readOnly ? _O_RDONLY : _O_RDWR);
-#endif
+#else // Everyone else
+    ctx.m_fd = ::open(filename.data(), readOnly ? O_RDONLY : O_RDWR);
 #endif
 
     if (ctx.m_fd == -1)
@@ -133,11 +131,7 @@ std::vector<std::string> directoryList(const std::string& dir)
         fs::directory_iterator end;
         while (it != end)
         {
-#ifndef __MINGW32__
-            files.push_back(untwine::fromNative(it->path()));
-#else
-            files.push_back(untwine::fromNative(it->path().string()));
-#endif
+            files.push_back(it->path().string());
             it++;
         }
     }

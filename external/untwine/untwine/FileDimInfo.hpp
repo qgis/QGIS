@@ -22,7 +22,12 @@ struct FileDimInfo
     FileDimInfo() : shift(-1), extraDim(false)
     {}
 
-    FileDimInfo(const std::string& name) : name(name), shift(-1), extraDim(false)
+    FileDimInfo(const std::string& name) : name(name), type(pdal::Dimension::Type::None),
+        shift(-1), extraDim(false)
+    {}
+
+    FileDimInfo(const std::string& name, pdal::Dimension::Type type) : name(name), type(type),
+        shift(-1), extraDim(false)
     {}
 
     std::string name;
