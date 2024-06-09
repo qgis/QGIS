@@ -45,35 +45,45 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
   const QgsField field = vl->fields().field( fieldIdx );
   if ( field.type() == QMetaType::Type::QVariantMap && ( field.typeName().compare( QStringLiteral( "JSON" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 || field.subType() == QMetaType::Type::QString ) )
   {
-    // Fetch the first not-null value and check if it is really a map
+    // Look for the first not-null value (limiting to the first 20 features) and check if it is really a map
+    const int MAX_FEATURE_LIMIT { 20 };
     QgsFeatureRequest req;
     req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     req.setSubsetOfAttributes( { fieldIdx } );
-    req.setFilterExpression( QStringLiteral( R"("%1" IS NOT NULL)" ).arg( field.name() ) );
-    req.setLimit( 1 );
+    req.setLimit( MAX_FEATURE_LIMIT );
     QgsFeature f;
     QgsFeatureIterator featureIt { vl->getFeatures( req ) };
-    if ( featureIt.nextFeature( f ) )
+    // The counter is an extra safety measure in case the provider does not respect the limit
+    int featureCount = 0;
+    while ( featureIt.nextFeature( f ) )
     {
+      ++featureCount;
+      if ( featureCount > MAX_FEATURE_LIMIT )
+      {
+        break;
+      }
       // Get attribute value and check if it is a valid JSON object
       const QVariant value( f.attribute( fieldIdx ) );
-      switch ( value.type() )
+      if ( ! value.isNull() )
       {
-        case QVariant::Type::Map:
+        switch ( value.type() )
         {
-          return 20;
-        }
-        default:
-        case QVariant::Type::String:
-        {
-          const QJsonDocument doc = QJsonDocument::fromJson( value.toString().toUtf8() );
-          if ( doc.isObject() )
+          case QVariant::Type::Map:
           {
             return 20;
           }
-          else
+          default:
+          case QVariant::Type::String:
           {
-            return 0;
+            const QJsonDocument doc = QJsonDocument::fromJson( value.toString().toUtf8() );
+            if ( doc.isObject() )
+            {
+              return 20;
+            }
+            else
+            {
+              return 0;
+            }
           }
         }
       }

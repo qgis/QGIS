@@ -171,6 +171,21 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         self.assertNotEqual(setup.type(), 'KeyValue')
         self.assertTrue(layer.rollBack())
 
+        # Add 21 records with a JSON field, only the last is NOT NULL
+        self.assertTrue(layer.startEditing())
+        for i in range(20):
+            feature = QgsFeature(layer.fields())
+            feature.setAttribute('json', None)
+            self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute('json', '["value", "another_value"]')
+        self.assertTrue(layer.addFeature(feature))
+        setup = registry.findBest(layer, 'json')
+        self.assertNotEqual(setup.type(), 'List')
+        # KeyValue is the default,
+        self.assertEqual(setup.type(), 'KeyValue')
+        self.assertTrue(layer.rollBack())
+
         # Cleanup removing the field
         self.assertTrue(layer.startEditing())
         field_idx = layer.fields().indexOf('json')
