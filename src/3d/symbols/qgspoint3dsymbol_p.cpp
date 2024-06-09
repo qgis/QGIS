@@ -94,12 +94,16 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
         float length = 0.0f;
         float radius = 0.0f;
+        float bottomRadius = 0.0f;
+        float topRadius = 0.0f;
         float size = 0.0f;
         QVector<QVector3D> positions;
 
         bool operator==( const PointData &other ) const
         {
-          return length == other.length && radius == other.radius && size == other.size;
+          return ( length == other.length && radius == other.radius
+                   && bottomRadius == other.bottomRadius && topRadius == other.topRadius
+                   && size == other.size );
         }
     };
 
@@ -148,6 +152,20 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
     radius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::Radius, context.expressionContext(), radius ) );
   }
 
+  const bool hasDDBottomRadius = ddp.isActive( QgsAbstract3DSymbol::Property::BottomRadius );
+  float bottomRadius = mSymbol->shapeProperty( QStringLiteral( "bottomRadius" ) ).toFloat();
+  if ( hasDDBottomRadius )
+  {
+    bottomRadius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::BottomRadius, context.expressionContext(), bottomRadius ) );
+  }
+
+  const bool hasDDTopRadius = ddp.isActive( QgsAbstract3DSymbol::Property::TopRadius );
+  float topRadius = mSymbol->shapeProperty( QStringLiteral( "topRadius" ) ).toFloat();
+  if ( hasDDTopRadius )
+  {
+    topRadius = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::TopRadius, context.expressionContext(), topRadius ) );
+  }
+
   const bool hasDDSize = ddp.isActive( QgsAbstract3DSymbol::Property::Size );
   float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
   if ( hasDDSize )
@@ -161,6 +179,8 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   PointData newPointData;
   newPointData.length = length;
   newPointData.radius = radius;
+  newPointData.bottomRadius = bottomRadius;
+  newPointData.topRadius = topRadius;
   newPointData.size = size;
 
   PointData *existingPointData = std::find( out.begin(), out.end(), newPointData );
@@ -464,13 +484,10 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Cone:
     {
-      const float bottomRadius = symbol->shapeProperty( QStringLiteral( "bottomRadius" ) ).toFloat();
-      const float topRadius = symbol->shapeProperty( QStringLiteral( "topRadius" ) ).toFloat();
-
       Qt3DExtras::QConeGeometry *geometry = new Qt3DExtras::QConeGeometry;
       geometry->setLength( pointData.length );
-      geometry->setBottomRadius( bottomRadius );
-      geometry->setTopRadius( topRadius );
+      geometry->setBottomRadius( pointData.bottomRadius );
+      geometry->setTopRadius( pointData.topRadius );
       // geometry->setHasBottomEndcap(hasBottomEndcap);
       // geometry->setHasTopEndcap(hasTopEndcap);
       return geometry;
