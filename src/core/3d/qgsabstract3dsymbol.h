@@ -72,6 +72,7 @@ class CORE_EXPORT QgsAbstract3DSymbol
       ExtrusionHeight SIP_MONKEYPATCH_COMPAT_NAME( PropertyExtrusionHeight ), //!< Extrusion height (zero means no extrusion)
       Length SIP_MONKEYPATCH_COMPAT_NAME( PropertyLength ), //!< Length
       Radius SIP_MONKEYPATCH_COMPAT_NAME( PropertyRadius ), //!< Radius
+      Size SIP_MONKEYPATCH_COMPAT_NAME( PropertySize ), //!< Size
     };
     // *INDENT-ON*
 
