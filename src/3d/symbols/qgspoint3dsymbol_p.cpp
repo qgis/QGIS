@@ -690,14 +690,6 @@ namespace Qgs3DSymbolImpl
     else
       return new QgsInstancedPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
   }
-
-  Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol )
-  {
-    QgsFeature3DHandler *handler = handlerForPoint3DSymbol( layer, &symbol );
-    Qt3DCore::QEntity *e = entityFromHandler( handler, map, layer );
-    delete handler;
-    return e;
-  }
 }
 
 /// @endcond

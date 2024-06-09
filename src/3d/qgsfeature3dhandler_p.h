@@ -137,16 +137,6 @@ class QgsFeature3DHandler
 };
 
 
-class Qgs3DMapSettings;
-class QgsVectorLayer;
-
-namespace Qgs3DSymbolImpl
-{
-  //! generic method to iterate over a layer, handle features with handler and create an entity out of it
-  Qt3DCore::QEntity *entityFromHandler( QgsFeature3DHandler *handler, const Qgs3DMapSettings &map, QgsVectorLayer *layer );
-}
-
-
 /// @endcond
 
 #endif // QGSFEATURE3DHANDLER_P_H
