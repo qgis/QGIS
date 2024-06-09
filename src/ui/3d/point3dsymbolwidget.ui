@@ -387,6 +387,13 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnRadiusOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="10" column="1">
       <widget class="QComboBox" name="cboAltClamping">
        <item>
@@ -460,10 +467,16 @@
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboShape</tabstop>
   <tabstop>spinRadius</tabstop>
+  <tabstop>mBtnRadiusOverride</tabstop>
   <tabstop>spinMinorRadius</tabstop>
   <tabstop>spinTopRadius</tabstop>
   <tabstop>spinBottomRadius</tabstop>
