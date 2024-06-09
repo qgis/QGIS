@@ -67,6 +67,8 @@ Returns the list of the vector layer geometry types which are compatible with th
       ExtrusionHeight,
       Length,
       Radius,
+      BottomRadius,
+      TopRadius,
       Size,
     };
 
