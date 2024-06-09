@@ -81,6 +81,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 
   connect( mBtnLengthOverride, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
   connect( mBtnRadiusOverride, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mBtnBottomRadiusOverride, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mBtnTopRadiusOverride, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
   connect( mBtnSizeOverride, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
 }
 
@@ -150,6 +152,8 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   // changes the shape.
   mBtnLengthOverride->init( static_cast< int >( QgsAbstract3DSymbol::Property::Length ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
   mBtnRadiusOverride->init( static_cast< int >( QgsAbstract3DSymbol::Property::Radius ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mBtnBottomRadiusOverride->init( static_cast< int >( QgsAbstract3DSymbol::Property::BottomRadius ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mBtnTopRadiusOverride->init( static_cast< int >( QgsAbstract3DSymbol::Property::TopRadius ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
   mBtnSizeOverride->init( static_cast< int >( QgsAbstract3DSymbol::Property::Size ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
 
   widgetMaterial->setSettings( pointSymbol->materialSettings(), layer );
@@ -219,6 +223,8 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
       vm[QStringLiteral( "bottomRadius" )] = spinBottomRadius->value();
       vm[QStringLiteral( "length" )] = spinLength->value();
       ddp.setProperty( QgsAbstract3DSymbol::Property::Length, mBtnLengthOverride->toProperty() );
+      ddp.setProperty( QgsAbstract3DSymbol::Property::TopRadius, mBtnTopRadiusOverride->toProperty() );
+      ddp.setProperty( QgsAbstract3DSymbol::Property::BottomRadius, mBtnBottomRadiusOverride->toProperty() );
       break;
     case Qgis::Point3DShape::Plane:
       vm[QStringLiteral( "size" )] = spinSize->value();
@@ -271,8 +277,8 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   allWidgets << labelSize << spinSize << mBtnSizeOverride
              << labelRadius << spinRadius << mBtnRadiusOverride
              << labelMinorRadius << spinMinorRadius
-             << labelTopRadius << spinTopRadius
-             << labelBottomRadius << spinBottomRadius
+             << labelTopRadius << spinTopRadius << mBtnTopRadiusOverride
+             << labelBottomRadius << spinBottomRadius << mBtnBottomRadiusOverride
              << labelLength << spinLength << mBtnLengthOverride
              << labelModel << lineEditModel
              << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
@@ -293,7 +299,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       activeWidgets << labelSize << spinSize << mBtnSizeOverride;
       break;
     case Qgis::Point3DShape::Cone:
-      activeWidgets << labelTopRadius << spinTopRadius << labelBottomRadius << spinBottomRadius << labelLength << spinLength << mBtnLengthOverride;
+      activeWidgets << labelTopRadius << spinTopRadius << mBtnTopRadiusOverride << labelBottomRadius << spinBottomRadius << mBtnBottomRadiusOverride << labelLength << spinLength << mBtnLengthOverride;
       break;
     case Qgis::Point3DShape::Plane:
       activeWidgets << labelSize << spinSize << mBtnSizeOverride;

@@ -295,6 +295,13 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnBottomRadiusOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -434,6 +441,13 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnTopRadiusOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="0">
       <widget class="QLabel" name="labelSize">
        <property name="text">
@@ -493,7 +507,9 @@
   <tabstop>mBtnRadiusOverride</tabstop>
   <tabstop>spinMinorRadius</tabstop>
   <tabstop>spinTopRadius</tabstop>
+  <tabstop>mBtnTopRadiusOverride</tabstop>
   <tabstop>spinBottomRadius</tabstop>
+  <tabstop>mBtnBottomRadiusOverride</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>mBtnSizeOverride</tabstop>
   <tabstop>spinLength</tabstop>
