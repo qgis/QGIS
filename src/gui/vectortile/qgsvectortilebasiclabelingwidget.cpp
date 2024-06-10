@@ -378,20 +378,28 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   setLayer( layer );
 }
 
+void QgsVectorTileBasicLabelingWidget::resyncToCurrentLayer()
+{
+  setLayer( mVTLayer );
+}
+
 void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
 {
-  if ( mVTLayer )
+  if ( mVTLayer && mVTLayer != layer )
   {
-    disconnect( mVTLayer );
+    disconnect( mVTLayer, &QgsMapLayer::styleChanged, this, &QgsVectorTileBasicLabelingWidget::resyncToCurrentLayer );
+  }
+  else if ( layer )
+  {
+    connect( layer, &QgsMapLayer::styleChanged, this, &QgsVectorTileBasicLabelingWidget::resyncToCurrentLayer );
   }
 
   mVTLayer = layer;
-  connect( mVTLayer, &QgsMapLayer::styleChanged, this, [ = ]() { setLayer( mVTLayer ); } );
 
-  if ( layer && layer->labeling() && layer->labeling()->type() == QLatin1String( "basic" ) )
+  if ( mVTLayer && mVTLayer->labeling() && mVTLayer->labeling()->type() == QLatin1String( "basic" ) )
   {
-    mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( layer->labeling()->clone() ) );
-    whileBlocking( mLabelModeComboBox )->setCurrentIndex( layer->labelsEnabled() ? 1 : 0 );
+    mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( mVTLayer->labeling()->clone() ) );
+    whileBlocking( mLabelModeComboBox )->setCurrentIndex( mVTLayer->labelsEnabled() ? 1 : 0 );
   }
   else
   {
