@@ -787,5 +787,7 @@ CREATE TABLE qgis_test.referencing_layer_composite(
   fk_ref_4 integer,
     CONSTRAINT fk_ref_3_4
       FOREIGN KEY (fk_ref_3, fk_ref_4)
-      REFERENCES qgis_test.referenced_layer_composite(pk_ref_3, pk_ref_4)
+      -- NOTE: referenced cols are given in reverse order to guard
+      --       against issue GH-56420
+      REFERENCES qgis_test.referenced_layer_composite(pk_ref_4, pk_ref_3)
 );
