@@ -109,6 +109,14 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
+    enum class LoadStyleFlag
+    {
+      IgnoreMissingStyleErrors,
+    };
+
+    typedef QFlags<Qgis::LoadStyleFlag> LoadStyleFlags;
+
+
     enum class WkbType
       {
       Unknown,
@@ -2971,6 +2979,8 @@ QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFla
 QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
 
 QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
+
+QFlags<Qgis::LoadStyleFlag> operator|(Qgis::LoadStyleFlag f1, QFlags<Qgis::LoadStyleFlag> f2);
 
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
 

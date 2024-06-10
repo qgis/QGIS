@@ -152,6 +152,25 @@ class CORE_EXPORT Qgis
     Q_FLAG( LayerFilters )
 
     /**
+     * Flags for loading layer styles.
+     *
+     * \since QGIS 3.38
+     */
+    enum class LoadStyleFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      IgnoreMissingStyleErrors = 1 << 0, //!< If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself.
+    };
+    Q_ENUM( LoadStyleFlag )
+
+    /**
+     * Flags for loading layer styles.
+     *
+     * \since QGIS 3.38
+     */
+    Q_DECLARE_FLAGS( LoadStyleFlags, LoadStyleFlag )
+    Q_FLAG( LoadStyleFlags )
+
+    /**
      * The WKB type describes the number of dimensions a geometry has
      *
      * - Point
@@ -5219,6 +5238,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LoadStyleFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
