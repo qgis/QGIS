@@ -1107,9 +1107,9 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl( )
   }
 
   QString error;
-  mRenderer->updateClasses( mLayer, nclasses, &error );
+  mRenderer->updateClasses( mLayer, nclasses, error );
 
-  if ( ! error.isEmpty() )
+  if ( !error.isEmpty() )
     QMessageBox::critical( this, tr( "Apply Classification" ), error );
 
   if ( methodComboBox->currentData() == SizeMode )

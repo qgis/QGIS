@@ -49,7 +49,7 @@ QIcon QgsClassificationJenks::icon() const
 
 
 QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses, QString *error )
+    const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( error )
   // Jenks Optimal (Natural Breaks) algorithm

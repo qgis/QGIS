@@ -51,7 +51,7 @@ QIcon QgsClassificationLogarithmic::icon() const
   return QgsApplication::getThemeIcon( "classification_methods/mClassificationLogarithmic.svg" );
 }
 
-QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString *error )
+QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( error )
   const QgsProcessingContext context;

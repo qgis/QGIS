@@ -49,7 +49,7 @@ QIcon QgsClassificationFixedInterval::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "classification_methods/mClassificationFixedInterval.svg" ) );
 }
 
-QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, double &maximum, const QList<double> &, int, QString *error )
+QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, double &maximum, const QList<double> &, int, QString &error )
 {
   const QgsProcessingContext context;
   const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "INTERVAL" ) );
@@ -70,8 +70,7 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
     // Limit number of classes to 999 to avoid overwhelming the gui
     if ( breaks.length() >= 999 )
     {
-      error->clear();
-      error->append( QObject::tr( "The specified interval would generate too many classes.\nOnly the first 999 classes are actually added." ) );
+      error = QObject::tr( "The specified interval would generate too many classes.\nOnly the first 999 classes are actually added." );
       break;
     }
   }
