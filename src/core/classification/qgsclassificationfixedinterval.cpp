@@ -70,7 +70,7 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
     // Limit number of classes to 999 to avoid overwhelming the gui
     if ( breaks.length() >= 999 )
     {
-      error = QObject::tr( "The specified interval would generate too many classes.\nOnly the first 999 classes are actually added." );
+      error = QObject::tr( "The specified interval would generate too many classes.\nOnly the first 999 classes have been generated." );
       break;
     }
   }
