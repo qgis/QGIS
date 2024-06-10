@@ -836,6 +836,9 @@ class TestQgsRenderContext(QgisTestCase):
         p.end()
 
     def test_symbol_layer_clip_geometries(self):
+        """
+        Test logic relating to symbol layer clip geometries.
+        """
         rc = QgsRenderContext()
         self.assertFalse(rc.symbolLayerHasClipGeometries('x'))
 
@@ -871,6 +874,21 @@ class TestQgsRenderContext(QgisTestCase):
             [g.asWkt() for g in rc2.symbolLayerClipGeometries('y')],
             ['Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
         self.assertFalse(rc2.symbolLayerClipGeometries('z'))
+
+        # adding multipart geometries to the render context should
+        # split these to multiple separate geometries
+        rc = QgsRenderContext()
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'MultiPolygon((( 0 0, 1 0 , 1 1 , 0 1, 0 0 )),((20 0, 21 0, 21 1, 20 1, 20 0)))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'Polygon(( 30 0, 31 0 , 31 1 , 30 1, 30 0 ))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))',
+                          'Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
 
 
 if __name__ == '__main__':
