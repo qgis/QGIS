@@ -133,6 +133,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
 
         layer->beginEditCommand( tr( "Topological points added by 'Add Feature'" ) );
 
+        int res;
         if ( layer->crs() != vlayer->crs() )
         {
           QgsGeometry transformedGeom = feature.geometry();
@@ -140,7 +141,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
           {
             // transform digitized geometry from vlayer crs to layer crs and add topological points
             transformedGeom.transform( QgsCoordinateTransform( vlayer->crs(), layer->crs(), layer->transformContext() ) );
-            layer->addTopologicalPoints( transformedGeom );
+            res = layer->addTopologicalPoints( transformedGeom );
           }
           catch ( QgsCsException &cse )
           {
@@ -152,10 +153,13 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
         }
         else
         {
-          layer->addTopologicalPoints( feature.geometry() );
+          res = layer->addTopologicalPoints( feature.geometry() );
         }
 
-        layer->endEditCommand();
+        if ( res == 0 ) // i.e. if any points were added
+          layer->endEditCommand();
+        else
+          layer->destroyEditCommand();
       }
       vlayer->addTopologicalPoints( feature.geometry() );
     }
