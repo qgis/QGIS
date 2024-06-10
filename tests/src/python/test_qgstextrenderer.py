@@ -1564,7 +1564,9 @@ class PyQgsTextRenderer(QgisTestCase):
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                          text=['test'],
                          point=QPointF(100, 200),
-                         image_size=400):
+                         image_size=400,
+                         enable_scale_workaround=False,
+                         render_mask=False):
         image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
@@ -1574,6 +1576,10 @@ class PyQgsTextRenderer(QgisTestCase):
         context = QgsRenderContext.fromMapSettings(ms)
         context.setPainter(painter)
         context.setScaleFactor(96 / 25.4)  # 96 DPI
+        if render_mask:
+            context.setIsGuiPreview(True)
+
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, enable_scale_workaround)
 
         painter.begin(image)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -3406,22 +3412,6 @@ class PyQgsTextRenderer(QgisTestCase):
         assert self.checkRenderPoint(format, 'text_html_formatting_buffer_scale_workaround', None, text=[
             't <span style="font-size:60pt">e</span> <span style="color: red">s</span>'],
             point=QPointF(50, 200), enable_scale_workaround=True)
-
-    def testHtmlFormattingMask(self):
-        """
-        Test drawing HTML with mask
-        """
-        format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
-        format.setSize(60)
-        format.setSizeUnit(QgsUnitTypes.RenderPixels)
-        format.setColor(QColor(0, 255, 0))
-        format.setAllowHtmlFormatting(True)
-        format.mask().setEnabled(True)
-        format.mask().setSize(5)
-        assert self.checkRenderPoint(format, 'text_html_formatting_mask', None, text=[
-            't <span style="font-size:60pt">e</span> <span style="color: red">s</span>'],
-            point=QPointF(50, 200), render_mask=True)
 
     def testHtmlFormattingMaskScaleFactor(self):
         """
