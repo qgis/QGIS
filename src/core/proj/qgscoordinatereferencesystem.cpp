@@ -1261,7 +1261,7 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( Qgis::CrsIdentifie
     id = QObject::tr( "Custom CRS: %1" ).arg( type == Qgis::CrsIdentifierType::MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
          : toProj() );
   if ( !id.isEmpty() && !std::isnan( d->mCoordinateEpoch ) )
-    id += QStringLiteral( " @ %1" ).arg( d->mCoordinateEpoch );
+    id += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( d->mCoordinateEpoch, 3 ) );
 
   return id;
 }
