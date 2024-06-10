@@ -778,8 +778,11 @@ Saves named and sld style of the layer to the style table in the db.
    in your client code.
 %End
 
+
+
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
-                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+                                    Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
 %Docstring
 Loads a named style from file/local db/datasource db
 
@@ -787,6 +790,7 @@ Loads a named style from file/local db/datasource db
 :param resultFlag: will be set to ``True`` if a named style is correctly loaded
 :param loadFromLocalDb: if ``True`` forces to load from local db instead of datasource one
 :param categories: the style categories to be loaded.
+:param flags: flags controlling how the style should be loaded (since QGIS 3.38)
 %End
 
 
@@ -973,6 +977,7 @@ record in the users style table in their personal qgis.db)
 :return: a QString with any status messages
 %End
 
+
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag /Out/ );
 %Docstring
 Retrieve a named metadata for this layer if one
@@ -988,6 +993,7 @@ record in the users style table in their personal qgis.db)
 :return: - a QString with any status messages
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default metadata.
 %End
+
 
     virtual QString loadDefaultMetadata( bool &resultFlag );
 %Docstring
@@ -1035,6 +1041,7 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`saveNamedStyle`
 %End
 
+
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
 %Docstring
 Retrieve the default style for this layer if one
@@ -1048,7 +1055,8 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`loadNamedStyle`
 %End
 
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
 %Docstring
 Retrieve a named style for this layer if one
 exists (either as a .qml file on disk or as a
@@ -1060,6 +1068,7 @@ record in the users style table in their personal qgis.db)
             table will be consulted to see if there is a style who's
             key matches the URI.
 :param categories: the style categories to be loaded.
+:param flags: flags controlling how the style should be loaded (since QGIS 3.38)
 
 :return: - a QString with any status messages
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.

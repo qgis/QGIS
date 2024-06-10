@@ -1579,7 +1579,7 @@ QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return loadNamedStyle( styleURI(), resultFlag );
+  return loadNamedStyle( styleURI(), resultFlag, QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlag::IgnoreMissingStyleErrors );
 }
 
 bool QgsMapLayer::loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd )
@@ -1649,20 +1649,21 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 }
 
 
-QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMapLayer::StyleCategories categories )
+QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return loadNamedStyle( uri, resultFlag, false, categories );
+  return loadNamedStyle( uri, resultFlag, false, categories, flags );
 }
 
-QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
+QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &namedPropertyExists, bool &propertySuccessfullyLoaded, StyleCategories categories, Qgis::LoadStyleFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsDebugMsgLevel( QStringLiteral( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
-  resultFlag = false;
+  namedPropertyExists = false;
+  propertySuccessfullyLoaded = false;
   if ( uri.isEmpty() )
     return QString();
 
@@ -1676,9 +1677,11 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   if ( myFile.open( QFile::ReadOnly ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "file found %1" ).arg( uri ), 2 );
+    namedPropertyExists = true;
+
     // read file
-    resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
-    if ( !resultFlag )
+    propertySuccessfullyLoaded = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
+    if ( !propertySuccessfullyLoaded )
       myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
     myFile.close();
   }
@@ -1696,16 +1699,19 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
              ( project.exists() && loadNamedStyleFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, xml ) ) ||
              loadNamedStyleFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, xml ) )
         {
-          resultFlag = myDocument.setContent( xml, &myErrorMessage, &line, &column );
-          if ( !resultFlag )
+          namedPropertyExists = true;
+          propertySuccessfullyLoaded = myDocument.setContent( xml, &myErrorMessage, &line, &column );
+          if ( !propertySuccessfullyLoaded )
           {
             myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
           }
         }
         else
         {
-          myErrorMessage = tr( "Style not found in database" );
-          resultFlag = false;
+          if ( !flags.testFlag( Qgis::LoadStyleFlag::IgnoreMissingStyleErrors ) )
+          {
+            myErrorMessage = tr( "Style not found in database" );
+          }
         }
         break;
       }
@@ -1715,8 +1721,9 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
              ( project.exists() && loadNamedMetadataFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, xml ) ) ||
              loadNamedMetadataFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, xml ) )
         {
-          resultFlag = myDocument.setContent( xml, &myErrorMessage, &line, &column );
-          if ( !resultFlag )
+          namedPropertyExists = true;
+          propertySuccessfullyLoaded = myDocument.setContent( xml, &myErrorMessage, &line, &column );
+          if ( !propertySuccessfullyLoaded )
           {
             myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
           }
@@ -1724,14 +1731,13 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
         else
         {
           myErrorMessage = tr( "Metadata not found in database" );
-          resultFlag = false;
         }
         break;
       }
     }
   }
 
-  if ( !resultFlag )
+  if ( !propertySuccessfullyLoaded )
   {
     return myErrorMessage;
   }
@@ -1739,13 +1745,13 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   switch ( type )
   {
     case QgsMapLayer::Style:
-      resultFlag = importNamedStyle( myDocument, myErrorMessage, categories );
-      if ( !resultFlag )
+      propertySuccessfullyLoaded = importNamedStyle( myDocument, myErrorMessage, categories );
+      if ( !propertySuccessfullyLoaded )
         myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
       break;
     case QgsMapLayer::Metadata:
-      resultFlag = importNamedMetadata( myDocument, myErrorMessage );
-      if ( !resultFlag )
+      propertySuccessfullyLoaded = importNamedMetadata( myDocument, myErrorMessage );
+      if ( !propertySuccessfullyLoaded )
         myErrorMessage = tr( "Loading metadata file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
       break;
   }
@@ -1895,7 +1901,14 @@ QString QgsMapLayer::loadNamedMetadata( const QString &uri, bool &resultFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return loadNamedProperty( uri, QgsMapLayer::Metadata, resultFlag );
+  bool metadataExists = false;
+  bool metadataSuccessfullyLoaded = false;
+  const QString message = loadNamedProperty( uri, QgsMapLayer::Metadata, metadataExists, metadataSuccessfullyLoaded );
+
+  // TODO QGIS 4.0 -- fix API for loadNamedMetadata so we can return metadataExists too
+  ( void )metadataExists;
+  resultFlag = metadataSuccessfullyLoaded;
+  return message;
 }
 
 QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
@@ -2686,7 +2699,7 @@ void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &descr
       description, uiFileContent, useAsDefault, msgError );
 }
 
-QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories )
+QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2708,7 +2721,16 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bo
   }
   else
   {
-    returnMessage = loadNamedProperty( theURI, PropertyType::Style, resultFlag, categories );
+    QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+    bool styleExists = false;
+    bool styleSuccessfullyLoaded = false;
+
+    returnMessage = loadNamedProperty( theURI, PropertyType::Style, styleExists, styleSuccessfullyLoaded, categories, flags );
+
+    // TODO QGIS 4.0 -- fix API for loadNamedStyle so we can return styleExists too
+    ( void )styleExists;
+    resultFlag = styleSuccessfullyLoaded;
   }
 
   if ( ! styleName.isEmpty() )

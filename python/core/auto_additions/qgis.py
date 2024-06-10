@@ -94,6 +94,13 @@ Qgis.LayerFilter.__doc__ = "Filter for layers\n\n.. versionadded:: 3.34.\n\n" + 
 # --
 Qgis.LayerFilters.baseClass = Qgis
 LayerFilters = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = "If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself."
+Qgis.LoadStyleFlag.__doc__ = "Flags for loading layer styles.\n\n.. versionadded:: 3.38\n\n" + '* ``IgnoreMissingStyleErrors``: ' + Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__
+# --
+Qgis.LoadStyleFlag.baseClass = Qgis
+Qgis.LoadStyleFlags.baseClass = Qgis
+LoadStyleFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsWkbTypes.Type = Qgis.WkbType
 # monkey patching scoped based enum
 QgsWkbTypes.Unknown = Qgis.WkbType.Unknown

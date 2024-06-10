@@ -772,15 +772,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
                                       QString &msgError SIP_OUT,
                                       QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
+
+    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
+
     /**
      * Loads a named style from file/local db/datasource db
      * \param theURI the URI of the style or the URI of the layer
      * \param resultFlag will be set to TRUE if a named style is correctly loaded
      * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
      * \param categories the style categories to be loaded.
+     * \param flags flags controlling how the style should be loaded (since QGIS 3.38)
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
-                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+                                    Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
 
 #ifndef SIP_RUN
 
@@ -1106,6 +1112,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString saveNamedMetadata( const QString &uri, bool &resultFlag );
 
+    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
+    // The first (metadata found, error occurred loading it) should trigger a user-facing warning, whereas the second (no metadata found) isn't reflective of an error at all.
+
     /**
      * Retrieve a named metadata for this layer if one
      * exists (either as a .qmd file on disk or as a
@@ -1120,6 +1129,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a QString with any status messages
      */
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
+
+    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
+    // The first (metadata found, error occurred loading it) should trigger a user-facing warning, whereas the second (no metadata found) isn't reflective of an error at all.
 
     /**
      * Retrieve the default metadata for this layer if one
@@ -1158,6 +1170,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString styleURI() const;
 
+    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
+
     /**
      * Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a
@@ -1168,6 +1183,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see loadNamedStyle()
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
+
+    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
      * Retrieve a named style for this layer if one
@@ -1181,10 +1199,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default style.
      * \param categories the style categories to be loaded.
+     * \param flags flags controlling how the style should be loaded (since QGIS 3.38)
      * \returns a QString with any status messages
      * \see loadDefaultStyle()
      */
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
 
     /**
      * Retrieve a named style for this layer from a sqlite database.
@@ -2344,7 +2363,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type,
                                bool &resultFlag, StyleCategories categories = AllStyleCategories );
     QString loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type,
-                               bool &resultFlag, StyleCategories categories = AllStyleCategories );
+                               bool &namedPropertyExists, bool &propertySuccessfullyLoaded, StyleCategories categories = AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
     // const method because extents are mutable
