@@ -222,8 +222,6 @@ void QgsAppGpsLogging::stopNmeaLogging()
 void QgsAppGpsLogging::createGpkgLogger()
 {
   mGpkgLogger.reset();
-  mGpkgPointsLayer.reset();
-  mGpkgTracksLayer.reset();
 
   mGpkgLogger = std::make_unique< QgsVectorLayerGpsLogger >( mConnection->connection() );
   mGpkgLogger->setTransformContext( QgsProject::instance()->transformContext() );
