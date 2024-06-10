@@ -121,45 +121,34 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     }
     if ( topologicalEditing )
     {
-      const QList<QgsPointLocator::Match> sm = snappingMatches();
+      const QVector<QgsVectorLayer *> layers = vlayer->project()->layers<QgsVectorLayer *>();
 
-      QList<QgsVectorLayer *> layers;
-      for ( QgsVectorLayer *lyr : vlayer->project()->layers<QgsVectorLayer *>() )
+      for ( QgsVectorLayer *layer : layers )
       {
-        if ( lyr->isEditable() && lyr != vlayer )
-          layers.append( lyr );
-      }
-
-      for ( int i = 0; i < sm.size() ; ++i )
-      {
-        QgsVectorLayer *snapLayer = sm.at( i ).layer();
-        if ( !snapLayer || snapLayer == vlayer )
+        if ( !layer->isEditable() || layer == vlayer )
           continue;
 
-        for ( QgsVectorLayer *layer : layers )
-        {
-          QgsPoint topologicalPoint{ feature.geometry().vertexAt( i ) };
+        if ( !( layer->geometryType() == Qgis::GeometryType::Polygon || layer->geometryType() == Qgis::GeometryType::Line ) )
+          continue;
 
-          if ( layer->crs() != vlayer->crs() )
+        if ( layer->crs() != vlayer->crs() )
+        {
+          QgsGeometry transformedGeom = feature.geometry();
+          try
           {
-            // transform digitized geometry from vlayer crs to layer crs and add topological point
-            try
-            {
-              topologicalPoint.transform( QgsCoordinateTransform( vlayer->crs(), layer->crs(), layer->transformContext() ) );
-              // the function adds a topological point if a segment overlaps it
-              layer->addTopologicalPoints( topologicalPoint );
-            }
-            catch ( QgsCsException &cse )
-            {
-              Q_UNUSED( cse )
-              QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
-            }
+            // transform digitized geometry from vlayer crs to layer crs and add topological points
+            transformedGeom.transform( QgsCoordinateTransform( vlayer->crs(), layer->crs(), layer->transformContext() ) );
+            layer->addTopologicalPoints( transformedGeom );
           }
-          else
+          catch ( QgsCsException &cse )
           {
-            // the function adds a topological point if a segment overlaps it
-            layer->addTopologicalPoints( topologicalPoint );
+            Q_UNUSED( cse )
+            QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
           }
+        }
+        else
+        {
+          layer->addTopologicalPoints( feature.geometry() );
         }
       }
       vlayer->addTopologicalPoints( feature.geometry() );
