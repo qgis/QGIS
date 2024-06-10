@@ -36,7 +36,7 @@ QString QgsClassificationPrettyBreaks::id() const
   return QStringLiteral( "Pretty" );
 }
 
-QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString *error )
+QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( values );
   Q_UNUSED( error );

@@ -40,7 +40,7 @@ class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum,
-                                   const QList<double> &values, int nclasses, QString *error = nullptr ) override;
+                                   const QList<double> &values, int nclasses, QString &error ) override;
 };
 
 #endif // QGSCLASSIFICATIONCUSTOM_H

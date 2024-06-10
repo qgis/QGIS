@@ -207,7 +207,13 @@ void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
   }
 }
 
-QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString *error )
+QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses )
+{
+  QString error;
+  return classesV2( layer, expression, nclasses, error );
+}
+
+QList<QgsClassificationRange> QgsClassificationMethod::classesV2( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString &error )
 {
   if ( expression.isEmpty() )
     return QList<QgsClassificationRange>();
@@ -256,7 +262,10 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<doub
   double maximum = *result.second;
 
   // get the breaks
-  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  QString error;
+  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses, error );
+  ( void )error;
+
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );
@@ -270,7 +279,10 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
   }
 
   // get the breaks
-  QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), nclasses );
+  QString error;
+  QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), nclasses, error );
+  ( void )error;
+
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );
