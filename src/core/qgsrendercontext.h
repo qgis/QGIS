@@ -982,8 +982,17 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     void addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry );
 
     /**
+     * Returns TRUE if the symbol layer with matching ID has any associated clip geometries.
+     *
+     * \see symbolLayerClipGeometries()
+     * \since QGIS 3.38
+     */
+    bool symbolLayerHasClipGeometries( const QString &symbolLayerId ) const;
+
+    /**
      * Returns clipping geometries to be applied to the \a symbolLayer before rendering
      *
+     * \see symbolLayerHasClipGeometries()
      * \see addSymbolLayerClipGeometry()
      * \since QGIS 3.38
      */

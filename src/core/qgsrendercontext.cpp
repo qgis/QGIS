@@ -748,6 +748,11 @@ void QgsRenderContext::addSymbolLayerClipGeometry( const QString &symbolLayerId,
   mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry );
 }
 
+bool QgsRenderContext::symbolLayerHasClipGeometries( const QString &symbolLayerId ) const
+{
+  return mSymbolLayerClippingGeometries.contains( symbolLayerId );
+}
+
 QVector<QgsGeometry> QgsRenderContext::symbolLayerClipGeometries( const QString &symbolLayerId ) const
 {
   return mSymbolLayerClippingGeometries[ symbolLayerId ];
