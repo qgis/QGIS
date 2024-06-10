@@ -2,10 +2,17 @@
 
 set -e
 
+DOCKER=$(command -v podman docker | head -1)
+
 # check for docker availability
-command -v docker > /dev/null || {
-	echo "Please install docker" >&2
+test -n "${DOCKER}" || {
+	echo "Please install podman or docker" >&2
 	exit 1
+}
+
+DOCKER_COMPOSE=$(command -v podman-compose docker-compose | head -1)
+test -n "${DOCKER_COMPOSE}" || {
+  DOCKER_COMPOSE="${DOCKER} compose" # TODO: check if supported
 }
 
 IMAGE_BUILD_DEPS=docker.io/qgis/qgis3-build-deps:latest
@@ -70,12 +77,12 @@ echo "--=[ QGIS_COMMON_GIT_DIR is $QGIS_COMMON_GIT_DIR"
 # Make qgis3-build-deps-binary-image available, building it if needed
 #
 
-if test "$(docker images -q ${IMAGE_BUILD_DEPS})" = ""; then
+if test "$(${DOCKER} images -q ${IMAGE_BUILD_DEPS})" = ""; then
   echo "--=[ Fetching qgis build dependencies image"
-  docker pull ${IMAGE_BUILD_DEPS}
+  ${DOCKER} pull ${IMAGE_BUILD_DEPS}
 elif test "${UPDATE_IMAGES}" = "yes"; then
   echo "--=[ Updating qgis build dependencies image"
-  docker pull ${IMAGE_BUILD_DEPS}
+  ${DOCKER} pull ${IMAGE_BUILD_DEPS}
 fi
 
 if test -d ${QGIS_BUILDDIR} -a "${FORCE_REBUILD}" = "no"; then
@@ -86,7 +93,7 @@ else
   if test "${QGIS_WORKSPACE}" != "${QGIS_COMMON_GIT_DIR}"; then
     VOLUMES="${VOLUMES} -v ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}:z"
   fi
-  docker run -t --name qgis_container \
+  ${DOCKER} run -t --name qgis_container \
     --rm \
     ${VOLUMES} \
     --env-file .docker/docker-variables.env \
@@ -108,9 +115,9 @@ else
   }
 fi
 
-if test "$(docker images -q qgis3-build-deps-binary-image)" = ""; then
+if test "$(${DOCKER} images -q qgis3-build-deps-binary-image)" = ""; then
   echo "--=[ Tagging qgis build dependencies image as required by .docker/docker-compose-testing.yml"
-  docker tag ${IMAGE_BUILD_DEPS} qgis3-build-deps-binary-image
+  ${DOCKER} tag ${IMAGE_BUILD_DEPS} qgis3-build-deps-binary-image
 fi
 
 if test "${INTERACTIVE}" = "no"; then
@@ -128,7 +135,7 @@ mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
 # Create an empty webdav folder with appropriate permissions so www user can write inside it
 mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
 
-docker compose \
+${DOCKER_COMPOSE} \
   -f .docker/docker-compose-testing.yml \
   run \
   -w "${QGIS_WORKSPACE_MOUNTPOINT}" \
