@@ -146,6 +146,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
             try
             {
               topologicalPoint.transform( QgsCoordinateTransform( vlayer->crs(), layer->crs(), layer->transformContext() ) );
+              // the function adds a topological point if a segment overlaps it
               layer->addTopologicalPoints( topologicalPoint );
             }
             catch ( QgsCsException &cse )
@@ -156,6 +157,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
           }
           else
           {
+            // the function adds a topological point if a segment overlaps it
             layer->addTopologicalPoints( topologicalPoint );
           }
         }
