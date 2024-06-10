@@ -835,6 +835,43 @@ class TestQgsRenderContext(QgisTestCase):
 
         p.end()
 
+    def test_symbol_layer_clip_geometries(self):
+        rc = QgsRenderContext()
+        self.assertFalse(rc.symbolLayerHasClipGeometries('x'))
+
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))'))
+        self.assertTrue(rc.symbolLayerHasClipGeometries('x'))
+        self.assertFalse(rc.symbolLayerHasClipGeometries('y'))
+
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))'])
+        self.assertFalse(rc.symbolLayerClipGeometries('y'))
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'Polygon(( 20 0, 21 0 , 21 1 , 20 1, 20 0 ))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertFalse(rc.symbolLayerClipGeometries('y'))
+        rc.addSymbolLayerClipGeometry('y', QgsGeometry.fromWkt(
+            'Polygon(( 30 0, 31 0 , 31 1 , 30 1, 30 0 ))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('y')],
+                         ['Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
+
+        rc2 = QgsRenderContext(rc)
+        self.assertTrue(rc2.symbolLayerHasClipGeometries('x'))
+        self.assertTrue(rc2.symbolLayerHasClipGeometries('y'))
+        self.assertFalse(rc2.symbolLayerHasClipGeometries('z'))
+        self.assertEqual([g.asWkt() for g in rc2.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertEqual(
+            [g.asWkt() for g in rc2.symbolLayerClipGeometries('y')],
+            ['Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
+        self.assertFalse(rc2.symbolLayerClipGeometries('z'))
+
 
 if __name__ == '__main__':
     unittest.main()
