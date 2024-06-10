@@ -131,6 +131,8 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
         if ( !( layer->geometryType() == Qgis::GeometryType::Polygon || layer->geometryType() == Qgis::GeometryType::Line ) )
           continue;
 
+        layer->beginEditCommand( tr( "Topological points added by 'Add Feature'" ) );
+
         if ( layer->crs() != vlayer->crs() )
         {
           QgsGeometry transformedGeom = feature.geometry();
@@ -144,12 +146,16 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
           {
             Q_UNUSED( cse )
             QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
+            layer->destroyEditCommand();
+            continue;
           }
         }
         else
         {
           layer->addTopologicalPoints( feature.geometry() );
         }
+
+        layer->endEditCommand();
       }
       vlayer->addTopologicalPoints( feature.geometry() );
     }
