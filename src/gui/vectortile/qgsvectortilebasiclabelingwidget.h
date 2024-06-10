@@ -61,6 +61,7 @@ class GUI_EXPORT QgsVectorTileBasicLabelingWidget : public QgsMapLayerConfigWidg
 
     void labelModeChanged();
     void updateLabelingFromWidget();
+    void resyncToCurrentLayer();
 
   private:
     QPointer< QgsVectorTileLayer > mVTLayer;
