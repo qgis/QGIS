@@ -122,18 +122,31 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     if ( topologicalEditing )
     {
       const QList<QgsPointLocator::Match> sm = snappingMatches();
+
+      QList<QgsVectorLayer *> layers;
+      for ( QgsVectorLayer *lyr : vlayer->project()->layers<QgsVectorLayer *>() )
+      {
+        if ( lyr->isEditable() && lyr != vlayer )
+          layers.append( lyr );
+      }
+
       for ( int i = 0; i < sm.size() ; ++i )
       {
-        if ( sm.at( i ).layer() && sm.at( i ).layer()->isEditable() && sm.at( i ).layer() != vlayer )
+        QgsVectorLayer *snapLayer = sm.at( i ).layer();
+        if ( !snapLayer || snapLayer == vlayer )
+          continue;
+
+        for ( QgsVectorLayer *layer : layers )
         {
           QgsPoint topologicalPoint{ feature.geometry().vertexAt( i ) };
-          if ( sm.at( i ).layer()->crs() != vlayer->crs() )
+
+          if ( layer->crs() != vlayer->crs() )
           {
-            // transform digitized geometry from vlayer crs to snapping layer crs and add topological point
+            // transform digitized geometry from vlayer crs to layer crs and add topological point
             try
             {
-              topologicalPoint.transform( QgsCoordinateTransform( vlayer->crs(), sm.at( i ).layer()->crs(), sm.at( i ).layer()->transformContext() ) );
-              sm.at( i ).layer()->addTopologicalPoints( topologicalPoint );
+              topologicalPoint.transform( QgsCoordinateTransform( vlayer->crs(), layer->crs(), layer->transformContext() ) );
+              layer->addTopologicalPoints( topologicalPoint );
             }
             catch ( QgsCsException &cse )
             {
@@ -143,7 +156,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
           }
           else
           {
-            sm.at( i ).layer()->addTopologicalPoints( topologicalPoint );
+            layer->addTopologicalPoints( topologicalPoint );
           }
         }
       }
