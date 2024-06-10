@@ -264,13 +264,12 @@ Recalculate classes for a layer
 .. deprecated:: QGIS 3.10
 %End
 
-    void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error = 0 );
+    void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error /Out/ = 0 );
 %Docstring
 Recalculate classes for a layer
 
 :param vl: The layer being rendered (from which data values are calculated)
 :param nclasses: the number of classes
-:param error: Optional parameter for error reporting
 %End
 
 

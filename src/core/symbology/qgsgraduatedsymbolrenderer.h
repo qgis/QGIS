@@ -234,7 +234,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param nclasses the number of classes
      * \param error Optional parameter for error reporting
      */
-    void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error = nullptr );
+    void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error SIP_OUT = nullptr );
 
     Q_NOWARN_DEPRECATED_PUSH;
 
