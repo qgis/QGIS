@@ -72,6 +72,7 @@ class QgsHanaConnection : public QObject
 
     QList<QgsVectorDataProvider::NativeType> getNativeTypes();
     const QString &getDatabaseVersion();
+    const QString &getDatabaseCloudVersion();
     const QString &getUserName();
     QgsCoordinateReferenceSystem getCrs( int srid );
     QVector<QgsHanaLayerProperty> getLayers(
@@ -114,6 +115,7 @@ class QgsHanaConnection : public QObject
     NS_ODBC::ConnectionRef mConnection;
     const QgsDataSourceUri mUri;
     QString mDatabaseVersion;
+    QString mDatabaseCloudVersion;
     QString mUserName;
 };
 

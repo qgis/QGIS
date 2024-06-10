@@ -1328,6 +1328,26 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
   return true;
 }
 
+bool QgsHanaProvider::checkHANAVersion( QgsHanaConnection &conn, const QVersionNumber &premise, const QVersionNumber &cloud ) const
+{
+  try
+  {
+    QVersionNumber version = QgsHanaUtils::toHANAVersion( conn.getDatabaseVersion() );
+    switch ( version.majorVersion() )
+    {
+      case 2: return version >= premise;
+      case 4: return QgsHanaUtils::toHANACloudVersion( conn.getDatabaseCloudVersion() ) >= cloud;
+      default: return false;
+    }
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    return false;
+  }
+
+  return false;
+}
+
 QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
 {
   if ( mGeometryColumn.isEmpty() )
@@ -1337,39 +1357,38 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
   if ( conn.isNull() )
     return QgsRectangle();
 
-  if ( QgsHanaUtils::toHANAVersion( conn->getDatabaseVersion() ).majorVersion() < 2 )
+  if ( !checkHANAVersion( *conn, QVersionNumber( 2, 0, 80 ), QVersionNumber( 2024, 2, 0 ) ) )
     useEstimatedMetadata = false;
 
-  try
+  QString sql;
+  if ( useEstimatedMetadata )
   {
-    QString sql;
-
-    if ( useEstimatedMetadata )
+    sql = ::buildQuery(
+            "SYS.M_ST_GEOMETRY_COLUMNS",
+            "MIN_X,MIN_Y,MAX_X,MAX_Y",
+            QStringLiteral( "SCHEMA_NAME=%1 AND TABLE_NAME=%2 AND COLUMN_NAME=%3" )
+            .arg(
+              QgsHanaUtils::quotedString( mSchemaName ),
+              QgsHanaUtils::quotedString( mTableName ),
+              QgsHanaUtils::quotedString( mGeometryColumn ) ), QString(), 1 );
+  }
+  else
+  {
+    if ( isSrsRoundEarth( *conn, mSrid ) )
     {
-      sql = ::buildQuery(
-              "SYS.M_ST_GEOMETRY_COLUMNS",
-              "MIN_X,MIN_Y,MAX_X,MAX_Y",
-              QStringLiteral( "SCHEMA_NAME=%1 AND TABLE_NAME=%2 AND COLUMN_NAME=%3" )
-              .arg(
-                QgsHanaUtils::quotedString( mSchemaName ),
-                QgsHanaUtils::quotedString( mTableName ),
-                QgsHanaUtils::quotedString( mGeometryColumn ) ), QString(), 1 );
+      QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) :
+                           QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
+      sql = buildQuery( QStringLiteral( "MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax())" ).arg( geomColumn ) );
     }
     else
     {
-      if ( isSrsRoundEarth( *conn, mSrid ) )
-      {
-        QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) :
-                             QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
-        sql = buildQuery( QStringLiteral( "MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax())" ).arg( geomColumn ) );
-      }
-      else
-      {
-        QString subQuery = buildQuery( QStringLiteral( "ST_EnvelopeAggr(%1) AS ext" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ) ) );
-        sql = QStringLiteral( "SELECT ext.ST_XMin(),ext.ST_YMin(),ext.ST_XMax(),ext.ST_YMax() FROM (%1)" ).arg( subQuery );
-      }
+      QString subQuery = buildQuery( QStringLiteral( "ST_EnvelopeAggr(%1) AS ext" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ) ) );
+      sql = QStringLiteral( "SELECT ext.ST_XMin(),ext.ST_YMin(),ext.ST_XMax(),ext.ST_YMax() FROM (%1)" ).arg( subQuery );
     }
+  }
 
+  try
+  {
     QgsHanaResultSetRef rsExtent = conn->executeQuery( sql );
     QgsRectangle ret;
     if ( rsExtent->next() )
@@ -1395,12 +1414,6 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
   }
   catch ( const QgsHanaException &ex )
   {
-    if ( useEstimatedMetadata )
-    {
-      // Try again without fast extent estimation
-      return estimateExtent( false );
-    }
-
     pushError( tr( "Failed to estimate the data extent: %1" ).arg( ex.what() ) );
   }
 

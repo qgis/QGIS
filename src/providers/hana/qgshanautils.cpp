@@ -417,6 +417,20 @@ QVersionNumber QgsHanaUtils::toHANAVersion( const QString &dbVersion )
   return QVersionNumber( maj, min, rev );
 }
 
+QVersionNumber QgsHanaUtils::toHANACloudVersion( const QString &dbCloudVersion )
+{
+  QString version = dbCloudVersion;
+  QStringList strs = version.replace( '-', '.' ).split( '.' );
+
+  if ( strs.length() < 3 )
+    return QVersionNumber( 0 );
+
+  const int maj = strs[0].toInt();
+  const int min = strs[1].toInt();
+  const int rev = strs[2].toInt();
+  return QVersionNumber( maj, min, rev );
+}
+
 constexpr int PLANAR_SRID_OFFSET = 1000000000;
 
 int QgsHanaUtils::toPlanarSRID( int srid )

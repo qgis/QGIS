@@ -219,7 +219,7 @@ void QgsHanaSettings::load()
     mPassword = settings.value( key + "/password" ).toString();
   mUserTablesOnly = settings.value( key + "/userTablesOnly", true ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
-  mUseEstimatedMetadata = settings.value( key + "/estimatedmetadata", false ).toBool();
+  mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
 
   // SSL parameters
   mSslEnabled = settings.value( key + "/sslEnabled", false ).toBool();
@@ -289,7 +289,7 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/password", mSavePassword ? mPassword : QString( ) );
   settings.setValue( key + "/userTablesOnly", mUserTablesOnly );
   settings.setValue( key + "/allowGeometrylessTables", mAllowGeometrylessTables );
-  settings.setValue( key + "/estimatedmetadata", mUseEstimatedMetadata );
+  settings.setValue( key + "/estimatedMetadata", mUseEstimatedMetadata );
   settings.setValue( key + "/sslEnabled", mSslEnabled );
   settings.setValue( key + "/sslCryptoProvider", mSslCryptoProvider );
   settings.setValue( key + "/sslKeyStore", mSslKeyStore );
@@ -339,7 +339,7 @@ void QgsHanaSettings::removeConnection( const QString &name )
   settings.remove( key + "/schema" );
   settings.remove( key + "/userTablesOnly" );
   settings.remove( key + "/allowGeometrylessTables" );
-  settings.remove( key + "/estimatedmetadata" );
+  settings.remove( key + "/estimatedMetadata" );
   settings.remove( key + "/username" );
   settings.remove( key + "/password" );
   settings.remove( key + "/saveUsername" );

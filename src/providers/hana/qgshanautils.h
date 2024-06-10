@@ -65,6 +65,7 @@ class QgsHanaUtils
     static bool isGeometryTypeSupported( Qgis::WkbType wkbType );
     static Qgis::WkbType toWkbType( const NS_ODBC::String &type, const NS_ODBC::Int &hasZ, const NS_ODBC::Int &hasM );
     static QVersionNumber toHANAVersion( const QString &dbVersion );
+    static QVersionNumber toHANACloudVersion( const QString &dbCloudVersion );
     static int toPlanarSRID( int srid );
     static bool convertField( QgsField &field );
     static int countFieldsWithFirstLetterInUppercase( const QgsFields &fields );

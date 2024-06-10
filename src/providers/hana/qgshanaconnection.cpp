@@ -509,6 +509,14 @@ const QString &QgsHanaConnection::getDatabaseVersion()
   return mDatabaseVersion;
 }
 
+const QString &QgsHanaConnection::getDatabaseCloudVersion()
+{
+  if ( mDatabaseCloudVersion.isEmpty() && QgsHanaUtils::toHANAVersion( getDatabaseVersion() ).majorVersion() >= 4 )
+    mDatabaseCloudVersion = executeScalar( QStringLiteral( "SELECT CLOUD_VERSION FROM SYS.M_DATABASE" ) ).toString();
+
+  return mDatabaseCloudVersion;
+}
+
 const QString &QgsHanaConnection::getUserName()
 {
   if ( mUserName.isEmpty() )
