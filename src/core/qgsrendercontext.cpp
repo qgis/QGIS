@@ -745,7 +745,14 @@ QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QString &symbo
 
 void QgsRenderContext::addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry )
 {
-  mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry );
+  if ( geometry.isMultipart() )
+  {
+    mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry.asGeometryCollection() );
+  }
+  else
+  {
+    mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry );
+  }
 }
 
 bool QgsRenderContext::symbolLayerHasClipGeometries( const QString &symbolLayerId ) const
