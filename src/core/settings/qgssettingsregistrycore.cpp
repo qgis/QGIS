@@ -271,7 +271,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( connection );
       QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), {service.toLower(), connection} );
-      settings.removeKey( QStringLiteral( "http-header" ) );
+      settings.remove( QStringLiteral( "http-header" ) );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
 
@@ -301,7 +301,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( connection );
       QgsVectorTileProviderConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
-      settings.removeKey( QStringLiteral( "http-header" ) );
+      settings.remove( QStringLiteral( "http-header" ) );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }
@@ -326,7 +326,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( connection );
       QgsXyzConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
-      settings.removeKey( QStringLiteral( "http-header" ) );
+      settings.remove( QStringLiteral( "http-header" ) );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }
@@ -352,7 +352,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
         Q_NOWARN_DEPRECATED_PUSH
         settings.beginGroup( connection );
         QgsArcGisConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
-        settings.removeKey( QStringLiteral( "http-header" ) );
+        settings.remove( QStringLiteral( "http-header" ) );
         settings.endGroup();
         Q_NOWARN_DEPRECATED_POP
       }
