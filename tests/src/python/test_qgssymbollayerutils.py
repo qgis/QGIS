@@ -11,7 +11,15 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import math
 
-from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
+from qgis.PyQt.QtCore import (
+    QDir,
+    QMimeData,
+    QPointF,
+    QSize,
+    QSizeF,
+    Qt,
+    QRectF
+)
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
@@ -33,7 +41,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsSymbolLayerUtils,
     QgsUnitTypes,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsRenderContext,
+    QgsGeometry
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -820,6 +830,72 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         elem = doc.documentElement()
         font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
         self.assertEqual(font_marker.symbolLayers()[0].character(), "()")
+
+    def test_collect_symbol_layer_clip_geometries(self):
+        """
+        Test logic relating to symbol layer clip geometries.
+        """
+        rc = QgsRenderContext()
+        self.assertFalse(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+            rc, 'x', QRectF(0, 0, 10, 10)
+        ))
+        rc.addSymbolLayerClipGeometry('x',
+                                      QgsGeometry.fromWkt(
+                                          'Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))'))
+        self.assertFalse(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+            rc, 'y', QRectF(0, 0, 10, 10)
+        ))
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF(0, 0, 10, 10)
+        )], ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))'])
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'Polygon(( 20 0, 21 0 , 21 1 , 20 1, 20 0 ))'))
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF(0, 0, 10, 10)
+        )], ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))'])
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF(15, 0, 10, 10)
+        )],
+            ['Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF(0, 0, 25, 10)
+        )], ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+             'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+
+        # null rect
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF()
+        )], ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+             'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+
+        rc.addSymbolLayerClipGeometry('y',
+                                      QgsGeometry.fromWkt(
+                                          'Polygon(( 0 0, 2 0 , 2 1 , 0 1, 0 0 ))'))
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF(0, 0, 25, 10)
+        )], ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+             'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'y', QRectF(0, 0, 25, 10)
+        )], ['Polygon ((0 0, 2 0, 2 1, 0 1, 0 0))'])
+
+        # null rect
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'x', QRectF()
+        )], ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+             'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertCountEqual([g.asWkt() for g in
+                               QgsSymbolLayerUtils.collectSymbolLayerClipGeometries(
+                                   rc, 'y', QRectF()
+        )], ['Polygon ((0 0, 2 0, 2 1, 0 1, 0 0))'])
 
 
 if __name__ == '__main__':
