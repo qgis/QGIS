@@ -342,9 +342,25 @@ void QgsGeometryPaintEngine::drawPolygon( const QPointF *points, int pointCount,
 
 void QgsGeometryPaintEngine::addStrokedLine( const QgsLineString *line, double penWidth, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, const QTransform *matrix )
 {
-  QgsGeos geos( line );
+  std::unique_ptr< QgsAbstractGeometry > buffered;
+  if ( mSimplifyTolerance > 0 )
+  {
+    // For performance, we apply a lower level of simplification to the line BEFORE doing the buffer.
+    // This avoids making the call to GEOS buffer function too expensive, as we'd otherwise be doing it
+    // on the unsimplified line and then immediately discarding most of the detail when we simplify
+    // the resultant buffer.
+    // The 0.75 factor here is just a guess! This could likely be made smarter, eg by considering the pen width?
+    const double preBufferedSimplificationFactor = mSimplifyTolerance * 0.75;
+    std::unique_ptr< QgsLineString > simplified( line->simplifyByDistance( preBufferedSimplificationFactor ) );
+    QgsGeos geos( simplified.get() );
+    buffered.reset( geos.buffer( penWidth / 2, mStrokedPathsSegments, endCapStyle, joinStyle, miterLimit ) );
+  }
+  else
+  {
+    QgsGeos geos( line );
+    buffered.reset( geos.buffer( penWidth / 2, mStrokedPathsSegments, endCapStyle, joinStyle, miterLimit ) );
+  }
 
-  std::unique_ptr< QgsAbstractGeometry > buffered( geos.buffer( penWidth / 2, mStrokedPathsSegments, endCapStyle, joinStyle, miterLimit ) );
   if ( !buffered )
     return;
 
