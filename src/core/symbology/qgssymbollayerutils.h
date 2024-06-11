@@ -929,6 +929,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
 
+    /**
+     * Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
+     * ID.
+     *
+     * The \a bounds argument specifies the target bounds (in painter coordinates) for matching geometries. Only mask
+     * geometries which intersect \a bounds will be returned. If \a bounds is a null QRectF then all clip geometries
+     * for the symbol layer will be returned.
+     *
+     * \since QGIS 3.38
+     */
+    static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
+
     ///@cond PRIVATE
 #ifndef SIP_RUN
     static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
