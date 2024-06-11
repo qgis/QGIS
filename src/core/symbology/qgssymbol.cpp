@@ -862,8 +862,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
   mDataDefinedProperties.prepare( context.expressionContext() );
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( !layer->enabled() || !context.isSymbolLayerEnabled( layer ) )
       continue;
