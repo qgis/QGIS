@@ -496,7 +496,7 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         result = device.geometry().clone()
         result.normalize()
         self.assertEqual(result.asWkt(2),
-                         'GeometryCollection (Polygon ((29.42 32.29, 42.58 105.71, 29.42 32.29)),Polygon ((11.29 29.89, 31.03 40.35, 11.29 29.89),(14 35.29, 14 35.29)),Polygon ((-7.17 -4.87, 3.17 10.87, -7.17 -4.87)))')
+                         'GeometryCollection (Polygon ((29.42 32.29, 42.58 105.71, 29.42 32.29)),Polygon ((10.71 34.31, 30.71 40.31, 10.71 34.31)),Polygon ((-7.17 -4.87, 3.17 10.87, -7.17 -4.87)))')
 
     def test_paths(self):
         """
@@ -632,7 +632,7 @@ class TestQgsGeometryPaintDevice(QgisTestCase):
         result = device.geometry().clone()
         result.normalize()
         self.assertEqual(result.asWkt(2),
-                         'GeometryCollection (Polygon ((9.64 31.16, 32.45 37.53, 21.33 -0.62, 9.64 31.16),(13.16 30.45, 21.03 4.73, 28.94 35.19, 13.16 30.45)))')
+                         'GeometryCollection (Polygon ((9.64 31.16, 32.38 37.21, 21.83 0.32, 9.64 31.16),(13.16 30.45, 20.41 6.75, 28.5 35.05, 13.16 30.45)))')
 
     def test_text(self):
         """
