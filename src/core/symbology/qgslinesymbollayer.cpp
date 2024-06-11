@@ -1547,7 +1547,10 @@ void QgsTemplatedLineSymbolLayerBase::stopFeatureRender( const QgsFeature &featu
 {
   mRenderingFeature = false;
   if ( mPlaceOnEveryPart  || !( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
+  {
+    removeMasks( context, true );
     return;
+  }
 
   const double prevOpacity = subSymbol()->opacity();
   subSymbol()->setOpacity( prevOpacity * mFeatureSymbolOpacity );
@@ -1556,6 +1559,8 @@ void QgsTemplatedLineSymbolLayerBase::stopFeatureRender( const QgsFeature &featu
   renderSymbol( mFinalVertex, &feature, context, -1, mCurrentFeatureIsSelected );
   mFeatureSymbolOpacity = 1;
   subSymbol()->setOpacity( prevOpacity );
+
+  removeMasks( context, true );
 }
 
 void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const
