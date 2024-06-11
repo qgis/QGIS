@@ -1001,6 +1001,18 @@ Regenerate recursively unique id from ``symbolLayer`` and its children
 .. versionadded:: 3.30
 %End
 
+    static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
+%Docstring
+Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
+ID.
+
+The ``bounds`` argument specifies the target bounds (in painter coordinates) for matching geometries. Only mask
+geometries which intersect ``bounds`` will be returned. If ``bounds`` is a null QRectF then all clip geometries
+for the symbol layer will be returned.
+
+.. versionadded:: 3.38
+%End
+
 
 };
 
