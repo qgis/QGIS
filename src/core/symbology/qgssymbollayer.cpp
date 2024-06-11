@@ -962,13 +962,7 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   const QVector<QgsGeometry> clipGeometries = renderContext.symbolLayerClipGeometries( id() );
   if ( !clipGeometries.empty() )
   {
-    QVector< QgsGeometry > fixed;
-    for ( const QgsGeometry &geometry : clipGeometries )
-    {
-      fixed << geometry.makeValid( Qgis::MakeValidMethod::Structure );
-    }
-
-    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( fixed );
+    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries );
     if ( context.renderContext().maskSettings().simplifyTolerance() > 0 )
     {
       QgsGeos geos( mergedGeom.constGet() );
