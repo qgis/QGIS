@@ -50,6 +50,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabeling.h"
+#include "qgsgeos.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 const QgsSettingsEntryString *QgsMapRendererJob::settingsMaskBackend = new QgsSettingsEntryString( QStringLiteral( "mask-backend" ), QgsSettingsTree::sTreeMap, QString(), QStringLiteral( "Backend engine to use for selective masking" ) );
@@ -1027,7 +1028,15 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
       }
       else if ( QgsGeometryPaintDevice *geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
       {
-        const QgsGeometry geometry( geometryDevice->geometry().clone() );
+        QgsGeometry geometry( geometryDevice->geometry().clone() );
+
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+        // structure would be better, but too old GEOS
+        geometry = geometry.makeValid( Qgis::MakeValidMethod::Linework );
+#else
+        geometry = geometry.makeValid( Qgis::MakeValidMethod::Structure );
+#endif
+
         for ( const QString &symbolLayerId : layers )
         {
           job.context()->addSymbolLayerClipGeometry( symbolLayerId, geometry );
