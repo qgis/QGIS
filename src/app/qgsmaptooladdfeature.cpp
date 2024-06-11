@@ -121,47 +121,46 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     }
     if ( topologicalEditing )
     {
-      const QVector<QgsVectorLayer *> layers = vlayer->project()->layers<QgsVectorLayer *>();
+      const QList<QgsMapLayer *> layers = canvas()->layers( true );
 
-      for ( QgsVectorLayer *layer : layers )
+      for ( QgsMapLayer *layer : layers )
       {
-        if ( !layer->isEditable() || layer == vlayer )
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+
+        if ( !vectorLayer || !vectorLayer->isEditable() )
           continue;
 
-        if ( !( layer->geometryType() == Qgis::GeometryType::Polygon || layer->geometryType() == Qgis::GeometryType::Line ) )
+        if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
           continue;
 
-        layer->beginEditCommand( tr( "Topological points added by 'Add Feature'" ) );
+        vectorLayer->beginEditCommand( tr( "Topological points added by 'Add Feature'" ) );
 
-        int res;
-        if ( layer->crs() != vlayer->crs() )
+        int res = 2;
+        if ( vectorLayer->crs() != vlayer->crs() )
         {
           QgsGeometry transformedGeom = feature.geometry();
           try
           {
-            // transform digitized geometry from vlayer crs to layer crs and add topological points
-            transformedGeom.transform( QgsCoordinateTransform( vlayer->crs(), layer->crs(), layer->transformContext() ) );
-            res = layer->addTopologicalPoints( transformedGeom );
+            // transform digitized geometry from vlayer crs to vectorLayer crs and add topological points
+            transformedGeom.transform( QgsCoordinateTransform( vlayer->crs(), vectorLayer->crs(), vectorLayer->transformContext() ) );
+            res = vectorLayer->addTopologicalPoints( transformedGeom );
           }
           catch ( QgsCsException &cse )
           {
             Q_UNUSED( cse )
-            QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
-            layer->destroyEditCommand();
-            continue;
+            QgsDebugError( QStringLiteral( "transformation to vectorLayer coordinate failed" ) );
           }
         }
         else
         {
-          res = layer->addTopologicalPoints( feature.geometry() );
+          res = vectorLayer->addTopologicalPoints( feature.geometry() );
         }
 
         if ( res == 0 ) // i.e. if any points were added
-          layer->endEditCommand();
+          vectorLayer->endEditCommand();
         else
-          layer->destroyEditCommand();
+          vectorLayer->destroyEditCommand();
       }
-      vlayer->addTopologicalPoints( feature.geometry() );
     }
   }
 }
