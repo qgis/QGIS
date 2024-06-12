@@ -2658,6 +2658,12 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
     QgsLocaleNumC l;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    QVector< int > changedFieldIndexes;
+    changedFieldIndexes.reserve( attr.size() );
+    bool useUpdateFeature = true;
+#endif
+
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
@@ -2702,6 +2708,12 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 #else
         OGR_F_UnsetField( of.get(), f );
 #endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+        changedFieldIndexes  << f;
+        // setting list fields to null does not work with UpdateFeature as of GDAL 3.8.5
+        if ( type == OFTStringList || type == OFTIntegerList || type == OFTRealList || type == OFTInteger64List )
+          useUpdateFeature = false;
+#endif
       }
       else
       {
@@ -2721,18 +2733,33 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                 pushError( tr( "wrong value for attribute %1 of feature %2: %3" ).arg( it2.key() ) . arg( fid ) .arg( strVal ) );
                 errorEmitted = true;
               }
+              else
+              {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                changedFieldIndexes  << f;
+#endif
+              }
             }
             else
             {
               OGR_F_SetFieldInteger( of.get(), f, strictToInt( *it2, &ok ) );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+              changedFieldIndexes  << f;
+#endif
             }
             break;
           }
           case OFTInteger64:
             OGR_F_SetFieldInteger64( of.get(), f, it2->toLongLong( &ok ) );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+            changedFieldIndexes  << f;
+#endif
             break;
           case OFTReal:
             OGR_F_SetFieldDouble( of.get(), f, it2->toDouble( &ok ) );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+            changedFieldIndexes  << f;
+#endif
             break;
           case OFTDate:
           {
@@ -2746,6 +2773,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                       date.day(),
                                       0, 0, 0,
                                       0 );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+              changedFieldIndexes  << f;
+#endif
             }
             break;
           }
@@ -2761,6 +2791,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                         time.minute(),
                                         static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
                                         0 );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+              changedFieldIndexes  << f;
+#endif
             }
             break;
           }
@@ -2782,6 +2815,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                         time.minute(),
                                         static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
                                         QgsOgrUtils::OGRTZFlagFromQt( dt ) );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+              changedFieldIndexes  << f;
+#endif
             }
             break;
           }
@@ -2792,12 +2828,19 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
             {
               stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( it2.value() ).dump() );
+              // setting JSON fields does not work with UpdateFeature as of GDAL 3.8.5
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+              useUpdateFeature = false;
+#endif
             }
             else
             {
               stringValue = jsonStringValue( it2.value() );
             }
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+            changedFieldIndexes  << f;
+#endif
             break;
           }
 
@@ -2806,6 +2849,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             ok = true;
             const QByteArray ba = it2->toByteArray();
             OGR_F_SetFieldBinary( of.get(), f, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+            changedFieldIndexes  << f;
+#endif
             break;
           }
 
@@ -2829,6 +2875,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
               lst[count] = nullptr;
               OGR_F_SetFieldStringList( of.get(), f, lst );
               CSLDestroy( lst );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+              changedFieldIndexes  << f;
+#endif
             }
             break;
           }
@@ -2855,6 +2904,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
               if ( ok )
               {
                 OGR_F_SetFieldIntegerList( of.get(), f, count, lst );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                changedFieldIndexes  << f;
+#endif
               }
               delete [] lst;
             }
@@ -2883,6 +2935,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
               if ( ok )
               {
                 OGR_F_SetFieldDoubleList( of.get(), f, count, lst );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                changedFieldIndexes  << f;
+#endif
               }
               delete [] lst;
             }
@@ -2911,6 +2966,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
               if ( ok )
               {
                 OGR_F_SetFieldInteger64List( of.get(), f, count, lst );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                changedFieldIndexes  << f;
+#endif
               }
               delete [] lst;
             }
@@ -2934,7 +2992,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    const OGRErr updateResult = useUpdateFeature ? mOgrLayer->UpdateFeature( of.get(), changedFieldIndexes.size(), changedFieldIndexes.constData(), 0, nullptr, false )
+                                : mOgrLayer->SetFeature( of.get() );
+    if ( updateResult != OGRERR_NONE )
+#else
     if ( mOgrLayer->SetFeature( of.get() ) != OGRERR_NONE )
+#endif
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
       returnValue = false;
@@ -3040,8 +3104,12 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       continue;
     }
 
-
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    constexpr int firstIndex {0};
+    if ( mOgrLayer->UpdateFeature( theOGRFeature.get(), 0, nullptr, 1, &firstIndex, false ) != OGRERR_NONE )
+#else
     if ( mOgrLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
+#endif
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       returnvalue = false;
