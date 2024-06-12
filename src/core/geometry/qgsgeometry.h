@@ -386,7 +386,7 @@ class CORE_EXPORT QgsGeometry
      * return TRUE for isEmpty().
      * \see isNull()
      */
-    bool isEmpty() const;
+    bool isEmpty() const SIP_HOLDGIL;
 
     //! Returns TRUE if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const SIP_HOLDGIL;
