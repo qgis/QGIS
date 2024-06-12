@@ -170,7 +170,7 @@ geometry and a list of field/values attributes.
 
     void __delitem__( int key ) /HoldGIL/;
 %MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+    if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
       sipCpp->deleteAttribute( a0 );
     else
     {
@@ -284,7 +284,7 @@ Returns the feature's attributes as a map of field name to value.
 %End
 %MethodCode
     const int fieldSize = sipCpp->fields().size();
-    const int attributeSize = sipCpp->attributes().size();
+    const int attributeSize = sipCpp->attributeCount();
     if ( fieldSize == 0 && attributeSize != 0 )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Field definition has not been set for feature" ).toUtf8().constData() );
@@ -478,7 +478,7 @@ Alternatively, in Python it is possible to directly `del` an attribute via its i
 .. seealso:: :py:func:`setAttribute`
 %End
 %MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+    if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
       sipCpp->deleteAttribute( a0 );
     else
     {
@@ -802,7 +802,7 @@ Alternatively, in Python it is possible to directly retrieve a field's value via
 %End
 %MethodCode
     {
-      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
       {
         PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
         sipIsErr = 1;
@@ -829,7 +829,7 @@ Returns ``True`` if the attribute at the specified index is an unset value.
 %End
 %MethodCode
     {
-      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
       {
         PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
         sipIsErr = 1;

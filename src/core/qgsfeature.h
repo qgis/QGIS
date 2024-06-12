@@ -205,7 +205,7 @@ class CORE_EXPORT QgsFeature
 
     void __delitem__( int key ) SIP_HOLDGIL;
     % MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+    if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
       sipCpp->deleteAttribute( a0 );
     else
     {
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsFeature
     SIP_PYOBJECT attributeMap() const SIP_HOLDGIL SIP_TYPEHINT( Dict[str, Optional[object]] );
     % MethodCode
     const int fieldSize = sipCpp->fields().size();
-    const int attributeSize = sipCpp->attributes().size();
+    const int attributeSize = sipCpp->attributeCount();
     if ( fieldSize == 0 && attributeSize != 0 )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Field definition has not been set for feature" ).toUtf8().constData() );
@@ -545,7 +545,7 @@ class CORE_EXPORT QgsFeature
      */
     void deleteAttribute( int field ) SIP_HOLDGIL;
     % MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+    if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
       sipCpp->deleteAttribute( a0 );
     else
     {
@@ -906,7 +906,7 @@ class CORE_EXPORT QgsFeature
     SIP_PYOBJECT attribute( int fieldIdx ) const SIP_HOLDGIL;
     % MethodCode
     {
-      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
       {
         PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
         sipIsErr = 1;
@@ -942,7 +942,7 @@ class CORE_EXPORT QgsFeature
     bool isUnsetValue( int fieldIdx ) const SIP_HOLDGIL;
     % MethodCode
     {
-      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
       {
         PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
         sipIsErr = 1;

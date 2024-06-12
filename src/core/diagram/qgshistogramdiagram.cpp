@@ -36,7 +36,7 @@ QgsHistogramDiagram *QgsHistogramDiagram::clone() const
 QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   QSizeF size;
-  if ( feature.attributes().isEmpty() )
+  if ( feature.attributeCount() == 0 )
   {
     return size; //zero size if no attributes
   }

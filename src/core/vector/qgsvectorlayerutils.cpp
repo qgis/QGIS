@@ -743,7 +743,7 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   else
   {
     // no field name mapping in feature, just use order
-    const int lengthDiff = feature.attributes().count() - fields.count();
+    const int lengthDiff = feature.attributeCount() - fields.count();
     if ( lengthDiff > 0 )
     {
       // truncate extra attributes
@@ -755,7 +755,8 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
       // add missing null attributes
       QgsAttributes attributes = feature.attributes();
       attributes.reserve( fields.count() );
-      for ( int i = feature.attributes().count(); i < fields.count(); ++i )
+      const int attributeCount = feature.attributeCount();
+      for ( int i = attributeCount; i < fields.count(); ++i )
       {
         attributes.append( QgsVariantUtils::createNullVariant( fields.at( i ).type() ) );
       }
