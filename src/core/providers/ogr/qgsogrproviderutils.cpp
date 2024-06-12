@@ -3300,6 +3300,14 @@ OGRErr QgsOgrLayer::SetFeature( OGRFeatureH hFeature )
   return OGR_L_SetFeature( hLayer, hFeature );
 }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+OGRErr QgsOgrLayer::UpdateFeature( OGRFeatureH hFeature, int nUpdatedFieldsCount, const int *panUpdatedFieldsIdx, int nUpdatedGeomFieldsCount, const int *panUpdatedGeomFieldsIdx, bool bUpdateStyleString )
+{
+  QMutexLocker locker( &ds->mutex );
+  return OGR_L_UpdateFeature( hLayer, hFeature, nUpdatedFieldsCount, panUpdatedFieldsIdx, nUpdatedGeomFieldsCount, panUpdatedGeomFieldsIdx, bUpdateStyleString );
+}
+#endif
+
 OGRErr QgsOgrLayer::DeleteFeature( GIntBig fid )
 {
   QMutexLocker locker( &ds->mutex );
