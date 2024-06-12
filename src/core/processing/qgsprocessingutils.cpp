@@ -1450,7 +1450,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
     }
     if ( errorCounter >= maxErrors )
     {
-      feedback->reportError( QObject::tr( "There were %1 errors writing features, only the first %2 have beeen reported." ).arg( QString::number( errorCounter ), QString::number( maxErrors ) ) );
+      feedback->reportError( QObject::tr( "There were %1 errors writing features, only the first %2 have been reported." ).arg( QString::number( errorCounter ), QString::number( maxErrors ) ) );
     }
     return temp;
   }
