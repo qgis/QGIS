@@ -323,12 +323,13 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   QString title;
   if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
   {
-    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase );
+    title = QStringLiteral( "%1 - %2" ).arg( QgsStringUtils::capitalize( mAlgorithm->group(), Qgis::Capitalization::TitleCase ), QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase ) );
   }
   else
   {
-    title = mAlgorithm->displayName();
+    title = QStringLiteral( "%1 - %2" ).arg( mAlgorithm->group(), mAlgorithm->displayName() );
   }
+
   setWindowTitle( title );
 
   const QString algHelp = formatHelp( algorithm );
