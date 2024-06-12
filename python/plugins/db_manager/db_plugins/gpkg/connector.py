@@ -584,7 +584,9 @@ class GPKGDBConnector(DBConnector):
     def deleteTable(self, table):
         """Deletes table from the database """
         if self.isRasterTable(table):
-            return False
+            sql = "DROP TABLE {}".format(self.quoteId(table))
+            self._execute_and_commit(sql)
+            return True
 
         _, tablename = self.getSchemaTableName(table)
         for i in range(self.gdal_ds.GetLayerCount()):
