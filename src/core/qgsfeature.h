@@ -91,7 +91,12 @@ class CORE_EXPORT QgsFeature
     else
     {
       const QVariant v = sipCpp->attribute( a0 );
-      if ( QgsVariantUtils::isNull( v, true ) )
+      if ( !v.isValid() )
+      {
+        Py_INCREF( Py_None );
+        sipRes = Py_None;
+      }
+      else if ( QgsVariantUtils::isNull( v, true ) )
       {
         PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
         PyObject *args = PyTuple_Pack( 1, vartype );
@@ -157,7 +162,12 @@ class CORE_EXPORT QgsFeature
     else
     {
       const QVariant v = sipCpp->attribute( fieldIdx );
-      if ( QgsVariantUtils::isNull( v, true ) )
+      if ( !v.isValid() )
+      {
+        Py_INCREF( Py_None );
+        sipRes = Py_None;
+      }
+      else if ( QgsVariantUtils::isNull( v, true ) )
       {
         PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
         PyObject *args = PyTuple_Pack( 1, vartype );
