@@ -53,7 +53,8 @@ geometry and a list of field/values attributes.
     else
     {
       const QVariant v = sipCpp->attribute( a0 );
-      if ( QgsVariantUtils::isNull( v, true ) )
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
@@ -115,7 +116,8 @@ geometry and a list of field/values attributes.
     else
     {
       const QVariant v = sipCpp->attribute( fieldIdx );
-      if ( QgsVariantUtils::isNull( v, true ) )
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;

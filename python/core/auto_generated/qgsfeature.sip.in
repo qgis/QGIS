@@ -57,7 +57,8 @@ geometry and a list of field/values attributes.
         Py_INCREF( Py_None );
         sipRes = Py_None;
       }
-      else if ( QgsVariantUtils::isNull( v, true ) )
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
       {
         PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
         PyObject *args = PyTuple_Pack( 1, vartype );
@@ -128,7 +129,8 @@ geometry and a list of field/values attributes.
         Py_INCREF( Py_None );
         sipRes = Py_None;
       }
-      else if ( QgsVariantUtils::isNull( v, true ) )
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
       {
         PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
         PyObject *args = PyTuple_Pack( 1, vartype );
