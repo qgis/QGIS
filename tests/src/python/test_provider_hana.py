@@ -543,17 +543,17 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         create_sql = f'CREATE TABLE "{self.schemaName}"."test_extent" ( ' \
             'ID INTEGER NOT NULL PRIMARY KEY,' \
             'GEOM1 ST_GEOMETRY(0),' \
-            'GEOM2 ST_GEOMETRY(0))'
+            'GEOM2 ST_GEOMETRY(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."test_extent" (ID, GEOM1, GEOM2) ' \
-            f'VALUES (?, ST_GeomFromText(?), ST_GeomFromText(?)) '
-        insert_args = [[1, 'POLYGON ((0 0, 20 0, 20 20, 0 20, 0 0))', 'POLYGON ((0 0, 40 0, 40 40, 0 40, 0 0))']]
+            f'VALUES (?, ST_GeomFromText(?), ST_GeomFromText(?, 4326)) '
+        insert_args = [[1, 'POLYGON ((0 0, 20 0, 20 20, 0 20, 0 0))', 'POLYGON ((0 0, 20 0, 20 20, 0 20, 0 0))']]
         self.prepareTestTable('test_extent', create_sql, insert_sql, insert_args)
 
         vl_geom1 = self.createVectorLayer(f'estimatedmetadata=true table="{self.schemaName}"."test_extent" (GEOM1) sql=', 'test_extent')
         vl_geom2 = self.createVectorLayer(f'estimatedmetadata=true table="{self.schemaName}"."test_extent" (GEOM2) sql=', 'test_extent')
 
         self.assertEqual(QgsRectangle(0, 0, 20, 20), vl_geom1.dataProvider().extent())
-        self.assertEqual(QgsRectangle(0, 0, 40, 40), vl_geom2.dataProvider().extent())
+        self.assertEqual(QgsRectangle(0, 0, 20, 20.283).toString(3), vl_geom2.dataProvider().extent().toString(3))
 
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""
