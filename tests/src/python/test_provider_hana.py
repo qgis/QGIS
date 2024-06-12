@@ -553,7 +553,7 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         vl_geom2 = self.createVectorLayer(f'estimatedmetadata=true table="{self.schemaName}"."test_extent" (GEOM2) sql=', 'test_extent')
 
         self.assertEqual(QgsRectangle(0, 0, 20, 20), vl_geom1.dataProvider().extent())
-        self.assertEqual(QgsRectangle(0, 0, 20, 20.283).toString(3), vl_geom2.dataProvider().extent().toString(3))
+        self.assertEqual(QgsRectangle(0, 0, 20, 20.284).toString(3), vl_geom2.dataProvider().extent().toString(3))
 
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""
