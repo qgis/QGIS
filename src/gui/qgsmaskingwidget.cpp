@@ -93,8 +93,8 @@ void QgsMaskingWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsMaskingWidget::populate()
 {
-  mMaskSourcesWidget->blockSignals( true );
-  mMaskTargetsWidget->blockSignals( true );
+  const QSignalBlocker blockerSourceWidget( mMaskSourcesWidget );
+  const QSignalBlocker blockerTargetWidget( mMaskTargetsWidget );
 
   mMaskSourcesWidget->update();
   mMaskTargetsWidget->setLayer( mLayer );
@@ -155,9 +155,6 @@ void QgsMaskingWidget::populate()
 
   mMaskSourcesWidget->setSelection( maskSources );
   mMaskTargetsWidget->setSelection( maskedSymbolLayers );
-
-  mMaskSourcesWidget->blockSignals( false );
-  mMaskTargetsWidget->blockSignals( false );
 }
 
 void QgsMaskingWidget::apply()
