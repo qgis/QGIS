@@ -2551,6 +2551,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     mayNeedResetReadingAfterGetFeature = false;
   }
 
+  QgsOgrFeatureDefn &featureDefinition = mOgrLayer->GetLayerDefn();
+
   /* Optimization to update a single field of all layer's feature with a
    * constant value */
   bool useUpdate = false;
@@ -2588,7 +2590,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           useUpdate = false;
           break;
         }
-        fd = mOgrLayer->GetLayerDefn().GetFieldDefn(
+        fd = featureDefinition.GetFieldDefn(
                ( mFirstFieldIsFid && fieldIdx > 0 ) ? fieldIdx - 1 : fieldIdx );
         if ( !fd )
         {
@@ -2635,6 +2637,18 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( useUpdate )
     it = attr_map.end();
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,1)
+  const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature );
+#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  // see https://github.com/OSGeo/gdal/pull/10197
+  const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature )
+                                && mGDALDriverName != QLatin1String( "ODS" )
+                                && mGDALDriverName != QLatin1String( "XLSX" )
+                                && mGDALDriverName != QLatin1String( "GeoJSON" );
+#else
+  constexpr bool useUpdateFeature = false;
+#endif
+
   for ( ; it != attr_map.end(); ++it )
   {
     QgsFeatureId fid = it.key();
@@ -2643,17 +2657,25 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( attr.isEmpty() )
       continue;
 
-    gdal::ogr_feature_unique_ptr of( mOgrLayer->GetFeature( FID_TO_NUMBER( fid ) ) );
-    if ( !of )
+    gdal::ogr_feature_unique_ptr of;
+    if ( useUpdateFeature )
     {
-      pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
-      returnValue = false;
-      continue;
+      of.reset( featureDefinition.CreateFeature() );
+      OGR_F_SetFID( of.get(), FID_TO_NUMBER( fid ) );
     }
-
-    if ( mayNeedResetReadingAfterGetFeature )
+    else
     {
-      mOgrLayer->ResetReading();
+      of.reset( mOgrLayer->GetFeature( FID_TO_NUMBER( fid ) ) );
+      if ( !of )
+      {
+        pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
+        returnValue = false;
+        continue;
+      }
+      if ( mayNeedResetReadingAfterGetFeature )
+      {
+        mOgrLayer->ResetReading();
+      }
     }
 
     QgsLocaleNumC l;
@@ -2661,7 +2683,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
     QVector< int > changedFieldIndexes;
     changedFieldIndexes.reserve( attr.size() );
-    bool useUpdateFeature = true;
 #endif
 
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
@@ -2710,9 +2731,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 #endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
         changedFieldIndexes  << f;
-        // setting list fields to null does not work with UpdateFeature as of GDAL 3.8.5
-        if ( type == OFTStringList || type == OFTIntegerList || type == OFTRealList || type == OFTInteger64List )
-          useUpdateFeature = false;
 #endif
       }
       else
@@ -2828,10 +2846,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
             {
               stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( it2.value() ).dump() );
-              // setting JSON fields does not work with UpdateFeature as of GDAL 3.8.5
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-              useUpdateFeature = false;
-#endif
             }
             else
             {
@@ -3049,20 +3063,42 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     mayNeedResetReadingAfterGetFeature = false;
   }
 
+  QgsOgrFeatureDefn &featureDefinition = mOgrLayer->GetLayerDefn();
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,1)
+  const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature );
+#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  // see https://github.com/OSGeo/gdal/pull/10197
+  const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature )
+                                && mGDALDriverName != QLatin1String( "ODS" )
+                                && mGDALDriverName != QLatin1String( "XLSX" )
+                                && mGDALDriverName != QLatin1String( "GeoJSON" );
+#else
+  constexpr bool useUpdateFeature = false;
+#endif
+
   bool returnvalue = true;
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
-    gdal::ogr_feature_unique_ptr theOGRFeature( mOgrLayer->GetFeature( FID_TO_NUMBER( it.key() ) ) );
-    if ( !theOGRFeature )
+    gdal::ogr_feature_unique_ptr theOGRFeature;
+    if ( useUpdateFeature )
     {
-      pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
-      returnvalue = false;
-      continue;
+      theOGRFeature.reset( featureDefinition.CreateFeature() );
+      OGR_F_SetFID( theOGRFeature.get(), FID_TO_NUMBER( it.key() ) );
     }
-
-    if ( mayNeedResetReadingAfterGetFeature )
+    else
     {
-      mOgrLayer->ResetReading(); // needed for SQLite-based to clear iterator, which could let the database in a locked state otherwise
+      theOGRFeature.reset( mOgrLayer->GetFeature( FID_TO_NUMBER( it.key() ) ) );
+      if ( !theOGRFeature )
+      {
+        pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
+        returnvalue = false;
+        continue;
+      }
+
+      if ( mayNeedResetReadingAfterGetFeature )
+      {
+        mOgrLayer->ResetReading(); // needed for SQLite-based to clear iterator, which could let the database in a locked state otherwise
+      }
     }
 
     OGRGeometryH newGeometry = nullptr;
@@ -3106,7 +3142,9 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
     constexpr int firstIndex {0};
-    if ( mOgrLayer->UpdateFeature( theOGRFeature.get(), 0, nullptr, 1, &firstIndex, false ) != OGRERR_NONE )
+    const OGRErr updateResult = useUpdateFeature ? mOgrLayer->UpdateFeature( theOGRFeature.get(), 0, nullptr, 1, &firstIndex, false )
+                                : mOgrLayer->SetFeature( theOGRFeature.get() );
+    if ( updateResult != OGRERR_NONE )
 #else
     if ( mOgrLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
 #endif
