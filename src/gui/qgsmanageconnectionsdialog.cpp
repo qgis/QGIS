@@ -889,7 +889,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
   }
 
   QString connectionName;
-  QStringList keys =  QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" ) } );
+  QStringList keys =  QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wfs" ) } );
 
   QDomElement child = root.firstChildElement();
   bool prompt = true;
