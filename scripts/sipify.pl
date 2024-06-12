@@ -1115,6 +1115,13 @@ while ($LINE_IDX < $LINE_COUNT){
             $LINE = read_line();
         }
     }
+    # skip PYQT6 code if we are in qt5
+    if ( !$is_qt6 && $LINE =~ m/^\s*#ifdef SIP_PYQT6_RUN/){
+        dbg_info("do not process PYQT6 code");
+        while ( $LINE !~ m/^#endif/ ){
+            $LINE = read_line();
+        }
+    }
 
     # do not process SIP code %XXXCode
     if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){

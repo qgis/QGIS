@@ -77,7 +77,10 @@ class CORE_EXPORT QgsFeature
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
     sipRes = PyObject_GetIter( attrs );
     % End
+#endif
 
+#ifdef SIP_PYQT5_RUN
+#ifdef SIP_RUN
     SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
@@ -90,8 +93,12 @@ class CORE_EXPORT QgsFeature
       const QVariant v = sipCpp->attribute( a0 );
       if ( QgsVariantUtils::isNull( v, true ) )
       {
-        QVariant *newV = new QVariant( v );
-        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {
@@ -152,8 +159,77 @@ class CORE_EXPORT QgsFeature
       const QVariant v = sipCpp->attribute( fieldIdx );
       if ( QgsVariantUtils::isNull( v, true ) )
       {
-        QVariant *newV = new QVariant( v );
-        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
+      }
+      else
+      {
+        switch ( v.userType() )
+        {
+          case QMetaType::Type::Int:
+            sipRes = PyLong_FromLong( v.toInt() );
+            break;
+
+          case QMetaType::Type::UInt:
+            sipRes = PyLong_FromUnsignedLong( v.toUInt() );
+            break;
+
+          case QMetaType::Type::Long:
+          case QMetaType::Type::LongLong:
+            sipRes = PyLong_FromLongLong( v.toLongLong() );
+            break;
+
+          case QMetaType::Type::ULong:
+          case QMetaType::Type::ULongLong:
+            sipRes = PyLong_FromUnsignedLongLong( v.toULongLong() );
+            break;
+
+          case QMetaType::Type::Bool:
+            sipRes = PyBool_FromLong( v.toBool() ? 1 : 0 );
+            break;
+
+          case QMetaType::Type::Float:
+          case QMetaType::Type::Double:
+            sipRes = PyFloat_FromDouble( v.toDouble() );
+            break;
+
+          case QMetaType::Type::QString:
+            sipRes = PyUnicode_FromString( v.toString().toUtf8().constData() );
+            break;
+
+          default:
+          {
+            QVariant *newV = new QVariant( v );
+            sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+            break;
+          }
+        }
+      }
+    }
+    % End
+#endif
+#endif
+
+#ifdef SIP_PYQT6_RUN
+#ifdef SIP_RUN
+    SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const QVariant v = sipCpp->attribute( a0 );
+      if ( QgsVariantUtils::isNull( v, true ) )
+      {
+        Py_INCREF( Py_None );
+        sipRes = Py_None;
       }
       else
       {
@@ -201,6 +277,71 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
+    SIP_PYOBJECT __getitem__( const QString &name ) SIP_HOLDGIL;
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const QVariant v = sipCpp->attribute( fieldIdx );
+      if ( QgsVariantUtils::isNull( v, true ) )
+      {
+        Py_INCREF( Py_None );
+        sipRes = Py_None;
+      }
+      else
+      {
+        switch ( v.userType() )
+        {
+          case QMetaType::Type::Int:
+            sipRes = PyLong_FromLong( v.toInt() );
+            break;
+
+          case QMetaType::Type::UInt:
+            sipRes = PyLong_FromUnsignedLong( v.toUInt() );
+            break;
+
+          case QMetaType::Type::Long:
+          case QMetaType::Type::LongLong:
+            sipRes = PyLong_FromLongLong( v.toLongLong() );
+            break;
+
+          case QMetaType::Type::ULong:
+          case QMetaType::Type::ULongLong:
+            sipRes = PyLong_FromUnsignedLongLong( v.toULongLong() );
+            break;
+
+          case QMetaType::Type::Bool:
+            sipRes = PyBool_FromLong( v.toBool() ? 1 : 0 );
+            break;
+
+          case QMetaType::Type::Float:
+          case QMetaType::Type::Double:
+            sipRes = PyFloat_FromDouble( v.toDouble() );
+            break;
+
+          case QMetaType::Type::QString:
+            sipRes = PyUnicode_FromString( v.toString().toUtf8().constData() );
+            break;
+
+          default:
+          {
+            QVariant *newV = new QVariant( v );
+            sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+            break;
+          }
+        }
+      }
+    }
+    % End
+#endif
+#endif
+
+#ifdef SIP_RUN
     void __setitem__( int key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
     % MethodCode
     bool rv;
