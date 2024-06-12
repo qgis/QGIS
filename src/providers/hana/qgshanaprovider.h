@@ -110,7 +110,6 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QString buildQuery( const QString &columns, const QString &where ) const;
     QString buildQuery( const QString &columns ) const;
     bool checkPermissionsAndSetCapabilities( QgsHanaConnection &conn );
-    bool checkHANAVersion( QgsHanaConnection &conn, const QVersionNumber &premise, const QVersionNumber &cloud ) const;
     QgsRectangle estimateExtent( bool useEstimatedMetadata ) const;
     void readAttributeFields( QgsHanaConnection &conn );
     void readGeometryType( QgsHanaConnection &conn );
