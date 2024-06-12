@@ -406,21 +406,7 @@ Qgis::WkbType QgsHanaUtils::toWkbType( const NS_ODBC::String &type, const NS_ODB
 QVersionNumber QgsHanaUtils::toHANAVersion( const QString &dbVersion )
 {
   QString version = dbVersion;
-  QStringList strs = version.replace( ' ', '.' ).split( '.' );
-
-  if ( strs.length() < 3 )
-    return QVersionNumber( 0 );
-
-  const int maj = strs[0].toInt();
-  const int min = strs[1].toInt();
-  const int rev = strs[2].toInt();
-  return QVersionNumber( maj, min, rev );
-}
-
-QVersionNumber QgsHanaUtils::toHANACloudVersion( const QString &dbCloudVersion )
-{
-  QString version = dbCloudVersion;
-  QStringList strs = version.replace( '-', '.' ).split( '.' );
+  QStringList strs = version.replace( '-', '.' ).replace( ' ', '.' ).split( '.' );
 
   if ( strs.length() < 3 )
     return QVersionNumber( 0 );

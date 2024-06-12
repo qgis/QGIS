@@ -1336,7 +1336,7 @@ static bool checkHANAVersion( QgsHanaConnection &conn, const QVersionNumber &pre
     switch ( version.majorVersion() )
     {
       case 2: return version >= premise;
-      case 4: return QgsHanaUtils::toHANACloudVersion( conn.getDatabaseCloudVersion() ) >= cloud;
+      case 4: return QgsHanaUtils::toHANAVersion( conn.getDatabaseCloudVersion() ) >= cloud;
       default: return false;
     }
   }
