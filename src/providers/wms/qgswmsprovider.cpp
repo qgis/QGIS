@@ -3774,7 +3774,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
           {
             QgsFeature *feature = featIt.value();
 
-            QgsDebugMsgLevel( QStringLiteral( "feature id = %1 : %2 attributes" ).arg( featIt.key() ).arg( feature->attributes().size() ), 2 );
+            QgsDebugMsgLevel( QStringLiteral( "feature id = %1 : %2 attributes" ).arg( featIt.key() ).arg( feature->attributeCount() ), 2 );
 
             if ( coordinateTransform.isValid() && feature->hasGeometry() )
             {

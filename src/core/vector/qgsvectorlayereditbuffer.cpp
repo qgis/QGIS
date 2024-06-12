@@ -135,9 +135,9 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature &f )
   {
     return false;
   }
-  if ( L->mFields.count() != f.attributes().count() )
+  if ( L->mFields.count() != f.attributeCount() )
   {
-    QgsMessageLog::logMessage( tr( "cannot add feature, wrong field count: layer: %1 feature: %2:" ).arg( L->mFields.count() ).arg( f.attributes().count() ) );
+    QgsMessageLog::logMessage( tr( "cannot add feature, wrong field count: layer: %1 feature: %2:" ).arg( L->mFields.count() ).arg( f.attributeCount() ) );
     return false;
   }
 

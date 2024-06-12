@@ -136,7 +136,8 @@ void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )
   geometryMap.insert( feature.id(), feature.geometry() );
   QgsChangedAttributesMap changedAttributesMap;
   QgsAttributeMap attribMap;
-  for ( int i = 0, n = feature.attributes().size(); i < n; ++i )
+  const int attributeCount = feature.attributeCount();
+  for ( int i = 0, n = attributeCount; i < n; ++i )
   {
     attribMap.insert( i, feature.attributes().at( i ) );
   }

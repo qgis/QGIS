@@ -1679,7 +1679,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     // don't try to set field from attribute map if it's not present in layer
     if ( ogrAttributeId >= featureDefinition.GetFieldCount() )
     {
-      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( featureDefinition.GetFieldCount() ).arg( f.attributes().count() ) );
+      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( featureDefinition.GetFieldCount() ).arg( f.attributeCount() ) );
       continue;
     }
 

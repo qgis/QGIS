@@ -433,21 +433,22 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   {
     it->setId( mNextFeatureId );
     it->setValid( true );
-    if ( it->attributes().count() < fieldCount )
+    const int attributeCount = it->attributeCount();
+    if ( attributeCount < fieldCount )
     {
       // ensure features have the correct number of attributes by padding
       // them with null attributes for missing values
       QgsAttributes attributes = it->attributes();
-      for ( int i = it->attributes().count(); i < mFields.count(); ++i )
+      for ( int i = attributeCount; i < mFields.count(); ++i )
       {
         attributes.append( QgsVariantUtils::createNullVariant( mFields.at( i ).type() ) );
       }
       it->setAttributes( attributes );
     }
-    else if ( it->attributes().count() > fieldCount )
+    else if ( attributeCount > fieldCount )
     {
       // too many attributes
-      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fieldCount ).arg( it->attributes().count() ) );
+      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fieldCount ).arg( attributeCount ) );
       QgsAttributes attributes = it->attributes();
       attributes.resize( mFields.count() );
       it->setAttributes( attributes );
