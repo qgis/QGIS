@@ -329,7 +329,7 @@ Returns type of the geometry as a :py:class:`Qgis`.GeometryType
 .. seealso:: :py:func:`wkbType`
 %End
 
-    bool isEmpty() const;
+    bool isEmpty() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is empty (eg a linestring with no vertices,
 or a collection with no geometries). A null geometry will always
