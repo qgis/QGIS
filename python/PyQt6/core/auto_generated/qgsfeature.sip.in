@@ -42,6 +42,7 @@ geometry and a list of field/values attributes.
     sipRes = PyObject_GetIter( attrs );
 %End
 
+
     SIP_PYOBJECT __getitem__( int key ) /HoldGIL/;
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
@@ -54,8 +55,8 @@ geometry and a list of field/values attributes.
       const QVariant v = sipCpp->attribute( a0 );
       if ( QgsVariantUtils::isNull( v, true ) )
       {
-        QVariant *newV = new QVariant( v );
-        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+        Py_INCREF( Py_None );
+        sipRes = Py_None;
       }
       else
       {
@@ -116,8 +117,8 @@ geometry and a list of field/values attributes.
       const QVariant v = sipCpp->attribute( fieldIdx );
       if ( QgsVariantUtils::isNull( v, true ) )
       {
-        QVariant *newV = new QVariant( v );
-        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+        Py_INCREF( Py_None );
+        sipRes = Py_None;
       }
       else
       {

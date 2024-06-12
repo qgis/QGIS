@@ -54,8 +54,12 @@ geometry and a list of field/values attributes.
       const QVariant v = sipCpp->attribute( a0 );
       if ( QgsVariantUtils::isNull( v, true ) )
       {
-        QVariant *newV = new QVariant( v );
-        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {
@@ -116,8 +120,12 @@ geometry and a list of field/values attributes.
       const QVariant v = sipCpp->attribute( fieldIdx );
       if ( QgsVariantUtils::isNull( v, true ) )
       {
-        QVariant *newV = new QVariant( v );
-        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {
@@ -164,6 +172,7 @@ geometry and a list of field/values attributes.
       }
     }
 %End
+
 
     void __setitem__( int key, SIP_PYOBJECT value /TypeHint="Optional[Union[bool, int, float, str, QVariant]]"/ ) /HoldGIL/;
 %MethodCode
