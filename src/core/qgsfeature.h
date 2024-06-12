@@ -30,6 +30,8 @@ email                : sherman at mrcc.com
 #include "qgsattributes.h"
 #include "qgsfields.h"
 #include "qgsfeatureid.h"
+#include "qgsvariantutils.h"
+
 #include <memory>
 class QgsFeature;
 class QgsFeaturePrivate;
@@ -78,16 +80,62 @@ class CORE_EXPORT QgsFeature
 
     SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
     % MethodCode
-    QgsAttributes attrs = sipCpp->attributes();
-    if ( a0 < 0 || a0 >= attrs.count() )
+    if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      QVariant *v = new QVariant( attrs.at( a0 ) );
-      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      const QVariant v = sipCpp->attribute( a0 );
+      if ( QgsVariantUtils::isNull( v, true ) )
+      {
+        QVariant *newV = new QVariant( v );
+        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+      }
+      else
+      {
+        switch ( v.userType() )
+        {
+          case QMetaType::Type::Int:
+            sipRes = PyLong_FromLong( v.toInt() );
+            break;
+
+          case QMetaType::Type::UInt:
+            sipRes = PyLong_FromUnsignedLong( v.toUInt() );
+            break;
+
+          case QMetaType::Type::Long:
+          case QMetaType::Type::LongLong:
+            sipRes = PyLong_FromLongLong( v.toLongLong() );
+            break;
+
+          case QMetaType::Type::ULong:
+          case QMetaType::Type::ULongLong:
+            sipRes = PyLong_FromUnsignedLongLong( v.toULongLong() );
+            break;
+
+          case QMetaType::Type::Bool:
+            sipRes = PyBool_FromLong( v.toBool() ? 1 : 0 );
+            break;
+
+          case QMetaType::Type::Float:
+          case QMetaType::Type::Double:
+            sipRes = PyFloat_FromDouble( v.toDouble() );
+            break;
+
+          case QMetaType::Type::QString:
+            sipRes = PyUnicode_FromString( v.toString().toUtf8().constData() );
+            break;
+
+          default:
+          {
+            QVariant *newV = new QVariant( v );
+            sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+            break;
+          }
+        }
+      }
     }
     % End
 
@@ -101,8 +149,55 @@ class CORE_EXPORT QgsFeature
     }
     else
     {
-      QVariant *v = new QVariant( sipCpp->attribute( fieldIdx ) );
-      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      const QVariant v = sipCpp->attribute( fieldIdx );
+      if ( QgsVariantUtils::isNull( v, true ) )
+      {
+        QVariant *newV = new QVariant( v );
+        sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+      }
+      else
+      {
+        switch ( v.userType() )
+        {
+          case QMetaType::Type::Int:
+            sipRes = PyLong_FromLong( v.toInt() );
+            break;
+
+          case QMetaType::Type::UInt:
+            sipRes = PyLong_FromUnsignedLong( v.toUInt() );
+            break;
+
+          case QMetaType::Type::Long:
+          case QMetaType::Type::LongLong:
+            sipRes = PyLong_FromLongLong( v.toLongLong() );
+            break;
+
+          case QMetaType::Type::ULong:
+          case QMetaType::Type::ULongLong:
+            sipRes = PyLong_FromUnsignedLongLong( v.toULongLong() );
+            break;
+
+          case QMetaType::Type::Bool:
+            sipRes = PyBool_FromLong( v.toBool() ? 1 : 0 );
+            break;
+
+          case QMetaType::Type::Float:
+          case QMetaType::Type::Double:
+            sipRes = PyFloat_FromDouble( v.toDouble() );
+            break;
+
+          case QMetaType::Type::QString:
+            sipRes = PyUnicode_FromString( v.toString().toUtf8().constData() );
+            break;
+
+          default:
+          {
+            QVariant *newV = new QVariant( v );
+            sipRes = sipConvertFromNewType( newV, sipType_QVariant, Py_None );
+            break;
+          }
+        }
+      }
     }
     % End
 
