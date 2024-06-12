@@ -1328,7 +1328,7 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
   return true;
 }
 
-bool QgsHanaProvider::checkHANAVersion( QgsHanaConnection &conn, const QVersionNumber &premise, const QVersionNumber &cloud ) const
+static bool checkHANAVersion( QgsHanaConnection &conn, const QVersionNumber &premise, const QVersionNumber &cloud )
 {
   try
   {
@@ -1357,7 +1357,7 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
   if ( conn.isNull() )
     return QgsRectangle();
 
-  if ( !checkHANAVersion( *conn, QVersionNumber( 2, 0, 80 ), QVersionNumber( 2024, 2, 0 ) ) )
+  if ( useEstimatedMetadata && !checkHANAVersion( *conn, QVersionNumber( 2, 0, 80 ), QVersionNumber( 2024, 2, 0 ) ) )
     useEstimatedMetadata = false;
 
   QString sql;
@@ -1401,15 +1401,13 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
         ret.setXMaximum( rsExtent->getValue( 3 ).toDouble() );
         ret.setYMaximum( rsExtent->getValue( 4 ).toDouble() );
       }
-      else if ( useEstimatedMetadata )
-      {
-        rsExtent->close();
-
-        // In this case it is very likely that the fast extent is not yet available, try again without using cached data
-        return estimateExtent( false );
-      }
     }
     rsExtent->close();
+
+    if ( useEstimatedMetadata && ret.isEmpty() )
+      // In this case it is very likely that the fast extent is not yet available, try again without using cached data
+      return estimateExtent( false );
+
     return ret;
   }
   catch ( const QgsHanaException &ex )
