@@ -342,6 +342,25 @@ void QgsCodeEditorWidget::triggerFind()
   showSearchBar();
 }
 
+bool QgsCodeEditorWidget::loadFile( const QString &path )
+{
+  if ( !QFile::exists( path ) )
+    return false;
+
+  QFile file( path );
+  if ( file.open( QFile::ReadOnly ) )
+  {
+    const QString content = file.readAll();
+    mEditor->setText( content );
+    mEditor->setModified( false );
+    mEditor->recolor();
+    mLastModified = QFileInfo( path ).lastModified();
+    setFilePath( path );
+    return true;
+  }
+  return false;
+}
+
 void QgsCodeEditorWidget::setFilePath( const QString &path )
 {
   if ( mFilePath == path )

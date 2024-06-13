@@ -424,14 +424,6 @@ class Editor(QgsCodeEditorPython):
                                              'The file <b>"{0}"</b> is read only, please save to different file first.').format(self.code_editor_widget.filePath())
         self.showMessage(msgText)
 
-    def loadFile(self, filename: str, read_only: bool = False):
-        self.lastModified = QFileInfo(filename).lastModified()
-        self.code_editor_widget.setFilePath(filename)
-        self.setText(Path(filename).read_text(encoding='utf-8'))
-        self.setReadOnly(read_only)
-        self.setModified(False)
-        self.recolor()
-
     def save(self, filename: Optional[str] = None):
         if self.isReadOnly():
             return
@@ -468,7 +460,6 @@ class Editor(QgsCodeEditorPython):
         self.tab_widget.setTabToolTip(index, self.code_editor_widget.filePath())
         self.setModified(False)
         self.console_widget.saveFileButton.setEnabled(False)
-        self.lastModified = QFileInfo(self.code_editor_widget.filePath()).lastModified()
         self.console_widget.updateTabListScript(self.code_editor_widget.filePath(), action='append')
         self.tab_widget.listObject(self.editor_tab)
         QgsSettings().setValue("pythonConsole/lastDirPath",
@@ -556,7 +547,9 @@ class EditorTab(QWidget):
 
         if filename:
             if QFileInfo(filename).exists():
-                self._editor.loadFile(filename, read_only)
+                self._editor_code_widget.loadFile(filename)
+                if read_only:
+                    self._editor.setReadOnly(True)
 
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
