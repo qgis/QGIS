@@ -40,6 +40,7 @@ from qgis.gui import (
 )
 from qgis.core import (
     QgsApplication,
+    QgsFileUtils,
     QgsSettings,
     QgsError,
     QgsProcessingAlgorithm,
@@ -228,9 +229,7 @@ class ScriptEditorDialog(BASE, WIDGET):
                                                      self.tr("Processing scripts (*.py *.PY)"))
 
             if newPath:
-                if not newPath.lower().endswith(".py"):
-                    newPath += ".py"
-
+                newPath = QgsFileUtils.ensureFileNameHasExtension(newPath, ['py'])
                 self.code_editor_widget.setFilePath(newPath)
 
         if self.code_editor_widget.filePath():
