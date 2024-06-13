@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCodeEditorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -49,6 +50,8 @@ feedback, otherwise an integrated message bar will be used.
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void showEvent( QShowEvent *event );
+
+    virtual bool eventFilter( QObject *obj, QEvent *event );
 
 
     QgsCodeEditor *editor();

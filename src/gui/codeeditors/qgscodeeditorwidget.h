@@ -66,6 +66,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
     void resizeEvent( QResizeEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
+    bool eventFilter( QObject *obj, QEvent *event ) override;
 
     /**
      * Returns the wrapped code editor.

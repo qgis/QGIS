@@ -93,9 +93,6 @@ class Editor(QgsCodeEditorPython):
         self.tab_widget: EditorTabWidget = tab_widget
         self.code_editor_widget: Optional[QgsCodeEditorWidget] = None
 
-        #  recent modification time
-        self.lastModified = 0
-
         self.setMinimumHeight(120)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
@@ -125,6 +122,12 @@ class Editor(QgsCodeEditorPython):
         self.syntaxCheckScut.activated.connect(self.syntaxCheck)
         self.modificationChanged.connect(self.editor_tab.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
+
+    def set_code_editor_widget(self, widget: QgsCodeEditorWidget):
+        self.code_editor_widget = widget
+        self.code_editor_widget.loadedExternalChanges.connect(
+            self.loaded_external_changes
+        )
 
     def settingsEditor(self):
         # Set Python lexer
@@ -399,25 +402,8 @@ class Editor(QgsCodeEditorPython):
 
         return True
 
-    def focusInEvent(self, e):
-        if self.code_editor_widget.filePath():
-            if not QFileInfo(self.code_editor_widget.filePath()).exists():
-                msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>"{0}"</b> has been deleted or is not accessible').format(self.code_editor_widget.filePath())
-                self.showMessage(msgText,
-                                 level=Qgis.MessageLevel.Critical)
-                return
-        if self.code_editor_widget.filePath() and self.lastModified != QFileInfo(self.code_editor_widget.filePath()).lastModified():
-            self.beginUndoAction()
-            self.selectAll()
-            self.removeSelectedText()
-            self.insert(Path(self.code_editor_widget.filePath()).read_text(encoding='utf-8'))
-            self.setModified(False)
-            self.endUndoAction()
-
-            self.tab_widget.listObject(self.tab_widget.currentWidget())
-            self.lastModified = QFileInfo(self.code_editor_widget.filePath()).lastModified()
-        super().focusInEvent(e)
+    def loaded_external_changes(self):
+        self.tab_widget.listObject(self.tab_widget.currentWidget())
 
     def fileReadOnly(self):
         msgText = QCoreApplication.translate('PythonConsole',
@@ -536,7 +522,7 @@ class EditorTab(QWidget):
         self._editor_code_widget = QgsCodeEditorWidget(
             self._editor
         )
-        self._editor.code_editor_widget = self._editor_code_widget
+        self._editor.set_code_editor_widget(self._editor_code_widget)
         self._editor_code_widget.searchBarToggled.connect(
             self.search_bar_toggled
         )

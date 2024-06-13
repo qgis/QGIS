@@ -41,6 +41,9 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
 {
   Q_ASSERT( mEditor );
 
+  mEditor->installEventFilter( this );
+  installEventFilter( this );
+
   QVBoxLayout *vl = new QVBoxLayout();
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->setSpacing( 0 );
@@ -239,6 +242,51 @@ void QgsCodeEditorWidget::showEvent( QShowEvent *event )
 {
   QgsPanelWidget::showEvent( event );
   updateHighlightController();
+}
+
+bool QgsCodeEditorWidget::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() == QEvent::FocusIn )
+  {
+    if ( !mFilePath.isEmpty() )
+    {
+      if ( !QFile::exists( mFilePath ) )
+      {
+        // file deleted externally
+        if ( mMessageBar )
+        {
+          mMessageBar->pushCritical( QString(), tr( "The file <b>\"%1\"</b> has been deleted or is not accessible" ).arg( QDir::toNativeSeparators( mFilePath ) ) );
+        }
+      }
+      else
+      {
+        const QFileInfo fi( mFilePath );
+        if ( mLastModified != fi.lastModified() )
+        {
+          // TODO - we should give users a choice of how to react to this, eg "ignore changes"
+          // note -- we intentionally don't call loadFile here -- we want this action to be undo-able
+          QFile file( mFilePath );
+          if ( file.open( QFile::ReadOnly ) )
+          {
+            const QString content = file.readAll();
+
+            // don't clear, instead perform undoable actions:
+            mEditor->beginUndoAction();
+            mEditor->selectAll();
+            mEditor->removeSelectedText();
+            mEditor->insert( content );
+            mEditor->setModified( false );
+            mEditor->recolor();
+            mEditor->endUndoAction();
+
+            mLastModified = fi.lastModified();
+            emit loadedExternalChanges();
+          }
+        }
+      }
+    }
+  }
+  return QgsPanelWidget::eventFilter( obj, event );
 }
 
 QgsCodeEditorWidget::~QgsCodeEditorWidget() = default;
