@@ -238,7 +238,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       if ( !reportedErrors.isEmpty() )
       {
         mValueMapErrorsLabel->setVisible( true );
-        mValueMapErrorsLabel->setText( reportedErrors.join( QStringLiteral( "<br>" ) ) );
+        mValueMapErrorsLabel->setText( reportedErrors.join( QLatin1String( "<br>" ) ) );
       }
     }
     ++row;
