@@ -20,6 +20,7 @@
 #include "qgsguiutils.h"
 #include "qgsmessagebar.h"
 #include "qgsdecoratedscrollbar.h"
+#include "qgscodeeditorpython.h"
 
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -350,7 +351,7 @@ void QgsCodeEditorWidget::setFilePath( const QString &path )
   emit filePathChanged( mFilePath );
 }
 
-bool QgsCodeEditorWidget::openInExternalEditor()
+bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
 {
   if ( mFilePath.isEmpty() )
     return false;
@@ -358,6 +359,46 @@ bool QgsCodeEditorWidget::openInExternalEditor()
   const QDir dir = QFileInfo( mFilePath ).dir();
 
   bool useFallback = true;
+
+  QString externalEditorCommand;
+  switch ( mEditor->language() )
+  {
+    case Qgis::ScriptLanguage::Python:
+      externalEditorCommand = QgsCodeEditorPython::settingExternalPythonEditorCommand->value();
+      break;
+
+    case Qgis::ScriptLanguage::Css:
+    case Qgis::ScriptLanguage::QgisExpression:
+    case Qgis::ScriptLanguage::Html:
+    case Qgis::ScriptLanguage::JavaScript:
+    case Qgis::ScriptLanguage::Json:
+    case Qgis::ScriptLanguage::R:
+    case Qgis::ScriptLanguage::Sql:
+    case Qgis::ScriptLanguage::Batch:
+    case Qgis::ScriptLanguage::Bash:
+    case Qgis::ScriptLanguage::Unknown:
+      break;
+  }
+
+  int currentLine, currentColumn;
+  mEditor->getCursorPosition( &currentLine, &currentColumn );
+  if ( line < 0 )
+    line = currentLine;
+  if ( column < 0 )
+    column = currentColumn;
+
+  if ( !externalEditorCommand.isEmpty() )
+  {
+    externalEditorCommand = externalEditorCommand.replace( QStringLiteral( "<file>" ), mFilePath );
+    externalEditorCommand = externalEditorCommand.replace( QStringLiteral( "<line>" ), QString::number( line + 1 ) );
+    externalEditorCommand = externalEditorCommand.replace( QStringLiteral( "<col>" ), QString::number( column + 1 ) );
+
+    const QStringList commandParts = QProcess::splitCommand( externalEditorCommand );
+    if ( QProcess::startDetached( commandParts.at( 0 ), commandParts.mid( 1 ), dir.absolutePath() ) )
+    {
+      return true;
+    }
+  }
 
   const QString editorCommand = qgetenv( "EDITOR" );
   if ( !editorCommand.isEmpty() )

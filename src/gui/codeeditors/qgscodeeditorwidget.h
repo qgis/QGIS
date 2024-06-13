@@ -169,9 +169,15 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      *
      * This requires that the widget has an associated filePath() set.
      *
+     * Optionally a target \a line and \a column number can be specified to open the editor
+     * at the corresponding location. (Not all external editors support this.) Line/column
+     * numbers of -1 indicate that the current cursor position should be used. A \a line
+     * number of 0 corresponds to the first line, and a column number of 0 corresponds to
+     * the first column.
+     *
      * \returns TRUE if the file was opened successfully.
      */
-    bool openInExternalEditor();
+    bool openInExternalEditor( int line = -1, int column = -1 );
 
   signals:
 
