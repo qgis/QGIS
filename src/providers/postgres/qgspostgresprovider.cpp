@@ -3895,117 +3895,92 @@ QgsBox3D QgsPostgresProvider::extent3D() const
   if ( !isValid() || mGeometryColumn.isNull() )
     return QgsBox3D();
 
-  if ( mLayerExtent.isEmpty() )
-  {
-    QString sql;
-    QgsPostgresResult result;
-    QString ext;
+  if ( !mLayerExtent.isNull() ) return mLayerExtent;
 
-    // get the extents
-    if ( !mIsQuery && mUseEstimatedMetadata && mSpatialColType != SctGeography )
+  const int vmaj = connectionRO()->majorVersion();
+  const int vmin = connectionRO()->minorVersion();
+  QString ext;
+  QString sql;
+  QgsPostgresResult result;
+
+  // Estimate the extents, if requested and possible
+  if ( mUseEstimatedMetadata )
+    do
     {
-      // do stats exists?
-      sql = QStringLiteral( "SELECT count(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )
-            .arg( quotedValue( mSchemaName ),
-                  quotedValue( mTableName ),
-                  quotedValue( mGeometryColumn ) );
+      if ( mIsQuery ) break; // Cannot estimate extent of a query
+
+      // PostGIS up to PostGIS-3.4.x had bogus estimation
+      // for geography type, https://trac.osgeo.org/postgis/ticket/5734
+      if ( mSpatialColType == SctGeography ) break;
+
+      sql = QStringLiteral( "SELECT %1(%2,%3,%4)" )
+            .arg(
+              vmaj < 2 ? "estimated_extent" : ( vmaj == 2 && vmin < 1 ? "st_estimated_extent" : "st_estimatedextent" ),
+              quotedValue( mSchemaName ),
+              quotedValue( mTableName ),
+              quotedValue( mGeometryColumn )
+            );
+
       result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 )
-      {
-        if ( result.PQgetvalue( 0, 0 ).toInt() > 0 )
-        {
-          sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
-          result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-          if ( result.PQresultStatus() == PGRES_TUPLES_OK
-               && result.PQntuples() == 1
-               && result.PQgetvalue( 0, 0 ).toLong() > 0 )
-          {
-            sql = QStringLiteral( "SELECT %1(%2,%3,%4)" )
-                  .arg( connectionRO()->majorVersion() < 2 ? "estimated_extent" :
-                        ( connectionRO()->majorVersion() == 2 && connectionRO()->minorVersion() < 1 ? "st_estimated_extent" : "st_estimatedextent" ),
-                        quotedValue( mSchemaName ),
-                        quotedValue( mTableName ),
-                        quotedValue( mGeometryColumn ) );
-            result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-            if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
-            {
-              ext = result.PQgetvalue( 0, 0 );
 
-              // fix for what might be a PostGIS bug: when the extent crosses the
-              // dateline extent() returns -180 to 180 (which appears right), but
-              // estimated_extent() returns eastern bound of data (>-180) and
-              // 180 degrees.
-              if ( !ext.startsWith( QLatin1String( "-180 " ) ) && ext.contains( QLatin1String( ",180 " ) ) )
-              {
-                ext.clear();
-              }
-            }
-          }
-          else
-          {
-            // no features => ignore estimated extent
-            ext.clear();
-          }
-        }
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "no column statistics for %1.%2.%3" ).arg( mSchemaName, mTableName, mGeometryColumn ), 2 );
-      }
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK ) break;
+      if ( result.PQntuples() != 1 ) break;
+      if ( result.PQgetisnull( 0, 0 ) ) break;
+
+      ext = result.PQgetvalue( 0, 0 );
     }
+    while ( 0 );
 
-    if ( ext.isEmpty() )
+  // Compute the extents, if estimation failed or was disabled
+  if ( ext.isEmpty() )
+    do
     {
       sql = QStringLiteral( "SELECT %1(%2%3) FROM %4%5" )
-            .arg( connectionRO()->majorVersion() < 2 ? "extent" : "ST_3DExtent",
+            .arg( vmaj < 2 ? "extent" : "ST_3DExtent",
                   quotedIdentifier( mBoundingBoxColumn ),
                   ( mSpatialColType == SctPcPatch || mSpatialColType == SctGeography ) ? "::geometry" : "",
                   mQuery,
                   filterWhereClause() );
 
       result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
-      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "ROLLBACK" ) );
-      else if ( result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
-        ext = result.PQgetvalue( 0, 0 );
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK ) break;
+      if ( result.PQntuples() != 1 ) break;
+      if ( result.PQgetisnull( 0, 0 ) ) break;
+      ext = result.PQgetvalue( 0, 0 );
     }
+    while ( 0 );
 
-    if ( !ext.isEmpty() )
+  if ( !ext.isEmpty() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Got extents (%1) using: %2" ).arg( ext ).arg( sql ), 2 );
+
+    const thread_local QRegularExpression rx3d( "\\((.+) (.+) (.+),(.+) (.+) (.+)\\)" );
+    const QRegularExpressionMatch match = rx3d.match( ext );
+    if ( match.hasMatch() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Got extents (%1) using: %2" ).arg( ext ).arg( sql ), 2 );
-
-      const thread_local QRegularExpression rx3d( "\\((.+) (.+) (.+),(.+) (.+) (.+)\\)" );
-      const QRegularExpressionMatch match = rx3d.match( ext );
+      mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
+      mLayerExtent.setYMinimum( match.captured( 2 ).toDouble() );
+      mLayerExtent.setZMinimum( match.captured( 3 ).toDouble() );
+      mLayerExtent.setXMaximum( match.captured( 4 ).toDouble() );
+      mLayerExtent.setYMaximum( match.captured( 5 ).toDouble() );
+      mLayerExtent.setZMaximum( match.captured( 6 ).toDouble() );
+    }
+    else
+    {
+      const thread_local QRegularExpression rx2d( "\\((.+) (.+),(.+) (.+)\\)" );
+      const QRegularExpressionMatch match = rx2d.match( ext );
       if ( match.hasMatch() )
       {
         mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
         mLayerExtent.setYMinimum( match.captured( 2 ).toDouble() );
-        mLayerExtent.setZMinimum( match.captured( 3 ).toDouble() );
-        mLayerExtent.setXMaximum( match.captured( 4 ).toDouble() );
-        mLayerExtent.setYMaximum( match.captured( 5 ).toDouble() );
-        mLayerExtent.setZMaximum( match.captured( 6 ).toDouble() );
-
-        if ( !elevationProperties()->containsElevationData() )
-        {
-          mLayerExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
-          mLayerExtent.setZMaximum( std::numeric_limits<double>::quiet_NaN() );
-        }
+        mLayerExtent.setXMaximum( match.captured( 3 ).toDouble() );
+        mLayerExtent.setYMaximum( match.captured( 4 ).toDouble() );
+        mLayerExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
+        mLayerExtent.setZMaximum( std::numeric_limits<double>::quiet_NaN() );
       }
       else
       {
-        const thread_local QRegularExpression rx2d( "\\((.+) (.+),(.+) (.+)\\)" );
-        const QRegularExpressionMatch match = rx2d.match( ext );
-        if ( match.hasMatch() )
-        {
-          mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
-          mLayerExtent.setYMinimum( match.captured( 2 ).toDouble() );
-          mLayerExtent.setXMaximum( match.captured( 3 ).toDouble() );
-          mLayerExtent.setYMaximum( match.captured( 4 ).toDouble() );
-        }
-        else
-        {
-          QgsMessageLog::logMessage( tr( "result of extents query invalid: %1" ).arg( ext ), tr( "PostGIS" ) );
-        }
+        QgsMessageLog::logMessage( tr( "result of extents query invalid: %1" ).arg( ext ), tr( "PostGIS" ) );
       }
     }
 
@@ -4015,6 +3990,8 @@ QgsBox3D QgsPostgresProvider::extent3D() const
     }
     else
     {
+      mLayerExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
+      mLayerExtent.setZMaximum( std::numeric_limits<double>::quiet_NaN() );
       QgsDebugMsgLevel( "Set extents to 2D with: " + mLayerExtent.toRectangle().toString(), 2 );
     }
   }
