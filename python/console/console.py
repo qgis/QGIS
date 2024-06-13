@@ -626,7 +626,9 @@ class PythonConsoleWidget(QWidget):
         if not index:
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.file_path():
-            fileName = self.tabEditorWidget.tabText(index).replace('*', '') + '.py'
+            fileName = self.tabEditorWidget.tabText(index).replace('*', '')
+            fileName = QgsFileUtils.ensureFileNameHasExtension(fileName,
+                                                               ['py'])
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
