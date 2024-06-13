@@ -51,6 +51,8 @@ feedback, otherwise an integrated message bar will be used.
 
     virtual void showEvent( QShowEvent *event );
 
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
 
     QgsCodeEditor *editor();
 %Docstring
