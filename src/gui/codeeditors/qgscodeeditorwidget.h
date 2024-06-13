@@ -20,6 +20,8 @@
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
 
+#include <QDateTime>
+
 class QgsCodeEditor;
 class QgsFilterLineEdit;
 class QToolButton;
@@ -157,8 +159,19 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     void triggerFind();
 
     /**
+     * Loads the file at the specified \a path into the widget, replacing the code editor's
+     * content with that from the file.
+     *
+     * This automatically sets the widget's filePath()
+     *
+     * Returns TRUE if the file was loaded successfully.
+     */
+    bool loadFile( const QString &path );
+
+    /**
      * Sets the widget's associated file \a path.
      *
+     * \see loadFile()
      * \see filePathChanged()
      * \see filePath()
      */
@@ -187,6 +200,12 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * \see filePath()
      */
     void filePathChanged( const QString &path );
+
+    /**
+     * Emitted when the widget loads in text from the associated file to bring in
+     * changes made externally to the file.
+     */
+    void loadedExternalChanges();
 
   private slots:
 
@@ -230,6 +249,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;
     QString mFilePath;
+    QDateTime mLastModified;
 };
 
 #endif // QGSCODEEDITORWIDGET_H

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCodeEditorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -147,9 +148,21 @@ This will automatically open the search bar and start a find operation using
 the default behavior, e.g. searching for any selected text in the code editor.
 %End
 
+    bool loadFile( const QString &path );
+%Docstring
+Loads the file at the specified ``path`` into the widget, replacing the code editor's
+content with that from the file.
+
+This automatically sets the widget's :py:func:`~QgsCodeEditorWidget.filePath`
+
+Returns ``True`` if the file was loaded successfully.
+%End
+
     void setFilePath( const QString &path );
 %Docstring
 Sets the widget's associated file ``path``.
+
+.. seealso:: :py:func:`loadFile`
 
 .. seealso:: :py:func:`filePathChanged`
 
@@ -179,6 +192,12 @@ Emitted when the widget's associated file path is changed.
 .. seealso:: :py:func:`setFilePath`
 
 .. seealso:: :py:func:`filePath`
+%End
+
+    void loadedExternalChanges();
+%Docstring
+Emitted when the widget loads in text from the associated file to bring in
+changes made externally to the file.
 %End
 
 };
