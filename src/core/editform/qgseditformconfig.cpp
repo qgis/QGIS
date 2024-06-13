@@ -238,6 +238,8 @@ bool QgsEditFormConfig::readOnly( int idx ) const
     if ( d->mFields.fieldOrigin( idx ) == Qgis::FieldOrigin::Join
          || d->mFields.fieldOrigin( idx ) == Qgis::FieldOrigin::Expression )
       return true;
+    if ( d->mFields.at( idx ).isReadOnly() )
+      return true;
     return !d->mFieldEditables.value( d->mFields.at( idx ).name(), true );
   }
   else

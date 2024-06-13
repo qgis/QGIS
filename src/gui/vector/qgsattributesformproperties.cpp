@@ -1080,8 +1080,6 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
   mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
-  mEditableEnabled = layer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Join
-                     && layer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
   mReuseLastValues = layer->editFormConfig().reuseLastValue( idx );
   mFieldConstraints = layer->fields().at( idx ).constraints();
