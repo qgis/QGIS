@@ -70,6 +70,8 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
   private:
     QTreeWidget *mTree;
     QHash<QgsSymbolLayerReference, QTreeWidgetItem *> mItems;
+
+    friend class TestQgsMaskingWidget;
 };
 
 #endif
