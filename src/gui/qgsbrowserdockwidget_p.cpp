@@ -292,6 +292,11 @@ void QgsBrowserLayerProperties::setCondensedMode( bool )
 
 void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 {
+  if ( !url.fragment().isEmpty() && url.toString().startsWith( QStringLiteral( "#" ) ) )
+  {
+    mMetadataTextBrowser->scrollToAnchor( url.fragment() );
+    return;
+  }
   const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
     QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
