@@ -66,10 +66,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QStringList extraDatasets() const override;
 
     int datasetGroupCount() const override;
-    int datasetCount( int groupIndex ) const override;
+    int datasetCount( int groupIndex ) const override final;
 
-    QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
-    QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
+    QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override final;
+    QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override final;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
     QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
     QgsMesh3DDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;

@@ -51,6 +51,7 @@ class TestQgsMdalProvider : public QgsTest
     void filters();
     void encodeDecodeUri();
     void absoluteRelativeUri();
+    void preserveMeshMetadata();
 
   private:
     QString mTestDataDir;
@@ -167,6 +168,43 @@ void TestQgsMdalProvider::load()
     QVERIFY( !mp->isValid() );
     delete provider;
   }
+}
+
+void TestQgsMdalProvider::preserveMeshMetadata()
+{
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( "mdal" );
+  QVERIFY( mdalMetadata );
+
+  QString uri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/small.mesh" );
+
+  QDir dir( QDir::tempPath() + QStringLiteral( "/mesh_metadata_test" ) );
+  dir.mkpath( dir.path() );
+  Q_ASSERT( dir.exists() );
+  QFile meshFile( uri );
+  const QString copiedFile = dir.filePath( QStringLiteral( "small.mesh" ) );
+  meshFile.copy( copiedFile );
+
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
+                                QStringLiteral( "mdal" ),
+                                copiedFile,
+                                QgsDataProvider::ProviderOptions()
+                              );
+
+  QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+  QVERIFY( mp );
+  QVERIFY( mp->isValid() );
+
+  QgsMesh *mesh = new QgsMesh();
+  mp->populateMesh( mesh );
+  QVERIFY( mp->saveMeshFrame( *mesh ) );
+  mp->reloadData();
+
+  QVERIFY( mp->isValid() );
+
+  dir.removeRecursively();
+
+  delete provider;
+  delete mesh;
 }
 
 QGSTEST_MAIN( TestQgsMdalProvider )
