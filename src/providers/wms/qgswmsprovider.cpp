@@ -2620,18 +2620,19 @@ QString QgsWmsProvider::htmlMetadata()
 
   if ( !mSettings.mTiled )
   {
-    metadata += QStringLiteral( "&nbsp;<a href=\"\" onclick=\"document.getElementById('selectedlayers').scrollIntoView(); return false;\">" ) %
+    // Use also HTML anchors for use in QTextBrowser / mMetadataTextBrowser https://github.com/qgis/QGIS/issues/39689
+    metadata += QStringLiteral( "&nbsp;<a href=\"#selectedlayers\" onclick=\"document.getElementById('selectedlayers').scrollIntoView(); return false;\">" ) %
                 tr( "Selected Layers" ) %
-                QStringLiteral( "</a>&nbsp;<a href=\"\" onclick=\"document.getElementById('otherlayers').scrollIntoView(); return false;\">" ) %
+                QStringLiteral( "</a>&nbsp;<a href=\"#otherlayers\" onclick=\"document.getElementById('otherlayers').scrollIntoView(); return false;\">" ) %
                 tr( "Other Layers" ) %
                 QStringLiteral( "</a>" );
   }
   else
   {
-    metadata += QStringLiteral( "&nbsp;<a href=\"\" onclick=\"document.getElementById('tilesetproperties').scrollIntoView(); return false;\">" ) %
+    metadata += QStringLiteral( "&nbsp;<a href=\"#tilesetproperties\" onclick=\"document.getElementById('tilesetproperties').scrollIntoView(); return false;\">" ) %
                 tr( "Tile Layer Properties" ) %
                 QStringLiteral( "</a> "
-                                "&nbsp;<a href=\"\" onclick=\"document.getElementById('cachestats'); return false;\">" ) %
+                                "&nbsp;<a href=\"#cachestats\" onclick=\"document.getElementById('cachestats'); return false;\">" ) %
                 tr( "Cache Stats" ) %
                 QStringLiteral( "</a> " );
   }
