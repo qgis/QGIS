@@ -2632,7 +2632,7 @@ QString QgsWmsProvider::htmlMetadata()
     metadata += QStringLiteral( "&nbsp;<a href=\"#tilesetproperties\" onclick=\"document.getElementById('tilesetproperties').scrollIntoView(); return false;\">" ) %
                 tr( "Tile Layer Properties" ) %
                 QStringLiteral( "</a> "
-                                "&nbsp;<a href=\"#cachestats\" onclick=\"document.getElementById('cachestats'); return false;\">" ) %
+                                "&nbsp;<a href=\"#cachestats\" onclick=\"document.getElementById('cachestats').scrollIntoView(); return false;\">" ) %
                 tr( "Cache Stats" ) %
                 QStringLiteral( "</a> " );
   }
