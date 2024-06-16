@@ -279,7 +279,16 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
   if ( mSelectionHandler->keyReleaseEvent( e ) )
     return;
 
-  QgsMapTool::keyReleaseEvent( e );
+  switch ( e->key() )
+  {
+    case Qt::Key_Escape:
+    {
+      clearResults();
+      return;
+    }
+  }
+
+  QgsMapToolIdentify::keyReleaseEvent( e );
 }
 
 void QgsMapToolIdentifyAction::showIdentifyResults( const QList<IdentifyResult> &identifyResults )

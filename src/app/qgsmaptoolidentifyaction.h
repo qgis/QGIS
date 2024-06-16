@@ -50,15 +50,10 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     ~QgsMapToolIdentifyAction() override;
 
-    //! Overridden mouse move event
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-
-    //! Overridden mouse press event
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
-
-    //! Overridden mouse release event
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-
+    void keyReleaseEvent( QKeyEvent *e ) override;
     void activate() override;
 
     void deactivate() override;
@@ -100,8 +95,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Qgis::DistanceUnit displayDistanceUnits() const override;
     Qgis::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
-
-    void keyReleaseEvent( QKeyEvent *e ) override;
 
     friend class TestQgsMapToolIdentifyAction;
 };
