@@ -333,6 +333,11 @@ QToolButton::menu-indicator:disabled
     width: 0.8em;
     height: 1.2em;
 }
+
+QToolBox::tab {
+    color: @text;
+}
+
 QToolBar QToolButton, QToolButton::menu-button
 {
     border-color: rgba(0,0,0,0);
@@ -1301,4 +1306,12 @@ QgsAttributeFormWidget QComboBox:disabled {
 
 QgsAttributeFormWidget QComboBox::down-arrow:disabled {
      image: none;
+}
+
+QWidget#mCadWidget QLineEdit {
+    color: @textlight;
+}
+
+QWidget#mCadWidget QLineEdit:disabled {
+    color: @text;
 }
