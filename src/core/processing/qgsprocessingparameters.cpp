@@ -3516,30 +3516,40 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &v, Qg
   if ( input.userType() != QMetaType::Type::QString || input.toString().isEmpty() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
+  if ( variantIsValidStringForExtent( input ) )
+    return true;
+
   if ( !context )
   {
     // that's as far as we can get without a context
     return true;
   }
 
-  const thread_local QRegularExpression rx( QStringLiteral( "^(.*?)\\s*,\\s*(.*?)\\s*,\\s*(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" ) );
-  const QRegularExpressionMatch match = rx.match( input.toString() );
-  if ( match.hasMatch() )
-  {
-    bool xMinOk = false;
-    ( void )match.captured( 1 ).toDouble( &xMinOk );
-    bool xMaxOk = false;
-    ( void )match.captured( 2 ).toDouble( &xMaxOk );
-    bool yMinOk = false;
-    ( void )match.captured( 3 ).toDouble( &yMinOk );
-    bool yMaxOk = false;
-    ( void )match.captured( 4 ).toDouble( &yMaxOk );
-    if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
-      return true;
-  }
-
   // try as layer extent
   return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+}
+
+bool QgsProcessingParameterExtent::variantIsValidStringForExtent( const QVariant &value )
+{
+  if ( value.userType() == QMetaType::Type::QString )
+  {
+    const thread_local QRegularExpression rx( QStringLiteral( "^(.*?)\\s*,\\s*(.*?)\\s*,\\s*(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" ) );
+    const QRegularExpressionMatch match = rx.match( value.toString() );
+    if ( match.hasMatch() )
+    {
+      bool xMinOk = false;
+      ( void )match.captured( 1 ).toDouble( &xMinOk );
+      bool xMaxOk = false;
+      ( void )match.captured( 2 ).toDouble( &xMaxOk );
+      bool yMinOk = false;
+      ( void )match.captured( 3 ).toDouble( &yMinOk );
+      bool yMaxOk = false;
+      ( void )match.captured( 4 ).toDouble( &yMaxOk );
+      if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
+        return true;
+    }
+  }
+  return false;
 }
 
 QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
@@ -3575,6 +3585,10 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
       return QStringLiteral( "QgsGeometry.fromWkt('%1')" ).arg( wkt );
     }
   }
+  else if ( variantIsValidStringForExtent( value ) )
+  {
+    return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+  }
 
   QVariantMap p;
   p.insert( name(), value );
@@ -3587,11 +3601,21 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
 
 QString QgsProcessingParameterExtent::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
+  if ( variantIsValidStringForExtent( value ) )
+  {
+    return value.toString();
+  }
+
   return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QVariant QgsProcessingParameterExtent::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( variantIsValidStringForExtent( value ) )
+  {
+    return value;
+  }
+
   return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
