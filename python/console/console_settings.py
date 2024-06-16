@@ -221,6 +221,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         pythonSettingsTreeNode.childSetting("autopep8-level").setValue(self.autopep8Level.value())
         pythonSettingsTreeNode.childSetting("black-normalize-quotes").setValue(self.blackNormalizeQuotes.isChecked())
         pythonSettingsTreeNode.childSetting("max-line-length").setValue(self.maxLineLength.value())
+        pythonSettingsTreeNode.childSetting('external-editor').setValue(
+            self.externalEditor.text())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -262,6 +264,10 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
+
+        self.externalEditor.setText(
+            pythonSettingsTreeNode.childSetting('external-editor').value()
+        )
 
     def onFormatterChanged(self):
         """ Toggle formatter-specific options visibility when the formatter is changed """
