@@ -1178,14 +1178,14 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           {
             const float fValue { value.toFloat() };
             valueString = QgsRasterBlock::printValue( fValue );
-            const int precision { valueString.count( QRegularExpression( QStringLiteral( "\\d" ) ) ) };
+            const int precision { static_cast<int>( valueString.count( QRegularExpression( QStringLiteral( "\\d" ) ) ) ) };
             valueString = QLocale().toString( fValue, 'g', precision );
           }
           else
           {
             const double dValue { value.toDouble() };
             valueString = QgsRasterBlock::printValue( dValue );
-            const int precision { valueString.count( QRegularExpression( QStringLiteral( "\\d" ) ) ) };
+            const int precision { static_cast<int>( valueString.count( QRegularExpression( QStringLiteral( "\\d" ) ) ) ) };
             valueString = QLocale().toString( dValue, 'g', precision );
           }
         }
