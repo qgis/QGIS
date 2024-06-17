@@ -1713,7 +1713,8 @@ while ($LINE_IDX < $LINE_COUNT){
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name.is_monkey_patched = True\n";
                             }
                             if ( $ACTUAL_CLASS ne "" ){
-                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
+                                my $complete_class_path = join('.', @CLASSNAME);
+                                push @OUTPUT_PYTHON, "$complete_class_path.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
                                 push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                             } else {
                                 push @OUTPUT_PYTHON, "$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
