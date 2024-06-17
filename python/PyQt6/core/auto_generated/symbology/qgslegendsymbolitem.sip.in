@@ -112,6 +112,24 @@ Takes ownership of the settings object.
 Returns extra information for data-defined size legend rendering. Normally it returns ``None``.
 %End
 
+    void setUserData( int key, QVariant &value );
+%Docstring
+Adds a ``key`` - ``value`` pair to the item's user data.
+
+.. seealso:: :py:func:`userData`
+
+.. versionadded:: 3.38
+%End
+
+    QVariant userData( int key ) const;
+%Docstring
+Retrieves the item's user data with the specified ``key``.
+
+.. seealso:: :py:func:`setUserData`
+
+.. versionadded:: 3.38
+%End
+
 };
 
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
