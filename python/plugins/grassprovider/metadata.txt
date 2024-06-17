@@ -1,17 +1,16 @@
 [general]
-name=GRASS GIS provider
+name=GRASS GIS Processing Provider
 description=GRASS GIS Processing provider
-about=GRASS GIS Processing provider
+about=Exposes selected GRASS GIS algorithms and tools for use within the QGIS Processing framework.
 category=Analysis
 version=2.12.99
 qgisMinimumVersion=3.0
 supportsQt6=yes
-author=Victor Olaya
 
 icon=:/images/themes/default/providerGrass.svg
 
-homepage=https://qgis.org
+homepage=https://grass.osgeo.org
 tracker=https://github.com/qgis/QGIS/issues
-repository=https://github.com/qgis/QGIS
+repository=https://github.com/qgis/QGIS/tree/master/python/plugins/grassprovider
 
 hasProcessingProvider=yes

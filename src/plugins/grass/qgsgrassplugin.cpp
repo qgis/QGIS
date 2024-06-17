@@ -54,7 +54,7 @@ extern "C"
 #include <grass/version.h>
 }
 
-static const QString pluginName = QObject::tr( "GRASS %1" ).arg( GRASS_VERSION_MAJOR );
+static const QString pluginName = QObject::tr( "GRASS %1 (deprecated plugin)" ).arg( GRASS_VERSION_MAJOR );
 static const QString pluginDescription = QObject::tr( "GRASS %1 (Geographic Resources Analysis Support System)" ).arg( GRASS_VERSION_MAJOR );
 static const QString pluginCategory = QObject::tr( "Plugins" );
 static const QString pluginVersion = QObject::tr( "Version 2.0" );
