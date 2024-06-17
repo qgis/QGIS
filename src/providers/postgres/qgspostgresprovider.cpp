@@ -3909,9 +3909,15 @@ QgsBox3D QgsPostgresProvider::extent3D() const
     {
       if ( mIsQuery ) break; // Cannot estimate extent of a query
 
-      // PostGIS up to PostGIS-3.4.x had bogus estimation
-      // for geography type, https://trac.osgeo.org/postgis/ticket/5734
-      if ( mSpatialColType == SctGeography ) break;
+      if ( mSpatialColType == SctGeography )
+      {
+        // PostGIS up to PostGIS-3.4.x had bogus estimation
+        // for geography type, https://trac.osgeo.org/postgis/ticket/5734
+        if ( vmaj < 3 || ( vmaj == 3 && vmin < 5 ) )
+        {
+          break;
+        }
+      }
 
       sql = QStringLiteral( "SELECT %1(%2,%3,%4)" )
             .arg(
