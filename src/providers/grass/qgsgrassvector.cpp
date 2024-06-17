@@ -230,7 +230,8 @@ bool QgsGrassVector::openHead()
   G_TRY
   {
     map = QgsGrass::vectNewMapStruct();
-    level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().constData(), ( char * ) mGrassObject.mapset().toUtf8().constData() );
+
+    level = Vect_open_old_head( map, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
   }
   G_CATCH( QgsGrass::Exception & e )
   {
@@ -279,10 +280,13 @@ bool QgsGrassVector::openHead()
 
     for ( int i = 0; i < ncidx; i++ )
     {
-      int field = Vect_cidx_get_field_number( map, i );
+      const int field = Vect_cidx_get_field_number( map, i );
+      if ( field <= 0 )
+        continue;
+
       QgsDebugMsgLevel( QString( "i = %1 layer = %2" ).arg( i ).arg( field ), 2 );
 
-      struct field_info *fieldInfo = Vect_get_field( map, field ); // should work also with field = 0
+      struct field_info *fieldInfo = Vect_get_field( map, field );
 
       QgsGrassVectorLayer *layer = new QgsGrassVectorLayer( mGrassObject, field, fieldInfo, this );
       const auto typeMap = QgsGrass::vectorTypeMap();
