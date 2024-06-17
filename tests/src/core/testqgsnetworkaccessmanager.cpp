@@ -138,11 +138,13 @@ class TestAuthRequestHandler : public QgsNetworkAuthenticationHandler
 
 };
 
-class TestQgsNetworkAccessManager : public QObject
+class TestQgsNetworkAccessManager : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsNetworkAccessManager() = default;
+    TestQgsNetworkAccessManager()
+      : QgsTest( QStringLiteral( "Network access manager tests" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -628,6 +630,11 @@ void TestQgsNetworkAccessManager::fetchPostMultiPart_data()
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
 {
+  if ( QgsTest::isCIRun() )
+  {
+    QSKIP( "badssl.com service is not reliable enough for use on CI" );
+  }
+
   const QObject context;
   //test fetching from a blank url
   bool loaded = false;
@@ -729,6 +736,11 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
 
 void TestQgsNetworkAccessManager::testSslErrorHandler()
 {
+  if ( QgsTest::isCIRun() )
+  {
+    QSKIP( "badssl.com service is not reliable enough for use on CI" );
+  }
+
   QgsNetworkAccessManager::instance()->setSslErrorHandler( std::make_unique< TestSslErrorHandler >() );
 
   const QObject context;

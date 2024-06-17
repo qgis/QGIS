@@ -232,15 +232,15 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
       }
 
       case QgsLayoutExporter::FileError:
-        throw QgsProcessingException( QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( directory ) ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( directory ) ) );
 
       case QgsLayoutExporter::MemoryError:
-        throw QgsProcessingException( QObject::tr( "Trying to create the image "
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Trying to create the image "
                                       "resulted in a memory overflow.\n\n"
                                       "Please try a lower resolution or a smaller paper size." ) );
 
       case QgsLayoutExporter::IteratorError:
-        throw QgsProcessingException( QObject::tr( "Error encountered while exporting atlas." ) );
+        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Error encountered while exporting atlas." ) );
 
       case QgsLayoutExporter::SvgLayerError:
       case QgsLayoutExporter::PrintError:

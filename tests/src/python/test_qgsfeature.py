@@ -25,6 +25,8 @@ from qgis.core import (
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
+from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -183,6 +185,24 @@ class TestQgsFeature(QgisTestCase):
         feat.setAttributes([NULL])
         assert [NULL] == feat.attributes()
 
+        # Test different type of attributes
+        attributes = [
+            -95985674563452,
+            12,
+            34.3,
+            False,
+            "QGIS",
+            "some value",
+            QVariant("foo"),
+            QDate(2023, 1, 1),
+            QTime(12, 11, 10),
+            QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)),
+            True
+        ]
+        feat.initAttributes(len(attributes))
+        feat.setAttributes(attributes)
+        self.assertEqual(feat.attributes(), attributes)
+
     def test_setAttribute(self):
         feat = QgsFeature()
         feat.initAttributes(1)
@@ -191,6 +211,74 @@ class TestQgsFeature(QgisTestCase):
         with self.assertRaises(KeyError):
             feat.setAttribute(10, 5)
         self.assertTrue(feat.setAttribute(0, 5))
+
+        # Test different type of attributes
+        attributes = [
+            -9585674563452,
+            34.3,
+            False,
+            "QGIS",
+            QVariant("foo"),
+            QDate(2023, 1, 1),
+            QTime(12, 11, 10),
+            QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10))
+        ]
+        self.assertEqual(feat.attributeCount(), 1)
+        for attribute in attributes:
+            self.assertTrue(feat.setAttribute(0, attribute))
+            self.assertEqual(feat.attribute(0), attribute)
+
+            feat.setAttribute(0, None)
+            self.assertEqual(feat.attribute(0), NULL)
+
+            feat[0] = attribute
+            self.assertEqual(feat.attribute(0), attribute)
+
+    def test_SetAttributeByName(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+
+        feat = QgsFeature(fields)
+        feat.initAttributes(2)
+
+        feat['my_field'] = 'foo'
+        feat['my_field2'] = 'bah'
+        self.assertEqual(feat.attributes(), ['foo', 'bah'])
+        self.assertEqual(feat.attribute('my_field'), 'foo')
+        self.assertEqual(feat.attribute('my_field2'), 'bah')
+
+        # Test different type of attributes
+        attributes = [
+            {'name': 'int', 'value': -9585674563452},
+            {'name': 'float', 'value': 34.3},
+            {'name': 'bool', 'value': False},
+            {'name': 'string', 'value': 'QGIS'},
+            {'name': 'variant', 'value': QVariant('foo')},
+            {'name': 'date', 'value': QDate(2023, 1, 1)},
+            {'name': 'time', 'value': QTime(12, 11, 10)},
+            {'name': 'datetime', 'value': QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10))}
+        ]
+        fields = QgsFields()
+        for attribute in attributes:
+            fields.append(QgsField(attribute['name']))
+
+        feat = QgsFeature(fields)
+        feat.initAttributes(len(attributes))
+
+        for attr in attributes:
+            name = attr['name']
+            value = attr['value']
+            feat.setAttribute(name, value)
+            self.assertEqual(feat.attribute(name), value)
+
+            feat.setAttribute(name, None)
+            self.assertEqual(feat.attribute(name), NULL)
+
+            feat[name] = value
+            self.assertEqual(feat.attribute(name), value)
 
     def test_DeleteAttribute(self):
         feat = QgsFeature()

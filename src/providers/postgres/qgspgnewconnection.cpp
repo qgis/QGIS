@@ -168,6 +168,8 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentData().toInt() );
+  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
+  settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) ? "true" : "false" );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );

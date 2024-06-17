@@ -142,6 +142,8 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
     map->addRenderedFeatureHandler( handler );
   }
 
+  mLayerTreeGroupOrder = mLayout->customProperty( QStringLiteral( "pdfGroupOrder" ) ).toStringList();
+
   // start with project layer order, and then apply custom layer order if set
   QStringList geoPdfLayerOrder;
   const QString presetLayerOrder = mLayout->customProperty( QStringLiteral( "pdfLayerOrder" ) ).toString();

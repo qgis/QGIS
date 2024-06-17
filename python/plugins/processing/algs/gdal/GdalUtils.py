@@ -27,10 +27,6 @@ import warnings
 
 import psycopg2
 
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-    from osgeo import ogr
-
 from qgis.core import (Qgis,
                        QgsBlockingProcess,
                        QgsRunProcess,
@@ -55,9 +51,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
 try:
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-        from osgeo import gdal  # NOQA
+    from osgeo import gdal, ogr
+    gdal.UseExceptions()
+    ogr.UseExceptions()
 
     gdalAvailable = True
 except:
@@ -436,8 +432,9 @@ class GdalUtils:
             if f.startswith('layerid='):
                 layerid = int(f.split('=')[1])
 
-        ds = ogr.Open(basePath)
-        if not ds:
+        try:
+            ds = gdal.OpenEx(basePath, gdal.OF_VECTOR)
+        except Exception:
             return None
 
         ly = ds.GetLayer(layerid)

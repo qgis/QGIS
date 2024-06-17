@@ -494,6 +494,8 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, &QgsFeatureListComboBox::currentFeatureChanged, this, &QgsRelationReferenceWidget::comboReferenceChanged );
+    // To avoid wrongly signaling a foreign key change, handle model feature found state following feature gathering separately
+    connect( mComboBox, &QgsFeatureListComboBox::currentFeatureFoundChanged, this, &QgsRelationReferenceWidget::comboReferenceFoundChanged );
 
     QApplication::restoreOverrideCursor();
 
@@ -624,6 +626,13 @@ void QgsRelationReferenceWidget::comboReferenceChanged()
   updateAttributeEditorFrame( mFeature );
 
   emitForeignKeysChanged( mComboBox->identifierValues() );
+}
+
+void QgsRelationReferenceWidget::comboReferenceFoundChanged( bool )
+{
+  mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );
+  highlightFeature( mFeature );
+  updateAttributeEditorFrame( mFeature );
 }
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature &feature )

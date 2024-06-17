@@ -20,6 +20,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsReadWriteContext,
     QgsUnitTypes,
+    QgsDoubleRange,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -102,6 +103,21 @@ class TestQgsPointCloudElevationProperties(QgisTestCase):
         props.setRespectLayerColors(False)
         layer.setRenderer(QgsPointCloudClassifiedRenderer())
         self.assertEqual(len(spy), 1)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def test_layer_calculations(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        props = layer.elevationProperties()
+        self.assertEqual(props.calculateZRange(layer), QgsDoubleRange(0.98, 1.25))
+        self.assertEqual(props.significantZValues(layer),
+                         [0.98, 1.25])
+
+        props.setZScale(2)
+        props.setZOffset(0.1)
+        self.assertEqual(props.significantZValues(layer),
+                         [2.06, 2.6])
 
 
 if __name__ == '__main__':

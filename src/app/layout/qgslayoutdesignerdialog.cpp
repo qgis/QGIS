@@ -2192,9 +2192,13 @@ void QgsLayoutDesignerDialog::print()
     case QgsLayoutExporter::PrintError:
     {
       QString message;
-      if ( !printerName.isEmpty() )
+      if ( !exporter.errorMessage().isEmpty() )
       {
-        message =   tr( "Could not create print device for %1." ).arg( printerName );
+        message = exporter.errorMessage();
+      }
+      else if ( !printerName.isEmpty() )
+      {
+        message = tr( "Could not create print device for %1." ).arg( printerName );
       }
       else
       {
@@ -2209,13 +2213,24 @@ void QgsLayoutDesignerDialog::print()
     }
 
     case QgsLayoutExporter::MemoryError:
+    {
       cursorOverride.release();
+      QString message;
+      if ( !exporter.errorMessage().isEmpty() )
+      {
+        message = exporter.errorMessage();
+      }
+      else
+      {
+        message = tr( "Printing the layout "
+                      "resulted in a memory overflow.\n\n"
+                      "Please try a lower resolution or a smaller paper size." );
+      }
       QMessageBox::warning( this, tr( "Memory Allocation Error" ),
-                            tr( "Printing the layout "
-                                "resulted in a memory overflow.\n\n"
-                                "Please try a lower resolution or a smaller paper size." ),
+                            message,
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
+    }
 
     case QgsLayoutExporter::FileError:
     case QgsLayoutExporter::SvgLayerError:
@@ -2310,7 +2325,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     case QgsLayoutExporter::FileError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Image Export Error" ),
-                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( exporter.errorFile() ) ),
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( exporter.errorFile() ) ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2318,7 +2333,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     case QgsLayoutExporter::MemoryError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Image Export Error" ),
-                            tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
                             .arg( QDir::toNativeSeparators( exporter.errorFile() ) ).arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
@@ -2425,7 +2440,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     case QgsLayoutExporter::FileError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to PDF" ),
-                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2433,7 +2448,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     case QgsLayoutExporter::PrintError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to PDF" ),
-                            tr( "Could not create print device." ),
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2442,7 +2457,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     case QgsLayoutExporter::MemoryError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to PDF" ),
-                            tr( "Exporting the PDF "
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -2543,7 +2558,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::FileError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
-                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2551,7 +2566,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::SvgLayerError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
-                            tr( "Cannot create layered SVG file %1." ).arg( outputFileName ),
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Cannot create layered SVG file %1." ).arg( outputFileName ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2559,7 +2574,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::PrintError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
-                            tr( "Could not create print device." ),
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2568,7 +2583,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::MemoryError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
-                            tr( "Exporting the SVG "
+                            !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -2828,9 +2843,13 @@ void QgsLayoutDesignerDialog::printAtlas()
     case QgsLayoutExporter::PrintError:
     {
       QString message;
-      if ( !printerName.isEmpty() )
+      if ( !error.isEmpty() )
       {
-        message =   tr( "Could not create print device for %1." ).arg( printerName );
+        message = error;
+      }
+      else if ( !printerName.isEmpty() )
+      {
+        message =  tr( "Could not create print device for %1." ).arg( printerName );
       }
       else
       {
@@ -2847,7 +2866,7 @@ void QgsLayoutDesignerDialog::printAtlas()
     case QgsLayoutExporter::MemoryError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Atlas" ),
-                            tr( "Printing the layout "
+                            !error.isEmpty() ? error :  tr( "Printing the layout "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -2856,7 +2875,7 @@ void QgsLayoutDesignerDialog::printAtlas()
     case QgsLayoutExporter::IteratorError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Atlas" ),
-                            tr( "Error encountered while printing atlas." ),
+                            !error.isEmpty() ? error : tr( "Error encountered while printing atlas." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3024,7 +3043,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Export Atlas as Image" ),
-                            tr( "Error encountered while exporting atlas." ),
+                            !error.isEmpty() ? error : tr( "Error encountered while exporting atlas." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3044,7 +3063,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Export Atlas as Image" ),
-                            tr( "Trying to create image of %2×%3 @ %4dpi "
+                            !error.isEmpty() ? error : tr( "Trying to create image of %2×%3 @ %4dpi "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
                             .arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
@@ -3196,14 +3215,14 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
     case QgsLayoutExporter::SvgLayerError:
       QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
-                            tr( "Cannot create layered SVG file." ),
+                            !error.isEmpty() ? error : tr( "Cannot create layered SVG file." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::PrintError:
       QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
-                            tr( "Could not create print device." ),
+                            !error.isEmpty() ? error : tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3211,7 +3230,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
-                            tr( "Exporting the SVG "
+                            !error.isEmpty() ? error : tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -3219,7 +3238,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
-                            tr( "Error encountered while exporting atlas." ),
+                            !error.isEmpty() ? error : tr( "Error encountered while exporting atlas." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3447,7 +3466,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
     case QgsLayoutExporter::PrintError:
       QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
-                            tr( "Could not create print device." ),
+                            !error.isEmpty() ? error : tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3455,7 +3474,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
-                            tr( "Exporting the PDF "
+                            !error.isEmpty() ? error : tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -3463,7 +3482,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
-                            tr( "Error encountered while exporting atlas" ),
+                            !error.isEmpty() ? error : tr( "Error encountered while exporting atlas" ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3556,7 +3575,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Export Report as Image" ),
-                            tr( "Error encountered while exporting report" ),
+                            !error.isEmpty() ? error : tr( "Error encountered while exporting report" ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3576,7 +3595,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Export Report as Image" ),
-                            tr( "Trying to create image of %2×%3 @ %4dpi "
+                            !error.isEmpty() ? error : tr( "Trying to create image of %2×%3 @ %4dpi "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
                             .arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
@@ -3681,14 +3700,14 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
     case QgsLayoutExporter::SvgLayerError:
       QMessageBox::warning( this, tr( "Export Report as SVG" ),
-                            tr( "Cannot create layered SVG file." ),
+                            !error.isEmpty() ? error : tr( "Cannot create layered SVG file." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::PrintError:
       QMessageBox::warning( this, tr( "Export Report as SVG" ),
-                            tr( "Could not create print device." ),
+                            !error.isEmpty() ? error : tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3696,7 +3715,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Export Report as SVG" ),
-                            tr( "Exporting the SVG "
+                            !error.isEmpty() ? error : tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -3704,7 +3723,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Export Report as SVG" ),
-                            tr( "Error encountered while exporting report." ),
+                            !error.isEmpty() ? error : tr( "Error encountered while exporting report." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3820,7 +3839,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
     case QgsLayoutExporter::PrintError:
       QMessageBox::warning( this, tr( "Export Report as PDF" ),
-                            tr( "Could not create print device." ),
+                            !error.isEmpty() ? error : tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3828,7 +3847,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Export Report as PDF" ),
-                            tr( "Exporting the PDF "
+                            !error.isEmpty() ? error : tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -3836,7 +3855,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Export Report as PDF" ),
-                            tr( "Error encountered while exporting report." ),
+                            !error.isEmpty() ? error : tr( "Error encountered while exporting report." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3929,9 +3948,13 @@ void QgsLayoutDesignerDialog::printReport()
     case QgsLayoutExporter::PrintError:
     {
       QString message;
-      if ( !printerName.isEmpty() )
+      if ( !error.isEmpty() )
       {
-        message =   tr( "Could not create print device for %1." ).arg( printerName );
+        message = error;
+      }
+      else if ( !printerName.isEmpty() )
+      {
+        message = tr( "Could not create print device for %1." ).arg( printerName );
       }
       else
       {
@@ -3948,7 +3971,7 @@ void QgsLayoutDesignerDialog::printReport()
     case QgsLayoutExporter::MemoryError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Report" ),
-                            tr( "Printing the report "
+                            !error.isEmpty() ? error : tr( "Printing the report "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
@@ -3957,7 +3980,7 @@ void QgsLayoutDesignerDialog::printReport()
     case QgsLayoutExporter::IteratorError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Report" ),
-                            tr( "Error encountered while printing report." ),
+                            !error.isEmpty() ? error : tr( "Error encountered while printing report." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -4599,6 +4622,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), useOgcBestPracticeFormat ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QLatin1String( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geoPdfLayerOrder.join( QLatin1String( "~~~" ) ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfGroupOrder" ), dialog.geoPdfGroupOrder() );
     mLayout->setCustomProperty( QStringLiteral( "pdfLosslessImages" ), losslessImages ? 1 : 0 );
   }
 

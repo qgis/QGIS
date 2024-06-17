@@ -33,7 +33,11 @@ set to a color with an ambiguous hue (e.g., black or white shades).
       Hue,
       Saturation,
       Value,
-      Alpha
+      Alpha,
+      Cyan,
+      Magenta,
+      Yellow,
+      Black
     };
 
     QgsColorWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = Multiple );
@@ -145,7 +149,7 @@ Returns the range of valid values for the color widget's component
 :return: maximum value allowed for color component, or -1 if widget has multiple components
 %End
 
-    int componentRange( ColorComponent component ) const;
+    static int componentRange( ColorComponent component );
 %Docstring
 Returns the range of valid values a color component
 
@@ -172,7 +176,7 @@ as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the satu
 :return: explicitly set hue for widget
 %End
 
-    void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) const;
+    static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue );
 %Docstring
 Alters a color by modifying the value of a specific color component
 
@@ -180,6 +184,16 @@ Alters a color by modifying the value of a specific color component
 :param component: color component to alter
 :param newValue: new value of color component. Values are automatically clipped to a
                  valid range for the color component.
+%End
+
+    QColor::Spec colorSpec() const;
+%Docstring
+Returns color widget type of color, either RGB, HSV, CMYK, or Invalid if this component value is Multiple or Alpha
+%End
+
+    static QColor::Spec colorSpec( QgsColorWidget::ColorComponent component );
+%Docstring
+Returns ``component`` type of color, either RGB, HSV, CMYK, or Invalid if ``component`` value is Multiple or Alpha
 %End
 
     static const QPixmap &transparentBackground();
@@ -200,6 +214,7 @@ Generates a checkboard pattern pixmap for use as a background to transparent col
     virtual void mousePressEvent( QMouseEvent *e );
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
+
 
 };
 

@@ -107,6 +107,9 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns a list of map layer IDs in the desired order they should appear in a generated GeoPDF file
     QStringList geoPdfLayerOrder() const;
 
+    //! Returns a list of groups in the desired order they should appear in a generated GeoPDF file
+    QStringList geoPdfGroupOrder() const;
+
     //! Sets whether to open the pdf after exporting it
     void setOpenAfterExporting( bool enabled );
     //! Returns whether the pdf should be opened after exporting it

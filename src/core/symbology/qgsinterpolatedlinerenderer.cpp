@@ -538,13 +538,13 @@ void QgsInterpolatedLineColor::graduatedColors( double value1, double value2, QL
 
   switch ( mColorRampShader.colorRampType() )
   {
-    case QgsColorRampShader::Interpolated:
+    case Qgis::ShaderInterpolationMethod::Linear:
       graduatedColorsInterpolated( value1, value2, breakValues, breakColors, gradients );
       break;
-    case QgsColorRampShader::Discrete:
+    case Qgis::ShaderInterpolationMethod::Discrete:
       graduatedColorsDiscrete( value1, value2, breakValues, breakColors, gradients );
       break;
-    case QgsColorRampShader::Exact:
+    case Qgis::ShaderInterpolationMethod::Exact:
       graduatedColorsExact( value1, value2, breakValues, breakColors, gradients );
       break;
   }
@@ -572,7 +572,7 @@ int QgsInterpolatedLineColor::itemColorIndexInf( double value ) const
   if ( itemList.isEmpty() || itemList.first().value > value )
     return -1;
 
-  if ( mColorRampShader.colorRampType() == QgsColorRampShader::Discrete )
+  if ( mColorRampShader.colorRampType() == Qgis::ShaderInterpolationMethod::Discrete )
     itemList.removeLast(); //remove the inf value
 
   if ( value > itemList.last().value )
@@ -600,7 +600,7 @@ int QgsInterpolatedLineColor::itemColorIndexInf( double value ) const
 
 void QgsInterpolatedLineColor::graduatedColorsExact( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, const QList<QLinearGradient> &gradients ) const
 {
-  Q_ASSERT( mColorRampShader.colorRampType() == QgsColorRampShader::Exact );
+  Q_ASSERT( mColorRampShader.colorRampType() == Qgis::ShaderInterpolationMethod::Exact );
   Q_ASSERT( breakValues.isEmpty() );
   Q_ASSERT( breakColors.isEmpty() );
   Q_ASSERT( gradients.isEmpty() );
@@ -630,7 +630,7 @@ void QgsInterpolatedLineColor::graduatedColorsExact( double value1, double value
 
 void QgsInterpolatedLineColor::graduatedColorsInterpolated( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const
 {
-  Q_ASSERT( mColorRampShader.colorRampType() == QgsColorRampShader::Interpolated );
+  Q_ASSERT( mColorRampShader.colorRampType() == Qgis::ShaderInterpolationMethod::Linear );
   Q_ASSERT( breakValues.isEmpty() );
   Q_ASSERT( breakColors.isEmpty() );
   Q_ASSERT( gradients.isEmpty() );
@@ -731,7 +731,7 @@ void QgsInterpolatedLineColor::graduatedColorsInterpolated( double value1, doubl
 
 void QgsInterpolatedLineColor::graduatedColorsDiscrete( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const
 {
-  Q_ASSERT( mColorRampShader.colorRampType() == QgsColorRampShader::Discrete );
+  Q_ASSERT( mColorRampShader.colorRampType() == Qgis::ShaderInterpolationMethod::Discrete );
   Q_ASSERT( breakValues.isEmpty() );
   Q_ASSERT( breakColors.isEmpty() );
   Q_ASSERT( gradients.isEmpty() );
@@ -1017,8 +1017,8 @@ QVariant QgsInterpolatedLineSymbolLayer::colorRampShaderProperties() const
   QVariantMap props;
   if ( colorRampShader.sourceColorRamp() )
     props.insert( QStringLiteral( "color_ramp_source" ), QgsSymbolLayerUtils::colorRampToVariant( QString(), colorRampShader.sourceColorRamp() ) );
-  props.insert( QStringLiteral( "color_ramp_shader_type" ), colorRampShader.colorRampType() );
-  props.insert( QStringLiteral( "color_ramp_shader_classification_mode" ), colorRampShader.classificationMode() );
+  props.insert( QStringLiteral( "color_ramp_shader_type" ), static_cast< int >( colorRampShader.colorRampType() ) );
+  props.insert( QStringLiteral( "color_ramp_shader_classification_mode" ), static_cast< int >( colorRampShader.classificationMode() ) );
   QVariantList colorRampItemListVariant;
 
   const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader.colorRampItemList();
@@ -1053,9 +1053,9 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
     colorRampShader.setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( shaderVariantMap.value( QStringLiteral( "color_ramp_source" ) ) ) );
 
   if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_type" ) ) )
-    colorRampShader.setColorRampType( static_cast<QgsColorRampShader::Type>( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_type" ) ).toInt() ) );
+    colorRampShader.setColorRampType( static_cast<Qgis::ShaderInterpolationMethod>( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_type" ) ).toInt() ) );
   if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_classification_mode" ) ) )
-    colorRampShader.setClassificationMode( static_cast<QgsColorRampShader::ClassificationMode>(
+    colorRampShader.setClassificationMode( static_cast<Qgis::ShaderClassificationMethod>(
         shaderVariantMap.value( QStringLiteral( "color_ramp_shader_classification_mode" ) ).toInt() ) );
 
   if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_items_list" ) ) )

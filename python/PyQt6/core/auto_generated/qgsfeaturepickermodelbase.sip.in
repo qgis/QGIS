@@ -211,9 +211,9 @@ still be available in the model.
 The index at which the extra identifier value is available within the model.
 %End
 
-    void extraValueDoesNotExistChanged();
+    void extraValueDoesNotExistChanged( bool found );
 %Docstring
-Flag indicating that the extraIdentifierValue does not exist in the data.
+Notification whether the model has ``found`` a feature tied to the extraIdentifierValue or not.
 %End
 
     void beginUpdate();

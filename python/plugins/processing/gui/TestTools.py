@@ -53,6 +53,8 @@ from qgis.core import (QgsApplication,
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
+gdal.UseExceptions()
+
 
 def extractSchemaPath(filepath):
     """
@@ -264,8 +266,9 @@ def createTest(text):
                                        'files'))
                 return
 
-            dataset = gdal.Open(token, GA_ReadOnly)
-            if dataset is None:
+            try:
+                dataset = gdal.Open(token, GA_ReadOnly)
+            except Exception:
                 QMessageBox.warning(None,
                                     tr('Error'),
                                     tr('Seems some outputs are temporary '

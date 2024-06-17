@@ -72,6 +72,15 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
   return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for GeoPDF creation." );
 }
 
+void CPL_STDCALL collectErrors( CPLErr, int, const char *msg )
+{
+  QgsDebugError( QStringLiteral( "GDAL PDF creation error: %1 " ).arg( msg ) );
+  if ( QStringList *errorList = static_cast< QStringList * >( CPLGetErrorHandlerUserData() ) )
+  {
+    errorList->append( QString( msg ) );
+  }
+}
+
 bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
 {
   if ( details.includeFeatures && !saveTemporaryLayers() )
@@ -108,9 +117,34 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
 
   char **papszOptions = CSLSetNameValue( nullptr, "COMPOSITION_FILE", xmlFilePath.toUtf8().constData() );
 
+  QStringList creationErrors;
+  CPLPushErrorHandlerEx( collectErrors, &creationErrors );
+
   // return a non-null (fake) dataset in case of success, nullptr otherwise.
   gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
+
+  CPLPopErrorHandler();
   const bool res = outputDataset.get() != nullptr;
+  if ( !res )
+  {
+    if ( creationErrors.size() == 1 )
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file: %1" ).arg( creationErrors.at( 0 ) );
+    }
+    else if ( !creationErrors.empty() )
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file. Received errors:\n" );
+      for ( const QString &error : std::as_const( creationErrors ) )
+      {
+        mErrorMessage += ( !mErrorMessage.isEmpty() ? QStringLiteral( "\n" ) : QString() ) + error;
+      }
+
+    }
+    else
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file, but no error details are available" );
+    }
+  }
   outputDataset.reset();
 
   CSLDestroy( papszOptions );
@@ -270,7 +304,6 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
   QMap< QString, QSet< QString > > createdLayerIds;
   QMap< QString, QDomElement > groupLayerMap;
-  QMap< QString, QString > customGroupNamesToIds;
 
   QMultiMap< QString, QDomElement > pendingLayerTreeElements;
 
@@ -357,16 +390,32 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
 
   // create custom layer tree entries
+  QStringList layerTreeGroupOrder = details.layerTreeGroupOrder;
+
+  // add any missing groups to end of order
   for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
   {
-    if ( customGroupNamesToIds.contains( it.value() ) )
+    if ( layerTreeGroupOrder.contains( it.value() ) )
+      continue;
+    layerTreeGroupOrder.append( it.value() );
+  }
+  // filter out groups which don't have any content
+  layerTreeGroupOrder.erase( std::remove_if( layerTreeGroupOrder.begin(), layerTreeGroupOrder.end(), [&details]( const QString & group )
+  {
+    return details.customLayerTreeGroups.key( group ).isEmpty();
+  } ), layerTreeGroupOrder.end() );
+
+  QMap< QString, QString > customGroupNamesToIds;
+  for ( const QString &group : std::as_const( layerTreeGroupOrder ) )
+  {
+    if ( customGroupNamesToIds.contains( group ) )
       continue;
 
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     const QString id = QUuid::createUuid().toString();
-    customGroupNamesToIds[ it.value() ] = id;
+    customGroupNamesToIds[ group ] = id;
     layer.setAttribute( QStringLiteral( "id" ), id );
-    layer.setAttribute( QStringLiteral( "name" ), it.value() );
+    layer.setAttribute( QStringLiteral( "name" ), group );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
     layerTree.appendChild( layer );
   }
@@ -423,7 +472,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
       // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
       // srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
-      if ( !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
+      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
       {
         srs.appendChild( doc.createTextNode( section.crs.authid() ) );
       }

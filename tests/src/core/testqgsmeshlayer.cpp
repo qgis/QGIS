@@ -28,6 +28,7 @@
 #include "qgstriangularmesh.h"
 #include "qgsexpression.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgsmeshlayerutils.h"
 
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidermetadata.h"
@@ -37,12 +38,14 @@
  * \ingroup UnitTests
  * This is a unit test for a mesh layer
  */
-class TestQgsMeshLayer : public QObject
+class TestQgsMeshLayer : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsMeshLayer() = default;
+    TestQgsMeshLayer()
+      : QgsTest( QStringLiteral( "Mesh layer tests" ) )
+    {}
 
   private:
     QString mDataDir;
@@ -108,6 +111,8 @@ class TestQgsMeshLayer : public QObject
     void keepDatasetIndexConsistency();
     void symbologyConsistencyWithName();
     void updateTimePropertiesWhenReloading();
+
+    void testHaveSameParentQuantity();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -2131,7 +2136,7 @@ void TestQgsMeshLayer::symbologyConsistencyWithName()
     int index = nameToindex_1.value( name );
     QgsMeshRendererScalarSettings scalSettings = settings_1.scalarSettings( index );
     QgsColorRampShader cl = scalSettings.colorRampShader();
-    cl.setClassificationMode( QgsColorRampShader::EqualInterval );
+    cl.setClassificationMode( Qgis::ShaderClassificationMethod::EqualInterval );
     cl.classifyColorRamp( 10 + i, -1 );
     QCOMPARE( cl.colorRampItemList().count(), 10 + i );
     scalSettings.setColorRampShader( cl );
@@ -2147,7 +2152,7 @@ void TestQgsMeshLayer::symbologyConsistencyWithName()
     int index = nameToindex_2.value( name );
     QgsMeshRendererScalarSettings scalSettings = settings_2.scalarSettings( index );
     QgsColorRampShader cl = scalSettings.colorRampShader();
-    cl.setClassificationMode( QgsColorRampShader::EqualInterval );
+    cl.setClassificationMode( Qgis::ShaderClassificationMethod::EqualInterval );
     cl.classifyColorRamp( 30 + i, -1 );
     QCOMPARE( cl.colorRampItemList().count(), 30 + i );
     scalSettings.setColorRampShader( cl );
@@ -2337,6 +2342,28 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
   layer->reload();
   QCOMPARE( referenceTime1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
   QCOMPARE( timeExtent1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
+}
+
+void TestQgsMeshLayer::testHaveSameParentQuantity()
+{
+  QgsMeshLayer layer1(
+    testDataPath( "mesh/netcdf_parent_quantity.nc" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" ) );
+  QVERIFY( layer1.isValid() );
+
+  QVERIFY( QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 1 ) ) );
+  QVERIFY( QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 2 ) ) );
+  QVERIFY( QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 2 ), QgsMeshDatasetIndex( 3 ) ) );
+  QVERIFY( !QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 4 ) ) );
+
+  QgsMeshLayer layer2(
+    testDataPath( "mesh/mesh_z_ws_d.nc" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" ) );
+  QVERIFY( layer2.isValid() );
+
+  QVERIFY( !QgsMeshLayerUtils::haveSameParentQuantity( &layer2, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 1 ) ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

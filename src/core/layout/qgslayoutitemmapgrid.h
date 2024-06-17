@@ -1005,6 +1005,13 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     void refresh() override;
 
+    /**
+     * Copies properties from specified map grid.
+     *
+     * \since QGIS 3.38
+     */
+    void copyProperties( const QgsLayoutItemMapGrid *other );
+
   signals:
 
     /**

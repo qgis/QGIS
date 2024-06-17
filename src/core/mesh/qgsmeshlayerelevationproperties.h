@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmeshdataset.h"
 #include "qgis.h"
 
 class QgsLineSymbol;
@@ -54,6 +55,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     QgsMeshLayerElevationProperties *clone() const override SIP_FACTORY;
     bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    QList< double > significantZValues( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
 
@@ -96,6 +98,30 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
      * \since QGIS 3.38
      */
     void setFixedRange( const QgsDoubleRange &range );
+
+    /**
+     * Returns the fixed elevation range for each group.
+     *
+     * \note This is only considered when mode() is Qgis::MeshElevationMode::FixedRangePerGroup.
+     *
+     * \note When a fixed range is set any zOffset() and zScale() is ignored.
+     *
+     * \see setFixedRangePerGroup()
+     * \since QGIS 3.38
+     */
+    QMap<int, QgsDoubleRange> fixedRangePerGroup() const;
+
+    /**
+     * Sets the fixed elevation range for each group.
+     *
+     * \note This is only considered when mode() is Qgis::MeshElevationMode::FixedRangePerGroup.
+     *
+     * \note When a fixed range is set any zOffset() and zScale() is ignored.
+     *
+     * \see fixedRangePerGroup()
+     * \since QGIS 3.38
+     */
+    void setFixedRangePerGroup( const QMap<int, QgsDoubleRange> &ranges );
 
     /**
      * Returns the line symbol used to render the mesh profile in elevation profile plots.
@@ -180,6 +206,8 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
     QgsDoubleRange mFixedRange;
+
+    QMap< int, QgsDoubleRange > mRangePerGroup;
 };
 
 #endif // QGSMESHLAYERELEVATIONPROPERTIES_H

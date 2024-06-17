@@ -71,6 +71,12 @@ namespace MDAL
   std::string pathJoin( const std::string &path1, const std::string &path2 );
   std::string readFileToString( const std::string &filename );
 
+  //! Deletes a file. Returns true on success, false otherwise
+  bool deleteFile( const std::string &path );
+
+  //! Renames a file. Returns true on success, false otherwise
+  bool renameFile( const std::string &from, const std::string &to );
+
   // strings
   enum ContainsBehaviour
   {

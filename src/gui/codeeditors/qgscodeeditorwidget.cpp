@@ -25,6 +25,7 @@
 #include <QToolButton>
 #include <QCheckBox>
 #include <QShortcut>
+#include <QGridLayout>
 
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,
@@ -54,55 +55,76 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   }
 
   mFindWidget = new QWidget();
-  QHBoxLayout *layoutFind = new QHBoxLayout();
+  QGridLayout *layoutFind = new QGridLayout();
   layoutFind->setContentsMargins( 0, 2, 0, 0 );
   layoutFind->setSpacing( 1 );
+
+  if ( !mEditor->isReadOnly() )
+  {
+    mShowReplaceBarButton = new QToolButton();
+    mShowReplaceBarButton->setToolTip( tr( "Replace" ) );
+    mShowReplaceBarButton->setCheckable( true );
+    mShowReplaceBarButton->setAutoRaise( true );
+    mShowReplaceBarButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionReplace.svg" ) ) );
+    layoutFind->addWidget( mShowReplaceBarButton, 0, 0 );
+
+    connect( mShowReplaceBarButton, &QCheckBox::toggled, this, &QgsCodeEditorWidget::setReplaceBarVisible );
+  }
+
   mLineEditFind = new QgsFilterLineEdit();
   mLineEditFind->setShowSearchIcon( true );
   mLineEditFind->setPlaceholderText( tr( "Enter text to find…" ) );
-  layoutFind->addWidget( mLineEditFind, 1 );
+  layoutFind->addWidget( mLineEditFind, 0, mShowReplaceBarButton ? 1 : 0 );
 
+  mLineEditReplace = new QgsFilterLineEdit();
+  mLineEditReplace->setShowSearchIcon( true );
+  mLineEditReplace->setPlaceholderText( tr( "Replace…" ) );
+  layoutFind->addWidget( mLineEditReplace, 1, mShowReplaceBarButton ? 1 : 0 );
+
+  QHBoxLayout *findButtonLayout = new QHBoxLayout();
+  findButtonLayout->setContentsMargins( 0, 0, 0, 0 );
+  findButtonLayout->setSpacing( 1 );
   mCaseSensitiveButton = new QToolButton();
   mCaseSensitiveButton->setToolTip( tr( "Case Sensitive" ) );
   mCaseSensitiveButton->setCheckable( true );
   mCaseSensitiveButton->setAutoRaise( true );
   mCaseSensitiveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchCaseSensitive.svg" ) ) );
-  layoutFind->addWidget( mCaseSensitiveButton );
+  findButtonLayout->addWidget( mCaseSensitiveButton );
 
   mWholeWordButton = new QToolButton( );
   mWholeWordButton->setToolTip( tr( "Whole Word" ) );
   mWholeWordButton->setCheckable( true );
   mWholeWordButton->setAutoRaise( true );
   mWholeWordButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWholeWord.svg" ) ) );
-  layoutFind->addWidget( mWholeWordButton );
+  findButtonLayout->addWidget( mWholeWordButton );
 
   mRegexButton = new QToolButton( );
   mRegexButton->setToolTip( tr( "Use Regular Expressions" ) );
   mRegexButton->setCheckable( true );
   mRegexButton->setAutoRaise( true );
   mRegexButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchRegex.svg" ) ) );
-  layoutFind->addWidget( mRegexButton );
+  findButtonLayout->addWidget( mRegexButton );
 
   mWrapAroundButton = new QToolButton();
   mWrapAroundButton->setToolTip( tr( "Wrap Around" ) );
   mWrapAroundButton->setCheckable( true );
   mWrapAroundButton->setAutoRaise( true );
   mWrapAroundButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWrapAround.svg" ) ) );
-  layoutFind->addWidget( mWrapAroundButton );
+  findButtonLayout->addWidget( mWrapAroundButton );
 
   mFindPrevButton = new QToolButton();
   mFindPrevButton->setEnabled( false );
   mFindPrevButton->setToolTip( tr( "Find Previous" ) );
   mFindPrevButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSearchPrevEditorConsole.svg" ) ) );
   mFindPrevButton->setAutoRaise( true );
-  layoutFind->addWidget( mFindPrevButton );
+  findButtonLayout->addWidget( mFindPrevButton );
 
   mFindNextButton = new QToolButton();
   mFindNextButton->setEnabled( false );
   mFindNextButton->setToolTip( tr( "Find Next" ) );
   mFindNextButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSearchNextEditorConsole.svg" ) ) );
   mFindNextButton->setAutoRaise( true );
-  layoutFind->addWidget( mFindNextButton );
+  findButtonLayout->addWidget( mFindNextButton );
 
   connect( mLineEditFind, &QLineEdit::returnPressed, this, &QgsCodeEditorWidget::findNext );
   connect( mLineEditFind, &QLineEdit::textChanged, this, &QgsCodeEditorWidget::textSearchChanged );
@@ -125,6 +147,22 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   findPreviousShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
   connect( findPreviousShortcut, &QShortcut::activated, this, &QgsCodeEditorWidget::findPrevious );
 
+  if ( !mEditor->isReadOnly() )
+  {
+    QShortcut *replaceShortcut = new QShortcut( QKeySequence::StandardKey::Replace, this );
+    replaceShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
+    connect( replaceShortcut, &QShortcut::activated, this, [ = ]
+    {
+      // shortcut toggles bar visibility
+      const bool show = mLineEditReplace->isHidden();
+      setReplaceBarVisible( show );
+
+      // ensure search bar is also visible
+      if ( show )
+        showSearchBar();
+    } );
+  }
+
   // escape on editor hides the find bar
   QShortcut *closeFindShortcut = new QShortcut( Qt::Key::Key_Escape, this );
   closeFindShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
@@ -133,6 +171,26 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     hideSearchBar();
     mEditor->setFocus();
   } );
+
+  layoutFind->addLayout( findButtonLayout, 0, mShowReplaceBarButton ? 2 : 1 );
+
+  QHBoxLayout *replaceButtonLayout = new QHBoxLayout();
+  replaceButtonLayout->setContentsMargins( 0, 0, 0, 0 );
+  replaceButtonLayout->setSpacing( 1 );
+
+  mReplaceButton = new QToolButton();
+  mReplaceButton->setText( tr( "Replace" ) );
+  mReplaceButton->setEnabled( false );
+  connect( mReplaceButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::replace );
+  replaceButtonLayout->addWidget( mReplaceButton );
+
+  mReplaceAllButton = new QToolButton();
+  mReplaceAllButton->setText( tr( "Replace All" ) );
+  mReplaceAllButton->setEnabled( false );
+  connect( mReplaceAllButton, &QToolButton::clicked, this, &QgsCodeEditorWidget::replaceAll );
+  replaceButtonLayout->addWidget( mReplaceAllButton );
+
+  layoutFind->addLayout( replaceButtonLayout, 1, mShowReplaceBarButton ? 2 : 1 );
 
   QToolButton *closeFindButton = new QToolButton( this );
   closeFindButton->setToolTip( tr( "Close" ) );
@@ -151,16 +209,32 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     hideSearchBar();
     mEditor->setFocus();
   } );
-  layoutFind->addWidget( closeFindButton );
+  layoutFind->addWidget( closeFindButton, 0, mShowReplaceBarButton ? 3 : 2 );
+
+  layoutFind->setColumnStretch( mShowReplaceBarButton ? 1 : 0, 1 );
 
   mFindWidget->setLayout( layoutFind );
   vl->addWidget( mFindWidget );
   mFindWidget->hide();
 
+  setReplaceBarVisible( false );
+
   setLayout( vl );
 
   mHighlightController = std::make_unique< QgsScrollBarHighlightController >();
   mHighlightController->setScrollArea( mEditor );
+}
+
+void QgsCodeEditorWidget::resizeEvent( QResizeEvent *event )
+{
+  QgsPanelWidget::resizeEvent( event );
+  updateHighlightController();
+}
+
+void QgsCodeEditorWidget::showEvent( QShowEvent *event )
+{
+  QgsPanelWidget::showEvent( event );
+  updateHighlightController();
 }
 
 QgsCodeEditorWidget::~QgsCodeEditorWidget() = default;
@@ -175,10 +249,44 @@ QgsMessageBar *QgsCodeEditorWidget::messageBar()
   return mMessageBar;
 }
 
+QgsScrollBarHighlightController *QgsCodeEditorWidget::scrollbarHighlightController()
+{
+  return mHighlightController.get();
+}
+
+void QgsCodeEditorWidget::addWarning( int lineNumber, const QString &warning )
+{
+  mEditor->addWarning( lineNumber, warning );
+
+  mHighlightController->addHighlight(
+    QgsScrollBarHighlight(
+      HighlightCategory::Warning,
+      lineNumber,
+      QColor( 255, 0, 0 ),
+      QgsScrollBarHighlight::Priority::HighestPriority
+    )
+  );
+}
+
+void QgsCodeEditorWidget::clearWarnings()
+{
+  mEditor->clearWarnings();
+
+  mHighlightController->removeHighlights(
+    HighlightCategory::Warning
+  );
+}
+
 void QgsCodeEditorWidget::showSearchBar()
 {
   addSearchHighlights();
   mFindWidget->show();
+
+  if ( mEditor->isReadOnly() )
+  {
+    setReplaceBarVisible( false );
+  }
+
   emit searchBarToggled( true );
 }
 
@@ -197,6 +305,24 @@ void QgsCodeEditorWidget::setSearchBarVisible( bool visible )
     hideSearchBar();
 }
 
+void QgsCodeEditorWidget::setReplaceBarVisible( bool visible )
+{
+  if ( visible )
+  {
+    mReplaceAllButton->show();
+    mReplaceButton->show();
+    mLineEditReplace->show();
+  }
+  else
+  {
+    mReplaceAllButton->hide();
+    mReplaceButton->hide();
+    mLineEditReplace->hide();
+  }
+  if ( mShowReplaceBarButton )
+    mShowReplaceBarButton->setChecked( visible );
+}
+
 void QgsCodeEditorWidget::triggerFind()
 {
   clearSearchHighlights();
@@ -211,9 +337,9 @@ void QgsCodeEditorWidget::triggerFind()
   showSearchBar();
 }
 
-void QgsCodeEditorWidget::findNext()
+bool QgsCodeEditorWidget::findNext()
 {
-  findText( true, false );
+  return findText( true, false );
 }
 
 void QgsCodeEditorWidget::findPrevious()
@@ -225,16 +351,12 @@ void QgsCodeEditorWidget::textSearchChanged( const QString &text )
 {
   if ( !text.isEmpty() )
   {
-    mFindNextButton->setEnabled( true );
-    mFindPrevButton->setEnabled( true );
     updateSearch();
   }
   else
   {
     clearSearchHighlights();
     mLineEditFind->setStyleSheet( QString() );
-    mFindNextButton->setEnabled( false );
-    mFindPrevButton->setEnabled( false );
   }
 }
 
@@ -246,7 +368,62 @@ void QgsCodeEditorWidget::updateSearch()
   clearSearchHighlights();
   addSearchHighlights();
 
-  findText( true, true, true );
+  findText( true, true );
+}
+
+void QgsCodeEditorWidget::replace()
+{
+  if ( mEditor->isReadOnly() )
+    return;
+
+  replaceSelection();
+
+  clearSearchHighlights();
+  addSearchHighlights();
+  findNext();
+}
+
+void QgsCodeEditorWidget::replaceSelection()
+{
+  const long selectionStart = mEditor->SendScintilla( QsciScintilla::SCI_GETSELECTIONSTART );
+  const long selectionEnd = mEditor->SendScintilla( QsciScintilla::SCI_GETSELECTIONEND );
+  if ( selectionEnd - selectionStart <= 0 )
+    return;
+
+  const QString replacement = mLineEditReplace->text();
+
+  mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, selectionStart, selectionEnd );
+
+  if ( mRegexButton->isChecked() )
+    mEditor->SendScintilla( QsciScintilla::SCI_REPLACETARGETRE, replacement.size(), replacement.toLocal8Bit().constData() );
+  else
+    mEditor->SendScintilla( QsciScintilla::SCI_REPLACETARGET, replacement.size(), replacement.toLocal8Bit().constData() );
+
+  // set the cursor to the end of the replaced text
+  const long postReplacementEnd = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETEND );
+  mEditor->SendScintilla( QsciScintilla::SCI_SETCURRENTPOS, postReplacementEnd );
+}
+
+void QgsCodeEditorWidget::replaceAll()
+{
+  if ( mEditor->isReadOnly() )
+    return;
+
+  if ( !findText( true, true ) )
+  {
+    return;
+  }
+
+  mEditor->SendScintilla( QsciScintilla::SCI_BEGINUNDOACTION );
+  replaceSelection();
+
+  while ( findText( true, false ) )
+  {
+    replaceSelection();
+  }
+
+  mEditor->SendScintilla( QsciScintilla::SCI_ENDUNDOACTION );
+  clearSearchHighlights();
 }
 
 void QgsCodeEditorWidget::addSearchHighlights()
@@ -260,8 +437,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
   long startPos = 0;
   long docEnd = mEditor->length();
 
-  mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
-  mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
+  updateHighlightController();
 
   int searchFlags = 0;
   const bool isRegEx = mRegexButton->isChecked();
@@ -274,6 +450,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
   if ( isWholeWordOnly )
     searchFlags |= QsciScintilla::SCFIND_WHOLEWORD;
   mEditor->SendScintilla( QsciScintilla::SCI_SETSEARCHFLAGS, searchFlags );
+  int matchCount = 0;
   while ( true )
   {
     mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, startPos, docEnd );
@@ -281,6 +458,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
     if ( fstart < 0 )
       break;
 
+    matchCount++;
     const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast< void * >( nullptr ) );
 
     startPos = fstart + matchLength;
@@ -295,6 +473,8 @@ void QgsCodeEditorWidget::addSearchHighlights()
   }
 
   mEditor->SendScintilla( QsciScintilla::SCI_SETTARGETRANGE, originalStartPos, originalEndPos );
+
+  searchMatchCountChanged( matchCount );
 }
 
 void QgsCodeEditorWidget::clearSearchHighlights()
@@ -305,13 +485,15 @@ void QgsCodeEditorWidget::clearSearchHighlights()
   mEditor->SendScintilla( QsciScintilla::SCI_INDICATORCLEARRANGE, docStart, docEnd - docStart );
 
   mHighlightController->removeHighlights( SearchMatch );
+
+  searchMatchCountChanged( 0 );
 }
 
-void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFoundWarning )
+bool QgsCodeEditorWidget::findText( bool forward, bool findFirst )
 {
   const QString searchString = mLineEditFind->text();
   if ( searchString.isEmpty() )
-    return;
+    return false;
 
   int lineFrom = 0;
   int indexFrom = 0;
@@ -343,16 +525,25 @@ void QgsCodeEditorWidget::findText( bool forward, bool findFirst, bool showNotFo
   {
     const QString styleError = QStringLiteral( "QLineEdit {background-color: #d65253;  color: #ffffff;}" );
     mLineEditFind->setStyleSheet( styleError );
-
-    if ( showNotFoundWarning )
-    {
-      mMessageBar->pushMessage( QString(), tr( "\"%1\" was not found" ).arg( searchString ),
-                                Qgis::MessageLevel::Info );
-    }
   }
   else
   {
     mLineEditFind->setStyleSheet( QString() );
   }
+  return found;
+}
+
+void QgsCodeEditorWidget::searchMatchCountChanged( int matchCount )
+{
+  mReplaceButton->setEnabled( matchCount > 0 );
+  mReplaceAllButton->setEnabled( matchCount > 0 );
+  mFindNextButton->setEnabled( matchCount > 0 );
+  mFindPrevButton->setEnabled( matchCount > 0 );
+}
+
+void QgsCodeEditorWidget::updateHighlightController()
+{
+  mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
+  mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
 }
 

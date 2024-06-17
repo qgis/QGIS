@@ -97,6 +97,7 @@ class TestQgsMeshLayerElevationProperties(QgisTestCase):
         self.assertEqual(props.fixedRange(), QgsDoubleRange(103.1, 106.8))
         self.assertEqual(props.calculateZRange(None),
                          QgsDoubleRange(103.1, 106.8))
+        self.assertEqual(props.significantZValues(None), [103.1, 106.8])
         self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 104.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
@@ -142,6 +143,78 @@ class TestQgsMeshLayerElevationProperties(QgisTestCase):
         self.assertEqual(props2.fixedRange(), QgsDoubleRange(103.1, 106.8,
                                                              includeLower=False,
                                                              includeUpper=True))
+
+    def test_basic_fixed_range_per_group(self):
+        """
+        Basic tests for the class using the FixedRangePerGroup mode
+        """
+        props = QgsMeshLayerElevationProperties(None)
+        self.assertFalse(props.fixedRangePerGroup())
+
+        props.setMode(Qgis.MeshElevationMode.FixedRangePerGroup)
+        props.setFixedRangePerGroup({1: QgsDoubleRange(103.1, 106.8),
+                                     2: QgsDoubleRange(106.8, 116.8),
+                                     3: QgsDoubleRange(116.8, 126.8)})
+        # fixed ranges should not be affected by scale/offset
+        props.setZOffset(0.5)
+        props.setZScale(2)
+        self.assertEqual(props.fixedRangePerGroup(), {1: QgsDoubleRange(103.1, 106.8),
+                                                      2: QgsDoubleRange(106.8, 116.8),
+                                                      3: QgsDoubleRange(116.8, 126.8)})
+        self.assertEqual(props.calculateZRange(None),
+                         QgsDoubleRange(103.1, 126.8))
+        self.assertEqual(props.significantZValues(None),
+                         [103.1, 106.8, 116.8, 126.8])
+        self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 104.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
+        self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(114.8, 124.8)))
+        self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(128.8, 134.8)))
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsMeshLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.mode(),
+                         Qgis.MeshElevationMode.FixedRangePerGroup)
+        self.assertEqual(props2.fixedRangePerGroup(), {1: QgsDoubleRange(103.1, 106.8),
+                                                       2: QgsDoubleRange(106.8, 116.8),
+                                                       3: QgsDoubleRange(116.8, 126.8)})
+
+        props2 = props.clone()
+        self.assertEqual(props2.mode(),
+                         Qgis.MeshElevationMode.FixedRangePerGroup)
+        self.assertEqual(props2.fixedRangePerGroup(), {1: QgsDoubleRange(103.1, 106.8),
+                                                       2: QgsDoubleRange(106.8, 116.8),
+                                                       3: QgsDoubleRange(116.8, 126.8)})
+
+        # include lower, exclude upper
+        props.setFixedRangePerGroup({1: QgsDoubleRange(103.1, 106.8,
+                                                       includeLower=True,
+                                                       includeUpper=False)})
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsMeshLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.fixedRangePerGroup(), {1: QgsDoubleRange(103.1, 106.8,
+                                                                         includeLower=True,
+                                                                         includeUpper=False)})
+
+        # exclude lower, include upper
+        props.setFixedRangePerGroup({1: QgsDoubleRange(103.1, 106.8,
+                                                       includeLower=False,
+                                                       includeUpper=True)})
+        elem = doc.createElement('test')
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsMeshLayerElevationProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.fixedRangePerGroup(), {1: QgsDoubleRange(103.1, 106.8,
+                                                                         includeLower=False,
+                                                                         includeUpper=True)})
 
 
 if __name__ == '__main__':

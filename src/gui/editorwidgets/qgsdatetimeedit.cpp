@@ -346,6 +346,9 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   {
     // changed emits a signal, so don't allow it to be emitted from setDateTime
     mBlockChangedSignal++;
+    // We need to set the time spec of the set datetime to the widget, otherwise
+    // the dateTime() getter would loose edit, and return local time.
+    QDateTimeEdit::setTimeSpec( dateTime.timeSpec() );
     QDateTimeEdit::setDateTime( dateTime );
     mBlockChangedSignal--;
     changed( dateTime );

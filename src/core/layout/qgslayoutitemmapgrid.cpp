@@ -1912,7 +1912,6 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( QgsLayoutItemMapGrid::Annot
          || ( mode == QgsLayoutItemMapGrid::LongitudeOnly && coordinate == QgsLayoutItemMapGrid::Longitude );
 }
 
-
 QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD( QString ddValue, QgsLayoutItemMapGrid::DisplayMode defValue )
 {
   if ( ddValue.compare( QLatin1String( "x_only" ), Qt::CaseInsensitive ) == 0 )
@@ -1926,7 +1925,6 @@ QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD( QString ddVal
   else
     return defValue;
 }
-
 
 void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 {
@@ -1986,7 +1984,6 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   mEvaluatedRightFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight, context ), mRightFrameDivisions );
   mEvaluatedTopFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop, context ), mTopFrameDivisions );
   mEvaluatedBottomFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom, context ), mBottomFrameDivisions );
-
 }
 
 double QgsLayoutItemMapGrid::mapWidth() const
@@ -2636,4 +2633,79 @@ QList<QPolygonF> QgsLayoutItemMapGrid::trimLinesToMap( const QPolygonF &line, co
     trimmedLines << ( *geomIt ).asQPolygonF();
   }
   return trimmedLines;
+}
+
+void QgsLayoutItemMapGrid::copyProperties( const QgsLayoutItemMapGrid *other )
+{
+  // grid
+  setStyle( other->style() );
+  setIntervalX( other->intervalX() );
+  setIntervalY( other->intervalY() );
+  setOffsetX( other->offsetX() );
+  setOffsetY( other->offsetX() );
+  setCrossLength( other->crossLength() );
+  setFrameStyle( other->frameStyle() );
+  setFrameSideFlags( other->frameSideFlags() );
+  setFrameWidth( other->frameWidth() );
+  setFrameMargin( other->frameMargin() );
+  setFramePenSize( other->framePenSize() );
+  setFramePenColor( other->framePenColor() );
+  setFrameFillColor1( other->frameFillColor1() );
+  setFrameFillColor2( other->frameFillColor2() );
+
+  setFrameDivisions( other->frameDivisions( QgsLayoutItemMapGrid::BorderSide::Left ), QgsLayoutItemMapGrid::BorderSide::Left );
+  setFrameDivisions( other->frameDivisions( QgsLayoutItemMapGrid::BorderSide::Right ), QgsLayoutItemMapGrid::BorderSide::Right );
+  setFrameDivisions( other->frameDivisions( QgsLayoutItemMapGrid::BorderSide::Bottom ), QgsLayoutItemMapGrid::BorderSide::Bottom );
+  setFrameDivisions( other->frameDivisions( QgsLayoutItemMapGrid::BorderSide::Top ), QgsLayoutItemMapGrid::BorderSide::Top );
+
+  setRotatedTicksLengthMode( other->rotatedTicksLengthMode() );
+  setRotatedTicksEnabled( other->rotatedTicksEnabled() );
+  setRotatedTicksMinimumAngle( other->rotatedTicksMinimumAngle() );
+  setRotatedTicksMarginToCorner( other->rotatedTicksMarginToCorner() );
+  setRotatedAnnotationsLengthMode( other->rotatedAnnotationsLengthMode() );
+  setRotatedAnnotationsEnabled( other->rotatedAnnotationsEnabled() );
+  setRotatedAnnotationsMinimumAngle( other->rotatedAnnotationsMinimumAngle() );
+  setRotatedAnnotationsMarginToCorner( other->rotatedAnnotationsMarginToCorner() );
+
+  if ( other->lineSymbol() )
+  {
+    setLineSymbol( other->lineSymbol()->clone() );
+  }
+
+  if ( other->markerSymbol() )
+  {
+    setMarkerSymbol( other->markerSymbol()->clone() );
+  }
+
+  setCrs( other->crs() );
+
+  setBlendMode( other->blendMode() );
+
+  //annotation
+  setAnnotationEnabled( other->annotationEnabled() );
+  setAnnotationFormat( other->annotationFormat() );
+  setAnnotationExpression( other->annotationExpression() );
+
+  setAnnotationPosition( other->annotationPosition( QgsLayoutItemMapGrid::BorderSide::Left ), QgsLayoutItemMapGrid::BorderSide::Left );
+  setAnnotationPosition( other->annotationPosition( QgsLayoutItemMapGrid::BorderSide::Right ), QgsLayoutItemMapGrid::BorderSide::Right );
+  setAnnotationPosition( other->annotationPosition( QgsLayoutItemMapGrid::BorderSide::Bottom ), QgsLayoutItemMapGrid::BorderSide::Bottom );
+  setAnnotationPosition( other->annotationPosition( QgsLayoutItemMapGrid::BorderSide::Top ), QgsLayoutItemMapGrid::BorderSide::Top );
+  setAnnotationDisplay( other->annotationDisplay( QgsLayoutItemMapGrid::BorderSide::Left ), QgsLayoutItemMapGrid::BorderSide::Left );
+  setAnnotationDisplay( other->annotationDisplay( QgsLayoutItemMapGrid::BorderSide::Right ), QgsLayoutItemMapGrid::BorderSide::Right );
+  setAnnotationDisplay( other->annotationDisplay( QgsLayoutItemMapGrid::BorderSide::Bottom ), QgsLayoutItemMapGrid::BorderSide::Bottom );
+  setAnnotationDisplay( other->annotationDisplay( QgsLayoutItemMapGrid::BorderSide::Top ), QgsLayoutItemMapGrid::BorderSide::Top );
+  setAnnotationDirection( other->annotationDirection( QgsLayoutItemMapGrid::BorderSide::Left ), QgsLayoutItemMapGrid::BorderSide::Left );
+  setAnnotationDirection( other->annotationDirection( QgsLayoutItemMapGrid::BorderSide::Right ), QgsLayoutItemMapGrid::BorderSide::Right );
+  setAnnotationDirection( other->annotationDirection( QgsLayoutItemMapGrid::BorderSide::Bottom ), QgsLayoutItemMapGrid::BorderSide::Bottom );
+  setAnnotationDirection( other->annotationDirection( QgsLayoutItemMapGrid::BorderSide::Top ), QgsLayoutItemMapGrid::BorderSide::Top );
+  setAnnotationFrameDistance( other->annotationFrameDistance() );
+  setAnnotationTextFormat( other->annotationTextFormat() );
+
+  setAnnotationPrecision( other->annotationPrecision() );
+  setUnits( other->units() );
+  setMinimumIntervalWidth( other->minimumIntervalWidth() );
+  setMaximumIntervalWidth( other->maximumIntervalWidth() );
+
+  setDataDefinedProperties( other->dataDefinedProperties() );
+  refreshDataDefinedProperties();
 }

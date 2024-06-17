@@ -121,6 +121,8 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         self.assertEqual(props.fixedRange(), QgsDoubleRange(103.1, 106.8))
         self.assertEqual(props.calculateZRange(None),
                          QgsDoubleRange(103.1, 106.8))
+        self.assertEqual(props.significantZValues(None),
+                         [103.1, 106.8])
         self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 104.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
@@ -186,6 +188,8 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
                                                      3: QgsDoubleRange(116.8, 126.8)})
         self.assertEqual(props.calculateZRange(None),
                          QgsDoubleRange(103.1, 126.8))
+        self.assertEqual(props.significantZValues(None),
+                         [103.1, 106.8, 116.8, 126.8])
         self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 104.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(104.8, 114.8)))
@@ -280,6 +284,10 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
         # layer is required to calculated z range
         self.assertEqual(props.calculateZRange(None), QgsDoubleRange())
         self.assertEqual(props.calculateZRange(raster_layer), QgsDoubleRange(2, 19))
+        self.assertEqual(props.significantZValues(None),
+                         [])
+        self.assertEqual(props.significantZValues(raster_layer),
+                         [2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0])
 
         self.assertFalse(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8)))
         self.assertTrue(props.isVisibleInZRange(QgsDoubleRange(3.1, 6.8), raster_layer))

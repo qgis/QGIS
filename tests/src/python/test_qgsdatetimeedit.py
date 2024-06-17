@@ -17,6 +17,7 @@ from qgis.testing import start_app, QgisTestCase
 start_app()
 
 DATE = QDateTime.fromString('2018-01-01 01:02:03', Qt.DateFormat.ISODate)
+DATE_Z = QDateTime.fromString('2018-01-01 01:02:03Z', Qt.DateFormat.ISODate)
 
 
 class TestQgsDateTimeEdit(QgisTestCase):
@@ -31,6 +32,17 @@ class TestQgsDateTimeEdit(QgisTestCase):
         # date should remain when setting an invalid date
         w.setDateTime(QDateTime())
         self.assertEqual(w.dateTime(), DATE)
+
+    def testSettersGetters_DATE_Z(self):
+        """ test widget handling with Z time spec """
+        w = QgsDateTimeEdit()
+        w.setAllowNull(False)
+
+        w.setDateTime(DATE_Z)
+        self.assertEqual(w.dateTime(), DATE_Z)
+        # date should remain when setting an invalid date
+        w.setDateTime(QDateTime())
+        self.assertEqual(w.dateTime(), DATE_Z)
 
     def testNullValueHandling(self):
         """ test widget handling of null values """

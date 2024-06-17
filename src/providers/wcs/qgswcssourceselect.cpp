@@ -83,7 +83,7 @@ void QgsWCSSourceSelect::populateLayerList()
     QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, coverage->identifier );
-    lItem->setData( 0, Qt::UserRole + 1, "" );
+    lItem->setData( 0, Qt::UserRole + 1, coverage->title );
 
     // Make only leaves selectable
     if ( coverageParents.contains( coverage->orderId ) )
@@ -101,13 +101,22 @@ void QgsWCSSourceSelect::populateLayerList()
   }
 }
 
-QString QgsWCSSourceSelect::selectedIdentifier()
+QString QgsWCSSourceSelect::selectedIdentifier() const
 {
   const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
   if ( selectionList.size() < 1 ) return QString(); // should not happen
   QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
   QgsDebugMsgLevel( " identifier = " + identifier, 2 );
   return identifier;
+}
+
+QString QgsWCSSourceSelect::selectedTitle() const
+{
+  const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
+  if ( selectionList.empty() ) return QString(); // should not happen
+  QString title = selectionList.value( 0 )->data( 0, Qt::UserRole + 1 ).toString();
+  QgsDebugMsgLevel( " title = " + title, 2 );
+  return title;
 }
 
 void QgsWCSSourceSelect::addButtonClicked()
@@ -164,10 +173,14 @@ void QgsWCSSourceSelect::addButtonClicked()
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( QStringLiteral( "cache" ), cache );
 
+  QString title = selectedTitle();
+  if ( title.isEmpty() )
+    title = identifier;
+
   Q_NOWARN_DEPRECATED_PUSH
-  emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
+  emit addRasterLayer( uri.encodedUri(), title, QStringLiteral( "wcs" ) );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
+  emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), title, QStringLiteral( "wcs" ) );
 }
 
 

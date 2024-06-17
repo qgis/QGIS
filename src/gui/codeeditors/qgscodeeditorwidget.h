@@ -62,6 +62,9 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsCodeEditorWidget() override;
 
+    void resizeEvent( QResizeEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
+
     /**
      * Returns the wrapped code editor.
      */
@@ -76,6 +79,32 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * Returns the message bar associated with the widget, to use for user feedback.
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Returns the scrollbar highlight controller, which can be used to add highlights
+     * in the code editor scrollbar.
+     */
+    QgsScrollBarHighlightController *scrollbarHighlightController();
+
+    /**
+     * Adds a \a warning message and indicator to the specified a \a lineNumber.
+     *
+     * This method calls QgsCodeEditor::addWarning(), but also automatically adds
+     * highlights to the widget scrollbars locating the warning location.
+     *
+     * \see clearWarnings()
+     */
+    void addWarning( int lineNumber, const QString &warning );
+
+    /**
+     * Clears all warning messages from the editor.
+     *
+     * This method calls QgsCodeEditor::clearWarnings(), but also removes
+     * highlights from the widget scrollbars at the warning locations.
+     *
+     * \see addWarning()
+     */
+    void clearWarnings();
 
   public slots:
 
@@ -100,8 +129,16 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      *
      * \see showSearchBar()
      * \see hideSearchBar()
+     * \see setReplaceBarVisible()
      */
     void setSearchBarVisible( bool visible );
+
+    /**
+     * Sets whether the replace bar is \a visible.
+     *
+     * \see setSearchBarVisible()
+     */
+    void setReplaceBarVisible( bool visible );
 
     /**
      * Triggers a find operation, using the default behavior.
@@ -120,32 +157,42 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
   private slots:
 
-    void findNext();
+    bool findNext();
     void findPrevious();
     void textSearchChanged( const QString &text );
     void updateSearch();
+    void replace();
+    void replaceSelection();
+    void replaceAll();
 
   private:
 
     void clearSearchHighlights();
     void addSearchHighlights();
     int searchFlags() const;
-    void findText( bool forward, bool findFirst, bool showNotFoundWarning = false );
+    bool findText( bool forward, bool findFirst );
+    void updateHighlightController();
+    void searchMatchCountChanged( int matchCount );
 
     enum HighlightCategory
     {
-      SearchMatch = 0
+      SearchMatch = 0,
+      Warning = 1
     };
 
     QgsCodeEditor *mEditor = nullptr;
     QWidget *mFindWidget = nullptr;
     QgsFilterLineEdit *mLineEditFind = nullptr;
+    QgsFilterLineEdit *mLineEditReplace = nullptr;
     QToolButton *mFindPrevButton = nullptr;
     QToolButton *mFindNextButton = nullptr;
     QToolButton *mCaseSensitiveButton = nullptr;
     QToolButton *mWholeWordButton = nullptr;
     QToolButton *mRegexButton = nullptr;
     QToolButton *mWrapAroundButton = nullptr;
+    QToolButton *mShowReplaceBarButton = nullptr;
+    QToolButton *mReplaceButton = nullptr;
+    QToolButton *mReplaceAllButton = nullptr;
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;

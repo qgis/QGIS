@@ -542,6 +542,8 @@ QgsMeshVectorWindBarbRenderer::QgsMeshVectorWindBarbRenderer(
         context,
         size )
 {
+  const QgsCoordinateReferenceSystem mapCrs = mContext.coordinateTransform().destinationCrs();
+  mGeographicTransform = QgsCoordinateTransform( mapCrs, mapCrs.toGeographicCrs(), mContext.coordinateTransform().context() );
 }
 
 QgsMeshVectorWindBarbRenderer::~QgsMeshVectorWindBarbRenderer() = default;
@@ -567,12 +569,26 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
   if ( shaftLength < 1 )
     return;
 
+  // Check if barb is above or below the equinox
+  const QgsPointXY mapPoint = mContext.mapToPixel().toMapCoordinates( lineStart.x(), lineStart.y() );
+  bool isNorthHemisphere = true;
+  try
+  {
+    const QgsPointXY geoPoint = mGeographicTransform.transform( mapPoint );
+    isNorthHemisphere = geoPoint.y() >= 0;
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "Could not transform wind barb coordinates to geographic ones" ) );
+  }
+
   const double d = shaftLength / 25; // this is a magic number ratio between shaft length and other barb dimensions
   const double centerRadius = d;
   const double zeroCircleRadius = 2 * d;
   const double barbLength = 8 * d + pen.widthF();
   const double barbAngle = 135;
   const double barbOffset = 2 * d + pen.widthF();
+  const int sign = isNorthHemisphere ? 1 : -1;
 
   // Determine the angle of the vector, counter-clockwise, from east
   // (and associated trigs)
@@ -612,7 +628,7 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
     // When first barb is a '10', we want to draw the shaft and barb as a single polyline for a proper join
     const QVector< QPointF > pts{ lineStart.toQPointF(),
                                   lineEnd.toQPointF(),
-                                  nextLineOrigin.project( barbLength, azimuth + barbAngle ).toQPointF() };
+                                  nextLineOrigin.project( barbLength, azimuth + barbAngle * sign ).toQPointF() };
     mContext.painter()->drawPolyline( pts );
     nextLineOrigin = nextLineOrigin.project( barbOffset, azimuth );
     knots -= 10;
@@ -630,7 +646,7 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
   while ( knots > 47.5 )
   {
     const QVector< QPointF > pts{ nextLineOrigin.toQPointF(),
-                                  nextLineOrigin.project( barbLength / 1.414, azimuth + 90 ).toQPointF(),
+                                  nextLineOrigin.project( barbLength / 1.414, azimuth + 90 * sign ).toQPointF(),
                                   nextLineOrigin.project( barbLength / 1.414, azimuth ).toQPointF() };
     mContext.painter()->drawPolygon( pts );
     knots -= 50;
@@ -645,7 +661,7 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
   // draw large barbs (10)
   while ( knots > 7.5 )
   {
-    mContext.painter()->drawLine( nextLineOrigin.toQPointF(), nextLineOrigin.project( barbLength, azimuth + barbAngle ).toQPointF() );
+    mContext.painter()->drawLine( nextLineOrigin.toQPointF(), nextLineOrigin.project( barbLength, azimuth + barbAngle * sign ).toQPointF() );
     nextLineOrigin = nextLineOrigin.project( barbOffset, azimuth );
     knots -= 10;
   }
@@ -657,7 +673,7 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
     if ( nextLineOrigin == lineEnd )
       nextLineOrigin = nextLineOrigin.project( barbLength / 2, azimuth );
 
-    mContext.painter()->drawLine( nextLineOrigin.toQPointF(), nextLineOrigin.project( barbLength / 2, azimuth + barbAngle ).toQPointF() );
+    mContext.painter()->drawLine( nextLineOrigin.toQPointF(), nextLineOrigin.project( barbLength / 2, azimuth + barbAngle * sign ).toQPointF() );
   }
 }
 ///@endcond

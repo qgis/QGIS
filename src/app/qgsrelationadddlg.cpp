@@ -58,7 +58,7 @@ QgsCreateRelationDialog::QgsCreateRelationDialog( QWidget *parent )
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsCreateRelationDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-1-n-relations" ) );
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/joins_relations.html#one-to-many-relation" ) );
   } );
 
   addFieldsRow();

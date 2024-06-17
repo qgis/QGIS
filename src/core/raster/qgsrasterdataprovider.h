@@ -476,7 +476,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: add data type (may be different from band type)
 
     //! Writes into the provider datasource
-    virtual bool write( void *data, int band, int width, int height, int xOffset, int yOffset )
+    virtual bool write( const void *data, int band, int width, int height, int xOffset, int yOffset )
     {
       Q_UNUSED( data )
       Q_UNUSED( band )

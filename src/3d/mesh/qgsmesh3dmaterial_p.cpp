@@ -196,8 +196,8 @@ void QgsMesh3DMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "textureType", int( mSymbol->renderingStyle() ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol->colorRampShader().colorRampItemList().count() ) );
-  const int colorRampType = mSymbol->colorRampShader().colorRampType();
-  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
+  const Qgis::ShaderInterpolationMethod colorRampType = mSymbol->colorRampShader().colorRampType();
+  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", static_cast< int >( colorRampType ) ) );
   const QColor meshColor = mSymbol->singleMeshColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3DMaterial::ScalarDataSet ) ) );

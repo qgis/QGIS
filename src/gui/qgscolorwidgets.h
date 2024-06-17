@@ -53,7 +53,11 @@ class GUI_EXPORT QgsColorWidget : public QWidget
       Hue, //!< Hue component of color (based on HSV model)
       Saturation, //!< Saturation component of color (based on HSV model)
       Value, //!< Value component of color (based on HSV model)
-      Alpha //!< Alpha component (opacity) of color
+      Alpha, //!< Alpha component (opacity) of color
+      Cyan, //!< Cyan component (based on CMYK model) of color
+      Magenta, //!< Magenta component (based on CMYK model) of color
+      Yellow, //!< Yellow component (based on CMYK model) of color
+      Black //!< Black component (based on CMYK model) of color
     };
 
     /**
@@ -155,7 +159,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * Returns the range of valid values a color component
      * \returns maximum value allowed for color component
      */
-    int componentRange( ColorComponent component ) const;
+    static int componentRange( ColorComponent component );
 
     /**
      * Returns the value of a component of the widget's current color. This method correctly
@@ -180,7 +184,17 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param newValue new value of color component. Values are automatically clipped to a
      * valid range for the color component.
      */
-    void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) const;
+    static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue );
+
+    /**
+     * Returns color widget type of color, either RGB, HSV, CMYK, or Invalid if this component value is Multiple or Alpha
+     */
+    QColor::Spec colorSpec() const;
+
+    /**
+     * Returns \a component type of color, either RGB, HSV, CMYK, or Invalid if \a component value is Multiple or Alpha
+     */
+    static QColor::Spec colorSpec( QgsColorWidget::ColorComponent component );
 
     /**
      * Generates a checkboard pattern pixmap for use as a background to transparent colors
@@ -197,6 +211,8 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     void mouseMoveEvent( QMouseEvent *e ) override;
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseReleaseEvent( QMouseEvent *e ) override;
+
+    friend class TestQgsCompoundColorWidget;
 };
 
 

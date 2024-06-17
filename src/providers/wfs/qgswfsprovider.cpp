@@ -1825,7 +1825,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     // Display an information box if within 2 seconds, the schema has not
     // been analyzed.
     box = new QMessageBox(
-      QMessageBox::Information, tr( "Information" ), tr( "Download of schemas in progress..." ),
+      QMessageBox::Information, tr( "Information" ), tr( "Download of XML schemas to which the WFS refers in progress..." ),
       QMessageBox::Cancel,
       parentWidget );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)

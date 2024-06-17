@@ -86,6 +86,7 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
 
     void mAddGridPushButton_clicked();
     void mRemoveGridPushButton_clicked();
+    void mCopyGridPushButton_clicked();
     void mGridUpButton_clicked();
     void mGridDownButton_clicked();
 

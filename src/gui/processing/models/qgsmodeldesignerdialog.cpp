@@ -1051,6 +1051,28 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       return;
   }
 
+  if ( !childAlgorithmSubset.isEmpty() )
+  {
+    for ( const QString &child : childAlgorithmSubset )
+    {
+      // has user previously run all requirements for this step?
+      const QSet< QString > requirements = mModel->dependsOnChildAlgorithms( child );
+      for ( const QString &requirement : requirements )
+      {
+        if ( !mLastResult.executedChildIds().contains( requirement ) )
+        {
+          QMessageBox messageBox;
+          messageBox.setWindowTitle( tr( "Run Model" ) );
+          messageBox.setIcon( QMessageBox::Icon::Warning );
+          messageBox.setText( tr( "Prerequisite parts of this model have not yet been run. (Try running the full model first)." ) );
+          messageBox.setStandardButtons( QMessageBox::StandardButton::Ok );
+          messageBox.exec();
+          return;
+        }
+      }
+    }
+  }
+
   std::unique_ptr< QgsProcessingAlgorithmDialogBase > dialog( createExecutionDialog() );
   if ( !dialog )
     return;

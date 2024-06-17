@@ -41,6 +41,7 @@ class TestQgsLayoutGeoPdfExport : public QgsTest
     void testCollectingFeatures();
     void skipLayers();
     void layerOrder();
+    void groupOrder();
 };
 
 void TestQgsLayoutGeoPdfExport::initTestCase()
@@ -434,6 +435,27 @@ void TestQgsLayoutGeoPdfExport::layerOrder()
   l.setCustomProperty( QStringLiteral( "pdfLayerOrder" ), QStringLiteral( "%1~~~%2" ).arg( linesLayer->id(), polygonLayer->id() ) );
   const QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
   QCOMPARE( geoPdfExporter2.layerOrder(), QStringList() << linesLayer->id() << polygonLayer->id() << pointsLayer->id() );
+}
+
+void TestQgsLayoutGeoPdfExport::groupOrder()
+{
+  QgsProject p;
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+
+  // no group ordering for layout
+  const QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  QVERIFY( geoPdfExporter.layerTreeGroupOrder().isEmpty() );
+
+  // custom group order is specified, respect that
+  l.setCustomProperty( QStringLiteral( "pdfGroupOrder" ), QStringList{ QStringLiteral( "group 1" ), QStringLiteral( "GROUP C" ), QStringLiteral( "group 2" ) } );
+  const QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
+  QCOMPARE( geoPdfExporter2.layerTreeGroupOrder(), QStringList() << QStringLiteral( "group 1" ) << QStringLiteral( "GROUP C" ) << QStringLiteral( "group 2" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

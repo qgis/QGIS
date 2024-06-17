@@ -22,17 +22,21 @@
 #include <QString>
 #include <QMap>
 #include <QPair>
+#include <QDateTime>
+#include <QDomElement>
 
 #include <limits>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspoint.h"
-#include "qgsdataprovider.h"
 
 class QgsMeshLayer;
 class QgsMeshDatasetGroup;
 class QgsRectangle;
+class QDomDocument;
+class QgsReadWriteContext;
+
 struct QgsMesh;
 
 /**
@@ -398,6 +402,16 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     QString name() const;
 
     /**
+     * Returns the name of the dataset's parent quantity, if available.
+     *
+     * The quantity can be used to collect dataset groups which represent a single quantity
+     * but at different values (e.g. groups which represent different elevations).
+     *
+     * \since QGIS 3.38
+     */
+    QString parentQuantityName() const;
+
+    /**
      * Returns the uri of the source
      *
      * \since QGIS 3.16
@@ -457,6 +471,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 
   private:
     QString mName;
+    QString mParentQuantityName;
     QString mUri;
     bool mIsScalar = false;
     DataType mDataType = DataType::DataOnFaces;

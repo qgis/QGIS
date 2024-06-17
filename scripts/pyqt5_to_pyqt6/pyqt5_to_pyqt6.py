@@ -158,6 +158,7 @@ deprecated_renamed_enums = {
     ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton'),
     ('Qt', 'TextColorRole'): ('ItemDataRole', 'ForegroundRole'),
     ('Qt', 'BackgroundColorRole'): ('ItemDataRole', 'BackgroundRole'),
+    ('QPainter', 'HighQualityAntialiasing'): ('RenderHint', 'Antialiasing'),
 }
 
 rename_function_attributes = {
@@ -194,6 +195,13 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     extra_imports = defaultdict(set)
     removed_imports = defaultdict(set)
     import_offsets = {}
+
+    object_types = {}
+
+    def visit_assign(_node: ast.Assign, _parent):
+        if isinstance(_node.value, ast.Call) and isinstance(_node.value.func,
+                                                            ast.Name) and _node.value.func.id in ('QFontMetrics', 'QFontMetricsF'):
+            object_types[_node.targets[0].id] = _node.value.func.id
 
     def visit_call(_node: ast.Call, _parent):
         if isinstance(_node.func, ast.Attribute):
@@ -310,10 +318,19 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         src='')
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
+            if object_types.get(_node.value.id) in ('QFontMetrics', 'QFontMetricsF'):
+                if _node.attr == 'width':
+                    sys.stderr.write(
+                        f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QFontMetrics.width() '
+                        'has been removed in Qt6. Use QFontMetrics.horizontalAdvance() if plugin can '
+                        'safely require Qt >= 5.11, or QFontMetrics.boundingRect().width() otherwise.\n')
+
         elif isinstance(_node.value, ast.Call):
-            if (isinstance(_node.value.func, ast.Attribute) and
-                _node.value.func.attr == 'fontMetrics' and
-                    _node.attr == 'width'):
+            if (_node.attr == 'width' and ((
+                isinstance(_node.value.func, ast.Attribute) and
+                _node.value.func.attr == 'fontMetrics')
+                or (isinstance(_node.value.func, ast.Name) and
+                    _node.value.func.id == 'QFontMetrics'))):
                 sys.stderr.write(
                     f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QFontMetrics.width() '
                     'has been removed in Qt6. Use QFontMetrics.horizontalAdvance() if plugin can '
@@ -363,6 +380,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 visit_attribute(node, parent)
             elif isinstance(node, ast.Subscript):
                 visit_subscript(node, parent)
+            elif isinstance(node, ast.Assign):
+                visit_assign(node, parent)
 
             if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
                 function_def_renames[
@@ -427,6 +446,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     for i, token in reversed_enumerate(tokens):
         if token.offset in import_offsets:
             end_import_offset = Offset(*import_offsets[token.offset][-2:])
+            del import_offsets[token.offset]
             assert tokens[i].src == 'from'
             token_index = i + 1
             while not tokens[token_index].src.strip():

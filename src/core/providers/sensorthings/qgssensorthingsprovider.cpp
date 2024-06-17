@@ -377,6 +377,24 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   if ( entity != Qgis::SensorThingsEntity::Invalid )
     components.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entity ) );
 
+  const QStringList expandToParam = dsUri.param( QStringLiteral( "expandTo" ) ).split( ';', Qt::SkipEmptyParts );
+  if ( !expandToParam.isEmpty() )
+  {
+    QVariantList expandParts;
+    for ( const QString &expandString : expandToParam )
+    {
+      const QgsSensorThingsExpansionDefinition definition = QgsSensorThingsExpansionDefinition::fromString( expandString );
+      if ( definition.isValid() )
+      {
+        expandParts.append( QVariant::fromValue( definition ) );
+      }
+    }
+    if ( !expandParts.isEmpty() )
+    {
+      components.insert( QStringLiteral( "expandTo" ), expandParts );
+    }
+  }
+
   bool ok = false;
   const int maxPageSizeParam = dsUri.param( QStringLiteral( "pageSize" ) ).toInt( &ok );
   if ( ok )
@@ -464,6 +482,24 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   {
     dsUri.setParam( QStringLiteral( "entity" ),
                     qgsEnumValueToKey( entity ) );
+  }
+
+  const QVariantList expandToParam = parts.value( QStringLiteral( "expandTo" ) ).toList();
+  if ( !expandToParam.isEmpty() )
+  {
+    QStringList expandToStringList;
+    for ( const QVariant &expansion : expandToParam )
+    {
+      const QgsSensorThingsExpansionDefinition expansionDefinition = expansion.value< QgsSensorThingsExpansionDefinition >();
+      if ( !expansionDefinition.isValid() )
+        continue;
+
+      expandToStringList.append( expansionDefinition.toString() );
+    }
+    if ( !expandToStringList.isEmpty() )
+    {
+      dsUri.setParam( QStringLiteral( "expandTo" ), expandToStringList.join( ';' ) );
+    }
   }
 
   bool ok = false;

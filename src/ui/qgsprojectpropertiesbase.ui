@@ -2370,7 +2370,7 @@
                           <item>
                            <widget class="QLabel" name="mWMSImageQualityLabel">
                             <property name="text">
-                             <string>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</string>
+                             <string>Quality for JPEG and WebP images (from 0 to 100; 0 - smaller size, 100 - better quality)</string>
                             </property>
                            </widget>
                           </item>

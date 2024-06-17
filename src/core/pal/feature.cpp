@@ -548,9 +548,11 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
 std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
   const QVector< Qgis::LabelPredefinedPointPosition > positions = mLF->predefinedPositionOrder();
-  double labelWidth = getLabelWidth( angle );
-  double labelHeight = getLabelHeight( angle );
+  const double labelWidth = getLabelWidth( angle );
+  const double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
+  const double maximumDistanceToLabel = mLF->maximumDistance();
+
   const QgsMargins &visualMargin = mLF->visualMargin();
 
   double symbolWidthOffset{ 0 };
@@ -572,55 +574,124 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
     }
   }
 
+  int candidatesPerPosition = 1;
+  double distanceStep = 0;
+  if ( maximumDistanceToLabel > distanceToLabel && !qgsDoubleNear( maximumDistanceToLabel, 0 ) )
+  {
+    // if we are placing labels over a distance range, we calculate the number of candidates
+    // based on the calculated valid area for labels
+    const double rayLength = maximumDistanceToLabel - distanceToLabel;
+
+    // we want at least two candidates per "ray", one at the min distance and one at the max
+    candidatesPerPosition = std::max( 2, static_cast< int >( std::ceil( mLF->layer()->mPal->maximumLineCandidatesPerMapUnit() * 1.5 * rayLength ) ) );
+    distanceStep = rayLength / ( candidatesPerPosition - 1 );
+  }
+
   double cost = 0.0001;
   std::size_t i = lPos.size();
 
-  const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
+  const Qgis::LabelPrioritization prioritization = mLF->prioritization();
+  const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates() * candidatesPerPosition;
   std::size_t created = 0;
-  for ( Qgis::LabelPredefinedPointPosition position : positions )
+
+  auto addCandidate = [this, x, y, labelWidth, labelHeight, angle, visualMargin, symbolWidthOffset, symbolHeightOffset, &created, &cost, &lPos, &i, maxNumberCandidates]( Qgis::LabelPredefinedPointPosition position, double distance ) -> bool
   {
     LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
 
     double labelX = 0;
     double labelY = 0;
-    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, symbolWidthOffset, symbolHeightOffset, angle );
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distance, visualMargin, symbolWidthOffset, symbolHeightOffset, angle );
 
     if ( ! mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
     {
       lPos.emplace_back( std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
-      created++;
+      ++created;
+      ++i;
       //TODO - tweak
       cost += 0.001;
       if ( maxNumberCandidates > 0 && created >= maxNumberCandidates )
-        break;
+        return false;
     }
-    ++i;
-  }
+    return true;
+  };
 
+  switch ( prioritization )
+  {
+    // the two cases below are identical, we just change which loop is the outer and inner loop
+    // remember to keep these in sync!!
+    case Qgis::LabelPrioritization::PreferPositionOrdering:
+    {
+      for ( Qgis::LabelPredefinedPointPosition position : positions )
+      {
+        double currentDistance = distanceToLabel;
+        for ( int distanceIndex = 0; distanceIndex < candidatesPerPosition; ++distanceIndex, currentDistance += distanceStep )
+        {
+          if ( !addCandidate( position, currentDistance ) )
+            return created;
+        }
+      }
+      break;
+    }
+
+    case Qgis::LabelPrioritization::PreferCloser:
+    {
+      double currentDistance = distanceToLabel;
+      for ( int distanceIndex = 0; distanceIndex < candidatesPerPosition; ++distanceIndex, currentDistance += distanceStep )
+      {
+        for ( Qgis::LabelPredefinedPointPosition position : positions )
+        {
+          if ( !addCandidate( position, currentDistance ) )
+            return created;
+        }
+      }
+      break;
+    }
+  }
   return created;
 }
 
 std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
-  double labelWidth = getLabelWidth( angle );
-  double labelHeight = getLabelHeight( angle );
-  double distanceToLabel = getLabelDistance();
+  const double labelWidth = getLabelWidth( angle );
+  const double labelHeight = getLabelHeight( angle );
+  const double distanceToLabel = getLabelDistance();
+  const double maximumDistanceToLabel = mLF->maximumDistance();
 
-  std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
-  if ( maxNumberCandidates == 0 )
-    maxNumberCandidates = 16;
+  // Take care of the label angle when creating candidates. See pr comments #44944 for details
+  // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
+  QTransform transformRotation;
+  transformRotation.rotate( angle * 180 / M_PI );
 
-  int icost = 0;
-  int inc = 2;
-  int id = lPos.size();
+  int rayCount = static_cast< int >( mLF->layer()->maximumPointLabelCandidates() );
+  if ( rayCount == 0 )
+    rayCount = 16;
 
-  double candidateAngleIncrement = 2 * M_PI / maxNumberCandidates; /* angle bw 2 pos */
+  int candidatesPerRay = 0;
+  double rayStepDelta = 0;
+  if ( maximumDistanceToLabel > distanceToLabel && !qgsDoubleNear( maximumDistanceToLabel, 0 ) )
+  {
+    // if we are placing labels over a distance range, we calculate the number of candidates
+    // based on the calculated valid area for labels
+    const double rayLength = maximumDistanceToLabel - distanceToLabel;
+
+    // we want at least two candidates per "ray", one at the min distance and one at the max
+    candidatesPerRay = std::max( 2, static_cast< int >( std::ceil( mLF->layer()->mPal->maximumLineCandidatesPerMapUnit() * 1.5 * rayLength ) ) );
+    rayStepDelta = rayLength / ( candidatesPerRay - 1 );
+  }
+  else
+  {
+    candidatesPerRay = 1;
+  }
+
+  int id = static_cast< int >( lPos.size() );
+
+  const double candidateAngleIncrement = 2 * M_PI / static_cast< double >( rayCount ); /* angle bw 2 pos */
 
   /* various angles */
-  double a90  = M_PI_2;
-  double a180 = M_PI;
-  double a270 = a180 + a90;
-  double a360 = 2 * M_PI;
+  constexpr double a90  = M_PI_2;
+  constexpr double a180 = M_PI;
+  constexpr double a270 = a180 + a90;
+  constexpr double a360 = 2 * M_PI;
 
   double gamma1, gamma2;
 
@@ -642,9 +713,12 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
   std::size_t numberCandidatesGenerated = 0;
 
-  std::size_t i;
-  double angleToCandidate;
-  for ( i = 0, angleToCandidate = M_PI_4; i < maxNumberCandidates; i++, angleToCandidate += candidateAngleIncrement )
+  double angleToCandidate = M_PI_4;
+
+  int integerRayCost = 0;
+  int integerRayCostIncrement = 2;
+
+  for ( int rayIndex = 0; rayIndex < rayCount; ++rayIndex, angleToCandidate += candidateAngleIncrement )
   {
     double deltaX = 0.0;
     double deltaY = 0.0;
@@ -652,107 +726,118 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
     if ( angleToCandidate > a360 )
       angleToCandidate -= a360;
 
-    LabelPosition::Quadrant quadrant = LabelPosition::QuadrantOver;
+    double rayDistance = distanceToLabel;
 
-    if ( angleToCandidate < gamma1 || angleToCandidate > a360 - gamma1 )  // on the right
-    {
-      deltaX = distanceToLabel;
-      double iota = ( angleToCandidate + gamma1 );
-      if ( iota > a360 - gamma1 )
-        iota -= a360;
+    constexpr double RAY_ANGLE_COST_FACTOR = 0.0020;
+    // ray angle cost increases from 0 at 45 degrees up to 1 at 45 + 180, and then decreases
+    // back to 0 at angles greater than 45 + 180
+    // scale ray angle cost to range 0 to 1, and then adjust by a magic constant factor
+    const double scaledRayAngleCost = RAY_ANGLE_COST_FACTOR * static_cast< double >( integerRayCost )
+                                      / static_cast< double >( rayCount - 1 );
 
-      //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
-      deltaY = -labelHeight + labelHeight * iota / ( 2 * gamma1 );
+    for ( int j = 0; j < candidatesPerRay; ++j, rayDistance += rayStepDelta )
+    {
+      LabelPosition::Quadrant quadrant = LabelPosition::QuadrantOver;
 
-      quadrant = LabelPosition::QuadrantRight;
-    }
-    else if ( angleToCandidate < a90 - gamma2 )  // top-right
-    {
-      deltaX = distanceToLabel * std::cos( angleToCandidate );
-      deltaY = distanceToLabel * std::sin( angleToCandidate );
-      quadrant = LabelPosition::QuadrantAboveRight;
-    }
-    else if ( angleToCandidate < a90 + gamma2 ) // top
-    {
-      //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
-      deltaX = -labelWidth * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
-      deltaY = distanceToLabel;
-      quadrant = LabelPosition::QuadrantAbove;
-    }
-    else if ( angleToCandidate < a180 - gamma1 )  // top left
-    {
-      deltaX = distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
-      deltaY = distanceToLabel * std::sin( angleToCandidate );
-      quadrant = LabelPosition::QuadrantAboveLeft;
-    }
-    else if ( angleToCandidate < a180 + gamma1 ) // left
-    {
-      deltaX = -distanceToLabel - labelWidth;
-      //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
-      deltaY = - ( angleToCandidate - a180 + gamma1 ) * labelHeight / ( 2 * gamma1 );
-      quadrant = LabelPosition::QuadrantLeft;
-    }
-    else if ( angleToCandidate < a270 - gamma2 ) // down - left
-    {
-      deltaX = distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
-      deltaY = distanceToLabel * std::sin( angleToCandidate ) - labelHeight;
-      quadrant = LabelPosition::QuadrantBelowLeft;
-    }
-    else if ( angleToCandidate < a270 + gamma2 ) // down
-    {
-      deltaY = -distanceToLabel - labelHeight;
-      //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
-      deltaX = -labelWidth + ( angleToCandidate - a270 + gamma2 ) * labelWidth / ( 2 * gamma2 );
-      quadrant = LabelPosition::QuadrantBelow;
-    }
-    else if ( angleToCandidate < a360 ) // down - right
-    {
-      deltaX = distanceToLabel * std::cos( angleToCandidate );
-      deltaY = distanceToLabel * std::sin( angleToCandidate ) - labelHeight;
-      quadrant = LabelPosition::QuadrantBelowRight;
-    }
-
-    // Take care of the label angle when creating candidates. See pr comments #44944 for details
-    // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
-    QTransform transformRotation;
-    transformRotation.rotate( angle * 180 / M_PI );
-    transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
-
-    double labelX = x + deltaX;
-    double labelY = y + deltaY;
-
-    double cost;
-
-    if ( maxNumberCandidates == 1 )
-      cost = 0.0001;
-    else
-      cost = 0.0001 + 0.0020 * double( icost ) / double( maxNumberCandidates - 1 );
-
-
-    if ( mLF->permissibleZonePrepared() )
-    {
-      if ( !GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
+      if ( angleToCandidate < gamma1 || angleToCandidate > a360 - gamma1 )  // on the right
       {
-        continue;
+        deltaX = rayDistance;
+        double iota = ( angleToCandidate + gamma1 );
+        if ( iota > a360 - gamma1 )
+          iota -= a360;
+
+        deltaY = -labelHeight + labelHeight * iota / ( 2 * gamma1 );
+
+        quadrant = LabelPosition::QuadrantRight;
       }
+      else if ( angleToCandidate < a90 - gamma2 )  // top-right
+      {
+        deltaX = rayDistance * std::cos( angleToCandidate );
+        deltaY = rayDistance * std::sin( angleToCandidate );
+        quadrant = LabelPosition::QuadrantAboveRight;
+      }
+      else if ( angleToCandidate < a90 + gamma2 ) // top
+      {
+        deltaX = -labelWidth * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
+        deltaY = rayDistance;
+        quadrant = LabelPosition::QuadrantAbove;
+      }
+      else if ( angleToCandidate < a180 - gamma1 )  // top left
+      {
+        deltaX = rayDistance * std::cos( angleToCandidate ) - labelWidth;
+        deltaY = rayDistance * std::sin( angleToCandidate );
+        quadrant = LabelPosition::QuadrantAboveLeft;
+      }
+      else if ( angleToCandidate < a180 + gamma1 ) // left
+      {
+        deltaX = -rayDistance - labelWidth;
+        deltaY = - ( angleToCandidate - a180 + gamma1 ) * labelHeight / ( 2 * gamma1 );
+        quadrant = LabelPosition::QuadrantLeft;
+      }
+      else if ( angleToCandidate < a270 - gamma2 ) // down - left
+      {
+        deltaX = rayDistance * std::cos( angleToCandidate ) - labelWidth;
+        deltaY = rayDistance * std::sin( angleToCandidate ) - labelHeight;
+        quadrant = LabelPosition::QuadrantBelowLeft;
+      }
+      else if ( angleToCandidate < a270 + gamma2 ) // down
+      {
+        deltaY = -rayDistance - labelHeight;
+        deltaX = -labelWidth + ( angleToCandidate - a270 + gamma2 ) * labelWidth / ( 2 * gamma2 );
+        quadrant = LabelPosition::QuadrantBelow;
+      }
+      else if ( angleToCandidate < a360 ) // down - right
+      {
+        deltaX = rayDistance * std::cos( angleToCandidate );
+        deltaY = rayDistance * std::sin( angleToCandidate ) - labelHeight;
+        quadrant = LabelPosition::QuadrantBelowRight;
+      }
+
+      transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
+
+      double labelX = x + deltaX;
+      double labelY = y + deltaY;
+
+      double cost;
+
+      if ( rayCount == 1 )
+        cost = 0.0001;
+      else
+        cost = 0.0001 + scaledRayAngleCost;
+
+      if ( j > 0 )
+      {
+        // cost increases with distance, such that the cost for placing the label at the optimal angle (45)
+        // but at a greater distance is more then the cost for placing the label at the worst angle (45+180)
+        // but at the minimum distance
+        cost += j * RAY_ANGLE_COST_FACTOR + RAY_ANGLE_COST_FACTOR / rayCount;
+      }
+
+      if ( mLF->permissibleZonePrepared() )
+      {
+        if ( !GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
+        {
+          continue;
+        }
+      }
+
+      lPos.emplace_back( std::make_unique< LabelPosition >( id, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
+      id++;
+      numberCandidatesGenerated++;
     }
 
-    lPos.emplace_back( std::make_unique< LabelPosition >( id + i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
-    numberCandidatesGenerated++;
+    integerRayCost += integerRayCostIncrement;
 
-    icost += inc;
-
-    if ( icost == static_cast< int >( maxNumberCandidates ) )
+    if ( integerRayCost == static_cast< int >( rayCount ) )
     {
-      icost = static_cast< int >( maxNumberCandidates ) - 1;
-      inc = -2;
+      integerRayCost = static_cast< int >( rayCount ) - 1;
+      integerRayCostIncrement = -2;
     }
-    else if ( icost > static_cast< int >( maxNumberCandidates ) )
+    else if ( integerRayCost > static_cast< int >( rayCount ) )
     {
-      icost = static_cast< int >( maxNumberCandidates ) - 2;
-      inc = -2;
+      integerRayCost = static_cast< int >( rayCount ) - 2;
+      integerRayCostIncrement = -2;
     }
-
   }
 
   return numberCandidatesGenerated;

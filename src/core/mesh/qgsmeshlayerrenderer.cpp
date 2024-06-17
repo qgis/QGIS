@@ -74,20 +74,6 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   mNativeMesh = *( layer->nativeMesh() );
   mLayerExtent = layer->extent();
 
-  // copy triangular mesh
-  copyTriangularMeshes( layer, context );
-
-  // copy datasets
-  copyScalarDatasetValues( layer );
-  copyVectorDatasetValues( layer );
-
-  calculateOutputSize();
-
-  QSet<QString> attrs;
-  prepareLabeling( layer, attrs );
-
-  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
-
   if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
   {
     QgsMeshLayerElevationProperties *elevProp = qobject_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() );
@@ -110,9 +96,68 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
           // TODO -- filtering by mesh z values is not currently implemented
           break;
         }
+
+        case Qgis::MeshElevationMode::FixedRangePerGroup:
+        {
+          // find the top-most group which matches the map range and parent group
+          int currentMatchingVectorGroup = -1;
+          int currentMatchingScalarGroup = -1;
+          QgsDoubleRange currentMatchingVectorRange;
+          QgsDoubleRange currentMatchingScalarRange;
+
+          const QMap<int, QgsDoubleRange > rangePerGroup = elevProp->fixedRangePerGroup();
+
+          const int activeVectorDatasetGroup = mRendererSettings.activeVectorDatasetGroup();
+          const int activeScalarDatasetGroup = mRendererSettings.activeScalarDatasetGroup();
+
+          for ( auto it = rangePerGroup.constBegin(); it != rangePerGroup.constEnd(); ++it )
+          {
+            if ( it.value().overlaps( context.zRange() ) )
+            {
+              const bool matchesVectorParentGroup = QgsMeshLayerUtils::haveSameParentQuantity( layer, QgsMeshDatasetIndex( activeVectorDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
+              const bool matchesScalarParentGroup = QgsMeshLayerUtils::haveSameParentQuantity( layer, QgsMeshDatasetIndex( activeScalarDatasetGroup ), QgsMeshDatasetIndex( it.key() ) );
+
+              if ( matchesVectorParentGroup && (
+                     currentMatchingVectorRange.isInfinite()
+                     || ( it.value().includeUpper() && it.value().upper() >= currentMatchingVectorRange.upper() )
+                     || ( !currentMatchingVectorRange.includeUpper() && it.value().upper() >= currentMatchingVectorRange.upper() ) ) )
+              {
+                currentMatchingVectorGroup = it.key();
+                currentMatchingVectorRange = it.value();
+              }
+
+              if ( matchesScalarParentGroup && (
+                     currentMatchingScalarRange.isInfinite()
+                     || ( it.value().includeUpper() && it.value().upper() >= currentMatchingScalarRange.upper() )
+                     || ( !currentMatchingScalarRange.includeUpper() && it.value().upper() >= currentMatchingScalarRange.upper() ) ) )
+              {
+                currentMatchingScalarGroup = it.key();
+                currentMatchingScalarRange = it.value();
+              }
+            }
+          }
+          if ( currentMatchingVectorGroup >= 0 )
+            mRendererSettings.setActiveVectorDatasetGroup( currentMatchingVectorGroup );
+          if ( currentMatchingScalarGroup >= 0 )
+            mRendererSettings.setActiveScalarDatasetGroup( currentMatchingScalarGroup );
+        }
       }
     }
   }
+
+  // copy triangular mesh
+  copyTriangularMeshes( layer, context );
+
+  // copy datasets
+  copyScalarDatasetValues( layer );
+  copyVectorDatasetValues( layer );
+
+  calculateOutputSize();
+
+  QSet<QString> attrs;
+  prepareLabeling( layer, attrs );
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
   mPreparationTime = timer.elapsed();
 }
@@ -154,9 +199,9 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
   QgsMeshDatasetIndex datasetIndex;
   if ( renderContext()->isTemporal() )
-    datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange() );
+    datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange(), mRendererSettings.activeScalarDatasetGroup() );
   else
-    datasetIndex = layer->staticScalarDatasetIndex();
+    datasetIndex = layer->staticScalarDatasetIndex( mRendererSettings.activeScalarDatasetGroup() );
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->datasetGroupCount();
@@ -255,9 +300,9 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
   QgsMeshDatasetIndex datasetIndex;
   if ( renderContext()->isTemporal() )
-    datasetIndex = layer->activeVectorDatasetAtTime( renderContext()->temporalRange() );
+    datasetIndex = layer->activeVectorDatasetAtTime( renderContext()->temporalRange(), mRendererSettings.activeVectorDatasetGroup() );
   else
-    datasetIndex = layer->staticVectorDatasetIndex();
+    datasetIndex = layer->staticVectorDatasetIndex( mRendererSettings.activeVectorDatasetGroup() );
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->datasetGroupCount();

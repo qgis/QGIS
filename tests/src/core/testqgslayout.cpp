@@ -161,30 +161,35 @@ void TestQgsLayout::name()
 void TestQgsLayout::customProperties()
 {
   QgsProject p;
-  QgsLayout *layout = new QgsLayout( &p );
+  QgsLayout layout( &p );
 
-  QCOMPARE( layout->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
-  QVERIFY( layout->customProperties().isEmpty() );
-  layout->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
-  QCOMPARE( layout->customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
-  QCOMPARE( layout->customProperties().length(), 1 );
-  QCOMPARE( layout->customProperties().at( 0 ), QString( "testprop" ) );
+  QCOMPARE( layout.customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+  QVERIFY( layout.customProperties().isEmpty() );
+  layout.setCustomProperty( QStringLiteral( "testprop" ), "testval" );
+  QCOMPARE( layout.customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
+  QCOMPARE( layout.customProperties().length(), 1 );
+  QCOMPARE( layout.customProperties().at( 0 ), QString( "testprop" ) );
 
   //test no crash
-  layout->removeCustomProperty( QStringLiteral( "badprop" ) );
+  layout.removeCustomProperty( QStringLiteral( "badprop" ) );
 
-  layout->removeCustomProperty( QStringLiteral( "testprop" ) );
-  QVERIFY( layout->customProperties().isEmpty() );
-  QCOMPARE( layout->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+  layout.removeCustomProperty( QStringLiteral( "testprop" ) );
+  QVERIFY( layout.customProperties().isEmpty() );
+  QCOMPARE( layout.customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
 
-  layout->setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
-  layout->setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
-  const QStringList keys = layout->customProperties();
+  layout.setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
+  layout.setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
+  const QStringList keys = layout.customProperties();
   QCOMPARE( keys.length(), 2 );
   QVERIFY( keys.contains( "testprop1" ) );
   QVERIFY( keys.contains( "testprop2" ) );
 
-  delete layout;
+  // list value
+  layout.setCustomProperty( QStringLiteral( "a_list" ), QStringList{ QStringLiteral( "value 1" ),
+                            QStringLiteral( "value 2" ),
+                            QStringLiteral( "value 3" )} );
+  const QStringList res = layout.customProperty( QStringLiteral( "a_list" ) ).toStringList();
+  QCOMPARE( res, QStringList() << "value 1" << "value 2" << "value 3" );
 }
 
 void TestQgsLayout::writeRetrieveCustomProperties()
@@ -192,6 +197,10 @@ void TestQgsLayout::writeRetrieveCustomProperties()
   QgsLayout layout( QgsProject::instance() );
   layout.setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   layout.setCustomProperty( QStringLiteral( "testprop2" ), 5 );
+  // list value
+  layout.setCustomProperty( QStringLiteral( "a_list" ), QStringList{ QStringLiteral( "value 1" ),
+                            QStringLiteral( "value 2" ),
+                            QStringLiteral( "value 3" )} );
 
   //test writing composition with custom properties
   QDomImplementation DomImplementation;
@@ -207,11 +216,13 @@ void TestQgsLayout::writeRetrieveCustomProperties()
   QVERIFY( readLayout.readXml( layoutNode, doc, QgsReadWriteContext() ) );
 
   //test retrieved custom properties
-  QCOMPARE( readLayout.customProperties().length(), 2 );
+  QCOMPARE( readLayout.customProperties().length(), 3 );
   QVERIFY( readLayout.customProperties().contains( QString( "testprop" ) ) );
   QVERIFY( readLayout.customProperties().contains( QString( "testprop2" ) ) );
   QCOMPARE( readLayout.customProperty( "testprop" ).toString(), QString( "testval" ) );
   QCOMPARE( readLayout.customProperty( "testprop2" ).toInt(), 5 );
+  const QStringList res = readLayout.customProperty( QStringLiteral( "a_list" ) ).toStringList();
+  QCOMPARE( res, QStringList() << "value 1" << "value 2" << "value 3" );
 }
 
 void TestQgsLayout::variablesEdited()

@@ -37,6 +37,7 @@
 #include "qgsscreenhelper.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsprofilesourceregistry.h"
 
 #include <QWheelEvent>
 #include <QTimer>
@@ -844,7 +845,10 @@ void QgsElevationProfileCanvas::refresh()
 
   const QList< QgsMapLayer * > layersToGenerate = layers();
   QList< QgsAbstractProfileSource * > sources;
-  sources.reserve( layersToGenerate .size() );
+  const QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
+  sources.reserve( layersToGenerate.size() + registrySources.size() );
+
+  sources << registrySources;
   for ( QgsMapLayer *layer : layersToGenerate )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )

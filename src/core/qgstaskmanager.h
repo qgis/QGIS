@@ -367,6 +367,7 @@ class CORE_EXPORT QgsTask : public QObject
     void processSubTasksForHold();
 
     friend class QgsTaskManager;
+    friend class QgsTaskWithSerialSubTasks;
     friend class QgsTaskRunnableWrapper;
     friend class TestQgsTaskManager;
 
@@ -612,6 +613,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     mutable QRecursiveMutex *mTaskMutex;
 
     QMap< long, TaskInfo > mTasks;
+    QMap< QgsTask *, long> mMapTaskPtrToId;
     QMap< long, QgsTaskList > mTaskDependencies;
     QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
 
@@ -647,12 +649,51 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     void cancelDependentTasks( long taskId );
 
-    bool resolveDependencies( long firstTaskId, long currentTaskId, QSet< long > &results ) const;
+    bool resolveDependencies( long taskId, QSet< long > &results ) const;
 
     //! Will return TRUE if the specified task has circular dependencies
     bool hasCircularDependencies( long taskId ) const;
 
     friend class TestQgsTaskManager;
+};
+
+/**
+ * \ingroup core
+ * \class QgsTaskWithSerialSubTasks
+ * \brief Task that is composed of sub-tasks to be executed in a serial way,
+ * which may be useful for example to add several layers in a single target
+ * dataset which does not support concurrent updates.
+ * \since QGIS 3.36
+ */
+class CORE_EXPORT QgsTaskWithSerialSubTasks : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+    //! Constructor
+    QgsTaskWithSerialSubTasks( const QString &desc = QString() ) : QgsTask( desc ) {}
+
+    //! Destructor
+    ~QgsTaskWithSerialSubTasks() override;
+
+    /**
+     * Add a subtask and transfer its ownership
+     *
+     * The parent task must be added to a QgsTaskManager for subtasks to be utilized.
+     * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
+     * task should be added to the manager.
+     *
+     * For now, subtasks can *NOT* be nested.
+     */
+    void addSubTask( QgsTask *subTask SIP_TRANSFER );
+
+    void cancel() override;
+
+  protected:
+
+    QList< QgsTask *> mSubTasksSerial;
+
+    bool run() override;
 };
 
 #endif //QGSTASKMANAGER_H

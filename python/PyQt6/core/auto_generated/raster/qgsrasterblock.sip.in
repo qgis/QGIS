@@ -352,6 +352,8 @@ overwrite data somewhere in the middle of the internal buffer.
 
 
 
+
+
     static QString printValue( double value );
 %Docstring
 Print double value with all necessary significant digits.

@@ -115,7 +115,7 @@ class TestQgsRasterLayer : public QgsTest
                                   QgsColorRamp *colorRamp,
                                   int numberOfEntries );
     bool testColorRamp( const QString &name, QgsColorRamp *colorRamp,
-                        QgsColorRampShader::Type type, int numberOfEntries );
+                        Qgis::ShaderInterpolationMethod type, int numberOfEntries );
     QString mTestDataDir;
     QgsRasterLayer *mpRasterLayer = nullptr;
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
@@ -211,7 +211,7 @@ void TestQgsRasterLayer::pseudoColor()
 {
   QgsRasterShader *rasterShader = new QgsRasterShader();
   QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setColorRampType( Qgis::ShaderInterpolationMethod::Linear );
 
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
@@ -286,7 +286,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader *colorRampS
 }
 
 bool TestQgsRasterLayer::testColorRamp( const QString &name, QgsColorRamp *colorRamp,
-                                        QgsColorRampShader::Type type, int numberOfEntries )
+                                        Qgis::ShaderInterpolationMethod type, int numberOfEntries )
 {
   QgsRasterShader *rasterShader = new QgsRasterShader();
   QgsColorRampShader *colorRampShader = new QgsColorRampShader();
@@ -310,7 +310,7 @@ void TestQgsRasterLayer::colorRamp1()
   colorRamp->setStops( stops );
 
   // QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::Interpolated, 5 ) );
-  QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::Discrete, 10 ) );
+  QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, Qgis::ShaderInterpolationMethod::Discrete, 10 ) );
   delete colorRamp;
 }
 
@@ -320,7 +320,7 @@ void TestQgsRasterLayer::colorRamp2()
   // ColorBrewer ramp
   QVERIFY( testColorRamp( "raster_colorRamp2",
                           &ramp,
-                          QgsColorRampShader::Discrete, 10 ) );
+                          Qgis::ShaderInterpolationMethod::Discrete, 10 ) );
 }
 
 void TestQgsRasterLayer::colorRamp3()
@@ -330,7 +330,7 @@ void TestQgsRasterLayer::colorRamp3()
   QgsCptCityColorRamp ramp( QStringLiteral( "cb/div/BrBG" ), QStringLiteral( "_10" ) );
   QVERIFY( testColorRamp( "raster_colorRamp3",
                           &ramp,
-                          QgsColorRampShader::Discrete, 10 ) );
+                          Qgis::ShaderInterpolationMethod::Discrete, 10 ) );
   QgsCptCityArchive::clearArchives();
 }
 
@@ -340,7 +340,7 @@ void TestQgsRasterLayer::colorRamp4()
   QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QString() );
   QVERIFY( testColorRamp( "raster_colorRamp4",
                           &ramp,
-                          QgsColorRampShader::Discrete, 10 ) );
+                          Qgis::ShaderInterpolationMethod::Discrete, 10 ) );
 }
 
 void TestQgsRasterLayer::landsatBasic()
@@ -874,7 +874,7 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoData()
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
   QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setColorRampType( Qgis::ShaderInterpolationMethod::Linear );
 
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
@@ -920,7 +920,7 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoDataColor()
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
   QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setColorRampType( Qgis::ShaderInterpolationMethod::Linear );
 
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;

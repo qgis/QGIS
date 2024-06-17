@@ -168,10 +168,10 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   {
     options.transformContext = mDataProvider->transformContext();
   }
-  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
-  QgsMapLayer::clone( layer );
+  std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( source(), name(), mProviderKey, options );
+  QgsMapLayer::clone( layer.get() );
   layer->mElevationProperties = mElevationProperties->clone();
-  layer->mElevationProperties->setParent( layer );
+  layer->mElevationProperties->setParent( layer.get() );
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setMapTipsEnabled( mapTipsEnabled() );
 
@@ -182,8 +182,14 @@ QgsRasterLayer *QgsRasterLayer::clone() const
       layer->pipe()->set( mPipe->at( i )->clone() );
   }
   layer->pipe()->setDataDefinedProperties( mPipe->dataDefinedProperties() );
+  layer->setResamplingStage( mPipe->resamplingStage() );
+  if ( mDataProvider && layer->dataProvider() )
+  {
+    layer->dataProvider()->setZoomedInResamplingMethod( mDataProvider->zoomedInResamplingMethod() );
+    layer->dataProvider()->setZoomedOutResamplingMethod( mDataProvider->zoomedOutResamplingMethod() );
+  }
 
-  return layer;
+  return layer.release();
 }
 
 QgsAbstractProfileGenerator *QgsRasterLayer::createProfileGenerator( const QgsProfileRequest &request )
@@ -592,7 +598,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
     {
       QgsDebugMsgLevel( QStringLiteral( "....got color ramp item list" ), 4 );
       myShader.setColorRampItemList( myColorRampItemList );
-      myShader.setColorRampType( QgsColorRampShader::Discrete );
+      myShader.setColorRampType( Qgis::ShaderInterpolationMethod::Discrete );
       // Draw image
       const int mySize = 100;
       QPixmap myPalettePixmap( mySize, mySize );
@@ -894,7 +900,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
           // TODO: this should go somewhere else
           QgsRasterShader *shader = new QgsRasterShader();
           QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-          colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+          colorRampShader->setColorRampType( Qgis::ShaderInterpolationMethod::Linear );
           colorRampShader->setColorRampItemList( colorTable );
           shader->setRasterShaderFunction( colorRampShader );
           r->setShader( shader );

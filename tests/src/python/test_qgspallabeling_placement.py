@@ -114,6 +114,224 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_point_placement_around_max_distance_show_candidates(
+            self):
+        """
+        Around point placement with max distance, showing candidates
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        label_settings = self._TestMapSettings.labelingEngineSettings()
+        label_settings.setFlag(
+            Qgis.LabelingFlag.DrawCandidates
+        )
+        label_settings.setMaximumLineCandidatesPerCm(1)
+        self._TestMapSettings.setLabelingEngineSettings(label_settings)
+
+        self.lyr.fieldName = "'testing'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.AroundPoint
+        self.lyr.pointSettings().setMaximumDistance(40)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_placement_around_no_max_distance(
+            self):
+        """
+        Around point placement without max distance.
+
+        In this case no label can be placed for the point
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        poly_layer = TestQgsPalLabeling.loadFeatureLayer('polygon_with_bump')
+        obstacle_label_settings = QgsPalLayerSettings()
+        obstacle_label_settings.obstacle = True
+        obstacle_label_settings.drawLabels = False
+        obstacle_label_settings.obstacleFactor = 2
+        obstacle_label_settings.obstacleSettings().setType(
+            QgsLabelObstacleSettings.ObstacleType.PolygonInterior)
+        poly_layer.setLabeling(
+            QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+        poly_layer.setLabelsEnabled(True)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
+        self.lyr.fieldName = "'abc'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.AroundPoint
+        self.lyr.priority = 1
+        self.lyr.pointSettings().setMaximumDistance(0)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.removeMapLayer(poly_layer)
+        self.layer = None
+
+    def test_point_placement_around_max_distance(
+            self):
+        """
+        Around point placement with max distance.
+
+        In this case the label can be placed for the point at up to 80mm
+        from the point
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        poly_layer = TestQgsPalLabeling.loadFeatureLayer('polygon_with_bump')
+        obstacle_label_settings = QgsPalLayerSettings()
+        obstacle_label_settings.obstacle = True
+        obstacle_label_settings.drawLabels = False
+        obstacle_label_settings.obstacleFactor = 2
+        obstacle_label_settings.obstacleSettings().setType(
+            QgsLabelObstacleSettings.ObstacleType.PolygonInterior)
+        poly_layer.setLabeling(
+            QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+        poly_layer.setLabelsEnabled(True)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
+        self.lyr.fieldName = "'abc'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.AroundPoint
+        self.lyr.priority = 1
+        self.lyr.pointSettings().setMaximumDistance(80)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.removeMapLayer(poly_layer)
+        self.layer = None
+
+    def test_point_placement_cartographic_max_distance_show_candidates(
+            self):
+        """
+        Cartographic placement with max distance, showing candidates
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        label_settings = self._TestMapSettings.labelingEngineSettings()
+        label_settings.setFlag(
+            Qgis.LabelingFlag.DrawCandidates
+        )
+        label_settings.setMaximumLineCandidatesPerCm(1)
+        self._TestMapSettings.setLabelingEngineSettings(label_settings)
+
+        self.lyr.fieldName = "'testing'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.pointSettings().setMaximumDistance(40)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_placement_cartographic_no_max_distance_prefer_ordering(
+            self):
+        """
+        Cartographic placement without max distance, prefer ordering
+
+        In this case the label for the top right feature MUST be
+        be placed in the second preference "top left" placement, because
+        we are not allowing a maximum distance and accordingly the label
+        cannot be placed in the preferred bottom left location.
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
+        self.lyr.fieldName = "'testing'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.pointSettings().setMaximumDistance(0)
+        self.lyr.pointSettings().setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft,
+             Qgis.LabelPredefinedPointPosition.TopLeft,
+             ]
+        )
+        self.lyr.placementSettings().setPrioritization(
+            Qgis.LabelPrioritization.PreferPositionOrdering)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_placement_cartographic_max_distance_prefer_ordering(self):
+        """
+        Cartographic placement with max distance, prefer ordering.
+
+        In this case the label for the top right feature should always
+        be placed in the preferred "bottom left" placement, even though
+        it means pushing it right out toward the maximum distance of 80mm
+        from the point itself
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
+        self.lyr.fieldName = "'testing'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.pointSettings().setMaximumDistance(80)
+        self.lyr.pointSettings().setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft,
+             Qgis.LabelPredefinedPointPosition.TopLeft,
+             ]
+        )
+        self.lyr.placementSettings().setPrioritization(
+            Qgis.LabelPrioritization.PreferPositionOrdering)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_placement_cartographic_max_distance_prefer_closer(self):
+        """
+        Cartographic placement with max distance, prefer closer.
+
+        In this case the label for the top right feature should
+        be placed in the second preference "top left" placement, even though
+        it could be placed 80 mm from the point in the first preference
+        bottom left mode. But we are using "prefer closer" prioritization,
+        so the closer candidate (top left) should be used instead.
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
+        self.lyr.fieldName = "'testing'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.pointSettings().setMaximumDistance(80)
+        self.lyr.pointSettings().setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft,
+             Qgis.LabelPredefinedPointPosition.TopLeft,
+             ]
+        )
+        self.lyr.placementSettings().setPrioritization(
+            Qgis.LabelPrioritization.PreferCloser)
+        f = self.lyr.format()
+        f.setSize(30)
+        self.lyr.setFormat(f)
+
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
     def test_line_with_no_candidate_show_all(self):
         # A line too short to have any candidates, yet we need to show all labels for the layer
         self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')

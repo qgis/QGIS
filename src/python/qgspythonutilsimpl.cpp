@@ -755,3 +755,12 @@ QStringList QgsPythonUtilsImpl::listActivePlugins()
   evalString( QStringLiteral( "'\\n'.join(qgis.utils.active_plugins)" ), output );
   return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
 }
+
+void QgsPythonUtilsImpl::initGDAL()
+{
+  runString("from osgeo import gdal, ogr, osr");
+  // To avoid FutureWarning with GDAL >= 3.7.0
+  runString("gdal.UseExceptions()");
+  runString("ogr.UseExceptions()");
+  runString("osr.UseExceptions()");
+}

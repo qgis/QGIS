@@ -121,6 +121,7 @@ Contains settings for how a map layer will be labeled.
       OffsetXY,
       OffsetUnits,
       LabelDistance,
+      MaximumDistance,
       DistanceUnits,
       OffsetRotation,
       CurvedCharAngleInOut,
@@ -276,7 +277,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool centroidInside;
 
-
     bool fitInPolygonOnly;
 
     double dist;
@@ -292,8 +292,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     Qgis::RenderUnit repeatDistanceUnit;
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
-
-    Qgis::LabelQuadrantPosition quadOffset;
 
     double xOffset;
 
@@ -483,6 +481,29 @@ a "perimeter" style mode).
 .. seealso:: :py:func:`lineSettings`
 
 .. versionadded:: 3.16
+%End
+
+
+    QgsLabelPointSettings &pointSettings();
+%Docstring
+Returns the label point settings, which contain settings related to how the label
+engine places and formats labels for point features, or polygon features which are
+labeled in the "around" or "over" centroid placement modes.
+
+.. seealso:: :py:func:`setPointSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setPointSettings( const QgsLabelPointSettings &settings );
+%Docstring
+Sets the label point ``settings``, which contain settings related to how the label
+engine places and formats labels for point features, or polygon features which are
+labeled in the "around" or "over" centroid placement modes.
+
+.. seealso:: :py:func:`pointSettings`
+
+.. versionadded:: 3.38
 %End
 
 

@@ -46,6 +46,11 @@ feedback, otherwise an integrated message bar will be used.
 %End
     ~QgsCodeEditorWidget();
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+    virtual void showEvent( QShowEvent *event );
+
+
     QgsCodeEditor *editor();
 %Docstring
 Returns the wrapped code editor.
@@ -59,6 +64,32 @@ Returns ``True`` if the search bar is visible.
     QgsMessageBar *messageBar();
 %Docstring
 Returns the message bar associated with the widget, to use for user feedback.
+%End
+
+    QgsScrollBarHighlightController *scrollbarHighlightController();
+%Docstring
+Returns the scrollbar highlight controller, which can be used to add highlights
+in the code editor scrollbar.
+%End
+
+    void addWarning( int lineNumber, const QString &warning );
+%Docstring
+Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
+
+This method calls :py:func:`QgsCodeEditor.addWarning()`, but also automatically adds
+highlights to the widget scrollbars locating the warning location.
+
+.. seealso:: :py:func:`clearWarnings`
+%End
+
+    void clearWarnings();
+%Docstring
+Clears all warning messages from the editor.
+
+This method calls :py:func:`QgsCodeEditor.clearWarnings()`, but also removes
+highlights from the widget scrollbars at the warning locations.
+
+.. seealso:: :py:func:`addWarning`
 %End
 
   public slots:
@@ -88,6 +119,15 @@ Sets whether the search bar is ``visible``.
 .. seealso:: :py:func:`showSearchBar`
 
 .. seealso:: :py:func:`hideSearchBar`
+
+.. seealso:: :py:func:`setReplaceBarVisible`
+%End
+
+    void setReplaceBarVisible( bool visible );
+%Docstring
+Sets whether the replace bar is ``visible``.
+
+.. seealso:: :py:func:`setSearchBarVisible`
 %End
 
     void triggerFind();

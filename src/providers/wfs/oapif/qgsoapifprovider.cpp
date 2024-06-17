@@ -29,6 +29,7 @@
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifoptionsrequest.h"
 #include "qgsoapifqueryablesrequest.h"
+#include "qgsoapifsingleitemrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
@@ -569,6 +570,7 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
   const bool hasAxisInverted = mShared->mSourceCrs.hasAxisInverted();
+  const int idFieldIdx = mShared->mFields.indexOf( "id" );
   for ( QgsFeature &f : flist )
   {
     QgsOapifCreateFeatureRequest req( uri );
@@ -579,6 +581,40 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       return false;
     }
     jsonIds.append( id );
+
+    // If there's no feature["properties"]["id"] field in the JSON returned by the
+    // /items request, but there's a "id" field, it means that feature["id"]
+    // is non-numeric. Thus set the one returned by the createFeature() request
+    if ( !( flags & QgsFeatureSink::FastInsert ) &&
+         !mShared->mFoundIdInProperties && idFieldIdx >= 0 )
+    {
+      f.setAttribute( idFieldIdx, id );
+    }
+
+    // Refresh the feature content with its content from the server with a
+    // /items/{id} request.
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      QgsOapifSingleItemRequest itemRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QString( QStringLiteral( "/" ) + id ) ) );
+      if ( itemRequest.request( /*synchronous=*/ true, /*forceRefresh=*/ true ) &&
+           itemRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+      {
+        const QgsFeature &updatedFeature = itemRequest.feature();
+        if ( updatedFeature.isValid() )
+        {
+          int updatedFieldIdx = 0;
+          for ( const QgsField &updatedField : itemRequest.fields() )
+          {
+            const int srcFieldIdx = mShared->mFields.indexOf( updatedField.name() );
+            if ( srcFieldIdx >= 0 )
+            {
+              f.setAttribute( srcFieldIdx, updatedFeature.attribute( updatedFieldIdx ) );
+            }
+            updatedFieldIdx++;
+          }
+        }
+      }
+    }
   }
 
   QStringList::const_iterator idIt = jsonIds.constBegin();

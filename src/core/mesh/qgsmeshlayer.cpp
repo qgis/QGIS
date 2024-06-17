@@ -788,8 +788,8 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
       colorRampShader.setMaximumValue( colorRampItemlist.count() - 1 );
       scalarSettings.setClassificationMinimumMaximum( 0, colorRampItemlist.count() - 1 );
       colorRampShader.setColorRampItemList( colorRampItemlist );
-      colorRampShader.setColorRampType( QgsColorRampShader::Exact );
-      colorRampShader.setClassificationMode( QgsColorRampShader::EqualInterval );
+      colorRampShader.setColorRampType( Qgis::ShaderInterpolationMethod::Exact );
+      colorRampShader.setClassificationMode( Qgis::ShaderClassificationMethod::EqualInterval );
     }
 
     scalarSettings.setColorRampShader( colorRampShader );
@@ -797,24 +797,24 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
   }
 }
 
-QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const
+QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange, int group ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( mTemporalProperties->isActive() )
-    return datasetIndexAtTime( timeRange, mRendererSettings.activeScalarDatasetGroup() );
+    return datasetIndexAtTime( timeRange, group >= 0 ? group : mRendererSettings.activeScalarDatasetGroup() );
   else
-    return QgsMeshDatasetIndex( mRendererSettings.activeScalarDatasetGroup(), mStaticScalarDatasetIndex );
+    return QgsMeshDatasetIndex( group >= 0 ? group : mRendererSettings.activeScalarDatasetGroup(), mStaticScalarDatasetIndex );
 }
 
-QgsMeshDatasetIndex QgsMeshLayer::activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const
+QgsMeshDatasetIndex QgsMeshLayer::activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange, int group ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( mTemporalProperties->isActive() )
-    return datasetIndexAtTime( timeRange, mRendererSettings.activeVectorDatasetGroup() );
+    return datasetIndexAtTime( timeRange, group >= 0 ? group : mRendererSettings.activeVectorDatasetGroup() );
   else
-    return QgsMeshDatasetIndex( mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
+    return QgsMeshDatasetIndex( group >= 0 ? group : mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
 }
 
 void QgsMeshLayer::fillNativeMesh()
@@ -903,11 +903,11 @@ int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, Qgs
   return selectedIndex;
 }
 
-QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
+QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex( int group ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsMeshDatasetIndex( mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
+  return QgsMeshDatasetIndex( group >= 0 ? group : mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
 }
 
 void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
@@ -1545,11 +1545,11 @@ QList<int> QgsMeshLayer::selectFacesByExpression( QgsExpression expression )
   return ret;
 }
 
-QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
+QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex( int group ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsMeshDatasetIndex( mRendererSettings.activeScalarDatasetGroup(), mStaticScalarDatasetIndex );
+  return QgsMeshDatasetIndex( group >= 0 ? group : mRendererSettings.activeScalarDatasetGroup(), mStaticScalarDatasetIndex );
 }
 
 void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex )

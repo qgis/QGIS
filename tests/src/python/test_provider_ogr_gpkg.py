@@ -2323,7 +2323,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         tmpfile = os.path.join(
             self.basetestpath, 'testVectorLayerExporterDeferredSpatialIndex.gpkg')
-        gdal.Unlink(tmpfile)
+        if os.path.exists(tmpfile):
+            os.unlink(tmpfile)
         options = {}
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
@@ -2442,7 +2443,10 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         ds = ogr.Open(tmpfile, update=1)
         gdal.PushErrorHandler()
-        ds.ExecuteSQL('DROP TRIGGER gpkg_metadata_reference_column_name_update')
+        try:
+            ds.ExecuteSQL('DROP TRIGGER gpkg_metadata_reference_column_name_update')
+        except Exception:
+            pass
         gdal.PopErrorHandler()
         # inject wrong trigger on purpose
         wrong_trigger = "CREATE TRIGGER 'gpkg_metadata_reference_column_name_update' " + \
@@ -2714,6 +2718,34 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(got[0]["dt"], new_dt)
+
+    def testWriteDateTimeFromLocalTime(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testWriteDateTimeFromLocalTime.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbNone)
+        lyr.CreateField(ogr.FieldDefn('dt', ogr.OFTDateTime))
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+
+        f = QgsFeature(vl.fields())
+        dt = QDateTime(QDate(2023, 1, 28), QTime(12, 34, 56, 789), Qt.TimeSpec.LocalTime)
+        f.setAttribute(1, dt)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(got[0]["dt"], dt.toUTC())
+
+        self.assertTrue(vl.startEditing())
+        dt = QDateTime(QDate(2024, 1, 1), QTime(12, 34, 56, 789), Qt.TimeSpec.LocalTime)
+        self.assertTrue(vl.changeAttributeValue(1, 1, dt))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(got[0]["dt"], dt.toUTC())
 
     def testTransactionModeAutoWithFilter(self):
 

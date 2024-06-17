@@ -271,6 +271,12 @@ void QgsDateTimeEditWrapper::updateValues( const QVariant &value, const QVariant
 
   if ( mQgsDateTimeEdit )
   {
+    // Convert to UTC if the format string includes a Z
+    if ( mQgsDateTimeEdit->displayFormat().indexOf( "Z" ) > 0 )
+    {
+      dateTime = dateTime.toUTC();
+    }
+
     mQgsDateTimeEdit->setDateTime( dateTime );
   }
   else

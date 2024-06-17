@@ -79,8 +79,10 @@ class QgsSensorThingsSharedData
 
     QString mEntityBaseUri;
     QString mSubsetString;
+    QString mExpandQueryString;
 
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
+    QList< QgsSensorThingsExpansionDefinition > mExpansions;
 
     int mFeatureLimit = 0;
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
@@ -95,6 +97,7 @@ class QgsSensorThingsSharedData
     QgsCoordinateReferenceSystem mSourceCRS;
 
     mutable long long mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
+    mutable long long mRetrievedBaseFeatureCount = 0;
 
     QHash<QString, QgsFeatureId> mIotIdToFeatureId;
     QMap<QgsFeatureId, QgsFeature> mCachedFeatures;

@@ -970,6 +970,12 @@ Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__ = "Labels may freely over
 Qgis.LabelOverlapHandling.__doc__ = "Label overlap handling.\n\n.. versionadded:: 3.26\n\n" + '* ``PreventOverlap``: ' + Qgis.LabelOverlapHandling.PreventOverlap.__doc__ + '\n' + '* ``AllowOverlapIfRequired``: ' + Qgis.LabelOverlapHandling.AllowOverlapIfRequired.__doc__ + '\n' + '* ``AllowOverlapAtNoCost``: ' + Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__
 # --
 Qgis.LabelOverlapHandling.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LabelPrioritization.PreferCloser.__doc__ = "Prefer closer labels, falling back to alternate positions before larger distances"
+Qgis.LabelPrioritization.PreferPositionOrdering.__doc__ = "Prefer labels follow position ordering, falling back to more distance labels before alternate positions"
+Qgis.LabelPrioritization.__doc__ = "Label prioritization.\n\n.. versionadded:: 3.38\n\n" + '* ``PreferCloser``: ' + Qgis.LabelPrioritization.PreferCloser.__doc__ + '\n' + '* ``PreferPositionOrdering``: ' + Qgis.LabelPrioritization.PreferPositionOrdering.__doc__
+# --
+Qgis.LabelPrioritization.baseClass = Qgis
 QgsPalLayerSettings.Placement = Qgis.LabelPlacement
 # monkey patching scoped based enum
 QgsPalLayerSettings.AroundPoint = Qgis.LabelPlacement.AroundPoint
@@ -1225,6 +1231,35 @@ Qgis.SublayerFlags = lambda flags=0: Qgis.SublayerFlag(flags)
 Qgis.SublayerFlag.baseClass = Qgis
 Qgis.SublayerFlags.baseClass = Qgis
 SublayerFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsColorRampShader.Type = Qgis.ShaderInterpolationMethod
+# monkey patching scoped based enum
+QgsColorRampShader.Interpolated = Qgis.ShaderInterpolationMethod.Linear
+QgsColorRampShader.Type.Interpolated = Qgis.ShaderInterpolationMethod.Linear
+QgsColorRampShader.Interpolated.is_monkey_patched = True
+QgsColorRampShader.Interpolated.__doc__ = "Interpolates the color between two class breaks linearly"
+QgsColorRampShader.Discrete = Qgis.ShaderInterpolationMethod.Discrete
+QgsColorRampShader.Discrete.is_monkey_patched = True
+QgsColorRampShader.Discrete.__doc__ = "Assigns the color of the higher class for every pixel between two class breaks"
+QgsColorRampShader.Exact = Qgis.ShaderInterpolationMethod.Exact
+QgsColorRampShader.Exact.is_monkey_patched = True
+QgsColorRampShader.Exact.__doc__ = "Assigns the color of the exact matching value in the color ramp item list"
+Qgis.ShaderInterpolationMethod.__doc__ = "Color ramp shader interpolation methods.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsColorRampShader`.Type\n\n.. versionadded:: 3.38\n\n" + '* ``Interpolated``: ' + Qgis.ShaderInterpolationMethod.Linear.__doc__ + '\n' + '* ``Discrete``: ' + Qgis.ShaderInterpolationMethod.Discrete.__doc__ + '\n' + '* ``Exact``: ' + Qgis.ShaderInterpolationMethod.Exact.__doc__
+# --
+Qgis.ShaderInterpolationMethod.baseClass = Qgis
+QgsColorRampShader.ClassificationMode = Qgis.ShaderClassificationMethod
+# monkey patching scoped based enum
+QgsColorRampShader.Continuous = Qgis.ShaderClassificationMethod.Continuous
+QgsColorRampShader.Continuous.is_monkey_patched = True
+QgsColorRampShader.Continuous.__doc__ = "Uses breaks from color palette"
+QgsColorRampShader.EqualInterval = Qgis.ShaderClassificationMethod.EqualInterval
+QgsColorRampShader.EqualInterval.is_monkey_patched = True
+QgsColorRampShader.EqualInterval.__doc__ = "Uses equal interval"
+QgsColorRampShader.Quantile = Qgis.ShaderClassificationMethod.Quantile
+QgsColorRampShader.Quantile.is_monkey_patched = True
+QgsColorRampShader.Quantile.__doc__ = "Uses quantile (i.e. equal pixel) count"
+Qgis.ShaderClassificationMethod.__doc__ = "Color ramp shader classification methods.\n\n.. note::\n\n   Prior to QGIS 3.38 this was available as :py:class:`QgsColorRampShader`.ClassificationMode\n\n.. versionadded:: 3.38\n\n" + '* ``Continuous``: ' + Qgis.ShaderClassificationMethod.Continuous.__doc__ + '\n' + '* ``EqualInterval``: ' + Qgis.ShaderClassificationMethod.EqualInterval.__doc__ + '\n' + '* ``Quantile``: ' + Qgis.ShaderClassificationMethod.Quantile.__doc__
+# --
+Qgis.ShaderClassificationMethod.baseClass = Qgis
 QgsRasterPipe.Role = Qgis.RasterPipeInterfaceRole
 # monkey patching scoped based enum
 QgsRasterPipe.UnknownRole = Qgis.RasterPipeInterfaceRole.Unknown
@@ -3278,7 +3313,8 @@ Qgis.RasterElevationMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MeshElevationMode.FixedElevationRange.__doc__ = "Layer has a fixed elevation range"
 Qgis.MeshElevationMode.FromVertices.__doc__ = "Elevation should be taken from mesh vertices"
-Qgis.MeshElevationMode.__doc__ = "Mesh layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.MeshElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``FromVertices``: ' + Qgis.MeshElevationMode.FromVertices.__doc__
+Qgis.MeshElevationMode.FixedRangePerGroup.__doc__ = "Layer has a fixed (manually specified) elevation range per group"
+Qgis.MeshElevationMode.__doc__ = "Mesh layer elevation modes.\n\n.. versionadded:: 3.38\n\n" + '* ``FixedElevationRange``: ' + Qgis.MeshElevationMode.FixedElevationRange.__doc__ + '\n' + '* ``FromVertices``: ' + Qgis.MeshElevationMode.FromVertices.__doc__ + '\n' + '* ``FixedRangePerGroup``: ' + Qgis.MeshElevationMode.FixedRangePerGroup.__doc__
 # --
 Qgis.MeshElevationMode.baseClass = Qgis
 # monkey patching scoped based enum

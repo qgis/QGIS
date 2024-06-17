@@ -300,6 +300,7 @@ class CORE_EXPORT QgsRenderChecker
     QString mMarkdownReport;
     unsigned int mMatchTarget = 0;
     int mElapsedTime = 0;
+    QImage mRenderedImage;
     QString mRenderedImageFile;
     QString mExpectedImageFile;
 

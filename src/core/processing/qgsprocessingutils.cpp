@@ -675,14 +675,17 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
   if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
     return context.project()->crs();
 
+  // else CRS from string
+  const QgsCoordinateReferenceSystem crs( crsText );
+  if ( crs.isValid() )
+    return crs;
+
   // maybe a map layer reference
   if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
     return layer->crs();
 
-  // else CRS from string
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromString( crsText );
-  return crs;
+  // no luck!
+  return QgsCoordinateReferenceSystem();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
@@ -1427,11 +1430,27 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
     else
       it = vl->getFeatures( request );
 
+    constexpr int maxErrors { 10 };
+    unsigned long errorCounter { 0 };
     while ( it.nextFeature( f ) )
     {
       if ( feedback && feedback->isCanceled() )
         return QString();
-      writer->addFeature( f, QgsFeatureSink::FastInsert );
+
+      if ( !writer->addFeature( f, QgsFeatureSink::FastInsert ) && feedback )
+      {
+        QString errorText;
+        if ( errorCounter++ < maxErrors )
+        {
+          errorText = QObject::tr( "Error writing feature # %1 to output layer: %2" ).arg( QString::number( f.id() ), writer->errorMessage() );
+
+          feedback->reportError( errorText );
+        }
+      }
+    }
+    if ( errorCounter >= maxErrors )
+    {
+      feedback->reportError( QObject::tr( "There were %1 errors writing features, only the first %2 have beeen reported." ).arg( QString::number( errorCounter ), QString::number( maxErrors ) ) );
     }
     return temp;
   }

@@ -19,6 +19,8 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgis.h"
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset )
   : mGroupIndex( group ), mDatasetIndex( dataset )
@@ -142,6 +144,14 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mReferenceTime( referenceTime )
   , mIsTemporal( isTemporal )
 {
+  // this relies on the naming convention used by MDAL's NetCDF driver: <group name>_<dimension_name>:<dimension_value>
+  // If future MDAL releases expose quantities via a standard API then we can safely remove this and port to the new API.
+  const thread_local QRegularExpression parentQuantityRegex( QStringLiteral( "^(.*):.*?$" ) );
+  const QRegularExpressionMatch parentQuantityMatch = parentQuantityRegex.match( mName );
+  if ( parentQuantityMatch.hasMatch() )
+  {
+    mParentQuantityName = parentQuantityMatch.captured( 1 );
+  }
 }
 
 QMap<QString, QString> QgsMeshDatasetGroupMetadata::extraOptions() const
@@ -169,7 +179,13 @@ QString QgsMeshDatasetGroupMetadata::name() const
   return mName;
 }
 
-QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
+QString QgsMeshDatasetGroupMetadata::parentQuantityName() const
+{
+  return mParentQuantityName;
+}
+
+QgsMeshDatasetGroupMetadata::DataType
+QgsMeshDatasetGroupMetadata::dataType() const
 {
   return mDataType;
 }

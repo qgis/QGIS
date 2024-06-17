@@ -550,6 +550,12 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelPrioritization /BaseType=IntEnum/
+    {
+      PreferCloser,
+      PreferPositionOrdering,
+    };
+
     enum class LabelPlacement /BaseType=IntEnum/
       {
       AroundPoint,
@@ -662,6 +668,20 @@ The development version
     };
     typedef QFlags<Qgis::SublayerFlag> SublayerFlags;
 
+
+    enum class ShaderInterpolationMethod /BaseType=IntEnum/
+      {
+      Linear,
+      Discrete,
+      Exact,
+    };
+
+    enum class ShaderClassificationMethod /BaseType=IntEnum/
+      {
+      Continuous,
+      EqualInterval,
+      Quantile,
+    };
 
     enum class RasterPipeInterfaceRole /BaseType=IntEnum/
       {
@@ -1888,7 +1908,8 @@ The development version
     enum class MeshElevationMode /BaseType=IntEnum/
     {
       FixedElevationRange,
-      FromVertices
+      FromVertices,
+      FixedRangePerGroup,
     };
 
     enum class BetweenLineConstraint /BaseType=IntEnum/

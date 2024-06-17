@@ -482,7 +482,11 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     }
   }
 
-  if ( !im.hasAlphaChannel() )
+  if ( !im.hasAlphaChannel()
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+       && im.format() != QImage::Format_CMYK8888
+#endif
+     )
     im = im.convertToFormat( QImage::Format_ARGB32 );
 
   if ( opacity < 1.0 )

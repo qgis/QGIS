@@ -41,6 +41,7 @@
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgslabellinesettings.h"
+#include "qgslabelpointsettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexpression.h"
 
@@ -190,6 +191,7 @@ class CORE_EXPORT QgsPalLayerSettings
       OffsetXY = 78,
       OffsetUnits = 80,
       LabelDistance = 13,
+      MaximumDistance = 119, //!< Maximum distance of label from feature
       DistanceUnits = 81,
       OffsetRotation = 82,
       CurvedCharAngleInOut = 83,
@@ -415,14 +417,6 @@ class CORE_EXPORT QgsPalLayerSettings
     bool centroidInside = false;
 
     /**
-     * Ordered list of predefined label positions for points. Positions earlier
-     * in the list will be prioritized over later positions. Only used when the placement
-     * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
-     * \note not available in Python bindings
-     */
-    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder SIP_SKIP;
-
-    /**
      * TRUE if only labels which completely fit within a polygon are allowed.
      */
     bool fitInPolygonOnly = false;
@@ -471,11 +465,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see repeatDistanceUnit
      */
     QgsMapUnitScale repeatDistanceMapUnitScale;
-
-    /**
-     * Sets the quadrant in which to offset labels from feature.
-     */
-    Qgis::LabelQuadrantPosition quadOffset = Qgis::LabelQuadrantPosition::Over;
 
     /**
      * Horizontal offset of label. Units are specified via offsetUnits.
@@ -780,6 +769,37 @@ class CORE_EXPORT QgsPalLayerSettings
     void setLineSettings( const QgsLabelLineSettings &settings ) { mLineSettings = settings; }
 
     /**
+     * Returns the label point settings, which contain settings related to how the label
+     * engine places and formats labels for point features, or polygon features which are
+     * labeled in the "around" or "over" centroid placement modes.
+     *
+     * \see setPointSettings()
+     * \note Not available in Python bindings
+     * \since QGIS 3.38
+     */
+    const QgsLabelPointSettings &pointSettings() const { return mPointSettings; } SIP_SKIP
+
+    /**
+     * Returns the label point settings, which contain settings related to how the label
+     * engine places and formats labels for point features, or polygon features which are
+     * labeled in the "around" or "over" centroid placement modes.
+     *
+    * \see setPointSettings()
+    * \since QGIS 3.38
+    */
+    QgsLabelPointSettings &pointSettings() { return mPointSettings; }
+
+    /**
+     * Sets the label point \a settings, which contain settings related to how the label
+     * engine places and formats labels for point features, or polygon features which are
+     * labeled in the "around" or "over" centroid placement modes.
+     *
+     * \see pointSettings()
+     * \since QGIS 3.38
+     */
+    void setPointSettings( const QgsLabelPointSettings &settings ) { mPointSettings = settings; }
+
+    /**
      * Returns the label obstacle settings.
      * \see setObstacleSettings()
      * \note Not available in Python bindings
@@ -968,6 +988,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsLabelPlacementSettings mPlacementSettings;
     QgsLabelLineSettings mLineSettings;
+    QgsLabelPointSettings mPointSettings;
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelThinningSettings mThinningSettings;
 

@@ -88,9 +88,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-123</y>
-        <width>548</width>
-        <height>1478</height>
+        <y>-798</y>
+        <width>539</width>
+        <height>1640</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -749,6 +749,20 @@
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mCopyGridPushButton">
+              <property name="toolTip">
+               <string>Duplicate selected grid</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionDuplicateLayout.svg</normaloff>:/images/themes/default/mActionDuplicateLayout.svg</iconset>
               </property>
              </widget>
             </item>

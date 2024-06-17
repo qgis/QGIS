@@ -352,6 +352,7 @@ class TestQgsTaskManager : public QObject
     void activeTasks();
     void holdTask();
     void dependencies();
+    void lotsOfDependencies();
     void layerDependencies();
     void managerWithSubTasks();
     void managerWithSubTasks2();
@@ -361,6 +362,7 @@ class TestQgsTaskManager : public QObject
     void proxyTask2();
     void scopedProxyTask();
     void hiddenTask();
+    void testQgsTaskWithSerialSubTasks();
 };
 
 void TestQgsTaskManager::initTestCase()
@@ -1376,6 +1378,34 @@ void TestQgsTaskManager::dependencies()
   QCOMPARE( grandChildTask->status(), QgsTask::Terminated );
 }
 
+// Check that dependency resolution performs well (O(n*log(n))) with the number
+// of tasks
+void TestQgsTaskManager::lotsOfDependencies()
+{
+  QgsTaskManager manager;
+
+  QList<QPointer<CancelableTask>> tasks;
+  const int N_TASKS = 100;
+  for ( int i = 0; i < N_TASKS; ++i )
+  {
+    tasks.push_back( new CancelableTask() );
+  }
+
+  QList<long> taskIds;
+  taskIds.push_back( manager.addTask( tasks[0] ) );
+  for ( int i = 1; i < N_TASKS; ++i )
+  {
+    QgsTaskList taskList;
+    taskList << tasks[i - 1];
+    if ( ( i % 2 ) == 0 )
+      taskList << tasks[i - 2];
+    taskIds.push_back( manager.addTask( QgsTaskManager::TaskDefinition( tasks[i], taskList ) ) );
+  }
+
+  // check dependency resolution
+  QCOMPARE( manager.dependencies( taskIds.back() ).size(), N_TASKS - 1 );
+}
+
 void TestQgsTaskManager::layerDependencies()
 {
   //make some layers
@@ -1753,6 +1783,20 @@ void TestQgsTaskManager::hiddenTask()
     QCoreApplication::processEvents();
   }
   flushEvents();
+}
+
+void TestQgsTaskManager::testQgsTaskWithSerialSubTasks()
+{
+  QgsTaskWithSerialSubTasks *taskWithSerialSubTasks = new QgsTaskWithSerialSubTasks();
+  QPointer< QgsTask > p( taskWithSerialSubTasks );
+
+  auto task = new TestTask();
+  taskWithSerialSubTasks->addSubTask( task );
+  taskWithSerialSubTasks->start();
+
+  QVERIFY( task->runCalled );
+
+  taskWithSerialSubTasks->cancel();
 }
 
 QGSTEST_MAIN( TestQgsTaskManager )

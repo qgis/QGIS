@@ -608,27 +608,27 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
       * Returns dataset index from active scalar group depending on the time range.
       * If the temporal properties is not active, return the static dataset
       *
-      * \param timeRange the time range
-      * \returns dataset index
+      * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
+      * to use. If this is not specified, then the active group from the layer's renderer will be used.
       *
       * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
       *
       * \since QGIS 3.14
       */
-    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange, int group = -1 ) const;
 
     /**
       * Returns dataset index from active vector group depending on the time range
       * If the temporal properties is not active, return the static dataset
       *
-      * \param timeRange the time range
-      * \returns dataset index
+      * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
+      * to use. If this is not specified, then the active group from the layer's renderer will be used.
       *
       * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
       *
       * \since QGIS 3.14
       */
-    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange, int group = -1 ) const;
 
     /**
       * Sets the static scalar dataset index that is rendered if the temporal properties is not active
@@ -649,18 +649,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex ) SIP_SKIP;
 
     /**
-      * Returns the static scalar dataset index that is rendered if the temporal properties is not active
+      * Returns the static scalar dataset index that is rendered if the temporal properties is not active.
+      *
+      * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
+      * to use. If this is not specified, then the active group from the layer's renderer will be used.
       *
       * \since QGIS 3.14
       */
-    QgsMeshDatasetIndex staticScalarDatasetIndex() const;
+    QgsMeshDatasetIndex staticScalarDatasetIndex( int group = -1 ) const;
 
     /**
-      * Returns the static vector dataset index that is rendered if the temporal properties is not active
+      * Returns the static vector dataset index that is rendered if the temporal properties is not active.
+      *
+      * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
+      * to use. If this is not specified, then the active group from the layer's renderer will be used.
       *
       * \since QGIS 3.14
       */
-    QgsMeshDatasetIndex staticVectorDatasetIndex() const;
+    QgsMeshDatasetIndex staticVectorDatasetIndex( int group = -1 ) const;
 
     /**
       * Sets the reference time of the layer

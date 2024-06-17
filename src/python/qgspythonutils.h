@@ -218,6 +218,11 @@ class PYTHON_EXPORT QgsPythonUtils
      */
     virtual bool unloadPlugin( const QString &packageName ) = 0;
 
+    /**
+     * Initialize GDAL Python, turning on its exceptions.
+     * \since QGIS 3.38
+     */
+    virtual void initGDAL() = 0;
 };
 
 #endif

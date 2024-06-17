@@ -5807,9 +5807,13 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
 
 static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   const QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   const QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+
+  // Convert to UTC if the format string includes a Z, as QLocale::toString() doesn't do it
+  if ( format.indexOf( "Z" ) > 0 )
+    datetime = datetime.toUTC();
 
   QLocale locale = !language.isEmpty() ? QLocale( language ) : QLocale();
   return locale.toString( datetime, format );

@@ -128,7 +128,11 @@ class TestQgsPalLabeling(QgisTestCase):
     def loadFeatureLayer(cls, table, chk=False):
         if chk and cls._MapRegistry.mapLayersByName(table):
             return
-        vlayer = QgsVectorLayer(f'{cls._PalDataDir}/{table}.geojson', table, 'ogr')
+
+        options = QgsVectorLayer.LayerOptions()
+        options.forceReadOnly = True
+        vlayer = QgsVectorLayer(
+            f'{cls._PalDataDir}/{table}.geojson', table, 'ogr', options)
         assert vlayer.isValid()
         # .qml should contain only style for symbology
         vlayer.loadNamedStyle(os.path.join(cls._PalDataDir,
@@ -148,7 +152,10 @@ class TestQgsPalLabeling(QgisTestCase):
     @classmethod
     def aoiExtent(cls):
         """Area of interest extent, which matches output aspect ratio"""
-        aoilayer = QgsVectorLayer(f'{cls._PalDataDir}/aoi.geojson', 'aoi', 'ogr')
+        options = QgsVectorLayer.LayerOptions()
+        options.forceReadOnly = True
+        aoilayer = QgsVectorLayer(
+            f'{cls._PalDataDir}/aoi.geojson', 'aoi', 'ogr', options)
         assert aoilayer.isValid()
         return aoilayer.extent()
 
@@ -198,8 +205,6 @@ class TestQgsPalLabeling(QgisTestCase):
         testid = self.id().split('.')
         self._TestGroup = testid[1]
         self._TestFunction = testid[2]
-        testheader = f'\n#####_____ {self._TestGroup}.{self._TestFunction} _____#####\n'
-        qDebug(testheader)
 
         # define the shorthand name of the test (to minimize file name length)
         self._Test = f"{self._TestGroupAbbr}_{self._TestFunction.replace('test_', '')}"

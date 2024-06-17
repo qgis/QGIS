@@ -515,6 +515,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLay
     {
       if ( result == FileError )
         error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( filePath ) );
+      else
+        error = exporter.errorMessage();
       iterator->endRender();
       return result;
     }
@@ -688,12 +690,16 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
       details.initialLayerVisibility = geoPdfExporter->initialLayerVisibility();
       details.layerOrder = geoPdfExporter->layerOrder();
+      details.layerTreeGroupOrder = geoPdfExporter->layerTreeGroupOrder();
       details.includeFeatures = settings.includeGeoPdfFeatures;
       details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
 
       if ( !geoPdfExporter->finalize( pdfComponents, filePath, details ) )
+      {
         result = PrintError;
+        mErrorMessage = geoPdfExporter->errorMessage();
+      }
     }
     else
     {
@@ -803,6 +809,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     {
       if ( result == FileError )
         error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( fileName ) );
+      else
+        error = exporter.errorMessage();
+
       iterator->endRender();
       return result;
     }
@@ -853,6 +862,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
     {
       if ( result == FileError )
         error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( filePath ) );
+      else
+        error = exporter.errorMessage();
       iterator->endRender();
       return result;
     }
@@ -974,6 +985,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
     if ( result != Success )
     {
       iterator->endRender();
+      error = exporter.errorMessage();
       return result;
     }
     first = false;
@@ -1199,6 +1211,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
     {
       if ( result == FileError )
         error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( filePath ) );
+      else
+        error = exporter.errorMessage();
       iterator->endRender();
       return result;
     }
