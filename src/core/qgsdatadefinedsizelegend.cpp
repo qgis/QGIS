@@ -15,6 +15,7 @@
 
 #include "qgsdatadefinedsizelegend.h"
 
+#include "qgslayertreemodellegendnode.h"
 #include "qgsproperty.h"
 #include "qgspropertytransformer.h"
 #include "qgssymbollayerutils.h"
@@ -124,10 +125,11 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
 QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
 {
   QgsLegendSymbolList lst;
+  QVariant isDataDefinedSize( true );
   if ( !mTitleLabel.isEmpty() )
   {
-    // we're abusing the ruleKey field here so we can later identify the resulting legend nodes as data defined size related
-    QgsLegendSymbolItem title( nullptr, mTitleLabel, QStringLiteral( "data-defined-size" ) );
+    QgsLegendSymbolItem title( nullptr, mTitleLabel, QString() );
+    title.setUserData( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ), isDataDefinedSize );
     lst << title;
   }
 
@@ -137,6 +139,7 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
     {
       QgsLegendSymbolItem i;
       i.setDataDefinedSizeLegendSettings( new QgsDataDefinedSizeLegend( *this ) );
+      i.setUserData( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ), isDataDefinedSize );
       lst << i;
       break;
     }
@@ -146,8 +149,8 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
       lst.reserve( mSizeClasses.size() );
       for ( const SizeClass &cl : mSizeClasses )
       {
-        // we're abusing the ruleKey field here so we can later identify the resulting legend nodes as data defined size related
-        QgsLegendSymbolItem si( mSymbol.get(), cl.label, QStringLiteral( "data-defined-size" ) );
+        QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
+        si.setUserData( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ), isDataDefinedSize );
         QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
         double size = cl.size;
         if ( mSizeScaleTransformer )

@@ -93,3 +93,13 @@ QgsDataDefinedSizeLegend *QgsLegendSymbolItem::dataDefinedSizeLegendSettings() c
 {
   return mDataDefinedSizeLegendSettings;
 }
+
+void QgsLegendSymbolItem::setUserData( int key, QVariant &value )
+{
+  mUserData.insert( key, value );
+}
+
+QVariant QgsLegendSymbolItem::userData( int key ) const
+{
+  return mUserData.value( key, QVariant() );
+}

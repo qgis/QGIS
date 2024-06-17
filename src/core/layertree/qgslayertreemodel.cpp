@@ -1317,6 +1317,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
           case QgsLayerTreeModelLegendNode::ColorRampLegend:
           {
             const QString ruleKey = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+            const bool isDataDefinedSize = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ) ).toBool();
             const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
                                  || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
 
@@ -1327,11 +1328,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
                 auto it = mHitTestResults.constFind( vl->id() );
                 if ( it != mHitTestResults.constEnd() &&
                      ( it->contains( ruleKey ) ||
-                       ( !it->isEmpty() &&  // If there is at least one hit for this layer...
-                         ( nodeType == QgsLayerTreeModelLegendNode::DataDefinedSizeLegend ||  // Show Collapsed data defined size legend...
-                           ruleKey == QLatin1String( "data-defined-size" )  // and data defined size title or dds separated legend items
-                         )
-                       )
+                       ( !it->isEmpty() && isDataDefinedSize )
                      )
                    )
                 {
