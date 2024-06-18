@@ -193,6 +193,15 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     bool openInExternalEditor( int line = -1, int column = -1 );
 
+    /**
+     * Shares the contents of the code editor on GitHub Gist.
+     *
+     * Requires that the user has configured an API token with appropriate permission in advance.
+     *
+     * \returns FALSE if the user has not configured a GitHub personal access token.
+     */
+    bool shareOnGist( bool isPublic );
+
   signals:
 
     /**

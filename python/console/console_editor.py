@@ -285,43 +285,7 @@ class Editor(QgsCodeEditorPython):
             self.console_widget.objectListButton.setChecked(True)
 
     def shareOnGist(self, is_public):
-        ACCESS_TOKEN = QgsSettings().value("pythonConsole/accessTokenGithub", '', type=QByteArray)
-        if not ACCESS_TOKEN:
-            msg_text = QCoreApplication.translate(
-                'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
-            self.showMessage(msg_text,
-                             level=Qgis.MessageLevel.Warning)
-            return
-
-        URL = "https://api.github.com/gists"
-
-        path = self.code_editor_widget.filePath()
-        filename = os.path.basename(path) if path else None
-        filename = filename if filename else "pyqgis_snippet.py"
-
-        selected_text = self.selectedText()
-        data = {"description": "Gist created by PyQGIS Console",
-                "public": is_public,
-                "files": {filename: {"content": selected_text}}}
-
-        request = QgsBlockingNetworkRequest()
-        net_req = QNetworkRequest()
-        url = QUrl(URL)
-        net_req.setUrl(url)
-        net_req.setRawHeader(b"Authorization", b"token %s" % ACCESS_TOKEN)
-        err = request.post(net_req, QJsonDocument(data).toJson())
-        if not err:
-            response = request.reply().content()
-            json_doc = QJsonDocument()
-            _json = json_doc.fromJson(response)
-            link = _json.object()['html_url'].toString()
-            QApplication.clipboard().setText(link)
-            msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-            self.showMessage(msg)
-        else:
-            msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.showMessage(msg + request.errorMessage(),
-                             level=Qgis.MessageLevel.Warning)
+        self.code_editor_widget.shareOnGist(is_public)
 
     def hideEditor(self):
         self.console_widget.splitterObj.hide()
