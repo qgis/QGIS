@@ -868,7 +868,9 @@ QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &prope
 
 Qgis::SymbolLayerFlags QgsInterpolatedLineSymbolLayer::flags() const
 {
-  return Qgis::SymbolLayerFlag::DisableFeatureClipping;
+  return QgsLineSymbolLayer::flags()
+         | Qgis::SymbolLayerFlag::DisableFeatureClipping
+         | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 QVariantMap QgsInterpolatedLineSymbolLayer::properties() const
