@@ -2148,7 +2148,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   if ( mStroke )
   {
-    mStroke->startRender( context.renderContext(), context.fields() );
+    mStroke->startRender( context.renderContext(), context.fields(), true );
   }
 }
 
@@ -3118,7 +3118,7 @@ bool QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   lineRenderContext.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
   lineRenderContext.setDisabledSymbolLayersV2( context.renderContext().disabledSymbolLayersV2() );
 
-  fillLineSymbol->startRender( lineRenderContext, context.fields() );
+  fillLineSymbol->startRender( lineRenderContext, context.fields(), true );
 
   QVector<QPolygonF> polygons;
   polygons.append( QPolygonF() << p1 << p2 );
@@ -3176,7 +3176,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
 
   if ( mRenderUsingLines && mFillLineSymbol )
   {
-    mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+    mFillLineSymbol->startRender( context.renderContext(), context.fields(), true );
     mFillLineSymbolRenderStarted = true;
   }
 }
@@ -3202,7 +3202,7 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
 
   if ( !mFillLineSymbolRenderStarted && mFillLineSymbol )
   {
-    mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+    mFillLineSymbol->startRender( context.renderContext(), context.fields(), true );
     mFillLineSymbolRenderStarted = true;
   }
 
@@ -3880,7 +3880,7 @@ bool QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setExpressionContext( context.renderContext().expressionContext() );
     pointRenderContext.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
-    mMarkerSymbol->startRender( pointRenderContext, context.fields() );
+    mMarkerSymbol->startRender( pointRenderContext, context.fields(), true );
 
     //render points on distance grid
     for ( double currentX = -width; currentX <= width * 2.0; currentX += width )
@@ -3957,7 +3957,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
 
   if ( mRenderUsingMarkers && mMarkerSymbol )
   {
-    mMarkerSymbol->startRender( context.renderContext() );
+    mMarkerSymbol->startRender( context.renderContext(), context.fields(), true );
     mMarkerSymbolRenderStarted = true;
   }
 }
@@ -4001,7 +4001,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
   if ( !mMarkerSymbolRenderStarted && mMarkerSymbol )
   {
-    mMarkerSymbol->startRender( context.renderContext() );
+    mMarkerSymbol->startRender( context.renderContext(), context.fields(), true );
     mMarkerSymbolRenderStarted = true;
   }
 
@@ -4793,7 +4793,7 @@ QColor QgsCentroidFillSymbolLayer::color() const
 
 void QgsCentroidFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->startRender( context.renderContext(), context.fields() );
+  mMarker->startRender( context.renderContext(), context.fields(), true );
 }
 
 void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -5544,7 +5544,7 @@ QColor QgsRandomMarkerFillSymbolLayer::color() const
 
 void QgsRandomMarkerFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->startRender( context.renderContext(), context.fields() );
+  mMarker->startRender( context.renderContext(), context.fields(), true );
 }
 
 void QgsRandomMarkerFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )

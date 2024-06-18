@@ -283,7 +283,7 @@ Returns ``False`` if ``layer`` is not compatible with the symbol's :py:func:`~Qg
 ``True`` if the layer was successfully replaced.
 %End
 
-    void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
+    void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields(), bool isSubSymbol = false );
 %Docstring
 Begins the rendering process for the symbol. This must be called before :py:func:`~QgsSymbol.renderFeature`,
 and should be followed by a call to :py:func:`~QgsSymbol.stopRender`.
@@ -292,6 +292,7 @@ and should be followed by a call to :py:func:`~QgsSymbol.stopRender`.
 :param fields: fields for features to be rendered (usually the associated
                vector layer's fields). Required for correct calculation of data defined
                overrides.
+:param isSubSymbol: Should be set to ``True`` when the symbol is being used as a subsymbol of a :py:class:`QgsSymbolLayer` (since QGIS 3.38)
 
 .. seealso:: :py:func:`stopRender`
 %End
