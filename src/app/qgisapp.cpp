@@ -8084,7 +8084,7 @@ void QgisApp::diagramProperties()
   layout->addWidget( gui );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(
-    QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply,
+    QDialogButtonBox::Help | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply,
     Qt::Horizontal, &dlg );
   layout->addWidget( buttonBox );
 
@@ -8096,6 +8096,10 @@ void QgisApp::diagramProperties()
            &dlg, &QDialog::reject );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked,
            gui, &QgsDiagramProperties::apply );
+  connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, gui, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
+  } );
 
   if ( dlg.exec() )
     gui->apply();
