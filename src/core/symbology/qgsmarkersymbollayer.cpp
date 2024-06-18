@@ -1931,7 +1931,7 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill )
   {
-    mFill->startRender( context.renderContext(), context.fields() );
+    mFill->startRender( context.renderContext(), context.fields(), true );
   }
 
   QgsSimpleMarkerSymbolLayerBase::startRender( context );

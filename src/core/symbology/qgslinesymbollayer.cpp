@@ -2475,7 +2475,7 @@ void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
     hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
 
-  mMarker->startRender( context.renderContext(), context.fields() );
+  mMarker->startRender( context.renderContext(), context.fields(), true );
 }
 
 void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -2801,7 +2801,7 @@ void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
     hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
 
-  mHashSymbol->startRender( context.renderContext(), context.fields() );
+  mHashSymbol->startRender( context.renderContext(), context.fields(), true );
 }
 
 void QgsHashedLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -3876,7 +3876,7 @@ void QgsFilledLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill )
   {
-    mFill->startRender( context.renderContext(), context.fields() );
+    mFill->startRender( context.renderContext(), context.fields(), true );
   }
 }
 
