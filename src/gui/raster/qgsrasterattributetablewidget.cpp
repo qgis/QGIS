@@ -170,7 +170,7 @@ void QgsRasterAttributeTableWidget::updateButtons()
 {
   const bool enableEditingButtons( static_cast<bool>( mAttributeTableBuffer ) && mEditable && mRATView->selectionModel()->currentIndex().isValid() );
   mActionToggleEditing->setChecked( mEditable );
-  mActionToggleEditing->setEnabled( enableEditingButtons );
+  mActionToggleEditing->setEnabled( mAttributeTableBuffer && mRasterLayer );
   mActionAddColumn->setEnabled( mEditable );
   mActionRemoveColumn->setEnabled( enableEditingButtons );
   mActionAddRow->setEnabled( enableEditingButtons );
