@@ -41,24 +41,19 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
-
     virtual void stopRender( QgsSymbolRenderContext &context );
-
 
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-
     virtual QVariantMap properties() const;
-
 
     virtual QgsSimpleFillSymbolLayer *clone() const /Factory/;
 
-
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
-
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -68,7 +63,6 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QColor strokeColor() const;
     virtual void setStrokeColor( const QColor &strokeColor );
-
     virtual QColor fillColor() const;
     virtual void setFillColor( const QColor &color );
 
@@ -224,6 +218,8 @@ Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map 
 Caller takes ownership of the returned symbol layer.
 %End
 
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual QString layerType() const;
 
@@ -497,6 +493,8 @@ Caller takes ownership of the returned symbol layer.
 
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -914,6 +912,8 @@ Used internally when reading/writing symbols.
 %End
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 

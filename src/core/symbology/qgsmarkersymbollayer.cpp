@@ -1089,6 +1089,11 @@ QString QgsSimpleMarkerSymbolLayer::layerType() const
   return QStringLiteral( "SimpleMarker" );
 }
 
+Qgis::SymbolLayerFlags QgsSimpleMarkerSymbolLayer::flags() const
+{
+  return QgsSimpleMarkerSymbolLayerBase::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsSimpleMarkerSymbolLayerBase::startRender( context );
@@ -2313,6 +2318,11 @@ QString QgsSvgMarkerSymbolLayer::layerType() const
   return QStringLiteral( "SvgMarker" );
 }
 
+Qgis::SymbolLayerFlags QgsSvgMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions
@@ -3137,6 +3147,11 @@ QString QgsRasterMarkerSymbolLayer::layerType() const
   return QStringLiteral( "RasterMarker" );
 }
 
+Qgis::SymbolLayerFlags QgsRasterMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
@@ -3533,6 +3548,11 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
 QString QgsFontMarkerSymbolLayer::layerType() const
 {
   return QStringLiteral( "FontMarker" );
+}
+
+Qgis::SymbolLayerFlags QgsFontMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
