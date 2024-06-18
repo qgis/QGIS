@@ -5219,7 +5219,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     // try to find if we have layers for the referenced table
-    const auto foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
+    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
     if ( !refTableFound.contains( refTable ) )
     {
       for ( const QgsVectorLayer *foundLayer : foundLayers )
