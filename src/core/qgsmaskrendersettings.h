@@ -37,6 +37,8 @@ class CORE_EXPORT QgsMaskRenderSettings
      *
      * A tolerance of 0 indicates no simplification. (No simplification is the default behavior).
      *
+     * \note This property is only used when exporting to vector formats, and is ignored during raster format based rendering.
+     *
      * \see setSimplificationTolerance()
      */
     double simplifyTolerance() const { return mSimplifyTolerance; }
@@ -47,6 +49,8 @@ class CORE_EXPORT QgsMaskRenderSettings
      * This will result in simpler, generalised paths.
      *
      * Set \a tolerance to 0 to disable simplification. (No simplification is the default behavior).
+     *
+     * \note This property is only used when exporting to vector formats, and is ignored during raster format based rendering.
      *
      * \see simplifyTolerance()
      */
