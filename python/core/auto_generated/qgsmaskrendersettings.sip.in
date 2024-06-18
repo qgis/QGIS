@@ -30,6 +30,10 @@ Returns the simplification tolerance (in painter units) to use for on-the-fly si
 
 A tolerance of 0 indicates no simplification. (No simplification is the default behavior).
 
+.. note::
+
+   This property is only used when exporting to vector formats, and is ignored during raster format based rendering.
+
 .. seealso:: :py:func:`setSimplificationTolerance`
 %End
 
@@ -40,6 +44,10 @@ Sets a simplification tolerance (in painter units) to use for on-the-fly simplif
 This will result in simpler, generalised paths.
 
 Set ``tolerance`` to 0 to disable simplification. (No simplification is the default behavior).
+
+.. note::
+
+   This property is only used when exporting to vector formats, and is ignored during raster format based rendering.
 
 .. seealso:: :py:func:`simplifyTolerance`
 %End
