@@ -76,7 +76,6 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
   {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QStringLiteral( "searchMatchBackground" ) }
 };
 
-
 QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin, QgsCodeEditor::Flags flags, QgsCodeEditor::Mode mode )
   : QsciScintilla( parent )
   , mWidgetTitle( title )

@@ -186,6 +186,15 @@ the first column.
 :return: ``True`` if the file was opened successfully.
 %End
 
+    bool shareOnGist( bool isPublic );
+%Docstring
+Shares the contents of the code editor on GitHub Gist.
+
+Requires that the user has configured an API token with appropriate permission in advance.
+
+:return: ``False`` if the user has not configured a GitHub personal access token.
+%End
+
   signals:
 
     void searchBarToggled( bool visible );

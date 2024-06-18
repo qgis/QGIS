@@ -21,6 +21,11 @@
 #include "qgsmessagebar.h"
 #include "qgsdecoratedscrollbar.h"
 #include "qgscodeeditorpython.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgsjsonutils.h"
+#include "nlohmann/json.hpp"
+#include "qgssettings.h"
 
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -31,6 +36,7 @@
 #include <QProcess>
 #include <QFileInfo>
 #include <QDir>
+#include <QNetworkRequest>
 
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,
@@ -488,6 +494,99 @@ bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( mFilePath ) );
   }
+  return true;
+}
+
+bool QgsCodeEditorWidget::shareOnGist( bool isPublic )
+{
+  const QString accessToken = QgsSettings().value( "pythonConsole/accessTokenGithub", QString() ).toString();
+  if ( accessToken.isEmpty() )
+  {
+    if ( mMessageBar )
+      mMessageBar->pushWarning( QString(), tr( "GitHub personal access token must be generated (see IDE Options)" ) );
+    return false;
+  }
+
+  QString defaultFileName;
+  switch ( mEditor->language() )
+  {
+    case Qgis::ScriptLanguage::Python:
+      defaultFileName = QStringLiteral( "pyqgis_snippet.py" );
+      break;
+
+    case Qgis::ScriptLanguage::Css:
+      defaultFileName = QStringLiteral( "qgis_snippet.css" );
+      break;
+
+    case Qgis::ScriptLanguage::QgisExpression:
+      defaultFileName = QStringLiteral( "qgis_snippet" );
+      break;
+
+    case Qgis::ScriptLanguage::Html:
+      defaultFileName = QStringLiteral( "qgis_snippet.html" );
+      break;
+
+    case Qgis::ScriptLanguage::JavaScript:
+      defaultFileName = QStringLiteral( "qgis_snippet.js" );
+      break;
+
+    case Qgis::ScriptLanguage::Json:
+      defaultFileName = QStringLiteral( "qgis_snippet.json" );
+      break;
+
+    case Qgis::ScriptLanguage::R:
+      defaultFileName = QStringLiteral( "qgis_snippet.r" );
+      break;
+
+    case Qgis::ScriptLanguage::Sql:
+      defaultFileName = QStringLiteral( "qgis_snippet.sql" );
+      break;
+
+    case Qgis::ScriptLanguage::Batch:
+      defaultFileName = QStringLiteral( "qgis_snippet.bat" );
+      break;
+
+    case Qgis::ScriptLanguage::Bash:
+      defaultFileName = QStringLiteral( "qgis_snippet.sh" );
+      break;
+
+    case Qgis::ScriptLanguage::Unknown:
+      defaultFileName = QStringLiteral( "qgis_snippet.txt" );
+      break;
+  }
+  const QString filename = mFilePath.isEmpty() ? defaultFileName : QFileInfo( mFilePath ).fileName();
+
+  const QString contents = mEditor->hasSelectedText() ? mEditor->selectedText() : mEditor->text();
+  const QVariantMap data
+  {
+    { QStringLiteral( "description" ), "Gist created by PyQGIS Console"},
+    { QStringLiteral( "public" ), isPublic },
+    { QStringLiteral( "files" ), QVariantMap{ {filename, QVariantMap{{ QStringLiteral( "content" ), contents }}    } } }
+  };
+
+  QNetworkRequest request;
+  request.setUrl( QUrl( QStringLiteral( "https://api.github.com/gists" ) ) );
+  request.setRawHeader( "Authorization", QStringLiteral( "token %1" ).arg( accessToken ).toLocal8Bit() );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/json" ) );
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCodeEditorWidget" ) );
+
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( request, QgsJsonUtils::jsonFromVariant( data ).dump().c_str() );
+  connect( reply, &QNetworkReply::finished, this, [this, reply]
+  {
+    if ( reply->error() == QNetworkReply::NoError )
+    {
+      const QVariantMap replyJson = QgsJsonUtils::parseJson( reply->readAll() ).toMap();
+      const QString link = replyJson.value( QStringLiteral( "html_url" ) ).toString();
+      QDesktopServices::openUrl( QUrl( link ) );
+    }
+    else
+    {
+      if ( mMessageBar )
+        mMessageBar->pushCritical( QString(), tr( "Connection error: %1" ).arg( reply->errorString() ) );
+    }
+    reply->deleteLater();
+  } );
   return true;
 }
 
