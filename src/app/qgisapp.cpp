@@ -112,6 +112,7 @@
 #include "options/qgsfontoptions.h"
 #include "options/qgsgpsdeviceoptions.h"
 #include "options/qgsgpsoptions.h"
+#include "options/qgsideoptions.h"
 #include "options/qgscustomprojectionoptions.h"
 #include "options/qgsrasterrenderingoptions.h"
 #include "options/qgsrenderingoptions.h"
@@ -1959,6 +1960,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     mCentralContainer->setCurrentIndex( 0 );
   } );
 
+  mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsIdeOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsCodeEditorOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsRenderingOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsVectorRenderingOptionsFactory >() ) );

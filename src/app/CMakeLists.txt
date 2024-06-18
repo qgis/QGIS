@@ -263,6 +263,7 @@ set(QGIS_APP_SRCS
   options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
   options/qgsgpsoptions.cpp
+  options/qgsideoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
   options/qgsrasterrenderingoptions.cpp
