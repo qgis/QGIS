@@ -67,6 +67,8 @@ Creates the symbol layer
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
+
     virtual void startRender( QgsSymbolRenderContext &context );
 
     virtual void stopRender( QgsSymbolRenderContext &context );
