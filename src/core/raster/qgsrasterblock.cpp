@@ -19,6 +19,7 @@
 
 #include <QByteArray>
 #include <QColor>
+#include <QLocale>
 
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
@@ -670,7 +671,7 @@ bool QgsRasterBlock::setImage( const QImage *image )
   return true;
 }
 
-QString QgsRasterBlock::printValue( double value )
+QString QgsRasterBlock::printValue( double value, bool localized )
 {
   /*
    *  IEEE 754 double has 15-17 significant digits. It specifies:
@@ -699,8 +700,13 @@ QString QgsRasterBlock::printValue( double value )
   for ( int i = 15; i <= 17; i++ )
   {
     s.setNum( value, 'g', i );
-    if ( qgsDoubleNear( s.toDouble(), value ) )
+    const double doubleValue { s.toDouble( ) };
+    if ( qgsDoubleNear( doubleValue, value ) )
     {
+      if ( localized )
+      {
+        return QLocale().toString( doubleValue, 'g', i );
+      }
       return s;
     }
   }
@@ -709,7 +715,7 @@ QString QgsRasterBlock::printValue( double value )
   return s;
 }
 
-QString QgsRasterBlock::printValue( float value )
+QString QgsRasterBlock::printValue( float value, bool localized )
 {
   /*
    *  IEEE 754 double has 6-9 significant digits. See printValue(double)
@@ -720,8 +726,13 @@ QString QgsRasterBlock::printValue( float value )
   for ( int i = 6; i <= 9; i++ )
   {
     s.setNum( value, 'g', i );
-    if ( qgsFloatNear( s.toFloat(), value ) )
+    const float floatValue { s.toFloat() };
+    if ( qgsFloatNear( floatValue, value ) )
     {
+      if ( localized )
+      {
+        return QLocale().toString( floatValue, 'g', i );
+      }
       return s;
     }
   }
