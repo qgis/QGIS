@@ -29,7 +29,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_16">
    <property name="leftMargin">
-    <number>20</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
     <number>0</number>
@@ -52,9 +52,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-133</y>
-        <width>775</width>
-        <height>1107</height>
+        <y>-115</y>
+        <width>795</width>
+        <height>1089</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
