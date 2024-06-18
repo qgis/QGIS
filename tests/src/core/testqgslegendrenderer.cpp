@@ -1555,7 +1555,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeSeparated()
   {
     QgsVectorDataProvider *pr = vlDataDefinedSize->dataProvider();
     QList<QgsField> attrs;
-    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    attrs << QgsField( QStringLiteral( "test_attr" ), QMetaType::Type::Int );
     pr->addAttributes( attrs );
 
     QgsFields fields;
@@ -1616,7 +1616,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsedFilterByMap()
   {
     QgsVectorDataProvider *pr = vlDataDefinedSize->dataProvider();
     QList<QgsField> attrs;
-    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    attrs << QgsField( QStringLiteral( "test_attr" ), QMetaType::Type::Int );
     pr->addAttributes( attrs );
 
     QgsFields fields;
@@ -1687,7 +1687,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeSeparatedFilterByMap()
   {
     QgsVectorDataProvider *pr = vlDataDefinedSize->dataProvider();
     QList<QgsField> attrs;
-    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    attrs << QgsField( QStringLiteral( "test_attr" ), QMetaType::Type::Int );
     pr->addAttributes( attrs );
 
     QgsFields fields;
