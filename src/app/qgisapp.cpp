@@ -13085,6 +13085,24 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
 
 void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
+  // make sure factories are inserted before others which create child pages for them
+  for ( auto it = mOptionsWidgetFactories.begin(); it != mOptionsWidgetFactories.end(); ++it )
+  {
+    const QgsOptionsWidgetFactory *other = ( *it ).data();
+    if ( !other )
+      continue;
+
+    const QStringList otherPath = other->path();
+    if ( otherPath.empty() )
+      continue;
+
+    if ( otherPath.at( 0 ) == factory->key() )
+    {
+      mOptionsWidgetFactories.insert( it, factory );
+      return;
+    }
+  }
+
   mOptionsWidgetFactories << factory;
 }
 
