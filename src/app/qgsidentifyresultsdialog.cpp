@@ -742,7 +742,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
     QString defVal;
-    if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
+    if ( fields.fieldOrigin( i ) == Qgis::FieldOrigin::Provider && vlayer->dataProvider() )
       defVal = vlayer->dataProvider()->defaultValueClause( fields.fieldOriginIndex( i ) );
 
     const QString originalValue = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
@@ -968,7 +968,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most information.
-    const int capabilities = layer->dataProvider()->capabilities();
+    const Qgis::RasterInterfaceCapabilities capabilities = layer->dataProvider()->capabilities();
     static const QList<Qgis::RasterIdentifyFormat> formats
     {
       Qgis::RasterIdentifyFormat::Html,
@@ -977,7 +977,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       Qgis::RasterIdentifyFormat::Value };
     for ( const auto &f : formats )
     {
-      if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
+      if ( !( capabilities & QgsRasterDataProvider::identifyFormatToCapability( f ) ) )
         continue;
       formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), QVariant::fromValue( f ) );
       formatCombo->setItemData( formatCombo->count() - 1, QVariant::fromValue( qobject_cast<QObject *>( layer ) ), Qt::UserRole + 1 );
@@ -1012,7 +1012,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   // add feature attributes
   if ( feature.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributes().size() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributeCount() ), 2 );
     const QgsAttributes attrs = feature.attributes();
     for ( int i = 0; i < attrs.count(); ++i )
     {
@@ -1025,7 +1025,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       bool isString = false;
       if ( value.isValid( ) )
       {
-        if ( value.type() == QVariant::Double )
+        if ( value.userType() == QMetaType::Type::Double )
         {
           bool ok;
           const double val( value.toDouble( &ok ) );
@@ -1047,7 +1047,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
             formattedValue = QLocale().toString( val, 'f', precision );
           }
         }
-        else if ( value.type() == QVariant::Int )
+        else if ( value.userType() == QMetaType::Type::Int )
         {
           bool ok;
           const double val( value.toInt( &ok ) );
@@ -1056,7 +1056,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
             formattedValue =  QLocale().toString( val, 'f', 0 );
           }
         }
-        else if ( value.type() == QVariant::LongLong )
+        else if ( value.userType() == QMetaType::Type::LongLong )
         {
           bool ok;
           const double val( value.toLongLong( &ok ) );

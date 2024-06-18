@@ -202,7 +202,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
       fieldTypeName = stripNS( sequenceElementRestriction.attribute( QStringLiteral( "base" ) ) );
     }
 
-    QVariant::Type fieldType = QVariant::String;
+    QMetaType::Type fieldType = QMetaType::Type::QString;
     if ( fieldTypeName.isEmpty() )
     {
       QgsDebugError( QStringLiteral( "Cannot get %1.%2 field type" ).arg( typeName, fieldName ) );
@@ -218,11 +218,11 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 
       if ( fieldTypeName == QLatin1String( "decimal" ) )
       {
-        fieldType = QVariant::Double;
+        fieldType = QMetaType::Type::Double;
       }
       else if ( fieldTypeName == QLatin1String( "integer" ) )
       {
-        fieldType = QVariant::Int;
+        fieldType = QMetaType::Type::Int;
       }
     }
 
@@ -515,17 +515,17 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   // It is not geometry attribute -> analyze value
   bool ok;
   ( void ) value.toInt( &ok );
-  QVariant::Type type = QVariant::String;
+  QMetaType::Type type = QMetaType::Type::QString;
   if ( ok )
   {
-    type = QVariant::Int;
+    type = QMetaType::Type::Int;
   }
   else
   {
     ( void ) value.toDouble( &ok );
     if ( ok )
     {
-      type = QVariant::Double;
+      type = QMetaType::Type::Double;
     }
   }
   //QgsDebugMsgLevel( "mStringCash = " + mStringCash + " type = " + QVariant::typeToName( type ),2 );
@@ -541,8 +541,8 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   {
     QgsField &field = fields[fieldIndex];
     // check if type is sufficient
-    if ( ( field.type() == QVariant::Int && ( type == QVariant::String || type == QVariant::Double ) ) ||
-         ( field.type() == QVariant::Double && type == QVariant::String ) )
+    if ( ( field.type() == QMetaType::Type::Int && ( type == QMetaType::Type::QString || type == QMetaType::Type::Double ) ) ||
+         ( field.type() == QMetaType::Type::Double && type == QMetaType::Type::QString ) )
     {
       field.setType( type );
     }

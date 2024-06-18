@@ -2371,7 +2371,7 @@ void TestQgsProcessing::createFeatureSink()
   // memory layer parameters
   destination = QStringLiteral( "memory:mylayer" );
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "my_field" ), QVariant::String, QString(), 100 ) );
+  fields.append( QgsField( QStringLiteral( "my_field" ), QMetaType::Type::QString, QString(), 100 ) );
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, Qgis::WkbType::PointZM, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
   QVERIFY( sink.get() );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, false ) );
@@ -2384,7 +2384,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().at( 0 ).type(), QMetaType::Type::QString );
   QCOMPARE( destination, layer->id() );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( layer->id() ), layer ); // layer should be in store
   QCOMPARE( layer->featureCount(), 0L );
@@ -2408,7 +2408,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().at( 0 ).type(), QMetaType::Type::QString );
   QCOMPARE( layer->featureCount(), 1L );
 
   // no extension, should default to shp
@@ -2428,7 +2428,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().size(), 2 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "fid" ) );
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().at( 1 ).type(), QMetaType::Type::QString );
   QCOMPARE( layer->featureCount(), 1L );
   // append to existing OGR layer
   QgsRemappingSinkDefinition remapDef;
@@ -2438,7 +2438,7 @@ void TestQgsProcessing::createFeatureSink()
   remapDef.setDestinationWkbType( Qgis::WkbType::Polygon );
   remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
   QgsFields fields2;
-  fields2.append( QgsField( "field2", QVariant::String ) );
+  fields2.append( QgsField( "field2", QMetaType::Type::QString ) );
   context.expressionContext().appendScope( new QgsExpressionContextScope() );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "extra" ), 2 );
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields2, Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::SinkFlags(), &remapDef ) );
@@ -2538,7 +2538,7 @@ void TestQgsProcessing::createFeatureSinkPostgres()
   QgsProcessingContext context;
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "my_field" ), QVariant::String, QString(), 100 ) );
+  fields.append( QgsField( QStringLiteral( "my_field" ), QMetaType::Type::QString, QString(), 100 ) );
 
   // save to database
   QString destination = "postgres://dbname='qgis_test' service='qgis_test' table=\"public\".\"test_feature_sink\" (geom)";
@@ -2692,7 +2692,7 @@ void TestQgsProcessing::parameters()
 
   // correctly setup feature
   QgsFields fields;
-  fields.append( QgsField( "a_field", QVariant::String, QString(), 30 ) );
+  fields.append( QgsField( "a_field", QMetaType::Type::QString, QString(), 30 ) );
   QgsFeature f( fields );
   f.setAttribute( 0, QStringLiteral( "field value" ) );
   context.expressionContext().setFeature( f );
@@ -3208,7 +3208,6 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
-  QVERIFY( def->checkValueIsAcceptable( "EPSG:12003" ) );
   QVERIFY( def->checkValueIsAcceptable( "EPSG:3111" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsCoordinateReferenceSystem() ) );
@@ -3269,7 +3268,7 @@ void TestQgsProcessing::parameterCrs()
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( QgsCoordinateReferenceSystem( "EPSG:3111" ), context ), QStringLiteral( "QgsCoordinateReferenceSystem('EPSG:3111')" ) );
   QCOMPARE( def->valueAsPythonString( QgsCoordinateReferenceSystem(), context ), QStringLiteral( "QgsCoordinateReferenceSystem()" ) );
-  QCOMPARE( def->valueAsPythonString( "EPSG:12003", context ), QStringLiteral( "'EPSG:12003'" ) );
+  QCOMPARE( def->valueAsPythonString( "EPSG:3857", context ), QStringLiteral( "'EPSG:3857'" ) );
   QCOMPARE( def->valueAsPythonString( "ProjectCrs", context ), QStringLiteral( "'ProjectCrs'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
   QCOMPARE( def->valueAsPythonString( raster1, context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "landsat_4326.tif'" ) ) );
@@ -3280,7 +3279,7 @@ void TestQgsProcessing::parameterCrs()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( QgsCoordinateReferenceSystem( "EPSG:3111" ), context ), QVariant( QStringLiteral( "EPSG:3111" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsCoordinateReferenceSystem(), context ), QVariant( QString() ) );
-  QCOMPARE( def->valueAsJsonObject( "EPSG:12003", context ), QVariant( QStringLiteral( "EPSG:12003" ) ) );
+  QCOMPARE( def->valueAsJsonObject( "EPSG:3857", context ), QVariant( QStringLiteral( "EPSG:3857" ) ) );
   QCOMPARE( def->valueAsJsonObject( "ProjectCrs", context ), QVariant( QStringLiteral( "ProjectCrs" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
   QCOMPARE( def->valueAsJsonObject( raster1, context ), QVariant( QString( testDataDir + QStringLiteral( "landsat_4326.tif" ) ) ) );
@@ -3294,7 +3293,7 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( QgsCoordinateReferenceSystem(), context, ok ), QString() );
   QVERIFY( ok );
-  QCOMPARE( def->valueAsString( "EPSG:12003", context, ok ), QStringLiteral( "EPSG:12003" ) );
+  QCOMPARE( def->valueAsString( "EPSG:3857", context, ok ), QStringLiteral( "EPSG:3857" ) );
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( "ProjectCrs", context, ok ), QStringLiteral( "ProjectCrs" ) );
   QVERIFY( ok );
@@ -8091,6 +8090,11 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::Vector );
 
+  // if we set testOnly = true, then layer should not be loaded on completion
+  context.setLayersToLoadOnCompletion( {} );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), QVariant::fromValue( fs ), context, true ), QStringLiteral( "test.shp" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().size(), 0 );
+
   // with name overloading
   QgsProcessingContext context2;
   fs = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.shp" ) );
@@ -8118,19 +8122,21 @@ void TestQgsProcessing::parameterVectorOut()
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), true ) );
   DummyProvider3 provider;
   QString error;
+  context.setLayersToLoadOnCompletion( {} );
   QVERIFY( provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) ); // optional
   QVERIFY( provider.isSupportedOutputValue( QString(), def.get(), context, error ) ); // optional
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.shp", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.SHP", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "ogr:d:/test.shp", def.get(), context, error ) );
-  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.SHP" ), def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.SHP", &p ), def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "d:/test.mif", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "d:/test.MIF", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "ogr:d:/test.MIF", def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF" ), def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF", &p ), def.get(), context, error ) );
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false ) );
   QVERIFY( !provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) ); // non-optional
   QVERIFY( !provider.isSupportedOutputValue( QString(), def.get(), context, error ) ); // non-optional
+  QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
 
   provider.loadAlgorithms();
   def->mOriginalProvider = &provider;
@@ -12641,8 +12647,8 @@ void TestQgsProcessing::convertCompatibleDuplicateFids()
   QgsVectorLayer *layer = new QgsVectorLayer{"Point", "vl", "memory"};
   // Add fields
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "fid" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "fid" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
   layer->dataProvider()->addAttributes( fields.toList() );
   layer->updateFields();
 
@@ -12669,8 +12675,8 @@ void TestQgsProcessing::convertCompatibleDuplicateFids()
   QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "gpkg", QString( "gpkg" ), &feedback );
   const QStringList logs( feedback.textLog().split( '\n', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
   QCOMPARE( logs.size(), 11 );
-  QVERIFY( logs.first().startsWith( QStringLiteral( "Error writing feature # 2" ) ) );
-  QVERIFY( logs.last().startsWith( QStringLiteral( "There were 11 errors writing features" ) ) );
+  QVERIFY( logs.first().startsWith( QLatin1String( "Error writing feature # 2" ) ) );
+  QVERIFY( logs.last().startsWith( QLatin1String( "There were 11 errors writing features" ) ) );
 }
 
 void TestQgsProcessing::create()
@@ -12812,8 +12818,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "tif" ) );
 
   // unless the user has set a default format, which IS supported by that provider
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QStringLiteral( "tab" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QStringLiteral( "sdat" ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
@@ -12824,8 +12830,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QStringLiteral( "gpkg" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QStringLiteral( "ecw" ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }

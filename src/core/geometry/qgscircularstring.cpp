@@ -624,13 +624,14 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
   return line;
 }
 
-QgsCircularString *QgsCircularString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsCircularString *QgsCircularString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool ) const
 {
   // prepare result
   std::unique_ptr<QgsCircularString> result { createEmptyWithSameType() };
 
+  // remove redundant not supported for circular strings
   bool res = snapToGridPrivate( hSpacing, vSpacing, dSpacing, mSpacing, mX, mY, mZ, mM,
-                                result->mX, result->mY, result->mZ, result->mM );
+                                result->mX, result->mY, result->mZ, result->mM, false );
   if ( res )
     return result.release();
   else

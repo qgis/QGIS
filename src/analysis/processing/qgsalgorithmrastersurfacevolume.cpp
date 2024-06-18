@@ -138,9 +138,9 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
   if ( parameters.contains( QStringLiteral( "OUTPUT_TABLE" ) ) && parameters.value( QStringLiteral( "OUTPUT_TABLE" ) ).isValid() )
   {
     QgsFields outFields;
-    outFields.append( QgsField( QStringLiteral( "volume" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "pixel_count" ), QVariant::LongLong ) );
+    outFields.append( QgsField( QStringLiteral( "volume" ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "pixel_count" ), QMetaType::Type::LongLong ) );
     sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )
       throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
@@ -252,6 +252,3 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
 
 
 ///@endcond
-
-
-

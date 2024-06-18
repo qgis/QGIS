@@ -464,11 +464,11 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
   return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
 }
 
-int QgsGrassRasterProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsGrassRasterProvider::capabilities() const
 {
-  int capability = QgsRasterDataProvider::Identify
-                   | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::Size;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
+      | Qgis::RasterInterfaceCapability::IdentifyValue
+      | Qgis::RasterInterfaceCapability::Size;
   return capability;
 }
 

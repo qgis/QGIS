@@ -85,6 +85,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
   , mProviderCapabilities( layer->dataProvider()->providerCapabilities() )
+  , mInterfaceCapabilities( layer->dataProvider()->capabilities() )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
   , mEnableProfile( rendererContext.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
@@ -222,7 +223,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
   const double dpi = 25.4 * rendererContext.scaleFactor();
-  if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
+  if ( mProviderCapabilities & Qgis::RasterProviderCapability::DpiDependentData
        && rendererContext.dpiTarget() >= 0.0 )
   {
     const double dpiScaleFactor = rendererContext.dpiTarget() / dpi;
@@ -450,8 +451,8 @@ bool QgsRasterLayerRenderer::render()
 
   // Skip rendering of out of view tiles (xyz)
   if ( !mRasterViewPort || ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) &&
-                             !( mProviderCapabilities &
-                                QgsRasterInterface::Capability::Prefetch ) ) )
+                             !( mInterfaceCapabilities &
+                                Qgis::RasterInterfaceCapability::Prefetch ) ) )
     return true;
 
   mPipe->moveToThread( QThread::currentThread() );
@@ -490,7 +491,7 @@ bool QgsRasterLayerRenderer::render()
   if ( projector )
   {
     // Force provider resampling if reprojection is needed
-    if ( ( mPipe->provider()->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+    if ( ( mPipe->provider()->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
          mRasterViewPort->mSrcCRS != mRasterViewPort->mDestCRS &&
          oldResamplingState != Qgis::RasterResamplingStage::Provider )
     {
@@ -616,7 +617,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
       if ( mPipe->resampleFilter() )
         overSampling = mPipe->resampleFilter()->maxOversampling();
 
-      if ( dataProvider->capabilities() & QgsRasterDataProvider::Size )
+      if ( dataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size )
       {
         // If the dataprovider has size capability, we calculate the requested resolution to provider
         double providerXResol = dataProvider->extent().width() / dataProvider->xSize();

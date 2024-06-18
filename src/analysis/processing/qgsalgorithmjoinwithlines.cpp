@@ -259,7 +259,8 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
     // only keep selected attributes
     QgsAttributes hubAttributes;
-    for ( int j = 0; j < hubFeature.attributes().count(); ++j )
+    const int attributeCount = hubFeature.attributeCount();
+    for ( int j = 0; j < attributeCount; ++j )
     {
       if ( !hubFieldIndices.contains( j ) )
         continue;
@@ -333,7 +334,8 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
       // only keep selected attributes
       QgsAttributes spokeAttributes;
-      for ( int j = 0; j < spokeFeature.attributes().count(); ++j )
+      const int attributeCount = spokeFeature.attributeCount();
+      for ( int j = 0; j < attributeCount; ++j )
       {
         if ( !spokeFieldIndices.contains( j ) )
           continue;

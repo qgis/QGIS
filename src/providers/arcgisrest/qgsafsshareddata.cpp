@@ -256,11 +256,11 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       if ( QgsVariantUtils::isNull( attribute ) )
       {
         // ensure that null values are mapped correctly for PyQGIS
-        attribute = QVariant( QVariant::Int );
+        attribute = QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
       }
 
       // date/datetime fields must be converted
-      if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
+      if ( mFields.at( idx ).type() == QMetaType::Type::QDateTime || mFields.at( idx ).type() == QMetaType::Type::QDate )
         attribute = QgsArcGisRestUtils::convertDateTime( attribute );
 
       if ( !mFields.at( idx ).convertCompatible( attribute ) )

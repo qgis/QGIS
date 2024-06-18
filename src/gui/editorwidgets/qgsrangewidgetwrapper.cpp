@@ -47,10 +47,10 @@ QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
   {
     switch ( layer()->fields().at( fieldIdx() ).type() )
     {
-      case QVariant::Double:
+      case QMetaType::Type::Double:
       // for long long field types we have to use a double spin box with 0 decimal places,
       // as the min/max value supported by QSpinBox is not large enough
-      case QVariant::LongLong:
+      case QMetaType::Type::LongLong:
       {
 
         editor = new QgsDoubleSpinBox( parent );
@@ -58,7 +58,7 @@ QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
         break;
       }
 
-      case QVariant::Int:
+      case QMetaType::Type::Int:
       default:
         editor = new QgsSpinBox( parent );
         static_cast<QgsSpinBox *>( editor )->setLineEditAlignment( Qt::AlignRight );
@@ -104,7 +104,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 
     const QgsField field = layer()->fields().at( fieldIdx() );
     // we use the double spin box for long long fields in order to get sufficient range of min/max values
-    const int precisionval = field.type() == QVariant::LongLong ? 0 : ( precision.isValid() ? precision.toInt() : field.precision() );
+    const int precisionval = field.type() == QMetaType::Type::LongLong ? 0 : ( precision.isValid() ? precision.toInt() : field.precision() );
 
     mDoubleSpinBox->setDecimals( precisionval );
 
@@ -194,21 +194,21 @@ bool QgsRangeWidgetWrapper::valid() const
 
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
-  if ( v.type() == QVariant::Int )
+  if ( v.userType() == QMetaType::Type::Int )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toInt() );
     Q_NOWARN_DEPRECATED_POP
     emit valuesChanged( v.toInt() );
   }
-  else if ( v.type() == QVariant::LongLong )
+  else if ( v.userType() == QMetaType::Type::LongLong )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toLongLong() );
     Q_NOWARN_DEPRECATED_POP
     emit valuesChanged( v.toLongLong() );
   }
-  else if ( v.type() == QVariant::Double )
+  else if ( v.userType() == QMetaType::Type::Double )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toDouble() );
@@ -223,14 +223,14 @@ QVariant QgsRangeWidgetWrapper::value() const
 
   if ( mDoubleSpinBox )
   {
-    const QVariant::Type fieldType = field().type();
+    const QMetaType::Type fieldType = field().type();
     switch ( fieldType )
     {
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         value = mDoubleSpinBox->value();
         break;
 
-      case QVariant::LongLong:
+      case QMetaType::Type::LongLong:
         value = static_cast< long long >( mDoubleSpinBox->value() );
         break;
 
@@ -240,7 +240,7 @@ QVariant QgsRangeWidgetWrapper::value() const
 
     if ( value == mDoubleSpinBox->minimum() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
-      value = QVariant( fieldType );
+      value = QgsVariantUtils::createNullVariant( fieldType );
     }
   }
   else if ( mIntSpinBox )
@@ -248,7 +248,7 @@ QVariant QgsRangeWidgetWrapper::value() const
     value = mIntSpinBox->value();
     if ( value == mIntSpinBox->minimum() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
-      value = QVariant( field().type() );
+      value = QgsVariantUtils::createNullVariant( field().type() );
     }
   }
   else if ( mQgsDial )

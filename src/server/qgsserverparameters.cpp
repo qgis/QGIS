@@ -29,10 +29,15 @@
 //
 // QgsServerParameterDefinition
 //
-QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type type,
+QgsServerParameterDefinition::QgsServerParameterDefinition( const QMetaType::Type type,
     const QVariant defaultValue )
   : mType( type )
   , mDefaultValue( defaultValue )
+{
+}
+
+QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type type, const QVariant defaultValue )
+  : QgsServerParameterDefinition( QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
 {
 }
 
@@ -413,9 +418,16 @@ void QgsServerParameterDefinition::raiseError( const QString &msg )
 // QgsServerParameter
 //
 QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
-                                        const QVariant::Type type, const QVariant defaultValue )
+                                        const QMetaType::Type type, const QVariant defaultValue )
   : QgsServerParameterDefinition( type, defaultValue )
   , mName( name )
+{
+}
+
+QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
+                                        const QVariant::Type type,
+                                        const QVariant defaultValue )
+  : QgsServerParameter( name, QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
 {
 }
 

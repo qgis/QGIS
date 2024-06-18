@@ -396,11 +396,11 @@ void TestQgsAttributeForm::testDynamicForm()
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
   QCOMPARE( ww->field().name(), QString( "layerB_col0" ) );
-  QCOMPARE( ww->value(), QVariant( QVariant::Int ) );
+  QCOMPARE( ww->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
   QCOMPARE( ww->field().name(), QString( "layerC_col0" ) );
-  QCOMPARE( ww->value(), QVariant( QVariant::Int ) );
+  QCOMPARE( ww->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   // change layerA join id field to join with layerB
   form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 30 ) );
@@ -415,7 +415,7 @@ void TestQgsAttributeForm::testDynamicForm()
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
   QCOMPARE( ww->field().name(), QString( "layerC_col0" ) );
-  QCOMPARE( ww->value(), QVariant( QVariant::Int ) );
+  QCOMPARE( ww->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   // change layerA join id field to join with layerC
   form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 32 ) );
@@ -426,7 +426,7 @@ void TestQgsAttributeForm::testDynamicForm()
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
   QCOMPARE( ww->field().name(), QString( "layerB_col0" ) );
-  QCOMPARE( ww->value(), QVariant( QVariant::Int ) );
+  QCOMPARE( ww->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
   QCOMPARE( ww->field().name(), QString( "layerC_col0" ) );

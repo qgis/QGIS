@@ -91,7 +91,15 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * \brief documentPath returns the path of the current document in the widget
      * \param type determines the type of the returned null variant if the document is not defined yet
      */
-    QVariant documentPath( QVariant::Type type = QVariant::String ) const;
+    QVariant documentPath( QMetaType::Type type = QMetaType::Type::QString ) const;
+
+    /**
+     * \brief documentPath returns the path of the current document in the widget
+     * \param type determines the type of the returned null variant if the document is not defined yet
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED QVariant documentPath( QVariant::Type type ) const SIP_DEPRECATED;
+
     void setDocumentPath( const QVariant &documentPath );
 
     /**

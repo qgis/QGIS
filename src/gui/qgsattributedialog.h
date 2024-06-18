@@ -96,6 +96,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
      */
     bool event( QEvent *e ) override;
 
+    void showEvent( QShowEvent *event ) override;
+
     /**
      * Sets \a extraScope as an additional expression context scope to be used
      * for calculations in this form.

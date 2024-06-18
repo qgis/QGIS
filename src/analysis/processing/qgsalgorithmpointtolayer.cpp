@@ -48,7 +48,7 @@ QVariantMap QgsPointToLayerAlgorithm::processAlgorithm( const QVariantMap &param
   const QgsGeometry geom = QgsGeometry::fromPointXY( parameterAsPoint( parameters, QStringLiteral( "INPUT" ), context ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::Int ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, crs ) );

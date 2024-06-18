@@ -39,7 +39,7 @@ QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int field
 
 QVariant QgsBinaryWidgetWrapper::value() const
 {
-  return mValue.isEmpty() || mValue.isNull() ? QVariant( QVariant::ByteArray ) : mValue;
+  return mValue.isEmpty() || mValue.isNull() ? QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ) : mValue;
 }
 
 void QgsBinaryWidgetWrapper::showIndeterminateState()

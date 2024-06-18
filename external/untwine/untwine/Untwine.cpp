@@ -49,6 +49,8 @@ void addArgs(pdal::ProgramArgs& programArgs, Options& options, pdal::Arg * &temp
         options.a_srs, "");
     programArgs.add("metadata", "Write PDAL metadata to VLR output",
         options.metadata, false);
+    programArgs.add("no_srs", "PDAL readers.las.nosrs passthrough.",
+        options.no_srs, false);
 }
 
 bool handleOptions(pdal::StringList& arglist, Options& options)
@@ -122,7 +124,7 @@ void cleanup(const std::string& dir, bool rmdir)
 
 } // namespace untwine
 
-#ifdef _WIN32
+#ifdef _MSC_VER // MSVC Compiler
 int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] )
 #else
 int main(int argc, char *argv[])

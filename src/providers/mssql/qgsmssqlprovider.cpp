@@ -204,9 +204,9 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
         const QgsField &fld = mAttributeFields.at( idx );
 
         if ( mPrimaryKeyAttrs.size() == 0 &&
-             ( fld.type() == QVariant::Int ||
-               fld.type() == QVariant::LongLong ||
-               ( fld.type() == QVariant::Double && fld.precision() == 0 ) ) )
+             ( fld.type() == QMetaType::Type::Int ||
+               fld.type() == QMetaType::Type::LongLong ||
+               ( fld.type() == QMetaType::Type::Double && fld.precision() == 0 ) ) )
         {
           mPrimaryKeyType = PktInt;
         }
@@ -251,15 +251,15 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( new QgsMssqlFeatureSource( this ), true, request ) );
 }
 
-QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
+QMetaType::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
 {
-  QVariant::Type type = QVariant::Invalid;
+  QMetaType::Type type = QMetaType::Type::UnknownType;
   if ( sqlTypeName.startsWith( QLatin1String( "decimal" ), Qt::CaseInsensitive ) ||
        sqlTypeName.startsWith( QLatin1String( "numeric" ), Qt::CaseInsensitive ) ||
        sqlTypeName.startsWith( QLatin1String( "real" ), Qt::CaseInsensitive ) ||
        sqlTypeName.startsWith( QLatin1String( "float" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::Double;
+    type = QMetaType::Type::Double;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "char" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "nchar" ), Qt::CaseInsensitive ) ||
@@ -269,48 +269,48 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
             sqlTypeName.startsWith( QLatin1String( "ntext" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::String;
+    type = QMetaType::Type::QString;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "smallint" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "int" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "bit" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "tinyint" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::Int;
+    type = QMetaType::Type::Int;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "bigint" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::LongLong;
+    type = QMetaType::Type::LongLong;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "binary" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "varbinary" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "image" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::ByteArray;
+    type = QMetaType::Type::QByteArray;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "datetime" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "smalldatetime" ), Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( QLatin1String( "datetime2" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::DateTime;
+    type = QMetaType::Type::QDateTime;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "date" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::Date;
+    type = QMetaType::Type::QDate;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::String;
+    type = QMetaType::Type::QString;
   }
   else if ( sqlTypeName.startsWith( QLatin1String( "time" ), Qt::CaseInsensitive ) )
   {
-    type = QVariant::Time;
+    type = QMetaType::Type::QTime;
   }
   else
   {
     QgsDebugError( QStringLiteral( "Unknown field type: %1" ).arg( sqlTypeName ) );
     // Everything else just dumped as a string.
-    type = QVariant::String;
+    type = QMetaType::Type::QString;
   }
 
   return type;
@@ -471,7 +471,7 @@ void QgsMssqlProvider::loadFields()
     }
     else
     {
-      const QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
+      const QMetaType::Type sqlType = DecodeSqlType( sqlTypeName );
       if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
       {
         mPrimaryKeyType = PktInt;
@@ -485,7 +485,7 @@ void QgsMssqlProvider::loadFields()
       }
 
       QgsField field;
-      if ( sqlType == QVariant::String )
+      if ( sqlType == QMetaType::Type::QString )
       {
         // Field length in chars is column 7 ("Length") of the sp_columns output,
         // except for uniqueidentifiers which must use column 6 ("Precision").
@@ -499,7 +499,7 @@ void QgsMssqlProvider::loadFields()
                           sqlTypeName,
                           length );
       }
-      else if ( sqlType == QVariant::Double )
+      else if ( sqlType == QMetaType::Type::Double )
       {
         field = QgsField( colName,
                           sqlType,
@@ -507,7 +507,7 @@ void QgsMssqlProvider::loadFields()
                           query.value( QStringLiteral( "PRECISION" ) ).toInt(),
                           sqlTypeName == QLatin1String( "decimal" ) || sqlTypeName == QLatin1String( "numeric" ) ? query.value( QStringLiteral( "SCALE" ) ).toInt() : -1 );
       }
-      else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
+      else if ( sqlType == QMetaType::Type::QDate || sqlType == QMetaType::Type::QDateTime || sqlType == QMetaType::Type::QTime )
       {
         field = QgsField( colName,
                           sqlType,
@@ -578,9 +578,9 @@ void QgsMssqlProvider::loadFields()
         const QgsField &fld = mAttributeFields.at( idx );
 
         if ( !mPrimaryKeyAttrs.isEmpty() ||
-             ( fld.type() != QVariant::Int &&
-               fld.type() != QVariant::LongLong &&
-               ( fld.type() != QVariant::Double || fld.precision() != 0 ) ) )
+             ( fld.type() != QMetaType::Type::Int &&
+               fld.type() != QMetaType::Type::LongLong &&
+               ( fld.type() != QMetaType::Type::Double || fld.precision() != 0 ) ) )
           mPrimaryKeyType = PktFidMap;
 
         mPrimaryKeyAttrs << idx;
@@ -638,18 +638,18 @@ QString QgsMssqlProvider::quotedValue( const QVariant &value )
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return QString( value.toBool() ? '1' : '0' );
 
     default:
-    case QVariant::String:
+    case QMetaType::Type::QString:
       QString v = value.toString();
       v.replace( '\'', QLatin1String( "''" ) );
       if ( v.contains( '\\' ) )
@@ -722,7 +722,7 @@ QString QgsMssqlProvider::storageType() const
 
 QVariant QgsMssqlProvider::convertTimeValue( const QVariant &value )
 {
-  if ( value.isValid() && value.type() == QVariant::ByteArray )
+  if ( value.isValid() && value.userType() == QMetaType::Type::QByteArray )
   {
     // time fields can be returned as byte arrays... woot
     const QByteArray ba = value.toByteArray();
@@ -733,10 +733,10 @@ QVariant QgsMssqlProvider::convertTimeValue( const QVariant &value )
       const int seconds = ba.at( 4 );
       QVariant t = QTime( hours, mins, seconds );
       if ( !t.isValid() ) // can't handle it
-        t = QVariant( QVariant::Time );
+        t = QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
       return t;
     }
-    return QVariant( QVariant::Time );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
   }
   return value;
 }
@@ -772,9 +772,9 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
   if ( query.isActive() && query.next() )
   {
     QVariant v = query.value( 0 );
-    if ( fld.type() == QVariant::Time )
+    if ( fld.type() == QMetaType::Type::QTime )
       v = convertTimeValue( v );
-    if ( v.type() != fld.type() )
+    if ( v.userType() != fld.type() )
       v = convertValue( fld.type(), v.toString() );
     return v;
   }
@@ -813,9 +813,9 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
   if ( query.isActive() && query.next() )
   {
     QVariant v = query.value( 0 );
-    if ( fld.type() == QVariant::Time )
+    if ( fld.type() == QMetaType::Type::QTime )
       v = convertTimeValue( v );
-    if ( v.type() != fld.type() )
+    if ( v.userType() != fld.type() )
       v = convertValue( fld.type(), v.toString() );
     return v;
   }
@@ -865,9 +865,9 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
     while ( query.next() )
     {
       QVariant v = query.value( 0 );
-      if ( fld.type() == QVariant::Time )
+      if ( fld.type() == QMetaType::Type::QTime )
         v = convertTimeValue( v );
-      if ( v.type() != fld.type() )
+      if ( v.userType() != fld.type() )
         v = convertValue( fld.type(), v.toString() );
       uniqueValues.insert( v );
     }
@@ -1346,41 +1346,41 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( mComputedColumns.contains( fld.name() ) )
         continue; // skip computed columns because they are done server side.
 
-      const QVariant::Type type = fld.type();
+      const QMetaType::Type type = fld.type();
       if ( QgsVariantUtils::isNull( attrs.at( i ) ) )
       {
         // binding null values
-        if ( type == QVariant::Date || type == QVariant::DateTime )
-          query.addBindValue( QVariant( QVariant::String ) );
+        if ( type == QMetaType::Type::QDate || type == QMetaType::Type::QDateTime )
+          query.addBindValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
         else
-          query.addBindValue( QVariant( type ) );
+          query.addBindValue( QgsVariantUtils::createNullVariant( type ) );
       }
-      else if ( type == QVariant::Int )
+      else if ( type == QMetaType::Type::Int )
       {
         // binding an INTEGER value
         query.addBindValue( attrs.at( i ).toInt() );
       }
-      else if ( type == QVariant::Double )
+      else if ( type == QMetaType::Type::Double )
       {
         // binding a DOUBLE value
         query.addBindValue( attrs.at( i ).toDouble() );
       }
-      else if ( type == QVariant::String )
+      else if ( type == QMetaType::Type::QString )
       {
         // binding a TEXT value
         query.addBindValue( attrs.at( i ).toString() );
       }
-      else if ( type == QVariant::Time )
+      else if ( type == QMetaType::Type::QTime )
       {
         // binding a TIME value
         query.addBindValue( attrs.at( i ).toTime().toString( Qt::ISODate ) );
       }
-      else if ( type == QVariant::Date )
+      else if ( type == QMetaType::Type::QDate )
       {
         // binding a DATE value
         query.addBindValue( attrs.at( i ).toDate().toString( Qt::ISODate ) );
       }
-      else if ( type == QVariant::DateTime )
+      else if ( type == QMetaType::Type::QDateTime )
       {
         // binding a DATETIME value
         query.addBindValue( attrs.at( i ).toDateTime().toString( Qt::ISODate ) );
@@ -1637,41 +1637,41 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       if ( mComputedColumns.contains( fld.name() ) )
         continue; // skip computed columns because they are done server side.
 
-      const QVariant::Type type = fld.type();
+      const QMetaType::Type type = fld.type();
       if ( QgsVariantUtils::isNull( *it2 ) )
       {
         // binding null values
-        if ( type == QVariant::Date || type == QVariant::DateTime )
-          query.addBindValue( QVariant( QVariant::String ) );
+        if ( type == QMetaType::Type::QDate || type == QMetaType::Type::QDateTime )
+          query.addBindValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
         else
-          query.addBindValue( QVariant( type ) );
+          query.addBindValue( QgsVariantUtils::createNullVariant( type ) );
       }
-      else if ( type == QVariant::Int )
+      else if ( type == QMetaType::Type::Int )
       {
         // binding an INTEGER value
         query.addBindValue( it2->toInt() );
       }
-      else if ( type == QVariant::Double )
+      else if ( type == QMetaType::Type::Double )
       {
         // binding a DOUBLE value
         query.addBindValue( it2->toDouble() );
       }
-      else if ( type == QVariant::String )
+      else if ( type == QMetaType::Type::QString )
       {
         // binding a TEXT value
         query.addBindValue( it2->toString() );
       }
-      else if ( type == QVariant::DateTime )
+      else if ( type == QMetaType::Type::QDateTime )
       {
         // binding a DATETIME value
         query.addBindValue( it2->toDateTime().toString( Qt::ISODate ) );
       }
-      else if ( type == QVariant::Date )
+      else if ( type == QMetaType::Type::QDate )
       {
         // binding a DATE value
         query.addBindValue( it2->toDate().toString( Qt::ISODate ) );
       }
-      else if ( type == QVariant::Time )
+      else if ( type == QMetaType::Type::QTime )
       {
         // binding a TIME value
         query.addBindValue( it2->toTime().toString( Qt::ISODate ) );
@@ -2078,39 +2078,39 @@ bool QgsMssqlProvider::convertField( QgsField &field )
   int fieldPrec = field.precision();
   switch ( field.type() )
   {
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       fieldType = QStringLiteral( "bigint" );
       fieldSize = -1;
       fieldPrec = 0;
       break;
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       fieldType = QStringLiteral( "datetime" );
       fieldPrec = 0;
       break;
 
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       fieldType = QStringLiteral( "date" );
       fieldPrec = 0;
       break;
 
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       fieldType = QStringLiteral( "time" );
       fieldPrec = 0;
       break;
 
-    case QVariant::String:
+    case QMetaType::Type::QString:
       fieldType = QStringLiteral( "nvarchar(max)" );
       fieldPrec = 0;
       break;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       fieldType = QStringLiteral( "int" );
       fieldSize = -1;
       fieldPrec = 0;
       break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       if ( fieldSize <= 0 || fieldPrec <= 0 )
       {
         fieldType = QStringLiteral( "float" );

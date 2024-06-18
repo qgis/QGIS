@@ -33,10 +33,8 @@
 #include <qgslinesymbol.h>
 #include <qgslinesymbollayer.h>
 #include <qgssymbol.h>
-#include "qgslayoutitemmap.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgslayout.h"
 
 /**
  * \ingroup UnitTests
@@ -82,7 +80,7 @@ void TestQgsLayeredSymbolLevel::initTestCase()
                                      myRoadsFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpRoadsLayer->setSimplifyMethod( simplifyMethod );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpRoadsLayer );

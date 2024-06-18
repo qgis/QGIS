@@ -69,7 +69,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
 {
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   QgsFields fields;
-  fields.append( QgsField( fieldName, QVariant::Double, QString(), 20, 8 ) );
+  fields.append( QgsField( fieldName, QMetaType::Type::Double, QString(), 20, 8 ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, sinkType(), mCrs ) );

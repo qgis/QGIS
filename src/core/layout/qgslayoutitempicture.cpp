@@ -361,7 +361,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
         QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( tr( "Picture expression eval error" ), sourceProperty.asExpression() ) );
       }
     }
-    else if ( source.type() != QVariant::ByteArray )
+    else if ( source.userType() != QMetaType::Type::QByteArray )
     {
       source = source.toString().trimmed();
       QgsDebugMsgLevel( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ), 2 );
@@ -552,7 +552,7 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
     imageData = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
   }
 
-  if ( imageData.type() == QVariant::ByteArray )
+  if ( imageData.userType() == QMetaType::Type::QByteArray )
   {
     if ( mImage.loadFromData( imageData.toByteArray() ) )
     {

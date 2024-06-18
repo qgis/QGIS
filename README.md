@@ -183,9 +183,9 @@ There are several channels where you can find help and support for QGIS:
 - Using the [QGIS community site](https://qgis.org)
 - Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
 - Chatting with other users real-time. *Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question. The following paths all take you to the same chat room:*
-    - Using an IRC client and joining the [#qgis](https://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.
-    - Using a Matrix client and joining the [#qgis:matrix.org](https://matrix.to/#/#qgis:matrix.org) room.
-    - Using [Gitter](https://gitter.im/qgis/QGIS) chat.
+    - Using an IRC client and joining the
+      [#qgis](https://web.libera.chat/?channels=#qgis) channel on irc.libera.chat.
+    - Using a Matrix client and joining the [#qgis:osgeo.org](https://matrix.to/#/#qgis:osgeo.org) room.
  - At the [GIS stackexchange](https://gis.stackexchange.com/) or [r/QGIS reddit](https://www.reddit.com/r/QGIS/), which are not maintained by the QGIS team, but where the QGIS and broader GIS community provides lots of advice
 - [Other support channels](https://qgis.org/en/site/forusers/support.html)
 

@@ -140,10 +140,13 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   // create an empty form to find out if it needs geometry or not
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
 
+  const QgsExpression sortingExpression = QgsExpression( mConfig.sortExpression() );
+
   const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry() ||
                              !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
                              || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
-                             || emptyForm.needsGeometry();
+                             || emptyForm.needsGeometry()
+                             || sortingExpression.needsGeometry();
 
   initLayerCache( needsGeometry );
   initModels( mapCanvas, request, loadFeatures );
@@ -154,6 +157,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mFeatureListView->setModel( mFeatureListModel );
 
   connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
+  connect( mLayer, &QgsVectorLayer::afterCommitChanges, this, [ = ] { mFeatureListView->setCurrentFeatureEdited( false ); } );
 
   if ( mFeatureListPreviewButton->defaultAction() )
     mFeatureListView->setDisplayExpression( mDisplayExpression );
@@ -336,16 +340,13 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
 
   // create an empty form to find out if it needs geometry or not
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
-  const bool needsGeometry = ( filterMode == QgsAttributeTableFilterModel::ShowVisible ) || emptyForm.needsGeometry();
+  const bool needsGeometry = ( filterMode == QgsAttributeTableFilterModel::ShowVisible ) || emptyForm.needsGeometry() || QgsExpression( mConfig.sortExpression() ).needsGeometry();
 
   const bool requiresTableReload = ( request.filterType() != Qgis::Qgis::FeatureRequestFilterType::NoFilter || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter ) // previous request was subset
                                    || ( needsGeometry && request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) // no geometry for last request
                                    || ( mMasterModel->rowCount() == 0 ); // no features
 
-  if ( !needsGeometry )
-    request.setFlags( request.flags() | Qgis::FeatureRequestFlag::NoGeometry );
-  else
-    request.setFlags( request.flags() & ~( static_cast< int >( Qgis::FeatureRequestFlag::NoGeometry ) ) );
+  request.setFlags( request.flags().setFlag( Qgis::FeatureRequestFlag::NoGeometry, !needsGeometry ) );
   request.setFilterFids( QgsFeatureIds() );
   request.setFilterRect( QgsRectangle() );
   request.disableFilter();
@@ -1135,7 +1136,6 @@ bool QgsDualView::modifySort()
       config.setSortExpression( QString() );
     }
 
-    setAttributeTableConfig( config );
     return true;
   }
   else
@@ -1163,7 +1163,7 @@ QgsAttributeList QgsDualView::requiredAttributes( const QgsVectorLayer *layer )
   const QSet<int> colAttrs { attributes };
   for ( const int attrIdx : std::as_const( colAttrs ) )
   {
-    if ( layer->fields().fieldOrigin( attrIdx ) == QgsFields::FieldOrigin::OriginExpression )
+    if ( layer->fields().fieldOrigin( attrIdx ) == Qgis::FieldOrigin::Expression )
     {
       attributes += QgsExpression( layer->expressionField( attrIdx ) ).referencedAttributeIndexes( layer->fields() );
     }
@@ -1334,7 +1334,13 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
   mFilterModel->setAttributeTableConfig( mConfig );
   mTableView->setAttributeTableConfig( mConfig );
   const QgsAttributeList attributes { requiredAttributes( mLayer ) };
-  QgsFeatureRequest request { mMasterModel->request() };
+  QgsFeatureRequest request = mMasterModel->request();
+  // if the sort expression needs geometry reset the flag
+  if ( QgsExpression( config.sortExpression() ).needsGeometry() )
+  {
+    mLayerCache->setCacheGeometry( true );
+    request.setFlags( request.flags().setFlag( Qgis::FeatureRequestFlag::NoGeometry, false ) );
+  }
   request.setSubsetOfAttributes( attributes );
   mMasterModel->setRequest( request );
   mLayerCache->setCacheSubsetOfAttributes( attributes );
@@ -1342,6 +1348,7 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
 
 void QgsDualView::setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder )
 {
+
   if ( sortExpression.isNull() )
     mFilterModel->sort( -1 );
   else

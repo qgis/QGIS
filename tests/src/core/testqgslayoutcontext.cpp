@@ -253,11 +253,11 @@ void TestQgsLayoutContext::simplifyMethod()
   QgsLayout l( QgsProject::instance() );
   QgsLayoutRenderContext context( &l );
   // must default to no simplification
-  QCOMPARE( context.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QCOMPARE( context.simplifyMethod().simplifyHints(), Qgis::VectorRenderingSimplificationFlag::NoSimplification );
   QgsVectorSimplifyMethod simplify;
-  simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  simplify.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
   context.setSimplifyMethod( simplify );
-  QCOMPARE( context.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
+  QCOMPARE( context.simplifyMethod().simplifyHints(), Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

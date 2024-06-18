@@ -83,7 +83,7 @@ class buildvrt(GdalAlgorithm):
                 return super(QgsProcessingParameterRasterDestination, self).parameterAsOutputLayer(definition, value, context)
 
             def isSupportedOutputValue(self, value, context):
-                output_path = QgsProcessingParameters.parameterAsOutputLayer(self, value, context)
+                output_path = QgsProcessingParameters.parameterAsOutputLayer(self, value, context, testOnly=True)
                 if pathlib.Path(output_path).suffix.lower() != '.vrt':
                     return False, QCoreApplication.translate("GdalAlgorithm", 'Output filename must use a .vrt extension')
                 return True, ''

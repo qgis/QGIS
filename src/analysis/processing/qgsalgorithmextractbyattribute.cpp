@@ -106,9 +106,9 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   if ( idx < 0 )
     throw QgsProcessingException( QObject::tr( "Field '%1' was not found in INPUT source" ).arg( fieldName ) );
 
-  const QVariant::Type fieldType = source->fields().at( idx ).type();
+  const QMetaType::Type fieldType = source->fields().at( idx ).type();
 
-  if ( fieldType != QVariant::String && ( op == BeginsWith || op == Contains || op == DoesNotContain ) )
+  if ( fieldType != QMetaType::Type::QString && ( op == BeginsWith || op == Contains || op == DoesNotContain ) )
   {
     QString method;
     switch ( op )

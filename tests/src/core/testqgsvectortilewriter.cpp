@@ -125,7 +125,7 @@ void TestQgsVectorTileWriter::test_basic()
   QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
 
   QgsFields fieldsPolys;
-  fieldsPolys.append( QgsField( "Name", QVariant::String ) );
+  fieldsPolys.append( QgsField( "Name", QMetaType::Type::QString ) );
   QMap<QString, QgsFields> perLayerFields;
   perLayerFields["polys"] = fieldsPolys;
   perLayerFields["lines"] = QgsFields();
@@ -194,7 +194,7 @@ void TestQgsVectorTileWriter::test_mbtiles()
   QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
 
   QgsFields fieldsPolys;
-  fieldsPolys.append( QgsField( "Name", QVariant::String ) );
+  fieldsPolys.append( QgsField( "Name", QMetaType::Type::QString ) );
   QMap<QString, QgsFields> perLayerFields;
   perLayerFields["polys"] = fieldsPolys;
   perLayerFields["lines"] = QgsFields();
@@ -373,7 +373,7 @@ void TestQgsVectorTileWriter::test_z0TileMatrix3857()
   QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
 
   QgsFields fieldsPolys;
-  fieldsPolys.append( QgsField( "Name", QVariant::String ) );
+  fieldsPolys.append( QgsField( "Name", QMetaType::Type::QString ) );
   QMap<QString, QgsFields> perLayerFields;
   perLayerFields["polys"] = fieldsPolys;
   perLayerFields["lines"] = QgsFields();
@@ -459,7 +459,7 @@ void TestQgsVectorTileWriter::test_z0TileMatrix2154()
   QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
 
   QgsFields fieldsPolys;
-  fieldsPolys.append( QgsField( "Name", QVariant::String ) );
+  fieldsPolys.append( QgsField( "Name", QMetaType::Type::QString ) );
   QMap<QString, QgsFields> perLayerFields;
   perLayerFields["polys"] = fieldsPolys;
   perLayerFields["lines"] = QgsFields();

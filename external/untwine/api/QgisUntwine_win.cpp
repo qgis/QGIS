@@ -76,6 +76,7 @@ bool QgisUntwine::stop()
 void QgisUntwine::childStopped()
 {
     m_running = false;
+    GetExitCodeProcess(m_pid, &m_exitCode);
     CloseHandle(m_progressFd);
     CloseHandle(m_pid);
 }

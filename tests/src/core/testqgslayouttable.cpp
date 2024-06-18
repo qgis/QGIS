@@ -1137,7 +1137,7 @@ void TestQgsLayoutTable::testIntegerNullCell()
   QgsFeature f2( layer->dataProvider()->fields(), 2 );
   f2.setAttribute( QStringLiteral( "intf" ), 2 );
   QgsFeature f3( layer->dataProvider()->fields(), 3 );
-  f3.setAttribute( QStringLiteral( "intf" ), QVariant( QVariant::Int ) );
+  f3.setAttribute( QStringLiteral( "intf" ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );
 
   table->setVectorLayer( layer.get() );

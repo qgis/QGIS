@@ -140,7 +140,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
         whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
                       .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
 
-        args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+        args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
         if ( ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) != 0
              && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox )
@@ -151,7 +151,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
             whereClause += QStringLiteral( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
                            .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ),
                                  bbox );
-            args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+            args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
           }
           else
           {
@@ -388,7 +388,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
             QgsField fld = mSource->mFields.at( idx );
 
             QVariant v = mQry.value( col );
-            if ( v.type() != fld.type() )
+            if ( v.userType() != fld.type() )
               v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
             primaryKeyVals << v;
 
@@ -425,7 +425,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = mQry.value( col );
-      if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( QLatin1String( ".SDO_GEOMETRY" ) ) )
+      if ( fld.type() == QMetaType::Type::QByteArray && fld.typeName().endsWith( QLatin1String( ".SDO_GEOMETRY" ) ) )
       {
         QByteArray ba( v.toByteArray() );
         if ( ba.size() > 0 )
@@ -436,10 +436,10 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         }
         else
         {
-          v = QVariant( QVariant::String );
+          v = QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
         }
       }
-      else if ( v.type() != fld.type() )
+      else if ( v.userType() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
       feature.setAttribute( idx, v );
 

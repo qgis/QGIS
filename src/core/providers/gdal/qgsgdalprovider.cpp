@@ -1618,22 +1618,20 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   return static_cast< double >( value ) * bandScale( band ) + bandOffset( band );
 }
 
-int QgsGdalProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsGdalProvider::capabilities() const
 {
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
-    return 0;
+    return Qgis::RasterInterfaceCapabilities();
 
-  int capability = QgsRasterDataProvider::Identify
-                   | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::Size
-                   | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Create
-                   | QgsRasterDataProvider::Remove
-                   | QgsRasterDataProvider::Prefetch;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
+      | Qgis::RasterInterfaceCapability::IdentifyValue
+      | Qgis::RasterInterfaceCapability::Size
+      | Qgis::RasterInterfaceCapability::BuildPyramids
+      | Qgis::RasterInterfaceCapability::Prefetch;
   if ( mDriverName != QLatin1String( "WMS" ) )
   {
-    capability |= QgsRasterDataProvider::Size;
+    capability |= Qgis::RasterInterfaceCapability::Size;
   }
   return capability;
 }
@@ -1787,13 +1785,14 @@ Qgis::DataProviderFlags QgsGdalProvider::flags() const
   return Qgis::DataProviderFlag::FastExtent2D;
 }
 
-QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
+Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
-  return ProviderCapability::ProviderHintBenefitsFromResampling |
-         ProviderCapability::ProviderHintCanPerformProviderResampling |
-         ProviderCapability::ReloadData |
-         ProviderCapability::NativeRasterAttributeTable |
-         ProviderCapability::ReadLayerMetadata;
+  return Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling |
+         Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling |
+         Qgis::RasterProviderCapability::ReloadData |
+         Qgis::RasterProviderCapability::NativeRasterAttributeTable |
+         Qgis::RasterProviderCapability::ReadLayerMetadata |
+         Qgis::RasterProviderCapability::BuildPyramids;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
@@ -3368,22 +3367,22 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
           const Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
-          QVariant::Type type = QVariant::Int;
+          QMetaType::Type type = QMetaType::Type::Int;
           switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
           {
             case GFT_Integer:
             {
-              type = QVariant::Int;
+              type = QMetaType::Type::Int;
               break;
             }
             case GFT_Real:
             {
-              type = QVariant::Double;
+              type = QMetaType::Type::Double;
               break;
             }
             case GFT_String:
             {
-              type = QVariant::String;
+              type = QMetaType::Type::QString;
               break;
             }
 
@@ -3415,15 +3414,15 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           {
             switch ( field.type )
             {
-              case QVariant::Int:
-              case QVariant::UInt:
-              case QVariant::LongLong:
-              case QVariant::ULongLong:
+              case QMetaType::Type::Int:
+              case QMetaType::Type::UInt:
+              case QMetaType::Type::LongLong:
+              case QMetaType::Type::ULongLong:
               {
                 rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, colIdx ) );
                 break;
               }
-              case QVariant::Double:
+              case QMetaType::Type::Double:
               {
                 rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, colIdx ) );
                 break;
@@ -3524,15 +3523,15 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
       GDALRATFieldType fType { GFT_String };
       switch ( field.type )
       {
-        case QVariant::Int:
-        case QVariant::UInt:
-        case QVariant::LongLong:
-        case QVariant::ULongLong:
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULongLong:
         {
           fType = GFT_Integer;
           break;
         }
-        case QVariant::Double:
+        case QMetaType::Type::Double:
         {
           fType = GFT_Real;
           break;

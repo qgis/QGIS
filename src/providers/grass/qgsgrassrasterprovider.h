@@ -167,14 +167,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
 
     QString lastError() override;
-
-    /**
-     * Returns a bitmask containing the supported capabilities
-     * Note, some capabilities may change depending on which
-     * sublayers are visible on this provider, so it may
-     * be prudent to check this value per intended operation.
-    */
-    int capabilities() const override;
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
 
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;

@@ -785,7 +785,7 @@ bool QgsOracleProvider::loadFields()
     if ( !mIsQuery && !types.contains( field.name() ) )
       continue;
 
-    QVariant::Type type = field.type();
+    QMetaType::Type type = QgsVariantUtils::variantTypeToMetaType( field.type() );
     QgsField newField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) );
     newField.setReadOnly( alwaysGenerated.value( field.name(), false ) );
 
@@ -952,9 +952,9 @@ bool QgsOracleProvider::determinePrimaryKey()
       QgsField fld = mAttributeFields.at( idx );
 
       if ( isInt &&
-           fld.type() != QVariant::Int &&
-           fld.type() != QVariant::LongLong &&
-           !( fld.type() == QVariant::Double && fld.precision() == 0 ) )
+           fld.type() != QMetaType::Type::Int &&
+           fld.type() != QMetaType::Type::LongLong &&
+           !( fld.type() == QMetaType::Type::Double && fld.precision() == 0 ) )
         isInt = false;
 
       mPrimaryKeyAttrs << idx;
@@ -1022,9 +1022,9 @@ void QgsOracleProvider::determinePrimaryKeyFromUriKeyColumn()
 
       if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
       {
-        if ( fld.type() == QVariant::Int ||
-             fld.type() == QVariant::LongLong ||
-             ( fld.type() == QVariant::Double && fld.precision() == 0 ) )
+        if ( fld.type() == QMetaType::Type::Int ||
+             fld.type() == QMetaType::Type::LongLong ||
+             ( fld.type() == QMetaType::Type::Double && fld.precision() == 0 ) )
         {
           mPrimaryKeyType = PktInt;
         }
@@ -1263,11 +1263,11 @@ bool QgsOracleProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints
   }
 }
 
-QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const
+QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, const QMetaType::Type &fieldType ) const
 {
   if ( value.isEmpty() )
   {
-    return QVariant( fieldType );
+    return QgsVariantUtils::createNullVariant( fieldType );
   }
 
   QgsOracleConn *conn = connectionRO();
@@ -1472,7 +1472,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
               QgsField fld = field( idx );
 
               QVariant v = getfid.value( col++ );
-              if ( v.type() != fld.type() )
+              if ( v.userType() != fld.type() )
                 v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
               features->setAttribute( idx, v );
             }
@@ -3040,7 +3040,7 @@ bool QgsOracleProvider::createSpatialIndex()
 
 
       if ( !LoggedExecStatic( qry, sql,
-                              QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QVariant( QVariant::Int ) : mSrid )
+                              QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSrid )
                               << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum(), mUri.uri() )
          )
       {
@@ -3092,36 +3092,36 @@ bool QgsOracleProvider::convertField( QgsField &field )
   int fieldPrec = field.precision();
   switch ( field.type() )
   {
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       fieldType = "NUMBER(20,0)";
       fieldSize = -1;
       fieldPrec = 0;
       break;
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       fieldType = "TIMESTAMP";
       fieldPrec = 0;
       break;
 
 
-    case QVariant::Time:
-    case QVariant::String:
+    case QMetaType::Type::QTime:
+    case QMetaType::Type::QString:
       fieldType = "VARCHAR2(2047)";
       fieldPrec = 0;
       break;
 
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       fieldType = "DATE";
       fieldPrec = 0;
       break;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       fieldType = "NUMBER(10,0)";
       fieldSize = -1;
       fieldPrec = 0;
       break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       if ( fieldSize <= 0 || fieldPrec <= 0 )
       {
         fieldType = "BINARY_DOUBLE";

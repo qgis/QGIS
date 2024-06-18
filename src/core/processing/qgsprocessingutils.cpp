@@ -807,23 +807,23 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
            r.crs().authid() );
   }
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return QString::number( value.toDouble() );
 
-    case QVariant::Int:
-    case QVariant::UInt:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
       return QString::number( value.toInt() );
 
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
       return QString::number( value.toLongLong() );
 
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
     {
       QStringList parts;
       const QVariantList vl = value.toList();
@@ -834,7 +834,7 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
 
-    case QVariant::Map:
+    case QMetaType::Type::QVariantMap:
     {
       const QVariantMap map = value.toMap();
       QStringList parts;
@@ -846,7 +846,7 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
       return parts.join( ',' ).prepend( '{' ).append( '}' );
     }
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
     {
       const QDateTime dateTime = value.toDateTime();
       return QStringLiteral( "QDateTime(QDate(%1, %2, %3), QTime(%4, %5, %6))" )
@@ -1450,7 +1450,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
     }
     if ( errorCounter >= maxErrors )
     {
-      feedback->reportError( QObject::tr( "There were %1 errors writing features, only the first %2 have beeen reported." ).arg( QString::number( errorCounter ), QString::number( maxErrors ) ) );
+      feedback->reportError( QObject::tr( "There were %1 errors writing features, only the first %2 have been reported." ).arg( QString::number( errorCounter ), QString::number( maxErrors ) ) );
     }
     return temp;
   }
@@ -1540,18 +1540,34 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 
 QString QgsProcessingUtils::defaultVectorExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt->value();
-  if ( setting == -1 )
+  QString setting = QgsProcessing::settingsDefaultOutputVectorLayerExt->value().trimmed();
+  if ( setting.isEmpty() )
     return QStringLiteral( "gpkg" );
-  return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
+
+  if ( setting.startsWith( '.' ) )
+    setting = setting.mid( 1 );
+
+  const QStringList supportedFormats = QgsVectorFileWriter::supportedFormatExtensions();
+  if ( !supportedFormats.contains( setting, Qt::CaseInsensitive ) )
+    return QStringLiteral( "gpkg" );
+
+  return setting;
 }
 
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value();
-  if ( setting == -1 )
+  QString setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value().trimmed();
+  if ( setting.isEmpty() )
     return QStringLiteral( "tif" );
-  return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
+
+  if ( setting.startsWith( '.' ) )
+    setting = setting.mid( 1 );
+
+  const QStringList supportedFormats = QgsRasterFileWriter::supportedFormatExtensions();
+  if ( !supportedFormats.contains( setting, Qt::CaseInsensitive ) )
+    return QStringLiteral( "tif" );
+
+  return setting;
 }
 
 QString QgsProcessingUtils::defaultPointCloudExtension()
@@ -1597,11 +1613,11 @@ QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &m
   QVariantMap res;
   for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
   {
-    if ( it->type() == QVariant::Map )
+    if ( it->userType() == QMetaType::Type::QVariantMap )
     {
       res.insert( it.key(), removePointerValuesFromMap( it.value().toMap() ) );
     }
-    else if ( it->type() == QVariant::List )
+    else if ( it->userType() == QMetaType::Type::QVariantList )
     {
       QVariantList dest;
       const QVariantList source = it.value().toList();
@@ -1626,7 +1642,7 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
   ok = true;
   for ( auto it = parameters.constBegin(); it != parameters.constEnd(); ++it )
   {
-    if ( it.value().type() == QVariant::Map )
+    if ( it.value().userType() == QMetaType::Type::QVariantMap )
     {
       const QVariantMap value = it.value().toMap();
       if ( value.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "data_defined" ) )
@@ -1652,7 +1668,7 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
         output.insert( it.key(), it.value() );
       }
     }
-    else if ( it.value().type() == QVariant::String )
+    else if ( it.value().userType() == QMetaType::Type::QString )
     {
       const QString stringValue = it.value().toString();
 

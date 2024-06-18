@@ -69,7 +69,7 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
 {
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   mCbEarlyResampling->setVisible(
-    provider && ( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) );
+    provider && ( provider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) );
   mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == Qgis::RasterResamplingStage::Provider );
 
   switch ( mRasterLayer->resamplingStage() )

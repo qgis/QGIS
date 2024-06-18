@@ -44,7 +44,7 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
   {
     if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QgsApplication::nullRepresentation() )
     {
-      return QVariant( field().type() );
+      return QgsVariantUtils::createNullVariant( field().type() );
     }
     else
     {
@@ -52,7 +52,7 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
     }
   }
 
-  return QVariant( field().type() );
+  return QgsVariantUtils::createNullVariant( field().type() );
 }
 
 void QgsExternalResourceWidgetWrapper::showIndeterminateState()

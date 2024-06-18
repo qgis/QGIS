@@ -40,8 +40,19 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * \param type The type of the parameter
      * \param defaultValue The default value of the parameter
      */
-    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
                                   const QVariant defaultValue = QVariant( "" ) );
+
+
+    /**
+     * Constructor for QgsServerParameterDefinition.
+     * \param type The type of the parameter
+     * \param defaultValue The default value of the parameter
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type,
+        const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
+
 
     /**
      * Default destructor for QgsServerParameterDefinition.
@@ -175,7 +186,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      */
     static void raiseError( const QString &msg );
 
-    QVariant::Type mType;
+    QMetaType::Type mType;
     QVariant mValue;
     QVariant mDefaultValue;
 };
@@ -210,8 +221,19 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
      * \param defaultValue The default value to use if not defined
      */
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
-                        const QVariant::Type type = QVariant::String,
+                        const QMetaType::Type type = QMetaType::Type::QString,
                         const QVariant defaultValue = QVariant( "" ) );
+
+    /**
+     * Constructor for QgsServerParameter.
+     * \param name The name of the parameter
+     * \param type The type of the parameter
+     * \param defaultValue The default value to use if not defined
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED QgsServerParameter( const QgsServerParameter::Name name,
+                                          const QVariant::Type type,
+                                          const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
 
     /**
      * Raises an error in case of an invalid conversion.

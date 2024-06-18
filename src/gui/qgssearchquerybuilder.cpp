@@ -132,7 +132,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   const QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   const int fieldIndex = mFieldMap[fieldName];
   const QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
-  const bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
+  const bool numeric = ( field.type() == QMetaType::Type::Int || field.type() == QMetaType::Type::Double );
 
   QgsFeature feat;
   QString value;

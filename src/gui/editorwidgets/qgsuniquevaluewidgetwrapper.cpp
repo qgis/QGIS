@@ -38,7 +38,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
   if ( mLineEdit )
   {
     if ( mLineEdit->text() == QgsApplication::nullRepresentation() )
-      value = QVariant( field().type() );
+      value = QgsVariantUtils::createNullVariant( field().type() );
     else
       value = mLineEdit->text();
   }
@@ -85,7 +85,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
   if ( mLineEdit )
   {
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( editor );
-    if ( fle && !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
+    if ( fle && !( field().type() == QMetaType::Type::Int || field().type() == QMetaType::Type::Double || field().type() == QMetaType::Type::LongLong || field().type() == QMetaType::Type::QDate ) )
     {
       fle->setNullValue( QgsApplication::nullRepresentation() );
     }

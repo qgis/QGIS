@@ -146,7 +146,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
     {
       bool ok = false;
       QString error = layer->loadDefaultStyle( ok );
-      if ( !ok )
+      if ( !ok && !error.isEmpty() )
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading style" ), error, Qgis::MessageLevel::Warning );
       error = layer->loadDefaultMetadata( ok );
       if ( !ok )

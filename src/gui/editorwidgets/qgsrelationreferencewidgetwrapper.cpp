@@ -113,13 +113,13 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
-    return QVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
 
   const QVariantList fkeys = mWidget->foreignKeys();
 
   if ( fkeys.isEmpty() )
   {
-    return QVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
   }
   else
   {
@@ -130,7 +130,7 @@ QVariant QgsRelationReferenceWidgetWrapper::value() const
       if ( fieldPairs.at( i ).referencingField() == field().name() )
         return fkeys.at( i );
     }
-    return QVariant( field().type() ); // should not happen
+    return QgsVariantUtils::createNullVariant( field().type() ); // should not happen
   }
 }
 
@@ -234,7 +234,7 @@ void QgsRelationReferenceWidgetWrapper::foreignKeysChanged( const QVariantList &
   if ( mBlockChanges != 0 ) // initial value is being set, we can ignore this signal
     return;
 
-  QVariant mainValue = QVariant( field().type() );
+  QVariant mainValue = QgsVariantUtils::createNullVariant( field().type() );
 
   if ( !mWidget || !mWidget->relation().isValid() )
   {

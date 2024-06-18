@@ -188,14 +188,14 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
     if ( mSelectedOnlyCheckBox->isChecked() )
       request.setFilterFids( mLayer->selectedFeatureIds() );
 
-    std::tuple<QVariant::Type, int> returnType = QgsExpressionUtils::determineResultType( mFieldExpressionWidget->expression(), mLayer, request, context );
+    std::tuple<QMetaType::Type, int> returnType = QgsExpressionUtils::determineResultType( mFieldExpressionWidget->expression(), mLayer, request, context );
     switch ( std::get<0>( returnType ) )
     {
-      case QVariant::String:
+      case QMetaType::Type::QString:
         mFieldType = DataType::String;
         break;
-      case QVariant::Date:
-      case QVariant::DateTime:
+      case QMetaType::Type::QDate:
+      case QMetaType::Type::QDateTime:
         mFieldType = DataType::DateTime;
         break;
       default:
@@ -627,10 +627,10 @@ DataType QgsStatisticalSummaryDockWidget::fieldType( const QString &fieldName )
 
   switch ( field.type() )
   {
-    case QVariant::String:
+    case QMetaType::Type::QString:
       return DataType::String;
-    case QVariant::Date:
-    case QVariant::DateTime:
+    case QMetaType::Type::QDate:
+    case QMetaType::Type::QDateTime:
       return DataType::DateTime;
     default:
       break;

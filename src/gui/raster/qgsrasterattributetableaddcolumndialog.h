@@ -72,7 +72,7 @@ class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, privat
     /**
      * Returns the new column type.
      */
-    QVariant::Type type( ) const;
+    QMetaType::Type type( ) const;
 
 
   private:

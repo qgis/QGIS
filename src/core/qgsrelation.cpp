@@ -225,7 +225,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     if ( referencingIdx >= 0 )
     {
-      QVariant::Type fieldType = referencingLayer()->fields().at( referencingIdx ).type();
+      QMetaType::Type fieldType = referencingLayer()->fields().at( referencingIdx ).type();
       conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val, fieldType );
     }
     else
@@ -247,7 +247,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     if ( referencedIdx >= 0 )
     {
-      QVariant::Type fieldType = referencedLayer()->fields().at( referencedIdx ).type();
+      QMetaType::Type fieldType = referencedLayer()->fields().at( referencedIdx ).type();
       conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ), fieldType );
     }
     else

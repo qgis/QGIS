@@ -935,7 +935,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
 
   // Add field
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddAttribute );
-  command.field = QgsField( QStringLiteral( "field_int" ), QVariant::Int, QStringLiteral( "integer" ) );
+  command.field = QgsField( QStringLiteral( "field_int" ), QMetaType::Type::Int, QStringLiteral( "integer" ) );
   commandGroup.commands << command;
 
   // Change attribute
@@ -947,7 +947,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
 
   // Delete field
   command = TestQgsGrassCommand( TestQgsGrassCommand::DeleteAttribute );
-  command.field = QgsField( QStringLiteral( "field_int" ), QVariant::Int, QStringLiteral( "integer" ) );
+  command.field = QgsField( QStringLiteral( "field_int" ), QMetaType::Type::Int, QStringLiteral( "integer" ) );
   commandGroup.commands << command;
 
   // Delete feature
@@ -1003,7 +1003,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
 
   // Add field
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddAttribute );
-  command.field = QgsField( QStringLiteral( "field_int" ), QVariant::Int, QStringLiteral( "integer" ) );
+  command.field = QgsField( QStringLiteral( "field_int" ), QMetaType::Type::Int, QStringLiteral( "integer" ) );
   commandGroup.commands << command;
 
   // Add line feature with attributes

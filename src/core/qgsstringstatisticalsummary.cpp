@@ -68,7 +68,7 @@ void QgsStringStatisticalSummary::addString( const QString &string )
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( QgsVariantUtils::isNull( value ) || value.type() == QVariant::String )
+  if ( QgsVariantUtils::isNull( value ) || value.userType() == QMetaType::Type::QString )
   {
     testString( value.toString() );
   }
@@ -101,7 +101,7 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
   const auto constValues = values;
   for ( const QVariant &variant : constValues )
   {
-    if ( QgsVariantUtils::isNull( variant ) || variant.type() == QVariant::String )
+    if ( QgsVariantUtils::isNull( variant ) || variant.userType() == QMetaType::Type::QString )
     {
       testString( variant.toString() );
     }

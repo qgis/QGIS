@@ -783,7 +783,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
       polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   polysLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapSettings ms;
@@ -813,7 +813,7 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
       lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   lineLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapSettings ms;
@@ -871,7 +871,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
   QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
       polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   polysLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapSettings ms;
@@ -905,7 +905,7 @@ void TestQgsPaintEffect::mapUnits()
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
       lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   lineLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapSettings ms;
@@ -940,7 +940,7 @@ void TestQgsPaintEffect::layout()
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
       lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   lineLayer->setSimplifyMethod( simplifyMethod );
 
   QgsSimpleLineSymbolLayer *line = new QgsSimpleLineSymbolLayer;

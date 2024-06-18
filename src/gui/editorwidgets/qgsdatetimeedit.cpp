@@ -29,7 +29,7 @@
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  : QgsDateTimeEdit( QDateTime(), QVariant::DateTime, parent )
+  : QgsDateTimeEdit( QDateTime(), QMetaType::Type::QDateTime, parent )
 #else
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
 #endif
@@ -39,7 +39,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 
 ///@cond PRIVATE
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
+QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
 #else
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant & var, QMetaType::Type parserType, QWidget * parent )
@@ -398,7 +398,7 @@ QDate QgsDateTimeEdit::date() const
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  : QgsDateTimeEdit( QTime(), QVariant::Time, parent )
+  : QgsDateTimeEdit( QTime(), QMetaType::Type::QTime, parent )
 #else
   : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
 #endif
@@ -439,7 +439,7 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  : QgsDateTimeEdit( QDate(), QVariant::Date, parent )
+  : QgsDateTimeEdit( QDate(), QMetaType::Type::QDate, parent )
 #else
   : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
 #endif

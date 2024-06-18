@@ -34,7 +34,7 @@ QString QgsProcessingOutputDefinition::valueAsString( const QVariant &value, Qgs
     return QObject::tr( "NULL" );
   }
 
-  if ( value.type() == QVariant::String )
+  if ( value.userType() == QMetaType::Type::QString )
   {
     ok = true;
     return value.toString();
@@ -81,7 +81,7 @@ QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QSt
 
 QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
-  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  if ( value.userType() == QMetaType::Type::QString && !value.toString().isEmpty() )
   {
     ok = true;
     return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
@@ -97,13 +97,13 @@ QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const
 QString QgsProcessingOutputNumber::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
   ok = false;
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
       ok = true;
       return value.toString();
     default:
@@ -123,7 +123,7 @@ QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, con
 QString QgsProcessingOutputBoolean::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
   ok = false;
-  if ( value.type() == QVariant::Bool )
+  if ( value.userType() == QMetaType::Type::Bool )
   {
     ok = true;
     return value.toBool() ? QObject::tr( "True" ) : QObject::tr( "False" );
@@ -137,7 +137,7 @@ QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const
 
 QString QgsProcessingOutputFolder::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
-  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  if ( value.userType() == QMetaType::Type::QString && !value.toString().isEmpty() )
   {
     ok = true;
     return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
@@ -152,7 +152,7 @@ QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QSt
 
 QString QgsProcessingOutputFile::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
-  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  if ( value.userType() == QMetaType::Type::QString && !value.toString().isEmpty() )
   {
     ok = true;
     return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
@@ -182,9 +182,9 @@ QString QgsProcessingOutputMultipleLayers::type() const
 QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
   ok = false;
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
     {
       ok = true;
       const QVariantList list = value.toList();
@@ -197,7 +197,7 @@ QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value,
       return layerNames.join( QLatin1String( ", " ) );
     }
 
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
     {
       ok = true;
       const QStringList list = value.toStringList();
@@ -228,20 +228,20 @@ QString QgsProcessingOutputVariant::type() const
 QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
   ok = false;
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
       ok = true;
       return value.toString();
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       ok = true;
       return value.toBool() ? QObject::tr( "True" ) : QObject::tr( "False" );
 
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
     {
       ok = true;
       const QVariantList list = value.toList();
@@ -254,7 +254,7 @@ QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsPro
       return names.join( QLatin1String( ", " ) );
     }
 
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
     {
       ok = true;
       const QStringList list = value.toStringList();

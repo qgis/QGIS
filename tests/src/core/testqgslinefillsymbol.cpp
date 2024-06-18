@@ -107,7 +107,7 @@ void TestQgsLineFillSymbol::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   //setup gradient fill
@@ -170,7 +170,7 @@ void TestQgsLineFillSymbol::viewportLineFillSymbol()
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   layer->setSimplifyMethod( simplifyMethod );
 
   //setup gradient fill

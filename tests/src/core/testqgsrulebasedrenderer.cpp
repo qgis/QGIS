@@ -200,7 +200,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -238,7 +238,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -278,7 +278,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -336,7 +336,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -391,7 +391,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -436,7 +436,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -486,7 +486,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -622,7 +622,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -678,7 +678,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -742,7 +742,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -797,7 +797,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -956,7 +956,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
       std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
-      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
 
       // Create rulebased style
@@ -1201,8 +1201,8 @@ class TestQgsRuleBasedRenderer: public QgsTest
       elseRule->appendChild( threeRule );
 
       QgsFields fields;
-      fields.append( QgsField( QStringLiteral( "Importance" ), QVariant::Int ) );
-      fields.append( QgsField( QStringLiteral( "Pilots" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "Importance" ), QMetaType::Type::Int ) );
+      fields.append( QgsField( QStringLiteral( "Pilots" ), QMetaType::Type::Int ) );
 
       QgsFeature feature( fields );
       QgsExpressionContext expContext;

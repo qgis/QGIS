@@ -170,9 +170,16 @@ Encapsulates information about how relationships in a SensorThings API service s
     QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
                                         const QString &orderBy = QString(),
                                         Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT );
+                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+                                        const QString &filter = QString() );
 %Docstring
 Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
+%End
+
+    static QgsSensorThingsExpansionDefinition defaultDefinitionForEntity( Qgis::SensorThingsEntity entity );
+%Docstring
+Returns an expansion definition for the specified ``entity`` type, populated with reasonable
+defaults which make sense for that entity type.
 %End
 
     bool isValid() const;
@@ -248,6 +255,20 @@ Set to -1 if no limit is desired.
 .. seealso:: :py:func:`limit`
 %End
 
+    QString filter() const;
+%Docstring
+Returns the the string filter to filter expanded child entities by.
+
+.. seealso:: :py:func:`setFilter`
+%End
+
+    void setFilter( const QString &filter );
+%Docstring
+Returns the the string ``filter`` to filter expanded child entities by.
+
+.. seealso:: :py:func:`filter`
+%End
+
     QString toString() const;
 %Docstring
 Returns a string encapsulation of the expansion definition.
@@ -293,6 +314,13 @@ Optionally a list of additional query options can be specified for the expansion
           innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
         else
           innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
+      }
+      if ( !sipCpp->filter().isEmpty() )
+      {
+        if ( !innerDefinition.isEmpty() )
+          innerDefinition = QStringLiteral( "%1, filter '%2'" ).arg( innerDefinition ).arg( sipCpp->filter() );
+        else
+          innerDefinition = QStringLiteral( "filter '%1'" ).arg( sipCpp->filter() );
       }
 
       QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );

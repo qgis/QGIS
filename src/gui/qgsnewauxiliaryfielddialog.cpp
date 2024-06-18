@@ -32,9 +32,9 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mType->addItem( QgsFields::iconForFieldType( QVariant::String ), QgsVariantUtils::typeToDisplayString( QVariant::String ), QgsPropertyDefinition::DataTypeString );
-  mType->addItem( QgsFields::iconForFieldType( QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), QgsPropertyDefinition::DataTypeNumeric );
-  mType->addItem( QgsFields::iconForFieldType( QVariant::Int ), tr( "Integer" ), QgsPropertyDefinition::DataTypeBoolean );
+  mType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QgsPropertyDefinition::DataTypeString );
+  mType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QgsPropertyDefinition::DataTypeNumeric );
+  mType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), QgsPropertyDefinition::DataTypeBoolean );
 
   mType->setCurrentIndex( mType->findData( def.dataType() ) );
 

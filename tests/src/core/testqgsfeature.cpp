@@ -110,7 +110,7 @@ void TestQgsFeature::attributesTest()
   QVERIFY( attr1 != attr4 );
 
   //null value
-  const QVariant nullDouble( QVariant::Double );
+  const QVariant nullDouble = QgsVariantUtils::createNullVariant( QMetaType::Type::Double );
   QgsAttributes attr5;
   attr5 << QVariant( 5 ) << nullDouble << QVariant( "val" );
   QVERIFY( attr1 != attr5 );

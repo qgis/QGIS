@@ -1115,6 +1115,13 @@ while ($LINE_IDX < $LINE_COUNT){
             $LINE = read_line();
         }
     }
+    # skip PYQT6 code if we are in qt5
+    if ( !$is_qt6 && $LINE =~ m/^\s*#ifdef SIP_PYQT6_RUN/){
+        dbg_info("do not process PYQT6 code");
+        while ( $LINE !~ m/^#endif/ ){
+            $LINE = read_line();
+        }
+    }
 
     # do not process SIP code %XXXCode
     if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
@@ -1706,7 +1713,8 @@ while ($LINE_IDX < $LINE_COUNT){
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name.is_monkey_patched = True\n";
                             }
                             if ( $ACTUAL_CLASS ne "" ){
-                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
+                                my $complete_class_path = join('.', @CLASSNAME);
+                                push @OUTPUT_PYTHON, "$complete_class_path.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
                                 push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                             } else {
                                 push @OUTPUT_PYTHON, "$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";

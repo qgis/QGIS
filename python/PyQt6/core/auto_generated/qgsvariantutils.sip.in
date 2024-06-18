@@ -22,11 +22,21 @@ Contains utility functions for working with QVariants and QVariant types.
 %End
   public:
 
-    static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+    static QString typeToDisplayString( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType );
 %Docstring
 Returns a user-friendly translated string representing a QVariant ``type``.
 
 The optional ``subType`` can be used to specify the type of variant list or map values.
+%End
+
+ static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid ) /Deprecated/;
+%Docstring
+Returns a user-friendly translated string representing a QVariant ``type``.
+
+The optional ``subType`` can be used to specify the type of variant list or map values.
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     static bool isNull( const QVariant &variant);
@@ -38,6 +48,9 @@ This method is more rigorous vs QVariant.isNull(), which will return
 
 .. versionadded:: 3.28
 %End
+
+
+
 
 
 

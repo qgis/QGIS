@@ -93,7 +93,7 @@ void TestQgsShapeburst::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
@@ -188,7 +188,7 @@ void TestQgsShapeburst::shapeburstSymbolFromQml()
 {
   QVERIFY( setQml( "shapeburst" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QVERIFY( imageCheck( "shapeburst_from_qml" ) );
 }

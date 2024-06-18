@@ -128,7 +128,7 @@ void TestQgsMapRendererJob::initTestCase()
 
   //create some objects that will be used in all tests...
   mEncoding = QStringLiteral( "UTF-8" );
-  QgsField myField1( QStringLiteral( "Value" ), QVariant::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
+  QgsField myField1( QStringLiteral( "Value" ), QMetaType::Type::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( geoWkt() );
   //

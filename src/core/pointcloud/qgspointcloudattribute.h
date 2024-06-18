@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPointCloudAttribute
      *
      * \see type()
      */
-    QVariant::Type variantType() const;
+    QMetaType::Type variantType() const;
 
     /**
      * Returns the type to use when displaying this field.

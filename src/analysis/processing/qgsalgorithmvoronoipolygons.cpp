@@ -136,12 +136,12 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        allPoints.addPart( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::GeometryType::Point );
+        allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
       }
     }
     else
     {
-      allPoints.addPart( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::GeometryType::Point );
+      allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
     }
 
     attributeCache.insert( f.id(), f.attributes() );
@@ -197,7 +197,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
 QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );

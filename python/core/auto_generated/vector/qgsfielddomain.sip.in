@@ -44,9 +44,19 @@ A field domain is a set of constraints that apply to one or several fields.
 
     QgsFieldDomain( const QString &name,
                     const QString &description,
-                    QVariant::Type fieldType );
+                    QMetaType::Type fieldType );
 %Docstring
 Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+%End
+
+ QgsFieldDomain( const QString &name,
+                                      const QString &description,
+                                      QVariant::Type fieldType ) /Deprecated/;
+%Docstring
+Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     virtual ~QgsFieldDomain();
@@ -94,18 +104,28 @@ Sets the ``description`` of the field domain.
 .. seealso:: :py:func:`description`
 %End
 
-    QVariant::Type fieldType() const;
+    QMetaType::Type fieldType() const;
 %Docstring
 Returns the associated field type.
 
 .. seealso:: :py:func:`setFieldType`
 %End
 
-    void setFieldType( QVariant::Type type );
+    void setFieldType( QMetaType::Type type );
 %Docstring
 Sets the associated field ``type``.
 
 .. seealso:: :py:func:`fieldType`
+%End
+
+ void setFieldType( QVariant::Type type ) /Deprecated/;
+%Docstring
+Sets the associated field ``type``.
+
+.. seealso:: :py:func:`fieldType`
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     Qgis::FieldDomainSplitPolicy splitPolicy() const;
@@ -206,13 +226,27 @@ The type of the code should be the one of the field domain.
 
     QgsCodedFieldDomain( const QString &name,
                          const QString &description,
-                         QVariant::Type fieldType,
+                         QMetaType::Type fieldType,
                          const QList<QgsCodedValue> &values );
 %Docstring
 Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
 
 The ``values`` list details the coded field values as :py:class:`QgsCodedValue` objects. Each code should
 appear only once, but it is the responsibility of the user to check this.
+%End
+
+ QgsCodedFieldDomain( const QString &name,
+                                           const QString &description,
+                                           QVariant::Type fieldType,
+                                           const QList<QgsCodedValue> &values ) /Deprecated/;
+%Docstring
+Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
+
+The ``values`` list details the coded field values as :py:class:`QgsCodedValue` objects. Each code should
+appear only once, but it is the responsibility of the user to check this.
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
 
@@ -263,7 +297,7 @@ Definition of a numeric field domain with a range of validity for values.
 
     QgsRangeFieldDomain( const QString &name,
                          const QString &description,
-                         QVariant::Type fieldType,
+                         QMetaType::Type fieldType,
                          const QVariant &minimum,
                          bool minimumIsInclusive,
                          const QVariant &maximum,
@@ -273,6 +307,23 @@ Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`
 
 Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimum or maximum value is desired.
 %End
+
+ QgsRangeFieldDomain( const QString &name,
+                                           const QString &description,
+                                           QVariant::Type fieldType,
+                                           const QVariant &minimum,
+                                           bool minimumIsInclusive,
+                                           const QVariant &maximum,
+                                           bool maximumIsInclusive ) /Deprecated/;
+%Docstring
+Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+
+Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimum or maximum value is desired.
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
+%End
+
 
 
     virtual Qgis::FieldDomainType type() const;
@@ -394,13 +445,27 @@ Globs are matching expression like "*[a-z][0-1]?"
 
     QgsGlobFieldDomain( const QString &name,
                         const QString &description,
-                        QVariant::Type fieldType,
+                        QMetaType::Type fieldType,
                         const QString &glob );
 %Docstring
 Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
 The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
 %End
+
+ QgsGlobFieldDomain( const QString &name,
+                                          const QString &description,
+                                          QVariant::Type fieldType,
+                                          const QString &glob ) /Deprecated/;
+%Docstring
+Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+
+The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
+%End
+
 
 
     virtual Qgis::FieldDomainType type() const;

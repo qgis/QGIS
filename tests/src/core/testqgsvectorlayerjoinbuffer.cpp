@@ -314,7 +314,7 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
   QCOMPARE( fA1.attribute( "B_C_value_c" ).toInt(), 101 );
 
   // test that layer A gets updated when layer C changes its fields
-  vlC->addExpressionField( QStringLiteral( "123" ), QgsField( QStringLiteral( "dummy" ), QVariant::Int ) );
+  vlC->addExpressionField( QStringLiteral( "123" ), QgsField( QStringLiteral( "dummy" ), QMetaType::Type::Int ) );
   QVERIFY( vlA->fields().count() == 4 ); // id_a, B_value_b, B_C_value_c, B_C_dummy
   vlC->removeExpressionField( 0 );
 

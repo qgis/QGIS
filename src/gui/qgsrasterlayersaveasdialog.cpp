@@ -84,7 +84,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
   {
-    if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
+    if ( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size )
     {
       setOriginalResolution();
       int xSize = mDataProvider->xSize();
@@ -110,7 +110,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::BuildPyramids )
+  if ( mDataProvider && ( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
+                          || mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     // setup pyramids option widget
     // mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
@@ -499,7 +500,7 @@ void QgsRasterLayerSaveAsDialog::hideOutput()
 
 void QgsRasterLayerSaveAsDialog::toggleResolutionSize()
 {
-  bool hasResolution = mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::Size;
+  bool hasResolution = mDataProvider && mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size;
 
   bool on = mResolutionRadioButton->isChecked();
   mXResolutionLineEdit->setEnabled( on );
@@ -514,7 +515,7 @@ void QgsRasterLayerSaveAsDialog::setOriginalResolution()
 {
   double xRes, yRes;
 
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
+  if ( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size )
   {
     xRes = mDataProvider->extent().width() / mDataProvider->xSize();
     yRes = mDataProvider->extent().height() / mDataProvider->ySize();

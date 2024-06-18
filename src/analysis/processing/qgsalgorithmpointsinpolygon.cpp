@@ -255,7 +255,7 @@ QgsFields QgsPointsInPolygonAlgorithm::outputFields( const QgsFields &inputField
     QgsFields outFields = inputFields;
     mDestFieldIndex = inputFields.lookupField( mFieldName );
     if ( mDestFieldIndex < 0 )
-      outFields.append( QgsField( mFieldName, QVariant::Double ) );
+      outFields.append( QgsField( mFieldName, QMetaType::Type::Double ) );
 
     mFields = outFields;
     return outFields;

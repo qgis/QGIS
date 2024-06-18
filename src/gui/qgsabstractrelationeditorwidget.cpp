@@ -19,6 +19,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsfeatureselectiondlg.h"
 #include "qgsrelation.h"
@@ -286,8 +287,14 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeatureList.first().attribute( fieldPair.referencedField() ) );
 
+    QgsVectorLayerToolsContext context;
+    context.setParentWidget( this );
+    context.setShowModal( true );
+    context.setHideParent( true );
+    std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::parentFormScope( mFeatureList.first(), mEditorContext.attributeFormModeString() ) );
+    context.setAdditionalExpressionContextScope( scope.get() );
     QgsFeature linkFeature;
-    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, this, true, true ) )
+    if ( !vlTools->addFeatureV2( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, context ) )
       return QgsFeatureIds();
 
     addedFeatureIds.insert( linkFeature.id() );
@@ -675,7 +682,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
 
           mRelation.referencingLayer()->changeAttributeValue( fid,
               referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
-              referencingLayer->fields().field( polyRel.referencedLayerField() ).type() );
+              QgsVariantUtils::createNullVariant( referencingLayer->fields().field( polyRel.referencedLayerField() ).type() ) );
           break;
         }
         case Qgis::RelationshipType::Normal:
@@ -686,7 +693,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       while ( it.hasNext() )
       {
         it.next();
-        mRelation.referencingLayer()->changeAttributeValue( fid, it.key(), QVariant( it.value().type() ) );
+        mRelation.referencingLayer()->changeAttributeValue( fid, it.key(), QgsVariantUtils::createNullVariant( it.value().type() ) );
       }
     }
   }

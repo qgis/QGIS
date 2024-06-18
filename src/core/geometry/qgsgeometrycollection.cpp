@@ -92,13 +92,13 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
-QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   std::unique_ptr<QgsGeometryCollection> result;
 
   for ( auto geom : mGeometries )
   {
-    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) };
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) };
     if ( gridified )
     {
       if ( !result )
@@ -229,6 +229,13 @@ bool QgsGeometryCollection::addGeometry( QgsAbstractGeometry *g )
   return true;
 }
 
+bool QgsGeometryCollection::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  mGeometries.append( geometries );
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
 bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g )
@@ -253,6 +260,14 @@ bool QgsGeometryCollection::removeGeometry( int nr )
   mGeometries.remove( nr );
   clearCache(); //set bounding box invalid
   return true;
+}
+
+QVector<QgsAbstractGeometry *> QgsGeometryCollection::takeGeometries()
+{
+  QVector< QgsAbstractGeometry * > results = mGeometries;
+  mGeometries.clear();
+  clearCache();
+  return results;
 }
 
 void QgsGeometryCollection::normalize()

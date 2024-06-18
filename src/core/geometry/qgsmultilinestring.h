@@ -36,6 +36,23 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      */
     QgsMultiLineString() SIP_HOLDGIL;
 
+    /**
+     * Constructor for a multilinestring containing the specified \a linestrings.
+     *
+     * The \a linestrings will be internally cloned.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiLineString( const QList< QgsLineString > &linestrings ) SIP_HOLDGIL;
+
+    /**
+     * Constructor for a multilinestring containing the specified \a linestrings.
+     *
+     * Ownership of the \a linestrings will be transferred to the multilinestring.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiLineString( const QList< QgsLineString * > &linestrings SIP_TRANSFER ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -88,6 +105,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) final;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
     /**

@@ -84,7 +84,7 @@ void TestQgsInvertedPolygon::initTestCase()
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );

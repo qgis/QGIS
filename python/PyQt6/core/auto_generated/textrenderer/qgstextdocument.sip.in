@@ -44,11 +44,17 @@ Constructor for a QgsTextDocument consisting of a single text ``fragment``.
     static QgsTextDocument fromPlainText( const QStringList &lines );
 %Docstring
 Constructor for QgsTextDocument consisting of a set of plain text ``lines``.
+
+If any line contains tab characters they will be appended as separate text fragments
+within the document, consisting of just the tab character.
 %End
 
     static QgsTextDocument fromHtml( const QStringList &lines );
 %Docstring
 Constructor for QgsTextDocument consisting of a set of HTML formatted ``lines``.
+
+If the HTML contains tab characters they will be appended as separate text fragments
+within the document, consisting of just the tab character.
 %End
 
     void append( const QgsTextBlock &block );

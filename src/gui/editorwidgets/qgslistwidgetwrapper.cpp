@@ -75,14 +75,14 @@ void QgsListWidgetWrapper::updateValues( const QVariant &value, const QVariantLi
 
 QVariant QgsListWidgetWrapper::value() const
 {
-  const QVariant::Type type = field().type();
-  if ( !mWidget ) return QVariant( type );
+  const QMetaType::Type type = field().type();
+  if ( !mWidget ) return QgsVariantUtils::createNullVariant( type );
   const QVariantList list = mWidget->list();
   if ( list.size() == 0 && config( QStringLiteral( "EmptyIsNull" ) ).toBool() )
   {
     return QVariant( );
   }
-  if ( type == QVariant::StringList )
+  if ( type == QMetaType::Type::QStringList )
   {
     QStringList result;
     for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )

@@ -196,7 +196,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   }
   else
   {
-    outFields.append( QgsField( fieldName, QVariant::Double ) );
+    outFields.append( QgsField( fieldName, QMetaType::Type::Double ) );
   }
 
   QString dest;

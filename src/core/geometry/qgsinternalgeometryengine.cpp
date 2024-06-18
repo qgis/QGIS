@@ -664,7 +664,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -823,7 +823,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -859,7 +859,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -1786,7 +1786,7 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2090,7 +2090,7 @@ QgsGeometry QgsInternalGeometryEngine::triangularWaves( double wavelength, doubl
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2133,7 +2133,7 @@ QgsGeometry QgsInternalGeometryEngine::triangularWavesRandomized( double minimum
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2386,7 +2386,7 @@ QgsGeometry QgsInternalGeometryEngine::squareWaves( double wavelength, double am
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2429,7 +2429,7 @@ QgsGeometry QgsInternalGeometryEngine::squareWavesRandomized( double minimumWave
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2802,7 +2802,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWaves( double wavelength, double amp
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2845,7 +2845,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWavesRandomized( double minimumWavel
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -3161,13 +3161,13 @@ QgsGeometry QgsInternalGeometryEngine::applyDashPattern( const QVector<double> &
       {
         for ( int j = 0; j < collection->numGeometries(); ++j )
         {
-          first.addPart( collection->geometryN( j )->clone() );
+          first.addPartV2( collection->geometryN( j )->clone() );
         }
         delete collection;
       }
       else
       {
-        first.addPart( g );
+        first.addPartV2( g );
       }
     }
     return first;

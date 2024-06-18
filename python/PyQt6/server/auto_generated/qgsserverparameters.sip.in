@@ -22,7 +22,7 @@ Definition of a parameter with basic conversion methods
 %End
   public:
 
-    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
                                   const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameterDefinition.
@@ -30,6 +30,20 @@ Constructor for QgsServerParameterDefinition.
 :param type: The type of the parameter
 :param defaultValue: The default value of the parameter
 %End
+
+
+ QgsServerParameterDefinition( const QVariant::Type type,
+        const QVariant defaultValue = QVariant( "" ) ) /Deprecated/;
+%Docstring
+Constructor for QgsServerParameterDefinition.
+
+:param type: The type of the parameter
+:param defaultValue: The default value of the parameter
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
+%End
+
 
     virtual ~QgsServerParameterDefinition();
 
@@ -191,7 +205,7 @@ Raises an exception in case of an invalid parameters.
 :raises QgsBadRequestException: Invalid parameter exception
 %End
 
-    QVariant::Type mType;
+    QMetaType::Type mType;
     QVariant mValue;
     QVariant mDefaultValue;
 };
@@ -222,7 +236,7 @@ Parameter common to all services (WMS, WFS, ...)
     };
 
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
-                        const QVariant::Type type = QVariant::String,
+                        const QMetaType::Type type = QMetaType::Type::QString,
                         const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameter.
@@ -230,6 +244,20 @@ Constructor for QgsServerParameter.
 :param name: The name of the parameter
 :param type: The type of the parameter
 :param defaultValue: The default value to use if not defined
+%End
+
+ QgsServerParameter( const QgsServerParameter::Name name,
+                                          const QVariant::Type type,
+                                          const QVariant defaultValue = QVariant( "" ) ) /Deprecated/;
+%Docstring
+Constructor for QgsServerParameter.
+
+:param name: The name of the parameter
+:param type: The type of the parameter
+:param defaultValue: The default value to use if not defined
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     void raiseError() const;

@@ -31,6 +31,34 @@ QgsMultiLineString::QgsMultiLineString()
   mWkbType = Qgis::WkbType::MultiLineString;
 }
 
+QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString> &linestrings )
+{
+  if ( linestrings.empty() )
+    return;
+
+  mGeometries.reserve( linestrings.size() );
+  for ( const QgsLineString &line : linestrings )
+  {
+    mGeometries.append( line.clone() );
+  }
+
+  setZMTypeFromSubGeometry( &linestrings.at( 0 ), Qgis::WkbType::MultiLineString );
+}
+
+QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString *> &linestrings )
+{
+  if ( linestrings.empty() )
+    return;
+
+  mGeometries.reserve( linestrings.size() );
+  for ( QgsLineString *line : linestrings )
+  {
+    mGeometries.append( line );
+  }
+
+  setZMTypeFromSubGeometry( linestrings.at( 0 ), Qgis::WkbType::MultiLineString );
+}
+
 QgsLineString *QgsMultiLineString::lineStringN( int index )
 {
   return qgsgeometry_cast< QgsLineString * >( geometryN( index ) );
@@ -150,6 +178,39 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
   else if ( !isMeasure() && g->isMeasure() )
     g->dropMValue();
   return QgsGeometryCollection::addGeometry( g ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
+}
+
+bool QgsMultiLineString::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( !qgsgeometry_cast<QgsLineString *>( g ) )
+    {
+      qDeleteAll( geometries );
+      return false;
+    }
+  }
+
+  if ( mGeometries.empty() && !geometries.empty() )
+  {
+    setZMTypeFromSubGeometry( geometries.at( 0 ), Qgis::WkbType::MultiLineString );
+  }
+  mGeometries.reserve( mGeometries.size() + geometries.size() );
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( is3D() && !g->is3D() )
+      g->addZValue();
+    else if ( !is3D() && g->is3D() )
+      g->dropZValue();
+    if ( isMeasure() && !g->isMeasure() )
+      g->addMValue();
+    else if ( !isMeasure() && g->isMeasure() )
+      g->dropMValue();
+    mGeometries.append( g );
+  }
+
+  clearCache();
+  return true;
 }
 
 bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )

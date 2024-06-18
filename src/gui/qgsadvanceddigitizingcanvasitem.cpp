@@ -261,17 +261,35 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().constLast();
     const QPointF snappedPoint = toCanvasCoordinates( snap.point() );
 
-    const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
-    const QgsGeometry geom = feature.geometry();
+    QgsFeatureRequest req;
+    req.setFilterFid( snap.featureId() );
+    req.setNoAttributes();
+    req.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
+    QgsFeatureIterator featureIt = snap.layer()->getFeatures( req );
+
+    QgsFeature feature;
+    featureIt.nextFeature( feature );
+
+    const QgsGeometry geometry = feature.geometry();
+    const QgsAbstractGeometry *geom = geometry.constGet();
 
     QgsPoint vertex;
-    if ( lineExtensionSide == Qgis::LineExtensionSide::BeforeVertex )
+    QgsVertexId vertexId;
+    geometry.vertexIdFromVertexNr( snap.vertexIndex(), vertexId );
+    if ( vertexId.isValid() )
     {
-      vertex = geom.vertexAt( snap.vertexIndex() - 1 );
-    }
-    else
-    {
-      vertex = geom.vertexAt( snap.vertexIndex() + 1 );
+      QgsVertexId previousVertexId;
+      QgsVertexId nextVertexId;
+      geom->adjacentVertices( vertexId, previousVertexId, nextVertexId );
+
+      if ( lineExtensionSide == Qgis::LineExtensionSide::BeforeVertex )
+      {
+        vertex = geom->vertexAt( previousVertexId );
+      }
+      else
+      {
+        vertex = geom->vertexAt( nextVertexId );
+      }
     }
 
     if ( !vertex.isEmpty() )

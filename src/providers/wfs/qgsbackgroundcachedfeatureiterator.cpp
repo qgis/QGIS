@@ -417,7 +417,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
       for ( const auto &columnName : setColumns )
       {
         int idx = fields.indexOf( columnName );
-        if ( idx >= 0 && fields[idx].type() == QVariant::DateTime )
+        if ( idx >= 0 && fields[idx].type() == QMetaType::Type::QDateTime )
         {
           hasDateTimeFieldInExpr = true;
           break;
@@ -657,7 +657,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       Q_ASSERT( idx >= 0 );
 
       const QVariant &v = cachedFeature.attributes().value( idx );
-      if ( !QgsVariantUtils::isNull( v ) && v.type() == QVariant::String )
+      if ( !QgsVariantUtils::isNull( v ) && v.userType() == QMetaType::Type::QString )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toLatin1() ) );
         QgsGeometry g;
@@ -939,14 +939,14 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
     if ( idx >= 0 )
     {
       const QVariant &v = srcFeature.attributes().value( idx );
-      const QVariant::Type fieldType = fields.at( i ).type();
+      const QMetaType::Type fieldType = fields.at( i ).type();
       if ( QgsVariantUtils::isNull( v ) )
-        dstFeature.setAttribute( i, QVariant( fieldType ) );
-      else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
+        dstFeature.setAttribute( i, QgsVariantUtils::createNullVariant( fieldType ) );
+      else if ( QgsWFSUtils::isCompatibleType( static_cast<QMetaType::Type>( v.userType() ), fieldType ) )
         dstFeature.setAttribute( i, v );
-      else if ( fieldType == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
+      else if ( fieldType == QMetaType::Type::QDateTime && !QgsVariantUtils::isNull( v ) )
         dstFeature.setAttribute( i, QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) );
-      else if ( fieldType == QVariant::Map && !QgsVariantUtils::isNull( v ) )
+      else if ( fieldType == QMetaType::Type::QVariantMap && !QgsVariantUtils::isNull( v ) )
         dstFeature.setAttribute( i, QJsonDocument::fromJson( v.toString().toUtf8() ).toVariant() );
       else
         dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );

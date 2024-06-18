@@ -88,7 +88,7 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
 bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "SOURCE_DATA" ) )->name() );
-  if ( layersVariant.type() != QVariant::List )
+  if ( layersVariant.userType() != QMetaType::Type::QVariantList )
     return false;
 
   const QVariantList layersList = layersVariant.toList();
@@ -102,7 +102,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     if ( feedback && feedback->isCanceled() )
       return false;
 
-    if ( layer.type() != QVariant::Map )
+    if ( layer.userType() != QMetaType::Type::QVariantMap )
       continue;
     const QVariantMap layerMap = layer.toMap();
     const QString layerSource = layerMap.value( QStringLiteral( "source" ) ).toString();

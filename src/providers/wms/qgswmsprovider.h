@@ -224,7 +224,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
-    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+    Qgis::RasterProviderCapabilities providerCapabilities() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
@@ -293,7 +293,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     // TODO: Get the table name associated with this provider instance
 
-    int capabilities() const override;
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;

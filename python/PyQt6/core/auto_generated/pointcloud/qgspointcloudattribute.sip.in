@@ -65,7 +65,7 @@ Returns the data type
 .. seealso:: :py:func:`variantType`
 %End
 
-    QVariant::Type variantType() const;
+    QMetaType::Type variantType() const;
 %Docstring
 Returns the most suitable equivalent QVariant data type to this attribute type.
 

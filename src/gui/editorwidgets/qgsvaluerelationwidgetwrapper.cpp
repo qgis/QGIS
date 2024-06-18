@@ -252,7 +252,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       v = mComboBox->currentData();
       if ( QgsVariantUtils::isNull( v ) )
-        v = QVariant( field().type() );
+        v = QgsVariantUtils::createNullVariant( field().type() );
     }
   }
   else if ( mTableWidget )
@@ -262,7 +262,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     // If there is no selection and allow NULL is not checked return NULL.
     if ( selection.isEmpty() && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
     {
-      return QVariant( QVariant::Type::List );
+      return QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList );
     }
 
     QVariantList vl;
@@ -270,13 +270,13 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     for ( const QString &s : std::as_const( selection ) )
     {
       // Convert to proper type
-      const QVariant::Type type { fkType() };
+      const QMetaType::Type type { fkType() };
       switch ( type )
       {
-        case QVariant::Type::Int:
+        case QMetaType::Type::Int:
           vl.push_back( s.toInt() );
           break;
-        case QVariant::Type::LongLong:
+        case QMetaType::Type::LongLong:
           vl.push_back( s.toLongLong() );
           break;
         default:
@@ -285,8 +285,8 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
-         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    if ( layer()->fields().at( fieldIdx() ).type() == QMetaType::Type::QVariantMap ||
+         layer()->fields().at( fieldIdx() ).type() == QMetaType::Type::QVariantList )
     {
       v = vl;
     }
@@ -386,8 +386,8 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
   {
     QStringList checkList;
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
-         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    if ( layer()->fields().at( fieldIdx() ).type() == QMetaType::Type::QVariantMap ||
+         layer()->fields().at( fieldIdx() ).type() == QMetaType::Type::QVariantList )
     {
       checkList = value.toStringList();
     }
@@ -528,7 +528,7 @@ int QgsValueRelationWidgetWrapper::columnCount() const
 }
 
 
-QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
+QMetaType::Type QgsValueRelationWidgetWrapper::fkType() const
 {
   const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
   if ( layer )
@@ -540,7 +540,7 @@ QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
       return fields.at( idx ).type();
     }
   }
-  return QVariant::Type::Invalid;
+  return QMetaType::Type::UnknownType;
 }
 
 void QgsValueRelationWidgetWrapper::populate()
@@ -570,7 +570,7 @@ void QgsValueRelationWidgetWrapper::populate()
     const bool allowNull = config( QStringLiteral( "AllowNull" ) ).toBool();
     if ( allowNull )
     {
-      mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type( ) ) );
+      mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createNullVariant( field().type( ) ) );
     }
 
     if ( !mCache.isEmpty() )

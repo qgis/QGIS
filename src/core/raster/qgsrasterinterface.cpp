@@ -33,6 +33,11 @@ QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
 {
 }
 
+Qgis::RasterInterfaceCapabilities QgsRasterInterface::capabilities() const
+{
+  return Qgis::RasterInterfaceCapability::NoCapabilities;
+}
+
 void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
     int bandNo,
     Qgis::RasterBandStatistics stats,
@@ -62,7 +67,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
     xRes = yRes = std::sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
-    if ( capabilities() & Size )
+    if ( capabilities() & Qgis::RasterInterfaceCapability::Size )
     {
       const double srcXRes = extent().width() / xSize();
       const double srcYRes = extent().height() / ySize();
@@ -76,7 +81,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
   }
   else
   {
-    if ( capabilities() & Size )
+    if ( capabilities() & Qgis::RasterInterfaceCapability::Size )
     {
       statistics.width = xSize();
       statistics.height = ySize();
@@ -314,7 +319,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
     xRes = yRes = std::sqrt( ( static_cast<double>( finalExtent.width( ) ) * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
-    if ( capabilities() & Size )
+    if ( capabilities() & Qgis::RasterInterfaceCapability::Size )
     {
       const double srcXRes = extent().width() / xSize();
       const double srcYRes = extent().height() / ySize();
@@ -328,7 +333,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   }
   else
   {
-    if ( capabilities() & Size )
+    if ( capabilities() & Qgis::RasterInterfaceCapability::Size )
     {
       histogram.width = xSize();
       histogram.height = ySize();
@@ -595,28 +600,18 @@ QString QgsRasterInterface::capabilitiesString() const
 {
   QStringList abilitiesList;
 
-  const int abilities = capabilities();
+  const Qgis::RasterInterfaceCapabilities abilities = capabilities();
 
   // Not all all capabilities are here (Size, IdentifyValue, IdentifyText,
   // IdentifyHtml, IdentifyFeature) because those are quite technical and probably
   // would be confusing for users
 
-  if ( abilities & QgsRasterInterface::Identify )
+  if ( abilities & Qgis::RasterInterfaceCapability::Identify )
   {
     abilitiesList += tr( "Identify" );
   }
 
-  if ( abilities & QgsRasterInterface::Create )
-  {
-    abilitiesList += tr( "Create Datasources" );
-  }
-
-  if ( abilities & QgsRasterInterface::Remove )
-  {
-    abilitiesList += tr( "Remove Datasources" );
-  }
-
-  if ( abilities & QgsRasterInterface::BuildPyramids )
+  if ( abilities & Qgis::RasterInterfaceCapability::BuildPyramids )
   {
     abilitiesList += tr( "Build Pyramids" );
   }

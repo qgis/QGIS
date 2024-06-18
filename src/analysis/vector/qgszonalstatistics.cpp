@@ -100,7 +100,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
     if ( mStatistics & stat )
     {
       QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
-      QgsField field( fieldName, QVariant::Double, QStringLiteral( "double precision" ) );
+      QgsField field( fieldName, QMetaType::Type::Double, QStringLiteral( "double precision" ) );
       newFieldList.push_back( field );
       statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
     }

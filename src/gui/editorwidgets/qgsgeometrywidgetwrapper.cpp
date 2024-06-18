@@ -40,7 +40,7 @@ QVariant QgsGeometryWidgetWrapper::value() const
 
   const QgsReferencedGeometry geomValue = mWidget->geometryValue();
   if ( geomValue.isNull() )
-    return QVariant( QVariant::UserType );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::User );
 
   return QVariant::fromValue( geomValue );
 }

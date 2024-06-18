@@ -204,21 +204,6 @@ class CORE_EXPORT QgsRasterInterface
     Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:
-    //! If you add to this, please also add to capabilitiesString()
-    enum Capability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoCapabilities   = 0,
-      Size             = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create           = 1 << 2, //!< Create new datasets
-      Remove           = 1 << 3, //!< Delete datasets
-      BuildPyramids    = 1 << 4, //!< Supports building of pyramids (overviews)
-      Identify         = 1 << 5, //!< At least one identify format supported
-      IdentifyValue    = 1 << 6, //!< Numerical values
-      IdentifyText     = 1 << 7, //!< WMS text
-      IdentifyHtml     = 1 << 8, //!< WMS HTML
-      IdentifyFeature  = 1 << 9, //!< WMS GML -> feature
-      Prefetch         = 1 << 10, //!< Allow prefetching of out-of-view images
-    };
 
     QgsRasterInterface( QgsRasterInterface *input = nullptr );
 
@@ -227,16 +212,20 @@ class CORE_EXPORT QgsRasterInterface
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
-    //! Returns a bitmask containing the supported capabilities
-    virtual int capabilities() const
-    {
-      return QgsRasterInterface::NoCapabilities;
-    }
+    // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
+    // (which inherits this class)
 
     /**
-     *  Returns the raster interface capabilities in friendly format.
+     * Returns the capabilities supported by the interface.
      */
-    QString capabilitiesString() const;
+    virtual Qgis::RasterInterfaceCapabilities capabilities() const;
+
+    /**
+     * Returns the raster interface capabilities in friendly format.
+     *
+     * \deprecated will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
     //! Returns data type for the band specified by number
     virtual Qgis::DataType dataType( int bandNo ) const = 0;

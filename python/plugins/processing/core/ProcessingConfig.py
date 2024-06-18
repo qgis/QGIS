@@ -57,8 +57,8 @@ class ProcessingConfig:
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
     SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
     MAX_THREADS = 'MAX_THREADS'
-    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'default-output-raster-layer-ext'
-    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'default-output-vector-layer-ext'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'default-output-raster-ext'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'default-output-vector-ext'
     TEMP_PATH = 'temp-path'
     RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
     VECTOR_FEATURE_COUNT = 'VECTOR_FEATURE_COUNT'
@@ -156,7 +156,7 @@ class ProcessingConfig:
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
             ProcessingConfig.tr('Default output vector layer extension'),
             QgsVectorFileWriter.supportedFormatExtensions()[0],
-            valuetype=Setting.SELECTION,
+            valuetype=Setting.SELECTION_STORE_STRING,
             options=extensions,
             hasSettingEntry=True))
 
@@ -166,7 +166,7 @@ class ProcessingConfig:
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
             ProcessingConfig.tr('Default output raster layer extension'),
             'tif',
-            valuetype=Setting.SELECTION,
+            valuetype=Setting.SELECTION_STORE_STRING,
             options=extensions,
             hasSettingEntry=True))
 
@@ -273,6 +273,7 @@ class Setting:
     FLOAT = 4
     INT = 5
     MULTIPLE_FOLDERS = 6
+    SELECTION_STORE_STRING = 7
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None,
                  validator=None, options=None, placeholder="", hasSettingEntry=False):

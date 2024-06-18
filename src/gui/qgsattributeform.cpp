@@ -42,9 +42,9 @@
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
 #include "qgstabwidget.h"
-#include "qgssettings.h"
 #include "qgsscrollarea.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
@@ -354,7 +354,9 @@ bool QgsAttributeForm::saveEdits( QString *error )
     // An add dialog should perform an action by default
     // and not only if attributes have "changed"
     if ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::FixAttributeMode )
+    {
       doUpdate = true;
+    }
 
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
@@ -462,7 +464,10 @@ bool QgsAttributeForm::saveEdits( QString *error )
           n++;
         }
 
-        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues );
+        std::unique_ptr<QgsVectorLayerToolsContext> context = std::make_unique<QgsVectorLayerToolsContext>();
+        QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
+        context->setExpressionContext( &expressionContext );
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() );
 
         if ( success && n > 0 )
         {
@@ -570,6 +575,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
         continue;
 
       QgsExpressionContext context = createExpressionContext( updatedFeature );
+
       const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
       eww->setValue( value );
       mCurrentFormFeature.setAttribute( eww->field().name(), value );
@@ -984,7 +990,13 @@ QgsExpressionContext QgsAttributeForm::createExpressionContext( const QgsFeature
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   context.appendScope( QgsExpressionContextUtils::formScope( feature, mContext.attributeFormModeString() ) );
   if ( mExtraContextScope )
+  {
     context.appendScope( new QgsExpressionContextScope( *mExtraContextScope.get() ) );
+  }
+  if ( mContext.parentFormFeature().isValid() )
+  {
+    context.appendScope( QgsExpressionContextUtils::parentFormScope( mContext.parentFormFeature() ) );
+  }
   context.setFeature( feature );
   return context;
 }
@@ -1174,7 +1186,7 @@ void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWr
 
   QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
 
-  if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+  if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == Qgis::FieldOrigin::Join )
   {
     int srcFieldIdx;
     const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
@@ -1369,7 +1381,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    attrs.insert( idx, QVariant( layer()->fields().at( idx ).type() ) );
+    attrs.insert( idx, QgsVariantUtils::createNullVariant( layer()->fields().at( idx ).type() ) );
     mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
@@ -1408,14 +1420,14 @@ void QgsAttributeForm::onUpdatedFields()
       if ( idx != -1 )
       {
         attrs[i] = mFeature.attributes().at( idx );
-        if ( mFeature.attributes().at( idx ).type() != layer()->fields().at( i ).type() )
+        if ( mFeature.attributes().at( idx ).userType() != layer()->fields().at( i ).type() )
         {
           attrs[i].convert( layer()->fields().at( i ).type() );
         }
       }
       else
       {
-        attrs[i] = QVariant( layer()->fields().at( i ).type() );
+        attrs[i] = QgsVariantUtils::createNullVariant( layer()->fields().at( i ).type() );
       }
     }
     mFeature.setFields( layer()->fields() );
@@ -3255,7 +3267,7 @@ void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
 
   if ( !eww->widget()->isEnabled() && mLayer->isEditable() )
   {
-    if ( mLayer->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+    if ( mLayer->fields().fieldOrigin( eww->fieldIdx() ) == Qgis::FieldOrigin::Join )
     {
       int srcFieldIndex;
       const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), mLayer->fields(), srcFieldIndex );

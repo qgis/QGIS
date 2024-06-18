@@ -61,8 +61,9 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   connect( mWidgetTypeComboBox, static_cast< void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::onCurrentWidgetChanged );
 
-  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
-       vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
+  if ( vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Join ||
+       vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression ||
+       vl->fields().field( fieldIdx ).isReadOnly() )
   {
     isFieldEditableCheckBox->setEnabled( false );
   }
@@ -352,6 +353,7 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
       << QgsExpressionContextUtils::layerScope( mLayer )
       << QgsExpressionContextUtils::formScope( )
+      << QgsExpressionContextUtils::parentFormScope( QgsFeature() )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
 
   return context;

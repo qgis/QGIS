@@ -231,6 +231,18 @@ class CORE_EXPORT QgsFeatureRequest
         CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
+         * Equality operator
+         * \since QGIS 3.38
+         */
+        CORE_EXPORT bool operator==( const OrderBy &v ) const;
+
+        /**
+         * Inequality operator
+         * \since QGIS 3.38
+         */
+        CORE_EXPORT bool operator!=( const OrderBy &v ) const;
+
+        /**
          * Gets a copy as a list of OrderByClauses
          *
          * This is only required in Python where the inheritance
@@ -293,6 +305,14 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest( const QgsFeatureRequest &rh );
     //! Assignment operator
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
+
+    /**
+     * Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
+     * \param other the other request
+     * \return TRUE if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+     * \since QGIS 3.38
+     */
+    bool compare( const QgsFeatureRequest &other ) const;
 
     ~QgsFeatureRequest();
 

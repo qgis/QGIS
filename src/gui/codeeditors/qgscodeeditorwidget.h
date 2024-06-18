@@ -20,6 +20,8 @@
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
 
+#include <QDateTime>
+
 class QgsCodeEditor;
 class QgsFilterLineEdit;
 class QToolButton;
@@ -64,6 +66,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
 
     void resizeEvent( QResizeEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
+    bool eventFilter( QObject *obj, QEvent *event ) override;
 
     /**
      * Returns the wrapped code editor.
@@ -105,6 +108,14 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * \see addWarning()
      */
     void clearWarnings();
+
+    /**
+     * Returns the widget's associated file path.
+     *
+     * \see setFilePath()
+     * \see filePathChanged()
+     */
+    QString filePath() const { return mFilePath; }
 
   public slots:
 
@@ -148,12 +159,60 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     void triggerFind();
 
+    /**
+     * Loads the file at the specified \a path into the widget, replacing the code editor's
+     * content with that from the file.
+     *
+     * This automatically sets the widget's filePath()
+     *
+     * Returns TRUE if the file was loaded successfully.
+     */
+    bool loadFile( const QString &path );
+
+    /**
+     * Sets the widget's associated file \a path.
+     *
+     * \see loadFile()
+     * \see filePathChanged()
+     * \see filePath()
+     */
+    void setFilePath( const QString &path );
+
+    /**
+     * Attempts to opens the script from the editor in an external text editor.
+     *
+     * This requires that the widget has an associated filePath() set.
+     *
+     * Optionally a target \a line and \a column number can be specified to open the editor
+     * at the corresponding location. (Not all external editors support this.) Line/column
+     * numbers of -1 indicate that the current cursor position should be used. A \a line
+     * number of 0 corresponds to the first line, and a column number of 0 corresponds to
+     * the first column.
+     *
+     * \returns TRUE if the file was opened successfully.
+     */
+    bool openInExternalEditor( int line = -1, int column = -1 );
+
   signals:
 
     /**
      * Emitted when the visibility of the search bar is changed.
      */
     void searchBarToggled( bool visible );
+
+    /**
+     * Emitted when the widget's associated file path is changed.
+     *
+     * \see setFilePath()
+     * \see filePath()
+     */
+    void filePathChanged( const QString &path );
+
+    /**
+     * Emitted when the widget loads in text from the associated file to bring in
+     * changes made externally to the file.
+     */
+    void loadedExternalChanges();
 
   private slots:
 
@@ -196,6 +255,8 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
     std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;
+    QString mFilePath;
+    QDateTime mLastModified;
 };
 
 #endif // QGSCODEEDITORWIDGET_H

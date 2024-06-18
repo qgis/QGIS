@@ -1064,7 +1064,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
           QMessageBox messageBox;
           messageBox.setWindowTitle( tr( "Run Model" ) );
           messageBox.setIcon( QMessageBox::Icon::Warning );
-          messageBox.setText( tr( "Prerequisite parts of this model have not yet been run. (Try running the full model first)." ) );
+          messageBox.setText( tr( "Prerequisite parts of this model have not yet been run (try running the full model first)." ) );
           messageBox.setStandardButtons( QMessageBox::StandardButton::Ok );
           messageBox.exec();
           return;

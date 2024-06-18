@@ -23,10 +23,11 @@
 #include "qgssensorthingsprovider.h"
 #include "qgsiconutils.h"
 #include "qgssensorthingsconnectionpropertiestask.h"
+#include "qgssensorthingssubseteditor.h"
 #include "qgsapplication.h"
 #include "qgsextentwidget.h"
-#include "qgsgui.h"
 #include "qgsspinbox.h"
+#include "qgsstringutils.h"
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -53,6 +54,37 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   // set a relatively conservative feature limit by default, to make it so they have to opt-in to shoot themselves in the foot!
   mSpinFeatureLimit->setValue( QgsSensorThingsUtils::DEFAULT_FEATURE_LIMIT );
 
+  mExpansionsModel = new QgsSensorThingsExpansionsModel( this );
+  mExpansionsTable->setModel( mExpansionsModel );
+
+  mExpansionsTableDelegate = new QgsSensorThingsExpansionsDelegate( mExpansionsTable );
+  mExpansionsTable->setItemDelegateForColumn( QgsSensorThingsExpansionsModel::Column::Entity, mExpansionsTableDelegate );
+  mExpansionsTable->setItemDelegateForColumn( QgsSensorThingsExpansionsModel::Column::Limit, mExpansionsTableDelegate );
+  mExpansionsTable->setItemDelegateForColumn( QgsSensorThingsExpansionsModel::Column::OrderBy, mExpansionsTableDelegate );
+  mExpansionsTable->setItemDelegateForColumn( QgsSensorThingsExpansionsModel::Column::SortOrder, mExpansionsTableDelegate );
+  mExpansionsTable->setItemDelegateForColumn( QgsSensorThingsExpansionsModel::Column::Filter, mExpansionsTableDelegate );
+
+  QgsSensorThingsRemoveExpansionDelegate *removeDelegate = new QgsSensorThingsRemoveExpansionDelegate( mExpansionsTable );
+  mExpansionsTable->setItemDelegateForColumn( QgsSensorThingsExpansionsModel::Column::Actions, removeDelegate );
+  mExpansionsTable->viewport()->installEventFilter( removeDelegate );
+  connect( mExpansionsTable, &QTableView::clicked, this, [this]( const QModelIndex & index )
+  {
+    if ( index.column() == QgsSensorThingsExpansionsModel::Column::Actions )
+    {
+      mExpansionsModel->removeRows( index.row(), 1 );
+    }
+  } );
+
+  mExpansionsTable->setEditTriggers( QAbstractItemView::AllEditTriggers );
+  mExpansionsTable->verticalHeader()->hide();
+  const QFontMetrics fm( font() );
+  mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Entity, fm.horizontalAdvance( '0' ) * 30 );
+  mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Limit, fm.horizontalAdvance( '0' ) * 15 );
+  mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::OrderBy, fm.horizontalAdvance( '0' ) * 30 );
+  mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Filter, fm.horizontalAdvance( '0' ) * 20 );
+  mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::SortOrder, fm.horizontalAdvance( '0' ) * 15 );
+  mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Actions, fm.horizontalAdvance( '0' ) * 5 );
+
   for ( Qgis::SensorThingsEntity type :
         {
           Qgis::SensorThingsEntity::Thing,
@@ -78,7 +110,6 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mRetrieveTypesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveTypes );
   mRetrieveTypesButton->setEnabled( false );
   connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, &QgsSensorThingsSourceWidget::validate );
-  connect( mConfigureExpansions, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::configureExpansions );
 
   validate();
 }
@@ -143,18 +174,18 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   }
 
   const QVariantList expandTo = mSourceParts.value( QStringLiteral( "expandTo" ) ).toList();
-  mExpansions.clear();
+  QList< QgsSensorThingsExpansionDefinition> expansions;
   QStringList expansionsLabelText;
   for ( const QVariant &expandVariant : expandTo )
   {
     const QgsSensorThingsExpansionDefinition definition = expandVariant.value< QgsSensorThingsExpansionDefinition >();
     if ( definition.isValid() )
     {
-      mExpansions.append( definition );
+      expansions.append( definition );
       expansionsLabelText.append( QgsSensorThingsUtils::displayString( definition.childEntity() ) );
     }
   }
-  mExpansionsLabel->setText( expansionsLabelText.join( tr( ", " ) ) );
+  mExpansionsModel->setExpansions( expansions );
 
   mIsValid = true;
 }
@@ -239,14 +270,15 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
     parts.remove( QStringLiteral( "featureLimit" ) );
   }
 
-  if ( mExpansions.isEmpty() )
+  const QList< QgsSensorThingsExpansionDefinition> expansions = mExpansionsModel->expansions();
+  if ( expansions.isEmpty() )
   {
     parts.remove( QStringLiteral( "expandTo" ) );
   }
   else
   {
     QVariantList expansionsList;
-    for ( const QgsSensorThingsExpansionDefinition &def : std::as_const( mExpansions ) )
+    for ( const QgsSensorThingsExpansionDefinition &def : std::as_const( expansions ) )
     {
       expansionsList.append( QVariant::fromValue( def ) );
     }
@@ -328,30 +360,11 @@ void QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted()
     mComboGeometryType->setCurrentIndex( 0 );
 }
 
-void QgsSensorThingsSourceWidget::configureExpansions()
-{
-  QgsSensorThingsConfigureExpansionsDialog dialog( currentEntityType() );
-  dialog.setExpansions( mExpansions );
-  if ( dialog.exec() && dialog.expansions() != mExpansions )
-  {
-    mExpansions = dialog.expansions();
-
-    QStringList expansionsLabelText;
-    for ( const QgsSensorThingsExpansionDefinition &expandVariant : mExpansions )
-    {
-      if ( expandVariant.isValid() )
-      {
-        expansionsLabelText.append( QgsSensorThingsUtils::displayString( expandVariant.childEntity() ) );
-      }
-    }
-    mExpansionsLabel->setText( expansionsLabelText.join( tr( ", " ) ) );
-
-    emit changed();
-  }
-}
-
 void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity type )
 {
+  mExpansionsTableDelegate->setBaseEntityType( type );
+  mExpansionsModel->setExpansions( {} );
+
   if ( mPropertiesTask )
   {
     disconnect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
@@ -444,7 +457,7 @@ QgsSensorThingsExpansionsModel::QgsSensorThingsExpansionsModel( QObject *parent 
 
 int QgsSensorThingsExpansionsModel::columnCount( const QModelIndex & ) const
 {
-  return 5;
+  return 6;
 }
 
 int QgsSensorThingsExpansionsModel::rowCount( const QModelIndex &parent ) const
@@ -484,6 +497,7 @@ Qt::ItemFlags QgsSensorThingsExpansionsModel::flags( const QModelIndex &index ) 
     case Column::Limit:
     case Column::OrderBy:
     case Column::SortOrder:
+    case Column::Filter:
       return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsEditable | Qt::ItemFlag::ItemIsSelectable;
     case Column::Actions:
       return Qt::ItemFlag::ItemIsEnabled;
@@ -523,6 +537,9 @@ QVariant QgsSensorThingsExpansionsModel::data( const QModelIndex &index, int rol
         case Column::SortOrder:
           return !expansion.isValid() ? QVariant() : ( expansion.sortOrder() == Qt::SortOrder::AscendingOrder ? tr( "Ascending" ) : tr( "Descending" ) );
 
+        case Column::Filter:
+          return !expansion.isValid() ? QVariant() : ( expansion.filter().isEmpty() ? QVariant() : expansion.filter() );
+
         case Column::Actions:
           return role == Qt::ToolTipRole ? tr( "Remove expansion" ) : QString();
 
@@ -545,6 +562,9 @@ QVariant QgsSensorThingsExpansionsModel::data( const QModelIndex &index, int rol
         case Column::OrderBy:
           return expansion.orderBy().isEmpty() ? QVariant() : expansion.orderBy();
 
+        case Column::Filter:
+          return expansion.filter().isEmpty() ? QVariant() : expansion.filter();
+
         case Column::SortOrder:
           return expansion.sortOrder();
 
@@ -561,6 +581,7 @@ QVariant QgsSensorThingsExpansionsModel::data( const QModelIndex &index, int rol
         case Column::Entity:
         case Column::OrderBy:
         case Column::SortOrder:
+        case Column::Filter:
           return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
 
         case Column::Limit:
@@ -591,6 +612,8 @@ QVariant QgsSensorThingsExpansionsModel::headerData( int section, Qt::Orientatio
         return tr( "Order By" );
       case Column::SortOrder:
         return tr( "Sort Order" );
+      case Column::Filter:
+        return tr( "Filter" );
       case Column::Actions:
         return QString();
       default:
@@ -627,6 +650,11 @@ bool QgsSensorThingsExpansionsModel::setData( const QModelIndex &index, const QV
           else
           {
             expansion.setChildEntity( value.value< Qgis::SensorThingsEntity >() );
+            if ( wasInvalid )
+            {
+              expansion = QgsSensorThingsExpansionDefinition::defaultDefinitionForEntity( expansion.childEntity() );
+              emit dataChanged( createIndex( index.row(), 0 ), createIndex( index.row(), columnCount() ) );
+            }
           }
           emit dataChanged( index, index, QVector<int>() << role );
           if ( wasInvalid )
@@ -653,6 +681,13 @@ bool QgsSensorThingsExpansionsModel::setData( const QModelIndex &index, const QV
         case Column::OrderBy:
         {
           expansion.setOrderBy( value.toString() );
+          emit dataChanged( index, index, QVector<int>() << role );
+          break;
+        }
+
+        case Column::Filter:
+        {
+          expansion.setFilter( value.toString() );
           emit dataChanged( index, index, QVector<int>() << role );
           break;
         }
@@ -717,82 +752,18 @@ void QgsSensorThingsExpansionsModel::setExpansions( const QList<QgsSensorThingsE
 }
 
 //
-// QgsSensorThingsConfigureExpansionsDialog
-//
-
-QgsSensorThingsConfigureExpansionsDialog::QgsSensorThingsConfigureExpansionsDialog( Qgis::SensorThingsEntity baseEntityType, QWidget *parent, Qt::WindowFlags f )
-  : QDialog( parent, f )
-  , mBaseEntityType( baseEntityType )
-{
-  setWindowTitle( tr( "Configure SensorThings Expansions" ) );
-  setObjectName( "QgsSensorThingsConfigureExpansionsDialog" );
-  QgsGui::enableAutoGeometryRestore( this );
-
-  QVBoxLayout *vLayout = new QVBoxLayout( );
-  QHBoxLayout *hLayout = new QHBoxLayout( );
-  hLayout->setContentsMargins( 0, 0, 0, 0 );
-
-  mModel = new QgsSensorThingsExpansionsModel( this );
-  mTable = new QTableView();
-  mTable->setModel( mModel );
-
-  QgsSensorThingsExpansionsDelegate *tableDelegate = new QgsSensorThingsExpansionsDelegate( mTable, mBaseEntityType );
-  mTable->setItemDelegateForColumn( 0, tableDelegate );
-  mTable->setItemDelegateForColumn( 1, tableDelegate );
-  mTable->setItemDelegateForColumn( 2, tableDelegate );
-  mTable->setItemDelegateForColumn( 3, tableDelegate );
-
-  QgsSensorThingsRemoveExpansionDelegate *removeDelegate = new QgsSensorThingsRemoveExpansionDelegate( mTable );
-  mTable->setItemDelegateForColumn( 4, removeDelegate );
-  mTable->viewport()->installEventFilter( removeDelegate );
-  connect( mTable, &QTableView::clicked, this, [this]( const QModelIndex & index )
-  {
-    if ( index.column() == QgsSensorThingsExpansionsModel::Column::Actions )
-    {
-      mModel->removeRows( index.row(), 1 );
-    }
-  } );
-
-  mTable->setEditTriggers( QAbstractItemView::AllEditTriggers );
-  mTable->verticalHeader()->hide();
-  const QFontMetrics fm( font() );
-  mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Entity, fm.horizontalAdvance( '0' ) * 30 );
-  mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Limit, fm.horizontalAdvance( '0' ) * 15 );
-  mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::OrderBy, fm.horizontalAdvance( '0' ) * 30 );
-  mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::SortOrder, fm.horizontalAdvance( '0' ) * 15 );
-  mTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Actions, fm.horizontalAdvance( '0' ) * 5 );
-
-  hLayout->addWidget( mTable, 1 );
-
-  vLayout->addLayout( hLayout, 1 );
-
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  vLayout->addWidget( buttonBox );
-
-  setLayout( vLayout );
-}
-
-void QgsSensorThingsConfigureExpansionsDialog::setExpansions( const QList<QgsSensorThingsExpansionDefinition> &expansions )
-{
-  mModel->setExpansions( expansions );
-}
-
-QList<QgsSensorThingsExpansionDefinition> QgsSensorThingsConfigureExpansionsDialog::expansions() const
-{
-  return mModel->expansions();
-}
-
-//
 // QgsSensorThingsExpansionsDelegate
 //
 
-QgsSensorThingsExpansionsDelegate::QgsSensorThingsExpansionsDelegate( QObject *parent, Qgis::SensorThingsEntity baseEntityType )
+QgsSensorThingsExpansionsDelegate::QgsSensorThingsExpansionsDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-  , mBaseEntityType( baseEntityType )
 {
 
+}
+
+void QgsSensorThingsExpansionsDelegate::setBaseEntityType( Qgis::SensorThingsEntity type )
+{
+  mBaseEntityType = type;
 }
 
 QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
@@ -852,6 +823,20 @@ QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const
       combo->addItem( tr( "Descending" ), QVariant::fromValue( Qt::SortOrder::DescendingOrder ) );
       return combo;
     }
+
+    case QgsSensorThingsExpansionsModel::Column::Filter:
+    {
+      // need to find out entity type for this row
+      const Qgis::SensorThingsEntity entityType = index.model()->data( index.model()->index( index.row(), 0 ), Qt::EditRole ).value< Qgis::SensorThingsEntity >();
+      QgsSensorThingsFilterWidget *w = new QgsSensorThingsFilterWidget( parent, entityType );
+      connect( w, &QgsSensorThingsFilterWidget::filterChanged, this, [ = ]()
+      {
+        const_cast< QgsSensorThingsExpansionsDelegate * >( this )->emit commitData( w );
+      } );
+      return w;
+
+    }
+
     default:
       break;
   }
@@ -871,6 +856,15 @@ void QgsSensorThingsExpansionsDelegate::setEditorData( QWidget *editor, const QM
         combo->setCurrentIndex( combo->findData( index.data( Qt::EditRole ) ) );
         if ( combo->currentIndex() < 0 )
           combo->setCurrentIndex( 0 );
+      }
+      return;
+    }
+
+    case QgsSensorThingsExpansionsModel::Column::Filter:
+    {
+      if ( QgsSensorThingsFilterWidget *w = qobject_cast< QgsSensorThingsFilterWidget * >( editor ) )
+      {
+        w->setFilter( index.data( Qt::EditRole ).toString() );
       }
       return;
     }
@@ -918,6 +912,15 @@ void QgsSensorThingsExpansionsDelegate::setModelData( QWidget *editor, QAbstract
         model->setData( index, combo->currentData() );
       }
       break;
+
+    case QgsSensorThingsExpansionsModel::Column::Filter:
+    {
+      if ( QgsSensorThingsFilterWidget *w = qobject_cast< QgsSensorThingsFilterWidget * >( editor ) )
+      {
+        model->setData( index, w->filter() );
+      }
+      break;
+    }
 
     default:
       break;
@@ -979,6 +982,47 @@ void QgsSensorThingsRemoveExpansionDelegate::paint( QPainter *painter, const QSt
 void QgsSensorThingsRemoveExpansionDelegate::setHoveredIndex( const QModelIndex &index )
 {
   mHoveredIndex = index;
+}
+
+
+//
+// QgsSensorThingsFilterWidget
+//
+
+QgsSensorThingsFilterWidget::QgsSensorThingsFilterWidget( QWidget *parent, Qgis::SensorThingsEntity entity )
+  : QWidget( parent )
+  , mEntity( entity )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+  hl->addStretch( 1 );
+  QToolButton *button = new QToolButton();
+  connect( button, &QToolButton::clicked, this, &QgsSensorThingsFilterWidget::setQuery );
+  button->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
+  hl->addWidget( button );
+  setLayout( hl );
+}
+
+void QgsSensorThingsFilterWidget::setFilter( const QString &filter )
+{
+  mFilter = filter;
+}
+
+QString QgsSensorThingsFilterWidget::filter() const
+{
+  return mFilter;
+}
+
+void QgsSensorThingsFilterWidget::setQuery()
+{
+  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mEntity );
+  QgsSensorThingsSubsetEditor editor( nullptr, fields, this );
+  editor.setSubsetString( mFilter );
+  if ( editor.exec() )
+  {
+    mFilter = editor.subsetString();
+    emit filterChanged();
+  }
 }
 
 ///@endcond

@@ -2482,9 +2482,9 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString &ogcCrs )
   return changeXY;
 }
 
-int QgsWmsCapabilities::identifyCapabilities() const
+Qgis::RasterInterfaceCapabilities QgsWmsCapabilities::identifyCapabilities() const
 {
-  int capability = QgsRasterInterface::NoCapabilities;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::NoCapabilities;
 
   for ( auto it = mIdentifyFormats.constBegin(); it != mIdentifyFormats.constEnd(); ++it )
   {

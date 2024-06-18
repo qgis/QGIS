@@ -108,8 +108,8 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
 {
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "group" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "group" ), QMetaType::Type::QString ) );
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, crs ) );
   if ( !sink )

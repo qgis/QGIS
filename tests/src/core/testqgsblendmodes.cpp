@@ -97,7 +97,7 @@ void TestQgsBlendModes::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
 
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 

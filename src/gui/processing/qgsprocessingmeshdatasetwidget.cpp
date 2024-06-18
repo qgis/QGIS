@@ -100,7 +100,7 @@ void QgsProcessingMeshDatasetGroupsWidget::setMeshLayer( QgsMeshLayer *layer, bo
 void QgsProcessingMeshDatasetGroupsWidget::setValue( const QVariant &value )
 {
   if ( value.isValid() )
-    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+    mValue = value.userType() == QMetaType::Type::QVariantList ? value.toList() : QVariantList() << value;
   else
     mValue.clear();
 
@@ -301,7 +301,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setWidgetValue( const QVariant
     return;
 
   QList<int> datasetGroupIndexes;
-  if ( value.type() == QVariant::List )
+  if ( value.userType() == QMetaType::Type::QVariantList )
   {
     //here we can't use  QgsProcessingParameters::parameterAsInts() because this method return empry list when first value is 0...
     datasetGroupIndexes = QgsProcessingParameters::parameterAsInts( parameterDefinition(), value, context );
@@ -420,7 +420,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperVal
 
   QVariant datasetGroupsVariant = wrapper->parameterValue();
 
-  if ( !datasetGroupsVariant.isValid() || datasetGroupsVariant.type() != QVariant::List )
+  if ( !datasetGroupsVariant.isValid() || datasetGroupsVariant.userType() != QMetaType::Type::QVariantList )
     mWidget->setDatasetGroupIndexes( QList<int>() );
 
   QVariantList datasetGroupsListVariant = datasetGroupsVariant.toList();
@@ -539,7 +539,7 @@ void QgsProcessingMeshDatasetTimeWidget::setDatasetGroupIndexes( const QList<int
 
 void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
 {
-  if ( !value.isValid() || ( value.type() != QVariant::Map && !value.toDateTime().isValid() ) )
+  if ( !value.isValid() || ( value.userType() != QMetaType::Type::QVariantMap && !value.toDateTime().isValid() ) )
     return;
 
   mValue.clear();

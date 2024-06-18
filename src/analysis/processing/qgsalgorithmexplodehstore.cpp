@@ -125,7 +125,7 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
   QgsFields hstoreFields;
   for ( const QString &fieldName : fieldsToAdd )
   {
-    hstoreFields.append( QgsField( fieldName, QVariant::String ) );
+    hstoreFields.append( QgsField( fieldName, QMetaType::Type::QString ) );
   }
 
   QgsFields outFields = QgsProcessingUtils::combineFields( source->fields(), hstoreFields );

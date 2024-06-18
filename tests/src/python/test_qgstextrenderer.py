@@ -163,6 +163,18 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setTabStopDistance(3)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setTabStopDistanceUnit(Qgis.RenderUnit.Points)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setTabStopDistanceMapUnitScale(QgsMapUnitScale(5, 10))
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.setOrientation(QgsTextFormat.TextOrientation.VerticalOrientation)
         self.assertTrue(t.isValid())
 
@@ -743,6 +755,10 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setForcedBold(True)
         s.setForcedItalic(True)
 
+        s.setTabStopDistance(4.5)
+        s.setTabStopDistanceUnit(Qgis.RenderUnit.RenderInches)
+        s.setTabStopDistanceMapUnitScale(QgsMapUnitScale(11, 12))
+
         s.setStretchFactor(110)
 
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Bold, QgsProperty.fromExpression('1>2'))
@@ -862,6 +878,19 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setStretchFactor(120)
         self.assertNotEqual(s, s2)
 
+        s = self.createFormatSettings()
+        s.setTabStopDistance(120)
+        self.assertNotEqual(s, s2)
+
+        s = self.createFormatSettings()
+        s.setTabStopDistanceUnit(Qgis.RenderUnit.Points)
+        self.assertNotEqual(s, s2)
+
+        s = self.createFormatSettings()
+        s.setTabStopDistanceMapUnitScale(
+            QgsMapUnitScale(111, 122))
+        self.assertNotEqual(s, s2)
+
     def checkTextFormat(self, s):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())
@@ -891,6 +920,9 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Property.Bold).expressionString(), '1>2')
         self.assertTrue(s.forcedBold())
         self.assertTrue(s.forcedItalic())
+        self.assertEqual(s.tabStopDistance(), 4.5)
+        self.assertEqual(s.tabStopDistanceUnit(), Qgis.RenderUnit.Inches)
+        self.assertEqual(s.tabStopDistanceMapUnitScale(), QgsMapUnitScale(11, 12))
 
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
@@ -1381,6 +1413,10 @@ class PyQgsTextRenderer(QgisTestCase):
             f.updateDataDefinedProperties(context)
             self.assertEqual(f.stretchFactor(), 135)
 
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.TabStopDistance, QgsProperty.fromExpression("15"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.tabStopDistance(), 15)
+
     def testFontFoundFromLayer(self):
         layer = createEmptyLayer()
         layer.setCustomProperty('labeling/fontFamily', 'asdasd')
@@ -1858,6 +1894,180 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setSize(30)
         format.setForcedItalic(True)
         assert self.checkRender(format, 'forced_italic', text=['Forced italic'])
+
+    def testDrawRTL(self):
+        """
+        Test drawing with simple rtl text
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl', text=['مرحبا بالعالم'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLHTML(self):
+        """
+        Test drawing with rtl text with HTML formatting
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_html', text=['<span style="font-size:50pt; color:green">بالعالم</span> مرحبا'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLRightAlign(self):
+        """
+        Test drawing with rtl text with right align
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRender(format, 'rtl_right_align', text=['مرحبا بالعالم'],
+                                         rect=QRectF(5, 100, 350, 250),
+                                         alignment=QgsTextRenderer.HAlignment.AlignRight))
+
+    def testDrawRTLBuffer(self):
+        """
+        Test drawing with right to left text with buffer
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_buffer', text=['مرحبا بالعالم'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLShadow(self):
+        """
+        Test drawing with right to left text with shadow
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setColor(
+            QColor(255, 255, 0))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowPlacement.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_shadow', text=['مرحبا بالعالم'],
+                                              point=QPointF(5, 200)))
+
+    @unittest.skip('broken')
+    def testDrawTextOnLineRTL(self):
+        """
+        Test drawing right to left text on line
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(25)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
+        painter.drawPolygon(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        QgsTextRenderer.drawTextOnLine(line, 'مرحبا بالعالم', context, format, 0)
+
+        painter.end()
+        self.assertTrue(self.image_check('text_on_line_at_start', 'text_on_line_at_start', image, 'text_on_line_at_start'))
+
+    def testDrawRTLLTRMixed(self):
+        """
+        Test drawing with mixed right to left and left to right text
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed', text=['hello באמת abc'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLLTRMixedHtml(self):
+        """
+        Test drawing with right to left marker, html mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed_html', text=['<i>hello באמת </i>abc'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLLTRMixedRect(self):
+        """
+        Test drawing with right to left marker in rect mode, right aligned
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+
+        self.assertTrue(self.checkRender(format, 'rtl_mixed_right_align', text=['hello באמת abc'],
+                                         rect=QRectF(5, 100, 350, 250),
+                                         alignment=QgsTextRenderer.HAlignment.AlignRight))
+
+    def testDrawRTLLTRMixedBuffer(self):
+        """
+        Test drawing with right to left marker with buffer
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed_buffer', text=['hello באמת abc'],
+                                              point=QPointF(5, 200)))
+
+    def testDrawRTLLTRMixedShadow(self):
+        """
+        Test drawing with right to left marker with shadow
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('Deja bold'))
+        format.setSize(30)
+        format.setColor(
+            QColor(255, 255, 0))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowPlacement.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        self.assertTrue(self.checkRenderPoint(format, 'rtl_mixed_shadow', text=['hello באמת abc'],
+                                              point=QPointF(5, 200)))
 
     @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
     def testDrawSmallCaps(self):
@@ -3366,6 +3576,28 @@ class PyQgsTextRenderer(QgisTestCase):
         format.buffer().setSize(5)
         assert self.checkRenderPoint(format, 'text_dd_buffer_color', None, text=['test'], point=QPointF(50, 200))
 
+    def testDrawTabPercent(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(4)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Percentage)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_percentage',
+                                         text=['with\ttabs', 'a\tb']))
+
+    def testDrawTabFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(40)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_fixed_size',
+                                         text=['with\ttabs', 'a\tb']))
+
     def testHtmlFormatting(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -3376,6 +3608,30 @@ class PyQgsTextRenderer(QgisTestCase):
         assert self.checkRenderPoint(format, 'text_html_formatting', None, text=[
             '<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline">t</span></span>'],
             point=QPointF(50, 200))
+
+    def testHtmlTabPercent(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(4)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Percentage)
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_percentage_html',
+                                         text=['<span style="font-size: 15pt">with</span>\ttabs', ' a\tb']))
+
+    def testHtmlTabFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(40)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_fixed_size_html',
+                                         text=['<span style="font-size: 15pt">with</span>\ttabs', ' a\tb']))
 
     def testHtmlFormattingBuffer(self):
         """

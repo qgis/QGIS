@@ -40,6 +40,7 @@ from qgis.gui import (
 )
 from qgis.core import (
     QgsApplication,
+    QgsFileUtils,
     QgsSettings,
     QgsError,
     QgsProcessingAlgorithm,
@@ -149,7 +150,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.run_dialog = None
 
-        self.filePath = None
         if filePath is not None:
             self._loadFile(filePath)
 
@@ -159,8 +159,10 @@ class ScriptEditorDialog(BASE, WIDGET):
         """
         Updates the script editor dialog title
         """
-        if self.filePath:
-            path, file_name = os.path.split(self.filePath)
+        if self.code_editor_widget.filePath():
+            path, file_name = os.path.split(
+                self.code_editor_widget.filePath()
+            )
         else:
             file_name = self.tr('Untitled Script')
 
@@ -219,7 +221,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def saveScript(self, saveAs):
         newPath = None
-        if self.filePath is None or saveAs:
+        if not self.code_editor_widget.filePath() or saveAs:
             scriptDir = ScriptUtils.scriptsFolders()[0]
             newPath, _ = QFileDialog.getSaveFileName(self,
                                                      self.tr("Save script"),
@@ -227,15 +229,14 @@ class ScriptEditorDialog(BASE, WIDGET):
                                                      self.tr("Processing scripts (*.py *.PY)"))
 
             if newPath:
-                if not newPath.lower().endswith(".py"):
-                    newPath += ".py"
+                newPath = QgsFileUtils.ensureFileNameHasExtension(newPath, ['py'])
+                self.code_editor_widget.setFilePath(newPath)
 
-                self.filePath = newPath
-
-        if self.filePath:
+        if self.code_editor_widget.filePath():
             text = self.editor.text()
             try:
-                with codecs.open(self.filePath, "w", encoding="utf-8") as f:
+                with codecs.open(self.code_editor_widget.filePath(),
+                                 "w", encoding="utf-8") as f:
                     f.write(text)
             except OSError as e:
                 QMessageBox.warning(self,
@@ -307,13 +308,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             canvas.setMapTool(prevMapTool)
 
     def _loadFile(self, filePath):
-        with codecs.open(filePath, "r", encoding="utf-8") as f:
-            txt = f.read()
 
-        self.editor.setText(txt)
+        self.code_editor_widget.loadFile(filePath)
         self.hasChanged = False
-        self.editor.setModified(False)
-        self.editor.recolor()
 
-        self.filePath = filePath
         self.update_dialog_title()

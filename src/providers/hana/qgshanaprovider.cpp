@@ -287,9 +287,9 @@ namespace
       default:
         if ( field.isGeometry() )
         {
-          if ( value.type() == QVariant::String )
+          if ( value.userType() == QMetaType::Type::QString )
             stmt->setString( paramIndex, isNull ? String() : String( value.toString().toStdString() ) );
-          else if ( value.type() == QVariant::ByteArray )
+          else if ( value.userType() == QMetaType::Type::QByteArray )
           {
             QByteArray arr = value.toByteArray();
             stmt->setBinary( paramIndex, isNull ? Binary() :  Binary( vector<char>( arr.begin(), arr.end() ) ) );
@@ -673,7 +673,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     }
 
     columnNames << QgsHanaUtils::quotedIdentifier( field.name );
-    if ( field.isGeometry() && mFields.at( idx ).type() == QVariant::String )
+    if ( field.isGeometry() && mFields.at( idx ).type() == QMetaType::Type::QString )
       values << QStringLiteral( "ST_GeomFromWKT(?, %1)" ).arg( QString::number( field.srid ) );
     else
       values << QStringLiteral( "?" );
@@ -728,7 +728,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         const int fieldIndex = fieldIds[i];
         const AttributeField &field = mAttributeFields.at( fieldIndex );
-        QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QVariant( QVariant::LongLong );
+        QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
         if ( pkFields[i] )
         {
           hasIdValue = hasIdValue || !attrValue.isNull();
@@ -1169,7 +1169,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
           continue;
 
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
-        if ( field.isGeometry() && mFields.at( fieldIndex ).type() == QVariant::String )
+        if ( field.isGeometry() && mFields.at( fieldIndex ).type() == QMetaType::Type::QString )
           attrs << QStringLiteral( "%1=ST_GeomFromWKT(?, %2)" ).arg(
                   QgsHanaUtils::quotedIdentifier( field.name ), QString::number( field.srid ) );
         else

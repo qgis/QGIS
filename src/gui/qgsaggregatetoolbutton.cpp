@@ -31,13 +31,18 @@ QgsAggregateToolButton::QgsAggregateToolButton()
   setText( tr( "Exclude" ) );
 }
 
-void QgsAggregateToolButton::setType( QVariant::Type type )
+void QgsAggregateToolButton::setType( QMetaType::Type type )
 {
   if ( mType == type )
     return;
 
   mType = type;
   updateAvailableAggregates();
+}
+
+void QgsAggregateToolButton::setType( QVariant::Type type )
+{
+  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 void QgsAggregateToolButton::aboutToShowMenu()
@@ -118,7 +123,7 @@ bool QgsAggregateToolButton::active() const
   return mActive;
 }
 
-QVariant::Type QgsAggregateToolButton::type() const
+QMetaType::Type QgsAggregateToolButton::type() const
 {
   return mType;
 }

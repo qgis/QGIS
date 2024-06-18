@@ -19,7 +19,8 @@ from qgis.core import (
     QgsPolygon,
     QgsMultiPoint,
     QgsMultiLineString,
-    QgsMultiPolygon
+    QgsMultiPolygon,
+    QgsRectangle
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -527,6 +528,65 @@ class TestQgsGeometryCollection(QgisTestCase):
                 Qgis.WkbType.Point).asWkt(),
             'MultiPoint EMPTY'
         )
+
+    def test_take_geometries(self):
+        """
+        Test taking geometries
+        """
+        # empty collection
+        collection = QgsGeometryCollection()
+        self.assertFalse(collection.takeGeometries())
+        self.assertEqual(collection.asWkt(), 'GeometryCollection EMPTY')
+
+        collection.addGeometry(
+            QgsPolygon(
+                QgsLineString([[1, 2, 3], [3, 4, 3], [1, 4, 3], [1, 2, 3]])))
+        collection.addGeometry(QgsPolygon(
+            QgsLineString(
+                [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]])))
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+
+        geometries = collection.takeGeometries()
+        # should be nothing left
+        self.assertEqual(collection.asWkt(), 'GeometryCollection EMPTY')
+        self.assertEqual(collection.boundingBox(), QgsRectangle())
+
+        del collection
+
+        self.assertEqual(
+            [p.asWkt() for p in geometries],
+            ['PolygonZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3))',
+             'PolygonZ ((11 22 33, 13 14 33, 11 14 33, 11 22 33))']
+        )
+
+    def test_add_geometries(self):
+        """
+        Test adding multiple geometries
+        """
+        # empty collection
+        collection = QgsGeometryCollection()
+        self.assertTrue(collection.addGeometries([]))
+        self.assertEqual(collection.asWkt(), 'GeometryCollection EMPTY')
+        self.assertEqual(collection.boundingBox(), QgsRectangle())
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsLineString([[1, 2, 3], [3, 4, 3], [1, 4, 3], [1, 2, 3]]),
+                QgsLineString(
+                    [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]])])
+        )
+        self.assertEqual(collection.asWkt(),
+                         'GeometryCollection (LineStringZ (1 2 3, 3 4 3, 1 4 3, 1 2 3),LineStringZ (11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+        self.assertTrue(
+            collection.addGeometries([
+                QgsPoint(100, 200)]
+            ))
+        self.assertEqual(collection.asWkt(), 'GeometryCollection (LineStringZ (1 2 3, 3 4 3, 1 4 3, 1 2 3),LineStringZ (11 22 33, 13 14 33, 11 14 33, 11 22 33),Point (100 200))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 100, 200))
 
 
 if __name__ == '__main__':

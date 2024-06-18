@@ -114,9 +114,9 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   if ( parameters.contains( QStringLiteral( "OUTPUT_TABLE" ) ) && parameters.value( QStringLiteral( "OUTPUT_TABLE" ) ).isValid() )
   {
     QgsFields outFields;
-    outFields.append( QgsField( QStringLiteral( "value" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "count" ), QVariant::LongLong, QString(), 20 ) );
-    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "value" ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "count" ), QMetaType::Type::LongLong, QString(), 20 ) );
+    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QMetaType::Type::Double, QString(), 20, 8 ) );
     sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )
       throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
@@ -231,6 +231,3 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
 
 
 ///@endcond
-
-
-

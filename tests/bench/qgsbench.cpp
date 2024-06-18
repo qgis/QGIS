@@ -299,7 +299,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
   QMap<QString, QVariant>::const_iterator i = map.constBegin();
   while ( i != map.constEnd() )
   {
-    switch ( static_cast< QMetaType::Type >( i.value().type() ) )
+    switch ( static_cast< QMetaType::Type >( i.value().userType() ) )
     {
       case QMetaType::Int:
         list.append( space2 + '\"' + i.key() + "\": " + QString::number( i.value().toInt() ) );

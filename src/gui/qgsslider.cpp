@@ -77,10 +77,10 @@ void QgsSlider::update()
   if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
-  if ( mMin.type() == QVariant::Int &&
-       mMax.type() == QVariant::Int &&
-       mStep.type() == QVariant::Int &&
-       mValue.type() == QVariant::Int )
+  if ( mMin.userType() == QMetaType::Type::Int &&
+       mMax.userType() == QMetaType::Type::Int &&
+       mStep.userType() == QMetaType::Type::Int &&
+       mValue.userType() == QMetaType::Type::Int )
   {
     QSlider::setMinimum( mMin.toInt() );
     QSlider::setMaximum( mMax.toInt() );
@@ -116,10 +116,10 @@ void QgsSlider::onValueChanged( int value )
   {
     mValue = QVariant();
   }
-  else if ( mMin.type() == QVariant::Int &&
-            mMax.type() == QVariant::Int &&
-            mStep.type() == QVariant::Int &&
-            mValue.type() == QVariant::Int )
+  else if ( mMin.userType() == QMetaType::Type::Int &&
+            mMax.userType() == QMetaType::Type::Int &&
+            mStep.userType() == QMetaType::Type::Int &&
+            mValue.userType() == QMetaType::Type::Int )
   {
     mValue = value;
   }

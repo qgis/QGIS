@@ -593,11 +593,11 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   return true;
 }
 
-QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType )
+QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, int ic, QMetaType::Type type, QMetaType::Type subType )
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {
-    if ( type == QVariant::Int )
+    if ( type == QMetaType::Type::Int )
     {
       // INTEGER value
       return sqlite3_column_int( stmt, ic );
@@ -627,7 +627,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
   {
     // TEXT value
     const QString txt = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, ic ) );
-    if ( type == QVariant::List || type == QVariant::StringList )
+    if ( type == QMetaType::Type::QVariantList || type == QMetaType::Type::QStringList )
     {
       // assume arrays are stored as JSON
       QVariant result = QVariant( QgsJsonUtils::parseArray( txt, subType ) );
@@ -637,7 +637,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
       }
       return result;
     }
-    else if ( type == QVariant::DateTime )
+    else if ( type == QMetaType::Type::QDateTime )
     {
       // first use the GDAL date format
       QDateTime dt = QDateTime::fromString( txt, Qt::ISODate );
@@ -649,7 +649,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
 
       return dt;
     }
-    else if ( type == QVariant::Date )
+    else if ( type == QMetaType::Type::QDate )
     {
       return QDate::fromString( txt, QStringLiteral( "yyyy-MM-dd" ) );
     }
@@ -657,7 +657,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
   }
 
   // assuming NULL
-  return QVariant( type );
+  return QgsVariantUtils::createNullVariant( type );
 }
 
 void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature )

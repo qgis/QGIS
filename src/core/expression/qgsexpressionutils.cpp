@@ -336,7 +336,7 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
 
 ///@endcond
 
-std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
+std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
 {
   QgsExpression exp( expression );
   request.setFlags( ( exp.needsGeometry() ) ?
@@ -351,7 +351,7 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
   const QgsFields fields = layer->fields();
   for ( int i = 0; i < fields.count(); i++ )
   {
-    if ( fields.fieldOrigin( i ) != QgsFields::OriginExpression )
+    if ( fields.fieldOrigin( i ) != Qgis::FieldOrigin::Expression )
       attributes << i;
   }
   request.setSubsetOfAttributes( attributes );
@@ -368,10 +368,10 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
     const QVariant value = exp.evaluate( &context );
     if ( !QgsVariantUtils::isNull( value ) )
     {
-      return std::make_tuple( value.type(), value.userType() );
+      return std::make_tuple( static_cast<QMetaType::Type>( value.userType() ), value.userType() );
     }
     hasFeature = it.nextFeature( f );
   }
   value = QVariant();
-  return std::make_tuple( value.type(), value.userType() );
+  return std::make_tuple( static_cast<QMetaType::Type>( value.userType() ), value.userType() );
 }

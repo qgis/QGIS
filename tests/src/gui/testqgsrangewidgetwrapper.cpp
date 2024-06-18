@@ -89,17 +89,17 @@ void TestQgsRangeWidgetWrapper::init()
 
   // add fields
   QList<QgsField> fields;
-  fields.append( QgsField( "id", QVariant::Int ) );
+  fields.append( QgsField( "id", QMetaType::Type::Int ) );
   // precision = 9
-  QgsField dfield( "number",  QVariant::Double );
+  QgsField dfield( "number",  QMetaType::Type::Double );
   dfield.setPrecision( 9 );
   fields.append( dfield );
   // default precision = 0
-  const QgsField dfield2( "number_def",  QVariant::Double );
+  const QgsField dfield2( "number_def",  QMetaType::Type::Double );
   fields.append( dfield2 );
   // simple int
-  fields.append( QgsField( "simplenumber", QVariant::Int ) );
-  fields.append( QgsField( "longlong", QVariant::LongLong ) );
+  fields.append( QgsField( "simplenumber", QMetaType::Type::Int ) );
+  fields.append( QgsField( "longlong", QMetaType::Type::LongLong ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
@@ -304,11 +304,11 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Out of range
   widget1->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor1->value( ), editor1->minimum() );
-  QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
+  QCOMPARE( widget1->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   widget1->setFeature( QgsFeature( vl->fields() ) );
   // Null
   QCOMPARE( editor1->value( ), editor1->minimum() );
-  QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
+  QCOMPARE( widget1->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   QCOMPARE( editor1->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
   editor1->mLineEdit->setText( QString( "151%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget1->value( ).toInt(), 151 );
@@ -323,11 +323,11 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Out of range
   widget0->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor0->value( ), editor0->minimum() );
-  QCOMPARE( widget0->value( ), QVariant( QVariant::Int ) );
+  QCOMPARE( widget0->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   widget0->setFeature( QgsFeature( vl->fields() ) );
   // Null
   QCOMPARE( editor0->value( ), editor0->minimum() );
-  QCOMPARE( widget0->value( ), QVariant( QVariant::Int ) );
+  QCOMPARE( widget0->value( ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   QCOMPARE( editor0->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
 
   editor0->mLineEdit->setText( QString( "150%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
@@ -385,21 +385,21 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
-  widget1->setValue( QVariant( QVariant::Double ) );
+  widget1->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsDoubleSpinBox
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
-  widget2->setValue( QVariant( QVariant::Double ) );
+  widget2->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsSpinBox
   widget3->setConfig( cfg );
   QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( w ) );
   QVERIFY( editor3 );
   widget3->initWidget( editor3 );
-  widget3->setValue( QVariant( QVariant::Int ) );
+  widget3->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );

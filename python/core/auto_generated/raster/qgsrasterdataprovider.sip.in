@@ -68,21 +68,6 @@ Base class for raster data providers.
 %End
   public:
 
-    enum ProviderCapability
-    {
-      NoProviderCapabilities,
-      ReadLayerMetadata,
-      WriteLayerMetadata,
-      ProviderHintBenefitsFromResampling,
-      ProviderHintCanPerformProviderResampling,
-      ReloadData,
-      DpiDependentData,
-      NativeRasterAttributeTable,
-    };
-
-    typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
-
-
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( const QString &uri,
@@ -100,7 +85,7 @@ The ``options`` argument specifies generic provider options and since QGIS 3.16 
     virtual QgsRasterDataProvider *clone() const = 0;
 
 
-    virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
+    virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 %Docstring
 Returns flags containing the supported capabilities of the data provider.
 %End
@@ -543,7 +528,7 @@ Converts a string ``formatName`` to a raster identify format.
 Converts a raster identify ``format`` to a translated string label.
 %End
 
-    static Capability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
+    static Qgis::RasterInterfaceCapability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
 %Docstring
 Converts a raster identify ``format`` to a capability.
 %End
@@ -795,9 +780,6 @@ Copy member variables from other raster data provider. Useful for implementation
 
 
 };
-
-QFlags<QgsRasterDataProvider::ProviderCapability> operator|(QgsRasterDataProvider::ProviderCapability f1, QFlags<QgsRasterDataProvider::ProviderCapability> f2);
-
 
 
 /************************************************************************

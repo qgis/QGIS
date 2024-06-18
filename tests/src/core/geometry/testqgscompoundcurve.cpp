@@ -1488,7 +1488,7 @@ void TestQgsCompoundCurve::deleteVertex()
   cc.deleteVertex( QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( cc.numPoints(), 0 );
 
-  // two lines
+  // two lines, small line first and long line second
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
                 << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) );
@@ -1506,19 +1506,20 @@ void TestQgsCompoundCurve::deleteVertex()
 
   const QgsLineString *lsPtr = dynamic_cast< const QgsLineString * >( cc.curveAt( 0 ) );
 
-  QCOMPARE( lsPtr->numPoints(), 2 );
+  QCOMPARE( lsPtr->numPoints(), 3 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( lsPtr->endPoint(), QgsPoint( Qgis::WkbType::PointZM, 31, 42, 4, 5 ) );
 
   //add vertex at the end of linestring
-  QVERIFY( cc.insertVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( Qgis::WkbType::PointZM, 35, 43, 4, 5 ) ) );
+  QVERIFY( cc.insertVertex( QgsVertexId( 0, 0, 3 ), QgsPoint( Qgis::WkbType::PointZM, 35, 43, 4, 5 ) ) );
 
   lsPtr = dynamic_cast< const QgsLineString * >( cc.curveAt( 0 ) );
 
-  QCOMPARE( lsPtr->numPoints(), 3 );
+  QCOMPARE( lsPtr->numPoints(), 4 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( lsPtr->endPoint(), QgsPoint( Qgis::WkbType::PointZM, 35, 43, 4, 5 ) );
 
+  // two lines, long line first and small line second
   ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
                 << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
                 << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 ) );
@@ -1535,9 +1536,22 @@ void TestQgsCompoundCurve::deleteVertex()
 
   lsPtr = dynamic_cast< const QgsLineString * >( cc.curveAt( 0 ) );
 
-  QCOMPARE( lsPtr->numPoints(), 2 );
+  QCOMPARE( lsPtr->numPoints(), 3 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( lsPtr->endPoint(), QgsPoint( Qgis::WkbType::PointZM, 31, 42, 4, 5 ) );
+
+  // small ("one-curve" i.e. 3 vertices total) CircularString followed by LineString
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 0, 3 ) << QgsPoint( 0, 4 ) );
+  cc.addCurve( cs.clone() );
+  cc.addCurve( ls.clone() );
+
+  QCOMPARE( cc.nCurves(), 2 );
+  QCOMPARE( cc.numPoints(), 5 );
+  QVERIFY( cc.deleteVertex( QgsVertexId( 0, 0, 2 ) ) );
+  QCOMPARE( cc.nCurves(), 1 );
+  QCOMPARE( cc.numPoints(), 3 );
 }
 
 void TestQgsCompoundCurve::filterVertices()

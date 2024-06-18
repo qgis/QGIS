@@ -3093,7 +3093,7 @@ void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &propert
 void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
 {
   const QVariantMap::iterator it = properties.find( QStringLiteral( "name" ) );
-  if ( it != properties.end() && it.value().type() == QVariant::String )
+  if ( it != properties.end() && it.value().userType() == QMetaType::Type::QString )
   {
     if ( saving )
       it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );

@@ -362,16 +362,16 @@ static size_t qgsQVariantApproximateMemoryUsage( const QVariant &v )
   // A QVariant has a private structure that is a union of things whose larger
   // size if a long long, and a int
   size_t s = sizeof( QVariant ) + sizeof( long long ) + sizeof( int );
-  if ( v.type() == QVariant::String )
+  if ( v.userType() == QMetaType::Type::QString )
   {
     s += qgsQStringApproximateMemoryUsage( v.toString() );
   }
-  else if ( v.type() == QVariant::StringList )
+  else if ( v.userType() == QMetaType::Type::QStringList )
   {
     for ( const QString &str : v.toStringList() )
       s += qgsQStringApproximateMemoryUsage( str );
   }
-  else if ( v.type() == QVariant::List )
+  else if ( v.userType() == QMetaType::Type::QVariantList )
   {
     for ( const QVariant &subV : v.toList() )
       s += qgsQVariantApproximateMemoryUsage( subV );

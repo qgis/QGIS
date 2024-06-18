@@ -57,7 +57,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( bool isDateOrTime READ isDateOrTime )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
-    Q_PROPERTY( QVariant::Type type READ type WRITE setType )
+    Q_PROPERTY( QMetaType::Type type READ type WRITE setType )
     Q_PROPERTY( QString comment READ comment WRITE setComment )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
@@ -84,12 +84,37 @@ class CORE_EXPORT QgsField
      *                this to QVariant::Invalid.
      */
     QgsField( const QString &name = QString(),
-              QVariant::Type type = QVariant::Invalid,
+              QMetaType::Type type = QMetaType::Type::UnknownType,
               const QString &typeName = QString(),
               int len = 0,
               int prec = 0,
               const QString &comment = QString(),
-              QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL;
+              QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
+
+
+    /**
+     * Constructor. Constructs a new QgsField object.
+     * \param name Field name
+     * \param type Field variant type, currently supported: String / Int / Double
+     * \param typeName Field type (e.g., char, varchar, text, int, serial, double).
+     * Field types are usually unique to the source and are stored exactly
+     * as returned from the data store.
+     * \param len Field length
+     * \param prec Field precision. Usually decimal places but may also be
+     * used in conjunction with other fields types (e.g., variable character fields)
+     * \param comment Comment for the field
+     * \param subType If the field is a collection, its element's type. When
+     *                all the elements don't need to have the same type, leave
+     *                this to QVariant::Invalid.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED QgsField( const QString &name,
+                                QVariant::Type type,
+                                const QString &typeName = QString(),
+                                int len = 0,
+                                int prec = 0,
+                                const QString &comment = QString(),
+                                QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL SIP_DEPRECATED;
 
     /**
      * Copy constructor
@@ -159,14 +184,14 @@ class CORE_EXPORT QgsField
     QString friendlyTypeString() const SIP_HOLDGIL;
 
     //! Gets variant type of the field as it will be retrieved from data source
-    QVariant::Type type() const SIP_HOLDGIL;
+    QMetaType::Type type() const SIP_HOLDGIL;
 
     /**
      * If the field is a collection, gets its element's type.
      * When all the elements don't need to have the same type, this returns
      * QVariant::Invalid.
      */
-    QVariant::Type subType() const SIP_HOLDGIL;
+    QMetaType::Type subType() const SIP_HOLDGIL;
 
     /**
      * Gets the field type. Field types vary depending on the data source. Examples
@@ -265,16 +290,30 @@ class CORE_EXPORT QgsField
     void setName( const QString &name ) SIP_HOLDGIL;
 
     /**
-     * Set variant type.
+     * Set variant \a type.
      */
-    void setType( QVariant::Type type ) SIP_HOLDGIL;
+    void setType( QMetaType::Type type ) SIP_HOLDGIL;
+
+    /**
+     * Set variant \a type.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED void setType( QVariant::Type type ) SIP_HOLDGIL SIP_DEPRECATED;
 
     /**
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
      */
-    void setSubType( QVariant::Type subType ) SIP_HOLDGIL;
+    void setSubType( QMetaType::Type subType ) SIP_HOLDGIL;
+
+    /**
+     * If the field is a collection, set its element's type.
+     * When all the elements don't need to have the same type, set this to
+     * QVariant::Invalid.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_HOLDGIL  SIP_DEPRECATED;
 
     /**
      * Set the field type.

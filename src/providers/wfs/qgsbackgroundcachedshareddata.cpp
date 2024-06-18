@@ -179,17 +179,17 @@ bool QgsBackgroundCachedSharedData::createCache()
   std::set<QString> setSQLiteColumnNameUpperCase;
   for ( const QgsField &field : std::as_const( mFields ) )
   {
-    QVariant::Type type = field.type();
+    QMetaType::Type type = field.type();
     // Map DateTime to int64 milliseconds from epoch
-    if ( type == QVariant::DateTime )
+    if ( type == QMetaType::Type::QDateTime )
     {
       // Note: this is just a wish. If GDAL < 2, QgsVectorFileWriter will actually map
       // it to a String
-      type = QVariant::LongLong;
+      type = QMetaType::Type::LongLong;
     }
-    else if ( type == QVariant::List && field.subType() == QVariant::String )
+    else if ( type == QMetaType::Type::QVariantList && field.subType() == QMetaType::Type::QString )
     {
-      type = QVariant::StringList;
+      type = QMetaType::Type::QStringList;
     }
 
     // Make sure we don't have several field names that only differ by their case
@@ -206,11 +206,11 @@ bool QgsBackgroundCachedSharedData::createCache()
     cacheFields.append( QgsField( sqliteFieldName, type, field.typeName() ) );
   }
   // Add some field for our internal use
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER, QVariant::Int, QStringLiteral( "int" ) ) );
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID, QVariant::String, QStringLiteral( "string" ) ) );
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM, QVariant::String, QStringLiteral( "string" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER, QMetaType::Type::Int, QStringLiteral( "int" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
   if ( mDistinctSelect )
-    cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5, QVariant::String, QStringLiteral( "string" ) ) );
+    cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
 
   const auto logMessageWithReason = [this]( const QString & reason )
   {
@@ -280,13 +280,13 @@ bool QgsBackgroundCachedSharedData::createCache()
     for ( const QgsField &field : std::as_const( cacheFields ) )
     {
       QString type( QStringLiteral( "VARCHAR" ) );
-      if ( field.type() == QVariant::Int )
+      if ( field.type() == QMetaType::Type::Int )
         type = QStringLiteral( "INTEGER" );
-      else if ( field.type() == QVariant::LongLong )
+      else if ( field.type() == QMetaType::Type::LongLong )
         type = QStringLiteral( "BIGINT" );
-      else if ( field.type() == QVariant::Double )
+      else if ( field.type() == QMetaType::Type::Double )
         type = QStringLiteral( "REAL" );
-      else if ( field.type() == QVariant::StringList )
+      else if ( field.type() == QMetaType::Type::QStringList )
         type = QStringLiteral( "JSONSTRINGLIST" );
 
       sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
@@ -626,10 +626,10 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       if ( idx >= 0 )
       {
         const QVariant &v = srcFeature.attributes().value( i );
-        const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
-        if ( v.type() == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
+        const QMetaType::Type fieldType = dataProviderFields.at( idx ).type();
+        if ( v.userType() == QMetaType::Type::QDateTime && !QgsVariantUtils::isNull( v ) )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
-        else if ( v.type() == QVariant::Map  && !QgsVariantUtils::isNull( v ) )
+        else if ( v.userType() == QMetaType::Type::QVariantMap  && !QgsVariantUtils::isNull( v ) )
         {
           QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( v ).toJson().constData() );
           if ( stringValue.isEmpty() )
@@ -639,7 +639,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
           }
           cachedFeature.setAttribute( idx, stringValue );
         }
-        else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
+        else if ( QgsWFSUtils::isCompatibleType( static_cast<QMetaType::Type>( v.userType() ), fieldType ) )
           cachedFeature.setAttribute( idx, v );
         else
           cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );
@@ -1129,7 +1129,7 @@ bool QgsBackgroundCachedSharedData::changeAttributeValues( const QgsChangedAttri
     {
       int idx = dataProviderFields.indexFromName( mMapUserVisibleFieldNameToSpatialiteColumnName[mFields.at( siter.key() ).name()] );
       Q_ASSERT( idx >= 0 );
-      if ( siter.value().type() == QVariant::DateTime && !QgsVariantUtils::isNull( siter.value() ) )
+      if ( siter.value().userType() == QMetaType::Type::QDateTime && !QgsVariantUtils::isNull( siter.value() ) )
         newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
       else
         newAttrMap[idx] = siter.value();
@@ -1153,26 +1153,26 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
     {
       // nothing to do
     }
-    else if ( v.type() == QVariant::DateTime )
+    else if ( v.userType() == QMetaType::Type::QDateTime )
     {
       qint64 val = v.toDateTime().toMSecsSinceEpoch();
       hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
-    else if ( v.type() == QVariant::Int )
+    else if ( v.userType() == QMetaType::Type::Int )
     {
       int val = v.toInt();
       hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
-    else if ( v.type() == QVariant::LongLong )
+    else if ( v.userType() == QMetaType::Type::LongLong )
     {
       qint64 val = v.toLongLong();
       hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
-    else if ( v.type() == QVariant::String )
+    else if ( v.userType() == QMetaType::Type::QString )
     {
       hash.addData( v.toByteArray() );
     }
-    else if ( v.type() == QVariant::StringList )
+    else if ( v.userType() == QMetaType::Type::QStringList )
     {
       for ( const QString &s : v.toStringList() )
         hash.addData( s.toUtf8() );

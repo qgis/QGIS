@@ -202,7 +202,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
     for ( const int attrIndex : usedAttributeIndices )
     {
-      if ( mSource->mFields.fieldOrigin( attrIndex ) != QgsFields::OriginProvider )
+      if ( mSource->mFields.fieldOrigin( attrIndex ) != Qgis::FieldOrigin::Provider )
         mDelegatedOrderByToProvider = false;
 
       attributeIndexes << attrIndex;
@@ -263,7 +263,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;
-      if ( mSource->mFields.fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
+      if ( mSource->mFields.fieldOrigin( attrIndex ) == Qgis::FieldOrigin::Provider )
         providerSubset << mSource->mFields.fieldOriginIndex( attrIndex );
     }
 
@@ -294,7 +294,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
       // If there are fields in the expression which are not of origin provider, the provider will not be able to filter based on them.
       // In this case we disable the expression filter.
-      if ( source->mFields.fieldOrigin( idx ) != QgsFields::OriginProvider )
+      if ( source->mFields.fieldOrigin( idx ) != Qgis::FieldOrigin::Provider )
       {
         mProviderRequest.disableFilter();
         // can't limit at provider side
@@ -798,7 +798,7 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   if ( !mSource->mFields.exists( fieldIdx ) )
     return;
 
-  if ( mSource->mFields.fieldOrigin( fieldIdx ) != QgsFields::OriginJoin )
+  if ( mSource->mFields.fieldOrigin( fieldIdx ) != Qgis::FieldOrigin::Join )
     return;
 
   int sourceLayerIndex;
@@ -939,7 +939,7 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
   QList< int >::const_iterator prepFieldIt = mPreparedFields.constBegin();
   for ( ; prepFieldIt != mPreparedFields.constEnd(); ++prepFieldIt )
   {
-    if ( mSource->mFields.fieldOrigin( *prepFieldIt ) != QgsFields::OriginJoin )
+    if ( mSource->mFields.fieldOrigin( *prepFieldIt ) != Qgis::FieldOrigin::Join )
     {
       resolvedFields.insert( *prepFieldIt );
     }
@@ -1044,20 +1044,20 @@ void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )
 {
   switch ( mSource->mFields.fieldOrigin( fieldIdx ) )
   {
-    case QgsFields::OriginExpression:
+    case Qgis::FieldOrigin::Expression:
       prepareExpression( fieldIdx );
       break;
 
-    case QgsFields::OriginJoin:
+    case Qgis::FieldOrigin::Join:
       if ( mSource->mJoinBuffer->containsJoins() )
       {
         prepareJoin( fieldIdx );
       }
       break;
 
-    case QgsFields::OriginUnknown:
-    case QgsFields::OriginProvider:
-    case QgsFields::OriginEdit:
+    case Qgis::FieldOrigin::Unknown:
+    case Qgis::FieldOrigin::Provider:
+    case Qgis::FieldOrigin::Edit:
       break;
   }
 }
@@ -1193,15 +1193,15 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   else
   {
     QString v = joinValue.toString();
-    switch ( joinValue.type() )
+    switch ( joinValue.userType() )
     {
-      case QVariant::Int:
-      case QVariant::LongLong:
-      case QVariant::Double:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::Double:
         break;
 
       default:
-      case QVariant::String:
+      case QMetaType::Type::QString:
         v.replace( '\'', QLatin1String( "''" ) );
         v.prepend( '\'' ).append( '\'' );
         break;

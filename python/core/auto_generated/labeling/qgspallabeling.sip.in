@@ -52,6 +52,7 @@ Contains settings for how a map layer will be labeled.
       MultiLineHeight,
       MultiLineAlignment,
       TextOrientation,
+      TabStopDistance,
       DirSymbDraw,
       DirSymbLeft,
       DirSymbRight,

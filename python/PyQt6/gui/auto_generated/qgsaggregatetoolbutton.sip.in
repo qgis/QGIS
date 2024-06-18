@@ -27,12 +27,20 @@ Functions are filtered based on the type.
 Constructor
 %End
 
-    void setType( QVariant::Type type );
+    void setType( QMetaType::Type type );
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End
 
-    QVariant::Type type() const;
+ void setType( QVariant::Type type ) /Deprecated/;
+%Docstring
+Based on the ``type`` of underlying data, some aggregates will be available or not.
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
+%End
+
+    QMetaType::Type type() const;
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End

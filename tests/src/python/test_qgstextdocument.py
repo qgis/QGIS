@@ -57,6 +57,30 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(len(doc[2]), 1)
         self.assertEqual(doc[2][0].text(), 'e')
 
+    def testFromPlainTextWithTabs(self):
+        doc = QgsTextDocument.fromPlainText(['a', 'b c\td\t gah', 'e'])
+        self.assertEqual(len(doc), 3)
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'a')
+        self.assertEqual(len(doc[1]), 5)
+        self.assertEqual(doc[1][0].text(), 'b c')
+        self.assertTrue(doc[1][1].isTab())
+        self.assertEqual(doc[1][2].text(), 'd')
+        self.assertTrue(doc[1][3].isTab())
+        self.assertEqual(doc[1][4].text(), ' gah')
+        self.assertEqual(len(doc[2]), 1)
+        self.assertEqual(doc[2][0].text(), 'e')
+
+        doc = QgsTextDocument.fromPlainText(['b\t\tc\td'])
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 6)
+        self.assertEqual(doc[0][0].text(), 'b')
+        self.assertTrue(doc[0][1].isTab())
+        self.assertTrue(doc[0][2].isTab())
+        self.assertEqual(doc[0][3].text(), 'c')
+        self.assertTrue(doc[0][4].isTab())
+        self.assertEqual(doc[0][5].text(), 'd')
+
     def testFromHtml(self):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><b style="text-decoration: underline; font-style: italic; font-size: 15pt; font-family: Serif">def</b> ghi<div>jkl</div></div>', 'b c d', 'e'])
         self.assertEqual(len(doc), 5)
@@ -96,6 +120,20 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(len(doc[4]), 1)
         self.assertEqual(doc[4][0].text(), 'e')
 
+        # with one line break
+        doc = QgsTextDocument.fromHtml(['<span style="color:red">a <span style="color:blue">b<br></span>c</span>d'])
+        self.assertEqual(len(doc), 2)
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[0][0].text(), 'a ')
+        self.assertEqual(doc[0][1].characterFormat().textColor().name(), '#0000ff')
+        self.assertEqual(doc[0][1].text(), 'b')
+        self.assertEqual(len(doc[1]), 2)
+        self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[1][0].text(), 'c')
+        self.assertEqual(doc[1][1].characterFormat().textColor().name(), '#000000')
+        self.assertEqual(doc[1][1].text(), 'd')
+
+        # with two line breaks
         doc = QgsTextDocument.fromHtml(['<span style="color:red">a<br><span style="color:blue">b<br></span>c</span>d'])
         self.assertEqual(len(doc), 3)
         self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
@@ -107,6 +145,56 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[2][0].text(), 'c')
         self.assertEqual(doc[2][1].characterFormat().textColor().name(), '#000000')
         self.assertEqual(doc[2][1].text(), 'd')
+
+        # with tabs
+        doc = QgsTextDocument.fromHtml(['<span\tstyle="color:red">a\t<span style="color:blue">b</span>\tc</span>d'])
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 6)
+
+        self.assertEqual(doc[0][0].text(), 'a')
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+
+        self.assertTrue(doc[0][1].isTab())
+
+        self.assertEqual(doc[0][2].text(), 'b')
+        self.assertEqual(doc[0][2].characterFormat().textColor().name(), '#0000ff')
+
+        self.assertTrue(doc[0][3].isTab())
+
+        self.assertEqual(doc[0][4].text(), 'c')
+        self.assertEqual(doc[0][4].characterFormat().textColor().name(), '#ff0000')
+
+        # combination tabs and brs
+        doc = QgsTextDocument.fromHtml(['<span style="color:red">aaaa aaa\t<span style="color:blue">b<br></span>c</span>d'])
+        self.assertEqual(len(doc), 2)
+
+        self.assertEqual(len(doc[0]), 3)
+        self.assertEqual(doc[0][0].text(), 'aaaa aaa')
+        self.assertEqual(doc[0][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertTrue(doc[0][1].isTab())
+        self.assertEqual(doc[0][2].text(), 'b')
+        self.assertEqual(doc[0][2].characterFormat().textColor().name(), '#0000ff')
+
+        self.assertEqual(len(doc[1]), 2)
+        self.assertEqual(doc[1][0].text(), 'c')
+        self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#ff0000')
+        self.assertEqual(doc[1][1].text(), 'd')
+        self.assertEqual(doc[1][1].characterFormat().textColor().name(), '#000000')
+
+        # Class || '\t' || 'a<br>b\tcdcd'
+        # combination tabs and newline, different string
+        doc = QgsTextDocument.fromHtml(['Class\ta<br>b\tcdcd'])
+        self.assertEqual(len(doc), 2)
+
+        self.assertEqual(len(doc[0]), 3)
+        self.assertEqual(doc[0][0].text(), 'Class')
+        self.assertTrue(doc[0][1].isTab())
+        self.assertEqual(doc[0][2].text(), 'a')
+
+        self.assertEqual(len(doc[1]), 3)
+        self.assertEqual(doc[1][0].text(), 'b')
+        self.assertTrue(doc[1][1].isTab())
+        self.assertEqual(doc[1][2].text(), 'cdcd')
 
     def testFromHtmlVerticalAlignment(self):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><sub>def<b>extra</b></sub> ghi</div><sup>sup</sup><span style="vertical-align: sub">css</span>'])

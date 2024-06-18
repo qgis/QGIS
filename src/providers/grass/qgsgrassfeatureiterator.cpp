@@ -703,7 +703,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
     if ( isEditedLayer )
     {
       value = mSource->mLayer->attribute( cat, *iter );
-      if ( value.type() == QVariant::ByteArray )
+      if ( value.userType() == QMetaType::Type::QByteArray )
       {
         value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
       }

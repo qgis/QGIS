@@ -345,29 +345,29 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 20, 0, 20 )
 
          // floating point
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QVariant::Double )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (double)" ), QStringLiteral( "float" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QMetaType::Type::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (double)" ), QStringLiteral( "float" ), QMetaType::Type::Double )
 
          // date/time types
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime, -1, -1, -1, -1 )
 
          // string types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QMetaType::Type::QString )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QMetaType::Type::QString )
          ;
 }
 
@@ -388,10 +388,10 @@ QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName, co
   {
     const QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
 
-    if ( schemaSettingsVariant.type() == QVariant::Map )
+    if ( schemaSettingsVariant.userType() == QMetaType::Type::QVariantMap )
     {
       const QVariantMap schemaSettings = schemaSettingsVariant.toMap();
-      if ( schemaSettings.contains( database ) && schemaSettings.value( database ).type() == QVariant::StringList )
+      if ( schemaSettings.contains( database ) && schemaSettings.value( database ).userType() == QMetaType::Type::QStringList )
         return schemaSettings.value( database ).toStringList();
     }
   }

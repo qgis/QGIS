@@ -96,7 +96,7 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
   {
     mStats |= STATS.at( s );
     mSelectedStats << STATS.at( s );
-    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == Qgis::Statistic::Count || STATS.at( s ) == Qgis::Statistic::Variety ? QVariant::Int : QVariant::Double ) );
+    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == Qgis::Statistic::Count || STATS.at( s ) == Qgis::Statistic::Variety ? QMetaType::Type::Int : QMetaType::Type::Double ) );
   }
 
   return true;

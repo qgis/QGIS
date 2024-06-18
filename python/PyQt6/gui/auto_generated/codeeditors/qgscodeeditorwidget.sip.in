@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCodeEditorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -49,6 +50,8 @@ feedback, otherwise an integrated message bar will be used.
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void showEvent( QShowEvent *event );
+
+    virtual bool eventFilter( QObject *obj, QEvent *event );
 
 
     QgsCodeEditor *editor();
@@ -90,6 +93,15 @@ This method calls :py:func:`QgsCodeEditor.clearWarnings()`, but also removes
 highlights from the widget scrollbars at the warning locations.
 
 .. seealso:: :py:func:`addWarning`
+%End
+
+    QString filePath() const;
+%Docstring
+Returns the widget's associated file path.
+
+.. seealso:: :py:func:`setFilePath`
+
+.. seealso:: :py:func:`filePathChanged`
 %End
 
   public slots:
@@ -138,11 +150,62 @@ This will automatically open the search bar and start a find operation using
 the default behavior, e.g. searching for any selected text in the code editor.
 %End
 
+    bool loadFile( const QString &path );
+%Docstring
+Loads the file at the specified ``path`` into the widget, replacing the code editor's
+content with that from the file.
+
+This automatically sets the widget's :py:func:`~QgsCodeEditorWidget.filePath`
+
+Returns ``True`` if the file was loaded successfully.
+%End
+
+    void setFilePath( const QString &path );
+%Docstring
+Sets the widget's associated file ``path``.
+
+.. seealso:: :py:func:`loadFile`
+
+.. seealso:: :py:func:`filePathChanged`
+
+.. seealso:: :py:func:`filePath`
+%End
+
+    bool openInExternalEditor( int line = -1, int column = -1 );
+%Docstring
+Attempts to opens the script from the editor in an external text editor.
+
+This requires that the widget has an associated :py:func:`~QgsCodeEditorWidget.filePath` set.
+
+Optionally a target ``line`` and ``column`` number can be specified to open the editor
+at the corresponding location. (Not all external editors support this.) Line/column
+numbers of -1 indicate that the current cursor position should be used. A ``line``
+number of 0 corresponds to the first line, and a column number of 0 corresponds to
+the first column.
+
+:return: ``True`` if the file was opened successfully.
+%End
+
   signals:
 
     void searchBarToggled( bool visible );
 %Docstring
 Emitted when the visibility of the search bar is changed.
+%End
+
+    void filePathChanged( const QString &path );
+%Docstring
+Emitted when the widget's associated file path is changed.
+
+.. seealso:: :py:func:`setFilePath`
+
+.. seealso:: :py:func:`filePath`
+%End
+
+    void loadedExternalChanges();
+%Docstring
+Emitted when the widget loads in text from the associated file to bring in
+changes made externally to the file.
 %End
 
 };

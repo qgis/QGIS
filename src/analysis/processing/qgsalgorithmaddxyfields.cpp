@@ -104,8 +104,8 @@ QgsFields QgsAddXYFieldsAlgorithm::outputFields( const QgsFields &inputFields ) 
     const QString yFieldName = mPrefix + 'y';
 
     QgsFields outFields = inputFields;
-    outFields.append( QgsField( xFieldName, QVariant::Double, QString(), 20, 10 ) );
-    outFields.append( QgsField( yFieldName, QVariant::Double, QString(), 20, 10 ) );
+    outFields.append( QgsField( xFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
+    outFields.append( QgsField( yFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
     return outFields;
   }
 }

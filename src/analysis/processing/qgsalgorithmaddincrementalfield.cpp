@@ -103,7 +103,7 @@ void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
 QgsFields QgsAddIncrementalFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outFields = inputFields;
-  outFields.append( QgsField( mFieldName, QVariant::LongLong ) );
+  outFields.append( QgsField( mFieldName, QMetaType::Type::LongLong ) );
   mFields = outFields;
   return outFields;
 }

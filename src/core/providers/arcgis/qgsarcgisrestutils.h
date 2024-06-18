@@ -120,7 +120,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts an ESRI REST field \a type to a QVariant type.
      */
-    static QVariant::Type convertFieldType( const QString &type );
+    static QMetaType::Type convertFieldType( const QString &type );
 
     /**
      * Converts an ESRI REST geometry \a type to a WKB type.
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \since QGIS 3.28
      */
-    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context );
+    static QVariant variantToAttributeValue( const QVariant &variant, QMetaType::Type expectedType, const QgsArcGisRestContext &context );
 
     /**
      * Converts a \a field's definition to an ArcGIS REST JSON representation.

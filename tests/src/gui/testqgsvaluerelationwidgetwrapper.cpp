@@ -1371,7 +1371,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   // FEATURE 4
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
   // Because allowNull is false we have a NULL variant here
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  QCOMPARE( w_favoriteauthors.value(), QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList ) );
   cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
   w_favoriteauthors.setConfig( cfg_favoriteauthors );
   //check if first feature checked correctly (empty list)
@@ -1389,7 +1389,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   // FEATURE 5
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
   // Because allowNull is false we have a NULL variant here
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  QCOMPARE( w_favoriteauthors.value(), QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList ) );
 
   cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
   w_favoriteauthors.setConfig( cfg_favoriteauthors );
@@ -1540,7 +1540,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
 
   // Because allowNull is false we have a NULL variant here
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  QCOMPARE( w_favoriteauthors.value(), QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList ) );
   cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
   w_favoriteauthors.setConfig( cfg_favoriteauthors );
 
@@ -1561,7 +1561,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
 
   // Because allowNull is false we have a NULL variant here
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  QCOMPARE( w_favoriteauthors.value(), QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList ) );
   cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
   w_favoriteauthors.setConfig( cfg_favoriteauthors );
 

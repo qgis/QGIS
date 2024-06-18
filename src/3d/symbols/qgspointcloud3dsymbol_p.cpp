@@ -607,9 +607,8 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point( x, y, z );
-    const QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
-    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
   }
 }
 
@@ -728,9 +727,8 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
         alreadyPrintedDebug = true;
       }
     }
-    QgsVector3D point( x, y, z );
-    point = context.map().mapToWorldCoordinates( point );
-    outNormal.positions.push_back( QVector3D( point.x(), point.y(), point.z() ) );
+    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
 
     if ( attrIsX )
       outNormal.parameter.push_back( x );
@@ -848,8 +846,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point( x, y, z );
-    const QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
 
@@ -883,7 +880,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     color.setY( ig / 255.0f );
     color.setZ( ib / 255.0f );
 
-    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
     outNormal.colors.push_back( color );
   }
 }
@@ -1013,8 +1010,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point( x, y, z );
-    const QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     float iParam = 0.0f;
     if ( attrIsX )
       iParam = x;
@@ -1028,7 +1024,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     if ( filteredOutValues.contains( ( int ) iParam ) ||
          ! categoriesValues.contains( ( int ) iParam ) )
       continue;
-    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
 
     // find iParam actual index in the categories list
     float iParam2 = categoriesValues.indexOf( ( int )iParam ) + 1;

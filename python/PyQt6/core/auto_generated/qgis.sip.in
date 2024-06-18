@@ -109,6 +109,14 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
+    enum class LoadStyleFlag /BaseType=IntFlag/
+    {
+      IgnoreMissingStyleErrors,
+    };
+
+    typedef QFlags<Qgis::LoadStyleFlag> LoadStyleFlags;
+
+
     enum class WkbType /BaseType=IntEnum/
       {
       Unknown,
@@ -792,6 +800,15 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldOrigin /BaseType=IntEnum/
+      {
+      Unknown,
+      Provider,
+      Join,
+      Edit,
+      Expression
+    };
+
     enum class FieldConfigurationFlag /BaseType=IntFlag/
     {
       NoFlag,
@@ -1456,6 +1473,25 @@ The development version
       SuperScript,
       SubScript,
     };
+
+    enum class VectorSimplificationAlgorithm /BaseType=IntEnum/
+      {
+      Distance,
+      SnapToGrid,
+      Visvalingam,
+      SnappedToGridGlobal,
+    };
+
+    enum class VectorRenderingSimplificationFlag /BaseType=IntFlag/
+    {
+      NoSimplification,
+      GeometrySimplification,
+      AntialiasingSimplification,
+      FullSimplification,
+    };
+
+    typedef QFlags<Qgis::VectorRenderingSimplificationFlag> VectorRenderingSimplificationFlags;
+
 
     enum class RenderSubcomponentProperty /BaseType=IntEnum/
     {
@@ -2294,6 +2330,42 @@ The development version
       Feature,
     };
 
+
+    enum class RasterInterfaceCapability /BaseType=IntFlag/
+    {
+      NoCapabilities,
+      Size,
+      Create,
+      Remove,
+      BuildPyramids,
+      Identify,
+      IdentifyValue,
+      IdentifyText,
+      IdentifyHtml,
+      IdentifyFeature,
+      Prefetch,
+    };
+
+    typedef QFlags<Qgis::RasterInterfaceCapability> RasterInterfaceCapabilities;
+
+
+
+    enum class RasterProviderCapability /BaseType=IntFlag/
+    {
+      NoProviderCapabilities,
+      ReadLayerMetadata,
+      WriteLayerMetadata,
+      ProviderHintBenefitsFromResampling,
+      ProviderHintCanPerformProviderResampling,
+      ReloadData,
+      DpiDependentData,
+      NativeRasterAttributeTable,
+      BuildPyramids,
+    };
+
+    typedef QFlags<Qgis::RasterProviderCapability> RasterProviderCapabilities;
+
+
     enum class ElevationMapCombineMethod /BaseType=IntEnum/
     {
       HighestElevation,
@@ -2908,6 +2980,8 @@ QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis:
 
 QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
 
+QFlags<Qgis::LoadStyleFlag> operator|(Qgis::LoadStyleFlag f1, QFlags<Qgis::LoadStyleFlag> f2);
+
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
 
 QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
@@ -2990,6 +3064,10 @@ QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::S
 
 QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
 
+QFlags<Qgis::RasterInterfaceCapability> operator|(Qgis::RasterInterfaceCapability f1, QFlags<Qgis::RasterInterfaceCapability> f2);
+
+QFlags<Qgis::RasterProviderCapability> operator|(Qgis::RasterProviderCapability f1, QFlags<Qgis::RasterProviderCapability> f2);
+
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 
 QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
@@ -3002,6 +3080,7 @@ QFlags<Qgis::ProcessingParameterFlag> operator|(Qgis::ProcessingParameterFlag f1
 
 QFlags<Qgis::DataItemProviderCapability> operator|(Qgis::DataItemProviderCapability f1, QFlags<Qgis::DataItemProviderCapability> f2);
 
+QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingSimplificationFlag f1, QFlags<Qgis::VectorRenderingSimplificationFlag> f2);
 
 
 

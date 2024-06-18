@@ -17,6 +17,7 @@
 #include "qgshanaexception.h"
 #include "qgshanaresultset.h"
 #include "qgshanautils.h"
+#include "qgsvariantutils.h"
 #include "qgslogger.h"
 #include <QString>
 
@@ -115,7 +116,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
         if ( str.isNull() || str->empty() )
-          return QVariant( QVariant::Char );
+          return QgsVariantUtils::createNullVariant( QMetaType::Type::QChar );
         else
           return QVariant( QChar( str->at( 0 ) ) );
       }
@@ -128,7 +129,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
         if ( str.isNull() || str->empty() )
-          return QVariant( QVariant::Char );
+          return QgsVariantUtils::createNullVariant( QMetaType::Type::QChar );
         else
           return QVariant( QChar( str->at( 0 ) ) );
       }

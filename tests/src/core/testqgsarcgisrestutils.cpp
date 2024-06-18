@@ -91,22 +91,22 @@ void TestQgsArcGisRestUtils::cleanupTestCase()
 
 void TestQgsArcGisRestUtils::testMapEsriFieldType()
 {
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeInteger" ) ), QVariant::LongLong );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSmallInteger" ) ), QVariant::Int );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QVariant::Double );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QVariant::Double );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeString" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::DateTime );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QVariant::LongLong );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QVariant::ByteArray );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeRaster" ) ), QVariant::ByteArray );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGUID" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeXML" ) ), QVariant::String );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeInteger" ) ), QMetaType::Type::LongLong );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSmallInteger" ) ), QMetaType::Type::Int );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QMetaType::Type::Double );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QMetaType::Type::Double );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeString" ) ), QMetaType::Type::QString );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QMetaType::Type::QDateTime );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QMetaType::Type::LongLong );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QMetaType::Type::QByteArray );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QMetaType::Type::QString );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeRaster" ) ), QMetaType::Type::QByteArray );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGUID" ) ), QMetaType::Type::QString );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeXML" ) ), QMetaType::Type::QString );
 
   // not valid fields
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QVariant::Invalid );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "xxx" ) ), QVariant::Invalid );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QMetaType::Type::UnknownType );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "xxx" ) ), QMetaType::Type::UnknownType );
 }
 
 void TestQgsArcGisRestUtils::testParseSpatialReference()

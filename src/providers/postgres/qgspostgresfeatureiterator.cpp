@@ -963,7 +963,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         QgsField fld = mSource->mFields.at( idx );
         QVariant v;
 
-        if ( fld.type() == QVariant::LongLong )
+        if ( fld.type() == QMetaType::Type::LongLong )
         {
           v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName(), mConn );
         }
@@ -1019,12 +1019,12 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 
   switch ( fld.type() )
   {
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
     {
       //special handling for binary field values
       if ( ::PQgetisnull( queryResult.result(), row, col ) )
       {
-        v = QVariant( QVariant::ByteArray );
+        v = QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray );
       }
       else
       {
@@ -1033,7 +1033,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
         unsigned char *data = ::PQunescapeBytea( reinterpret_cast<const unsigned char *>( value ), &returnedLength );
         if ( returnedLength == 0 )
         {
-          v = QVariant( QVariant::ByteArray );
+          v = QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray );
         }
         else
         {
@@ -1043,11 +1043,11 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
       }
       break;
     }
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
     {
       if ( ::PQgetisnull( queryResult.result(), row, col ) )
       {
-        v = QVariant( QVariant::LongLong );
+        v = QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
       }
       else
       {

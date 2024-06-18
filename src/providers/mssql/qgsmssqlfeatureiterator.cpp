@@ -488,13 +488,13 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       const QVariant originalValue = mQuery->value( i );
       QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
       QVariant v = originalValue;
-      if ( fld.type() == QVariant::Time )
+      if ( fld.type() == QMetaType::Type::QTime )
         v = QgsMssqlProvider::convertTimeValue( v );
-      if ( v.type() != fld.type() )
+      if ( v.userType() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), originalValue.toString() );
 
       // second chance for time fields -- time fields are not correctly handled by sql server driver on linux (maybe win too?)
-      if ( QgsVariantUtils::isNull( v ) && fld.type() == QVariant::Time && originalValue.isValid() && originalValue.type() == QVariant::ByteArray )
+      if ( QgsVariantUtils::isNull( v ) && fld.type() == QMetaType::Type::QTime && originalValue.isValid() && originalValue.userType() == QMetaType::Type::QByteArray )
       {
         // time fields can be returned as byte arrays... woot
         const QByteArray ba = originalValue.toByteArray();
@@ -505,7 +505,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
           const int seconds = ba.at( 4 );
           v = QTime( hours, mins, seconds );
           if ( !v.isValid() ) // can't handle it
-            v = QVariant( QVariant::Time );
+            v = QgsVariantUtils::createNullVariant( QMetaType::Type::QTime );
         }
       }
 
@@ -531,9 +531,9 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
           QgsField fld = mSource->mFields.at( idx );
 
           QVariant v = mQuery->record().value( fld.name() );
-          if ( fld.type() == QVariant::Time )
+          if ( fld.type() == QMetaType::Type::QTime )
             v = QgsMssqlProvider::convertTimeValue( v );
-          if ( v.type() != fld.type() )
+          if ( v.userType() != fld.type() )
             v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
           primaryKeyVals << v;
 

@@ -39,21 +39,20 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
 
   // don't use the default QgsPostgresConn::quotedValue handling for double values -- for
   // various reasons it returns them as string values!
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::UserType:
-      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    default:
+
+      if ( value.userType() == qMetaTypeId<QgsGeometry>() )
       {
         const QgsGeometry geom = value.value<QgsGeometry>();
         return QString( "ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
       }
       break;
 
-    default:
-      break;
   }
 
   return QgsPostgresConn::quotedValue( value );

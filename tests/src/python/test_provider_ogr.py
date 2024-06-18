@@ -3597,6 +3597,18 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertAlmostEqual(vl.extent3D().zMaximum(), 105.6, places=3)
         del vl
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def testReadOnlyFieldsFileGeodatabase(self):
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir, 'testReadOnlyFieldsFileGeodatabase.gdb')
+            ds = ogr.GetDriverByName("OpenFileGDB").CreateDataSource(dest_file_name)
+            ds.CreateLayer("test", geom_type=ogr.wkbPolygon, options=["CREATE_SHAPE_AREA_AND_LENGTH_FIELDS=YES"])
+            ds = None
+
+            vl = QgsVectorLayer(dest_file_name, 'vl')
+            self.assertTrue(vl.fields()["Shape_Area"].isReadOnly())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -122,6 +122,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MultiLineHeight = 32,
       MultiLineAlignment = 33,
       TextOrientation = 110,
+      TabStopDistance = 120, //!< Tab stop distance, since QGIS 3.38
       DirSymbDraw = 34,
       DirSymbLeft = 35,
       DirSymbRight = 36,
@@ -637,7 +638,7 @@ class CORE_EXPORT QgsPalLayerSettings
      */
 #ifndef SIP_RUN
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr,
-                             QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *documentMetrics = nullptr, QRectF *outerBounds = nullptr );
+                             QgsTextFormat *format = nullptr, QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *documentMetrics = nullptr, QRectF *outerBounds = nullptr );
 #else
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr );
 #endif

@@ -174,14 +174,14 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 
   cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 3 );
-  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   cb->setIdentifierValues( QVariantList() << "silver" << 888 << "fish" );
   QCOMPARE( cb->identifierValues(), QVariantList() << "silver" << 888 << "fish" );
 
   cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 3 );
-  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   cb->setIdentifierFields( QStringList() << "material" << "raccord" );
   cb->setDisplayExpression( "\"material\" || ' ' || \"raccord\"" );
@@ -193,7 +193,7 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 
   cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 2 );
-  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant( QVariant::Int ) << QVariant( QVariant::Int ) );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 }
 
 void TestQgsFeatureListComboBox::testAllowNull()

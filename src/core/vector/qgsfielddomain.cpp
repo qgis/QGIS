@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsfielddomain.h"
+#include "qgsvariantutils.h"
 #include <memory>
 
 //
 // QgsFieldDomain
 //
 
-QgsFieldDomain::QgsFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType )
+QgsFieldDomain::QgsFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType )
   : mName( name )
   , mDescription( description )
   , mFieldType( fieldType )
@@ -28,7 +29,19 @@ QgsFieldDomain::QgsFieldDomain( const QString &name, const QString &description,
 
 }
 
+QgsFieldDomain::QgsFieldDomain( const QString &name,
+                                const QString &description,
+                                QVariant::Type fieldType )
+  : QgsFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ) )
+{
+}
+
 QgsFieldDomain::~QgsFieldDomain() = default;
+
+void QgsFieldDomain::setFieldType( QVariant::Type type )
+{
+  setFieldType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
 //
 // QgsCodedValue
@@ -47,9 +60,15 @@ bool QgsCodedValue::operator!=( const QgsCodedValue &other ) const
 // QgsCodedFieldDomain
 //
 
-QgsCodedFieldDomain::QgsCodedFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QList<QgsCodedValue> &values )
+QgsCodedFieldDomain::QgsCodedFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType, const QList<QgsCodedValue> &values )
   : QgsFieldDomain( name, description, fieldType )
   , mValues( values )
+{
+
+}
+
+QgsCodedFieldDomain::QgsCodedFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QList<QgsCodedValue> &values )
+  : QgsCodedFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), values )
 {
 
 }
@@ -76,7 +95,7 @@ QgsCodedFieldDomain *QgsCodedFieldDomain::clone() const
 // QgsRangeFieldDomain
 //
 
-QgsRangeFieldDomain::QgsRangeFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QVariant &minimum, bool minimumIsInclusive, const QVariant &maximum, bool maximumIsInclusive )
+QgsRangeFieldDomain::QgsRangeFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType, const QVariant &minimum, bool minimumIsInclusive, const QVariant &maximum, bool maximumIsInclusive )
   : QgsFieldDomain( name, description, fieldType )
   , mMin( minimum )
   , mMax( maximum )
@@ -84,6 +103,11 @@ QgsRangeFieldDomain::QgsRangeFieldDomain( const QString &name, const QString &de
   , mMaxIsInclusive( maximumIsInclusive )
 {
 
+}
+
+QgsRangeFieldDomain::QgsRangeFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QVariant &minimum, bool minimumIsInclusive, const QVariant &maximum, bool maximumIsInclusive )
+  : QgsRangeFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), minimum, minimumIsInclusive, maximum, maximumIsInclusive )
+{
 }
 
 Qgis::FieldDomainType QgsRangeFieldDomain::type() const
@@ -109,11 +133,16 @@ QgsRangeFieldDomain *QgsRangeFieldDomain::clone() const
 // QgsGlobFieldDomain
 //
 
-QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QString &glob )
+QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType, const QString &glob )
   : QgsFieldDomain( name, description, fieldType )
   , mGlob( glob )
 {
 
+}
+
+QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QString &glob )
+  : QgsGlobFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), glob )
+{
 }
 
 Qgis::FieldDomainType QgsGlobFieldDomain::type() const

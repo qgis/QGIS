@@ -170,11 +170,11 @@ void QgsPropertyOverrideButton::updateFieldLists()
           break;
 
         case QgsPropertyDefinition::DataTypeNumeric:
-          fieldMatch = f.isNumeric() || f.type() == QVariant::String;
+          fieldMatch = f.isNumeric() || f.type() == QMetaType::Type::QString;
           break;
 
         case QgsPropertyDefinition::DataTypeString:
-          fieldMatch = f.type() == QVariant::String;
+          fieldMatch = f.type() == QMetaType::Type::QString;
           break;
       }
 

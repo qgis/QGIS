@@ -444,8 +444,8 @@ void QgsGdalSourceSelect::fillOpenOptions()
       QComboBox *cb = new QComboBox();
       cb->addItem( tr( "Yes" ), "YES" );
       cb->addItem( tr( "No" ), "NO" );
-      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
-      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
+      int idx = cb->findData( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
       cb->setCurrentIndex( idx );
       control = cb;
     }
@@ -456,8 +456,8 @@ void QgsGdalSourceSelect::fillOpenOptions()
       {
         cb->addItem( val, val );
       }
-      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
-      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
+      int idx = cb->findData( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
       if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0 && label->text() == QLatin1String( "MODE" ) && options.contains( QLatin1String( "INTERPOLATED" ) ) )

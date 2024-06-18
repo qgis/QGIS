@@ -11,7 +11,12 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsMultiLineString, QgsLineString, QgsPoint
+from qgis.core import (
+    QgsMultiLineString,
+    QgsLineString,
+    QgsPoint,
+    QgsRectangle
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -29,6 +34,32 @@ class TestQgsMultiLineString(QgisTestCase):
         line = multiline.geometryN(0)
         self.assertEqual(line.startPoint(), QgsPoint(1, 2))
         self.assertEqual(line.endPoint(), QgsPoint(3, 4))
+
+        p = QgsMultiLineString([])
+        self.assertTrue(p.isEmpty())
+
+        value = QgsLineString([[1, 2], [10, 2], [10, 10]])
+        p = QgsMultiLineString([value])
+        self.assertEqual(p.asWkt(), 'MultiLineString ((1 2, 10 2, 10 10))')
+        # constructor should have made internal copy
+        del value
+        self.assertEqual(p.asWkt(), 'MultiLineString ((1 2, 10 2, 10 10))')
+
+        p = QgsMultiLineString([QgsLineString([[1, 2], [10, 2], [10, 10], [1, 2]]),
+                                QgsLineString([[100, 2], [110, 2], [110, 10], [100, 2]])])
+        self.assertEqual(p.asWkt(), 'MultiLineString ((1 2, 10 2, 10 10, 1 2),(100 2, 110 2, 110 10, 100 2))')
+
+        # with z
+        p = QgsMultiLineString([QgsLineString([[1, 2, 3], [10, 2, 3], [10, 10, 3], [1, 2, 3]]),
+                                QgsLineString([[100, 2, 4], [110, 2, 4], [110, 10, 4], [100, 2, 4]])])
+        self.assertEqual(p.asWkt(),
+                         'MultiLineStringZ ((1 2 3, 10 2 3, 10 10 3, 1 2 3),(100 2 4, 110 2 4, 110 10 4, 100 2 4))')
+
+        # with zm
+        p = QgsMultiLineString([QgsLineString([[1, 2, 3, 5], [10, 2, 3, 5], [10, 10, 3, 5], [1, 2, 3, 5]]),
+                                QgsLineString([[100, 2, 4, 6], [110, 2, 4, 6], [110, 10, 4, 6], [100, 2, 4, 6]])])
+        self.assertEqual(p.asWkt(),
+                         'MultiLineStringZM ((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5),(100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6))')
 
     def testMeasureLine(self):
         multiline = QgsMultiLineString()
@@ -162,6 +193,45 @@ class TestQgsMultiLineString(QgisTestCase):
         epsilon *= 10
         self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
         self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+    def test_add_geometries(self):
+        """
+        Test adding multiple geometries
+        """
+        # empty collection
+        collection = QgsMultiLineString()
+        self.assertTrue(collection.addGeometries([]))
+        self.assertEqual(collection.asWkt(), 'MultiLineString EMPTY')
+        self.assertEqual(collection.boundingBox(), QgsRectangle())
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsLineString([[1, 2, 3], [3, 4, 3], [1, 4, 3], [1, 2, 3]]),
+                QgsLineString(
+                    [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]])])
+        )
+        self.assertEqual(collection.asWkt(),
+                         'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+
+        # can't add non-linestrings
+        self.assertFalse(
+            collection.addGeometries([
+                QgsPoint(100, 200)]
+            ))
+        self.assertEqual(collection.asWkt(),
+                         'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 13, 22))
+
+        self.assertTrue(
+            collection.addGeometries([
+                QgsLineString([[100, 2, 3], [300, 4, 3]])])
+        )
+        self.assertEqual(collection.asWkt(), 'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33),(100 2 3, 300 4 3))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 300, 22))
 
 
 if __name__ == '__main__':

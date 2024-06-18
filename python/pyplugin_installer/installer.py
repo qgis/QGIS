@@ -50,7 +50,6 @@ from qgis.utils import (
     unloadPlugin,
     loadPlugin,
     OverrideCursor,
-    reloadPlugin,
     updateAvailablePlugins,
     plugins_metadata_parser,
     isPluginLoaded,
@@ -685,11 +684,10 @@ class QgsPluginInstaller(QObject):
 
                 settings = QgsSettings()
                 if settings.contains('/PythonPlugins/' + pluginName):  # Plugin was available?
+                    unloadPlugin(pluginName)
+                    loadPlugin(pluginName)
                     if settings.value('/PythonPlugins/' + pluginName, False, bool):  # Plugin was also active?
-                        reloadPlugin(pluginName)  # unloadPlugin + loadPlugin + startPlugin
-                    else:
-                        unloadPlugin(pluginName)
-                        loadPlugin(pluginName)
+                        startPlugin(pluginName)
                 else:
                     if startPlugin(pluginName):
                         settings.setValue('/PythonPlugins/' + pluginName, True)

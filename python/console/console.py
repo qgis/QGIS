@@ -18,6 +18,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 import os
+import subprocess
 
 from qgis.PyQt.QtCore import Qt, QTimer, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
@@ -587,12 +588,7 @@ class PythonConsoleWidget(QWidget):
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
-        path = tabWidget.path
-        import subprocess
-        try:
-            subprocess.Popen([os.environ['EDITOR'], path])
-        except KeyError:
-            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+        tabWidget.open_in_external_editor()
 
     def openScriptFile(self):
         settings = QgsSettings()
@@ -604,7 +600,7 @@ class PythonConsoleWidget(QWidget):
             for pyFile in fileList:
                 for i in range(self.tabEditorWidget.count()):
                     tabWidget = self.tabEditorWidget.widget(i)
-                    if tabWidget.path == pyFile:
+                    if tabWidget.file_path() == pyFile:
                         self.tabEditorWidget.setCurrentWidget(tabWidget)
                         break
                 else:
@@ -621,7 +617,7 @@ class PythonConsoleWidget(QWidget):
             tabWidget.save()
         except (IOError, OSError) as error:
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
+                                                 'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.file_path(),
                                                                                                               error.strerror)
             self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
 
@@ -629,13 +625,15 @@ class PythonConsoleWidget(QWidget):
         tabWidget = self.tabEditorWidget.currentWidget()
         if not index:
             index = self.tabEditorWidget.currentIndex()
-        if not tabWidget.path:
-            fileName = self.tabEditorWidget.tabText(index).replace('*', '') + '.py'
+        if not tabWidget.file_path():
+            fileName = self.tabEditorWidget.tabText(index).replace('*', '')
+            fileName = QgsFileUtils.ensureFileNameHasExtension(fileName,
+                                                               ['py'])
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:
-            pathFileName = tabWidget.path
+            pathFileName = tabWidget.file_path()
             fileNone = False
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
         filename, filter = QFileDialog.getSaveFileName(self,
@@ -648,13 +646,13 @@ class PythonConsoleWidget(QWidget):
                 tabWidget.save(filename)
             except (IOError, OSError) as error:
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
+                                                     'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.file_path(),
                                                                                                                   error.strerror)
                 self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
                 if fileNone:
-                    tabWidget.path = None
+                    tabWidget.set_file_path(None)
                 else:
-                    tabWidget.path = pathFileName
+                    tabWidget.set_file_path(pathFileName)
                 return
 
             if not fileNone:

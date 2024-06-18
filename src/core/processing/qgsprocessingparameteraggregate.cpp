@@ -37,13 +37,13 @@ bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &in
   if ( !input.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( input.type() != QVariant::List )
+  if ( input.userType() != QMetaType::Type::QVariantList )
     return false;
 
   const QVariantList inputList = input.toList();
   for ( const QVariant &inputItem : inputList )
   {
-    if ( inputItem.type() != QVariant::Map )
+    if ( inputItem.userType() != QMetaType::Type::QVariantMap )
       return false;
 
     const QVariantMap inputItemMap = inputItem.toMap();

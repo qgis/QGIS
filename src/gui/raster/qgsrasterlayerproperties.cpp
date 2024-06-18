@@ -309,7 +309,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( provider && provider->capabilities() & QgsRasterDataProvider::BuildPyramids )
+  if ( provider &&
+       ( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
+         || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
@@ -357,7 +359,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // We can calculate histogram for all data sources but estimated only if
   // size is unknown - could also be enabled if well supported (estimated histogram
   // and let user know that it is estimated)
-  if ( !provider || !( provider->capabilities() & QgsRasterDataProvider::Size ) )
+  if ( !provider || !( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
   {
     // disable Histogram tab completely
     mOptsPage_Histogram->setEnabled( false );
@@ -773,7 +775,8 @@ void QgsRasterLayerProperties::sync()
   }
 
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
-  if ( !( provider->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
+  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
+          || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids )
     {
@@ -782,7 +785,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  if ( !( provider->capabilities() & QgsRasterDataProvider::Size ) )
+  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
   {
     if ( mOptsPage_Histogram )
     {

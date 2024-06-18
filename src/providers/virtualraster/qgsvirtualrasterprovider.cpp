@@ -353,15 +353,13 @@ QString QgsVirtualRasterProvider::providerKey()
   return PROVIDER_KEY;
 };
 
-int QgsVirtualRasterProvider::capabilities() const
+Qgis::RasterInterfaceCapabilities QgsVirtualRasterProvider::capabilities() const
 {
-  const int capability = QgsRasterDataProvider::Identify
-                         | QgsRasterDataProvider::IdentifyValue
-                         | QgsRasterDataProvider::Size
-                         //| QgsRasterDataProvider::BuildPyramids
-                         | QgsRasterDataProvider::Create
-                         | QgsRasterDataProvider::Remove
-                         | QgsRasterDataProvider::Prefetch;
+  const Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
+      | Qgis::RasterInterfaceCapability::IdentifyValue
+      | Qgis::RasterInterfaceCapability::Size
+      //| Qgis::RasterInterfaceCapability::BuildPyramids
+      | Qgis::RasterInterfaceCapability::Prefetch;
   return capability;
 }
 

@@ -2091,6 +2091,7 @@ QgisApp::QgisApp()
   mMapTools = std::make_unique< QgsAppMapTools >( mMapCanvas, mAdvancedDigitizingDockWidget );
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
+  mVectorLayerTools = new QgsGuiVectorLayerTools();
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
@@ -8517,7 +8518,7 @@ QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
 
   if ( mAttributesAsDisplayedValues.contains( idx ) )
   {
-    return QgsField( field.name(), QVariant::String );
+    return QgsField( field.name(), QMetaType::Type::QString );
   }
   return field;
 }
@@ -9755,7 +9756,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
       QVariant val = merged.at( i );
       QgsField fld( vl->fields().at( i ) );
-      bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+      bool isDefaultValue = vl->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Provider &&
                             vl->dataProvider() &&
                             vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
 
@@ -10371,7 +10372,8 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
       }
 
       QgsAttributeMap attrMap;
-      for ( int i = 0; i < feature.attributes().count(); i++ )
+      const int attributeCount = feature.attributeCount();
+      for ( int i = 0; i < attributeCount; i++ )
       {
         attrMap[i] = feature.attribute( i );
       }
@@ -10655,7 +10657,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
 
       // Fallback to string
       QgsField strField { f };
-      strField.setType( QVariant::String );
+      strField.setType( QMetaType::Type::QString );
       if ( !layer->addAttribute( strField ) )
       {
         visibleMessageBar()->pushMessage( tr( "Paste features" ),
@@ -15491,7 +15493,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
            && dprovider->dataType( 1 ) != Qgis::DataType::ARGB32
            && dprovider->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied )
       {
-        if ( dprovider->capabilities() & QgsRasterDataProvider::Size )
+        if ( dprovider->capabilities() & Qgis::RasterInterfaceCapability::Size )
         {
           mActionFullHistogramStretch->setEnabled( true );
         }
@@ -15589,7 +15591,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         if ( dprovider )
         {
           // does provider allow the identify map tool?
-          if ( dprovider->capabilities() & QgsRasterDataProvider::Identify )
+          if ( dprovider->capabilities() & Qgis::RasterInterfaceCapability::Identify )
           {
             mActionIdentify->setEnabled( true );
           }

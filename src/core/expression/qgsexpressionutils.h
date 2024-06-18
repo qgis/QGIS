@@ -94,20 +94,23 @@ class CORE_EXPORT QgsExpressionUtils
         return Unknown;
 
       //handle some special cases
-      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+      if ( value.type() == QVariant::UserType )
       {
-        //geom is false if empty
-        const QgsGeometry geom = value.value<QgsGeometry>();
-        return geom.isNull() ? False : True;
-      }
-      else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
-      {
-        //feat is false if non-valid
-        const QgsFeature feat = value.value<QgsFeature>();
-        return feat.isValid() ? True : False;
+        if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+        {
+          //geom is false if empty
+          const QgsGeometry geom = value.value<QgsGeometry>();
+          return geom.isNull() ? False : True;
+        }
+        else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+        {
+          //feat is false if non-valid
+          const QgsFeature feat = value.value<QgsFeature>();
+          return feat.isValid() ? True : False;
+        }
       }
 
-      if ( value.type() == QVariant::Int )
+      if ( value.userType() == QMetaType::Type::Int )
         return value.toInt() != 0 ? True : False;
 
       bool ok;
@@ -123,17 +126,17 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isIntSafe( const QVariant &v )
     {
-      if ( v.type() == QVariant::Int )
+      if ( v.userType() == QMetaType::Type::Int )
         return true;
-      if ( v.type() == QVariant::UInt )
+      if ( v.userType() == QMetaType::Type::UInt )
         return true;
-      if ( v.type() == QVariant::LongLong )
+      if ( v.userType() == QMetaType::Type::LongLong )
         return true;
-      if ( v.type() == QVariant::ULongLong )
+      if ( v.userType() == QMetaType::Type::ULongLong )
         return true;
-      if ( v.type() == QVariant::Double )
+      if ( v.userType() == QMetaType::Type::Double )
         return false;
-      if ( v.type() == QVariant::String )
+      if ( v.userType() == QMetaType::Type::QString )
       {
         bool ok;
         v.toString().toInt( &ok );
@@ -144,17 +147,17 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isDoubleSafe( const QVariant &v )
     {
-      if ( v.type() == QVariant::Double )
+      if ( v.userType() == QMetaType::Type::Double )
         return true;
-      if ( v.type() == QVariant::Int )
+      if ( v.userType() == QMetaType::Type::Int )
         return true;
-      if ( v.type() == QVariant::UInt )
+      if ( v.userType() == QMetaType::Type::UInt )
         return true;
-      if ( v.type() == QVariant::LongLong )
+      if ( v.userType() == QMetaType::Type::LongLong )
         return true;
-      if ( v.type() == QVariant::ULongLong )
+      if ( v.userType() == QMetaType::Type::ULongLong )
         return true;
-      if ( v.type() == QVariant::String )
+      if ( v.userType() == QMetaType::Type::QString )
       {
         bool ok;
         const double val = v.toString().toDouble( &ok );
@@ -166,9 +169,9 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isDateTimeSafe( const QVariant &v )
     {
-      return v.type() == QVariant::DateTime
-             || v.type() == QVariant::Date
-             || v.type() == QVariant::Time;
+      return v.userType() == QMetaType::Type::QDateTime
+             || v.userType() == QMetaType::Type::QDate
+             || v.userType() == QMetaType::Type::QTime;
     }
 
     static inline bool isIntervalSafe( const QVariant &v )
@@ -178,7 +181,7 @@ class CORE_EXPORT QgsExpressionUtils
         return true;
       }
 
-      if ( v.type() == QVariant::String )
+      if ( v.userType() == QMetaType::Type::QString )
       {
         return QgsInterval::fromString( v.toString() ).isValid();
       }
@@ -192,7 +195,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isList( const QVariant &v )
     {
-      return v.type() == QVariant::List || v.type() == QVariant::StringList;
+      return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList;
     }
 
 // implicit conversion to string
@@ -210,7 +213,7 @@ class CORE_EXPORT QgsExpressionUtils
      */
     static QByteArray getBinaryValue( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.type() != QVariant::ByteArray )
+      if ( value.userType() != QMetaType::Type::QByteArray )
       {
         parent->setEvalErrorString( QObject::tr( "Value is not a binary value" ) );
         return QByteArray();
@@ -392,7 +395,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+      if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
       {
         return value.toList();
       }
@@ -405,7 +408,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QVariantMap getMapValue( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.type() == QVariant::Map )
+      if ( value.userType() == QMetaType::Type::QVariantMap )
       {
         return value.toMap();
       }
@@ -424,12 +427,12 @@ class CORE_EXPORT QgsExpressionUtils
      */
     static QString toLocalizedString( const QVariant &value )
     {
-      if ( value.type() == QVariant::Int || value.type() == QVariant::UInt || value.type() == QVariant::LongLong || value.type() == QVariant::ULongLong )
+      if ( value.userType() == QMetaType::Type::Int || value.userType() == QMetaType::Type::UInt || value.userType() == QMetaType::Type::LongLong || value.userType() == QMetaType::Type::ULongLong )
       {
         bool ok;
         QString res;
 
-        if ( value.type() == QVariant::ULongLong )
+        if ( value.userType() == QMetaType::Type::ULongLong )
         {
           res = QLocale().toString( value.toULongLong( &ok ) );
         }
@@ -448,7 +451,7 @@ class CORE_EXPORT QgsExpressionUtils
         }
       }
       // Qt madness with QMetaType::Float :/
-      else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
+      else if ( value.userType() == QMetaType::Type::Double || value.userType() == static_cast<QMetaType::Type>( QMetaType::Float ) )
       {
         bool ok;
         const QString strVal = value.toString();
@@ -481,7 +484,7 @@ class CORE_EXPORT QgsExpressionUtils
      * \param foundFeatures An optional boolean parameter that will be set when features are found.
      * \since QGIS 3.22
      */
-    static std::tuple<QVariant::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+    static std::tuple<QMetaType::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
 
   private:
 

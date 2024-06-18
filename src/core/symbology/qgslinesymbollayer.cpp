@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslinesymbollayer.h"
-#include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
@@ -451,7 +450,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
   std::unique_ptr< QgsScopedQPainterState > painterState;
   if ( points.size() <= 2 &&
-       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) &&
+       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification ) &&
        QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
        ( p->renderHints() & QPainter::Antialiasing ) )
   {
@@ -3413,7 +3412,7 @@ QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
 void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
 {
   const QVariantMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
-  if ( it != properties.end() && it.value().type() == QVariant::String )
+  if ( it != properties.end() && it.value().userType() == QMetaType::Type::QString )
   {
     if ( saving )
       it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );

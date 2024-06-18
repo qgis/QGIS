@@ -395,7 +395,7 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
       {
         for ( auto p = g.const_parts_begin(); p != g.const_parts_end(); ++p )
         {
-          collected.addPart( ( *p )->clone() );
+          collected.addPartV2( ( *p )->clone() );
         }
       }
       else
@@ -947,7 +947,16 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QVector<QgsPointXY> &p
 {
   QgsPointSequence l;
   convertPointList( points, l );
+  Q_NOWARN_DEPRECATED_PUSH
   return addPart( l, geomType );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType )
+{
+  QgsPointSequence l;
+  convertPointList( points, l );
+  return addPartV2( l, wkbType );
 }
 
 Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &points, Qgis::GeometryType geomType )
@@ -963,7 +972,25 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &poin
     ringLine->setPoints( points );
     partGeom = std::move( ringLine );
   }
+  Q_NOWARN_DEPRECATED_PUSH
   return addPart( partGeom.release(), geomType );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType )
+{
+  std::unique_ptr< QgsAbstractGeometry > partGeom;
+  if ( points.size() == 1 )
+  {
+    partGeom = std::make_unique< QgsPoint >( points[0] );
+  }
+  else if ( points.size() > 1 )
+  {
+    std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >();
+    ringLine->setPoints( points );
+    partGeom = std::move( ringLine );
+  }
+  return addPartV2( partGeom.release(), wkbType );
 }
 
 Qgis::GeometryOperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qgis::GeometryType geomType )
@@ -996,6 +1023,44 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Q
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( p ) );
 }
 
+Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part, Qgis::WkbType wkbType )
+{
+  std::unique_ptr< QgsAbstractGeometry > p( part );
+  if ( !d->geometry )
+  {
+    switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
+    {
+      case Qgis::WkbType::Point:
+        reset( std::make_unique< QgsMultiPoint >() );
+        break;
+      case Qgis::WkbType::LineString:
+        reset( std::make_unique< QgsMultiLineString >() );
+        break;
+      case Qgis::WkbType::Polygon:
+      case Qgis::WkbType::Triangle:
+        reset( std::make_unique< QgsMultiPolygon >() );
+        break;
+      case Qgis::WkbType::CurvePolygon:
+        reset( std::make_unique< QgsMultiSurface >() );
+        break;
+      case Qgis::WkbType::CompoundCurve:
+      case Qgis::WkbType::CircularString:
+        reset( std::make_unique< QgsMultiCurve >() );
+        break;
+      default:
+        reset( nullptr );
+        return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
+    }
+  }
+  else
+  {
+    detach();
+    convertToMultiType();
+  }
+
+  return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( p ) );
+}
+
 Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsGeometry &newPart )
 {
   if ( !d->geometry )
@@ -1007,7 +1072,7 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsGeometry &newPart )
     return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
   }
 
-  return addPart( newPart.d->geometry->clone() );
+  return addPartV2( newPart.d->geometry->clone() );
 }
 
 QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const

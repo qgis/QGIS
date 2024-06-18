@@ -119,7 +119,7 @@ QVariant QgsProcessingAggregatePanelWidget::value() const
 
 void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
 {
-  if ( value.type() != QVariant::List )
+  if ( value.userType() != QMetaType::Type::QVariantList )
     return;
 
   QList< QgsAggregateMappingModel::Aggregate > aggregates;
@@ -130,12 +130,12 @@ void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
   {
     const QVariantMap map = field.toMap();
     const QgsField f( map.value( QStringLiteral( "name" ) ).toString(),
-                      static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ),
-                      map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ) ) ).toString(),
+                      static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), static_cast< int >( QMetaType::Type::UnknownType ) ).toInt() ),
+                      map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QMetaType::Type >( map.value( QStringLiteral( "type" ), static_cast< int >( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
                       map.value( QStringLiteral( "length" ), 0 ).toInt(),
                       map.value( QStringLiteral( "precision" ), 0 ).toInt(),
                       QString(),
-                      static_cast< QVariant::Type >( map.value( QStringLiteral( "sub_type" ), QVariant::Invalid ).toInt() ) );
+                      static_cast< QMetaType::Type >( map.value( QStringLiteral( "sub_type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
 
     QgsAggregateMappingModel::Aggregate aggregate;
     aggregate.field = f;
@@ -401,5 +401,3 @@ const QgsVectorLayer *QgsProcessingAggregateWidgetWrapper::linkedVectorLayer() c
 }
 
 /// @endcond
-
-

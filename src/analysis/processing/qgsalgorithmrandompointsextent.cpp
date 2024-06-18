@@ -96,7 +96,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
 {
 
   QgsFields fields = QgsFields();
-  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, mCrs ) );

@@ -1320,9 +1320,9 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
     // not quoting numbers saves a type cast
     if ( QgsVariantUtils::isNull( cat.value() ) )
       value = "NULL";
-    else if ( cat.value().type() == QVariant::Int )
+    else if ( cat.value().userType() == QMetaType::Type::Int )
       value = cat.value().toString();
-    else if ( cat.value().type() == QVariant::Double )
+    else if ( cat.value().userType() == QMetaType::Type::Double )
       // we loose precision here - so we may miss some categories :-(
       // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
       value = QString::number( cat.value().toDouble(), 'f', 4 );
@@ -1471,14 +1471,14 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       rule->setLabel( category.label() );
 
       //We first define the rule corresponding to the category
-      if ( category.value().type() == QVariant::List )
+      if ( category.value().userType() == QMetaType::Type::QVariantList )
       {
         QStringList values;
         const QVariantList list = category.value().toList();
         for ( const QVariant &v : list )
         {
           //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-          if ( QVariant( v ).convert( QVariant::Double ) )
+          if ( QVariant( v ).convert( QMetaType::Type::Double ) )
           {
             values << v.toString();
           }
@@ -1500,7 +1500,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       else
       {
         //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-        if ( category.value().convert( QVariant::Double ) )
+        if ( category.value().convert( QMetaType::Type::Double ) )
         {
           value = category.value().toString();
         }

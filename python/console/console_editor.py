@@ -93,10 +93,6 @@ class Editor(QgsCodeEditorPython):
         self.tab_widget: EditorTabWidget = tab_widget
         self.code_editor_widget: Optional[QgsCodeEditorWidget] = None
 
-        self.path: Optional[str] = None
-        #  recent modification time
-        self.lastModified = 0
-
         self.setMinimumHeight(120)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
@@ -126,6 +122,12 @@ class Editor(QgsCodeEditorPython):
         self.syntaxCheckScut.activated.connect(self.syntaxCheck)
         self.modificationChanged.connect(self.editor_tab.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
+
+    def set_code_editor_widget(self, widget: QgsCodeEditorWidget):
+        self.code_editor_widget = widget
+        self.code_editor_widget.loadedExternalChanges.connect(
+            self.loaded_external_changes
+        )
 
     def settingsEditor(self):
         # Set Python lexer
@@ -293,7 +295,7 @@ class Editor(QgsCodeEditorPython):
 
         URL = "https://api.github.com/gists"
 
-        path = self.tab_widget.currentWidget().path
+        path = self.code_editor_widget.filePath()
         filename = os.path.basename(path) if path else None
         filename = filename if filename else "pyqgis_snippet.py"
 
@@ -318,7 +320,7 @@ class Editor(QgsCodeEditorPython):
             self.showMessage(msg)
         else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.showMessage(msg + request.erroMessage(),
+            self.showMessage(msg + request.errorMessage(),
                              level=Qgis.MessageLevel.Warning)
 
     def hideEditor(self):
@@ -334,8 +336,7 @@ class Editor(QgsCodeEditorPython):
 
     def runScriptCode(self):
         autoSave = QgsSettings().value("pythonConsole/autoSaveScript", False, type=bool)
-        tabWidget = self.tab_widget.currentWidget()
-        filename = tabWidget.path
+        filename = self.code_editor_widget.filePath()
         filename_override = None
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
                                                     'Hey, type something to run!')
@@ -401,39 +402,13 @@ class Editor(QgsCodeEditorPython):
 
         return True
 
-    def focusInEvent(self, e):
-        if self.path:
-            if not QFileInfo(self.path).exists():
-                msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>"{0}"</b> has been deleted or is not accessible').format(self.path)
-                self.showMessage(msgText,
-                                 level=Qgis.MessageLevel.Critical)
-                return
-        if self.path and self.lastModified != QFileInfo(self.path).lastModified():
-            self.beginUndoAction()
-            self.selectAll()
-            self.removeSelectedText()
-            self.insert(Path(self.path).read_text(encoding='utf-8'))
-            self.setModified(False)
-            self.endUndoAction()
-
-            self.tab_widget.listObject(self.tab_widget.currentWidget())
-            self.lastModified = QFileInfo(self.path).lastModified()
-        super().focusInEvent(e)
+    def loaded_external_changes(self):
+        self.tab_widget.listObject(self.tab_widget.currentWidget())
 
     def fileReadOnly(self):
-        tabWidget = self.tab_widget.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
-                                             'The file <b>"{0}"</b> is read only, please save to different file first.').format(tabWidget.path)
+                                             'The file <b>"{0}"</b> is read only, please save to different file first.').format(self.code_editor_widget.filePath())
         self.showMessage(msgText)
-
-    def loadFile(self, filename: str, read_only: bool = False):
-        self.lastModified = QFileInfo(filename).lastModified()
-        self.path = filename
-        self.setText(Path(filename).read_text(encoding='utf-8'))
-        self.setReadOnly(read_only)
-        self.setModified(False)
-        self.recolor()
 
     def save(self, filename: Optional[str] = None):
         if self.isReadOnly():
@@ -444,19 +419,20 @@ class Editor(QgsCodeEditorPython):
 
         index = self.tab_widget.indexOf(self.editor_tab)
         if filename:
-            self.path = filename
-        if not self.path:
+            self.code_editor_widget.setFilePath(filename)
+        if not self.code_editor_widget.filePath():
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
-            self.path, filter = QFileDialog().getSaveFileName(self,
-                                                              saveTr,
-                                                              os.path.join(folder, self.tab_widget.tabText(index).replace('*', '') + '.py'),
-                                                              "Script file (*.py)")
+            path, filter = QFileDialog().getSaveFileName(self,
+                                                         saveTr,
+                                                         os.path.join(folder, self.tab_widget.tabText(index).replace('*', '') + '.py'),
+                                                         "Script file (*.py)")
             # If the user didn't select a file, abort the save operation
-            if not self.path:
-                self.path = None
+            if not path:
+                self.code_editor_widget.setFilePath(None)
                 return
+            self.code_editor_widget.setFilePath(path)
 
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Script was correctly saved.')
@@ -464,17 +440,16 @@ class Editor(QgsCodeEditorPython):
 
         # Save the new contents
         # Need to use newline='' to avoid adding extra \r characters on Windows
-        with open(self.path, 'w', encoding='utf-8', newline='') as f:
+        with open(self.code_editor_widget.filePath(), 'w', encoding='utf-8', newline='') as f:
             f.write(self.text())
-        self.tab_widget.setTabTitle(index, Path(self.path).name)
-        self.tab_widget.setTabToolTip(index, self.path)
+        self.tab_widget.setTabTitle(index, Path(self.code_editor_widget.filePath()).name)
+        self.tab_widget.setTabToolTip(index, self.code_editor_widget.filePath())
         self.setModified(False)
         self.console_widget.saveFileButton.setEnabled(False)
-        self.lastModified = QFileInfo(self.path).lastModified()
-        self.console_widget.updateTabListScript(self.path, action='append')
+        self.console_widget.updateTabListScript(self.code_editor_widget.filePath(), action='append')
         self.tab_widget.listObject(self.editor_tab)
         QgsSettings().setValue("pythonConsole/lastDirPath",
-                               Path(self.path).parent.as_posix())
+                               Path(self.code_editor_widget.filePath()).parent.as_posix())
 
     def event(self, e):
         """ Used to override the Application shortcuts when the editor has focus """
@@ -547,7 +522,7 @@ class EditorTab(QWidget):
         self._editor_code_widget = QgsCodeEditorWidget(
             self._editor
         )
-        self._editor.code_editor_widget = self._editor_code_widget
+        self._editor.set_code_editor_widget(self._editor_code_widget)
         self._editor_code_widget.searchBarToggled.connect(
             self.search_bar_toggled
         )
@@ -558,11 +533,22 @@ class EditorTab(QWidget):
 
         if filename:
             if QFileInfo(filename).exists():
-                self._editor.loadFile(filename, read_only)
+                self._editor_code_widget.loadFile(filename)
+                if read_only:
+                    self._editor.setReadOnly(True)
 
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
         self.tabLayout.addWidget(self._editor_code_widget)
+
+    def set_file_path(self, path: str):
+        self._editor_code_widget.setFilePath(path)
+
+    def file_path(self) -> Optional[str]:
+        return self._editor_code_widget.filePath()
+
+    def open_in_external_editor(self):
+        self._editor_code_widget.openInExternalEditor()
 
     def modified(self, modified):
         self.tab_widget.tabModified(self, modified)
@@ -850,14 +836,14 @@ class EditorTabWidget(QTabWidget):
                 return
             if res == QMessageBox.StandardButton.Save:
                 editorTab.save()
-            if editorTab.path:
-                self.console_widget.updateTabListScript(editorTab.path, action='remove')
+            if editorTab.code_editor_widget.filePath():
+                self.console_widget.updateTabListScript(editorTab.code_editor_widget.filePath(), action='remove')
             self.removeTab(tab)
             if self.count() < 1:
                 self.newTabEditor()
         else:
-            if editorTab.path:
-                self.console_widget.updateTabListScript(editorTab.path, action='remove')
+            if editorTab.code_editor_widget.filePath():
+                self.console_widget.updateTabListScript(editorTab.code_editor_widget.filePath(), action='remove')
             if self.count() <= 1:
                 self.removeTab(tab)
                 self.newTabEditor()
@@ -923,8 +909,8 @@ class EditorTabWidget(QTabWidget):
         else:
             tabWidget = self.widget(tab)
         if tabWidget:
-            if tabWidget.path:
-                pathFile, file = os.path.split(tabWidget.path)
+            if tabWidget.file_path():
+                pathFile, file = os.path.split(tabWidget.file_path())
                 module, ext = os.path.splitext(file)
                 found = False
                 if pathFile not in sys.path:
@@ -936,7 +922,7 @@ class EditorTabWidget(QTabWidget):
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
                     for name, class_data in sorted(list(readModule.items()), key=lambda x: x[1].lineno):
-                        if os.path.normpath(class_data.file) == os.path.normpath(tabWidget.path):
+                        if os.path.normpath(class_data.file) == os.path.normpath(tabWidget.file_path()):
                             superClassName = []
                             for superClass in class_data.super:
                                 if superClass == 'object':
@@ -973,7 +959,7 @@ class EditorTabWidget(QTabWidget):
                             self.console_widget.listClassMethod.addTopLevelItem(classItem)
                     for func_name, data in sorted(list(readModuleFunction.items()), key=lambda x: x[1].lineno):
                         if isinstance(data, pyclbr.Function) and \
-                           os.path.normpath(data.file) == os.path.normpath(tabWidget.path):
+                           os.path.normpath(data.file) == os.path.normpath(tabWidget.file_path()):
                             funcItem = QTreeWidgetItem()
                             funcItem.setText(0, func_name + ' ')
                             funcItem.setText(1, str(data.lineno))
@@ -1009,9 +995,9 @@ class EditorTabWidget(QTabWidget):
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
-        if tabWidget and tabWidget.path:
+        if tabWidget and tabWidget.file_path():
             QgsSettings().setValue("pythonConsole/lastDirPath",
-                                   Path(tabWidget.path).parent.as_posix())
+                                   Path(tabWidget.file_path()).parent.as_posix())
 
     def showMessage(self, text, level=Qgis.MessageLevel.Info, timeout=-1, title=""):
         currWidget = self.currentWidget()

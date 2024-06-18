@@ -2181,14 +2181,14 @@ namespace QgsWms
 
     QgsMessageLog::logMessage( QStringLiteral( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
-    if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) &&
-         !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature ) )
+    if ( !( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyValue ) &&
+         !( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature ) )
     {
       return false;
     }
 
     const Qgis::RasterIdentifyFormat identifyFormat(
-      static_cast<bool>( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature )
+      static_cast<bool>( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature )
       ? Qgis::RasterIdentifyFormat::Feature
       : Qgis::RasterIdentifyFormat::Value );
 
@@ -2230,7 +2230,7 @@ namespace QgsWms
         int index = 0;
         for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
         {
-          fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
+          fields.append( QgsField( layer->bandName( it.key() ), QMetaType::Type::Double ) );
           feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
         }
         feature.setFields( fields );
@@ -2244,13 +2244,13 @@ namespace QgsWms
         for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
         {
           QVariant value = it.value();
-          if ( value.type() == QVariant::Bool && !value.toBool() )
+          if ( value.userType() == QMetaType::Type::Bool && !value.toBool() )
           {
             // sublayer not visible or not queryable
             continue;
           }
 
-          if ( value.type() == QVariant::String )
+          if ( value.userType() == QMetaType::Type::QString )
           {
             continue;
           }
@@ -2296,13 +2296,13 @@ namespace QgsWms
         for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
         {
           QVariant value = it.value();
-          if ( value.type() == QVariant::Bool && !value.toBool() )
+          if ( value.userType() == QMetaType::Type::Bool && !value.toBool() )
           {
             // sublayer not visible or not queryable
             continue;
           }
 
-          if ( value.type() == QVariant::String )
+          if ( value.userType() == QMetaType::Type::QString )
           {
             continue;
           }

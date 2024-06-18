@@ -29,10 +29,7 @@
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsinvertedpolygonrenderer.h"
-#include "qgslogger.h"
 #include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
-#include "qgspointdisplacementrenderer.h"
 #include "qgsproperty.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
@@ -49,6 +46,7 @@
 #include "qgsclassificationcustom.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgspointdistancerenderer.h"
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
@@ -415,7 +413,10 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   }
   r->setClassificationMethod( method );
 
-  r->updateClasses( vlayer, classes );
+  QString error;
+  r->updateClasses( vlayer, classes, error );
+  ( void )error;
+
   return r;
 }
 Q_NOWARN_DEPRECATED_POP
@@ -431,15 +432,18 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
   setClassificationMethod( method );
 
-  updateClasses( vlayer, nclasses );
+  QString error;
+  updateClasses( vlayer, nclasses, error );
+  ( void )error;
 }
 
-void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nclasses )
+void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nclasses, QString &error )
 {
+  Q_UNUSED( error )
   if ( mClassificationMethod->id() == QgsClassificationCustom::METHOD_ID )
     return;
 
-  QList<QgsClassificationRange> classes = mClassificationMethod->classes( vl, mAttrName, nclasses );
+  QList<QgsClassificationRange> classes = mClassificationMethod->classesV2( vl, mAttrName, nclasses, error );
 
   deleteAllClasses();
 
@@ -824,8 +828,8 @@ QString QgsGraduatedSymbolRenderer::legendKeyToExpression( const QString &key, Q
   const QString attributeComponent = QgsExpression::quoteFieldExpression( mAttrName, layer );
   const QgsRendererRange &range = mRanges[i];
 
-  return QStringLiteral( "(%1 >= %2) AND (%1 <= %3)" ).arg( attributeComponent, QgsExpression::quotedValue( range.lowerValue(), QVariant::Double ),
-         QgsExpression::quotedValue( range.upperValue(), QVariant::Double ) );
+  return QStringLiteral( "(%1 >= %2) AND (%1 <= %3)" ).arg( attributeComponent, QgsExpression::quotedValue( range.lowerValue(), QMetaType::Type::Double ),
+         QgsExpression::quotedValue( range.upperValue(), QMetaType::Type::Double ) );
 }
 
 QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol()

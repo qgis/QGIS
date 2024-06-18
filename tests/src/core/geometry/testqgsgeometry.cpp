@@ -2595,6 +2595,27 @@ void TestQgsGeometry::snappedToGrid()
     QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZM (68 415 11 57, 27 505 24 49, 27 406 40 32)" ) );
     snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 10, 10 ) );
     QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZM (68 415 10 60, 27 505 20 50, 27 406 40 30)" ) );
+
+    // with removal of redundant vertices
+    curve = QgsGeometry::fromWkt( "LineString( 68.1 415.2, 68.1 505.2, 27.1 505.2 )" );
+    curve = curve.densifyByCount( 10 );
+    // no removal of redundant vertices
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, false ) );
+    QCOMPARE( snapped->nCoordinates(), 23 );
+    // removal of redundant vertices
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68 415, 68 505, 27 505)" ) );
+    curve = curve.densifyByCount( 1000 );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68 415, 68 505, 27 505)" ) );
+
+    // closed linestring, where the first vertex becomes redundant
+    curve = QgsGeometry::fromWkt( "LineString( 68.1 415.2, 90.1 415.2, 90.1 505.2, 27.1 505.2, 27.3 414.9, 68.1 415.2 )" );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (90 415, 90 505, 27 505, 27 415, 90 415)" ) );
+    curve = curve.densifyByCount( 10 );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 0, true ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (90 415, 90 505, 27 505, 27 415, 90 415)" ) );
   }
 
   //compound curve

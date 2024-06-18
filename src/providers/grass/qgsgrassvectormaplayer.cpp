@@ -148,7 +148,7 @@ void QgsGrassVectorMapLayer::load()
           dbColumn *column = db_get_table_column( databaseTable, i );
 
           int ctype = db_sqltype_to_Ctype( db_get_column_sqltype( column ) );
-          QVariant::Type qtype = QVariant::String; //default to string
+          QMetaType::Type qtype = QMetaType::Type::QString; //default to string
           QgsDebugMsgLevel( QString( "column = %1 ctype = %2" ).arg( db_get_column_name( column ) ).arg( ctype ), 2 );
 
           QString ctypeStr;
@@ -156,19 +156,19 @@ void QgsGrassVectorMapLayer::load()
           {
             case DB_C_TYPE_INT:
               ctypeStr = QStringLiteral( "integer" );
-              qtype = QVariant::Int;
+              qtype = QMetaType::Type::Int;
               break;
             case DB_C_TYPE_DOUBLE:
               ctypeStr = QStringLiteral( "double" );
-              qtype = QVariant::Double;
+              qtype = QMetaType::Type::Double;
               break;
             case DB_C_TYPE_STRING:
               ctypeStr = QStringLiteral( "string" );
-              qtype = QVariant::String;
+              qtype = QMetaType::Type::QString;
               break;
             case DB_C_TYPE_DATETIME:
               ctypeStr = QStringLiteral( "datetime" );
-              qtype = QVariant::String;
+              qtype = QMetaType::Type::QString;
               break;
           }
           mTableFields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr,
@@ -281,7 +281,7 @@ void QgsGrassVectorMapLayer::load()
   if ( mTableFields.size() == 0 )
   {
     mKeyColumn = 0;
-    mTableFields.append( QgsField( QStringLiteral( "cat" ), QVariant::Int, QStringLiteral( "integer" ) ) );
+    mTableFields.append( QgsField( QStringLiteral( "cat" ), QMetaType::Type::Int, QStringLiteral( "integer" ) ) );
     QPair<double, double> minMax( 0, 0 );
 
     if ( cidxFieldIndex() >= 0 )
@@ -387,18 +387,18 @@ QString QgsGrassVectorMapLayer::quotedValue( const QVariant &value )
     return QStringLiteral( "NULL" );
   }
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? "TRUE" : "FALSE";
 
     default:
-    case QVariant::String:
+    case QMetaType::Type::QString:
       QString v = value.toString();
       v.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       if ( v.contains( QLatin1String( "\\" ) ) )
@@ -456,7 +456,7 @@ dbDriver *QgsGrassVectorMapLayer::openDriver( QString &error )
 void QgsGrassVectorMapLayer::addTopoField( QgsFields &fields )
 {
   QString comment = tr( "Virtual topology symbol field" );
-  QgsField topoField = QgsField( QgsGrassVectorMap::topoSymbolFieldName(), QVariant::Int, QStringLiteral( "integer" ), 0, 0, comment );
+  QgsField topoField = QgsField( QgsGrassVectorMap::topoSymbolFieldName(), QMetaType::Type::Int, QStringLiteral( "integer" ), 0, 0, comment );
   fields.append( topoField );
 }
 
@@ -595,7 +595,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
   QgsDebugMsgLevel( "Database opened -> create table", 2 );
 
   QgsFields catFields;
-  catFields.append( QgsField( mFieldInfo->key, QVariant::Int, QStringLiteral( "integer" ) ) );
+  catFields.append( QgsField( mFieldInfo->key, QMetaType::Type::Int, QStringLiteral( "integer" ) ) );
   for ( const QgsField &field : fields )
   {
     catFields.append( field );

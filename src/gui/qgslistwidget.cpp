@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgslistwidget.h"
+#include "qgsvariantutils.h"
 
-QgsListWidget::QgsListWidget( QVariant::Type subType, QWidget *parent )
+QgsListWidget::QgsListWidget( QMetaType::Type subType, QWidget *parent )
   : QgsTableWidgetBase( parent )
   , mModel( subType, this )
   , mSubType( subType )
@@ -37,7 +38,7 @@ void QgsListWidget::setReadOnly( bool readOnly )
 
 
 ///@cond PRIVATE
-QgsListModel::QgsListModel( QVariant::Type subType, QObject *parent ) :
+QgsListModel::QgsListModel( QMetaType::Type subType, QObject *parent ) :
   QAbstractTableModel( parent ),
   mSubType( subType )
 {
@@ -100,7 +101,7 @@ QVariant QgsListModel::data( const QModelIndex &index, int role ) const
        ( role != Qt::DisplayRole && role != Qt::EditRole ) ||
        index.column() != 0 )
   {
-    return QVariant( mSubType );
+    return QgsVariantUtils::createNullVariant( mSubType );
   }
   return mLines.at( index.row() );
 }
@@ -137,7 +138,7 @@ bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
-    mLines.insert( position, QVariant( mSubType ) );
+    mLines.insert( position, QgsVariantUtils::createNullVariant( mSubType ) );
   }
   endInsertRows();
   return true;

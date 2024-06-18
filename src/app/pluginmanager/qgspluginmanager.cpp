@@ -47,6 +47,7 @@
 #include "qgisplugin.h"
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
+#include "qgsvariantutils.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
 #ifdef WITH_BINDINGS
@@ -67,7 +68,7 @@
 const QgsSettingsEntryBool *QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates = new QgsSettingsEntryBool( QStringLiteral( "automatically-check-for-updates" ), sTreePluginManager, true, QStringLiteral( "Automatically check for plugin updates on startup" ) );
 const QgsSettingsEntryBool *QgsPluginManager::settingsAllowExperimental = new QgsSettingsEntryBool( QStringLiteral( "allow-experimental" ), sTreePluginManager, false, QStringLiteral( "Allow experimental plugins." ) );
 const QgsSettingsEntryBool *QgsPluginManager::settingsAllowDeprecated = new QgsSettingsEntryBool( QStringLiteral( "allow-deprecated" ), sTreePluginManager, false, QStringLiteral( "Allow deprecated plugins." ) );
-const QgsSettingsEntryVariant *QgsPluginManager::settingsCheckOnStartLastDate = new QgsSettingsEntryVariant( QStringLiteral( "check-on-start-last-date" ), sTreePluginManager, QVariant( QVariant::Date ), QStringLiteral( "Date last time the check was performed." ) );
+const QgsSettingsEntryVariant *QgsPluginManager::settingsCheckOnStartLastDate = new QgsSettingsEntryVariant( QStringLiteral( "check-on-start-last-date" ), sTreePluginManager, QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ), QStringLiteral( "Date last time the check was performed." ) );
 const QgsSettingsEntryStringList *QgsPluginManager::settingsSeenPlugins = new QgsSettingsEntryStringList( QStringLiteral( "seen-plugins" ), sTreePluginManager, {}, QStringLiteral( "Date last time the check was performed." ) );
 const QgsSettingsEntryString *QgsPluginManager::settingsLastZipDirectory = new QgsSettingsEntryString( QStringLiteral( "last-zip-directory" ), sTreePluginManager, QString(), QStringLiteral( "Last ZIP directory." ) );
 const QgsSettingsEntryBool *QgsPluginManager::settingsShowInstallFromZipWarning = new QgsSettingsEntryBool( QStringLiteral( "show-install-from-zip-warning" ), sTreePluginManager, true );

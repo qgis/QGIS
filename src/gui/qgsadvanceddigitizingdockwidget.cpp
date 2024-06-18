@@ -772,7 +772,6 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
       mMConstraint->setValue( mCadPointList.constLast().m(), true );
     }
   }
-
 }
 
 #if 0

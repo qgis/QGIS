@@ -363,7 +363,17 @@ class CORE_EXPORT QgsJsonUtils
      *        the array items will be converted to the type, and discarded if
      *        the conversion is not possible.
      */
-    Q_INVOKABLE static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
+    Q_INVOKABLE static QVariantList parseArray( const QString &json, QMetaType::Type type = QMetaType::Type::UnknownType );
+
+    /**
+     * Parse a simple array (depth=1)
+     * \param json the JSON to parse
+     * \param type optional variant type of the elements, if specified (and not Invalid),
+     *        the array items will be converted to the type, and discarded if
+     *        the conversion is not possible.
+     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     */
+    Q_INVOKABLE Q_DECL_DEPRECATED static QVariantList parseArray( const QString &json, QVariant::Type type ) SIP_DEPRECATED;
 
     /**
      * Parses a GeoJSON "geometry" value to a QgsGeometry object.

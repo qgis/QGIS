@@ -277,7 +277,10 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           emit messageEmitted( errorMsg, Qgis::MessageLevel::Critical );
           deleteRubberband();
+          vlayer->deleteFeatures( request.filterFids() );
+          vlayer->destroyEditCommand();
           mSnapIndicator->setMatch( QgsPointLocator::Match() );
+          return;
         }
         if ( !childrenInfoMsg.isEmpty() )
         {

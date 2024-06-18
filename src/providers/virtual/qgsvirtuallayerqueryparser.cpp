@@ -91,11 +91,11 @@ namespace QgsVirtualLayerQueryParser
       ColumnDef def;
       def.setName( column );
       if ( type == QLatin1String( "int" ) )
-        def.setScalarType( QVariant::LongLong );
+        def.setScalarType( QMetaType::Type::LongLong );
       else if ( type == QLatin1String( "real" ) )
-        def.setScalarType( QVariant::Double );
+        def.setScalarType( QMetaType::Type::Double );
       else if ( type == QLatin1String( "text" ) )
-        def.setScalarType( QVariant::String );
+        def.setScalarType( QMetaType::Type::QString );
       else
       {
         // there should be 2 more captures
@@ -121,11 +121,11 @@ namespace QgsVirtualLayerQueryParser
     // the type declared by one of the virtual tables
     // or null
     if ( columnType.compare( QLatin1String( "int" ), Qt::CaseInsensitive ) == 0 )
-      d.setScalarType( QVariant::LongLong );
+      d.setScalarType( QMetaType::Type::LongLong );
     else if ( columnType.compare( QLatin1String( "real" ), Qt::CaseInsensitive ) == 0 )
-      d.setScalarType( QVariant::Double );
+      d.setScalarType( QMetaType::Type::Double );
     else if ( columnType.compare( QLatin1String( "text" ), Qt::CaseInsensitive ) == 0 )
-      d.setScalarType( QVariant::String );
+      d.setScalarType( QMetaType::Type::QString );
     else if ( columnType.startsWith( QLatin1String( "geometry" ), Qt::CaseInsensitive ) )
     {
       // parse the geometry type and srid
@@ -200,7 +200,7 @@ namespace QgsVirtualLayerQueryParser
 
           setColumnDefType( columnType, d );
 
-          if ( d.scalarType() == QVariant::Invalid )
+          if ( d.scalarType() == QMetaType::Type::UnknownType )
           {
             // else no type is defined
             undefinedColumns << columnNumber;
@@ -237,10 +237,10 @@ namespace QgsVirtualLayerQueryParser
           switch ( type )
           {
             case SQLITE_INTEGER:
-              tableDef[colIdx].setScalarType( QVariant::LongLong );
+              tableDef[colIdx].setScalarType( QMetaType::Type::LongLong );
               break;
             case SQLITE_FLOAT:
-              tableDef[colIdx].setScalarType( QVariant::Double );
+              tableDef[colIdx].setScalarType( QMetaType::Type::Double );
               break;
             case SQLITE_BLOB:
             {
@@ -255,13 +255,13 @@ namespace QgsVirtualLayerQueryParser
               else
               {
                 // interpret it as a string
-                tableDef[colIdx].setScalarType( QVariant::String );
+                tableDef[colIdx].setScalarType( QMetaType::Type::QString );
               }
             }
             break;
             case SQLITE_TEXT:
             default:
-              tableDef[colIdx].setScalarType( QVariant::String );
+              tableDef[colIdx].setScalarType( QMetaType::Type::QString );
               break;
           };
         }

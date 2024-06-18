@@ -163,7 +163,7 @@ void TestQgsProperty::conversions()
   collection.property( 0 ).setStaticValue( "i am not a color" ); //badly encoded color, should return default color
   QCOMPARE( c1.valueAsColor( context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
   QCOMPARE( collection.valueAsColor( 0, context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
-  collection.property( 0 ).setStaticValue( QVariant( QVariant::String ) ); //null value
+  collection.property( 0 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) ); //null value
   QCOMPARE( c1.valueAsColor( context, QColor( 200, 210, 220 ), &ok ), QColor( 200, 210, 220 ) );
   QVERIFY( !ok );
   QCOMPARE( collection.valueAsColor( 0, context, QColor( 200, 210, 220 ), &ok ), QColor( 200, 210, 220 ) );
@@ -188,8 +188,8 @@ void TestQgsProperty::conversions()
   collection.property( 1 ).setStaticValue( "i am not a double" ); //not a double, should return default value
   QCOMPARE( d1.valueAsDouble( context, -1.2 ), -1.2 );
   QCOMPARE( collection.valueAsDouble( 1, context, -1.2 ), -1.2 );
-  d1.setStaticValue( QVariant( QVariant::Double ) ); //null value
-  collection.property( 1 ).setStaticValue( QVariant( QVariant::Double ) ); //null value
+  d1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ); //null value
+  collection.property( 1 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ); //null value
   QCOMPARE( d1.valueAsDouble( context, -1.2, &ok ), -1.2 );
   QVERIFY( !ok );
   QCOMPARE( collection.valueAsDouble( 1, context, -1.2, &ok ), -1.2 );
@@ -223,8 +223,8 @@ void TestQgsProperty::conversions()
   collection.property( 2 ).setStaticValue( "i am not a int" ); //not a int, should return default value
   QCOMPARE( i1.valueAsInt( context, -11 ), -11 );
   QCOMPARE( collection.valueAsInt( 2, context, -11 ), -11 );
-  i1.setStaticValue( QVariant( QVariant::Int ) ); // null value
-  collection.property( 2 ).setStaticValue( QVariant( QVariant::Int ) ); // null value
+  i1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // null value
+  collection.property( 2 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // null value
   QCOMPARE( i1.valueAsInt( context, -11, &ok ), -11 );
   QVERIFY( !ok );
   QCOMPARE( collection.valueAsInt( 2, context, -11, &ok ), -11 );
@@ -277,8 +277,8 @@ void TestQgsProperty::conversions()
   QCOMPARE( b1.valueAsBool( context, true ), false );
   QCOMPARE( collection.valueAsBool( 3, context, false ), false );
   QCOMPARE( collection.valueAsBool( 3, context, true ), false );
-  b1.setStaticValue( QVariant( QVariant::Bool ) ); // null value
-  collection.property( 3 ).setStaticValue( QVariant( QVariant::Bool ) );
+  b1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Bool ) ); // null value
+  collection.property( 3 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Bool ) );
   QCOMPARE( b1.valueAsBool( context, false ), false );
   QCOMPARE( b1.valueAsBool( context, true ), true );
   QCOMPARE( collection.valueAsBool( 3, context, false, &ok ), false );
@@ -299,8 +299,8 @@ void TestQgsProperty::conversions()
   QVERIFY( ok );
   QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), QStringLiteral( "s" ) );
   QVERIFY( ok );
-  s1.setStaticValue( QVariant( QVariant::String ) );
-  collection.property( 4 ).setStaticValue( QVariant( QVariant::String ) );
+  s1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
+  collection.property( 4 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
   QCOMPARE( s1.valueAsString( context, "n", &ok ), QStringLiteral( "n" ) );
   QVERIFY( !ok );
   QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), QStringLiteral( "y" ) );
@@ -329,8 +329,8 @@ void TestQgsProperty::conversions()
   collection.property( 5 ).setStaticValue( "i am not a datetime" ); //not a double, should return default value
   QCOMPARE( d1.valueAsDateTime( context, dt ), dt );
   QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt );
-  d1.setStaticValue( QVariant( QVariant::DateTime ) ); // null value
-  collection.property( 5 ).setStaticValue( QVariant( QVariant::DateTime ) ); // null value
+  d1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDateTime ) ); // null value
+  collection.property( 5 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDateTime ) ); // null value
   QCOMPARE( d1.valueAsDateTime( context, dt, &ok ), dt );
   QVERIFY( !ok );
   QCOMPARE( collection.valueAsDateTime( 5, context, dt, &ok ), dt );
@@ -439,8 +439,8 @@ void TestQgsProperty::fieldBasedProperty()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -538,8 +538,8 @@ void TestQgsProperty::expressionBasedProperty()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -719,7 +719,7 @@ void TestQgsProperty::isStaticValueInContext()
 
   // should still be non-static, even with valid fields
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "xxx" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "xxx" ), QMetaType::Type::Int ) );
   context.setFields( fields );
   v = 5;
   QVERIFY( !p.isStaticValueInContext( context, v ) );
@@ -769,7 +769,7 @@ void TestQgsProperty::propertyTransformer()
   QVERIFY( dynamic_cast< const TestTransformer * >( p1.transformer() ) );
   QCOMPARE( static_cast< const TestTransformer * >( p1.transformer() )->minValue(), 10.0 );
   QCOMPARE( static_cast< const TestTransformer * >( p1.transformer() )->maxValue(), 20.0 );
-  p1.setStaticValue( QVariant( QVariant::Double ) );
+  p1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   QCOMPARE( p1.value( context, -99 ).toDouble(), -1.0 );
   p1.setStaticValue( 11.0 );
   QCOMPARE( p1.value( context, -99 ).toDouble(), 22.0 );
@@ -843,7 +843,7 @@ void TestQgsProperty::genericNumericTransformer()
   QCOMPARE( t1.transform( context, 10 ).toInt(), 100 );
   QCOMPARE( t1.transform( context, 20 ).toInt(), 200 );
   //null value
-  QCOMPARE( t1.transform( context, QVariant( QVariant::Double ) ).toInt(), -10 );
+  QCOMPARE( t1.transform( context, QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ).toInt(), -10 );
   //non numeric value
   QCOMPARE( t1.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
 
@@ -1044,7 +1044,7 @@ void TestQgsProperty::sizeScaleTransformer()
   QCOMPARE( scale.transform( context, 10 ).toInt(), 100 );
   QCOMPARE( scale.transform( context, 20 ).toInt(), 200 );
   //null value
-  QCOMPARE( scale.transform( context, QVariant( QVariant::Double ) ).toInt(), -10 );
+  QCOMPARE( scale.transform( context, QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ).toInt(), -10 );
   //non numeric value
   QCOMPARE( scale.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
 
@@ -1273,7 +1273,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( scale.transform( context, 10 ).value<QColor>(), QColor( 0, 0, 0 ) );
   QCOMPARE( scale.transform( context, 20 ).value<QColor>(), QColor( 255, 255, 255 ) );
   //null value
-  QCOMPARE( scale.transform( context, QVariant( QVariant::Double ) ).value<QColor>(), QColor( 100, 150, 200 ) );
+  QCOMPARE( scale.transform( context, QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ).value<QColor>(), QColor( 100, 150, 200 ) );
   //non numeric value
   QCOMPARE( scale.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
 
@@ -1460,8 +1460,8 @@ void TestQgsProperty::propertyCollection()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -1662,8 +1662,8 @@ void TestQgsProperty::collectionStack()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QVariant::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );

@@ -281,6 +281,9 @@ class QgsTextSettingsPrivate : public QSharedData
       , previewBackgroundColor( other.previewBackgroundColor )
       , allowHtmlFormatting( other.allowHtmlFormatting )
       , capitalization( other.capitalization )
+      , tabStopDistance( other.tabStopDistance )
+      , tabStopDistanceUnits( other.tabStopDistanceUnits )
+      , tabStopDistanceMapUnitScale( other.tabStopDistanceMapUnitScale )
       , mDataDefinedProperties( other.mDataDefinedProperties )
     {
     }
@@ -303,6 +306,10 @@ class QgsTextSettingsPrivate : public QSharedData
     QColor previewBackgroundColor = Qt::white;
     bool allowHtmlFormatting = false;
     Qgis::Capitalization capitalization = Qgis::Capitalization::MixedCase;
+
+    double tabStopDistance = 6.0;
+    Qgis::RenderUnit tabStopDistanceUnits = Qgis::RenderUnit::Percentage;
+    QgsMapUnitScale tabStopDistanceMapUnitScale;
 
     //! Property collection for data defined settings
     QgsPropertyCollection mDataDefinedProperties;

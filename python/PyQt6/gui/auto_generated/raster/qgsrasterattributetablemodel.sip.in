@@ -67,7 +67,7 @@ Returns ``True`` if the Raster Attribute Table was modified since it was last sa
 %End
 
 
-    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Inserts a field at the given position.
 
@@ -78,6 +78,22 @@ Inserts a field at the given position.
 
 :return: - true on success
          - errorMessage: error message
+%End
+
+ bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated/;
+%Docstring
+Inserts a field at the given position.
+
+:param name: field name
+:param usage: field usage
+:param type: field type
+:param position: insertion point (before)
+
+:return: - true on success
+         - errorMessage: error message
+
+.. deprecated:: QGIS 3.38
+  use the method with a QMetaType.Type argument instead
 %End
 
     bool removeField( const int position, QString *errorMessage /Out/ = 0 );

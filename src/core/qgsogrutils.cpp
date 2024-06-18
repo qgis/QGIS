@@ -237,12 +237,12 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
 {
   std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Invalid:
+    case QMetaType::Type::UnknownType:
       OGR_RawField_SetUnset( res.get() );
       break;
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
     {
       const int val = value.toBool() ? 1 : 0;
       if ( type == OFTInteger )
@@ -258,7 +258,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::Int:
+    case QMetaType::Type::Int:
     {
       const int val = value.toInt();
       if ( type == OFTInteger )
@@ -274,7 +274,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
     {
       const qint64 val = value.toLongLong();
       if ( type == OFTInteger )
@@ -303,7 +303,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::Double:
+    case QMetaType::Type::Double:
     {
       double val = value.toDouble();
       if ( type == OFTInteger )
@@ -343,8 +343,8 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::Char:
-    case QVariant::String:
+    case QMetaType::Type::QChar:
+    case QMetaType::Type::QString:
     {
       if ( type == OFTString )
         res->String = CPLStrdup( value.toString().toUtf8().constData() );
@@ -355,7 +355,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
     {
       if ( type == OFTDate )
       {
@@ -372,7 +372,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
     {
       if ( type == OFTTime )
       {
@@ -389,7 +389,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       break;
     }
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
     {
       if ( type == OFTDateTime )
       {
@@ -464,38 +464,38 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
     }
 
     QString name = encoding ? encoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ) : QString::fromUtf8( OGR_Fld_GetNameRef( fldDef ) );
-    QVariant::Type varType;
+    QMetaType::Type varType;
     switch ( OGR_Fld_GetType( fldDef ) )
     {
       case OFTInteger:
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean )
-          varType = QVariant::Bool;
+          varType = QMetaType::Type::Bool;
         else
-          varType = QVariant::Int;
+          varType = QMetaType::Type::Int;
         break;
       case OFTInteger64:
-        varType = QVariant::LongLong;
+        varType = QMetaType::Type::LongLong;
         break;
       case OFTReal:
-        varType = QVariant::Double;
+        varType = QMetaType::Type::Double;
         break;
       case OFTDate:
-        varType = QVariant::Date;
+        varType = QMetaType::Type::QDate;
         break;
       case OFTTime:
-        varType = QVariant::Time;
+        varType = QMetaType::Type::QTime;
         break;
       case OFTDateTime:
-        varType = QVariant::DateTime;
+        varType = QMetaType::Type::QDateTime;
         break;
       case OFTString:
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-          varType = QVariant::Map;
+          varType = QMetaType::Type::QVariantMap;
         else
-          varType = QVariant::String;
+          varType = QMetaType::Type::QString;
         break;
       default:
-        varType = QVariant::String; // other unsupported, leave it as a string
+        varType = QMetaType::Type::QString; // other unsupported, leave it as a string
     }
     fields.append( QgsField( name, varType ) );
   }
@@ -545,7 +545,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   {
     switch ( field.type() )
     {
-      case QVariant::String:
+      case QMetaType::Type::QString:
       {
         if ( encoding )
           value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
@@ -561,21 +561,21 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
         break;
       }
-      case QVariant::Int:
+      case QMetaType::Type::Int:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
         break;
-      case QVariant::Bool:
+      case QMetaType::Type::Bool:
         value = QVariant( bool( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) ) );
         break;
-      case QVariant::LongLong:
+      case QMetaType::Type::LongLong:
         value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
         break;
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
         break;
-      case QVariant::Date:
-      case QVariant::DateTime:
-      case QVariant::Time:
+      case QMetaType::Type::QDate:
+      case QMetaType::Type::QDateTime:
+      case QMetaType::Type::QTime:
       {
         int year, month, day, hour, minute, tzf;
         float second;
@@ -584,9 +584,9 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         OGR_F_GetFieldAsDateTimeEx( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
         float millisecondPart = std::modf( second, &secondsPart );
 
-        if ( field.type() == QVariant::Date )
+        if ( field.type() == QMetaType::Type::QDate )
           value = QDate( year, month, day );
-        else if ( field.type() == QVariant::Time )
+        else if ( field.type() == QMetaType::Type::QTime )
           value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
         else
         {
@@ -598,7 +598,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
       }
       break;
 
-      case QVariant::ByteArray:
+      case QMetaType::Type::QByteArray:
       {
         int size = 0;
         const GByte *b = OGR_F_GetFieldAsBinary( ogrFet, attIndex, &size );
@@ -612,7 +612,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
-      case QVariant::StringList:
+      case QMetaType::Type::QStringList:
       {
         QStringList list;
         char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -632,11 +632,11 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
-      case QVariant::List:
+      case QMetaType::Type::QVariantList:
       {
         switch ( field.subType() )
         {
-          case QVariant::String:
+          case QMetaType::Type::QString:
           {
             QStringList list;
             char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -656,7 +656,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
             break;
           }
 
-          case QVariant::Int:
+          case QMetaType::Type::Int:
           {
             QVariantList list;
             int count = 0;
@@ -673,7 +673,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
             break;
           }
 
-          case QVariant::Double:
+          case QMetaType::Type::Double:
           {
             QVariantList list;
             int count = 0;
@@ -690,7 +690,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
             break;
           }
 
-          case QVariant::LongLong:
+          case QMetaType::Type::LongLong:
           {
             QVariantList list;
             int count = 0;
@@ -718,7 +718,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
-      case QVariant::Map:
+      case QMetaType::Type::QVariantMap:
       {
         //it has to be JSON
         //it's null if no json format
@@ -736,7 +736,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   }
   else
   {
-    value = QVariant( field.type() );
+    value = QgsVariantUtils::createNullVariant( field.type() );
   }
 
   return value;
@@ -1880,40 +1880,40 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
   return nullptr;
 }
 
-void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType )
+void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QMetaType::Type &variantType, QMetaType::Type &variantSubType )
 {
-  variantType = QVariant::Type::Invalid;
-  variantSubType = QVariant::Type::Invalid;
+  variantType = QMetaType::Type::UnknownType;
+  variantSubType = QMetaType::Type::UnknownType;
 
   switch ( ogrType )
   {
     case OFTInteger:
       if ( ogrSubType == OFSTBoolean )
       {
-        variantType = QVariant::Bool;
+        variantType = QMetaType::Type::Bool;
         ogrSubType = OFSTBoolean;
       }
       else
-        variantType = QVariant::Int;
+        variantType = QMetaType::Type::Int;
       break;
     case OFTInteger64:
-      variantType = QVariant::LongLong;
+      variantType = QMetaType::Type::LongLong;
       break;
     case OFTReal:
-      variantType = QVariant::Double;
+      variantType = QMetaType::Type::Double;
       break;
     case OFTDate:
-      variantType = QVariant::Date;
+      variantType = QMetaType::Type::QDate;
       break;
     case OFTTime:
-      variantType = QVariant::Time;
+      variantType = QMetaType::Type::QTime;
       break;
     case OFTDateTime:
-      variantType = QVariant::DateTime;
+      variantType = QMetaType::Type::QDateTime;
       break;
 
     case OFTBinary:
-      variantType = QVariant::ByteArray;
+      variantType = QMetaType::Type::QByteArray;
       break;
 
     case OFTString:
@@ -1921,84 +1921,81 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
       if ( ogrSubType == OFSTJSON )
       {
         ogrSubType = OFSTJSON;
-        variantType = QVariant::Map;
-        variantSubType = QVariant::String;
+        variantType = QMetaType::Type::QVariantMap;
+        variantSubType = QMetaType::Type::QString;
       }
       else
       {
-        variantType = QVariant::String;
+        variantType = QMetaType::Type::QString;
       }
       break;
 
     case OFTStringList:
     case OFTWideStringList:
-      variantType = QVariant::StringList;
-      variantSubType = QVariant::String;
+      variantType = QMetaType::Type::QStringList;
+      variantSubType = QMetaType::Type::QString;
       break;
 
     case OFTIntegerList:
-      variantType = QVariant::List;
-      variantSubType = QVariant::Int;
+      variantType = QMetaType::Type::QVariantList;
+      variantSubType = QMetaType::Type::Int;
       break;
 
     case OFTRealList:
-      variantType = QVariant::List;
-      variantSubType = QVariant::Double;
+      variantType = QMetaType::Type::QVariantList;
+      variantSubType = QMetaType::Type::Double;
       break;
 
     case OFTInteger64List:
-      variantType = QVariant::List;
-      variantSubType = QVariant::LongLong;
+      variantType = QMetaType::Type::QVariantList;
+      variantSubType = QMetaType::Type::LongLong;
       break;
   }
 }
 
-void QgsOgrUtils::variantTypeToOgrFieldType( QVariant::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType )
+void QgsOgrUtils::variantTypeToOgrFieldType( QMetaType::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType )
 {
   ogrSubType = OFSTNone;
   switch ( variantType )
   {
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       ogrType = OFTInteger;
       ogrSubType = OFSTBoolean;
       break;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       ogrType = OFTInteger;
       break;
 
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       ogrType = OFTInteger64;
       break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       ogrType = OFTReal;
       break;
 
-    case QVariant::Char:
+    case QMetaType::Type::QChar:
+    case QMetaType::Type::QString:
       ogrType = OFTString;
       break;
 
-    case QVariant::String:
-      ogrType = OFTString;
-      break;
-
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
       ogrType = OFTStringList;
       break;
 
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
       ogrType = OFTBinary;
       break;
 
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       ogrType = OFTDate;
       break;
 
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       ogrType = OFTTime;
       break;
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       ogrType = OFTDateTime;
       break;
 
@@ -2083,13 +2080,13 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver(
 
   QList<QgsVectorDataProvider::NativeType> nativeTypes;
   nativeTypes
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
-      << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "integer" ), QMetaType::Type::Int, 0, nMaxIntLen )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "integer64" ), QMetaType::Type::LongLong, 0, nMaxInt64Len )
+      << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "double" ), QMetaType::Type::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QStringLiteral( "string" ), QMetaType::Type::QString, 0, 65535 );
 
   if ( driverName == QLatin1String( "GPKG" ) )
-    nativeTypes << QgsVectorDataProvider::NativeType( QObject::tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
+    nativeTypes << QgsVectorDataProvider::NativeType( QObject::tr( "JSON (string)" ), QStringLiteral( "JSON" ), QMetaType::Type::QVariantMap, 0, 0, 0, 0, QMetaType::Type::QString );
 
   bool supportsDate = true;
   bool supportsTime = true;
@@ -2128,42 +2125,42 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver(
   if ( supportsDate )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, nDateLen, nDateLen );
   }
   if ( supportsTime )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime );
   }
   if ( supportsDateTime )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime );
   }
   if ( supportsBinary )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), QStringLiteral( "binary" ), QMetaType::Type::QByteArray );
   }
   if ( supportIntegerList )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), QStringLiteral( "integerlist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Int );
   }
   if ( supportInteger64List )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), QStringLiteral( "integer64list" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong );
   }
   if ( supportRealList )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), QStringLiteral( "doublelist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double );
   }
   if ( supportsStringList )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::StringList ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), QStringLiteral( "stringlist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::QString );
   }
 
   const char *pszDataSubTypes = GDALGetMetadataItem( driver, GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
@@ -2171,7 +2168,7 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver(
   {
     // boolean data type
     nativeTypes
-        << QgsVectorDataProvider::NativeType( QObject::tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool );
+        << QgsVectorDataProvider::NativeType( QObject::tr( "Boolean" ), QStringLiteral( "bool" ), QMetaType::Type::Bool );
   }
 
   return nativeTypes;
@@ -2187,8 +2184,8 @@ std::unique_ptr< QgsFieldDomain > QgsOgrUtils::convertFieldDomain( OGRFieldDomai
   const QString name{ OGR_FldDomain_GetName( domain ) };
   const QString description{ OGR_FldDomain_GetDescription( domain ) };
 
-  QVariant::Type fieldType = QVariant::Type::Invalid;
-  QVariant::Type fieldSubType = QVariant::Type::Invalid;
+  QMetaType::Type fieldType = QMetaType::Type::UnknownType;
+  QMetaType::Type fieldSubType = QMetaType::Type::UnknownType;
   const OGRFieldType domainFieldType = OGR_FldDomain_GetFieldType( domain );
   const OGRFieldSubType domainFieldSubType = OGR_FldDomain_GetFieldSubType( domain );
   ogrFieldTypeToQVariantType( domainFieldType, domainFieldSubType, fieldType, fieldSubType );

@@ -72,10 +72,10 @@ void QgsDial::update()
   if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
-  if ( mMin.type() == QVariant::Int &&
-       mMax.type() == QVariant::Int &&
-       mStep.type() == QVariant::Int &&
-       mValue.type() == QVariant::Int )
+  if ( mMin.userType() == QMetaType::Type::Int &&
+       mMax.userType() == QMetaType::Type::Int &&
+       mStep.userType() == QMetaType::Type::Int &&
+       mValue.userType() == QMetaType::Type::Int )
   {
     QDial::setMinimum( mMin.toInt() );
     QDial::setMaximum( mMax.toInt() );
@@ -83,10 +83,10 @@ void QgsDial::update()
     QDial::setValue( mValue.toInt() );
   }
 
-  if ( mMin.type() == QVariant::Double &&
-       mMax.type() == QVariant::Double &&
-       mStep.type() == QVariant::Double &&
-       mValue.type() == QVariant::Double )
+  if ( mMin.userType() == QMetaType::Type::Double &&
+       mMax.userType() == QMetaType::Type::Double &&
+       mStep.userType() == QMetaType::Type::Double &&
+       mValue.userType() == QMetaType::Type::Double )
   {
     if ( minimum() != 0 )
       QDial::setMinimum( 0 );
@@ -115,17 +115,17 @@ void QgsDial::onValueChanged( int value )
   {
     mValue = QVariant();
   }
-  else if ( mMin.type() == QVariant::Int &&
-            mMax.type() == QVariant::Int &&
-            mStep.type() == QVariant::Int &&
-            mValue.type() == QVariant::Int )
+  else if ( mMin.userType() == QMetaType::Type::Int &&
+            mMax.userType() == QMetaType::Type::Int &&
+            mStep.userType() == QMetaType::Type::Int &&
+            mValue.userType() == QMetaType::Type::Int )
   {
     mValue = value;
   }
-  else if ( mMin.type() == QVariant::Double &&
-            mMax.type() == QVariant::Double &&
-            mStep.type() == QVariant::Double &&
-            mValue.type() == QVariant::Double )
+  else if ( mMin.userType() == QMetaType::Type::Double &&
+            mMax.userType() == QMetaType::Type::Double &&
+            mStep.userType() == QMetaType::Type::Double &&
+            mValue.userType() == QMetaType::Type::Double )
   {
     mValue = QVariant( mMin.toDouble() + value * mStep.toDouble() );
   }

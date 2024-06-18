@@ -76,7 +76,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
 
     explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
     Qgis::DataProviderFlags flags() const override;
-    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+    Qgis::RasterProviderCapabilities providerCapabilities() const override;
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
     QString name() const override;
@@ -94,7 +94,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
 
     /* Inherited from QgsRasterInterface */
     int bandCount() const override { return 1; }
-    int capabilities() const override { return Identify | IdentifyText | IdentifyFeature | Prefetch; }
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
 
     /* Inherited from QgsRasterDataProvider */
     QgsRectangle extent() const override { return mExtent; }

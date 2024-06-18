@@ -931,15 +931,35 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Add a clip \a path to be applied to the \a symbolLayer before rendering
+     * \see addSymbolLayerClipGeometry()
+     *
      * \since QGIS 3.26, arguments changed and public API since 3.30
      */
     void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path );
 
     /**
      * Returns clip paths to be applied to the \a symbolLayer before rendering
+     *
+     *\see symbolLayerClipGeometries()
      * \since QGIS 3.26, arguments changed and public API since 3.30
      */
     QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const;
+
+    /**
+     * Add a clip \a geometry to be applied to the \a symbolLayer before rendering.
+     *
+     * \see symbolLayerClipGeometries()
+     * \since QGIS 3.38
+     */
+    void addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry );
+
+    /**
+     * Returns clipping geometries to be applied to the \a symbolLayer before rendering
+     *
+     * \see addSymbolLayerClipGeometry()
+     * \since QGIS 3.38
+     */
+    QVector<QgsGeometry> symbolLayerClipGeometries( const QString &symbolLayerId ) const;
 
     /**
      * Returns the range of z-values which should be rendered.
@@ -1226,6 +1246,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     //! clip paths to be applied to the symbol layer before rendering
     QMap< QString, QList<QPainterPath> > mSymbolLayerClipPaths;
+
+    //! Clip geometries to be applied to the symbol layer before rendering
+    QMap< QString, QVector<QgsGeometry> > mSymbolLayerClippingGeometries;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

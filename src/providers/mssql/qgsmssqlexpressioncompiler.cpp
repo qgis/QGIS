@@ -110,9 +110,9 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok
     return QString();
   }
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       //no boolean literal support in mssql, so fake it
       return value.toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
 

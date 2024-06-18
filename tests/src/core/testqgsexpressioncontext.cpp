@@ -875,7 +875,7 @@ void TestQgsExpressionContext::featureBasedContext()
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "x1" ) ) );
   fields.append( QgsField( QStringLiteral( "x2" ) ) );
-  fields.append( QgsField( QStringLiteral( "foo" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "foo" ), QMetaType::Type::Int ) );
 
   QgsFeature f;
   f.initAttributes( 3 );

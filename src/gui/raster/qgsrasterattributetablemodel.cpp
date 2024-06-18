@@ -116,7 +116,7 @@ bool QgsRasterAttributeTableModel::isDirty()
   return mRat && mRat->isDirty( );
 }
 
-bool QgsRasterAttributeTableModel::insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+bool QgsRasterAttributeTableModel::insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage )
 {
 
   if ( ! editChecks( errorMessage ) )
@@ -140,6 +140,12 @@ bool QgsRasterAttributeTableModel::insertField( const int position, const QStrin
   endResetModel();
   return retVal;
 }
+
+bool QgsRasterAttributeTableModel::insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+{
+  return insertField( position, name, usage, QgsVariantUtils::variantTypeToMetaType( type ), errorMessage );
+}
+
 
 bool QgsRasterAttributeTableModel::removeField( const int position, QString *errorMessage )
 {
@@ -383,7 +389,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
           return QVariant();
       }
     }
-    else if ( role == Qt::ItemDataRole::TextAlignmentRole && field.type != QVariant::String )
+    else if ( role == Qt::ItemDataRole::TextAlignmentRole && field.type != QMetaType::Type::QString )
     {
       return QVariant( Qt::AlignmentFlag::AlignRight | Qt::AlignmentFlag::AlignVCenter );
     }
@@ -419,7 +425,7 @@ bool QgsRasterAttributeTableModel::setData( const QModelIndex &index, const QVar
     }
     if ( hasColor() && isColorOrRamp )
     {
-      if ( ! value.canConvert( QVariant::Type::Color ) || ! mRat->setColor( index.row(), value.value<QColor>( ) ) )
+      if ( ! value.canConvert( QMetaType::Type::QColor ) || ! mRat->setColor( index.row(), value.value<QColor>( ) ) )
       {
         return false;
       }

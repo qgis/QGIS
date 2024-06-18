@@ -177,13 +177,13 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   if ( parameters.contains( QStringLiteral( "OUTPUT_TABLE" ) ) && parameters.value( QStringLiteral( "OUTPUT_TABLE" ) ).isValid() )
   {
     QgsFields outFields;
-    outFields.append( QgsField( QStringLiteral( "zone" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( areaUnit.isEmpty() ? "area" : areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "sum" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "count" ), QVariant::LongLong, QString(), 20 ) );
-    outFields.append( QgsField( QStringLiteral( "min" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "max" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "mean" ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "zone" ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( areaUnit.isEmpty() ? "area" : areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "sum" ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "count" ), QMetaType::Type::LongLong, QString(), 20 ) );
+    outFields.append( QgsField( QStringLiteral( "min" ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "max" ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "mean" ), QMetaType::Type::Double, QString(), 20, 8 ) );
 
     sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )

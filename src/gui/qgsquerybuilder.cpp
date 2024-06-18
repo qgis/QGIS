@@ -148,9 +148,9 @@ void QgsQueryBuilder::fillValues( const QString &field, int limit )
     QString value;
     if ( QgsVariantUtils::isNull( var ) )
       value = nullValue;
-    else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+    else if ( var.userType() == QMetaType::Type::QDate && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
       value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
-    else if ( var.type() == QVariant::List || var.type() == QVariant::StringList )
+    else if ( var.userType() == QMetaType::Type::QVariantList || var.userType() == QMetaType::Type::QStringList )
     {
       const QVariantList list = var.toList();
       for ( const QVariant &val : list )
@@ -368,9 +368,9 @@ void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
   const QVariant value = index.data( Qt::UserRole + 1 );
   if ( QgsVariantUtils::isNull( value ) )
     mTxtSql->insertText( QStringLiteral( "NULL" ) );
-  else if ( value.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+  else if ( value.userType() == QMetaType::Type::QDate && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
     mTxtSql->insertText( '\'' + value.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) ) + '\'' );
-  else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong || value.type() == QVariant::Bool )
+  else if ( value.userType() == QMetaType::Type::Int || value.userType() == QMetaType::Type::Double || value.userType() == QMetaType::Type::LongLong || value.userType() == QMetaType::Type::Bool )
     mTxtSql->insertText( value.toString() );
   else
     mTxtSql->insertText( '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'' );

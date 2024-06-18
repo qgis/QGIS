@@ -267,7 +267,7 @@ void TestQgsFields::extend()
 
   QgsFields source;
   const QgsField field3( QStringLiteral( "testfield3" ) );
-  source.append( field3, QgsFields::OriginJoin, 5 );
+  source.append( field3, Qgis::FieldOrigin::Join, 5 );
   const QgsField field4( QStringLiteral( "testfield4" ) );
   source.append( field4 );
 
@@ -314,34 +314,34 @@ void TestQgsFields::fieldOrigin()
 {
   QgsFields fields;
   const QgsField field( QStringLiteral( "testfield" ) );
-  fields.append( field, QgsFields::OriginJoin );
+  fields.append( field, Qgis::FieldOrigin::Join );
   const QgsField field2( QStringLiteral( "testfield2" ) );
-  fields.append( field2, QgsFields::OriginExpression );
+  fields.append( field2, Qgis::FieldOrigin::Expression );
 
-  QCOMPARE( fields.fieldOrigin( 0 ), QgsFields::OriginJoin );
-  QCOMPARE( fields.fieldOrigin( 1 ), QgsFields::OriginExpression );
-  QCOMPARE( fields.fieldOrigin( 2 ), QgsFields::OriginUnknown );
+  QCOMPARE( fields.fieldOrigin( 0 ), Qgis::FieldOrigin::Join );
+  QCOMPARE( fields.fieldOrigin( 1 ), Qgis::FieldOrigin::Expression );
+  QCOMPARE( fields.fieldOrigin( 2 ), Qgis::FieldOrigin::Unknown );
 }
 
 void TestQgsFields::fieldOriginIndex()
 {
   QgsFields fields;
   const QgsField field( QStringLiteral( "testfield" ) );
-  fields.append( field, QgsFields::OriginProvider, 5 );
+  fields.append( field, Qgis::FieldOrigin::Provider, 5 );
   QCOMPARE( fields.fieldOriginIndex( 0 ), 5 );
 
   const QgsField field2( QStringLiteral( "testfield2" ) );
-  fields.append( field2, QgsFields::OriginProvider, 10 );
+  fields.append( field2, Qgis::FieldOrigin::Provider, 10 );
   QCOMPARE( fields.fieldOriginIndex( 1 ), 10 );
 
   const QgsField field3( QStringLiteral( "testfield3" ) );
   //field origin index not specified with OriginProvider, should be automatic
-  fields.append( field3, QgsFields::OriginProvider );
+  fields.append( field3, Qgis::FieldOrigin::Provider );
   QCOMPARE( fields.fieldOriginIndex( 2 ), 2 );
 
   const QgsField field4( QStringLiteral( "testfield4" ) );
   //field origin index not specified with other than OriginProvider, should remain -1
-  fields.append( field4, QgsFields::OriginEdit );
+  fields.append( field4, Qgis::FieldOrigin::Edit );
   QCOMPARE( fields.fieldOriginIndex( 3 ), -1 );
 }
 
@@ -435,7 +435,7 @@ void TestQgsFields::appendExpressionField()
   const QgsField exprField( QStringLiteral( "expression" ) );
   QVERIFY( fields.appendExpressionField( exprField, 5 ) );
   QCOMPARE( fields.count(), 3 );
-  QCOMPARE( fields.fieldOrigin( 2 ), QgsFields::OriginExpression );
+  QCOMPARE( fields.fieldOrigin( 2 ), Qgis::FieldOrigin::Expression );
   QCOMPARE( fields.fieldOriginIndex( 2 ), 5 );
 }
 
@@ -443,7 +443,7 @@ void TestQgsFields::dataStream()
 {
   QgsField original1;
   original1.setName( QStringLiteral( "name" ) );
-  original1.setType( QVariant::Int );
+  original1.setType( QMetaType::Type::Int );
   original1.setLength( 5 );
   original1.setPrecision( 2 );
   original1.setTypeName( QStringLiteral( "typename1" ) );
@@ -451,7 +451,7 @@ void TestQgsFields::dataStream()
 
   QgsField original2;
   original2.setName( QStringLiteral( "next name" ) );
-  original2.setType( QVariant::Double );
+  original2.setType( QMetaType::Type::Double );
   original2.setLength( 15 );
   original2.setPrecision( 3 );
   original2.setTypeName( QStringLiteral( "double" ) );
@@ -480,27 +480,27 @@ void TestQgsFields::field()
 {
   QgsField original;
   original.setName( QStringLiteral( "name" ) );
-  original.setType( QVariant::Int );
+  original.setType( QMetaType::Type::Int );
   original.setLength( 5 );
   original.setPrecision( 2 );
 
   //test constructors for QgsFields::Field
-  const QgsFields::Field fieldConstructor1( original, QgsFields::OriginJoin, 5 );
+  const QgsFields::Field fieldConstructor1( original, Qgis::FieldOrigin::Join, 5 );
   QCOMPARE( fieldConstructor1.field, original );
-  QCOMPARE( fieldConstructor1.origin, QgsFields::OriginJoin );
+  QCOMPARE( fieldConstructor1.origin, Qgis::FieldOrigin::Join );
   QCOMPARE( fieldConstructor1.originIndex, 5 );
 
   const QgsFields::Field fieldConstructor2;
-  QCOMPARE( fieldConstructor2.origin, QgsFields::OriginUnknown );
+  QCOMPARE( fieldConstructor2.origin, Qgis::FieldOrigin::Unknown );
   QCOMPARE( fieldConstructor2.originIndex, -1 );
 
   //test equality operators
-  const QgsFields::Field field1( original, QgsFields::OriginJoin, 5 );
-  const QgsFields::Field field2( original, QgsFields::OriginJoin, 5 );
+  const QgsFields::Field field1( original, Qgis::FieldOrigin::Join, 5 );
+  const QgsFields::Field field2( original, Qgis::FieldOrigin::Join, 5 );
   QVERIFY( field1 == field2 );
-  const QgsFields::Field field3( original, QgsFields::OriginEdit, 5 );
+  const QgsFields::Field field3( original, Qgis::FieldOrigin::Edit, 5 );
   QVERIFY( field1 != field3 );
-  const QgsFields::Field field4( original, QgsFields::OriginJoin, 6 );
+  const QgsFields::Field field4( original, Qgis::FieldOrigin::Join, 6 );
   QVERIFY( field1 != field4 );
 }
 

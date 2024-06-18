@@ -1303,9 +1303,13 @@ class CORE_EXPORT QgsProcessingParameters
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a output layer destination.
+     *
+     * Since QGIS 3.38 the \a testOnly argument can be set to TRUE to evaluate the parameter to an output layer destination for advance testing only. This
+     * prevents default behavior such as output post-processing which would otherwise occur.
+     *
      * \since QGIS 3.4
      */
-    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly = false );
 
     /**
      * Evaluates the parameter with matching \a definition to a file based output destination.
@@ -1852,6 +1856,15 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterExtent *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    /**
+     * Returns TRUE if \a value is a valid string value representing an extent.
+     *
+     * This method does NOT attempt to resolve \a value to a map layer.
+     */
+    static bool variantIsValidStringForExtent( const QVariant &value );
 
 };
 

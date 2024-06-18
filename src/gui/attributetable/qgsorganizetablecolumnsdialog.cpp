@@ -17,24 +17,16 @@
 #include <QMessageBox>
 
 #include "qgsorganizetablecolumnsdialog.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
-#include "qgsdockwidget.h"
 
 #include "qgsapplication.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 
 #include "qgssearchquerybuilder.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsmessagebar.h"
-#include "qgsexpressionselectiondialog.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsrubberband.h"
 #include "qgsfields.h"
 #include "qgseditorwidgetregistry.h"
@@ -55,7 +47,8 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
   if ( vl )
   {
     mConfig = config;
-    mConfig.update( vl->fields() );
+    const QgsFields fields = vl->fields();
+    mConfig.update( fields );
 
     mFieldsList->clear();
 
@@ -70,23 +63,9 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
       }
       else
       {
-        const int idx = vl->fields().lookupField( columnConfig.name );
+        const int idx = fields.lookupField( columnConfig.name );
         item = new QListWidgetItem( vl->attributeDisplayName( idx ), mFieldsList );
-
-        switch ( vl->fields().fieldOrigin( idx ) )
-        {
-          case QgsFields::OriginExpression:
-            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
-            break;
-
-          case QgsFields::OriginJoin:
-            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
-            break;
-
-          default:
-            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ) );
-            break;
-        }
+        item->setIcon( fields.iconForField( idx, true ) );
       }
 
       item->setCheckState( columnConfig.hidden ? Qt::Unchecked : Qt::Checked );

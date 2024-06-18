@@ -30,30 +30,30 @@ const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSe
 
 const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog = new QgsSettingsEntryString( QStringLiteral( "last-gpkg-log" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Last used Geopackage/Spatialite file for logging GPS locations" ) );
 
-const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> QgsAppGpsLogging::sPointFields
+const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QMetaType::Type, QString >>> QgsAppGpsLogging::sPointFields
 {
-  { Qgis::GpsInformationComponent::Timestamp, { QVariant::DateTime, QStringLiteral( "timestamp" )}},
-  { Qgis::GpsInformationComponent::Altitude, { QVariant::Double, QStringLiteral( "altitude" )}},
-  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QVariant::Double, QStringLiteral( "altitude_wgs84" )}},
-  { Qgis::GpsInformationComponent::GroundSpeed, { QVariant::Double, QStringLiteral( "ground_speed" )}},
-  { Qgis::GpsInformationComponent::Bearing, { QVariant::Double, QStringLiteral( "bearing" )}},
-  { Qgis::GpsInformationComponent::Pdop, { QVariant::Double, QStringLiteral( "pdop" )}},
-  { Qgis::GpsInformationComponent::Hdop, { QVariant::Double, QStringLiteral( "hdop" )}},
-  { Qgis::GpsInformationComponent::Vdop, { QVariant::Double, QStringLiteral( "vdop" )}},
-  { Qgis::GpsInformationComponent::HorizontalAccuracy, { QVariant::Double, QStringLiteral( "horizontal_accuracy" )}},
-  { Qgis::GpsInformationComponent::VerticalAccuracy, { QVariant::Double, QStringLiteral( "vertical_accuracy" )}},
-  { Qgis::GpsInformationComponent::HvAccuracy, { QVariant::Double, QStringLiteral( "hv_accuracy" )}},
-  { Qgis::GpsInformationComponent::SatellitesUsed, { QVariant::Double, QStringLiteral( "satellites_used" )}},
-  { Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint, { QVariant::Double, QStringLiteral( "distance_since_previous" )}},
-  { Qgis::GpsInformationComponent::TrackTimeSinceLastPoint, { QVariant::Double, QStringLiteral( "time_since_previous" )}},
+  { Qgis::GpsInformationComponent::Timestamp, { QMetaType::Type::QDateTime, QStringLiteral( "timestamp" )}},
+  { Qgis::GpsInformationComponent::Altitude, { QMetaType::Type::Double, QStringLiteral( "altitude" )}},
+  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QMetaType::Type::Double, QStringLiteral( "altitude_wgs84" )}},
+  { Qgis::GpsInformationComponent::GroundSpeed, { QMetaType::Type::Double, QStringLiteral( "ground_speed" )}},
+  { Qgis::GpsInformationComponent::Bearing, { QMetaType::Type::Double, QStringLiteral( "bearing" )}},
+  { Qgis::GpsInformationComponent::Pdop, { QMetaType::Type::Double, QStringLiteral( "pdop" )}},
+  { Qgis::GpsInformationComponent::Hdop, { QMetaType::Type::Double, QStringLiteral( "hdop" )}},
+  { Qgis::GpsInformationComponent::Vdop, { QMetaType::Type::Double, QStringLiteral( "vdop" )}},
+  { Qgis::GpsInformationComponent::HorizontalAccuracy, { QMetaType::Type::Double, QStringLiteral( "horizontal_accuracy" )}},
+  { Qgis::GpsInformationComponent::VerticalAccuracy, { QMetaType::Type::Double, QStringLiteral( "vertical_accuracy" )}},
+  { Qgis::GpsInformationComponent::HvAccuracy, { QMetaType::Type::Double, QStringLiteral( "hv_accuracy" )}},
+  { Qgis::GpsInformationComponent::SatellitesUsed, { QMetaType::Type::Double, QStringLiteral( "satellites_used" )}},
+  { Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint, { QMetaType::Type::Double, QStringLiteral( "distance_since_previous" )}},
+  { Qgis::GpsInformationComponent::TrackTimeSinceLastPoint, { QMetaType::Type::Double, QStringLiteral( "time_since_previous" )}},
 };
 
-const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> QgsAppGpsLogging::sTrackFields
+const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QMetaType::Type, QString >>> QgsAppGpsLogging::sTrackFields
 {
-  { Qgis::GpsInformationComponent::TrackStartTime, { QVariant::DateTime, QStringLiteral( "start_time" )}},
-  { Qgis::GpsInformationComponent::TrackEndTime, { QVariant::DateTime, QStringLiteral( "end_time" )}},
-  { Qgis::GpsInformationComponent::TotalTrackLength, { QVariant::Double, QStringLiteral( "track_length" )}},
-  { Qgis::GpsInformationComponent::TrackDistanceFromStart, { QVariant::Double, QStringLiteral( "distance_from_start" )}},
+  { Qgis::GpsInformationComponent::TrackStartTime, { QMetaType::Type::QDateTime, QStringLiteral( "start_time" )}},
+  { Qgis::GpsInformationComponent::TrackEndTime, { QMetaType::Type::QDateTime, QStringLiteral( "end_time" )}},
+  { Qgis::GpsInformationComponent::TotalTrackLength, { QMetaType::Type::Double, QStringLiteral( "track_length" )}},
+  { Qgis::GpsInformationComponent::TrackDistanceFromStart, { QMetaType::Type::Double, QStringLiteral( "distance_from_start" )}},
 };
 
 
@@ -133,6 +133,8 @@ void QgsAppGpsLogging::setGpkgLogFile( const QString &filename )
     {
       mGpkgLogger->endCurrentTrack();
       mGpkgLogger.reset();
+      mGpkgTracksLayer.reset();
+      mGpkgPointsLayer.reset();
 
       QgisApp::instance()->messageBar()->pushInfo( QString(), tr( "GPS logging stopped" ) );
     }
@@ -153,9 +155,9 @@ void QgsAppGpsLogging::gpsConnected()
   {
     startNmeaLogging();
   }
-  if ( mGpkgLogger )
+  if ( !mGpkgLogFile.isEmpty() )
   {
-    mGpkgLogger->setConnection( mConnection->connection() );
+    setGpkgLogFile( mGpkgLogFile );
   }
 }
 
@@ -165,7 +167,9 @@ void QgsAppGpsLogging::gpsDisconnected()
   if ( mGpkgLogger )
   {
     mGpkgLogger->endCurrentTrack();
-    mGpkgLogger->setConnection( nullptr );
+    mGpkgLogger.reset();
+    mGpkgTracksLayer.reset();
+    mGpkgPointsLayer.reset();
   }
 }
 
@@ -235,8 +239,8 @@ void QgsAppGpsLogging::createGpkgLogger()
     for ( const auto &it : sPointFields )
     {
       Qgis::GpsInformationComponent component;
-      std::tuple< QVariant::Type, QString > fieldTypeToName;
-      QVariant::Type fieldType;
+      std::tuple< QMetaType::Type, QString > fieldTypeToName;
+      QMetaType::Type fieldType;
       QString fieldName;
       std::tie( component, fieldTypeToName ) = it;
       std::tie( fieldType, fieldName ) = fieldTypeToName;
@@ -264,8 +268,8 @@ void QgsAppGpsLogging::createGpkgLogger()
     for ( const auto &it : sTrackFields )
     {
       Qgis::GpsInformationComponent component;
-      std::tuple< QVariant::Type, QString > fieldTypeToName;
-      QVariant::Type fieldType;
+      std::tuple< QMetaType::Type, QString > fieldTypeToName;
+      QMetaType::Type fieldType;
       QString fieldName;
       std::tie( component, fieldTypeToName ) = it;
       std::tie( fieldType, fieldName ) = fieldTypeToName;
@@ -331,8 +335,8 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       for ( const auto &it : sPointFields )
       {
         Qgis::GpsInformationComponent component;
-        std::tuple< QVariant::Type, QString > fieldTypeToName;
-        QVariant::Type fieldType;
+        std::tuple< QMetaType::Type, QString > fieldTypeToName;
+        QMetaType::Type fieldType;
         QString fieldName;
         std::tie( component, fieldTypeToName ) = it;
         std::tie( fieldType, fieldName ) = fieldTypeToName;
@@ -371,8 +375,8 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       for ( const auto &it : sTrackFields )
       {
         Qgis::GpsInformationComponent component;
-        std::tuple< QVariant::Type, QString > fieldTypeToName;
-        QVariant::Type fieldType;
+        std::tuple< QMetaType::Type, QString > fieldTypeToName;
+        QMetaType::Type fieldType;
         QString fieldName;
         std::tie( component, fieldTypeToName ) = it;
         std::tie( fieldType, fieldName ) = fieldTypeToName;

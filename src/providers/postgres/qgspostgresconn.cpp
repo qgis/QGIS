@@ -1383,7 +1383,7 @@ static QString quotedList( const QVariantList &list )
     }
 
     QString inner = i->toString();
-    if ( inner.startsWith( '{' ) || i->type() == QVariant::Int || i->type() == QVariant::LongLong )
+    if ( inner.startsWith( '{' ) || i->userType() == QMetaType::Type::Int || i->userType() == QMetaType::Type::LongLong )
     {
       ret.append( inner );
     }
@@ -1400,27 +1400,27 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
       return value.toString();
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return quotedString( value.toDateTime().toString( Qt::ISODateWithMs ) );
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? "TRUE" : "FALSE";
 
-    case QVariant::Map:
+    case QMetaType::Type::QVariantMap:
       return quotedMap( value.toMap() );
 
-    case QVariant::StringList:
-    case QVariant::List:
+    case QMetaType::Type::QStringList:
+    case QMetaType::Type::QVariantList:
       return quotedList( value.toList() );
 
-    case QVariant::Double:
-    case QVariant::String:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::QString:
     default:
       return quotedString( value.toString() );
   }
@@ -1431,7 +1431,7 @@ QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "null" );
   // where json is a string literal just construct it from that rather than dump
-  if ( value.type() == QVariant::String )
+  if ( value.userType() == QMetaType::Type::QString )
   {
     QString valueStr = value.toString();
     if ( valueStr.at( 0 ) == '\"' && valueStr.at( valueStr.size() - 1 ) == '\"' )
@@ -1906,7 +1906,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   return oid;
 }
 
-QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVariant::Type valueType, QString expr )
+QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QMetaType::Type valueType, QString expr )
 {
   QString out;
   const QString &type = fld.typeName();
@@ -1915,7 +1915,7 @@ QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVa
   {
     out = expr.arg( quotedIdentifier( fld.name() ) );
     // if field and value havev incompatible types, rollback to text cast
-    if ( valueType !=  QVariant::LastType && valueType != QVariant::DateTime && valueType != QVariant::Date && valueType != QVariant::Time )
+    if ( valueType !=  QMetaType::Type::UnknownType && valueType != QMetaType::Type::QDateTime && valueType != QMetaType::Type::QDate && valueType != QMetaType::Type::QTime )
     {
       out = out + "::text";
     }
@@ -1928,7 +1928,7 @@ QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVa
   {
     out = expr.arg( quotedIdentifier( fld.name() ) );
     // if field and value havev incompatible types, rollback to text cast
-    if ( valueType !=  QVariant::LastType && valueType != QVariant::Int && valueType != QVariant::LongLong && valueType != QVariant::Double )
+    if ( valueType !=  QMetaType::Type::UnknownType && valueType != QMetaType::Type::Int && valueType != QMetaType::Type::LongLong && valueType != QMetaType::Type::Double )
     {
       out = out + "::text";
     }
@@ -1948,7 +1948,7 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   expr = expr.arg( quotedIdentifier( fld.name() ) );
   if ( type == QLatin1String( "money" ) )
   {
-    return QStringLiteral( "cash_out(%1)::text" ).arg( expr );
+    return QStringLiteral( "%1::numeric::text" ).arg( expr );
   }
   else if ( type.startsWith( '_' ) )
   {
@@ -1986,48 +1986,48 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresConn::nativeTypes()
   QList<QgsVectorDataProvider::NativeType> types;
 
   types     // integer types
-      << QgsVectorDataProvider::NativeType( tr( "Whole Number (smallint - 16bit)" ), QStringLiteral( "int2" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 32bit)" ), QStringLiteral( "int4" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 64bit)" ), QStringLiteral( "int8" ), QVariant::LongLong, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole Number (smallint - 16bit)" ), QStringLiteral( "int2" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 32bit)" ), QStringLiteral( "int4" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 64bit)" ), QStringLiteral( "int8" ), QMetaType::Type::LongLong, -1, -1, 0, 0 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 20, 0, 20 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 20, 0, 20 )
 
       // floating point
-      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QVariant::Double, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QMetaType::Type::Double, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), QStringLiteral( "double precision" ), QMetaType::Type::Double, -1, -1, -1, -1 )
 
       // string types
-      << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QMetaType::Type::QString, 1, 255, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QMetaType::Type::QString, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QMetaType::Type::QString, -1, -1, -1, -1 )
 
       // date type
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "timestamp without time zone" ), QMetaType::Type::QDateTime, -1, -1, -1, -1 )
 
       // complex types
-      << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
-      << QgsVectorDataProvider::NativeType( tr( "Array of Number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )
-      << QgsVectorDataProvider::NativeType( tr( "Array of Number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
-      << QgsVectorDataProvider::NativeType( tr( "Array of Number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
-      << QgsVectorDataProvider::NativeType( tr( "Array of Text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
+      << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QMetaType::Type::QVariantMap, -1, -1, -1, -1, QMetaType::Type::QString )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QMetaType::Type::QVariantList, -1, -1, -1, -1, QMetaType::Type::Int )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QMetaType::Type::QVariantList, -1, -1, -1, -1, QMetaType::Type::LongLong )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Number (double)" ), QStringLiteral( "double precision[]" ), QMetaType::Type::QVariantList, -1, -1, -1, -1, QMetaType::Type::Double )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Text" ), QStringLiteral( "text[]" ), QMetaType::Type::QStringList, -1, -1, -1, -1, QMetaType::Type::QString )
 
       // boolean
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), QStringLiteral( "bool" ), QMetaType::Type::Bool, -1, -1, -1, -1 )
 
       // binary (bytea)
-      << QgsVectorDataProvider::NativeType( tr( "Binary Object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Binary Object (bytea)" ), QStringLiteral( "bytea" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
       ;
 
   if ( pgVersion() >= 90200 )
   {
-    types << QgsVectorDataProvider::NativeType( tr( "JSON (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
+    types << QgsVectorDataProvider::NativeType( tr( "JSON (json)" ), QStringLiteral( "json" ), QMetaType::Type::QVariantMap, -1, -1, -1, -1, QMetaType::Type::QString );
 
     if ( pgVersion() >= 90400 )
     {
-      types << QgsVectorDataProvider::NativeType( tr( "JSON (jsonb)" ), QStringLiteral( "jsonb" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
+      types << QgsVectorDataProvider::NativeType( tr( "JSON (jsonb)" ), QStringLiteral( "jsonb" ), QMetaType::Type::QVariantMap, -1, -1, -1, -1, QMetaType::Type::QString );
     }
   }
   return types;

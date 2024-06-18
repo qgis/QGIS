@@ -124,6 +124,10 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
         horizontalHeader()->setSortIndicatorShown( true );
         horizontalHeader()->setSortIndicator( columns.value( refCols.constFirst() ), config.sortOrder() );
       }
+      else
+      {
+        horizontalHeader()->setSortIndicatorShown( false );
+      }
     }
   }
   mSortExpression = config.sortExpression();
@@ -326,7 +330,7 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
   {
     const QModelIndex index = indexAt( event->pos() );
     const QVariant data = model()->data( index, Qt::DisplayRole );
-    if ( data.type() == QVariant::String )
+    if ( data.userType() == QMetaType::Type::QString )
     {
       const QString textVal = data.toString();
       if ( QgsStringUtils::isUrl( textVal ) )

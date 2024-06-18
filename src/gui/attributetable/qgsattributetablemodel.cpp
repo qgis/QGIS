@@ -748,7 +748,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       const WidgetData &widgetData = getWidgetData( index.column() );
       QString tooltip = widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
-      if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
+      if ( val.userType() == QMetaType::Type::QString && QgsStringUtils::isUrl( val.toString() ) )
       {
         tooltip = tr( "%1 (Ctrl+click to open)" ).arg( tooltip );
       }
@@ -818,7 +818,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
         if ( role == Qt::FontRole )
           return style.font();
       }
-      else if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
+      else if ( val.userType() == QMetaType::Type::QString && QgsStringUtils::isUrl( val.toString() ) )
       {
         if ( role == Qt::ForegroundRole )
         {
@@ -1053,9 +1053,8 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     widgetData = getWidgetData( cache.sortFieldIndex );
   }
 
-  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
-                                    .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                    .setSubsetOfAttributes( cache.sortCacheAttributes );
+  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest ).setFlags( cache.sortCacheExpression.needsGeometry() ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( cache.sortCacheAttributes );
+
   QgsFeatureIterator it = mLayerCache->getFeatures( request );
 
   QgsFeature f;
@@ -1094,9 +1093,17 @@ QString QgsAttributeTableModel::sortCacheExpression( unsigned long cacheIndex ) 
 
 void QgsAttributeTableModel::setRequest( const QgsFeatureRequest &request )
 {
-  mFeatureRequest = request;
-  if ( mLayer && !mLayer->isSpatial() )
-    mFeatureRequest.setFlags( mFeatureRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
+  if ( ! mFeatureRequest.compare( request ) )
+  {
+    mFeatureRequest = request;
+    if ( mLayer && !mLayer->isSpatial() )
+      mFeatureRequest.setFlags( mFeatureRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
+    // Prefetch data for sorting, resetting all caches
+    for ( unsigned long i = 0; i < mSortCaches.size(); ++i )
+    {
+      prefetchSortData( sortCacheExpression( i ), i );
+    }
+  }
 }
 
 const QgsFeatureRequest &QgsAttributeTableModel::request() const

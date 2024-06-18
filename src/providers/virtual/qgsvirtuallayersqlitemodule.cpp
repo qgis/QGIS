@@ -201,16 +201,16 @@ struct VTable
         QString typeName = QStringLiteral( "text" );
         switch ( field.type() )
         {
-          case QVariant::Int:
-          case QVariant::UInt:
-          case QVariant::Bool:
-          case QVariant::LongLong:
+          case QMetaType::Type::Int:
+          case QMetaType::Type::UInt:
+          case QMetaType::Type::Bool:
+          case QMetaType::Type::LongLong:
             typeName = QStringLiteral( "int" );
             break;
-          case QVariant::Double:
+          case QMetaType::Type::Double:
             typeName = QStringLiteral( "real" );
             break;
-          case QVariant::String:
+          case QMetaType::Type::QString:
           default:
             typeName = QStringLiteral( "text" );
             break;
@@ -698,19 +698,19 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
   }
   else
   {
-    switch ( v.type() )
+    switch ( v.userType() )
     {
-      case QVariant::Int:
-      case QVariant::Bool:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::Bool:
         // read signed integer
         sqlite3_result_int( ctxt, v.toInt() );
         break;
-      case QVariant::UInt:
-      case QVariant::LongLong:
+      case QMetaType::Type::UInt:
+      case QMetaType::Type::LongLong:
         // read 64 bits signed integer (or 32 bits unsigned one)
         sqlite3_result_int64( ctxt, v.toLongLong() );
         break;
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         sqlite3_result_double( ctxt, v.toDouble() );
         break;
       default:
@@ -814,24 +814,24 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     return;
   }
 
-  switch ( ret.type() )
+  switch ( ret.userType() )
   {
-    case QVariant::Bool:
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
+    case QMetaType::Type::Bool:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
       sqlite3_result_int64( ctxt, ret.toLongLong() );
       break;
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       sqlite3_result_double( ctxt, ret.toDouble() );
       break;
-    case QVariant::String:
+    case QMetaType::Type::QString:
     {
       QByteArray ba( ret.toByteArray() );
       sqlite3_result_text( ctxt, ba.constData(), ba.size(), SQLITE_TRANSIENT );
       break;
     }
-    case QVariant::UserType:
+    case QMetaType::Type::User:
     {
       if ( ret.userType() == QMetaType::type( "QgsGeometry" ) )
       {

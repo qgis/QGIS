@@ -81,8 +81,8 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode &layerNode )
       const QString comment = field.attribute( QStringLiteral( "comment" ) );
       const int precision = field.attribute( QStringLiteral( "precision" ) ).toInt();
       const int length = field.attribute( QStringLiteral( "length" ) ).toInt();
-      const QVariant::Type type = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "type" ) ).toInt() );
-      const QVariant::Type subType = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "subType" ), QStringLiteral( "0" ) ).toInt() );
+      const QMetaType::Type type = static_cast< QMetaType::Type >( field.attribute( QStringLiteral( "type" ) ).toInt() );
+      const QMetaType::Type subType = static_cast< QMetaType::Type >( field.attribute( QStringLiteral( "subType" ), QStringLiteral( "0" ) ).toInt() );
       const QString typeName = field.attribute( QStringLiteral( "typeName" ) );
 
       mExpressions.append( ExpressionField( exp, QgsField( name, type, typeName, length, precision, comment, subType ) ) );
