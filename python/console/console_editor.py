@@ -247,7 +247,6 @@ class Editor(QgsCodeEditorPython):
         syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
         pyQGISHelpAction.setEnabled(False)
-        gist_menu.setEnabled(False)
         cutAction.setEnabled(False)
         runSelected.setEnabled(False)  # spellok
         copyAction.setEnabled(False)
@@ -259,7 +258,6 @@ class Editor(QgsCodeEditorPython):
             runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
-            gist_menu.setEnabled(True)
             pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
