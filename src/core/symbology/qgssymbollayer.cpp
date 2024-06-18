@@ -958,15 +958,14 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   mClipPath.clear();
 
   const QgsRenderContext &renderContext = context.renderContext();
-
   const QVector<QgsGeometry> clipGeometries = renderContext.symbolLayerClipGeometries( id() );
   if ( !clipGeometries.empty() )
   {
     QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries );
-    if ( context.renderContext().maskSettings().simplifyTolerance() > 0 )
+    if ( renderContext.maskSettings().simplifyTolerance() > 0 )
     {
       QgsGeos geos( mergedGeom.constGet() );
-      mergedGeom = QgsGeometry( geos.simplify( context.renderContext().maskSettings().simplifyTolerance() ) );
+      mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance() ) );
     }
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
     // structure would be better, but too old GEOS
