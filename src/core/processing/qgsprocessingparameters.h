@@ -1888,6 +1888,15 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
      */
     static QgsProcessingParameterExtent *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+  private:
+
+    /**
+     * Returns TRUE if \a value is a valid string value representing an extent.
+     *
+     * This method does NOT attempt to resolve \a value to a map layer.
+     */
+    static bool variantIsValidStringForExtent( const QVariant &value );
+
 };
 
 
