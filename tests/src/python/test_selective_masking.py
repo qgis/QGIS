@@ -1358,7 +1358,9 @@ class SelectiveMaskingTestBase():
         circle_symbol = QgsMarkerSymbol.createSimple({'size': '3'})
         sl.setSubSymbol(circle_symbol)
 
-        self.lines_layer.setRenderer(QgsSingleSymbolRenderer(QgsLineSymbol([sl])))
+        symbol = QgsLineSymbol.createSimple({})
+        symbol.changeSymbolLayer(0, sl)
+        self.lines_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         self.polys_layer.setRenderer(QgsNullSymbolRenderer())
 
         label_settings = self.polys_layer.labeling().settings()
