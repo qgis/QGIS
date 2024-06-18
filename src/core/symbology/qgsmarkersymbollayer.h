@@ -215,6 +215,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     // reimplemented from base classes
 
     QString layerType() const override;
+    Qgis::SymbolLayerFlags flags() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
@@ -513,18 +514,13 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
+    Qgis::SymbolLayerFlags flags() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
     bool usesMapUnits() const override;
-
     QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
-
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
     /**
@@ -705,7 +701,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
+    Qgis::SymbolLayerFlags flags() const override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
@@ -885,6 +881,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
+    Qgis::SymbolLayerFlags flags() const override;
 
     void startRender( QgsSymbolRenderContext &context ) override;
 

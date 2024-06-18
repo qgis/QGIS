@@ -231,6 +231,11 @@ QString QgsSimpleLineSymbolLayer::layerType() const
   return QStringLiteral( "SimpleLine" );
 }
 
+Qgis::SymbolLayerFlags QgsSimpleLineSymbolLayer::flags() const
+{
+  return QgsLineSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QColor penColor = mColor;
@@ -3438,6 +3443,11 @@ QString QgsRasterLineSymbolLayer::layerType() const
   return QStringLiteral( "RasterLine" );
 }
 
+Qgis::SymbolLayerFlags QgsRasterLineSymbolLayer::flags() const
+{
+  return QgsAbstractBrushedLineSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   double scaledHeight = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
@@ -3681,6 +3691,11 @@ QgsLineburstSymbolLayer *QgsLineburstSymbolLayer::clone() const
 QString QgsLineburstSymbolLayer::layerType() const
 {
   return QStringLiteral( "Lineburst" );
+}
+
+Qgis::SymbolLayerFlags QgsLineburstSymbolLayer::flags() const
+{
+  return QgsAbstractBrushedLineSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 void QgsLineburstSymbolLayer::startRender( QgsSymbolRenderContext & )
