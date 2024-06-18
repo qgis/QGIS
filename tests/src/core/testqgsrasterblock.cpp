@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QString>
 #include <QTemporaryFile>
+#include <QLocale>
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
@@ -39,6 +40,10 @@ class TestQgsRasterBlock : public QObject
 
     void testBasic();
     void testWrite();
+    void testPrintValueFloat_data();
+    void testPrintValueFloat();
+    void testPrintValueDouble_data();
+    void testPrintValueDouble();
 
   private:
 
@@ -240,6 +245,73 @@ void TestQgsRasterBlock::testWrite()
   delete rlayer;
 
   delete block;
+}
+
+void TestQgsRasterBlock::testPrintValueDouble_data( )
+{
+  QTest::addColumn< double  >( "value" );
+  QTest::addColumn< bool  >( "localized" );
+  QTest::addColumn< QLocale::Language >( "language" );
+  QTest::addColumn< QString >( "expected" );
+
+  QTest::newRow( "English double" ) << 123456.789 << true << QLocale::Language::English << QStringLiteral( "123,456.789" );
+  QTest::newRow( "English int" ) << 123456.0 << true << QLocale::Language::English << QStringLiteral( "123,456" );
+  QTest::newRow( "English int no locale" ) << 123456.0  << false << QLocale::Language::English << QStringLiteral( "123456" );
+  QTest::newRow( "English double no locale" ) << 123456.789  << false << QLocale::Language::English << QStringLiteral( "123456.789" );
+  QTest::newRow( "English negative double" ) << -123456.789 << true << QLocale::Language::English << QStringLiteral( "-123,456.789" );
+
+  QTest::newRow( "Italian double" ) << 123456.789 << true << QLocale::Language::Italian << QStringLiteral( "123.456,789" );
+  QTest::newRow( "Italian int" ) << 123456.0 << true << QLocale::Language::Italian << QStringLiteral( "123.456" );
+  QTest::newRow( "Italian int no locale" ) << 123456.0 << false << QLocale::Language::Italian << QStringLiteral( "123456" );
+  QTest::newRow( "Italian double no locale" ) << 123456.789 << false << QLocale::Language::Italian << QStringLiteral( "123456.789" );
+  QTest::newRow( "Italian negative double" ) << -123456.789 << true << QLocale::Language::Italian << QStringLiteral( "-123.456,789" );
+}
+
+
+void TestQgsRasterBlock::testPrintValueDouble()
+{
+  QFETCH( double, value );
+  QFETCH( bool, localized );
+  QFETCH( QLocale::Language, language );
+  QFETCH( QString, expected );
+
+  QLocale::setDefault( language );
+  QString actual = QgsRasterBlock::printValue( value, localized );
+  QCOMPARE( actual, expected );
+  QLocale::setDefault( QLocale::Language::English );
+}
+
+void TestQgsRasterBlock::testPrintValueFloat_data( )
+{
+  QTest::addColumn< float  >( "value" );
+  QTest::addColumn< bool  >( "localized" );
+  QTest::addColumn< QLocale::Language >( "language" );
+  QTest::addColumn< QString >( "expected" );
+
+  QTest::newRow( "English float" ) << 123456.789f << true << QLocale::Language::English << QStringLiteral( "123,456.79" );
+  QTest::newRow( "English int" ) << 123456.f << true << QLocale::Language::English << QStringLiteral( "123,456" );
+  QTest::newRow( "English int no locale" ) << 123456.f << false << QLocale::Language::English << QStringLiteral( "123456" );
+  QTest::newRow( "English float no locale" ) << 123456.789f << false << QLocale::Language::English << QStringLiteral( "123456.79" );
+  QTest::newRow( "English negative float" ) << -123456.789f << true << QLocale::Language::English << QStringLiteral( "-123,456.79" );
+
+  QTest::newRow( "Italian float" ) << 123456.789f << true << QLocale::Language::Italian << QStringLiteral( "123.456,79" );
+  QTest::newRow( "Italian int" ) << 123456.f << true << QLocale::Language::Italian << QStringLiteral( "123.456" );
+  QTest::newRow( "Italian int no locale" ) << 123456.f << false << QLocale::Language::Italian << QStringLiteral( "123456" );
+  QTest::newRow( "Italian float no locale" ) << 123456.789f << false << QLocale::Language::Italian << QStringLiteral( "123456.79" );
+  QTest::newRow( "Italian negative float" ) << -123456.789f << true << QLocale::Language::Italian << QStringLiteral( "-123.456,79" );
+}
+
+void TestQgsRasterBlock::testPrintValueFloat()
+{
+  QFETCH( float, value );
+  QFETCH( bool, localized );
+  QFETCH( QLocale::Language, language );
+  QFETCH( QString, expected );
+
+  QLocale::setDefault( language );
+  QString actual = QgsRasterBlock::printValue( value, localized );
+  QCOMPARE( actual, expected );
+  QLocale::setDefault( QLocale::Language::English );
 }
 
 QGSTEST_MAIN( TestQgsRasterBlock )

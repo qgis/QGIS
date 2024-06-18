@@ -1176,11 +1176,11 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           // the return value should be interpreted as QMetaType::Type"
           if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::Float )
           {
-            valueString = QgsRasterBlock::printValue( value.toFloat() );
+            valueString = QgsRasterBlock::printValue( value.toFloat(), true );
           }
           else
           {
-            valueString = QgsRasterBlock::printValue( value.toDouble() );
+            valueString = QgsRasterBlock::printValue( value.toDouble(), true );
           }
         }
         attributes.insert( dprovider->generateBandName( it.key() ), valueString );

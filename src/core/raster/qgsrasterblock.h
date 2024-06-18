@@ -588,19 +588,21 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
-     *  \param value the value to be printed
-     *  \returns string representing the value
+     * \param value the value to be printed
+     * \param localized if TRUE, use localized number format
+     * \returns string representing the value
      */
-    static QString printValue( double value );
+    static QString printValue( double value, bool localized = false );
 
     /**
      * \brief Print float value with all necessary significant digits.
      *         It is ensured that conversion back to float gives the same number.
-     *  \param value the value to be printed
-     *  \returns string representing the value
+     * \param value the value to be printed
+     * \param localized if TRUE, use localized number format
+     * \returns string representing the value
      * \note not available in Python bindings
      */
-    static QString printValue( float value ) SIP_SKIP;
+    static QString printValue( float value, bool localized = false ) SIP_SKIP;
 
     /**
      * \brief Convert data to different type.

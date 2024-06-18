@@ -354,12 +354,13 @@ overwrite data somewhere in the middle of the internal buffer.
 
 
 
-    static QString printValue( double value );
+    static QString printValue( double value, bool localized = false );
 %Docstring
 Print double value with all necessary significant digits.
 It is ensured that conversion back to double gives the same number.
 
 :param value: the value to be printed
+:param localized: if ``True``, use localized number format
 
 :return: string representing the value
 %End
