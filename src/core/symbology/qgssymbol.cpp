@@ -826,7 +826,7 @@ bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
 }
 
 
-void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields )
+void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields, bool isSubSymbol )
 {
   Q_ASSERT_X( !mStarted, "startRender", "Rendering has already been started for this symbol instance!" );
   mStarted = true;

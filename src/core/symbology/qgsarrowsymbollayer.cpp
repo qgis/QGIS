@@ -215,7 +215,7 @@ void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mComputedHeadType = headType();
   mComputedArrowType = arrowType();
 
-  mSymbol->startRender( context.renderContext() );
+  mSymbol->startRender( context.renderContext(), context.fields(), true );
 }
 
 void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
