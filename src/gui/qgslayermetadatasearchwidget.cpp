@@ -206,30 +206,49 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
     for ( const auto &selectedIndex : std::as_const( selectedIndexes ) )
     {
       const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), static_cast< int >( QgsLayerMetadataResultsModel::CustomRole::Metadata ) ).value<QgsLayerMetadataProviderResult>() };
+
+      QString layerName = metadataResult.title();
+      if ( layerName.isEmpty() )
+      {
+        QVariantMap components = QgsProviderRegistry::instance()->decodeUri( metadataResult.dataProviderName(),  metadataResult.uri() );
+        if ( components.contains( QStringLiteral( "layerName" ) ) )
+        {
+          layerName = components.value( QStringLiteral( "layerName" ) ).toString();
+        }
+        else if ( components.contains( QStringLiteral( "table" ) ) )
+        {
+          layerName = components.value( QStringLiteral( "table" ) ).toString();
+        }
+        else
+        {
+          layerName = metadataResult.identifier();
+        }
+      }
+
       switch ( metadataResult.layerType() )
       {
         case Qgis::LayerType::Raster:
         {
           Q_NOWARN_DEPRECATED_PUSH
-          emit addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addRasterLayer( metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           Q_NOWARN_DEPRECATED_POP
-          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           break;
         }
         case Qgis::LayerType::Vector:
         {
           Q_NOWARN_DEPRECATED_PUSH
-          emit addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addVectorLayer( metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           Q_NOWARN_DEPRECATED_POP
-          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           break;
         }
         case Qgis::LayerType::Mesh:
         {
           Q_NOWARN_DEPRECATED_PUSH
-          emit addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addMeshLayer( metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           Q_NOWARN_DEPRECATED_POP
-          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           break;
         }
         default:  // unsupported
