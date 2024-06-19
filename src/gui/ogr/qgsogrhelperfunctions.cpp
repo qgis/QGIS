@@ -221,7 +221,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
 QString createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
 {
   QString uri;
-  if ( type == QLatin1String( "HTTP/HTTPS/FTP" ) )
+  if ( type == QLatin1String( "vsicurl" ) )
   {
     uri = url;
     // If no protocol is provided in the URL, default to HTTP
@@ -231,35 +231,17 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
     }
     uri.prepend( QStringLiteral( "/vsicurl/" ) );
   }
-  else if ( type == QLatin1String( "AWS S3" ) )
+  else if ( type == QLatin1String( "vsis3" )
+            || type == QLatin1String( "vsigs" )
+            || type == QLatin1String( "vsiaz" )
+            || type == QLatin1String( "vsiadls" )
+            || type == QLatin1String( "vsioss" )
+            || type == QLatin1String( "vsiswift" )
+            || type == QLatin1String( "vsihdfs" )
+          )
   {
     uri = url;
-    uri.prepend( QStringLiteral( "/vsis3/" ) );
-  }
-  else if ( type == QLatin1String( "Google Cloud Storage" ) )
-  {
-    uri = url;
-    uri.prepend( QStringLiteral( "/vsigs/" ) );
-  }
-  else if ( type == QLatin1String( "Microsoft Azure Blob" ) )
-  {
-    uri = url;
-    uri.prepend( QStringLiteral( "/vsiaz/" ) );
-  }
-  else if ( type == QLatin1String( "Microsoft Azure Data Lake Storage" ) )
-  {
-    uri = url;
-    uri.prepend( QStringLiteral( "/vsiadls/" ) );
-  }
-  else if ( type == QLatin1String( "Alibaba Cloud OSS" ) )
-  {
-    uri = url;
-    uri.prepend( QStringLiteral( "/vsioss/" ) );
-  }
-  else if ( type == QLatin1String( "OpenStack Swift Object Storage" ) )
-  {
-    uri = url;
-    uri.prepend( QStringLiteral( "/vsiswift/" ) );
+    uri.prepend( QStringLiteral( "/%1/" ).arg( type ) );
   }
   // catching both GeoJSON and GeoJSONSeq
   else if ( type.startsWith( QLatin1String( "GeoJSON" ) ) )
@@ -274,8 +256,7 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
   {
     uri = QStringLiteral( "DODS:%1" ).arg( url );
   }
-  // Check beginning because of "experimental"
-  else if ( type.startsWith( QLatin1String( "WFS3" ) ) )
+  else if ( type == QLatin1String( "WFS3" ) )
   {
     uri = QStringLiteral( "WFS3:%1" ).arg( url );
   }
@@ -302,4 +283,15 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
     uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
   }
   return uri;
+}
+
+bool isProtocolCloudType( const QString &protocol )
+{
+  return ( protocol == QLatin1String( "vsis3" ) ||
+           protocol == QLatin1String( "vsigs" ) ||
+           protocol == QLatin1String( "vsiaz" ) ||
+           protocol == QLatin1String( "vsiadls" ) ||
+           protocol == QLatin1String( "vsioss" ) ||
+           protocol == QLatin1String( "vsiswift" ) ||
+           protocol == QLatin1String( "vsihdfs" ) );
 }

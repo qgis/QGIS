@@ -34,3 +34,8 @@ QString GUI_EXPORT createDatabaseURI( const QString &connectionType, const QStri
  * \note not available in python bindings
  */
 QString GUI_EXPORT createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig = false );
+
+/**
+ * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
+ */
+bool GUI_EXPORT isProtocolCloudType( const QString &protocol );
