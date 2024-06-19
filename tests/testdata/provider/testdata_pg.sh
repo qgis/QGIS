@@ -57,11 +57,11 @@ EOF
 
 # Test service=qgis_test connects to the just-created database
 echo "Checking if we can connect to ${DB} via service=qgis_test"
-CHECK=$(psql -XtA 'service=qgis_test' -c "select val from qgis_test.schema_info where var='fingerprint'")
+CHECK=$(psql -wXtA 'service=qgis_test' -c "select val from qgis_test.schema_info where var='fingerprint'")
 if test "${CHECK}" != "${FINGERPRINT}"; then
   exec >&2
   echo "ERROR: Could not access the just created test database ${DB} via service=qgis_test"
-  echo "HINT: create a section like the following in ~/.pg_service.conf"
+  echo "HINT: setup a section like the following in ~/.pg_service.conf"
   cat <<EOF
 [qgis_test]
   host=localhost
@@ -73,15 +73,15 @@ EOF
   exit 1
 fi
 
-# TODO: Test service=qgis_test connects via a method which accepts
+# Test service=qgis_test connects via a method which accepts
 # username/password
-CHECK=$(psql -XtA 'service=qgis_test user=qgis_test_user password=qgis_test_user_password' -c "select version()")
+CHECK=$(psql -wXtA 'service=qgis_test user=qgis_test_unprivileged_user password=qgis_test_unprivileged_user_password' -c "select version()")
 if test -z "${CHECK}"; then
   exec >&2
   echo "ERROR: Could not access the just created test database ${DB} via service=qgis_test and overriding username/password"
-  echo "HINT: make sure MD5 method is accepted in pg_hba.conf "
-  echo "(specifying host=localhost in the [qgis_test] section of "
-  echo "'~/.pg_service.conf' often does help)"
+  echo "HINT: make sure password based methods ( scram-sha-256, md4 ) are accepted in pg_hba.conf"
+  echo "      for the kind of connection used by the [qgis_test] section of ~/.pg_service.conf"
+  echo "      Specifying host=localhost often helps."
   exit 1
 fi
 
