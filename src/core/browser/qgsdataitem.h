@@ -313,6 +313,27 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns a filtered list of data \a items which match the template type.
+     *
+     * \since QGIS 3.38
+     */
+    template<class T>
+    static QList< T * > filteredItems( const QList< QgsDataItem * > &items )
+    {
+      QList< T * > result;
+      result.reserve( items.size() );
+      for ( QgsDataItem *item : items )
+      {
+        if ( T *matchedItem = qobject_cast< T * >( item ) )
+          result << matchedItem;
+      }
+      return result;
+    }
+#endif
+
     // members
 
     Qgis::BrowserItemType type() const { return mType; }
