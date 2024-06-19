@@ -23,6 +23,7 @@
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
 #include "qgsgdalutils.h"
+#include "qgsgdalcredentialoptionswidget.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -60,8 +61,6 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     cmbProtocolTypes->addItem( protocol.first, protocol.second );
   }
 
-  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems" ) ) );
-
   connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
     if ( radioSrcProtocol->isChecked() )
@@ -97,6 +96,13 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     fillOpenOptions();
   } );
   mOpenOptionsGroupBox->setVisible( false );
+
+  mCredentialsWidget = new QgsGdalCredentialOptionsWidget();
+  mCredentialOptionsLayout->addWidget( mCredentialsWidget );
+  mCredentialOptionsGroupBox->setVisible( false );
+
+  connect( mCredentialsWidget, &QgsGdalCredentialOptionsWidget::optionsChanged, this, &QgsGdalSourceSelect::credentialOptionsChanged );
+
   mAuthSettingsProtocol->setDataprovider( QStringLiteral( "gdal" ) );
 }
 
@@ -111,7 +117,6 @@ void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
     mBucket->show();
     labelKey->show();
     mKey->show();
-    mAuthWarning->show();
   }
   else
   {
@@ -122,7 +127,6 @@ void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
     mBucket->hide();
     labelKey->hide();
     mKey->hide();
-    mAuthWarning->hide();
   }
 }
 
@@ -133,9 +137,9 @@ void QgsGdalSourceSelect::radioSrcFile_toggled( bool checked )
     fileGroupBox->show();
     protocolGroupBox->hide();
     clearOpenOptions();
+    updateProtocolOptions();
 
     emit enableButtons( !mFileWidget->filePath().isEmpty() );
-
   }
 }
 
@@ -168,6 +172,7 @@ void QgsGdalSourceSelect::radioSrcProtocol_toggled( bool checked )
     protocolGroupBox->show();
     setProtocolWidgetsVisibility();
     clearOpenOptions();
+    updateProtocolOptions();
 
     emit enableButtons( !protocolURI->text().isEmpty() );
   }
@@ -178,6 +183,7 @@ void QgsGdalSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &t
   Q_UNUSED( text )
   setProtocolWidgetsVisibility();
   clearOpenOptions();
+  updateProtocolOptions();
 }
 
 void QgsGdalSourceSelect::addButtonClicked()
@@ -306,6 +312,8 @@ void QgsGdalSourceSelect::computeDataSources()
     }
   }
 
+  const QVariantMap credentialOptions = !mCredentialOptionsGroupBox->isHidden() ? mCredentialOptions : QVariantMap();
+
   if ( radioSrcFile->isChecked() || radioSrcOgcApi->isChecked() )
   {
     for ( const auto &filePath : QgsFileWidget::splitFilePaths( mRasterPath ) )
@@ -342,6 +350,8 @@ void QgsGdalSourceSelect::computeDataSources()
     QVariantMap parts;
     if ( !openOptions.isEmpty() )
       parts.insert( QStringLiteral( "openOptions" ), openOptions );
+    if ( !credentialOptions.isEmpty() )
+      parts.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
     parts.insert( QStringLiteral( "path" ),
                   createProtocolURI( cmbProtocolTypes->currentData().toString(),
                                      uri,
@@ -384,8 +394,33 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
   }
 
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), firstDataSource );
+  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  parts.remove( QStringLiteral( "credentialOptions" ) );
+  if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
+  {
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
+    if ( bucketMatch.hasMatch() )
+    {
+      const QString bucket = vsiPrefix + bucketMatch.captured( 1 );
+      for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
+      {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+        VSISetPathSpecificOption( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 5, 0)
+        VSISetCredential( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#else
+        ( void )bucket;
+        QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
+#endif
+      }
+    }
+  }
+
+  const QString gdalUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
   GDALDriverH hDriver;
-  hDriver = GDALIdentifyDriverEx( firstDataSource.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
+  hDriver = GDALIdentifyDriverEx( gdalUri.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 
@@ -458,7 +493,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
       if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0 && label->text() == QLatin1String( "MODE" ) && options.contains( QLatin1String( "INTERPOLATED" ) ) )
       {
-        gdal::dataset_unique_ptr hSrcDS( GDALOpen( firstDataSource.toUtf8().constData(), GA_ReadOnly ) );
+        gdal::dataset_unique_ptr hSrcDS( GDALOpen( gdalUri.toUtf8().constData(), GA_ReadOnly ) );
         if ( hSrcDS && QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
         {
           idx = cb->findText( QLatin1String( "INTERPOLATED" ) );
@@ -503,12 +538,35 @@ void QgsGdalSourceSelect::fillOpenOptions()
   }
 
   mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
-
 }
 
 void QgsGdalSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
+}
+
+void QgsGdalSourceSelect::updateProtocolOptions()
+{
+  const QString currentProtocol = cmbProtocolTypes->currentData().toString();
+  if ( radioSrcProtocol->isChecked() && isProtocolCloudType( currentProtocol ) )
+  {
+    mCredentialsWidget->setDriver( currentProtocol );
+    mCredentialOptionsGroupBox->setVisible( true );
+  }
+  else
+  {
+    mCredentialOptionsGroupBox->setVisible( false );
+  }
+}
+
+void QgsGdalSourceSelect::credentialOptionsChanged()
+{
+  const QVariantMap newCredentialOptions = mCredentialsWidget->credentialOptions();
+  if ( newCredentialOptions == mCredentialOptions )
+    return;
+
+  mCredentialOptions = newCredentialOptions;
+  fillOpenOptions();
 }
 
 ///@endcond

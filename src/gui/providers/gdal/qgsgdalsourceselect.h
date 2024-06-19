@@ -25,6 +25,8 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+class QgsGdalCredentialOptionsWidget;
+
 /**
  * \class QgsGdalSourceSelect
  * \brief Dialog to select GDAL supported rasters
@@ -51,17 +53,23 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
 
   private slots:
     void showHelp();
+    void updateProtocolOptions();
+    void credentialOptionsChanged();
 
   private:
 
     void computeDataSources();
     void clearOpenOptions();
     void fillOpenOptions();
+
     std::vector<QWidget *> mOpenOptionsWidgets;
+    QgsGdalCredentialOptionsWidget *mCredentialsWidget = nullptr;
 
     QString mRasterPath;
     QStringList mDataSources;
     bool mIsOgcApi = false;
+    QVariantMap mCredentialOptions;
+
 };
 
 ///@endcond
