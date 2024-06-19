@@ -98,8 +98,7 @@ QMap<QString, QString> QgsMetalRoughMaterialSettings::toExportParameters() const
   return parameters;
 }
 
-void QgsMetalRoughMaterialSettings::addParametersToEffect( Qt3DRender::QEffect * ) const
+void QgsMetalRoughMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {
 
 }
-
