@@ -310,6 +310,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
 #elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 5, 0)
         VSISetCredential( bucket.toLocal8Bit().constData(), it.key().toLocal8Bit().constData(), it.value().toString().toLocal8Bit().constData() );
 #else
+        ( void )bucket;
         QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
 #endif
       }
