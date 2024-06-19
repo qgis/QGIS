@@ -31,27 +31,32 @@ dropdb --if-exists "${DB}"
 echo "Creating DB $DB"
 # TODO: use service=qgis_test to connect to "template1" and use SQL ?
 createdb "${DB}" -E UTF8 -T template0 || exit 1
+
+export PGDATABASE="${DB}"
+
 for f in ${SCRIPTS}; do
   echo "Loading $f"
-  psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" "${DB}" -v ON_ERROR_STOP=1 || exit 1
+  psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" -v ON_ERROR_STOP=1 || exit 1
 done
 
-PGSERVERVERSION=$(psql -XtA -c 'SHOW server_version_num' "${DB}")
+PGSERVERVERSION=$(psql -XtA -c 'SHOW server_version_num')
 if test "${PGSERVERVERSION}" -gt 120000; then
   for f in ${SCRIPTS12}; do
     echo "Loading $f"
-    psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" "${DB}" -v ON_ERROR_STOP=1 || exit 1
+    psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" -v ON_ERROR_STOP=1 || exit 1
   done
 fi
 
 FINGERPRINT="${DB}-$(date +%s)"
-echo "Storing fingerprint ${FINGERPRINT} in $DB"
-psql -q --echo-errors "${DB}" -v ON_ERROR_STOP=1 <<EOF || exit 1
+echo "Storing fingerprint '${FINGERPRINT}' in $DB"
+
+psql -q --echo-errors -v ON_ERROR_STOP=1 <<EOF || exit 1
 CREATE TABLE qgis_test.schema_info AS SELECT
   'fingerprint' var, '${FINGERPRINT}' val;
 EOF
 
 # Test service=qgis_test connects to the just-created database
+echo "Checking if we can connect to ${DB} via service=qgis_test"
 CHECK=$(psql -XtA 'service=qgis_test' -c "select val from qgis_test.schema_info where var='fingerprint'")
 if test "${CHECK}" != "${FINGERPRINT}"; then
   exec >&2
@@ -62,8 +67,8 @@ if test "${CHECK}" != "${FINGERPRINT}"; then
   host=localhost
   port=5432
   dbname=${DB}
-  user=USERNAME
-  password=PASSWORD
+  user=qgis_test_user
+  password=qgis_test_user_password
 EOF
   exit 1
 fi
@@ -73,7 +78,7 @@ fi
 CHECK=$(psql -XtA 'service=qgis_test user=qgis_test_user password=qgis_test_user_password' -c "select version()")
 if test -z "${CHECK}"; then
   exec >&2
-  echo "ERROR: Cannot service=qgis_test via username/password"
+  echo "ERROR: Could not access the just created test database ${DB} via service=qgis_test and overriding username/password"
   echo "HINT: make sure MD5 method is accepted in pg_hba.conf "
   echo "(specifying host=localhost in the [qgis_test] section of "
   echo "'~/.pg_service.conf' often does help)"
