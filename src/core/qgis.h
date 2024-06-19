@@ -636,6 +636,7 @@ class CORE_EXPORT Qgis
     enum class SymbolLayerFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
+      CanCalculateMaskGeometryPerFeature = 1 << 1, //!< If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. (Since QGIS 3.38)
     };
     Q_ENUM( SymbolLayerFlag )
     //! Symbol layer flags
