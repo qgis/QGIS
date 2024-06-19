@@ -20,12 +20,13 @@
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
 
-void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsWfsRootItem *rootItem = qobject_cast< QgsWfsRootItem * >( item ) )
   {
@@ -54,8 +55,15 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    const QList< QgsWfsConnectionItem * > wfsConnectionItems = QgsDataItem::filteredItems<QgsWfsConnectionItem>( selection );
+    QAction *actionDelete = new QAction( wfsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [wfsConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( wfsConnectionItems, []( const QString & connectionName )
+      {
+        QgsWfsConnection::deleteConnection( connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
   }
 }
@@ -81,17 +89,6 @@ void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
     // the parent should be updated
     item->parent()->refreshConnections();
   }
-}
-
-void QgsWfsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsWfsConnection::deleteConnection( item->name() );
-  // the parent should be updated
-  item->parent()->refreshConnections();
 }
 
 void QgsWfsDataItemGuiProvider::refreshConnection( QgsDataItem *item )

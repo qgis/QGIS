@@ -20,13 +20,14 @@
 #include "qgsarcgisvectortileconnectiondialog.h"
 #include "qgsvectortileconnection.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
 ///@cond PRIVATE
 
-void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsVectorTileLayerItem *layerItem = qobject_cast< QgsVectorTileLayerItem * >( item ) )
   {
@@ -34,8 +35,15 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
+    const QList< QgsVectorTileLayerItem * > vtConnectionItems = QgsDataItem::filteredItems<QgsVectorTileLayerItem>( selection );
+    QAction *actionDelete = new QAction( vtConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [vtConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( vtConnectionItems, []( const QString & connectionName )
+      {
+        QgsVectorTileProviderConnection::deleteConnection( connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
@@ -96,17 +104,6 @@ void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
       break;
     }
   }
-
-  item->parent()->refreshConnections();
-}
-
-void QgsVectorTileDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsVectorTileProviderConnection::deleteConnection( item->name() );
 
   item->parent()->refreshConnections();
 }

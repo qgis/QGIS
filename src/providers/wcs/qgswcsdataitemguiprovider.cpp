@@ -19,12 +19,13 @@
 #include "qgswcsdataitems.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
 
-void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsWCSRootItem *rootItem = qobject_cast< QgsWCSRootItem * >( item ) )
   {
@@ -53,8 +54,15 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    const QList< QgsWCSConnectionItem * > wcsConnectionItems = QgsDataItem::filteredItems<QgsWCSConnectionItem>( selection );
+    QAction *actionDelete = new QAction( wcsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [wcsConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( wcsConnectionItems, []( const QString & connectionName )
+      {
+        QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
   }
 }
@@ -78,17 +86,6 @@ void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
     // the parent should be updated
     item->parent()->refreshConnections();
   }
-}
-
-void QgsWcsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), item->name() );
-  // the parent should be updated
-  item->parent()->refreshConnections();
 }
 
 void QgsWcsDataItemGuiProvider::refreshConnection( QgsDataItem *item )

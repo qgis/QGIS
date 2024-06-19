@@ -44,6 +44,7 @@
 %Include auto_generated/qgsdatabasetablecombobox.sip
 %Include auto_generated/qgsdataitemguiprovider.sip
 %Include auto_generated/qgsdataitemguiproviderregistry.sip
+%Include auto_generated/qgsdataitemguiproviderutils.sip
 %Include auto_generated/qgsdatasourceselectdialog.sip
 %Include auto_generated/qgsdbrelationshipwidget.sip
 %Include auto_generated/qgsdecoratedscrollbar.sip

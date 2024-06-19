@@ -39,7 +39,6 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
   private:
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
-    static void deleteConnection( QgsDataItem *item );
     static void createSchema( QgsMssqlConnectionItem *connItem );
     static void truncateTable( QgsMssqlLayerItem *layerItem );
     static void saveConnections();
