@@ -128,8 +128,7 @@ QMap<QString, QString> QgsSimpleLineMaterialSettings::toExportParameters() const
 
 void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  ambientParameter->setValue( mAmbient );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), mAmbient );
   effect->addParameter( ambientParameter );
 }
 
