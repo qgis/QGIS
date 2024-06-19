@@ -37,9 +37,6 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     //! Constructor
     QgsGdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    //! Returns whether the protocol is a cloud type
-    bool isProtocolCloudType();
-
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;

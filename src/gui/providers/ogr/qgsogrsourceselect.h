@@ -61,8 +61,6 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     QString encoding();
     //! Returns the connection type
     QString dataSourceType();
-    //! Returns whether the protocol is a cloud type
-    bool isProtocolCloudType();
 
   private:
     //! Stores the file vector filters

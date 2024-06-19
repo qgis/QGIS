@@ -45,13 +45,19 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   whileBlocking( radioSrcFile )->setChecked( true );
   protocolGroupBox->hide();
 
-  QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs" ).split( ';' );
-  protocolTypes += QStringLiteral( "Microsoft Azure Blob,vsiaz;Microsoft Azure Data Lake Storage,vsiadls;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift" ).split( ';' );
-  for ( int i = 0; i < protocolTypes.count(); i++ )
+  for ( const auto &protocol :
+        {
+          std::make_pair( QStringLiteral( "HTTP/HTTPS/FTP" ), QStringLiteral( "vsicurl" ) ),
+          std::make_pair( QStringLiteral( "AWS S3" ), QStringLiteral( "vsis3" ) ),
+          std::make_pair( QObject::tr( "Google Cloud Storage" ), QStringLiteral( "vsigs" ) ),
+          std::make_pair( QObject::tr( "Microsoft Azure Blob" ), QStringLiteral( "vsiaz" ) ),
+          std::make_pair( QObject::tr( "Microsoft Azure Data Lake Storage" ), QStringLiteral( "vsiadls" ) ),
+          std::make_pair( QObject::tr( "Alibaba Cloud OSS" ), QStringLiteral( "vsioss" ) ),
+          std::make_pair( QObject::tr( "OpenStack Swift Object Storage" ), QStringLiteral( "vsiswift" ) ),
+          std::make_pair( QObject::tr( "Hadoop File System" ), QStringLiteral( "vsihdfs" ) ),
+        } )
   {
-    QString protocol = protocolTypes.at( i );
-    if ( ( !protocol.isEmpty() ) && ( !protocol.isNull() ) )
-      cmbProtocolTypes->addItem( protocol.split( ',' ).at( 0 ) );
+    cmbProtocolTypes->addItem( protocol.first, protocol.second );
   }
 
   mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems" ) ) );
@@ -94,19 +100,9 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mAuthSettingsProtocol->setDataprovider( QStringLiteral( "gdal" ) );
 }
 
-bool QgsGdalSourceSelect::isProtocolCloudType()
-{
-  return ( cmbProtocolTypes->currentText() == QLatin1String( "AWS S3" ) ||
-           cmbProtocolTypes->currentText() == QLatin1String( "Google Cloud Storage" ) ||
-           cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Blob" ) ||
-           cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Data Lake Storage" ) ||
-           cmbProtocolTypes->currentText() == QLatin1String( "Alibaba Cloud OSS" ) ||
-           cmbProtocolTypes->currentText() == QLatin1String( "OpenStack Swift Object Storage" ) );
-}
-
 void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
 {
-  if ( isProtocolCloudType() )
+  if ( isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
   {
     labelProtocolURI->hide();
     protocolURI->hide();
@@ -323,7 +319,7 @@ void QgsGdalSourceSelect::computeDataSources()
   }
   else if ( radioSrcProtocol->isChecked() )
   {
-    bool cloudType = isProtocolCloudType();
+    bool cloudType = isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
       return;
@@ -347,7 +343,7 @@ void QgsGdalSourceSelect::computeDataSources()
     if ( !openOptions.isEmpty() )
       parts.insert( QStringLiteral( "openOptions" ), openOptions );
     parts.insert( QStringLiteral( "path" ),
-                  createProtocolURI( cmbProtocolTypes->currentText(),
+                  createProtocolURI( cmbProtocolTypes->currentData().toString(),
                                      uri,
                                      mAuthSettingsProtocol->configId(),
                                      mAuthSettingsProtocol->username(),
