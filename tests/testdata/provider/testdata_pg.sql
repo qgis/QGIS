@@ -791,3 +791,29 @@ CREATE TABLE qgis_test.referencing_layer_composite(
       --       against issue GH-56420
       REFERENCES qgis_test.referenced_layer_composite(pk_ref_4, pk_ref_3)
 );
+
+---------------------------------------------
+--
+-- Table where user only has insert privilege
+-- on a single column
+-- See https://github.com/qgis/QGIS/issues/28835
+--
+CREATE TABLE qgis_issue_gh_28835 (
+  id SERIAL PRIMARY KEY,
+  restricted_column TEXT,
+  geom GEOMETRY(Polygon, 4326)
+);
+--
+-- NOTE: schema permissions take precedence over table permissions
+--       so if "ALL" on the schema containing table qgis_issue_gh_28835
+--       is granted, the following line would not restrict insert
+--       on restricted_column
+--
+GRANT USAGE
+  ON qgis_issue_gh_28835_id_seq
+  TO qgis_test_unprivileged_user;
+GRANT
+    SELECT, INSERT(geom)
+    -- ,UPDATE(geom) -- intentionally kept the UPDATE out
+  ON qgis_issue_gh_28835
+  TO qgis_test_unprivileged_user;
