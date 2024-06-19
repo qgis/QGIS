@@ -300,6 +300,7 @@ Sets the capabilities for the data item.
     static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
 
 
+
     Qgis::BrowserItemType type() const;
 
     QgsDataItem *parent() const;
