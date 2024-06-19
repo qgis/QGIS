@@ -418,19 +418,42 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   QgsDebugMsgLevel( "Data source uri is [" + uri + ']', 2 );
 
+  QVariantMap credentialOptions;
   mFilePath = QgsOgrProviderUtils::analyzeURI( uri,
               mIsSubLayer,
               mLayerIndex,
               mLayerName,
               mSubsetString,
               mOgrGeometryTypeFilter,
-              mOpenOptions );
-
+              mOpenOptions,
+              credentialOptions );
 
   const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
   if ( parts.contains( QStringLiteral( "uniqueGeometryType" ) ) )
   {
     mUniqueGeometryType = parts.value( QStringLiteral( "uniqueGeometryType" ) ).toString() == QLatin1String( "yes" );
+  }
+
+  const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+  if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
+  {
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
+    if ( bucketMatch.hasMatch() )
+    {
+      const QString bucket = vsiPrefix + bucketMatch.captured( 1 );
+      for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
+      {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+        VSISetPathSpecificOption( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 5, 0)
+        VSISetCredential( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#else
+        ( void )bucket;
+        QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
+#endif
+      }
+    }
   }
 
   // to be called only after mFilePath has been set

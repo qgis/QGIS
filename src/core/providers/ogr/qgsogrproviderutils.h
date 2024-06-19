@@ -250,7 +250,8 @@ class CORE_EXPORT QgsOgrProviderUtils
                                QString &layerName,
                                QString &subsetString,
                                OGRwkbGeometryType &ogrGeometryTypeFilter,
-                               QStringList &openOptions );
+                               QStringList &openOptions,
+                               QVariantMap &credentialOptions );
 
     //! Whether a driver can share the same dataset handle among different layers
     static bool canDriverShareSameDatasetAmongLayers( const QString &driverName );

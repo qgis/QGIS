@@ -1626,6 +1626,24 @@ class PyQgsOGRProvider(QgisTestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
         self.assertEqual(encodedUri, uri)
 
+    def testDecodeEncodeUriCredentialOptions(self):
+        """Test decodeUri/encodeUri credential options support"""
+
+        uri = '/my/vector.shp|option:AN=OPTION|credential:ANOTHER=BBB|credential:SOMEKEY=AAAAA'
+        parts = QgsProviderRegistry.instance().decodeUri('ogr', uri)
+        self.assertEqual(parts, {
+            'path': '/my/vector.shp',
+            'layerId': None,
+            'layerName': None,
+            'credentialOptions': {
+                'ANOTHER': 'BBB',
+                'SOMEKEY': 'AAAAA'
+            },
+            'openOptions': ['AN=OPTION']
+        })
+        encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
+        self.assertEqual(encodedUri, uri)
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
     def testFieldDomains(self):
         """
