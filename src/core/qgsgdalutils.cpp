@@ -711,11 +711,10 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
 {
   const QStringList vsiPrefixes = QgsGdalUtils::vsiArchivePrefixes();
 
-  for ( const QString &vsiPrefix : vsiPrefixes )
-  {
-    if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
-      return vsiPrefix;
-  }
+  const thread_local QRegularExpression vsiRx( QStringLiteral( "^(/vsi.+?/)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  const QRegularExpressionMatch vsiMatch = vsiRx.match( path );
+  if ( vsiMatch.hasMatch() )
+    return vsiMatch.captured( 1 );
 
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
   {
