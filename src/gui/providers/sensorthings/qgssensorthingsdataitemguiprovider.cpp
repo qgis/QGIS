@@ -18,13 +18,14 @@
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectiondialog.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
 
 ///@cond PRIVATE
 
-void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsSensorThingsConnectionItem *connectionItem = qobject_cast< QgsSensorThingsConnectionItem * >( item ) )
   {
@@ -32,8 +33,15 @@ void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item,
     connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connectionItem] { deleteConnection( connectionItem ); } );
+    const QList< QgsSensorThingsConnectionItem * > stConnectionItems = QgsDataItem::filteredItems<QgsSensorThingsConnectionItem>( selection );
+    QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [stConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString & connectionName )
+      {
+        QgsSensorThingsProviderConnection( QString() ).remove( connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
@@ -71,17 +79,6 @@ void QgsSensorThingsDataItemGuiProvider::editConnection( QgsDataItem *item )
 
   QgsSensorThingsProviderConnection::Data newConnection = QgsSensorThingsProviderConnection::decodedUri( dlg.connectionUri() );
   QgsSensorThingsProviderConnection::addConnection( dlg.connectionName(), newConnection );
-
-  item->parent()->refreshConnections();
-}
-
-void QgsSensorThingsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsSensorThingsProviderConnection( QString() ).remove( item->name() );
 
   item->parent()->refreshConnections();
 }

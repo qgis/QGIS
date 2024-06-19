@@ -21,13 +21,14 @@
 #include "qgspgnewconnection.h"
 #include "qgsnewnamedialog.h"
 #include "qgspgsourceselect.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 
 
-void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
+void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsPGRootItem *rootItem = qobject_cast< QgsPGRootItem * >( item ) )
   {
@@ -56,8 +57,16 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    const QList< QgsPGConnectionItem * > pgConnectionItems = QgsDataItem::filteredItems<QgsPGConnectionItem>( selection );
+    QAction *actionDelete = new QAction( pgConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [pgConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( pgConnectionItems, []( const QString & connectionName )
+      {
+        QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+        md->deleteConnection( connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
 
     menu->addSeparator();
@@ -65,7 +74,6 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
     connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
     menu->addAction( actionCreateSchema );
-
   }
 
   if ( QgsPGSchemaItem *schemaItem = qobject_cast< QgsPGSchemaItem * >( item ) )
@@ -234,21 +242,6 @@ void QgsPostgresDataItemGuiProvider::editConnection( QgsDataItem *item )
     if ( item->parent() )
       item->parent()->refreshConnections();
   }
-}
-
-void QgsPostgresDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ),
-                              QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
-  md->deleteConnection( item->name() );
-
-  // the parent should be updated
-  if ( item->parent() )
-    item->parent()->refreshConnections();
 }
 
 void QgsPostgresDataItemGuiProvider::refreshConnection( QgsDataItem *item )

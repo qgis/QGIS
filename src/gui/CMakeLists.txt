@@ -551,6 +551,7 @@ set(QGIS_GUI_SRCS
   qgsdatabasetablecombobox.cpp
   qgsdataitemguiprovider.cpp
   qgsdataitemguiproviderregistry.cpp
+  qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
@@ -822,6 +823,7 @@ set(QGIS_GUI_HDRS
   qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h
   qgsdataitemguiproviderregistry.h
+  qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
   qgsdbqueryhistoryprovider.h

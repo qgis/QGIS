@@ -44,7 +44,6 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static QString typeNameFromLayer( const QgsPostgresLayerProperty &layer );
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
-    static void deleteConnection( QgsDataItem *item );
     static void refreshConnection( QgsDataItem *item );
     static void createSchema( QgsDataItem *item, QgsDataItemGuiContext context );
     static void deleteSchema( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );

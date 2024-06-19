@@ -23,6 +23,7 @@
 #include "qgsxyzconnection.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswmssourceselect.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -39,7 +40,7 @@ static QWidget *_paramWidget( QgsDataItem *root )
   }
 }
 
-void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
   {
@@ -53,8 +54,15 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    const QList< QgsWMSConnectionItem * > wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
+    QAction *actionDelete = new QAction( wmsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString & connectionName )
+      {
+        QgsWMSConnection::deleteConnection( connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
@@ -88,17 +96,6 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
     // the parent should be updated
     item->parent()->refreshConnections();
   }
-}
-
-void QgsWmsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsWMSConnection::deleteConnection( item->name() );
-  // the parent should be updated
-  item->parent()->refreshConnections();
 }
 
 void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
@@ -140,7 +137,7 @@ void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 // -----------
 
 
-void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsXyzLayerItem *layerItem = qobject_cast< QgsXyzLayerItem * >( item ) )
   {
@@ -148,8 +145,15 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), this );
-    connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
+    const QList< QgsXyzLayerItem * > xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
+    QAction *actionDelete = new QAction( xyzConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString & connectionName )
+      {
+        QgsXyzConnectionUtils::deleteConnection( connectionName );
+      }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
@@ -183,17 +187,6 @@ void QgsXyzDataItemGuiProvider::editConnection( QgsDataItem *item )
 
   QgsXyzConnectionUtils::deleteConnection( item->name() );
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
-
-  item->parent()->refreshConnections();
-}
-
-void QgsXyzDataItemGuiProvider::deleteConnection( QgsDataItem *item )
-{
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsXyzConnectionUtils::deleteConnection( item->name() );
 
   item->parent()->refreshConnections();
 }
