@@ -135,16 +135,19 @@ QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const
   return parameters;
 }
 
-void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
+void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const
 {
+  const QColor ambient = materialContext.isSelected() ? materialContext.selectionColor().darker() : mAmbient;
+  const QColor diffuse = materialContext.isSelected() ? materialContext.selectionColor() : mDiffuse;
+
   Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ),
-      QColor::fromRgbF( mAmbient.redF() * mAmbientCoefficient,
-                        mAmbient.greenF() * mAmbientCoefficient,
-                        mAmbient.blueF() * mAmbientCoefficient ) );
+      QColor::fromRgbF( ambient.redF() * mAmbientCoefficient,
+                        ambient.greenF() * mAmbientCoefficient,
+                        ambient.blueF() * mAmbientCoefficient ) );
   Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ),
-      QColor::fromRgbF( mDiffuse.redF() * mDiffuseCoefficient,
-                        mDiffuse.greenF() * mDiffuseCoefficient,
-                        mDiffuse.blueF() * mDiffuseCoefficient ) );
+      QColor::fromRgbF( diffuse.redF() * mDiffuseCoefficient,
+                        diffuse.greenF() * mDiffuseCoefficient,
+                        diffuse.blueF() * mDiffuseCoefficient ) );
   Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ),
       QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient,
                         mSpecular.greenF() * mSpecularCoefficient,

@@ -189,7 +189,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     /**
      * Adds parameters from the material to a destination \a effect.
      */
-    virtual void addParametersToEffect( Qt3DRender::QEffect *effect ) const = 0;
+    virtual void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const = 0;
 
     // *INDENT-OFF*
     //! Data definable properties.

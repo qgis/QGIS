@@ -141,7 +141,7 @@ Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettings
   return nullptr;
 }
 
-void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect * ) const
+void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {
 }
 

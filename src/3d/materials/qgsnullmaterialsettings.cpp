@@ -61,6 +61,6 @@ QMap<QString, QString> QgsNullMaterialSettings::toExportParameters() const
   return parameters;
 }
 
-void QgsNullMaterialSettings::addParametersToEffect( Qt3DRender::QEffect * ) const
+void QgsNullMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {
 }
