@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>501</height>
+    <width>878</width>
+    <height>921</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,19 +179,6 @@
         <item row="3" column="1">
          <widget class="QLineEdit" name="mKey"/>
         </item>
-        <item row="4" column="0" colspan="2">
-         <widget class="QLabel" name="mAuthWarning">
-          <property name="text">
-           <string>…</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-          <property name="openExternalLinks">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="5" column="0" colspan="2">
          <widget class="QGroupBox" name="mAuthGroupBox">
           <property name="title">
@@ -227,6 +214,18 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsCollapsibleGroupBox" name="mCredentialOptionsGroupBox" native="true">
+       <property name="title" stdset="0">
+        <string>Credential Options</string>
+       </property>
+       <layout class="QVBoxLayout" name="openOptionsVBoxLayout_2" stretch="1">
+        <item>
+         <layout class="QFormLayout" name="mCredentialOptionsLayout"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <widget class="QgsScrollArea" name="scrollArea">
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
@@ -239,8 +238,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>353</width>
-          <height>68</height>
+          <width>876</width>
+          <height>246</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
