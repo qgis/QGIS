@@ -4,11 +4,12 @@ DB=${1:-qgis_test}
 
 cd "$(dirname "$0")"/../../../ || exit 1
 
+# IMPORTANT: order matters, don't just sort the files
 SCRIPTS="
+  tests/testdata/provider/testdata_pg_role.sql
   tests/testdata/provider/testdata_pg.sql
   tests/testdata/provider/testdata_pg_relations.sql
   tests/testdata/provider/testdata_pg_reltests.sql
-  tests/testdata/provider/testdata_pg_role.sql
   tests/testdata/provider/testdata_pg_vectorjoin.sql
   tests/testdata/provider/testdata_pg_hstore.sql
   tests/testdata/provider/testdata_pg_array.sql
