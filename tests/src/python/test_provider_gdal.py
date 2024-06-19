@@ -113,6 +113,23 @@ class PyQgsGdalProvider(QgisTestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
         self.assertEqual(encodedUri, uri)
 
+    def testDecodeEncodeUriCredentialOptions(self):
+        """Test decodeUri/encodeUri credential options support"""
+
+        uri = '/my/raster.pdf|option:AN=OPTION|credential:ANOTHER=BBB|credential:SOMEKEY=AAAAA'
+        parts = QgsProviderRegistry.instance().decodeUri('gdal', uri)
+        self.assertEqual(parts, {
+            'path': '/my/raster.pdf',
+            'layerName': None,
+            'credentialOptions': {
+                'ANOTHER': 'BBB',
+                'SOMEKEY': 'AAAAA'
+            },
+            'openOptions': ['AN=OPTION']
+        })
+        encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
+        self.assertEqual(encodedUri, uri)
+
     def testDecodeEncodeUriVsizip(self):
         """Test decodeUri/encodeUri for /vsizip/ prefixed URIs"""
 

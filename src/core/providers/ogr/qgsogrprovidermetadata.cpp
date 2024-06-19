@@ -139,6 +139,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
   QString geometryType;
   QString uniqueGeometryType;
   QStringList openOptions;
+  QVariantMap credentialOptions;
   QString databaseName;
   QString authcfg;
 
@@ -179,6 +180,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     const thread_local QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const thread_local QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
     const thread_local QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+    const thread_local QRegularExpression credentialOptionRegex( QStringLiteral( "\\|credential:([^|]*)" ) );
+    const thread_local QRegularExpression credentialOptionKeyValueRegex( QStringLiteral( "(.*?)=(.*)" ) );
 
     // we first try to split off the geometry type component, if that's present. That's a known quantity which
     // will never be more than a-z characters
@@ -219,6 +222,24 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
       if ( match.hasMatch() )
       {
         openOptions << match.captured( 1 );
+        path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    while ( true )
+    {
+      const QRegularExpressionMatch match = credentialOptionRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        const QRegularExpressionMatch keyValueMatch = credentialOptionKeyValueRegex.match( match.captured( 1 ) );
+        if ( keyValueMatch.hasMatch() )
+        {
+          credentialOptions.insert( keyValueMatch.captured( 1 ), keyValueMatch.captured( 2 ) );
+        }
         path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
       }
       else
@@ -275,6 +296,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     uriComponents.insert( QStringLiteral( "databaseName" ), databaseName );
   if ( !openOptions.isEmpty() )
     uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+  if ( !credentialOptions.isEmpty() )
+    uriComponents.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
   if ( !vsiPrefix.isEmpty() )
     uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
   if ( !vsiSuffix.isEmpty() )
@@ -307,6 +330,16 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
     uri += QLatin1String( "|option:" );
     uri += openOption;
   }
+
+  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
+  {
+    if ( !it.value().toString().isEmpty() )
+    {
+      uri += QStringLiteral( "|credential:%1=%2" ).arg( it.key(), it.value().toString() );
+    }
+  }
+
   if ( !subset.isEmpty() )
     uri += QStringLiteral( "|subset=%1" ).arg( subset );
   if ( !authcfg.isEmpty() )
@@ -347,13 +380,15 @@ static QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri, bool upd
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
   QStringList openOptions;
+  QVariantMap credentialOptions;
   filePath = QgsOgrProviderUtils::analyzeURI( uri,
              isSubLayer,
              layerIndex,
              layerName,
              subsetString,
              ogrGeometryType,
-             openOptions );
+             openOptions,
+             credentialOptions );
 
   if ( updateMode )
   {

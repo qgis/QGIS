@@ -73,7 +73,7 @@ QString QgsOgrProviderUtils::analyzeURI( QString const &uri,
     QString &layerName,
     QString &subsetString,
     OGRwkbGeometryType &ogrGeometryTypeFilter,
-    QStringList &openOptions )
+    QStringList &openOptions, QVariantMap &credentialOptions )
 {
   isSubLayer = false;
   layerIndex = 0;
@@ -117,6 +117,8 @@ QString QgsOgrProviderUtils::analyzeURI( QString const &uri,
   {
     openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
   }
+
+  credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
 
   const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
                            + parts.value( QStringLiteral( "path" ) ).toString()
@@ -1449,6 +1451,7 @@ static GDALDatasetH OpenHelper( const QString &dsName,
     papszOpenOptions = CSLAddString( papszOpenOptions,
                                      option.toUtf8().constData() );
   }
+
   GDALDatasetH hDS = QgsOgrProviderUtils::GDALOpenWrapper(
                        QgsOgrProviderUtils::expandAuthConfig( dsName ).toUtf8().constData(), updateMode, papszOpenOptions, nullptr );
   CSLDestroy( papszOpenOptions );
@@ -3461,14 +3464,15 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
   QStringList openOptions;
+  QVariantMap credentialOptions;
   QString filePath = analyzeURI( uri,
                                  isSubLayer,
                                  layerIndex,
                                  layerName,
                                  subsetString,
                                  ogrGeometryType,
-                                 openOptions );
-
+                                 openOptions,
+                                 credentialOptions );
 
   gdal::dataset_unique_ptr hDS( GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )

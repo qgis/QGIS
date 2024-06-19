@@ -76,6 +76,7 @@ class TestQgsGdalProvider : public QgsTest
     void testGdalProviderQuerySublayersFastScan();
     void testGdalProviderQuerySublayersFastScan_NetCDF();
     void testGdalProviderAbsoluteRelativeUri();
+    void testVsiCredentialOptions();
 
   private:
     QString mTestDataDir;
@@ -904,6 +905,37 @@ void TestQgsGdalProvider::testGdalProviderAbsoluteRelativeUri()
   relativeUri = QStringLiteral( "NETCDF:\"./landsat.nc\":Band1" );
   QCOMPARE( mGdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( mGdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+}
+
+void TestQgsGdalProvider::testVsiCredentialOptions()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+  // test that credential options are correctly set when layer URI specifies them
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
+
+  // confirm that GDAL VSI configuration options are set
+  QString noSign( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QStringLiteral( "YES" ) );
+  QString region( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QStringLiteral( "eu-central-1" ) );
+
+  // different bucket
+  noSign = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QString() );
+  region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QString() );
+
+  // credentials should be bucket specific
+  std::unique_ptr< QgsRasterLayer > rl2 = std::make_unique< QgsRasterLayer >( QStringLiteral( "/vsis3/another/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
+  noSign = QString( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QStringLiteral( "YES" ) );
+  region = QString( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QStringLiteral( "eu-central-1" ) );
+  noSign = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QStringLiteral( "NO" ) );
+  region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QStringLiteral( "eu-central-2" ) );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )

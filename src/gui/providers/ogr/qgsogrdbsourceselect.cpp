@@ -385,13 +385,15 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
   QStringList openOptions;
+  QVariantMap credentialOptions;
   const QString filePath = QgsOgrProviderUtils::analyzeURI( uri,
                            isSubLayer,
                            layerIndex,
                            layerName,
                            subsetString,
                            ogrGeometryType,
-                           openOptions );
+                           openOptions,
+                           credentialOptions );
 
   QFileInfo pathInfo { filePath };
   const QString connectionName { pathInfo.fileName() };
