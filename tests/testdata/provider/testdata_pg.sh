@@ -30,7 +30,6 @@ SCRIPTS12="
 echo "Dropping DB $DB"
 dropdb --if-exists "${DB}"
 echo "Creating DB $DB"
-# TODO: use service=qgis_test to connect to "template1" and use SQL ?
 createdb "${DB}" -E UTF8 -T template0 || exit 1
 
 export PGDATABASE="${DB}"
