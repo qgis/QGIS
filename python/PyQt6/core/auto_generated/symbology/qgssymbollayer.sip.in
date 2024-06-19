@@ -666,6 +666,25 @@ This id is unique in the whole project
 .. versionadded:: 3.30
 %End
 
+    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
+%Docstring
+When rendering, install masks on ``context`` painter.
+
+If ``recursive`` is ``True`` masks are installed recursively for all children symbol layers.
+
+Since QGIS 3.38 the ``rect`` argument can be used to specify a target bounds (in painter coordinates)
+for mask geometries. Only mask geometries which intersect ``rect`` will be installed.
+
+:return: ``True`` if any masks were installed (since QGIS 3.38)
+
+.. seealso:: :py:func:`prepareMasks`
+
+.. seealso:: :py:func:`removeMasks`
+
+
+.. versionadded:: 3.30
+%End
+
   protected:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
@@ -700,20 +719,6 @@ Copies all data defined properties of this layer to another symbol layer.
 Copies paint effect of this layer to another symbol layer
 
 :param destLayer: destination layer
-%End
-
-    bool installMasks( QgsRenderContext &context, bool recursive );
-%Docstring
-When rendering, install masks on ``context`` painter
-if ``recursive`` is ``True`` masks are installed recursively for all children symbol layers
-
-.. seealso:: :py:func:`prepareMasks`
-
-.. seealso:: :py:func:`removeMasks`
-
-:return: ``True`` if any masks were installed (since QGIS 3.38)
-
-.. versionadded:: 3.30
 %End
 
     void removeMasks( QgsRenderContext &context, bool recursive );
