@@ -1005,7 +1005,7 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   }
 }
 
-bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
+bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect )
 {
   bool res = false;
   if ( !mClipPath.isEmpty() )
@@ -1013,6 +1013,37 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
     context.painter()->save();
     context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
     res = true;
+  }
+  else if ( rect.isValid() )
+  {
+    // find just the clip geometries within the area the symbol layer will be drawn over
+    const QVector<QgsGeometry> clipGeometries = QgsSymbolLayerUtils::collectSymbolLayerClipGeometries( context, id(), rect );
+    if ( !clipGeometries.empty() )
+    {
+      QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries );
+      if ( context.maskSettings().simplifyTolerance() > 0 )
+      {
+        QgsGeos geos( mergedGeom.constGet() );
+        mergedGeom = QgsGeometry( geos.simplify( context.maskSettings().simplifyTolerance() ) );
+      }
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+      // structure would be better, but too old GEOS
+      mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework );
+#else
+      mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Structure );
+#endif
+      if ( !mergedGeom.isEmpty() )
+      {
+        const QgsGeometry exterior = QgsGeometry::fromRect(
+                                       rect );
+        const QgsGeometry maskGeom = exterior.difference( mergedGeom );
+        if ( !maskGeom.isNull() )
+        {
+          context.painter()->setClipPath( maskGeom.constGet()->asQPainterPath(), context.painter()->clipPath().isEmpty() ? Qt::ReplaceClip : Qt::IntersectClip );
+          res = true;
+        }
+      }
+    }
   }
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )

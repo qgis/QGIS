@@ -18,6 +18,7 @@
 #include <QPainter>
 #include <QSize>
 #include <QSvgGenerator>
+#include <QPicture>
 
 #include <cmath>
 #include <map>
@@ -868,7 +869,25 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields,
       continue;
 
     layer->prepareExpressions( symbolContext );
-    layer->prepareMasks( symbolContext );
+
+    // We prepare "entire map" clip masks in advance only in certain circumstances. These are non-optimal,
+    // because the entire map mask will be applied once for every feature rendered, resulting in overly complex
+    // clipping paths with paths which fall well outside of the map area that is actually being drawn on for the
+    // feature. These circumstances are:
+    // 1. If we are rendering a sub symbol. The current logic relating to calculating per-feature masks
+    //    is not designed to handle sub symbol rendering where layers from the subsymbol have their own set of
+    //    clipping paths, so we just fallback to the non-optimal approach always for these cases.
+    //    TODO:
+    //    - we could add another special condition here to check whether the subsymbol actually does have unique
+    //      clipping paths in its symbol layers, or whether they are identical to the parent symbol layer's clipping paths.
+    // 2. When the symbol layer type doesn't explicitly state that it's compatible with per-feature mask geometries
+    // 3. When the older clipping mask approach using QPainterPaths is being used. (This last condition can be
+    //    safely removed when the older QPainterPath backend is removed.)
+    // In other circumstances we do NOT prepare masks in advance, and instead calculate them in renderFeature().
+    if ( isSubSymbol
+         || !layer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
+         || !context.symbolLayerClipPaths( layer->id() ).isEmpty() )
+      layer->prepareMasks( symbolContext );
     layer->startRender( symbolContext );
   }
 }
@@ -1642,6 +1661,22 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     if ( needsExpressionContext )
       mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_index" ), symbolLayerIndex + 1, true ) );
 
+    // if this symbol layer has associated clip masks, we need to render it to a QPicture first so that we can
+    // determine the actual rendered bounds of the symbol. We'll then use that to retrieve the clip masks we need
+    // to apply when painting the symbol via this QPicture.
+    const bool hasClipGeometries = symbolLayer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
+                                   && context.symbolLayerHasClipGeometries( symbolLayer->id() );
+    QPainter *previousPainter = nullptr;
+    std::unique_ptr< QPicture > renderedPicture;
+    std::unique_ptr< QPainter > picturePainter;
+    if ( hasClipGeometries )
+    {
+      previousPainter = context.painter();
+      renderedPicture = std::make_unique< QPicture >();
+      picturePainter = std::make_unique< QPainter >( renderedPicture.get() );
+      context.setPainter( picturePainter.get() );
+    }
+
     symbolLayer->startFeatureRender( feature, context );
 
     switch ( mType )
@@ -1710,6 +1745,32 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
 
     symbolLayer->stopFeatureRender( feature, context );
+
+    if ( hasClipGeometries )
+    {
+      // restore previous painter
+      context.setPainter( previousPainter );
+      picturePainter->end();
+      picturePainter.reset();
+
+      // determine actual rendered bounds of symbol layer, and then buffer out a little to be safe
+      QRectF maximalBounds = renderedPicture->boundingRect();
+      constexpr double BOUNDS_MARGIN = 0.05;
+      maximalBounds.adjust( -maximalBounds.width() * BOUNDS_MARGIN, -maximalBounds.height() * BOUNDS_MARGIN, maximalBounds.width() * BOUNDS_MARGIN, maximalBounds.height() * BOUNDS_MARGIN );
+
+      const bool hadClipping = context.painter()->hasClipping();
+      const QPainterPath oldClipPath = hadClipping ? context.painter()->clipPath() : QPainterPath();
+
+      const bool isMasked = symbolLayer->installMasks( context, false, maximalBounds );
+
+      context.painter()->drawPicture( QPointF( 0, 0 ), *renderedPicture );
+
+      if ( isMasked )
+      {
+        context.painter()->setClipPath( oldClipPath );
+        context.painter()->setClipping( hadClipping );
+      }
+    }
   }
 
   // step 4 - handle post processing steps
