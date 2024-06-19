@@ -389,6 +389,7 @@ The development version
     enum class SymbolLayerFlag
     {
       DisableFeatureClipping,
+      CanCalculateMaskGeometryPerFeature,
     };
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 

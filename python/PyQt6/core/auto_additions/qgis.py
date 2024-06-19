@@ -669,7 +669,8 @@ Qgis.SymbolPreviewFlags.baseClass = Qgis
 SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
-Qgis.SymbolLayerFlag.__doc__ = "Flags controlling behavior of symbol layers\n\n.. note::\n\n   These differ from Qgis.SymbolLayerUserFlag in that Qgis.SymbolLayerFlag flags are used to reflect the inbuilt properties\n   of a symbol layer type, whereas Qgis.SymbolLayerUserFlag are optional, user controlled flags which can be toggled\n   for a symbol layer.\n\n.. versionadded:: 3.22\n\n" + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
+Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__ = "If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. (Since QGIS 3.38)"
+Qgis.SymbolLayerFlag.__doc__ = "Flags controlling behavior of symbol layers\n\n.. note::\n\n   These differ from Qgis.SymbolLayerUserFlag in that Qgis.SymbolLayerFlag flags are used to reflect the inbuilt properties\n   of a symbol layer type, whereas Qgis.SymbolLayerUserFlag are optional, user controlled flags which can be toggled\n   for a symbol layer.\n\n.. versionadded:: 3.22\n\n" + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ + '\n' + '* ``CanCalculateMaskGeometryPerFeature``: ' + Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__
 # --
 Qgis.SymbolLayerFlag.baseClass = Qgis
 Qgis.SymbolLayerFlags = lambda flags=0: Qgis.SymbolLayerFlag(flags)
