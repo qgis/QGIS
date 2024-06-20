@@ -577,7 +577,8 @@ class CORE_EXPORT Qgis
      */
     enum class SymbolRenderHint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, RenderHint ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
+      DynamicRotation = 1 << 1, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
+      IsSymbolLayerSubSymbol = 1 << 2, //!< Symbol is being rendered as a sub-symbol of a QgsSymbolLayer (since QGIS 3.38)
     };
     Q_ENUM( SymbolRenderHint )
     //! Symbol render hints

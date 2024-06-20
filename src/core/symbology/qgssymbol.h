@@ -329,10 +329,9 @@ class CORE_EXPORT QgsSymbol
      * \param fields fields for features to be rendered (usually the associated
      * vector layer's fields). Required for correct calculation of data defined
      * overrides.
-     * \param isSubSymbol Should be set to TRUE when the symbol is being used as a subsymbol of a QgsSymbolLayer (since QGIS 3.38)
      * \see stopRender()
      */
-    void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields(), bool isSubSymbol = false );
+    void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
 
     /**
      * Ends the rendering process. This should be called after rendering all desired features.
