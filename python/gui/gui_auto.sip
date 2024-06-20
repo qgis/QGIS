@@ -450,6 +450,7 @@
 %Include auto_generated/proj/qgsprojectionselectionwidget.sip
 %Include auto_generated/proj/qgsrecentcoordinatereferencesystemsmodel.sip
 %Include auto_generated/providers/qgsabstractdbsourceselect.sip
+%Include auto_generated/providers/gdal/qgsgdalcredentialoptionswidget.sip
 %Include auto_generated/raster/qgsrasterattributetablewidget.sip
 %Include auto_generated/raster/qgsrasterattributetabledialog.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
