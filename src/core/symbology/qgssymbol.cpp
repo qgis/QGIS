@@ -1654,6 +1654,9 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   if ( needsExpressionContext )
     mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), mLayers.count(), true ) );
 
+  const bool maskGeometriesDisabledForSymbol = context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
+                                               && !mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
+
   for ( const int symbolLayerIndex : layers )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( symbolLayerIndex );
@@ -1666,7 +1669,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     // if this symbol layer has associated clip masks, we need to render it to a QPicture first so that we can
     // determine the actual rendered bounds of the symbol. We'll then use that to retrieve the clip masks we need
     // to apply when painting the symbol via this QPicture.
-    const bool hasClipGeometries = !context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
+    const bool hasClipGeometries = !maskGeometriesDisabledForSymbol
                                    && symbolLayer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
                                    && context.symbolLayerHasClipGeometries( symbolLayer->id() );
     QPainter *previousPainter = nullptr;
