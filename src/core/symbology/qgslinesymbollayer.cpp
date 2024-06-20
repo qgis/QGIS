@@ -2475,12 +2475,12 @@ QColor QgsMarkerLineSymbolLayer::color() const
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol;
   if ( rotateSymbols() )
     hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
 
-  mMarker->startRender( context.renderContext(), context.fields(), true );
+  mMarker->startRender( context.renderContext(), context.fields() );
 }
 
 void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -2801,12 +2801,12 @@ QString QgsHashedLineSymbolLayer::layerType() const
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol;
   if ( rotateSymbols() )
     hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
 
-  mHashSymbol->startRender( context.renderContext(), context.fields(), true );
+  mHashSymbol->startRender( context.renderContext(), context.fields() );
 }
 
 void QgsHashedLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -3891,7 +3891,8 @@ void QgsFilledLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill )
   {
-    mFill->startRender( context.renderContext(), context.fields(), true );
+    mFill->setRenderHints( mFill->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
+    mFill->startRender( context.renderContext(), context.fields() );
   }
 }
 

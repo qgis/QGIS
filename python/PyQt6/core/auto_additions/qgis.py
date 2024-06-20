@@ -634,7 +634,10 @@ QgsSymbol.RenderHint = Qgis.SymbolRenderHint
 QgsSymbol.DynamicRotation = Qgis.SymbolRenderHint.DynamicRotation
 QgsSymbol.DynamicRotation.is_monkey_patched = True
 QgsSymbol.DynamicRotation.__doc__ = "Rotation of symbol may be changed during rendering and symbol should not be cached"
-Qgis.SymbolRenderHint.__doc__ = "Flags controlling behavior of symbols during rendering\n\n.. versionadded:: 3.20\n\n" + '* ``DynamicRotation``: ' + Qgis.SymbolRenderHint.DynamicRotation.__doc__
+QgsSymbol.IsSymbolLayerSubSymbol = Qgis.SymbolRenderHint.IsSymbolLayerSubSymbol
+QgsSymbol.IsSymbolLayerSubSymbol.is_monkey_patched = True
+QgsSymbol.IsSymbolLayerSubSymbol.__doc__ = "Symbol is being rendered as a sub-symbol of a QgsSymbolLayer (since QGIS 3.38)"
+Qgis.SymbolRenderHint.__doc__ = "Flags controlling behavior of symbols during rendering\n\n.. versionadded:: 3.20\n\n" + '* ``DynamicRotation``: ' + Qgis.SymbolRenderHint.DynamicRotation.__doc__ + '\n' + '* ``IsSymbolLayerSubSymbol``: ' + Qgis.SymbolRenderHint.IsSymbolLayerSubSymbol.__doc__
 # --
 Qgis.SymbolRenderHint.baseClass = Qgis
 Qgis.SymbolRenderHints = lambda flags=0: Qgis.SymbolRenderHint(flags)

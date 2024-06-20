@@ -827,7 +827,7 @@ bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
 }
 
 
-void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields, bool isSubSymbol )
+void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   Q_ASSERT_X( !mStarted, "startRender", "Rendering has already been started for this symbol instance!" );
   mStarted = true;
@@ -885,7 +885,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields,
     //    safely removed when the older QPainterPath backend is removed.)
     // 4. When per feature mask geometry is explicitly disabled for the render context
     // In other circumstances we do NOT prepare masks in advance, and instead calculate them in renderFeature().
-    if ( isSubSymbol
+    if ( mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol )
          || context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
          || !layer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
          || !context.symbolLayerClipPaths( layer->id() ).isEmpty() )

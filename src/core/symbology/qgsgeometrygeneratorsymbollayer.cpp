@@ -98,7 +98,9 @@ void QgsGeometryGeneratorSymbolLayer::startRender( QgsSymbolRenderContext &conte
 {
   mExpression->prepare( &context.renderContext().expressionContext() );
 
-  subSymbol()->startRender( context.renderContext(), context.fields(), true );
+  subSymbol()->setRenderHints( subSymbol()->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
+
+  subSymbol()->startRender( context.renderContext(), context.fields() );
 }
 
 void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext &context )
