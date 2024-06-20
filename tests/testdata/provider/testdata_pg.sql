@@ -817,3 +817,22 @@ GRANT
     -- ,UPDATE(geom) -- intentionally kept the UPDATE out
   ON qgis_issue_gh_28835
   TO qgis_test_unprivileged_user;
+
+---------------------------------------------
+--
+-- Table where user only has both insert and update
+-- privileges on a single column
+-- See https://github.com/qgis/QGIS/issues/57809
+--
+CREATE TABLE qgis_issue_gh_57809 (
+  id SERIAL PRIMARY KEY,
+  restricted_column TEXT,
+  geom GEOMETRY(Polygon, 4326)
+);
+GRANT USAGE
+  ON qgis_issue_gh_57809_id_seq
+  TO qgis_test_unprivileged_user;
+GRANT
+    SELECT, INSERT(geom), UPDATE(geom)
+  ON qgis_issue_gh_57809
+  TO qgis_test_unprivileged_user;
