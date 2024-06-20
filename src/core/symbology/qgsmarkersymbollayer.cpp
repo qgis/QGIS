@@ -1936,7 +1936,8 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill )
   {
-    mFill->startRender( context.renderContext(), context.fields(), true );
+    mFill->setRenderHints( mFill->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
+    mFill->startRender( context.renderContext(), context.fields() );
   }
 
   QgsSimpleMarkerSymbolLayerBase::startRender( context );
