@@ -362,6 +362,7 @@ The development version
     enum class SymbolRenderHint
     {
       DynamicRotation,
+      IsSymbolLayerSubSymbol,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
