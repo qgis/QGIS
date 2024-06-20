@@ -260,6 +260,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, mapSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
   ctx.setFlag( Qgis::RenderContextFlag::SkipSymbolRendering, mapSettings.testFlag( Qgis::MapSettingsFlag::SkipSymbolRendering ) );
   ctx.setFlag( Qgis::RenderContextFlag::RecordProfile, mapSettings.testFlag( Qgis::MapSettingsFlag::RecordProfile ) );
+  ctx.setFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks, mapSettings.testFlag( Qgis::MapSettingsFlag::AlwaysUseGlobalMasks ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );
