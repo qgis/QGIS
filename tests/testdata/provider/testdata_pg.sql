@@ -26,9 +26,9 @@ CREATE EXTENSION IF NOT EXISTS citext;
 --- Create qgis_test schema
 DROP SCHEMA IF EXISTS qgis_test CASCADE;
 CREATE SCHEMA qgis_test;
-GRANT ALL ON SCHEMA qgis_test TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO public;
+GRANT ALL ON SCHEMA qgis_test TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO qgis_test_group;
 
 
 --- Create "CamelCase'singlequote'Schema" schema
