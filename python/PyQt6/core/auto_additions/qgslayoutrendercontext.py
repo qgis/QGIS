@@ -10,4 +10,5 @@ QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders = QgsLayoutRenderConte
 QgsLayoutRenderContext.FlagRenderLabelsByMapLayer = QgsLayoutRenderContext.Flag.FlagRenderLabelsByMapLayer
 QgsLayoutRenderContext.FlagLosslessImageRendering = QgsLayoutRenderContext.Flag.FlagLosslessImageRendering
 QgsLayoutRenderContext.FlagSynchronousLegendGraphics = QgsLayoutRenderContext.Flag.FlagSynchronousLegendGraphics
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks = QgsLayoutRenderContext.Flag.FlagAlwaysUseGlobalMasks
 QgsLayoutRenderContext.Flags = lambda flags=0: QgsLayoutRenderContext.Flag(flags)

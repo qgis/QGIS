@@ -883,8 +883,10 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields,
     // 2. When the symbol layer type doesn't explicitly state that it's compatible with per-feature mask geometries
     // 3. When the older clipping mask approach using QPainterPaths is being used. (This last condition can be
     //    safely removed when the older QPainterPath backend is removed.)
+    // 4. When per feature mask geometry is explicitly disabled for the render context
     // In other circumstances we do NOT prepare masks in advance, and instead calculate them in renderFeature().
     if ( isSubSymbol
+         || context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
          || !layer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
          || !context.symbolLayerClipPaths( layer->id() ).isEmpty() )
       layer->prepareMasks( symbolContext );
@@ -1664,7 +1666,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     // if this symbol layer has associated clip masks, we need to render it to a QPicture first so that we can
     // determine the actual rendered bounds of the symbol. We'll then use that to retrieve the clip masks we need
     // to apply when painting the symbol via this QPicture.
-    const bool hasClipGeometries = symbolLayer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
+    const bool hasClipGeometries = !context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
+                                   && symbolLayer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
                                    && context.symbolLayerHasClipGeometries( symbolLayer->id() );
     QPainter *previousPainter = nullptr;
     std::unique_ptr< QPicture > renderedPicture;

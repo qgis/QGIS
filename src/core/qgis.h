@@ -2335,6 +2335,7 @@ class CORE_EXPORT Qgis
       SkipSymbolRendering      = 0x8000, //!< Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
       ForceRasterMasks         = 0x10000,  //!< Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. (since QGIS 3.26.1)
       RecordProfile            = 0x20000, //!< Enable run-time profiling while rendering (since QGIS 3.34)
+      AlwaysUseGlobalMasks     = 0x40000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. (Since QGIS 3.38)
     };
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
@@ -2368,6 +2369,7 @@ class CORE_EXPORT Qgis
       HighQualityImageTransforms = 0x20000, //!< Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
       SkipSymbolRendering      = 0x40000, //!< Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
       RecordProfile            = 0x80000, //!< Enable run-time profiling while rendering (since QGIS 3.34)
+      AlwaysUseGlobalMasks     = 0x100000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. (Since QGIS 3.38)
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
