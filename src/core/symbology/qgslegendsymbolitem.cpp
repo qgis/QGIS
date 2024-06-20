@@ -59,6 +59,7 @@ QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &
   mScaleMaxDenom = other.mScaleMaxDenom;
   mLevel = other.mLevel;
   mParentKey = other.mParentKey;
+  mUserData = other.mUserData;
 
   return *this;
 }
