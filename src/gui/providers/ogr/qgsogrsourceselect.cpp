@@ -32,6 +32,7 @@
 #include "ogr/qgsnewogrconnection.h"
 #include "ogr/qgsogrhelperfunctions.h"
 #include "qgsgui.h"
+#include "qgsgdalutils.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -95,21 +96,13 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   }
 
   //add protocol drivers
-  for ( const auto &protocol :
-        {
-          std::make_pair( QStringLiteral( "HTTP/HTTPS/FTP" ), QStringLiteral( "vsicurl" ) ),
-          std::make_pair( QStringLiteral( "AWS S3" ), QStringLiteral( "vsis3" ) ),
-          std::make_pair( QObject::tr( "Google Cloud Storage" ), QStringLiteral( "vsigs" ) ),
-          std::make_pair( QObject::tr( "Microsoft Azure Blob" ), QStringLiteral( "vsiaz" ) ),
-          std::make_pair( QObject::tr( "Microsoft Azure Data Lake Storage" ), QStringLiteral( "vsiadls" ) ),
-          std::make_pair( QObject::tr( "Alibaba Cloud OSS" ), QStringLiteral( "vsioss" ) ),
-          std::make_pair( QObject::tr( "OpenStack Swift Object Storage" ), QStringLiteral( "vsiswift" ) ),
-          std::make_pair( QObject::tr( "Hadoop File System" ), QStringLiteral( "vsihdfs" ) ),
-          std::make_pair( QObject::tr( "WFS3 (Experimental)" ), QStringLiteral( "WFS3" ) ),
-        } )
+  const QList< QgsGdalUtils::VsiNetworkFileSystemDetails > vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
+  for ( const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiDetail : vsiDetails )
   {
-    cmbProtocolTypes->addItem( protocol.first, protocol.second );
+    cmbProtocolTypes->addItem( vsiDetail.name, vsiDetail.identifier );
   }
+  cmbProtocolTypes->addItem( QObject::tr( "WFS3 (Experimental)" ), QStringLiteral( "WFS3" ) );
+
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
 
