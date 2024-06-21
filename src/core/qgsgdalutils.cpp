@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterblock.h"
+#include "qgsmessagelog.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
@@ -992,5 +993,34 @@ bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType 
 
   CPLPopErrorHandler();
   return static_cast< bool >( hDriver );
+}
+
+bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QString &path, const QVariantMap &options )
+{
+  QString vsiPrefix = prefix;
+  if ( !vsiPrefix.startsWith( '/' ) )
+    vsiPrefix.prepend( '/' );
+  if ( !vsiPrefix.endsWith( '/' ) )
+    vsiPrefix.append( '/' );
+
+  QString vsiPath = path;
+  if ( vsiPath.endsWith( '/' ) )
+    vsiPath.chop( 1 );
+
+  const QString bucket = vsiPrefix + vsiPath;
+
+  for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
+  {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+    VSISetPathSpecificOption( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 5, 0)
+    VSISetCredential( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#else
+    ( void )bucket;
+    QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
+    return false;
+#endif
+  }
+  return true;
 }
 #endif

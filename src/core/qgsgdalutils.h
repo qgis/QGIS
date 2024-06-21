@@ -342,6 +342,18 @@ class CORE_EXPORT QgsGdalUtils
     static bool isVsiArchiveFileExtension( const QString &extension );
 
     /**
+     * Attempts to apply VSI credential \a options.
+     *
+     * This method uses GDAL's VSISetPathSpecificOption, which will overrwrite any existing
+     * options for the same VSI \a prefix and \a path.
+     *
+     * Returns TRUE if the options could be applied.
+     *
+     * \since QGIS 3.40
+     */
+    static bool applyVsiCredentialOptions( const QString &prefix, const QString &path, const QVariantMap &options );
+
+    /**
      * Returns TRUE if the VRT file at the specified path is a VRT matching
      * the given layer \a type.
      *
