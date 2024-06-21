@@ -33,6 +33,8 @@
 #include "ogr/qgsogrhelperfunctions.h"
 #include "qgsgui.h"
 #include "qgsgdalutils.h"
+#include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -325,9 +327,23 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
     {
       value = le->text();
     }
+    else if ( QgsSpinBox *intSpin = qobject_cast<QgsSpinBox *>( control ) )
+    {
+      if ( intSpin->value() != intSpin->clearValue() )
+      {
+        value = QString::number( intSpin->value() );
+      }
+    }
+    else if ( QgsDoubleSpinBox *doubleSpin = qobject_cast<QgsDoubleSpinBox *>( control ) )
+    {
+      if ( doubleSpin->value() != doubleSpin->clearValue() )
+      {
+        value = QString::number( doubleSpin->value() );
+      }
+    }
     if ( !value.isEmpty() )
     {
-      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName() ).arg( value );
+      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName(), value );
     }
   }
 
@@ -673,6 +689,28 @@ bool QgsOgrSourceSelect::configureFromUri( const QString &uri )
         {
           le->setText( opt.value().toString() );
         }
+        else if ( QgsSpinBox *intSpin = qobject_cast<QgsSpinBox *>( *widget ) )
+        {
+          if ( opt.value().toString().isEmpty() )
+          {
+            intSpin->clear();
+          }
+          else
+          {
+            intSpin->setValue( opt.value().toInt() );
+          }
+        }
+        else if ( QgsDoubleSpinBox *doubleSpin = qobject_cast<QgsDoubleSpinBox *>( *widget ) )
+        {
+          if ( opt.value().toString().isEmpty() )
+          {
+            doubleSpin->clear();
+          }
+          else
+          {
+            doubleSpin->setValue( opt.value().toDouble() );
+          }
+        }
       }
     }
   }
@@ -722,42 +760,38 @@ void QgsOgrSourceSelect::fillOpenOptions()
     return;
   }
 
+  const QList< QgsGdalOption > options = QgsGdalOption::optionsFromXml( psOpenOptionList );
+  CPLDestroyXMLNode( psDoc );
+
   const bool bIsGPKG = EQUAL( GDALGetDriverShortName( hDriver ), "GPKG" );
 
-  for ( auto psItem = psOpenOptionList->psChild; psItem != nullptr; psItem = psItem->psNext )
+  for ( const QgsGdalOption &option : options )
   {
-    if ( psItem->eType != CXT_Element || !EQUAL( psItem->pszValue, "Option" ) )
-      continue;
-
-    const char *pszOptionName = CPLGetXMLValue( psItem, "name", nullptr );
-    if ( pszOptionName == nullptr )
-      continue;
-
     // Exclude options that are not of vector scope
-    const char *pszScope = CPLGetXMLValue( psItem, "scope", nullptr );
-    if ( pszScope != nullptr && strstr( pszScope, "vector" ) == nullptr )
+    if ( !option.scope.isEmpty()
+         && option.scope.compare( QLatin1String( "vector" ), Qt::CaseInsensitive ) != 0 )
       continue;
 
     // The GPKG driver list a lot of options that are only for rasters
     if ( bIsGPKG && strstr( pszOpenOptionList, "scope=" ) == nullptr &&
-         !EQUAL( pszOptionName, "LIST_ALL_TABLES" ) &&
-         !EQUAL( pszOptionName, "PRELUDE_STATEMENTS" ) )
+         option.name != QLatin1String( "LIST_ALL_TABLES" ) &&
+         option.name != QLatin1String( "PRELUDE_STATEMENTS" ) )
       continue;
 
     // The NOLOCK option is automatically set by the OGR provider. Do not
     // expose it
-    if ( bIsGPKG && EQUAL( pszOptionName, "NOLOCK" ) )
+    if ( bIsGPKG && option.name == QLatin1String( "NOLOCK" ) )
       continue;
 
     // Do not list database options already asked in the database dialog
     if ( radioSrcDatabase->isChecked() &&
-         ( EQUAL( pszOptionName, "USER" ) ||
-           EQUAL( pszOptionName, "PASSWORD" ) ||
-           EQUAL( pszOptionName, "HOST" ) ||
-           EQUAL( pszOptionName, "DBNAME" ) ||
-           EQUAL( pszOptionName, "DATABASE" ) ||
-           EQUAL( pszOptionName, "PORT" ) ||
-           EQUAL( pszOptionName, "SERVICE" ) ) )
+         ( option.name == QLatin1String( "USER" ) ||
+           option.name == QLatin1String( "PASSWORD" ) ||
+           option.name == QLatin1String( "HOST" ) ||
+           option.name == QLatin1String( "DBNAME" ) ||
+           option.name == QLatin1String( "DATABASE" ) ||
+           option.name == QLatin1String( "PORT" ) ||
+           option.name == QLatin1String( "SERVICE" ) ) )
     {
       continue;
     }
@@ -765,67 +799,22 @@ void QgsOgrSourceSelect::fillOpenOptions()
     // QGIS data model doesn't support the OGRFeature native data concept
     // (typically used for GeoJSON "foreign" members). Hide it to avoid setting
     // wrong expectations to users (https://github.com/qgis/QGIS/issues/48004)
-    if ( EQUAL( pszOptionName, "NATIVE_DATA" ) )
+    if ( option.name == QLatin1String( "NATIVE_DATA" ) )
       continue;
 
-    const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
-    QStringList options;
-    if ( pszType && EQUAL( pszType, "string-select" ) )
-    {
-      for ( auto psOption = psItem->psChild; psOption != nullptr; psOption = psOption->psNext )
-      {
-        if ( psOption->eType != CXT_Element ||
-             !EQUAL( psOption->pszValue, "Value" ) ||
-             psOption->psChild == nullptr )
-        {
-          continue;
-        }
-        options << psOption->psChild->pszValue;
-      }
-    }
+    QWidget *control = QgsGdalGuiUtils::createWidgetForOption( option, nullptr, true );
+    if ( !control )
+      continue;
 
-    QLabel *label = new QLabel( pszOptionName );
-    QWidget *control = nullptr;
-    if ( pszType && EQUAL( pszType, "boolean" ) )
-    {
-      QComboBox *cb = new QComboBox();
-      cb->addItem( tr( "Yes" ), "YES" );
-      cb->addItem( tr( "No" ), "NO" );
-      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      int idx = cb->findData( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      cb->setCurrentIndex( idx );
-      control = cb;
-    }
-    else if ( !options.isEmpty() )
-    {
-      QComboBox *cb = new QComboBox();
-      for ( const QString &val : std::as_const( options ) )
-      {
-        cb->addItem( val, val );
-      }
-      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      int idx = cb->findData( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      cb->setCurrentIndex( idx );
-      control = cb;
-    }
-    else
-    {
-      QLineEdit *le = new QLineEdit( );
-      control = le;
-    }
-    control->setObjectName( pszOptionName );
+    control->setObjectName( option.name );
     mOpenOptionsWidgets.push_back( control );
 
-    const char *pszDescription = CPLGetXMLValue( psItem, "description", nullptr );
-    if ( pszDescription )
-    {
-      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
-      control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
-    }
+    QLabel *label = new QLabel( option.name );
+    if ( !option.description.isEmpty() )
+      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option.description ) );
+
     mOpenOptionsLayout->addRow( label, control );
   }
-
-  CPLDestroyXMLNode( psDoc );
 
   // Set label to point to driver help page
   const char *pszHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );

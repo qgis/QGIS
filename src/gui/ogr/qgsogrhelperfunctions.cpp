@@ -301,13 +301,17 @@ bool QgsGdalGuiUtils::isProtocolCloudType( const QString &protocol )
            protocol == QLatin1String( "vsihdfs" ) );
 }
 
-QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QWidget *parent )
+QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QWidget *parent, bool includeDefaultChoices )
 {
   switch ( option.type )
   {
     case QgsGdalOption::Type::Select:
     {
       QComboBox *cb = new QComboBox( parent );
+      if ( includeDefaultChoices )
+      {
+        cb->addItem( QObject::tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
+      }
       for ( const QString &val : std::as_const( option.options ) )
       {
         cb->addItem( val, val );
@@ -320,6 +324,10 @@ QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QW
     case QgsGdalOption::Type::Boolean:
     {
       QComboBox *cb = new QComboBox( parent );
+      if ( includeDefaultChoices )
+      {
+        cb->addItem( QObject::tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
+      }
       cb->addItem( QObject::tr( "Yes" ), "YES" );
       cb->addItem( QObject::tr( "No" ), "NO" );
       cb->setCurrentIndex( 0 );
@@ -332,6 +340,10 @@ QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QW
       QgsFilterLineEdit *res = new QgsFilterLineEdit( parent );
       res->setToolTip( option.description );
       res->setShowClearButton( true );
+      if ( includeDefaultChoices )
+      {
+        res->setPlaceholderText( QObject::tr( "Default" ) );
+      }
       return res;
     }
 
@@ -342,13 +354,22 @@ QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QW
       if ( option.minimum.isValid() )
         res->setMinimum( option.minimum.toInt() );
       else
-        res->setMinimum( std::numeric_limits< int>::lowest() + 1 );
+        res->setMinimum( 0 );
       if ( option.maximum.isValid() )
         res->setMaximum( option.maximum.toInt() );
       else
         res->setMaximum( std::numeric_limits< int>::max() - 1 );
-      if ( option.defaultValue.isValid() )
+      if ( includeDefaultChoices )
+      {
+        res->setMinimum( res->minimum() - 1 );
+        res->setClearValueMode( QgsSpinBox::ClearValueMode::MinimumValue,
+                                QObject::tr( "Default" ) );
+      }
+      else if ( option.defaultValue.isValid() )
+      {
         res->setClearValue( option.defaultValue.toInt() );
+      }
+      res->clear();
       return res;
     }
 
@@ -359,13 +380,24 @@ QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QW
       if ( option.minimum.isValid() )
         res->setMinimum( option.minimum.toDouble() );
       else
-        res->setMinimum( std::numeric_limits< double>::lowest() + 1 );
+        res->setMinimum( 0 );
       if ( option.maximum.isValid() )
         res->setMaximum( option.maximum.toDouble() );
       else
         res->setMaximum( std::numeric_limits< double>::max() - 1 );
       if ( option.defaultValue.isValid() )
         res->setClearValue( option.defaultValue.toDouble() );
+      if ( includeDefaultChoices )
+      {
+        res->setMinimum( res->minimum() - 1 );
+        res->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue,
+                                QObject::tr( "Default" ) );
+      }
+      else if ( option.defaultValue.isValid() )
+      {
+        res->setClearValue( option.defaultValue.toDouble() );
+      }
+      res->clear();
       return res;
     }
 
