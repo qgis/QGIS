@@ -31,6 +31,132 @@
 #include <QFileInfo>
 #include <mutex>
 
+
+QgsGdalOption QgsGdalOption::fromXmlNode( CPLXMLNode *node )
+{
+  if ( node->eType != CXT_Element || !EQUAL( node->pszValue, "Option" ) )
+    return {};
+
+  const QString optionName( CPLGetXMLValue( node, "name", nullptr ) );
+  if ( optionName.isEmpty() )
+    return {};
+
+  QgsGdalOption option;
+  option.name = optionName;
+
+  option.description = QString( CPLGetXMLValue( node, "description", nullptr ) );
+
+  option.type = QgsGdalOption::Type::Text;
+
+  const char *pszType = CPLGetXMLValue( node, "type", nullptr );
+  const char *pszDefault = CPLGetXMLValue( node, "default", nullptr );
+  if ( pszType && EQUAL( pszType, "string-select" ) )
+  {
+    option.type = QgsGdalOption::Type::Select;
+    for ( auto psOption = node->psChild; psOption != nullptr; psOption = psOption->psNext )
+    {
+      if ( psOption->eType != CXT_Element ||
+           !EQUAL( psOption->pszValue, "Value" ) ||
+           psOption->psChild == nullptr )
+      {
+        continue;
+      }
+      option.options << psOption->psChild->pszValue;
+    }
+    option.defaultValue = pszDefault ? QString( pszDefault ) : option.options.value( 0 );
+    return option;
+  }
+  else if ( pszType && EQUAL( pszType, "boolean" ) )
+  {
+    option.type = QgsGdalOption::Type::Boolean;
+    option.defaultValue = pszDefault ? QString( pszDefault ) : QStringLiteral( "YES" );
+    return option;
+  }
+  else if ( pszType && EQUAL( pszType, "string" ) )
+  {
+    option.type = QgsGdalOption::Type::Text;
+    if ( pszDefault )
+      option.defaultValue = QString( pszDefault );
+    return option;
+  }
+  else if ( pszType && ( EQUAL( pszType, "int" ) || EQUAL( pszType, "integer" ) ) )
+  {
+    option.type = QgsGdalOption::Type::Int;
+    if ( pszDefault )
+    {
+      bool ok = false;
+      const int defaultInt = QString( pszDefault ).toInt( &ok );
+      if ( ok )
+        option.defaultValue = defaultInt;
+    }
+
+    if ( const char *pszMin = CPLGetXMLValue( node, "min", nullptr ) )
+    {
+      bool ok = false;
+      const int minInt = QString( pszMin ).toInt( &ok );
+      if ( ok )
+        option.minimum = minInt;
+    }
+    if ( const char *pszMax = CPLGetXMLValue( node, "max", nullptr ) )
+    {
+      bool ok = false;
+      const int maxInt = QString( pszMax ).toInt( &ok );
+      if ( ok )
+        option.maximum = maxInt;
+    }
+    return option;
+  }
+  else if ( pszType && EQUAL( pszType, "double" ) )
+  {
+    option.type = QgsGdalOption::Type::Double;
+    if ( pszDefault )
+    {
+      bool ok = false;
+      const double defaultDouble = QString( pszDefault ).toDouble( &ok );
+      if ( ok )
+        option.defaultValue = defaultDouble;
+    }
+
+    if ( const char *pszMin = CPLGetXMLValue( node, "min", nullptr ) )
+    {
+      bool ok = false;
+      const double minDouble = QString( pszMin ).toDouble( &ok );
+      if ( ok )
+        option.minimum = minDouble;
+    }
+    if ( const char *pszMax = CPLGetXMLValue( node, "max", nullptr ) )
+    {
+      bool ok = false;
+      const double maxDouble = QString( pszMax ).toDouble( &ok );
+      if ( ok )
+        option.maximum = maxDouble;
+    }
+    return option;
+  }
+
+  QgsDebugError( QStringLiteral( "Unhandled GDAL option type: %1" ).arg( pszType ) );
+  return {};
+}
+
+QList<QgsGdalOption> QgsGdalOption::optionsFromXml( CPLXMLNode *node )
+{
+  QList< QgsGdalOption > options;
+  for ( auto psItem = node->psChild; psItem != nullptr; psItem = node->psNext )
+  {
+    const QgsGdalOption option = fromXmlNode( psItem );
+    if ( option.type == QgsGdalOption::Type::Invalid )
+      continue;
+
+    options << option;
+  }
+  return options;
+}
+
+
+//
+// QgsGdalUtils
+//
+
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
   const QString driverShortName = GDALGetDriverShortName( driver );

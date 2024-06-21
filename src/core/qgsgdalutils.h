@@ -26,6 +26,67 @@
 
 /**
  * \ingroup core
+ * \class QgsGdalOption
+ * \brief Encapsulates the definition of a GDAL configuration option.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsGdalOption
+{
+  public:
+
+    /**
+     * Option types
+     */
+    enum class Type
+    {
+      Invalid, //!< Invalid option
+      Select, //!< Selection option
+      Boolean, //!< Boolean option
+      Text, //!< Text option
+      Int, //!< Integer option
+      Double, //!< Double option
+    };
+
+    //! Option name
+    QString name;
+
+    //! Option type
+    Type type = Type::Invalid;
+
+    //! Option description
+    QString description;
+
+    //! Available choices, for Select options
+    QStringList options;
+
+    //! Default value
+    QVariant defaultValue;
+
+    //! Minimum acceptable value
+    QVariant minimum;
+
+    //! Maximum acceptable value
+    QVariant maximum;
+
+    /**
+     * Creates a QgsGdalOption from an XML \a node.
+     *
+     * Returns an invalid option if the node could not be interpreted
+     * as a GDAL option.
+     */
+    static QgsGdalOption fromXmlNode( CPLXMLNode *node );
+
+    /**
+     * Returns a list of all GDAL options from an XML \a node.
+     */
+    static QList< QgsGdalOption > optionsFromXml( CPLXMLNode *node );
+};
+
+
+/**
+ * \ingroup core
  * \class QgsGdalUtils
  * \brief Utilities for working with GDAL
  *
