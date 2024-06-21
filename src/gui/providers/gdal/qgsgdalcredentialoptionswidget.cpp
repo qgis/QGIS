@@ -595,6 +595,7 @@ void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
     option.type = GdalOption::Type::Text;
 
     const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
+    const char *pszDefault = CPLGetXMLValue( psItem, "default", nullptr );
     if ( pszType && EQUAL( pszType, "string-select" ) )
     {
       option.type = GdalOption::Type::Select;
@@ -608,12 +609,18 @@ void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
         }
         option.options << psOption->psChild->pszValue;
       }
-      option.defaultValue = option.options.value( 0 );
+      option.defaultValue = pszDefault ? QString( pszDefault ) : option.options.value( 0 );
     }
     else if ( pszType && EQUAL( pszType, "boolean" ) )
     {
       option.type = GdalOption::Type::Boolean;
-      option.defaultValue = QStringLiteral( "YES" );
+      option.defaultValue = pszDefault ? QString( pszDefault ) : QStringLiteral( "YES" );
+    }
+    else if ( pszType && EQUAL( pszType, "string" ) )
+    {
+      option.type = GdalOption::Type::Text;
+      if ( pszDefault )
+        option.defaultValue = QString( pszDefault );
     }
 
     options << option;
