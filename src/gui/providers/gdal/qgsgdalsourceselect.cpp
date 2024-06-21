@@ -24,6 +24,8 @@
 #include "ogr/qgsogrhelperfunctions.h"
 #include "qgsgdalutils.h"
 #include "qgsgdalcredentialoptionswidget.h"
+#include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -270,9 +272,31 @@ bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
             cb->setCurrentIndex( idx );
           }
         }
-        else if ( auto le = qobject_cast<QLineEdit *>( *widget ) )
+        else if ( QLineEdit *le = qobject_cast<QLineEdit *>( *widget ) )
         {
           le->setText( opt.value().toString() );
+        }
+        else if ( QgsSpinBox *intSpin = qobject_cast<QgsSpinBox *>( *widget ) )
+        {
+          if ( opt.value().toString().isEmpty() )
+          {
+            intSpin->clear();
+          }
+          else
+          {
+            intSpin->setValue( opt.value().toInt() );
+          }
+        }
+        else if ( QgsDoubleSpinBox *doubleSpin = qobject_cast<QgsDoubleSpinBox *>( *widget ) )
+        {
+          if ( opt.value().toString().isEmpty() )
+          {
+            doubleSpin->clear();
+          }
+          else
+          {
+            doubleSpin->setValue( opt.value().toDouble() );
+          }
         }
       }
     }
@@ -297,9 +321,23 @@ void QgsGdalSourceSelect::computeDataSources()
     {
       value = le->text();
     }
+    else if ( QgsSpinBox *intSpin = qobject_cast<QgsSpinBox *>( control ) )
+    {
+      if ( intSpin->value() != intSpin->clearValue() )
+      {
+        value = QString::number( intSpin->value() );
+      }
+    }
+    else if ( QgsDoubleSpinBox *doubleSpin = qobject_cast<QgsDoubleSpinBox *>( control ) )
+    {
+      if ( doubleSpin->value() != doubleSpin->clearValue() )
+      {
+        value = QString::number( doubleSpin->value() );
+      }
+    }
     if ( !value.isEmpty() )
     {
-      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName() ).arg( value );
+      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName(), value );
     }
   }
 
@@ -429,90 +467,44 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
   }
 
-  for ( auto psItem = psOpenOptionList->psChild; psItem != nullptr; psItem = psItem->psNext )
+  const QList< QgsGdalOption > options = QgsGdalOption::optionsFromXml( psOpenOptionList );
+  CPLDestroyXMLNode( psDoc );
+
+  for ( const QgsGdalOption &option : options )
   {
-    if ( psItem->eType != CXT_Element || !EQUAL( psItem->pszValue, "Option" ) )
-      continue;
-
-    const char *pszOptionName = CPLGetXMLValue( psItem, "name", nullptr );
-    if ( pszOptionName == nullptr )
-      continue;
-
     // Exclude options that are not of raster scope
-    const char *pszScope = CPLGetXMLValue( psItem, "scope", nullptr );
-    if ( pszScope != nullptr && strstr( pszScope, "raster" ) == nullptr )
+    if ( !option.scope.isEmpty()
+         && option.scope.compare( QLatin1String( "raster" ), Qt::CaseInsensitive ) != 0 )
       continue;
 
-    const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
-    QStringList options;
-    if ( pszType && EQUAL( pszType, "string-select" ) )
-    {
-      for ( auto psOption = psItem->psChild; psOption != nullptr; psOption = psOption->psNext )
-      {
-        if ( psOption->eType != CXT_Element ||
-             !EQUAL( psOption->pszValue, "Value" ) ||
-             psOption->psChild == nullptr )
-        {
-          continue;
-        }
-        options << psOption->psChild->pszValue;
-      }
-    }
-
-    QLabel *label = new QLabel( pszOptionName );
-    QWidget *control = nullptr;
-    if ( pszType && EQUAL( pszType, "boolean" ) )
-    {
-      QComboBox *cb = new QComboBox();
-      cb->addItem( tr( "Yes" ), "YES" );
-      cb->addItem( tr( "No" ), "NO" );
-      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      int idx = cb->findData( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      cb->setCurrentIndex( idx );
-      control = cb;
-    }
-    else if ( !options.isEmpty() )
-    {
-      QComboBox *cb = new QComboBox();
-      for ( const QString &val : std::as_const( options ) )
-      {
-        cb->addItem( val, val );
-      }
-      cb->addItem( tr( "<Default>" ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-      int idx = cb->findData( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
+    QWidget *control = QgsGdalGuiUtils::createWidgetForOption( option, nullptr, true );
+    if ( !control )
+      continue;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
-      if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0 && label->text() == QLatin1String( "MODE" ) && options.contains( QLatin1String( "INTERPOLATED" ) ) )
+    if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0
+         && option.name == QLatin1String( "MODE" ) && option.options.contains( QLatin1String( "INTERPOLATED" ) ) )
+    {
+      gdal::dataset_unique_ptr hSrcDS( GDALOpen( gdalUri.toUtf8().constData(), GA_ReadOnly ) );
+      if ( hSrcDS && QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
       {
-        gdal::dataset_unique_ptr hSrcDS( GDALOpen( gdalUri.toUtf8().constData(), GA_ReadOnly ) );
-        if ( hSrcDS && QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
+        if ( QComboBox *combo = qobject_cast< QComboBox * >( control ) )
         {
-          idx = cb->findText( QLatin1String( "INTERPOLATED" ) );
+          combo->setCurrentIndex( combo->findText( QLatin1String( "INTERPOLATED" ) ) );
         }
       }
+    }
 #endif
 
-      cb->setCurrentIndex( idx );
-      control = cb;
-    }
-    else
-    {
-      QLineEdit *le = new QLineEdit( );
-      control = le;
-    }
-    control->setObjectName( pszOptionName );
+    control->setObjectName( option.name );
     mOpenOptionsWidgets.push_back( control );
 
-    const char *pszDescription = CPLGetXMLValue( psItem, "description", nullptr );
-    if ( pszDescription )
-    {
-      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
-      control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
-    }
+    QLabel *label = new QLabel( option.name );
+    if ( !option.description.isEmpty() )
+      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option.description ) );
+
     mOpenOptionsLayout->addRow( label, control );
   }
-
-  CPLDestroyXMLNode( psDoc );
 
   // Set label to point to driver help page
   const char *pszHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );

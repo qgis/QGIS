@@ -32,7 +32,7 @@
 #include <mutex>
 
 
-QgsGdalOption QgsGdalOption::fromXmlNode( CPLXMLNode *node )
+QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
 {
   if ( node->eType != CXT_Element || !EQUAL( node->pszValue, "Option" ) )
     return {};
@@ -45,6 +45,7 @@ QgsGdalOption QgsGdalOption::fromXmlNode( CPLXMLNode *node )
   option.name = optionName;
 
   option.description = QString( CPLGetXMLValue( node, "description", nullptr ) );
+  option.scope = QString( CPLGetXMLValue( node, "scope", nullptr ) );
 
   option.type = QgsGdalOption::Type::Text;
 
@@ -138,10 +139,10 @@ QgsGdalOption QgsGdalOption::fromXmlNode( CPLXMLNode *node )
   return {};
 }
 
-QList<QgsGdalOption> QgsGdalOption::optionsFromXml( CPLXMLNode *node )
+QList<QgsGdalOption> QgsGdalOption::optionsFromXml( const CPLXMLNode *node )
 {
   QList< QgsGdalOption > options;
-  for ( auto psItem = node->psChild; psItem != nullptr; psItem = node->psNext )
+  for ( auto psItem = node->psChild; psItem != nullptr; psItem = psItem->psNext )
   {
     const QgsGdalOption option = fromXmlNode( psItem );
     if ( option.type == QgsGdalOption::Type::Invalid )

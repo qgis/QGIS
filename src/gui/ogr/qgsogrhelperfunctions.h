@@ -55,8 +55,11 @@ class GUI_EXPORT QgsGdalGuiUtils
 
     /**
      * Creates a new widget for configuration a GDAL \a option.
+     *
+     * If \a includeDefaultChoices is TRUE then the widget will include an option
+     * for the default value.
      */
-    static QWidget *createWidgetForOption( const QgsGdalOption &option, QWidget *parent = nullptr );
+    static QWidget *createWidgetForOption( const QgsGdalOption &option, QWidget *parent = nullptr, bool includeDefaultChoices = false );
 
 };
 

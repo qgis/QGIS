@@ -70,18 +70,21 @@ class CORE_EXPORT QgsGdalOption
     //! Maximum acceptable value
     QVariant maximum;
 
+    //! Option scope
+    QString scope;
+
     /**
      * Creates a QgsGdalOption from an XML \a node.
      *
      * Returns an invalid option if the node could not be interpreted
      * as a GDAL option.
      */
-    static QgsGdalOption fromXmlNode( CPLXMLNode *node );
+    static QgsGdalOption fromXmlNode( const CPLXMLNode *node );
 
     /**
      * Returns a list of all GDAL options from an XML \a node.
      */
-    static QList< QgsGdalOption > optionsFromXml( CPLXMLNode *node );
+    static QList< QgsGdalOption > optionsFromXml( const CPLXMLNode *node );
 };
 
 
