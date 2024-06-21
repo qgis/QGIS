@@ -3377,28 +3377,34 @@ INSERT INTO public.test_geog_ext(g)
         vlEstm = QgsVectorLayer(uri.uri() + " estimatedmetadata='true'", 'estimated', 'postgres')
         self.assertTrue(vlEstm.isValid())
 
-        def test_acceptable_estimated_extent(realExt, estmExt):
+        def test_acceptable_estimated_extent(realExt, estmExt, msg):
+            toleratedDrift = 1
             # 1. test that the estimated extent contains the real one
-            self.assertTrue(estmExt.contains(realExt))
+            self.assertTrue(estmExt.contains(realExt),
+                            "Estimated extent {} does not contain real extent {}"
+                            .format(estmExt, realExt))
             # 2. test that the estimated extent is not too different in size
-            self.assertTrue(abs(estmExt.width() - realExt.width()) < 1)
-            self.assertTrue(abs(estmExt.height() - realExt.height()) < 1)
+            self.assertAlmostEqual(estmExt.width(), realExt.width(), toleratedDrift, msg)
+            self.assertAlmostEqual(estmExt.height(), realExt.height(), toleratedDrift, msg)
 
         # No stats
-        test_acceptable_estimated_extent(realExtent, vlEstm.extent())
+        test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with no stats')
 
         # Add stats
         conn.executeSql('ANALYZE public.test_geog_ext')
         vlEstm.updateExtents()
-        test_acceptable_estimated_extent(realExtent, vlEstm.extent())
+        test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with stats')
 
         # Add index
-        conn.executeSql('CREATE INDEX ON public.test_geog_ext using gist (g)')
+        conn.executeSql('CREATE INDEX ON public.test_geog_ext using gist (g)', 'with index')
         vlEstm.updateExtents()
         test_acceptable_estimated_extent(realExtent, vlEstm.extent())
 
-        # Cleanup
-        conn.executeSql('DROP TABLE public.test_geog_ext')
+        # Following line is to test the error message upon failure
+        #test_acceptable_estimated_extent(QgsRectangle(0,4,5,3), vlEstm.extent())
+
+        # Cleanup - TODO: only clean if test passed ?
+        #conn.executeSql('DROP TABLE public.test_geog_ext')
 
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):
