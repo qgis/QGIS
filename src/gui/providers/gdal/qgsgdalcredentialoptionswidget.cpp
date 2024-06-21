@@ -100,7 +100,7 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
     return QVariant();
 
   const QPair< QString, QString > option = mCredentialOptions.at( index.row() );
-  const GdalOption gdalOption = QgsGdalCredentialOptionsModel::option( option.first );
+  const QgsGdalOption gdalOption = QgsGdalCredentialOptionsModel::option( option.first );
 
   switch ( role )
   {
@@ -112,7 +112,7 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
           return option.first;
 
         case Column::Value:
-          return gdalOption.type == GdalOption::Type::Boolean ? ( option.second == QStringLiteral( "YES" ) ? tr( "Yes" ) : option.second == QStringLiteral( "NO" ) ? tr( "No" ) : option.second )
+          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QStringLiteral( "YES" ) ? tr( "Yes" ) : option.second == QStringLiteral( "NO" ) ? tr( "No" ) : option.second )
                  :  option.second;
 
         default:
@@ -269,26 +269,26 @@ void QgsGdalCredentialOptionsModel::setOptions( const QList< QPair< QString, QSt
   emit optionsChanged();
 }
 
-void QgsGdalCredentialOptionsModel::setAvailableOptions( const QList<GdalOption> &options )
+void QgsGdalCredentialOptionsModel::setAvailableOptions( const QList<QgsGdalOption> &options )
 {
   mAvailableOptions = options;
   mDescriptions.clear();
   mAvailableKeys.clear();
-  for ( const GdalOption &option : options )
+  for ( const QgsGdalOption &option : options )
   {
     mAvailableKeys.append( option.name );
     mDescriptions[option.name] = option.description;
   }
 }
 
-GdalOption QgsGdalCredentialOptionsModel::option( const QString &key ) const
+QgsGdalOption QgsGdalCredentialOptionsModel::option( const QString &key ) const
 {
-  for ( const GdalOption &option : mAvailableOptions )
+  for ( const QgsGdalOption &option : mAvailableOptions )
   {
     if ( option.name == key )
       return option;
   }
-  return GdalOption();
+  return QgsGdalOption();
 }
 
 void QgsGdalCredentialOptionsModel::setCredentialOptions( const QList<QPair<QString, QString> > &options )
@@ -346,10 +346,10 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
       if ( key.isEmpty() )
         return nullptr;
 
-      const GdalOption option = model->option( key );
+      const QgsGdalOption option = model->option( key );
       switch ( option.type )
       {
-        case GdalOption::Type::Select:
+        case QgsGdalOption::Type::Select:
         {
           QComboBox *cb = new QComboBox( parent );
           for ( const QString &val : std::as_const( option.options ) )
@@ -361,7 +361,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
           return cb;
         }
 
-        case GdalOption::Type::Boolean:
+        case QgsGdalOption::Type::Boolean:
         {
           QComboBox *cb = new QComboBox( parent );
           cb->addItem( tr( "Yes" ), "YES" );
@@ -371,14 +371,14 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
           return cb;
         }
 
-        case GdalOption::Type::Text:
+        case QgsGdalOption::Type::Text:
         {
           QLineEdit *res = new QLineEdit( parent );
           res->setToolTip( option.description );
           return res;
         }
 
-        case GdalOption::Type::Int:
+        case QgsGdalOption::Type::Int:
         {
           QgsSpinBox *res = new QgsSpinBox( parent );
           res->setToolTip( option.description );
@@ -395,7 +395,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
           return res;
         }
 
-        case GdalOption::Type::Double:
+        case QgsGdalOption::Type::Double:
         {
           QgsDoubleSpinBox *res = new QgsDoubleSpinBox( parent );
           res->setToolTip( option.description );
@@ -634,115 +634,15 @@ void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
     return;
   }
 
-  int maxKeyLength = 0;
-  QList< GdalOption > options;
-  for ( auto psItem = psOptionList->psChild; psItem != nullptr; psItem = psItem->psNext )
-  {
-    if ( psItem->eType != CXT_Element || !EQUAL( psItem->pszValue, "Option" ) )
-      continue;
-
-    const QString optionName( CPLGetXMLValue( psItem, "name", nullptr ) );
-    if ( optionName.isEmpty() )
-      continue;
-
-    GdalOption option;
-    option.name = optionName;
-    if ( optionName.length() > maxKeyLength )
-      maxKeyLength = optionName.length();
-
-    option.description = QString( CPLGetXMLValue( psItem, "description", nullptr ) );
-
-    option.type = GdalOption::Type::Text;
-
-    const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
-    const char *pszDefault = CPLGetXMLValue( psItem, "default", nullptr );
-    if ( pszType && EQUAL( pszType, "string-select" ) )
-    {
-      option.type = GdalOption::Type::Select;
-      for ( auto psOption = psItem->psChild; psOption != nullptr; psOption = psOption->psNext )
-      {
-        if ( psOption->eType != CXT_Element ||
-             !EQUAL( psOption->pszValue, "Value" ) ||
-             psOption->psChild == nullptr )
-        {
-          continue;
-        }
-        option.options << psOption->psChild->pszValue;
-      }
-      option.defaultValue = pszDefault ? QString( pszDefault ) : option.options.value( 0 );
-    }
-    else if ( pszType && EQUAL( pszType, "boolean" ) )
-    {
-      option.type = GdalOption::Type::Boolean;
-      option.defaultValue = pszDefault ? QString( pszDefault ) : QStringLiteral( "YES" );
-    }
-    else if ( pszType && EQUAL( pszType, "string" ) )
-    {
-      option.type = GdalOption::Type::Text;
-      if ( pszDefault )
-        option.defaultValue = QString( pszDefault );
-    }
-    else if ( pszType && ( EQUAL( pszType, "int" ) || EQUAL( pszType, "integer" ) ) )
-    {
-      option.type = GdalOption::Type::Int;
-      if ( pszDefault )
-      {
-        bool ok = false;
-        const int defaultInt = QString( pszDefault ).toInt( &ok );
-        if ( ok )
-          option.defaultValue = defaultInt;
-      }
-
-      if ( const char *pszMin = CPLGetXMLValue( psItem, "min", nullptr ) )
-      {
-        bool ok = false;
-        const int minInt = QString( pszMin ).toInt( &ok );
-        if ( ok )
-          option.minimum = minInt;
-      }
-      if ( const char *pszMax = CPLGetXMLValue( psItem, "max", nullptr ) )
-      {
-        bool ok = false;
-        const int maxInt = QString( pszMax ).toInt( &ok );
-        if ( ok )
-          option.maximum = maxInt;
-      }
-    }
-    else if ( pszType && EQUAL( pszType, "double" ) )
-    {
-      option.type = GdalOption::Type::Double;
-      if ( pszDefault )
-      {
-        bool ok = false;
-        const double defaultDouble = QString( pszDefault ).toDouble( &ok );
-        if ( ok )
-          option.defaultValue = defaultDouble;
-      }
-
-      if ( const char *pszMin = CPLGetXMLValue( psItem, "min", nullptr ) )
-      {
-        bool ok = false;
-        const double minDouble = QString( pszMin ).toDouble( &ok );
-        if ( ok )
-          option.minimum = minDouble;
-      }
-      if ( const char *pszMax = CPLGetXMLValue( psItem, "max", nullptr ) )
-      {
-        bool ok = false;
-        const double maxDouble = QString( pszMax ).toDouble( &ok );
-        if ( ok )
-          option.maximum = maxDouble;
-      }
-    }
-    else
-    {
-      QgsDebugError( QStringLiteral( "Unhandled GDAL option type: %1" ).arg( pszType ) );
-    }
-
-    options << option;
-  }
-
+  const QList< QgsGdalOption > options = QgsGdalOption::optionsFromXml( psOptionList );
   CPLDestroyXMLNode( psDoc );
+
+  int maxKeyLength = 0;
+  for ( const QgsGdalOption &option : options )
+  {
+    if ( option.name.length() > maxKeyLength )
+      maxKeyLength = option.name.length();
+  }
 
   mTableView->setColumnWidth( QgsGdalCredentialOptionsModel::Column::Key, static_cast< int >( QFontMetrics( mTableView->font() ).horizontalAdvance( 'X' ) * maxKeyLength * 1.1 ) );
 

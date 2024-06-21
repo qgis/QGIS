@@ -20,32 +20,13 @@
 #include "ui_qgsgdalcredentialoptionswidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsgdalutils.h"
 
 #include <QAbstractItemModel>
 #include <QStyledItemDelegate>
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-
-struct GdalOption
-{
-  enum class Type
-  {
-    Select,
-    Boolean,
-    Text,
-    Int,
-    Double
-  };
-
-  QString name;
-  Type type = Type::Text;
-  QStringList options;
-  QString description;
-  QVariant defaultValue;
-  QVariant minimum;
-  QVariant maximum;
-};
 
 class QgsGdalCredentialOptionsModel : public QAbstractItemModel
 {
@@ -72,9 +53,9 @@ class QgsGdalCredentialOptionsModel : public QAbstractItemModel
     bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
 
     void setOptions( const QList< QPair< QString, QString > > &options );
-    void setAvailableOptions( const QList< GdalOption > &options );
+    void setAvailableOptions( const QList< QgsGdalOption > &options );
     QStringList availableKeys() const { return mAvailableKeys; }
-    GdalOption option( const QString &key ) const;
+    QgsGdalOption option( const QString &key ) const;
     QList< QPair< QString, QString > > credentialOptions() const { return mCredentialOptions; }
     void setCredentialOptions( const QList< QPair< QString, QString > > &options );
 
@@ -85,7 +66,7 @@ class QgsGdalCredentialOptionsModel : public QAbstractItemModel
   private:
 
     QList< QPair< QString, QString > > mCredentialOptions;
-    QList< GdalOption > mAvailableOptions;
+    QList< QgsGdalOption > mAvailableOptions;
     QStringList mAvailableKeys;
     QMap<QString, QString> mDescriptions;
 };
