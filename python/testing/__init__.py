@@ -318,6 +318,17 @@ class QgisTestCase(unittest.TestCase):
             (file_path[1:] if file_path.startswith('/') else file_path)
         )
 
+    def assertNumbersWithinTolerance(self, number1, number2, tolerance):
+        """
+        :param number1: The first number to compare
+        :param number2: The second numnber to compare
+        :param tolerance: Tolerated difference between the numbers
+        """
+        absDiff = abs(number1 - number2)
+        self.assertTrue(absDiff <= tolerated,
+                        "difference between {} and {} is {}, bigger than tolerated ({})"
+                        .format(number1, number2))
+
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """
         :param layer_expected: The first layer to compare
@@ -746,7 +757,7 @@ def expectedFailure(*args):
         #   def testfunction():
         func = args[0]
 
-        @functools.wraps(func)
+        @ functools.wraps(func)
         def wrapper(*args, **kwargs):
             try:
                 func(*args, **kwargs)
@@ -762,7 +773,7 @@ def expectedFailure(*args):
         condition = args[0]
 
         def realExpectedFailure(func):
-            @functools.wraps(func)
+            @ functools.wraps(func)
             def wrapper(*args, **kwargs):
                 if condition:
                     try:
@@ -920,7 +931,7 @@ def start_app(cleanup=True):
             import atexit
             import shutil
 
-            @atexit.register
+            @ atexit.register
             def exitQgis():
                 QGISAPP.exitQgis()
                 shutil.rmtree(tmpdir)
