@@ -3397,6 +3397,9 @@ INSERT INTO public.test_geog_ext(g)
         vlEstm.updateExtents()
         test_acceptable_estimated_extent(realExtent, vlEstm.extent())
 
+        # Cleanup
+        conn.executeSql('DROP TABLE public.test_geog_ext')
+
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):
         # check that primary key creation correctly works
