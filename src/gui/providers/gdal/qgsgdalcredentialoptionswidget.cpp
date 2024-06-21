@@ -20,6 +20,9 @@
 #include "ogr/qgsogrhelperfunctions.h"
 #include "qgsvariantutils.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -184,7 +187,7 @@ bool QgsGdalCredentialOptionsModel::setData( const QModelIndex &index, const QVa
           else
           {
             if ( option.first != value.toString() )
-              option.second = QgsGdalCredentialOptionsModel::option( value.toString() ).defaultValue;
+              option.second = QgsGdalCredentialOptionsModel::option( value.toString() ).defaultValue.toString();
 
             option.first = value.toString();
             if ( wasInvalid )
@@ -367,6 +370,40 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
           res->setToolTip( option.description );
           return res;
         }
+
+        case GdalOption::Type::Int:
+        {
+          QgsSpinBox *res = new QgsSpinBox( parent );
+          res->setToolTip( option.description );
+          if ( option.minimum.isValid() )
+            res->setMinimum( option.minimum.toInt() );
+          else
+            res->setMinimum( std::numeric_limits< int>::lowest() + 1 );
+          if ( option.maximum.isValid() )
+            res->setMaximum( option.maximum.toInt() );
+          else
+            res->setMaximum( std::numeric_limits< int>::max() - 1 );
+          if ( option.defaultValue.isValid() )
+            res->setClearValue( option.defaultValue.toInt() );
+          return res;
+        }
+
+        case GdalOption::Type::Double:
+        {
+          QgsDoubleSpinBox *res = new QgsDoubleSpinBox( parent );
+          res->setToolTip( option.description );
+          if ( option.minimum.isValid() )
+            res->setMinimum( option.minimum.toDouble() );
+          else
+            res->setMinimum( std::numeric_limits< double>::lowest() + 1 );
+          if ( option.maximum.isValid() )
+            res->setMaximum( option.maximum.toDouble() );
+          else
+            res->setMaximum( std::numeric_limits< double>::max() - 1 );
+          if ( option.defaultValue.isValid() )
+            res->setClearValue( option.defaultValue.toDouble() );
+          return res;
+        }
       }
       return nullptr;
     }
@@ -402,6 +439,14 @@ void QgsGdalCredentialOptionsDelegate::setEditorData( QWidget *editor, const QMo
       {
         edit->setText( index.data( Qt::EditRole ).toString() );
       }
+      else if ( QgsSpinBox *spin = qobject_cast< QgsSpinBox * >( editor ) )
+      {
+        spin->setValue( index.data( Qt::EditRole ).toInt() );
+      }
+      else if ( QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor ) )
+      {
+        spin->setValue( index.data( Qt::EditRole ).toDouble() );
+      }
       return;
     }
 
@@ -433,6 +478,14 @@ void QgsGdalCredentialOptionsDelegate::setModelData( QWidget *editor, QAbstractI
       else if ( QLineEdit *edit = qobject_cast< QLineEdit * >( editor ) )
       {
         model->setData( index, edit->text() );
+      }
+      else if ( QgsSpinBox *spin = qobject_cast< QgsSpinBox * >( editor ) )
+      {
+        model->setData( index, spin->value() );
+      }
+      else if ( QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor ) )
+      {
+        model->setData( index, spin->value() );
       }
       break;
     }
@@ -621,6 +674,62 @@ void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
       option.type = GdalOption::Type::Text;
       if ( pszDefault )
         option.defaultValue = QString( pszDefault );
+    }
+    else if ( pszType && ( EQUAL( pszType, "int" ) || EQUAL( pszType, "integer" ) ) )
+    {
+      option.type = GdalOption::Type::Int;
+      if ( pszDefault )
+      {
+        bool ok = false;
+        const int defaultInt = QString( pszDefault ).toInt( &ok );
+        if ( ok )
+          option.defaultValue = defaultInt;
+      }
+
+      if ( const char *pszMin = CPLGetXMLValue( psItem, "min", nullptr ) )
+      {
+        bool ok = false;
+        const int minInt = QString( pszMin ).toInt( &ok );
+        if ( ok )
+          option.minimum = minInt;
+      }
+      if ( const char *pszMax = CPLGetXMLValue( psItem, "max", nullptr ) )
+      {
+        bool ok = false;
+        const int maxInt = QString( pszMax ).toInt( &ok );
+        if ( ok )
+          option.maximum = maxInt;
+      }
+    }
+    else if ( pszType && EQUAL( pszType, "double" ) )
+    {
+      option.type = GdalOption::Type::Double;
+      if ( pszDefault )
+      {
+        bool ok = false;
+        const double defaultDouble = QString( pszDefault ).toDouble( &ok );
+        if ( ok )
+          option.defaultValue = defaultDouble;
+      }
+
+      if ( const char *pszMin = CPLGetXMLValue( psItem, "min", nullptr ) )
+      {
+        bool ok = false;
+        const double minDouble = QString( pszMin ).toDouble( &ok );
+        if ( ok )
+          option.minimum = minDouble;
+      }
+      if ( const char *pszMax = CPLGetXMLValue( psItem, "max", nullptr ) )
+      {
+        bool ok = false;
+        const double maxDouble = QString( pszMax ).toDouble( &ok );
+        if ( ok )
+          option.maximum = maxDouble;
+      }
+    }
+    else
+    {
+      QgsDebugError( QStringLiteral( "Unhandled GDAL option type: %1" ).arg( pszType ) );
     }
 
     options << option;

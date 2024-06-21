@@ -33,14 +33,18 @@ struct GdalOption
   {
     Select,
     Boolean,
-    Text
+    Text,
+    Int,
+    Double
   };
 
   QString name;
   Type type = Type::Text;
   QStringList options;
   QString description;
-  QString defaultValue;
+  QVariant defaultValue;
+  QVariant minimum;
+  QVariant maximum;
 };
 
 class QgsGdalCredentialOptionsModel : public QAbstractItemModel
