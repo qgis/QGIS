@@ -19,6 +19,9 @@
 #include <QString>
 #include "qgis_gui.h"
 
+class QWidget;
+class QgsGdalOption;
+
 #define SIP_NO_FILE
 
 /**
@@ -39,3 +42,23 @@ QString GUI_EXPORT createProtocolURI( const QString &type, const QString &url, c
  * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
  */
 bool GUI_EXPORT isProtocolCloudType( const QString &protocol );
+
+/**
+ * \ingroup core
+ * \class QgsGdalOption
+ * \brief Encapsulates the definition of a GDAL configuration option.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.40
+ */
+class GUI_EXPORT QgsGdalGuiUtils
+{
+  public:
+
+    /**
+     * Creates a new widget for configuration a GDAL \a option.
+     */
+    static QWidget *createWidgetForOption( const QgsGdalOption &option, QWidget *parent = nullptr );
+
+};
+

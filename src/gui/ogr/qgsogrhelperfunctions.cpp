@@ -20,7 +20,12 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include <QRegExp>
+#include "qgsgdalutils.h"
+#include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
+#include "qgsfilterlineedit.h"
+
+#include <QComboBox>
 
 QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password, bool expandAuthConfig )
 {
@@ -294,4 +299,78 @@ bool isProtocolCloudType( const QString &protocol )
            protocol == QLatin1String( "vsioss" ) ||
            protocol == QLatin1String( "vsiswift" ) ||
            protocol == QLatin1String( "vsihdfs" ) );
+}
+
+QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QWidget *parent )
+{
+  switch ( option.type )
+  {
+    case QgsGdalOption::Type::Select:
+    {
+      QComboBox *cb = new QComboBox( parent );
+      for ( const QString &val : std::as_const( option.options ) )
+      {
+        cb->addItem( val, val );
+      }
+      cb->setCurrentIndex( 0 );
+      cb->setToolTip( option.description );
+      return cb;
+    }
+
+    case QgsGdalOption::Type::Boolean:
+    {
+      QComboBox *cb = new QComboBox( parent );
+      cb->addItem( QObject::tr( "Yes" ), "YES" );
+      cb->addItem( QObject::tr( "No" ), "NO" );
+      cb->setCurrentIndex( 0 );
+      cb->setToolTip( option.description );
+      return cb;
+    }
+
+    case QgsGdalOption::Type::Text:
+    {
+      QgsFilterLineEdit *res = new QgsFilterLineEdit( parent );
+      res->setToolTip( option.description );
+      res->setShowClearButton( true );
+      return res;
+    }
+
+    case QgsGdalOption::Type::Int:
+    {
+      QgsSpinBox *res = new QgsSpinBox( parent );
+      res->setToolTip( option.description );
+      if ( option.minimum.isValid() )
+        res->setMinimum( option.minimum.toInt() );
+      else
+        res->setMinimum( std::numeric_limits< int>::lowest() + 1 );
+      if ( option.maximum.isValid() )
+        res->setMaximum( option.maximum.toInt() );
+      else
+        res->setMaximum( std::numeric_limits< int>::max() - 1 );
+      if ( option.defaultValue.isValid() )
+        res->setClearValue( option.defaultValue.toInt() );
+      return res;
+    }
+
+    case QgsGdalOption::Type::Double:
+    {
+      QgsDoubleSpinBox *res = new QgsDoubleSpinBox( parent );
+      res->setToolTip( option.description );
+      if ( option.minimum.isValid() )
+        res->setMinimum( option.minimum.toDouble() );
+      else
+        res->setMinimum( std::numeric_limits< double>::lowest() + 1 );
+      if ( option.maximum.isValid() )
+        res->setMaximum( option.maximum.toDouble() );
+      else
+        res->setMaximum( std::numeric_limits< double>::max() - 1 );
+      if ( option.defaultValue.isValid() )
+        res->setClearValue( option.defaultValue.toDouble() );
+      return res;
+    }
+
+    case QgsGdalOption::Type::Invalid:
+      break;
+  }
+  return nullptr;
 }
