@@ -20,7 +20,6 @@
 #include "ogr/qgsogrhelperfunctions.h"
 #include "qgsvariantutils.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 
@@ -347,72 +346,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
         return nullptr;
 
       const QgsGdalOption option = model->option( key );
-      switch ( option.type )
-      {
-        case QgsGdalOption::Type::Select:
-        {
-          QComboBox *cb = new QComboBox( parent );
-          for ( const QString &val : std::as_const( option.options ) )
-          {
-            cb->addItem( val, val );
-          }
-          cb->setCurrentIndex( 0 );
-          cb->setToolTip( option.description );
-          return cb;
-        }
-
-        case QgsGdalOption::Type::Boolean:
-        {
-          QComboBox *cb = new QComboBox( parent );
-          cb->addItem( tr( "Yes" ), "YES" );
-          cb->addItem( tr( "No" ), "NO" );
-          cb->setCurrentIndex( 0 );
-          cb->setToolTip( option.description );
-          return cb;
-        }
-
-        case QgsGdalOption::Type::Text:
-        {
-          QLineEdit *res = new QLineEdit( parent );
-          res->setToolTip( option.description );
-          return res;
-        }
-
-        case QgsGdalOption::Type::Int:
-        {
-          QgsSpinBox *res = new QgsSpinBox( parent );
-          res->setToolTip( option.description );
-          if ( option.minimum.isValid() )
-            res->setMinimum( option.minimum.toInt() );
-          else
-            res->setMinimum( std::numeric_limits< int>::lowest() + 1 );
-          if ( option.maximum.isValid() )
-            res->setMaximum( option.maximum.toInt() );
-          else
-            res->setMaximum( std::numeric_limits< int>::max() - 1 );
-          if ( option.defaultValue.isValid() )
-            res->setClearValue( option.defaultValue.toInt() );
-          return res;
-        }
-
-        case QgsGdalOption::Type::Double:
-        {
-          QgsDoubleSpinBox *res = new QgsDoubleSpinBox( parent );
-          res->setToolTip( option.description );
-          if ( option.minimum.isValid() )
-            res->setMinimum( option.minimum.toDouble() );
-          else
-            res->setMinimum( std::numeric_limits< double>::lowest() + 1 );
-          if ( option.maximum.isValid() )
-            res->setMaximum( option.maximum.toDouble() );
-          else
-            res->setMaximum( std::numeric_limits< double>::max() - 1 );
-          if ( option.defaultValue.isValid() )
-            res->setClearValue( option.defaultValue.toDouble() );
-          return res;
-        }
-      }
-      return nullptr;
+      return QgsGdalGuiUtils::createWidgetForOption( option, parent );
     }
 
     default:
