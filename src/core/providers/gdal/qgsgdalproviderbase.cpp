@@ -26,8 +26,6 @@
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsgdalutils.h"
-#include "qgssettings.h"
-#include "qgsmessagelog.h"
 
 #include <mutex>
 #include <QRegularExpression>
@@ -302,18 +300,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
     const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
     if ( bucketMatch.hasMatch() )
     {
-      const QString bucket = vsiPrefix + bucketMatch.captured( 1 );
-      for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
-      {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
-        VSISetPathSpecificOption( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
-#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 5, 0)
-        VSISetCredential( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
-#else
-        ( void )bucket;
-        QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
-#endif
-      }
+      QgsGdalUtils::applyVsiCredentialOptions( vsiPrefix, bucketMatch.captured( 1 ), credentialOptions );
     }
   }
 
