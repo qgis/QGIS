@@ -3351,6 +3351,52 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         test_table(self.dbconn, 'mls3d', [0, 0, 0, 3, 3, 3])
         test_table(self.dbconn, 'pt4d', [1, 2, 3, 1, 2, 3])
 
+    # See https://github.com/qgis/QGIS/issues/30294
+    def testGeographyExtent(self):
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        # Create a 10 rows table with extent -10 -10 to 10 10
+        conn.executeSql('''
+DROP TABLE IF EXISTS public.test_geog_ext;
+CREATE TABLE public.test_geog_ext (id SERIAL PRIMARY KEY, g geography);
+INSERT INTO public.test_geog_ext(g)
+    SELECT ST_MakePoint(n,n*6)
+    FROM generate_series(-10,10,1) n;
+        ''')
+        realExtent = QgsRectangle(-10, -60, 10, 60)
+
+        uri = QgsDataSourceUri(self.dbconn + ' table="public"."test_geog_ext" (g)')
+
+        # Create layer with computed (not estimated) metadata
+        vlReal = QgsVectorLayer(uri.uri(), 'real', 'postgres')
+        self.assertTrue(vlReal.isValid(), "Could not create test layer from qgis_test.test_geog_ext")
+        self.assertEqual(vlReal.extent(), realExtent)
+
+        # Create layer with estimated metadata
+        vlEstm = QgsVectorLayer(uri.uri() + " estimatedmetadata='true'", 'estimated', 'postgres')
+        self.assertTrue(vlEstm.isValid())
+
+        def test_acceptable_estimated_extent(realExt, estmExt):
+            # 1. test that the estimated extent contains the real one
+            self.assertTrue(estmExt.contains(realExt))
+            # 2. test that the estimated extent is not too different in size
+            self.assertTrue(abs(estmExt.width() - realExt.width()) < 1)
+            self.assertTrue(abs(estmExt.height() - realExt.height()) < 1)
+
+        # No stats
+        test_acceptable_estimated_extent(realExtent, vlEstm.extent())
+
+        # Add stats
+        conn.executeSql('ANALYZE public.test_geog_ext')
+        vlEstm.updateExtents()
+        test_acceptable_estimated_extent(realExtent, vlEstm.extent())
+
+        # Add index
+        conn.executeSql('CREATE INDEX ON public.test_geog_ext using gist (g)')
+        vlEstm.updateExtents()
+        test_acceptable_estimated_extent(realExtent, vlEstm.extent())
+
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):
         # check that primary key creation correctly works
