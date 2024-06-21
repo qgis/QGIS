@@ -25,28 +25,9 @@ class QgsGdalOption;
 #define SIP_NO_FILE
 
 /**
- * CreateDatabaseURI
- * \brief Create database uri from connection parameters
- * \note not available in python bindings
- */
-QString GUI_EXPORT createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig = false );
-
-/**
- * CreateProtocolURI
- * \brief Create protocol uri from connection parameters
- * \note not available in python bindings
- */
-QString GUI_EXPORT createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig = false );
-
-/**
- * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
- */
-bool GUI_EXPORT isProtocolCloudType( const QString &protocol );
-
-/**
- * \ingroup core
- * \class QgsGdalOption
- * \brief Encapsulates the definition of a GDAL configuration option.
+ * \ingroup gui
+ * \class QgsGdalGuiUtils
+ * \brief Utility functions for working with GDAL in GUI classes.
  *
  * \note not available in Python bindings
  * \since QGIS 3.40
@@ -54,6 +35,23 @@ bool GUI_EXPORT isProtocolCloudType( const QString &protocol );
 class GUI_EXPORT QgsGdalGuiUtils
 {
   public:
+
+    /**
+     * Create database uri from connection parameters
+     * \note not available in python bindings
+     */
+    static QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig = false );
+
+    /**
+     * Create protocol uri from connection parameters
+     * \note not available in python bindings
+     */
+    static QString createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig = false );
+
+    /**
+     * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
+     */
+    static bool isProtocolCloudType( const QString &protocol );
 
     /**
      * Creates a new widget for configuration a GDAL \a option.

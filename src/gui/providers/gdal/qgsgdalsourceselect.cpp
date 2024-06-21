@@ -99,7 +99,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
 void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
 {
-  if ( isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
+  if ( QgsGdalGuiUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
   {
     labelProtocolURI->hide();
     protocolURI->hide();
@@ -318,7 +318,7 @@ void QgsGdalSourceSelect::computeDataSources()
   }
   else if ( radioSrcProtocol->isChecked() )
   {
-    bool cloudType = isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
+    bool cloudType = QgsGdalGuiUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
       return;
@@ -344,11 +344,11 @@ void QgsGdalSourceSelect::computeDataSources()
     if ( !credentialOptions.isEmpty() )
       parts.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
     parts.insert( QStringLiteral( "path" ),
-                  createProtocolURI( cmbProtocolTypes->currentData().toString(),
-                                     uri,
-                                     mAuthSettingsProtocol->configId(),
-                                     mAuthSettingsProtocol->username(),
-                                     mAuthSettingsProtocol->password() ) );
+                  QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(),
+                      uri,
+                      mAuthSettingsProtocol->configId(),
+                      mAuthSettingsProtocol->username(),
+                      mAuthSettingsProtocol->password() ) );
     mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
   }
 }
@@ -539,7 +539,7 @@ void QgsGdalSourceSelect::showHelp()
 void QgsGdalSourceSelect::updateProtocolOptions()
 {
   const QString currentProtocol = cmbProtocolTypes->currentData().toString();
-  if ( radioSrcProtocol->isChecked() && isProtocolCloudType( currentProtocol ) )
+  if ( radioSrcProtocol->isChecked() && QgsGdalGuiUtils::isProtocolCloudType( currentProtocol ) )
   {
     mCredentialsWidget->setDriver( currentProtocol );
     mCredentialOptionsGroupBox->setVisible( true );

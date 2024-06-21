@@ -27,7 +27,7 @@
 
 #include <QComboBox>
 
-QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password, bool expandAuthConfig )
+QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password, bool expandAuthConfig )
 {
   QString uri;
 
@@ -223,7 +223,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
 }
 
 
-QString createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
+QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
 {
   QString uri;
   if ( type == QLatin1String( "vsicurl" ) )
@@ -290,7 +290,7 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
   return uri;
 }
 
-bool isProtocolCloudType( const QString &protocol )
+bool QgsGdalGuiUtils::isProtocolCloudType( const QString &protocol )
 {
   return ( protocol == QLatin1String( "vsis3" ) ||
            protocol == QLatin1String( "vsigs" ) ||
