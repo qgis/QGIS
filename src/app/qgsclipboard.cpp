@@ -187,11 +187,14 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
 
           if ( useJSONFromVariant )
           {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
           }
           else
           {
-            value = attributes.at( idx ).toString();
+            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+              value = "";
+            else
+              value = variant.toString();
           }
 
           if ( value.contains( '\n' ) || value.contains( '\t' ) )
@@ -202,11 +205,14 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
           }
           if ( useJSONFromVariant )
           {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
           }
           else
           {
-            value = attributes.at( idx ).toString();
+            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+              value = "";
+            else
+              value = variant.toString();
           }
           value.replace( '\n', QLatin1String( "<br>" ) ).replace( '\t', QLatin1String( "&emsp;" ) );
           htmlFields += QStringLiteral( "<td>%1</td>" ).arg( value );
