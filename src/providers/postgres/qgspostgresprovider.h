@@ -486,7 +486,20 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static int crsToSrid( const QgsCoordinateReferenceSystem &crs,  QgsPostgresConn *conn );
     static QgsCoordinateReferenceSystem sridToCrs( int srsId, QgsPostgresConn *conn );
 
+    /**
+     * Set mLayerExtent by estimation, if possible
+     *
+     * @return whether it was possible to estimate extent.
+     * If false is returned, mLayerExtent is left untouched.
+     */
     bool estimateExtent() const;
+
+    /**
+     * Set mLayerExtent by 3d computation, if possible
+     *
+     * @return whether it was possible to estimate extent.
+     * If false is returned, mLayerExtent is left untouched.
+     */
     bool computeExtent3D() const;
 
 };
