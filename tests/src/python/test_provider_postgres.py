@@ -2511,6 +2511,16 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             vl
         ]
 
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 2)
+        for i, r in enumerate(relations):
+            self.assertEqual(r.referencedLayer(), vls[i])
+        self.assertEqual(len(relations[0].fieldPairs()), 1)
+        self.assertEqual(len(relations[1].fieldPairs()), 1)
+
     def testValidLayerDiscoverRelationsComposite(self):
         """
         Test implicit relations that can be discovered between tables, based on declared composite foreign keys.
