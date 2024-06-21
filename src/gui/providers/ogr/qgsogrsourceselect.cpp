@@ -284,7 +284,7 @@ void QgsOgrSourceSelect::setSelectedConnection()
 
 void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
 {
-  if ( isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
+  if ( QgsGdalGuiUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
   {
     labelProtocolURI->hide();
     protocolURI->hide();
@@ -376,7 +376,7 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
       if ( !openOptions.isEmpty() )
         parts.insert( QStringLiteral( "openOptions" ), openOptions );
       parts.insert( QStringLiteral( "path" ),
-                    createDatabaseURI(
+                    QgsGdalGuiUtils::createDatabaseURI(
                       cmbDatabaseTypes->currentText(),
                       host,
                       database,
@@ -390,7 +390,7 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
   }
   else if ( radioSrcProtocol->isChecked() )
   {
-    bool cloudType = isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
+    bool cloudType = QgsGdalGuiUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
       if ( interactive )
@@ -426,11 +426,11 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
     if ( !openOptions.isEmpty() )
       parts.insert( QStringLiteral( "openOptions" ), openOptions );
     parts.insert( QStringLiteral( "path" ),
-                  createProtocolURI( cmbProtocolTypes->currentData().toString(),
-                                     uri,
-                                     mAuthSettingsProtocol->configId(),
-                                     mAuthSettingsProtocol->username(),
-                                     mAuthSettingsProtocol->password() ) );
+                  QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(),
+                      uri,
+                      mAuthSettingsProtocol->configId(),
+                      mAuthSettingsProtocol->username(),
+                      mAuthSettingsProtocol->password() ) );
     mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
   }
   else if ( radioSrcFile->isChecked() || radioSrcOgcApi->isChecked() )
