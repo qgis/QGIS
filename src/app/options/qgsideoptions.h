@@ -39,7 +39,7 @@ class QgsIdeOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsIdeOptio
 
     void apply() override;
 
-private slots:
+  private slots:
 
     void generateGitHubToken();
 
@@ -59,6 +59,5 @@ class QgsIdeOptionsFactory : public QgsOptionsWidgetFactory
     QString pagePositionHint() const override;
 
 };
-
 
 #endif // QGSIDEOPTIONS_H

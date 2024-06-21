@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>QgsIdeOptionsWidgetBase</class>
  <widget class="QWidget" name="QgsIdeOptionsWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>235</width>
+    <height>117</height>
+   </rect>
+  </property>
   <layout class="QGridLayout" name="gridLayout_16">
    <property name="leftMargin">
     <number>0</number>
@@ -16,7 +24,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -28,8 +36,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>500</width>
-        <height>432</height>
+        <width>235</width>
+        <height>117</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -87,6 +95,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mTokenLineEdit</tabstop>
