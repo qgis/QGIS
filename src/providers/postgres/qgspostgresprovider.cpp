@@ -3890,7 +3890,7 @@ bool QgsPostgresProvider::estimateExtent() const
   // Cannot estimate extent of a query
   if ( mIsQuery )
   {
-    QgsDebugMsgLevel( tr( "Estimating extent of queries is not supported" ), 2 );
+    QgsDebugMsgLevel( "Estimating extent of queries is not supported", 2 );
     return false;
   }
 
@@ -3903,7 +3903,7 @@ bool QgsPostgresProvider::estimateExtent() const
     // for geography type, https://trac.osgeo.org/postgis/ticket/5734
     if ( vmaj < 3 || ( vmaj == 3 && vmin < 5 ) )
     {
-      QgsDebugMsgLevel( tr( "Estimating extent of geography columns was not supported by PostGIS %1.%2 (3.5+ required)" ).arg( vmaj, vmin ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Estimating extent of geography columns was not supported by PostGIS %1.%2 (3.5+ required)" ).arg( vmaj, vmin ), 2 );
       return false;
     }
   }
