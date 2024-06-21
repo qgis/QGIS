@@ -35,7 +35,7 @@ QgsIdeOptionsWidget::QgsIdeOptionsWidget( QWidget *parent )
   connect( mGenerateTokenButton, &QPushButton::clicked, this, &QgsIdeOptionsWidget::generateGitHubToken );
 
   QgsSettings settings;
-  mTokenLineEdit->setText(settings.value("pythonConsole/accessTokenGithub", QString() ).toString() );
+  mTokenLineEdit->setText( settings.value( "pythonConsole/accessTokenGithub", QString() ).toString() );
 }
 
 QgsIdeOptionsWidget::~QgsIdeOptionsWidget() = default;
@@ -47,20 +47,21 @@ QString QgsIdeOptionsWidget::helpKey() const
 
 void QgsIdeOptionsWidget::apply()
 {
-    QgsSettings settings;
-    settings.setValue("pythonConsole/accessTokenGithub", mTokenLineEdit->text() );
+  QgsSettings settings;
+  settings.setValue( "pythonConsole/accessTokenGithub", mTokenLineEdit->text() );
 }
 
 void QgsIdeOptionsWidget::generateGitHubToken()
 {
-  QDesktopServices::openUrl(QUrl(
-    QStringLiteral("https://github.com/settings/tokens/new?description=%1&scopes=gist").arg(tr("QGIS Code Editor"))
-  ));
+  QDesktopServices::openUrl( QUrl(
+                               QStringLiteral( "https://github.com/settings/tokens/new?description=%1&scopes=gist" ).arg( tr( "QGIS Code Editor" ) )
+                             ) );
 }
 
 //
 // QgsIdeOptionsFactory
 //
+
 QgsIdeOptionsFactory::QgsIdeOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "IDE" ), QIcon(), QStringLiteral( "ide" ) )
 {
@@ -79,5 +80,5 @@ QgsOptionsPageWidget *QgsIdeOptionsFactory::createWidget( QWidget *parent ) cons
 
 QString QgsIdeOptionsFactory::pagePositionHint() const
 {
-    return QString();
+  return QString();
 }
