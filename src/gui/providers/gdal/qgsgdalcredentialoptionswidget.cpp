@@ -324,9 +324,16 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
     {
       const QgsGdalCredentialOptionsModel *model = qgis::down_cast< const QgsGdalCredentialOptionsModel * >( index.model() );
       QComboBox *combo = new QComboBox( parent );
-      if ( !model->availableKeys().isEmpty() )
+      const QStringList availableKeys = model->availableKeys();
+      for ( const QString &key : availableKeys )
       {
-        combo->addItems( model->availableKeys() );
+        if ( key == QLatin1String( "GDAL_HTTP_MAX_RETRY" ) && combo->count() > 0 )
+        {
+          // add separator before generic settings
+          combo->insertSeparator( combo->count() );
+        }
+
+        combo->addItem( key );
       }
       return combo;
     }
