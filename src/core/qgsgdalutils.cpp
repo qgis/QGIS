@@ -760,6 +760,52 @@ QStringList QgsGdalUtils::vsiArchivePrefixes()
   return res;
 }
 
+QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSystems()
+{
+  // get supported extensions
+  static std::once_flag initialized;
+  static QList<QgsGdalUtils::VsiNetworkFileSystemDetails> VSI_FILE_SYSTEM_DETAILS;
+  std::call_once( initialized, [ = ]
+  {
+    if ( char **papszPrefixes = VSIGetFileSystemsPrefixes() )
+    {
+      for ( int i = 0; papszPrefixes[i]; i++ )
+      {
+        QgsGdalUtils::VsiNetworkFileSystemDetails details;
+        details.identifier = QString( papszPrefixes[i] );
+        if ( details.identifier.startsWith( '/' ) )
+          details.identifier = details.identifier.mid( 1 );
+        if ( details.identifier.endsWith( '/' ) )
+          details.identifier.chop( 1 );
+
+        if ( details.identifier == QStringLiteral( "vsicurl" ) )
+          details.name = QObject::tr( "HTTP/HTTPS/FTP" );
+        else if ( details.identifier == QStringLiteral( "vsis3" ) )
+          details.name = QObject::tr( "AWS S3" );
+        else if ( details.identifier == QStringLiteral( "vsigs" ) )
+          details.name = QObject::tr( "Google Cloud Storage" );
+        else if ( details.identifier == QStringLiteral( "vsiaz" ) )
+          details.name = QObject::tr( "Microsoft Azure Blob" );
+        else if ( details.identifier == QStringLiteral( "vsiadls" ) )
+          details.name = QObject::tr( "Microsoft Azure Data Lake Storage" );
+        else if ( details.identifier == QStringLiteral( "vsioss" ) )
+          details.name = QObject::tr( "Alibaba Cloud OSS" );
+        else if ( details.identifier == QStringLiteral( "vsiswift" ) )
+          details.name = QObject::tr( "OpenStack Swift Object Storage" );
+        else if ( details.identifier == QStringLiteral( "vsihdfs" ) )
+          details.name = QObject::tr( "Hadoop File System" );
+        else
+          continue;
+        VSI_FILE_SYSTEM_DETAILS.append( details );
+      }
+
+      CSLDestroy( papszPrefixes );
+    }
+  } );
+
+  return VSI_FILE_SYSTEM_DETAILS;
+}
+
 bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
 {
   return vsiArchivePrefixes().contains( prefix );

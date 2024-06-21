@@ -236,6 +236,27 @@ class CORE_EXPORT QgsGdalUtils
     static QStringList vsiArchivePrefixes();
 
     /**
+     * Encapsulates details for a GDAL VSI network file system.
+     *
+     * \since QGIS 3.40
+     */
+    struct VsiNetworkFileSystemDetails
+    {
+      //! VSI driver identifier, eg "vsis3"
+      QString identifier;
+
+      //! Translated, user-friendly name.
+      QString name;
+    };
+
+    /**
+     * Returns a list of available GDAL VSI network file systems.
+     *
+     * \since QGIS 3.40
+     */
+    static QList< VsiNetworkFileSystemDetails > vsiNetworkFileSystems();
+
+    /**
      * Returns TRUE if \a prefix is a supported archive style container prefix (e.g. "/vsizip/").
      *
      * \since QGIS 3.32
