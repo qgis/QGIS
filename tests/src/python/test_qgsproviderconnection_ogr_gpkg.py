@@ -124,7 +124,10 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateVectorTable))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.DropVectorTable))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameVectorTable))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
+        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 10, 0):
+            self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
+        else:
+            self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
 
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
         typ = QgsWkbTypes.Type.LineString
@@ -369,6 +372,21 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         conn = md.createConnection(f'{TEST_DATA_DIR}/provider/bug_56203.gpkg', {})
         res = conn.searchLayerMetadata(QgsMetadataSearchContext())
         self.assertTrue(res[0].geographicExtent().isEmpty())
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 10, 0), "GDAL 3.10 required")
+    def test_rename_raster_layer(self):
+        """Test renaming a raster layer"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        tables = conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Raster)
+        osm = tables[0]
+        self.assertEqual(osm.tableName(), 'osm')
+        conn.renameRasterTable('', 'osm', 'osm_new')
+        tables = conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Raster)
+        osm = tables[0]
+        self.assertEqual(osm.tableName(), 'osm_new')
 
 
 if __name__ == '__main__':
