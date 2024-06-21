@@ -3933,6 +3933,9 @@ bool QgsPostgresProvider::estimateExtent() const
   if ( result.PQgetisnull( 0, 0 ) ) return false;
 
   QString box2dString = result.PQgetvalue( 0, 0 );
+
+  QgsDebugMsgLevel( QStringLiteral( "Got estimated extent (%1) using: %2" ).arg( box2dString ).arg( sql ), 2 );
+
   const thread_local QRegularExpression rx2d( "\\((.+) (.+),(.+) (.+)\\)" );
   const QRegularExpressionMatch match = rx2d.match( box2dString );
   if ( ! match.hasMatch() )
