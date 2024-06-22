@@ -342,7 +342,7 @@ if(WITH_CORE)
   endif()
 
   find_package(FLEX 2.6 REQUIRED)
-  find_package(BISON REQUIRED)
+  find_package(BISON 2.4 REQUIRED)
 
   #############################################################
   # search for dependencies
