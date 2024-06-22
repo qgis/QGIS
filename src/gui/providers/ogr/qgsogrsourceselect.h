@@ -31,7 +31,6 @@
 #include <vector>
 
 #include "ui_qgsogrsourceselectbase.h"
-#include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
@@ -39,6 +38,8 @@
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
+
+class QgsGdalCredentialOptionsWidget;
 
 /**
  *  Class for a  dialog to select the type and source for ogr vectors, supports
@@ -110,6 +111,8 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void cmbProtocolTypes_currentIndexChanged( const QString &text );
     void showHelp();
     bool configureFromUri( const QString &uri ) override;
+    void updateProtocolOptions();
+    void credentialOptionsChanged();
 
   private:
 
@@ -117,9 +120,10 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void clearOpenOptions();
     void fillOpenOptions();
     std::vector<QWidget *> mOpenOptionsWidgets;
+    QgsGdalCredentialOptionsWidget *mCredentialsWidget = nullptr;
     bool mIsOgcApi = false;
+    QVariantMap mCredentialOptions;
     QString mVectorPath;
-
 
 };
 
