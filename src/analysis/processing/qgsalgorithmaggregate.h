@@ -41,6 +41,7 @@ class QgsAggregateAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsAggregateAlgorithm *createInstance() const override SIP_FACTORY;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
@@ -48,8 +49,6 @@ class QgsAggregateAlgorithm : public QgsProcessingAlgorithm
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   private:
 

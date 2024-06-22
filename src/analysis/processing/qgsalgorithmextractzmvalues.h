@@ -39,6 +39,7 @@ class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorith
     QString group() const override;
     QString groupId() const override;
     QList<int> inputLayerTypes() const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -49,7 +50,6 @@ class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorith
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 

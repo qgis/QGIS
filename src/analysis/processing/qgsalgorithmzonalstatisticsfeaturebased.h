@@ -41,7 +41,7 @@ class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBased
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
-
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsZonalStatisticsFeatureBasedAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -52,7 +52,6 @@ class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBased
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   private:
     std::unique_ptr< QgsRasterInterface > mRaster;
