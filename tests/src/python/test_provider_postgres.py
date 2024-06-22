@@ -115,6 +115,16 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         cur.close()
         self.con.commit()
 
+    def assertAcceptableEstimatedExtent(self, realExt, estmExt, msg):
+        toleratedDrift = 1
+        # 1. test that the estimated extent contains the real one
+        self.assertTrue(estmExt.contains(realExt),
+                        "Estimated extent {} does not contain real extent {}"
+                        .format(estmExt, realExt))
+        # 2. test that the estimated extent is not too different in size
+        self.assertAlmostEqual(estmExt.width(), realExt.width(), toleratedDrift, msg)
+        self.assertAlmostEqual(estmExt.height(), realExt.height(), toleratedDrift, msg)
+
     # Create instances of this class for scoped backups,
     # example:
     #
@@ -3316,14 +3326,41 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         md = QgsProviderRegistry.instance().providerMetadata("postgres")
         conn = md.createConnection(self.dbconn, {})
-        conn.executeSql('DROP TABLE IF EXISTS public.test_extent')
-        conn.executeSql('CREATE TABLE qgis_test.test_extent (id SERIAL PRIMARY KEY, name VARCHAR(64))')
-        conn.executeSql("SELECT AddGeometryColumn('qgis_test', 'test_extent', 'geom', 4326, 'POINT', 2 )")
+        conn.executeSql('''
+DROP TABLE IF EXISTS public.test_ext;
+CREATE TABLE public.test_ext (id SERIAL PRIMARY KEY, g geometry);
+INSERT INTO public.test_ext(g)
+    SELECT ST_MakePoint(n,n*7)
+    FROM generate_series(2,10,1) n;
+        ''')
+        realExtent = QgsRectangle(2, 14, 10, 70)
 
-        uri = QgsDataSourceUri(self.dbconn +
-                               ' sslmode=disable  key=\'id\'srid=4326 type=POINT table="qgis_test"."test_extent" (geom) sql=')
-        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
-        self.assertTrue(vl.isValid())
+        uri = QgsDataSourceUri(self.dbconn + ' table="public"."test_ext" (g)')
+
+        # Create layer with computed (not estimated) metadata
+        vlReal = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vlReal.isValid())
+        self.assertEqual(vlReal.extent(), realExtent)
+
+        # Create layer with estimated metadata
+        vlEstm = QgsVectorLayer(uri.uri() + " estimatedmetadata='true'", 'estimated', 'postgres')
+        self.assertTrue(vlEstm.isValid())
+
+        # No stats
+        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with no stats')
+
+        # Add stats
+        conn.executeSql('ANALYZE public.test_ext')
+        vlEstm.updateExtents()
+        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with stats')
+
+        # Add index
+        conn.executeSql('CREATE INDEX ON public.test_ext using gist (g)')
+        vlEstm.updateExtents()
+        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with index')
+
+        # Cleanup - TODO: only clean if test passed ?
+        conn.executeSql('DROP TABLE IF EXISTS public.test_ext')
 
     def testExtent3D(self):
         def test_table(dbconn, table_name, wkt):
@@ -3377,31 +3414,18 @@ INSERT INTO public.test_geog_ext(g)
         vlEstm = QgsVectorLayer(uri.uri() + " estimatedmetadata='true'", 'estimated', 'postgres')
         self.assertTrue(vlEstm.isValid())
 
-        def test_acceptable_estimated_extent(realExt, estmExt, msg):
-            toleratedDrift = 1
-            # 1. test that the estimated extent contains the real one
-            self.assertTrue(estmExt.contains(realExt),
-                            "Estimated extent {} does not contain real extent {}"
-                            .format(estmExt, realExt))
-            # 2. test that the estimated extent is not too different in size
-            self.assertAlmostEqual(estmExt.width(), realExt.width(), toleratedDrift, msg)
-            self.assertAlmostEqual(estmExt.height(), realExt.height(), toleratedDrift, msg)
-
         # No stats
-        test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with no stats')
+        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with no stats')
 
         # Add stats
         conn.executeSql('ANALYZE public.test_geog_ext')
         vlEstm.updateExtents()
-        test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with stats')
+        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with stats')
 
         # Add index
         conn.executeSql('CREATE INDEX ON public.test_geog_ext using gist (g)')
         vlEstm.updateExtents()
-        test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with index')
-
-        # Following line is to test the error message upon failure
-        # test_acceptable_estimated_extent(QgsRectangle(0, 4, 5, 3), vlEstm.extent())
+        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with index')
 
         # Cleanup - TODO: only clean if test passed ?
         conn.executeSql('DROP TABLE public.test_geog_ext')
