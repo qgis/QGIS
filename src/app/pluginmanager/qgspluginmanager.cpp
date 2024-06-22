@@ -33,6 +33,7 @@
 #include <QRegularExpression>
 #include <QUrl>
 #include <QCheckBox>
+#include <QPalette>
 
 #include "qgsmessagelog.h"
 
@@ -699,7 +700,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   QString html = "<style>"
                  "  body {"
-                 "    background-color:white;"
+                 "    color:" + QPalette().color( QPalette::ColorRole::Text ).name() + ";"
                  "  }"
                  "  body, table {"
                  "    padding:0px;"
@@ -1368,7 +1369,7 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
-                     "      background-color: white;"
+                     "      color: " + QPalette().color( QPalette::ColorRole::Text ).name() + ";"
                      "      margin: 2px;"
                      "      font-family: Verdana, Sans-serif;"
                      "      font-size: 10pt;"
