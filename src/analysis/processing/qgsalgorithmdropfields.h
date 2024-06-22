@@ -44,6 +44,7 @@ class QgsDropTableFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     QgsDropTableFieldsAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -54,7 +55,6 @@ class QgsDropTableFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   private:
 

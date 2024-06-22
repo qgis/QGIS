@@ -450,6 +450,16 @@ Returns a JSON serializable variant map containing the specified ``parameters`` 
 Associates this algorithm with its provider. No transfer of ownership is involved.
 %End
 
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation returns ``False``.
+
+:return: ``True`` if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
+%End
+
   protected:
 
     virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory,VirtualErrorHandler=processing_exception_handler/;
@@ -1099,16 +1109,6 @@ should correspond to the sink parameter name.
 .. versionadded:: 3.22
 %End
 
-    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
-%Docstring
-Checks whether this algorithm supports in-place editing on the given ``layer``
-Default implementation returns ``False``.
-
-:return: ``True`` if the algorithm supports in-place editing
-
-.. versionadded:: 3.4
-%End
-
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
@@ -1172,6 +1172,18 @@ Algorithms can throw a :py:class:`QgsProcessingException` if a fatal error occur
 prevent the algorithm execution from continuing. This can be annoying for users though as it
 can break valid model execution - so use with extreme caution, and consider using
 ``feedback`` to instead report non-fatal processing failures for features instead.
+%End
+
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation for feature based algorithms run some basic compatibility
+checks based on the geometry type of the layer.
+
+:return: ``True`` if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
 %End
 
   protected:
@@ -1281,18 +1293,6 @@ called from a subclasses' :py:func:`~QgsProcessingFeatureBasedAlgorithm.processF
 %Docstring
 Returns the feature request used for fetching features to process from the
 source layer. The default implementation requests all attributes and geometry.
-%End
-
-    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
-
-%Docstring
-Checks whether this algorithm supports in-place editing on the given ``layer``
-Default implementation for feature based algorithms run some basic compatibility
-checks based on the geometry type of the layer.
-
-:return: ``True`` if the algorithm supports in-place editing
-
-.. versionadded:: 3.4
 %End
 
     void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
