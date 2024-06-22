@@ -77,12 +77,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *shadowMapTexture() { return mShadowMapTexture; }
 
     /**
-     * Returns ambient occlusion factor values texture
-     * \since QGIS 3.28
-     */
-    Qt3DRender::QTexture2D *ambientOcclusionFactorMap() { return mAmbientOcclusionRenderTexture; }
-
-    /**
      * Returns blurred ambient occlusion factor values texture
      * \since QGIS 3.28
      */
