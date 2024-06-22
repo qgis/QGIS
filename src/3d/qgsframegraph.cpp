@@ -102,6 +102,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   //  +-----------------+
 
   mMainCameraSelector = new Qt3DRender::QCameraSelector;
+  mMainCameraSelector->setObjectName( "Forward render pass CameraSelector" );
   mMainCameraSelector->setCamera( mMainCamera );
 
   mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
@@ -225,6 +226,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructShadowRenderPass()
 {
   mLightCameraSelectorShadowPass = new Qt3DRender::QCameraSelector;
+  mLightCameraSelectorShadowPass->setObjectName( "Shadow render pass CameraSelector" );
   mLightCameraSelectorShadowPass->setCamera( mLightCamera );
 
   mShadowSceneEntitiesFilter = new Qt3DRender::QLayerFilter( mLightCameraSelectorShadowPass );
@@ -274,6 +276,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructShadowRenderPass()
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 {
   mPostProcessingCameraSelector = new Qt3DRender::QCameraSelector;
+  mPostProcessingCameraSelector->setObjectName( "Postprocessing pass CameraSelector" );
   mPostProcessingCameraSelector->setCamera( mLightCamera );
 
   mPostprocessPassLayerFilter = new Qt3DRender::QLayerFilter( mPostProcessingCameraSelector );
@@ -329,6 +332,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass()
 {
   mAmbientOcclusionRenderCameraSelector = new Qt3DRender::QCameraSelector;
+  mAmbientOcclusionRenderCameraSelector->setObjectName( "AmbientOcclusion render pass CameraSelector" );
   mAmbientOcclusionRenderCameraSelector->setCamera( mMainCamera );
 
   mAmbientOcclusionRenderStateSet = new Qt3DRender::QRenderStateSet( mAmbientOcclusionRenderCameraSelector );
@@ -375,6 +379,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass(
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionBlurPass()
 {
   mAmbientOcclusionBlurCameraSelector = new Qt3DRender::QCameraSelector;
+  mAmbientOcclusionBlurCameraSelector->setObjectName( "AmbientOcclusion blur pass CameraSelector" );
   mAmbientOcclusionBlurCameraSelector->setCamera( mMainCamera );
 
   mAmbientOcclusionBlurStateSet = new Qt3DRender::QRenderStateSet( mAmbientOcclusionBlurCameraSelector );
@@ -422,6 +427,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionBlurPass()
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
 {
   mRubberBandsCameraSelector = new Qt3DRender::QCameraSelector;
+  mRubberBandsCameraSelector->setObjectName( "RubberBands Pass CameraSelector" );
   mRubberBandsCameraSelector->setCamera( mMainCamera );
 
   mRubberBandsLayerFilter = new Qt3DRender::QLayerFilter( mRubberBandsCameraSelector );
@@ -448,6 +454,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructDepthRenderPass()
   // depth buffer render to copy pass
 
   mDepthRenderCameraSelector = new Qt3DRender::QCameraSelector;
+  mDepthRenderCameraSelector->setObjectName( "Depth render view CameraSelector" );
   mDepthRenderCameraSelector->setCamera( mMainCamera );
 
   mDepthRenderStateSet = new Qt3DRender::QRenderStateSet( mDepthRenderCameraSelector );
