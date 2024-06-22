@@ -284,6 +284,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
   mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
 
   mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mPostprocessClearBuffers );
+  mRenderCaptureTargetSelector->setObjectName( "Postprocessing pass RenderTargetSelector" );
 
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( mRenderCaptureTargetSelector );
 
@@ -300,6 +301,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
   mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
   mRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mRenderCaptureColorTexture->setObjectName( "PostProcessingPass::ColorTarget" );
 
   // Hook the texture up to our output, and the output up to this object.
   colorOutput->setTexture( mRenderCaptureColorTexture );
@@ -315,6 +317,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
   mRenderCaptureDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mRenderCaptureDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
   mRenderCaptureDepthTexture->setComparisonMode( Qt3DRender::QAbstractTexture::CompareRefToTexture );
+  mRenderCaptureDepthTexture->setObjectName( "PostProcessingPass::DepthTarget" );
 
   depthOutput->setTexture( mRenderCaptureDepthTexture );
   renderTarget->addOutput( depthOutput );
@@ -325,6 +328,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 
   mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
   mPostprocessPassLayerFilter->addLayer( mPostprocessingEntity->layer() );
+  mPostprocessingEntity->setObjectName( "PostProcessingPassEntity" );
 
   return mPostProcessingCameraSelector;
 }
@@ -670,6 +674,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   // post process
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mMainViewPort );
+  postprocessingPass->setObjectName( "PostProcessingPass" );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
   mRubberBandsRootEntity->addComponent( mRubberBandsLayer );
