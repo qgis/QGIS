@@ -3396,15 +3396,15 @@ INSERT INTO public.test_geog_ext(g)
         test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with stats')
 
         # Add index
-        conn.executeSql('CREATE INDEX ON public.test_geog_ext using gist (g)', 'with index')
+        conn.executeSql('CREATE INDEX ON public.test_geog_ext using gist (g)')
         vlEstm.updateExtents()
-        test_acceptable_estimated_extent(realExtent, vlEstm.extent())
+        test_acceptable_estimated_extent(realExtent, vlEstm.extent(), 'with index')
 
         # Following line is to test the error message upon failure
-        #test_acceptable_estimated_extent(QgsRectangle(0,4,5,3), vlEstm.extent())
+        # test_acceptable_estimated_extent(QgsRectangle(0, 4, 5, 3), vlEstm.extent())
 
         # Cleanup - TODO: only clean if test passed ?
-        #conn.executeSql('DROP TABLE public.test_geog_ext')
+        conn.executeSql('DROP TABLE public.test_geog_ext')
 
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):
