@@ -290,17 +290,6 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
   return uri;
 }
 
-bool QgsGdalGuiUtils::isProtocolCloudType( const QString &protocol )
-{
-  return ( protocol == QLatin1String( "vsis3" ) ||
-           protocol == QLatin1String( "vsigs" ) ||
-           protocol == QLatin1String( "vsiaz" ) ||
-           protocol == QLatin1String( "vsiadls" ) ||
-           protocol == QLatin1String( "vsioss" ) ||
-           protocol == QLatin1String( "vsiswift" ) ||
-           protocol == QLatin1String( "vsihdfs" ) );
-}
-
 QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QWidget *parent, bool includeDefaultChoices )
 {
   switch ( option.type )

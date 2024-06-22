@@ -965,6 +965,23 @@ bool QgsGdalUtils::isVsiArchiveFileExtension( const QString &extension )
   return vsiArchiveFileExtensions().contains( extWithDot.toLower() );
 }
 
+bool QgsGdalUtils::isProtocolCloudType( const QString &protocol )
+{
+  QString vsiPrefix = protocol;
+  if ( vsiPrefix.startsWith( '/' ) )
+    vsiPrefix = vsiPrefix.mid( 1 );
+  if ( vsiPrefix.endsWith( '/' ) )
+    vsiPrefix.chop( 1 );
+
+  return ( vsiPrefix == QLatin1String( "vsis3" ) ||
+           vsiPrefix == QLatin1String( "vsigs" ) ||
+           vsiPrefix == QLatin1String( "vsiaz" ) ||
+           vsiPrefix == QLatin1String( "vsiadls" ) ||
+           vsiPrefix == QLatin1String( "vsioss" ) ||
+           vsiPrefix == QLatin1String( "vsiswift" ) ||
+           vsiPrefix == QLatin1String( "vsihdfs" ) );
+}
+
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type )
 {
   CPLPushErrorHandler( CPLQuietErrorHandler );
