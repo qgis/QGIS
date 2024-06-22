@@ -461,6 +461,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     void setProvider( QgsProcessingProvider *provider ) SIP_HOLDGIL;
 
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation returns FALSE.
+     *
+     * \return TRUE if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
   protected:
 
     /**
@@ -1082,15 +1091,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
 
-    /**
-     * Checks whether this algorithm supports in-place editing on the given \a layer
-     * Default implementation returns FALSE.
-     *
-     * \return TRUE if the algorithm supports in-place editing
-     * \since QGIS 3.4
-     */
-    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
-
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
@@ -1174,6 +1174,16 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * \a feedback to instead report non-fatal processing failures for features instead.
      */
     virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation for feature based algorithms run some basic compatibility
+     * checks based on the geometry type of the layer.
+     *
+     * \return TRUE if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -1281,16 +1291,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * source layer. The default implementation requests all attributes and geometry.
      */
     virtual QgsFeatureRequest request() const;
-
-    /**
-     * Checks whether this algorithm supports in-place editing on the given \a layer
-     * Default implementation for feature based algorithms run some basic compatibility
-     * checks based on the geometry type of the layer.
-     *
-     * \return TRUE if the algorithm supports in-place editing
-     * \since QGIS 3.4
-     */
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
     /**
      * Read the source from \a parameters and \a context and set it
