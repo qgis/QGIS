@@ -297,8 +297,11 @@ class TEST_EXPORT QgsTest : public QObject
      */
     bool imageCheck( const char *file, const char *function, int line, const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
     {
+      if ( image.isNull() )
+        return false;
       const QString renderedFileName = QDir::tempPath() + '/' + name + ".png";
-      image.save( renderedFileName );
+      if ( !image.save( renderedFileName ) )
+        return false;
 
       return imageCheck( file, function, line, name, referenceImage, renderedFileName, controlName, allowedMismatch, sizeTolerance, colorTolerance );
     }
