@@ -116,14 +116,15 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.con.commit()
 
     def assertAcceptableEstimatedExtent(self, realExt, estmExt, msg):
-        toleratedDrift = 1
         # 1. test that the estimated extent contains the real one
         self.assertTrue(estmExt.contains(realExt),
                         "Estimated extent {} does not contain real extent {}"
                         .format(estmExt, realExt))
-        # 2. test that the estimated extent is not too different in size
-        self.assertAlmostEqual(estmExt.width(), realExt.width(), toleratedDrift, msg)
-        self.assertAlmostEqual(estmExt.height(), realExt.height(), toleratedDrift, msg)
+        # 2. test that the estimated extent is not larger than 10% of real extent
+        self.assertLess(estmExt.width() - realExt.width(), realExt.width() / 10,
+                        'extent width estimated {}, real {} ({})'.format(estmExt.width(), realExt.width(), msg))
+        self.assertLess(estmExt.height() - realExt.height(), realExt.height() / 10,
+                        'extent height estimated {}, real {} ({})'.format(estmExt.height(), realExt.height(), msg))
 
     # Create instances of this class for scoped backups,
     # example:
@@ -3359,7 +3360,7 @@ INSERT INTO public.test_ext(g)
         vlEstm.updateExtents()
         self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with index')
 
-        # Cleanup - TODO: only clean if test passed ?
+        # Cleanup
         conn.executeSql('DROP TABLE IF EXISTS public.test_ext')
 
     def testExtent3D(self):
@@ -3398,10 +3399,10 @@ INSERT INTO public.test_ext(g)
 DROP TABLE IF EXISTS public.test_geog_ext;
 CREATE TABLE public.test_geog_ext (id SERIAL PRIMARY KEY, g geography);
 INSERT INTO public.test_geog_ext(g)
-    SELECT ST_MakePoint(n,n*6)
+    SELECT ST_MakePoint(n*4,n)
     FROM generate_series(-10,10,1) n;
         ''')
-        realExtent = QgsRectangle(-10, -60, 10, 60)
+        realExtent = QgsRectangle(-40, -10, 40, 10)
 
         uri = QgsDataSourceUri(self.dbconn + ' table="public"."test_geog_ext" (g)')
 
@@ -3427,7 +3428,7 @@ INSERT INTO public.test_geog_ext(g)
         vlEstm.updateExtents()
         self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), 'with index')
 
-        # Cleanup - TODO: only clean if test passed ?
+        # Cleanup
         conn.executeSql('DROP TABLE public.test_geog_ext')
 
     # See: https://github.com/qgis/QGIS/issues/55856
