@@ -24,7 +24,6 @@
 #include <QInputDialog>
 #include <QTextCodec>
 
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgssettings.h"
@@ -35,6 +34,8 @@
 #include "qgsgdalutils.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgsgdalcredentialoptionswidget.h"
+#include "qgshelp.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -108,8 +109,6 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
 
-  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
-
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   mFileWidget->setFilter( mVectorFileFilter );
@@ -146,6 +145,12 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mAuthSettingsProtocol->setDataprovider( QStringLiteral( "ogr" ) );
 
   mOpenOptionsGroupBox->setVisible( false );
+
+  mCredentialsWidget = new QgsGdalCredentialOptionsWidget();
+  mCredentialOptionsLayout->addWidget( mCredentialsWidget );
+  mCredentialOptionsGroupBox->setVisible( false );
+
+  connect( mCredentialsWidget, &QgsGdalCredentialOptionsWidget::optionsChanged, this, &QgsOgrSourceSelect::credentialOptionsChanged );
 }
 
 QStringList QgsOgrSourceSelect::dataSources()
@@ -295,7 +300,6 @@ void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
     mBucket->show();
     labelKey->show();
     mKey->show();
-    mAuthWarning->show();
   }
   else
   {
@@ -306,7 +310,6 @@ void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
     mBucket->hide();
     labelKey->hide();
     mKey->hide();
-    mAuthWarning->hide();
   }
 }
 
@@ -346,6 +349,8 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
       openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName(), value );
     }
   }
+
+  const QVariantMap credentialOptions = !mCredentialOptionsGroupBox->isHidden() ? mCredentialOptions : QVariantMap();
 
   if ( radioSrcDatabase->isChecked() )
   {
@@ -441,6 +446,8 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
     QVariantMap parts;
     if ( !openOptions.isEmpty() )
       parts.insert( QStringLiteral( "openOptions" ), openOptions );
+    if ( !credentialOptions.isEmpty() )
+      parts.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
     parts.insert( QStringLiteral( "path" ),
                   QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(),
                       uri,
@@ -529,6 +536,7 @@ void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     clearOpenOptions();
+    updateProtocolOptions();
 
     mFileWidget->setDialogTitle( tr( "Open an OGR Supported Vector Layer" ) );
     mFileWidget->setFilter( mVectorFileFilter );
@@ -551,6 +559,7 @@ void QgsOgrSourceSelect::radioSrcOgcApi_toggled( bool checked )
     mVectorPath = mFileWidget->filePath();
     emit enableButtons( ! mVectorPath.isEmpty() );
     fillOpenOptions();
+    updateProtocolOptions();
   }
   else
   {
@@ -568,6 +577,7 @@ void QgsOgrSourceSelect::radioSrcDirectory_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     clearOpenOptions();
+    updateProtocolOptions();
 
     mFileWidget->setDialogTitle( tr( "Open Directory" ) );
     mFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
@@ -589,6 +599,7 @@ void QgsOgrSourceSelect::radioSrcDatabase_toggled( bool checked )
     dbGroupBox->show();
     layout()->blockSignals( false );
     clearOpenOptions();
+    updateProtocolOptions();
 
     setConnectionTypeListPosition();
     populateConnectionList();
@@ -607,6 +618,7 @@ void QgsOgrSourceSelect::radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     clearOpenOptions();
+    updateProtocolOptions();
 
     mDataSourceType = QStringLiteral( "protocol" );
 
@@ -651,6 +663,8 @@ void QgsOgrSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &te
 {
   Q_UNUSED( text )
   setProtocolWidgetsVisibility();
+  clearOpenOptions();
+  updateProtocolOptions();
 }
 //********************end auto connected slots *****************/
 
@@ -718,6 +732,30 @@ bool QgsOgrSourceSelect::configureFromUri( const QString &uri )
   return true;
 }
 
+void QgsOgrSourceSelect::updateProtocolOptions()
+{
+  const QString currentProtocol = cmbProtocolTypes->currentData().toString();
+  if ( radioSrcProtocol->isChecked() && QgsGdalGuiUtils::isProtocolCloudType( currentProtocol ) )
+  {
+    mCredentialsWidget->setDriver( currentProtocol );
+    mCredentialOptionsGroupBox->setVisible( true );
+  }
+  else
+  {
+    mCredentialOptionsGroupBox->setVisible( false );
+  }
+}
+
+void QgsOgrSourceSelect::credentialOptionsChanged()
+{
+  const QVariantMap newCredentialOptions = mCredentialsWidget->credentialOptions();
+  if ( newCredentialOptions == mCredentialOptions )
+    return;
+
+  mCredentialOptions = newCredentialOptions;
+  fillOpenOptions();
+}
+
 void QgsOgrSourceSelect::clearOpenOptions()
 {
   mOpenOptionsWidgets.clear();
@@ -738,11 +776,28 @@ void QgsOgrSourceSelect::fillOpenOptions()
   if ( mDataSources.isEmpty() )
     return;
 
+  const QString firstDataSource = mDataSources.at( 0 );
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), firstDataSource );
+  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( firstDataSource );
+  parts.remove( QStringLiteral( "credentialOptions" ) );
+  if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
+  {
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
+    if ( bucketMatch.hasMatch() )
+    {
+      QgsGdalUtils::applyVsiCredentialOptions( vsiPrefix, bucketMatch.captured( 1 ), credentialOptions );
+    }
+  }
+
+  const QString ogrUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
+
   GDALDriverH hDriver;
-  if ( STARTS_WITH_CI( mDataSources[0].toUtf8().toStdString().c_str(), "PG:" ) )
+  if ( STARTS_WITH_CI( ogrUri.toUtf8().toStdString().c_str(), "PG:" ) )
     hDriver = GDALGetDriverByName( "PostgreSQL" ); // otherwise the PostgisRaster driver gets identified
   else
-    hDriver = GDALIdentifyDriverEx( mDataSources[0].toUtf8().toStdString().c_str(), GDAL_OF_VECTOR, nullptr, nullptr );
+    hDriver = GDALIdentifyDriverEx( ogrUri.toUtf8().toStdString().c_str(), GDAL_OF_VECTOR, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 

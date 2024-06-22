@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
+    <width>545</width>
     <height>786</height>
    </rect>
   </property>
@@ -141,23 +141,19 @@
         <string>Protocol</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="mKey"/>
+        </item>
         <item row="0" column="1">
          <widget class="QComboBox" name="cmbProtocolTypes"/>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelKey">
           <property name="text">
-           <string>Type</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="labelProtocolURI">
-          <property name="text">
-           <string>&amp;URI</string>
+           <string>Object key</string>
           </property>
           <property name="buddy">
-           <cstring>protocolURI</cstring>
+           <cstring>mKey</cstring>
           </property>
          </widget>
         </item>
@@ -177,33 +173,7 @@
         <item row="2" column="1">
          <widget class="QLineEdit" name="mBucket"/>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="labelKey">
-          <property name="text">
-           <string>Object key</string>
-          </property>
-          <property name="buddy">
-           <cstring>mKey</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="mKey"/>
-        </item>
         <item row="4" column="0" colspan="2">
-         <widget class="QLabel" name="mAuthWarning">
-          <property name="text">
-           <string>…</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-          <property name="openExternalLinks">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0" colspan="2">
          <widget class="QGroupBox" name="mAuthGroupBox">
           <property name="title">
            <string>Authentication</string>
@@ -232,6 +202,23 @@
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelProtocolURI">
+          <property name="text">
+           <string>&amp;URI</string>
+          </property>
+          <property name="buddy">
+           <cstring>protocolURI</cstring>
+          </property>
          </widget>
         </item>
        </layout>
@@ -366,6 +353,18 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsCollapsibleGroupBox" name="mCredentialOptionsGroupBox">
+       <property name="title">
+        <string>Credential Options</string>
+       </property>
+       <layout class="QVBoxLayout" name="openOptionsVBoxLayout_2" stretch="1">
+        <item>
+         <layout class="QFormLayout" name="mCredentialOptionsLayout"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <widget class="QgsScrollArea" name="scrollArea">
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
@@ -390,8 +389,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>506</width>
-          <height>78</height>
+          <width>529</width>
+          <height>77</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -408,8 +407,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QgsCollapsibleGroupBox" name="mOpenOptionsGroupBox" native="true">
-           <property name="title" stdset="0">
+          <widget class="QgsCollapsibleGroupBox" name="mOpenOptionsGroupBox">
+           <property name="title">
             <string>Options</string>
            </property>
            <layout class="QVBoxLayout" name="openOptionsVBoxLayout">
@@ -461,6 +460,18 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
@@ -470,18 +481,6 @@
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>qgsauthsettingswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QWidget</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
