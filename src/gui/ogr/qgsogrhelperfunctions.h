@@ -49,11 +49,6 @@ class GUI_EXPORT QgsGdalGuiUtils
     static QString createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig = false );
 
     /**
-     * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
-     */
-    static bool isProtocolCloudType( const QString &protocol );
-
-    /**
      * Creates a new widget for configuration a GDAL \a option.
      *
      * If \a includeDefaultChoices is TRUE then the widget will include an option

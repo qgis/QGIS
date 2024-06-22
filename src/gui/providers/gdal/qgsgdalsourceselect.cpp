@@ -105,7 +105,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
 void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
 {
-  if ( QgsGdalGuiUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
+  if ( QgsGdalUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
   {
     labelProtocolURI->hide();
     protocolURI->hide();
@@ -360,7 +360,7 @@ void QgsGdalSourceSelect::computeDataSources()
   }
   else if ( radioSrcProtocol->isChecked() )
   {
-    bool cloudType = QgsGdalGuiUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
+    bool cloudType = QgsGdalUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
       return;
@@ -524,7 +524,7 @@ void QgsGdalSourceSelect::showHelp()
 void QgsGdalSourceSelect::updateProtocolOptions()
 {
   const QString currentProtocol = cmbProtocolTypes->currentData().toString();
-  if ( radioSrcProtocol->isChecked() && QgsGdalGuiUtils::isProtocolCloudType( currentProtocol ) )
+  if ( radioSrcProtocol->isChecked() && QgsGdalUtils::isProtocolCloudType( currentProtocol ) )
   {
     mCredentialsWidget->setDriver( currentProtocol );
     mCredentialOptionsGroupBox->setVisible( true );

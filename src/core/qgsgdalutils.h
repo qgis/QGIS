@@ -342,6 +342,13 @@ class CORE_EXPORT QgsGdalUtils
     static bool isVsiArchiveFileExtension( const QString &extension );
 
     /**
+     * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
+     *
+     * \since QGIS 3.40
+     */
+    static bool isProtocolCloudType( const QString &protocol );
+
+    /**
      * Attempts to apply VSI credential \a options.
      *
      * This method uses GDAL's VSISetPathSpecificOption, which will overrwrite any existing

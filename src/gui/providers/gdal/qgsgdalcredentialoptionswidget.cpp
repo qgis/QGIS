@@ -547,7 +547,7 @@ void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
 
   mDriver = driver;
 
-  if ( !QgsGdalGuiUtils::isProtocolCloudType( mDriver ) )
+  if ( !QgsGdalUtils::isProtocolCloudType( mDriver ) )
   {
     mModel->setAvailableOptions( {} );
     return;
