@@ -72,7 +72,7 @@
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "framegraph/qgsdebugtextureentity.h"
+#include "qgsdebugtextureentity.h"
 
 #include "qgslinematerial_p.h"
 #include "qgs3dsceneexporter.h"
@@ -88,6 +88,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
+#include "qgsdebugtexturerenderview.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 

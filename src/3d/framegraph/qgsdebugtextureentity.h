@@ -16,7 +16,7 @@
 #ifndef QGSDEBUGTEXTUREENTITY_H
 #define QGSDEBUGTEXTUREENTITY_H
 
-#include "qgspreviewquad.h"
+#include "qgsrenderpassquad.h"
 
 class QgsFrameGraph;
 namespace Qt3DRender
@@ -34,16 +34,24 @@ namespace Qt3DRender
  *
  * \since QGIS 3.44
  */
-class QgsDebugTextureEntity : public QgsPreviewQuad
+class QgsDebugTextureEntity : public QgsRenderPassQuad
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsDebugTextureEntity( QgsFrameGraph *frameGraph, Qt3DRender::QTexture2D *texture );
+    QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
 
     //! Sets the texture debugging parameters
     void onSettingsChanged( bool enabled, Qt::Corner corner, double size );
+
+    //! Sets the view port of the quad
+    void setViewPort( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords );
+
+  protected:
+    Qt3DRender::QParameter *mTextureParameter = nullptr;
+    Qt3DRender::QParameter *mCenterTextureCoords = nullptr;
+    Qt3DRender::QParameter *mSizeTextureCoords = nullptr;
 };
 
 #endif // QGSDEBUGTEXTUREENTITY_H

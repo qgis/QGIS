@@ -17,7 +17,6 @@
 #include "moc_qgsframegraph.cpp"
 #include "qgsdirectionallightsettings.h"
 #include "qgspostprocessingentity.h"
-#include "qgspreviewquad.h"
 #include "qgs3dutils.h"
 #include "qgsframegraphutils.h"
 #include "qgsabstractrenderview.h"
@@ -478,7 +477,7 @@ void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settin
   if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
   {
     Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();
-    mShadowTextureDebugging = new QgsDebugTextureEntity( this, shadowDepthTexture );
+    mShadowTextureDebugging = new QgsDebugTextureEntity( shadowDepthTexture, debugRenderView->debugLayer(), this );
   }
 
   debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
@@ -501,7 +500,7 @@ void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &setting
   if ( !mDepthTextureDebugging && settings.debugDepthMapEnabled() )
   {
     Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
-    mDepthTextureDebugging = new QgsDebugTextureEntity( this, forwardDepthTexture );
+    mDepthTextureDebugging = new QgsDebugTextureEntity( forwardDepthTexture, debugRenderView->debugLayer(), this );
   }
 
   debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
