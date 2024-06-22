@@ -48,8 +48,12 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   whileBlocking( radioSrcFile )->setChecked( true );
   protocolGroupBox->hide();
 
-  const QList< QgsGdalUtils::VsiNetworkFileSystemDetails > vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
-  for ( const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiDetail : vsiDetails )
+  QList< QgsGdalUtils::VsiNetworkFileSystemDetails > vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
+  std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails & a, const QgsGdalUtils::VsiNetworkFileSystemDetails & b )
+  {
+    return QString::localeAwareCompare( a.name, b.name ) < 0;
+  } );
+  for ( const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiDetail : std::as_const( vsiDetails ) )
   {
     cmbProtocolTypes->addItem( vsiDetail.name, vsiDetail.identifier );
   }
