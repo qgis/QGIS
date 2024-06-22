@@ -799,7 +799,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   }
 
   if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
-       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+       && QgsGdalUtils::isVsiArchivePrefix( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() ) )
   {
     // get list of files inside archive file
     QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ), 3 );
@@ -852,6 +853,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
                          ? pathInfo.suffix().toLower()
                          : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
   bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+  const bool isVsiNetworkProtocol = QgsGdalUtils::isProtocolCloudType( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() );
 
   bool forceDeepScanDir = false;
   if ( pathInfo.isDir() && !isOgrSupportedDirectory )
@@ -860,13 +862,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     forceDeepScanDir = it.hasNext();
   }
 
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) && !forceDeepScanDir )
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() || isVsiNetworkProtocol ) && !forceDeepScanDir )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
 
     // allow only normal files or supported directories to continue
-    if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
+    if ( !isOgrSupportedDirectory && !pathInfo.isFile() && !isVsiNetworkProtocol )
       return {};
 
     if ( !fileExtensions.contains( suffix ) && !dirExtensions.contains( suffix ) )
@@ -949,6 +951,18 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     firstLayerUriParts.insert( QStringLiteral( "vsiPrefix" ), uriParts.value( QStringLiteral( "vsiPrefix" ) ) );
   if ( !uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
     firstLayerUriParts.insert( QStringLiteral( "vsiSuffix" ), uriParts.value( QStringLiteral( "vsiSuffix" ) ) );
+
+  const QVariantMap credentialOptions = uriParts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  if ( !credentialOptions.isEmpty() && !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+  {
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( uriParts.value( QStringLiteral( "path" ) ).toString() );
+    if ( bucketMatch.hasMatch() )
+    {
+      QgsGdalUtils::applyVsiCredentialOptions( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString(), bucketMatch.captured( 1 ), credentialOptions );
+    }
+  }
+
   firstLayerUriParts.insert( QStringLiteral( "path" ), uriParts.value( QStringLiteral( "path" ) ) );
 
   CPLPushErrorHandler( CPLQuietErrorHandler );

@@ -18,13 +18,14 @@
 #include "qgstest.h"
 
 //qgis includes...
-#include <qgis.h>
-#include <qgssettings.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsvectorlayer.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsprovidermetadata.h>
+#include "qgis.h"
+#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsprovidermetadata.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QObject>
 #include <QThread>
@@ -55,6 +56,7 @@ class TestQgsOgrProvider : public QgsTest
     void absoluteRelativeUri();
     void testExtent();
     void testVsiCredentialOptions();
+    void testVsiCredentialOptionsQuerySublayers();
 
   private:
     QString mTestDataDir;
@@ -512,6 +514,34 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   QCOMPARE( noSign, QStringLiteral( "NO" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QStringLiteral( "eu-central-2" ) );
+#endif
+}
+
+void TestQgsOgrProvider::testVsiCredentialOptionsQuerySublayers()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+  QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( "ogr" );
+  QVERIFY( ogrMetadata );
+
+  // test that credential options are correctly handled when querying sublayers
+  QList< QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
+  // ideally we'd test with a real dataset here!
+  QVERIFY( subLayers.isEmpty() );
+
+  // confirm that GDAL VSI configuration options are set
+  QString noSign( VSIGetPathSpecificOption( "/vsis3/sublayerstestbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QStringLiteral( "YES" ) );
+  QString region( VSIGetPathSpecificOption( "/vsis3/sublayerstestbucket", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QStringLiteral( "eu-central-3" ) );
+
+  subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ), Qgis::SublayerQueryFlag::FastScan );
+  // ideally we'd test with a real dataset here!
+  QCOMPARE( subLayers.size(), 1 );
+  QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "test" ) );
+  QCOMPARE( subLayers.at( 0 ).uri(), QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
+  QCOMPARE( subLayers.at( 0 ).providerKey(), QStringLiteral( "ogr" ) );
+  QCOMPARE( subLayers.at( 0 ).type(), Qgis::LayerType::Vector );
+
 #endif
 }
 
