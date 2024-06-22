@@ -16,6 +16,8 @@
 #include "qgswindow3dengine.h"
 #include "moc_qgswindow3dengine.cpp"
 
+#include "qgsframegraph.h"
+
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 

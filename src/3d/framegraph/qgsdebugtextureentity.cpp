@@ -15,27 +15,34 @@
 
 #include "qgsdebugtextureentity.h"
 #include "moc_qgsdebugtextureentity.cpp"
-#include "qgspreviewquad.h"
 #include <Qt3DRender/QTexture>
 
 #include <Qt3DRender/QParameter>
 #include <QUrl>
+#include <QVector2D>
 
 #include "qgsframegraph.h"
-#include "qgsdebugtexturerenderview.h"
+#include "qgsabstractrenderview.h"
 
-QgsDebugTextureEntity::QgsDebugTextureEntity( QgsFrameGraph *frameGraph, Qt3DRender::QTexture2D *texture )
-  : QgsPreviewQuad( texture
-                    , QPointF( 0.9f, 0.9f )
-                    , QSizeF( 0.1, 0.1 )
-  ,  QVector<Qt3DRender::QParameter *> {new Qt3DRender::QParameter( "isDepth", true )} )
+QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
+  : QgsRenderPassQuad( layer, parent )
 {
   setObjectName( "DebugTextureQuad" );
-  setParent( frameGraph->rootEntity() );
-  setEnabled( false );
 
-  QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( frameGraph->renderView( QgsFrameGraph::DEBUG_RENDERVIEW ) );
-  addComponent( debugRenderView->debugLayer() );
+  mTextureParameter = new Qt3DRender::QParameter( "previewTexture", texture );
+  mCenterTextureCoords = new Qt3DRender::QParameter( "centerTexCoords", QVector2D( 0, 0 ) );
+  mSizeTextureCoords = new Qt3DRender::QParameter( "sizeTexCoords", QVector2D( 1, 1 ) );
+  mMaterial->addParameter( mTextureParameter );
+  mMaterial->addParameter( mCenterTextureCoords );
+  mMaterial->addParameter( mSizeTextureCoords );
+  mMaterial->addParameter( new Qt3DRender::QParameter( "isDepth", true ) );
+
+  mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/preview.vert" ) ) );
+  mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/preview.frag" ) ) );
+
+  setViewPort( QPointF( 0.9f, 0.9f ), QSizeF( 0.1, 0.1 ) );
+
+  setEnabled( false );
 }
 
 void QgsDebugTextureEntity::onSettingsChanged( bool enabled, Qt::Corner corner, double size )
@@ -59,4 +66,10 @@ void QgsDebugTextureEntity::onSettingsChanged( bool enabled, Qt::Corner corner, 
         break;
     }
   }
+}
+
+void QgsDebugTextureEntity::setViewPort( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords )
+{
+  mCenterTextureCoords->setValue( QVector2D( static_cast<float>( centerTexCoords.x() ), static_cast<float>( centerTexCoords.y() ) ) );
+  mSizeTextureCoords->setValue( QVector2D( static_cast<float>( sizeTexCoords.width() ), static_cast<float>( sizeTexCoords.height() ) ) );
 }
