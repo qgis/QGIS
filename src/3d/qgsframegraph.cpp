@@ -630,6 +630,8 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mTransparentObjectsPassLayer = new Qt3DRender::QLayer;
   mRubberBandsLayer = new Qt3DRender::QLayer;
 
+  mRubberBandsLayer->setObjectName( "mRubberBandsLayer" );
+
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
@@ -654,6 +656,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   // rubber bands (they should be always on top)
   Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
+  rubberBandsPass->setObjectName( "rubberBandsPass" );
   rubberBandsPass->setParent( mMainViewPort );
 
   // shadow rendering pass
@@ -677,6 +680,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   postprocessingPass->setObjectName( "PostProcessingPass" );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
+  mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
   mRubberBandsRootEntity->addComponent( mRubberBandsLayer );
 
   // textures preview pass
