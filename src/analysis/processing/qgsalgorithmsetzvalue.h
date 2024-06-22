@@ -41,6 +41,7 @@ class QgsSetZValueAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsSetZValueAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *l ) const override;
 
   protected:
 
@@ -48,7 +49,6 @@ class QgsSetZValueAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-    bool supportInPlaceEdit( const QgsMapLayer *l ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
