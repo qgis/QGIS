@@ -1103,7 +1103,6 @@ if (WITH_CORE AND WITH_BINDINGS)
 
   find_package(Qsci REQUIRED)
   include(PythonMacros)
-  include(PyQtMacros)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)

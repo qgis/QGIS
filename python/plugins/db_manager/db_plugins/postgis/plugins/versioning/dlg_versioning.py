@@ -19,13 +19,16 @@ Based on PG_Manager by Martin Dobias <wonder.sk@gmail.com> (GPLv2 license)
  ***************************************************************************/
 """
 
+from pathlib import Path
+
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplication
 
-from .ui_DlgVersioning import Ui_DlgVersioning
-
 from .....dlg_db_error import DlgDbError
 from ....plugin import BaseError, Table
+
+Ui_DlgVersioning, _ = uic.loadUiType(Path(__file__).parent / 'DlgVersioining.ui')
 
 
 class DlgVersioning(QDialog, Ui_DlgVersioning):

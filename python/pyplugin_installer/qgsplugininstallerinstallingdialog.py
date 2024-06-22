@@ -25,6 +25,9 @@
 """
 from builtins import str
 
+from pathlib import Path
+
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
@@ -32,9 +35,10 @@ from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
 from qgis.utils import HOME_PLUGIN_PATH
 
-from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from .installer_data import removeDir, repositories
 from .unzip import unzip
+
+Ui_QgsPluginInstallerInstallingDialogBase, _ = uic.loadUiType(Path(__file__).parent / 'qgsplugininstallerinstallingbase.ui')
 
 
 class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):

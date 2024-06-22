@@ -18,6 +18,9 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
+from pathlib import Path
+
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtWidgets import QWidget, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
@@ -26,7 +29,8 @@ from qgis.core import QgsSettings, QgsApplication, QgsSettingsTree
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_compile_apis import PrepareAPIDialog
-from .ui_console_settings import Ui_SettingsDialogPythonConsole
+
+Ui_SettingsDialogPythonConsole, _ = uic.loadUiType(Path(__file__).parent / 'console_settings.ui')
 
 
 class ConsoleOptionsFactory(QgsOptionsWidgetFactory):
