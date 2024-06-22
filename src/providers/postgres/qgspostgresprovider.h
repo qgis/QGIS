@@ -25,6 +25,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsreferencedgeometry.h"
 #include <memory>
+#include <optional>
 
 class QgsFeature;
 class QgsField;
@@ -127,7 +128,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
      */
-    void setExtent( QgsRectangle &newExtent );
+    void setExtent( const QgsRectangle &newExtent );
 
     QgsRectangle extent() const override;
     QgsBox3D extent3D() const override;
@@ -396,7 +397,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     QString mGeometryColumn;          //!< Name of the geometry column
     QString mBoundingBoxColumn;       //!< Name of the bounding box column
-    mutable QgsBox3D mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
+    mutable std::optional<QgsBox3D> mLayerExtent;        //!< QgsBox3D that contains the extent (bounding box) of the layer
 
     Qgis::WkbType mDetectedGeomType = Qgis::WkbType::Unknown ;  //!< Geometry type detected in the database
     Qgis::WkbType mRequestedGeomType = Qgis::WkbType::Unknown ; //!< Geometry type requested in the uri
@@ -484,6 +485,22 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QString geomAttrToString( const QVariant &attr, QgsPostgresConn *conn );
     static int crsToSrid( const QgsCoordinateReferenceSystem &crs,  QgsPostgresConn *conn );
     static QgsCoordinateReferenceSystem sridToCrs( int srsId, QgsPostgresConn *conn );
+
+    /**
+     * Set mLayerExtent by estimation, if possible
+     *
+     * @return whether it was possible to estimate extent.
+     * If false is returned, mLayerExtent is left untouched.
+     */
+    bool estimateExtent() const;
+
+    /**
+     * Set mLayerExtent by 3d computation, if possible
+     *
+     * @return whether it was possible to estimate extent.
+     * If false is returned, mLayerExtent is left untouched.
+     */
+    bool computeExtent3D() const;
 
 };
 
