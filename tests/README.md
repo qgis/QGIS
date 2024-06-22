@@ -130,6 +130,16 @@ with something like this (tweak $builddir and $srcdir as appropriate)
    TestQgsVectorLayer.testOverwriteLayer
 ```
 
+A convenient way to set all the variables used in the above snippet
+automatically is by sourcing the tests/env.sh script in build dir,
+for example:
+
+```
+source build/tests/env.sh
+python ${srcdir}/tests/src/python/test_provider_postgres.py \
+  TestPyQgsPostgresProvider.testExtent
+````
+
 #### Running python tests in GDB
 
 First find out the required environment variables by running the test outside
