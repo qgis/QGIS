@@ -1185,10 +1185,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      */
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
-  protected:
-
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-
     /**
      * Returns the name of the parameter corresponding to the input layer.
      *
@@ -1206,6 +1202,10 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * \since QGIS 3.12
      */
     virtual QString inputParameterDescription() const SIP_HOLDGIL;
+
+  protected:
+
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
     /**
      * Returns the translated, user visible name for any layers created by this algorithm.
