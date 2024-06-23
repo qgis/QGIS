@@ -29,6 +29,7 @@
 #include <QVector3D>
 
 #include <Qt3DRender/QLayer>
+#include <Qt3DRender/QRenderSettings>
 
 #include <QtWidgets/QMenu>
 #include "qgs3dmapsettings.h"
@@ -176,6 +177,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     QPoint mLastClickedPos;
     Qt::MouseButton mLastClickedButton;
     QCursor mPreviousCursor = Qt::ArrowCursor;
+    Qt3DRender::QPickingSettings::PickMethod mDefaultPickingMethod;
     QMenu *mMenu = nullptr;
 
 };

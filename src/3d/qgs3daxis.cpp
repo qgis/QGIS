@@ -81,6 +81,8 @@ Qgs3DAxis::~Qgs3DAxis()
 
 void Qgs3DAxis::init3DObjectPicking( )
 {
+  mDefaultPickingMethod = mMapScene->engine()->renderSettings()->pickingSettings()->pickMethod();
+
   // Create screencaster to be used by EventFilter:
   //   1- Perform ray casting tests by specifying "touch" coordinates in screen space
   //   2- connect screencaster results to onTouchedByRay
@@ -152,12 +154,23 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
         // if casted ray from pos matches an entity, call onTouchedByRay
         mScreenRayCaster->trigger( mLastClickedPos );
       }
-
-      // when we exit the viewport, reset the mouse cursor if needed
-      else if ( mPreviousCursor != Qt::ArrowCursor && mCanvas->cursor() == Qt::ArrowCursor )
+      // exit the viewport
+      else
       {
-        mCanvas->setCursor( mPreviousCursor );
-        mPreviousCursor = Qt::ArrowCursor;
+        // reset the mouse cursor if needed
+        if ( mPreviousCursor != Qt::ArrowCursor && mCanvas->cursor() == Qt::ArrowCursor )
+        {
+          mCanvas->setCursor( mPreviousCursor );
+          mPreviousCursor = Qt::ArrowCursor;
+        }
+
+        // reset the picking settings if needed
+        if ( mMapScene->engine()->renderSettings()->pickingSettings()->pickMethod() == Qt3DRender::QPickingSettings::TrianglePicking
+             && mDefaultPickingMethod != Qt3DRender::QPickingSettings::TrianglePicking )
+        {
+          mMapScene->engine()->renderSettings()->pickingSettings()->setPickMethod( mDefaultPickingMethod );
+          QgsDebugMsgLevel( "Disabling triangle picking", 2 );
+        }
       }
 
       mIsDragging = false; // drag ends
@@ -210,6 +223,14 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
         mPreviousCursor = mCanvas->cursor();
         mCanvas->setCursor( Qt::ArrowCursor );
         QgsDebugMsgLevel( "Enabling arrow cursor", 2 );
+
+        // The cube needs triangle picking to handle click on faces.
+        if ( mMapScene->engine()->renderSettings()->pickingSettings()->pickMethod() != Qt3DRender::QPickingSettings::TrianglePicking &&
+             mCubeRoot->isEnabled() )
+        {
+          mMapScene->engine()->renderSettings()->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
+          QgsDebugMsgLevel( "Enabling triangle picking", 2 );
+        }
       }
     }
   }
