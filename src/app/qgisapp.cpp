@@ -5520,6 +5520,9 @@ QString QgisApp::getVersionString()
 {
   QString versionString = QStringLiteral( "<table width='100%' align='center'>" );
 
+  const QString compLabel = tr( "Compiled" );
+  const QString runLabel = tr( "Running" );
+
   versionString += QStringLiteral( "<tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Libraries" ) );
   versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td>" ).arg( tr( "QGIS version" ), Qgis::version() );
 
@@ -5546,60 +5549,44 @@ QString QgisApp::getVersionString()
   // Qt version
   const QString qtVersionCompiled{ QT_VERSION_STR };
   const QString qtVersionRunning{ qVersion() };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "Qt version" ), qtVersionCompiled );
   if ( qtVersionCompiled != qtVersionRunning )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against Qt" ), qtVersionCompiled );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against Qt" ), qtVersionRunning );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, qtVersionRunning, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Qt version" ), qtVersionCompiled );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 
   // Python version
   QString pythonVersion;
   QgsPythonRunner::run( QStringLiteral( "import platform" ) );
   QgsPythonRunner::eval( QStringLiteral( "platform.python_version()" ), pythonVersion );
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "Python version" ), PYTHON_VERSION );
   if ( pythonVersion != PYTHON_VERSION )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against Python" ), PYTHON_VERSION );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against Python" ), pythonVersion );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, pythonVersion, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Python version" ), PYTHON_VERSION );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 
   // GDAL version
   const QString gdalVersionCompiled { GDAL_RELEASE_NAME };
   const QString gdalVersionRunning { GDALVersionInfo( "RELEASE_NAME" ) };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GDAL/OGR version" ), gdalVersionCompiled );
   if ( gdalVersionCompiled != gdalVersionRunning )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against GDAL/OGR" ), gdalVersionCompiled );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against GDAL/OGR" ), gdalVersionRunning );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, gdalVersionRunning, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "GDAL/OGR version" ), gdalVersionCompiled );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 
   // proj
   PJ_INFO info = proj_info();
   const QString projVersionCompiled { QStringLiteral( "%1.%2.%3" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH ) };
   const QString projVersionRunning { info.version };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "PROJ version" ), projVersionCompiled );
   if ( projVersionCompiled != projVersionRunning )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against PROJ" ), projVersionCompiled );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PROJ" ), projVersionRunning );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, projVersionRunning, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "PROJ version" ), projVersionCompiled );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 
   // CRS database versions
   versionString += QStringLiteral( "<td>%1</td><td>%2 (%3)</td>" ).arg( tr( "EPSG Registry database version" ), QgsProjUtils::epsgRegistryVersion(), QgsProjUtils::epsgRegistryDate().toString( Qt::ISODate ) );
@@ -5608,30 +5595,22 @@ QString QgisApp::getVersionString()
   // GEOS version
   const QString geosVersionCompiled { GEOS_CAPI_VERSION };
   const QString geosVersionRunning { GEOSversion() };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GEOS version" ), geosVersionCompiled );
   if ( geosVersionCompiled != geosVersionRunning )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against GEOS" ), geosVersionCompiled );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against GEOS" ), geosVersionRunning );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, geosVersionRunning, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "GEOS version" ), geosVersionCompiled );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 
   // SQLite version
   const QString sqliteVersionCompiled { SQLITE_VERSION };
   const QString sqliteVersionRunning { sqlite3_libversion() };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SQLite version" ), sqliteVersionCompiled );
   if ( sqliteVersionCompiled != sqliteVersionRunning )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against SQLite" ), sqliteVersionCompiled );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against SQLite" ), sqliteVersionRunning );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, sqliteVersionRunning, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "SQLite version" ), sqliteVersionCompiled );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 
   // PDAL
 #ifdef HAVE_PDAL_QGIS
@@ -5644,16 +5623,12 @@ QString QgisApp::getVersionString()
   const thread_local QRegularExpression pdalVersionRx { QStringLiteral( "(\\d+\\.\\d+\\.\\d+)" )};
   const QRegularExpressionMatch pdalVersionMatch{ pdalVersionRx.match( pdalVersionRunningRaw ) };
   const QString pdalVersionRunning{ pdalVersionMatch.hasMatch() ? pdalVersionMatch.captured( 1 ) : pdalVersionRunningRaw };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "PDAL version" ), pdalVersionCompiled );
   if ( pdalVersionCompiled != pdalVersionRunning )
   {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against PDAL" ), pdalVersionCompiled );
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PDAL" ), pdalVersionRunning );
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, pdalVersionRunning, runLabel );
   }
-  else
-  {
-    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "PDAL version" ), pdalVersionCompiled );
-  }
-  versionString += QLatin1String( "</tr><tr>" );
+  versionString += QLatin1String( "</td></tr><tr>" );
 #endif
 
   // postgres
@@ -5687,7 +5662,6 @@ QString QgisApp::getVersionString()
   versionString += QLatin1String( "</tr><tr>" );
 
 #ifdef QGISDEBUG
-  versionString += QLatin1String( "</tr><tr>" );
   versionString += QStringLiteral( "<td colspan=\"2\"><i>%1</i></td>" ).arg( tr( "This copy of QGIS writes debugging output." ) );
   versionString += QLatin1String( "</tr><tr>" );
 #endif
