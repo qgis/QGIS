@@ -813,9 +813,9 @@ void Qgs3DAxis::createCube( )
   int fontSize = 0.75 * mFontSize;
   float textHeight = fontSize * 1.5f;
   float textWidth;
-  QFont f = QFontDatabase::systemFont( QFontDatabase::FixedFont );
-  f.setPointSize( fontSize );
-  f.setWeight( QFont::Weight::Black );
+  QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
+  font.setPointSize( fontSize );
+  font.setWeight( QFont::Weight::Black );
 
   {
     text = QStringLiteral( "top" );
@@ -825,7 +825,7 @@ void Qgs3DAxis::createCube( )
                               mCylinderLength * 0.5f - textHeight / 2.0f,
                               mCylinderLength * 1.01f );
     QMatrix4x4 rotation;
-    mCubeLabels << addCubeText( text, textHeight, textWidth, f, rotation, translation );
+    mCubeLabels << addCubeText( text, textHeight, textWidth, font, rotation, translation );
   }
 
   {
@@ -837,7 +837,7 @@ void Qgs3DAxis::createCube( )
                               -mCylinderLength * 0.01f );
     QMatrix4x4 rotation;
     rotation.rotate( 180.0f, QVector3D( 1.0f, 0.0f, 0.0f ).normalized() );
-    mCubeLabels << addCubeText( text, textHeight, textWidth, f, rotation, translation );
+    mCubeLabels << addCubeText( text, textHeight, textWidth, font, rotation, translation );
   }
 
   {
@@ -850,7 +850,7 @@ void Qgs3DAxis::createCube( )
     QMatrix4x4 rotation;
     rotation.rotate( 90.0f, QVector3D( 0.0f, -1.0f, 0.0f ).normalized() );
     rotation.rotate( 90.0f, QVector3D( 0.0f, 0.0f, -1.0f ).normalized() );
-    mCubeLabels << addCubeText( text, textHeight, textWidth, f, rotation, translation );
+    mCubeLabels << addCubeText( text, textHeight, textWidth, font, rotation, translation );
   }
 
   {
@@ -863,7 +863,7 @@ void Qgs3DAxis::createCube( )
     QMatrix4x4 rotation;
     rotation.rotate( 90.0f, QVector3D( 0.0f, 1.0f, 0.0f ).normalized() );
     rotation.rotate( 90.0f, QVector3D( 0.0f, 0.0f, 1.0f ).normalized() );
-    mCubeLabels << addCubeText( text, textHeight, textWidth, f, rotation, translation );
+    mCubeLabels << addCubeText( text, textHeight, textWidth, font, rotation, translation );
   }
 
   {
@@ -875,7 +875,7 @@ void Qgs3DAxis::createCube( )
                               mCylinderLength * 0.5f - textHeight / 2.0f );
     QMatrix4x4 rotation;
     rotation.rotate( 90.0f, QVector3D( 1.0f, 0.0f, 0.0f ).normalized() );
-    mCubeLabels << addCubeText( text, textHeight, textWidth, f, rotation, translation );
+    mCubeLabels << addCubeText( text, textHeight, textWidth, font, rotation, translation );
   }
 
   {
@@ -888,7 +888,7 @@ void Qgs3DAxis::createCube( )
     QMatrix4x4 rotation;
     rotation.rotate( 90.0f, QVector3D( -1.0f, 0.0f, 0.0f ).normalized() );
     rotation.rotate( 180.0f, QVector3D( 0.0f, 0.0f, 1.0f ).normalized() );
-    mCubeLabels << addCubeText( text, textHeight, textWidth, f, rotation, translation );
+    mCubeLabels << addCubeText( text, textHeight, textWidth, font, rotation, translation );
   }
 
   for ( Qt3DExtras::QText2DEntity *l : std::as_const( mCubeLabels ) )
@@ -897,11 +897,11 @@ void Qgs3DAxis::createCube( )
   }
 }
 
-Qt3DExtras::QText2DEntity *Qgs3DAxis::addCubeText( const QString &text, float textHeight, float textWidth, const QFont &f, const QMatrix4x4 &rotation, const QVector3D &translation )
+Qt3DExtras::QText2DEntity *Qgs3DAxis::addCubeText( const QString &text, float textHeight, float textWidth, const QFont &font, const QMatrix4x4 &rotation, const QVector3D &translation )
 {
   Qt3DExtras::QText2DEntity *textEntity = new Qt3DExtras::QText2DEntity;
   textEntity->setObjectName( "3DAxis_cube_label_" + text );
-  textEntity->setFont( f );
+  textEntity->setFont( font );
   textEntity->setHeight( textHeight );
   textEntity->setWidth( textWidth );
   textEntity->setColor( QColor( 192, 192, 192 ) );
