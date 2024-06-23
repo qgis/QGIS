@@ -810,16 +810,14 @@ void Qgs3DAxis::createCube( )
 
   // text
   QString text;
-  int fontSize = 0.75 * mFontSize;
-  float textHeight = fontSize * 1.5f;
+  const int fontSize = static_cast<int>( std::round( 0.75f * static_cast<float>( mFontSize ) ) );
+  const float textHeight = static_cast<float>( fontSize ) * 1.5f;
   float textWidth;
-  QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
-  font.setPointSize( fontSize );
-  font.setWeight( QFont::Weight::Black );
+  const QFont font = createFont( fontSize );
 
   {
     text = QStringLiteral( "top" );
-    textWidth = text.length() * fontSize * 0.75f;
+    textWidth = static_cast<float>( text.length() * fontSize ) * 0.75f;
     QVector3D translation = minPos + QVector3D(
                               mCylinderLength * 0.5f - textWidth / 2.0f,
                               mCylinderLength * 0.5f - textHeight / 2.0f,
@@ -830,7 +828,7 @@ void Qgs3DAxis::createCube( )
 
   {
     text = QStringLiteral( "btm" );
-    textWidth = text.length() * fontSize * 0.75f;
+    textWidth = static_cast<float>( text.length() * fontSize ) * 0.75f;
     QVector3D translation = minPos + QVector3D(
                               mCylinderLength * 0.5f - textWidth / 2.0f,
                               mCylinderLength * 0.5f + textHeight / 2.0f,
@@ -842,7 +840,7 @@ void Qgs3DAxis::createCube( )
 
   {
     text = QStringLiteral( "west" );
-    textWidth = text.length() * fontSize * 0.75f;
+    textWidth = static_cast<float>( text.length() * fontSize ) * 0.75f;
     QVector3D translation = minPos + QVector3D(
                               - mCylinderLength * 0.01f,
                               mCylinderLength * 0.5f + textWidth / 2.0f,
@@ -855,7 +853,7 @@ void Qgs3DAxis::createCube( )
 
   {
     text = QStringLiteral( "east" );
-    textWidth = text.length() * fontSize * 0.75f;
+    textWidth = static_cast<float>( text.length() * fontSize ) * 0.75f;
     QVector3D translation = minPos + QVector3D(
                               mCylinderLength * 1.01f,
                               mCylinderLength * 0.5f - textWidth / 2.0f,
@@ -868,7 +866,7 @@ void Qgs3DAxis::createCube( )
 
   {
     text = QStringLiteral( "south" );
-    textWidth = text.length() * fontSize * 0.75f;
+    textWidth = static_cast<float>( text.length() * fontSize ) * 0.75f;
     QVector3D translation = minPos + QVector3D(
                               mCylinderLength * 0.5f - textWidth / 2.0f,
                               - mCylinderLength * 0.01f,
@@ -880,7 +878,7 @@ void Qgs3DAxis::createCube( )
 
   {
     text = QStringLiteral( "north" );
-    textWidth = text.length() * fontSize * 0.75f;
+    textWidth = static_cast<float>( text.length() * fontSize ) * 0.75f;
     QVector3D translation = minPos + QVector3D(
                               mCylinderLength * 0.5f + textWidth / 2.0f,
                               mCylinderLength * 1.01f,
@@ -1203,11 +1201,18 @@ void Qgs3DAxis::updateAxisLabelPosition()
 
 void Qgs3DAxis::updateAxisLabelText( Qt3DExtras::QText2DEntity *textEntity, const QString &text )
 {
-  QFont font = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
-  font.setWeight( QFont::Weight::Black );
-  font.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
-  textEntity->setFont( font );
   const float scaledFontSize = static_cast<float>( mAxisScaleFactor ) * static_cast<float>( mFontSize );
+  const QFont font = createFont( static_cast<int>( std::round( scaledFontSize ) ) );
+  textEntity->setFont( font );
   textEntity->setWidth( scaledFontSize * static_cast<float>( text.length() ) );
   textEntity->setHeight( 1.5f * scaledFontSize );
+}
+
+QFont Qgs3DAxis::createFont( int pointSize )
+{
+  QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
+  font.setPointSize( pointSize );
+  font.setWeight( QFont::Weight::Black );
+  font.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
+  return font;
 }
