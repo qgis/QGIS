@@ -355,6 +355,7 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   mTwoDLabelCamera->setPosition( QVector3D( 0.0f, 0.0f, 100.0f ) );
 
   Qt3DRender::QLayer *twoDLayer = new Qt3DRender::QLayer;
+  twoDLayer->setObjectName( "3DAxis_LabelsLayer" );
   twoDLayer->setRecursive( true );
   mTwoDLabelSceneEntity->addComponent( twoDLayer );
 
