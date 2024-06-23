@@ -163,6 +163,9 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( !found );
   QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QStringLiteral( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
   QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "Load https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')" ), &found ), QStringLiteral( "Load <a href=\"https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')\">https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')</a>" ) );
+  QVERIFY( found );
+
 }
 
 void TestQgsStringUtils::titleCase_data()
