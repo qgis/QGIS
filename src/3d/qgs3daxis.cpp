@@ -135,8 +135,8 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
     else if ( ! mIsDragging )
     {
       // limit ray caster usage to the axis viewport
-      QPointF normalizedPos( static_cast<float>( mouseEvent->pos().x() ) / mCanvas->width(),
-                             ( float )mouseEvent->pos().y() / mCanvas->height() );
+      QPointF normalizedPos( static_cast<float>( mouseEvent->pos().x() ) / static_cast<float>( mCanvas->width() ),
+                             static_cast<float>( mouseEvent->pos().y() ) / static_cast<float>( mCanvas->height() ) );
 
       if ( 2 <= QgsLogger::debugLevel() && event->type() == QEvent::MouseButtonRelease )
       {
@@ -1090,16 +1090,16 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorLeft )
       xRatio = 0.0f;
     else if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorHorizontalCenter )
-      xRatio = 0.5f - widthRatio / 2.0f;
+      xRatio = 0.5f - static_cast<float>( widthRatio ) / 2.0f;
     else
-      xRatio = 1.0f - widthRatio;
+      xRatio = 1.0f - static_cast<float>( widthRatio );
 
     if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorTop )
       yRatio = 0.0f;
     else if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorVerticalCenter )
-      yRatio = 0.5f - heightRatio / 2.0f;
+      yRatio = 0.5f - static_cast<float>( heightRatio ) / 2.0f;
     else
-      yRatio = 1.0f - heightRatio;
+      yRatio = 1.0f - static_cast<float>( heightRatio );
 
     QgsDebugMsgLevel( QString( "Qgs3DAxis: update viewport: %1 x %2 x %3 x %4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ), 2 );
     mViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
