@@ -140,7 +140,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     QgsCameraController *mCameraController = nullptr;
 
     float mCylinderLength = 40.0f;
-    int mFontSize = 10;
+    int mFontSize = 12;
 
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
     Qt3DRender::QLayer *mAxisObjectLayer = nullptr;
