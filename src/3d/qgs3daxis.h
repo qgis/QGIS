@@ -69,20 +69,15 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     ~Qgs3DAxis() override;
 
     /**
-     * \brief project a 3D position from sourceCamera (in sourceViewport) to a 2D position for destCamera (in destViewport). destCamera and the destViewport act as a billboarding layer. The labels displayed by this process will always face the camera.
+     * \brief project a 3D position from sourceCamera to a 2D position for destCamera. destCamera acts as a billboarding layer. The labels displayed by this process will always face the camera.
      *
      * \param sourcePos 3D label coordinates
      * @param sourceCamera main view camera
-     * @param sourceViewport main viewport
      * @param destCamera billboarding camera
-     * @param destViewport billboarding viewport
-     * @param destSize main qt3d window size
      * @return
      */
-    QVector3D from3DTo2DLabelPosition( const QVector3D &sourcePos,
-                                       Qt3DRender::QCamera *sourceCamera, Qt3DRender::QViewport *sourceViewport,
-                                       Qt3DRender::QCamera *destCamera, Qt3DRender::QViewport *destViewport,
-                                       const QSize &destSize );
+    QVector3D from3DTo2DLabelPosition( const QVector3D &sourcePos, Qt3DRender::QCamera *sourceCamera, Qt3DRender::QCamera *destCamera );
+
 
   public slots:
 
@@ -121,8 +116,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void updateAxisLabelText( Qt3DExtras::QText2DEntity *textEntity, const QString &text );
     QFont createFont( int pointSize );
 
-    Qt3DRender::QViewport *constructAxisViewport( Qt3DCore::QEntity *parent3DScene );
-    Qt3DRender::QViewport *constructLabelViewport( Qt3DCore::QEntity *parent3DScene, const QRectF &parentViewportSize );
+    Qt3DRender::QViewport *constructAxisScene( Qt3DCore::QEntity *parent3DScene );
+    void constructLabelsScene( Qt3DCore::QEntity *parent3DScene );
 
     Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &font, const QMatrix4x4 &rotation, const QVector3D &translation );
 
@@ -142,10 +137,11 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     float mCylinderLength = 40.0f;
     int mFontSize = 12;
 
+    Qt3DRender::QViewport *mViewport = nullptr;
+
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
     Qt3DRender::QLayer *mAxisObjectLayer = nullptr;
     Qt3DRender::QCamera *mAxisCamera = nullptr;
-    Qt3DRender::QViewport *mAxisViewport = nullptr;
 
     Qt3DCore::QEntity *mAxisRoot = nullptr;
     Qt3DCore::QEntity *mCubeRoot = nullptr;
@@ -166,7 +162,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     Qt3DRender::QCamera *mTwoDLabelCamera  = nullptr;
     Qt3DCore::QEntity *mTwoDLabelSceneEntity = nullptr;
-    Qt3DRender::QViewport *mTwoDLabelViewport = nullptr;
 
     // axis picking and menu
     Qt3DRender::QScreenRayCaster *mScreenRayCaster = nullptr;

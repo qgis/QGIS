@@ -55,11 +55,10 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas,
   , mCameraController( cameraCtrl )
   , mCrs( map->crs() )
 {
-  mAxisViewport = constructAxisViewport( parent3DScene );
-  mAxisViewport->setParent( mCanvas->activeFrameGraph() );
+  mViewport = constructAxisScene( parent3DScene );
+  mViewport->setParent( mCanvas->activeFrameGraph() );
 
-  mTwoDLabelViewport = constructLabelViewport( parent3DScene, QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
-  mTwoDLabelViewport->setParent( mCanvas->activeFrameGraph() );
+  constructLabelsScene( parent3DScene );
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
   connect( mCanvas, &Qgs3DMapCanvas::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
@@ -142,11 +141,11 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
       if ( 2 <= QgsLogger::debugLevel() && event->type() == QEvent::MouseButtonRelease )
       {
         std::ostringstream os;
-        os << "QGS3DAxis: normalized pos: " << normalizedPos << " / viewport: " << mAxisViewport->normalizedRect();
+        os << "QGS3DAxis: normalized pos: " << normalizedPos << " / viewport: " << mViewport->normalizedRect();
         QgsDebugMsgLevel( os.str().c_str(), 2 );
       }
 
-      if ( mAxisViewport->normalizedRect().contains( normalizedPos ) )
+      if ( mViewport->normalizedRect().contains( normalizedPos ) )
       {
         mLastClickedButton = mouseEvent->button();
         mLastClickedPos = mouseEvent->pos();
@@ -286,7 +285,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   }
 }
 
-Qt3DRender::QViewport *Qgs3DAxis::constructAxisViewport( Qt3DCore::QEntity *parent3DScene )
+Qt3DRender::QViewport *Qgs3DAxis::constructAxisScene( Qt3DCore::QEntity *parent3DScene )
 {
   Qt3DRender::QViewport *axisViewport = new Qt3DRender::QViewport;
   // parent will be set later
@@ -331,12 +330,8 @@ Qt3DRender::QViewport *Qgs3DAxis::constructAxisViewport( Qt3DCore::QEntity *pare
   return axisViewport;
 }
 
-Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *parent3DScene, const QRectF &parentViewportSize )
+void Qgs3DAxis::constructLabelsScene( Qt3DCore::QEntity *parent3DScene )
 {
-  Qt3DRender::QViewport *twoDViewport = new Qt3DRender::QViewport;
-  // parent will be set later
-  twoDViewport->setNormalizedRect( parentViewportSize );
-
   mTwoDLabelSceneEntity = new Qt3DCore::QEntity;
   mTwoDLabelSceneEntity->setParent( parent3DScene );
   mTwoDLabelSceneEntity->setEnabled( true );
@@ -344,10 +339,7 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   mTwoDLabelCamera = new Qt3DRender::QCamera;
   mTwoDLabelCamera->setParent( mTwoDLabelSceneEntity );
   mTwoDLabelCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
-  mTwoDLabelCamera->lens()->setOrthographicProjection(
-    -mCanvas->width() / 2.0f, mCanvas->width() / 2.0f,
-    -mCanvas->height() / 2.0f, mCanvas->height() / 2.0f,
-    -10.0f, 100.0f );
+  // the camera lens parameters are defined by onAxisViewportSizeUpdate()
 
   mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
   mTwoDLabelCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
@@ -359,7 +351,7 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   twoDLayer->setRecursive( true );
   mTwoDLabelSceneEntity->addComponent( twoDLayer );
 
-  Qt3DRender::QLayerFilter *twoDLayerFilter = new Qt3DRender::QLayerFilter( twoDViewport );
+  Qt3DRender::QLayerFilter *twoDLayerFilter = new Qt3DRender::QLayerFilter;
   twoDLayerFilter->addLayer( twoDLayer );
 
   Qt3DRender::QCameraSelector *twoDCameraSelector = new Qt3DRender::QCameraSelector;
@@ -376,40 +368,18 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( sortPolicy );
   clearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
-  // cppcheck-suppress memleak
-  return twoDViewport;
+  twoDLayerFilter->setParent( mViewport );
 }
 
-QVector3D Qgs3DAxis::from3DTo2DLabelPosition( const QVector3D &sourcePos,
-    Qt3DRender::QCamera *sourceCamera, Qt3DRender::QViewport *sourceViewport,
-    Qt3DRender::QCamera *destCamera, Qt3DRender::QViewport *destViewport,
-    const QSize &destSize )
+QVector3D Qgs3DAxis::from3DTo2DLabelPosition( const QVector3D &sourcePos, Qt3DRender::QCamera *sourceCamera, Qt3DRender::QCamera *destCamera )
 {
-  QVector3D destPos = sourcePos.project( sourceCamera->viewMatrix(),
-                                         destCamera->projectionMatrix(),
-                                         QRect( 0.0f, 0.0f,
-                                             destViewport->normalizedRect().width() * destSize.width(),
-                                             destViewport->normalizedRect().height() * destSize.height() ) );
-  QPointF axisCenter = sourceViewport->normalizedRect().center();
-  QPointF labelCenter = destViewport->normalizedRect().center();
-  QVector3D viewTranslation = QVector3D( ( axisCenter - labelCenter ).x() * destSize.width(),
-                                         ( axisCenter - labelCenter ).y() * destSize.height(),
-                                         0.0f );
-  destPos -= QVector3D( labelCenter.x() * destSize.width(),
-                        labelCenter.y() * destSize.height(),
-                        0.0f );
-  destPos.setX( destPos.x() + viewTranslation.x() );
-  destPos.setY( destPos.y() - viewTranslation.y() );
-  destPos.setZ( 0.0f );
+  const int viewportWidth = static_cast<int>( std::round( mTwoDLabelCamera->lens()->right() - mTwoDLabelCamera->lens()->left() ) );
+  const int viewportHeight = static_cast<int>( std::round( mTwoDLabelCamera->lens()->top() - mTwoDLabelCamera->lens()->bottom() ) );
+  QRect viewportRect( static_cast<int>( std::round( mTwoDLabelCamera->lens()->left() ) ), static_cast<int>( std::round( mTwoDLabelCamera->lens()->bottom() ) ),
+                      viewportWidth, viewportHeight );
 
-  if ( 2 <= QgsLogger::debugLevel() )
-  {
-    std::ostringstream os;
-    os << "Qgs3DAxis::from3DTo2DLabelPosition: sourcePos: " << sourcePos.toPoint()
-       << " with translation: " << viewTranslation.toPoint()
-       << " corrected to pos: " << destPos.toPoint();
-    QgsDebugMsgLevel( os.str().c_str(), 2 );
-  }
+  QVector3D destPos = sourcePos.project( sourceCamera->viewMatrix(), destCamera->projectionMatrix(), viewportRect );
+  destPos.setZ( 0.0f );
   return destPos;
 }
 
@@ -1096,7 +1066,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   {
     QgsDebugMsgLevel( "viewport takes too much place into the 3d view, disabling it", 2 );
     // take too much place into the 3d view
-    mAxisViewport->setEnabled( false );
+    mViewport->setEnabled( false );
     setEnableCube( false );
     setEnableAxis( false );
   }
@@ -1106,14 +1076,14 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     mAxisScaleFactor = viewportPixelSize / defaultViewportPixelSize;
     QgsDebugMsgLevel( QString( "3DAxis viewport mAxisScaleFactor %1" ).arg( mAxisScaleFactor ), 2 );
 
-    if ( ! mAxisViewport->isEnabled() )
+    if ( ! mViewport->isEnabled() )
     {
       if ( settings.mode() == Qgs3DAxisSettings::Mode::Crs )
         setEnableAxis( true );
       else if ( settings.mode() == Qgs3DAxisSettings::Mode::Cube )
         setEnableCube( true );
     }
-    mAxisViewport->setEnabled( true );
+    mViewport->setEnabled( true );
 
     float xRatio = 1.0f;
     float yRatio = 1.0f;
@@ -1132,13 +1102,15 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
       yRatio = 1.0f - heightRatio;
 
     QgsDebugMsgLevel( QString( "Qgs3DAxis: update viewport: %1 x %2 x %3 x %4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ), 2 );
-    mAxisViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
+    mViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
 
     if ( settings.mode() == Qgs3DAxisSettings::Mode::Crs )
     {
+      const float halfWidthSize = static_cast<float>( windowWidth * widthRatio / 2.0 );
+      const float halfHeightSize = static_cast<float>( windowWidth * widthRatio / 2.0 );
       mTwoDLabelCamera->lens()->setOrthographicProjection(
-        -windowWidth / 2.0f, windowWidth / 2.0f,
-        -windowHeight / 2.0f, windowHeight / 2.0f,
+        -halfWidthSize, halfWidthSize,
+        -halfHeightSize, halfHeightSize,
         mTwoDLabelCamera->lens()->nearPlane(), mTwoDLabelCamera->lens()->farPlane() );
 
       updateAxisLabelPosition();
@@ -1182,19 +1154,13 @@ void Qgs3DAxis::updateAxisLabelPosition()
 {
   if ( mTextTransformX && mTextTransformY && mTextTransformZ )
   {
-    mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX * mAxisScaleFactor, mAxisCamera,
-                                     mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
-                                     mCanvas->size() ) );
+    mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX * static_cast<float>( mAxisScaleFactor ), mAxisCamera, mTwoDLabelCamera ) );
     updateAxisLabelText( mTextX, mTextX->text() );
 
-    mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY * mAxisScaleFactor, mAxisCamera,
-                                     mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
-                                     mCanvas->size() ) );
+    mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY * static_cast<float>( mAxisScaleFactor ), mAxisCamera, mTwoDLabelCamera ) );
     updateAxisLabelText( mTextY, mTextY->text() );
 
-    mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ * mAxisScaleFactor, mAxisCamera,
-                                     mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
-                                     mCanvas->size() ) );
+    mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ * static_cast<float>( mAxisScaleFactor ), mAxisCamera, mTwoDLabelCamera ) );
     updateAxisLabelText( mTextZ, mTextZ->text() );
   }
 }
