@@ -1168,7 +1168,7 @@ void Qgs3DAxis::onCameraUpdate( )
     }
     else
     {
-      mAxisCamera->setPosition( mainCameraShift * mCylinderLength * 10.0 );
+      mAxisCamera->setPosition( mainCameraShift * mCylinderLength * 9.0 );
     }
 
     if ( mAxisRoot->isEnabled() )
