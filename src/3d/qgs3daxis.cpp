@@ -88,7 +88,7 @@ void Qgs3DAxis::init3DObjectPicking( )
   //   2- connect screencaster results to onTouchedByRay
   //   3- screencaster will be triggered by EventFilter
   mScreenRayCaster = new Qt3DRender::QScreenRayCaster( mAxisSceneEntity );
-  mScreenRayCaster->addLayer( mAxisSceneLayer ); // to only filter on axis objects
+  mScreenRayCaster->addLayer( mAxisObjectLayer ); // to only filter on axis objects
   mScreenRayCaster->setFilterMode( Qt3DRender::QScreenRayCaster::AcceptAllMatchingLayers );
   mScreenRayCaster->setRunMode( Qt3DRender::QAbstractRayCaster::SingleShot );
 
@@ -296,10 +296,10 @@ Qt3DRender::QViewport *Qgs3DAxis::constructAxisViewport( Qt3DCore::QEntity *pare
   mAxisSceneEntity->setParent( parent3DScene );
   mAxisSceneEntity->setObjectName( "3DAxis_SceneEntity" );
 
-  mAxisSceneLayer = new Qt3DRender::QLayer;
-  mAxisSceneLayer->setObjectName( "3DAxis_SceneLayer" );
-  mAxisSceneLayer->setParent( mAxisSceneEntity );
-  mAxisSceneLayer->setRecursive( true );
+  mAxisObjectLayer = new Qt3DRender::QLayer;
+  mAxisObjectLayer->setObjectName( "3DAxis_ObjectLayer" );
+  mAxisObjectLayer->setParent( mAxisSceneEntity );
+  mAxisObjectLayer->setRecursive( true );
 
   mAxisCamera = new Qt3DRender::QCamera;
   mAxisCamera->setParent( mAxisSceneEntity );
@@ -310,12 +310,8 @@ Qt3DRender::QViewport *Qgs3DAxis::constructAxisViewport( Qt3DCore::QEntity *pare
   mAxisCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
   // position will be set later
 
-  Qt3DRender::QLayer *axisLayer = new Qt3DRender::QLayer;
-  axisLayer->setRecursive( true );
-  mAxisSceneEntity->addComponent( axisLayer );
-
   Qt3DRender::QLayerFilter *axisLayerFilter = new Qt3DRender::QLayerFilter( axisViewport );
-  axisLayerFilter->addLayer( axisLayer );
+  axisLayerFilter->addLayer( mAxisObjectLayer );
 
   Qt3DRender::QCameraSelector *axisCameraSelector = new Qt3DRender::QCameraSelector;
   axisCameraSelector->setParent( axisLayerFilter );
@@ -453,7 +449,7 @@ void Qgs3DAxis::createAxisScene()
     mAxisRoot = new Qt3DCore::QEntity;
     mAxisRoot->setParent( mAxisSceneEntity );
     mAxisRoot->setObjectName( "3DAxis_AxisRoot" );
-    mAxisRoot->addComponent( mAxisSceneLayer ); // raycaster will filter object containing this layer
+    mAxisRoot->addComponent( mAxisObjectLayer ); // raycaster will filter object containing this layer
 
     createAxis( Qt::Axis::XAxis );
     createAxis( Qt::Axis::YAxis );
@@ -462,7 +458,7 @@ void Qgs3DAxis::createAxisScene()
     mCubeRoot = new Qt3DCore::QEntity;
     mCubeRoot->setParent( mAxisSceneEntity );
     mCubeRoot->setObjectName( "3DAxis_CubeRoot" );
-    mCubeRoot->addComponent( mAxisSceneLayer ); // raycaster will filter object containing this layer
+    mCubeRoot->addComponent( mAxisObjectLayer ); // raycaster will filter object containing this layer
 
     createCube( );
   }

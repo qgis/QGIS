@@ -145,7 +145,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     int mFontSize = 10;
 
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
-    Qt3DRender::QLayer *mAxisSceneLayer = nullptr;
+    Qt3DRender::QLayer *mAxisObjectLayer = nullptr;
     Qt3DRender::QCamera *mAxisCamera = nullptr;
     Qt3DRender::QViewport *mAxisViewport = nullptr;
 
