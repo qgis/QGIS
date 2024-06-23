@@ -119,6 +119,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void setEnableAxis( bool show );
     void updateAxisLabelPosition();
     void updateAxisLabelText( Qt3DExtras::QText2DEntity *textEntity, const QString &text );
+    QFont createFont( int pointSize );
 
     Qt3DRender::QViewport *constructAxisViewport( Qt3DCore::QEntity *parent3DScene );
     Qt3DRender::QViewport *constructLabelViewport( Qt3DCore::QEntity *parent3DScene, const QRectF &parentViewportSize );
