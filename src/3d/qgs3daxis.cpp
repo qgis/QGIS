@@ -933,7 +933,10 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::XAxis:
       mTextX = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mTextX->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, &Qgs3DAxis::onTextXChanged );
+      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
+      {
+        updateAxisLabelText( mTextX, text );
+      } );
       mTextTransformX = new Qt3DCore::QTransform();
       mTextCoordX = QVector3D( mCylinderLength + coneLength / 2.0f, 0.0f, 0.0f );
 
@@ -947,7 +950,10 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::YAxis:
       mTextY = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mTextY->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, &Qgs3DAxis::onTextYChanged );
+      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
+      {
+        updateAxisLabelText( mTextY, text );
+      } );
       mTextTransformY = new Qt3DCore::QTransform();
       mTextCoordY = QVector3D( 0.0f, mCylinderLength + coneLength / 2.0f, 0.0f );
 
@@ -961,7 +967,10 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::ZAxis:
       mTextZ = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mTextZ->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, &Qgs3DAxis::onTextZChanged );
+      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
+      {
+        updateAxisLabelText( mTextZ, text );
+      } );
       mTextTransformZ = new Qt3DCore::QTransform();
       mTextCoordZ = QVector3D( 0.0f, 0.0f, mCylinderLength + coneLength / 2.0f );
 
@@ -1178,46 +1187,27 @@ void Qgs3DAxis::updateAxisLabelPosition()
     mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mCanvas->size() ) );
-    onTextXChanged( mTextX->text() );
+    updateAxisLabelText( mTextX, mTextX->text() );
 
     mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mCanvas->size() ) );
-    onTextYChanged( mTextY->text() );
+    updateAxisLabelText( mTextY, mTextY->text() );
 
     mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mCanvas->size() ) );
-    onTextZChanged( mTextZ->text() );
+    updateAxisLabelText( mTextZ, mTextZ->text() );
   }
 }
 
-void Qgs3DAxis::onTextXChanged( const QString &text )
+void Qgs3DAxis::updateAxisLabelText( Qt3DExtras::QText2DEntity *textEntity, const QString &text )
 {
-  QFont f = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
-  f.setWeight( QFont::Weight::Black );
-  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
-  mTextX->setFont( f );
-  mTextX->setWidth( mAxisScaleFactor * mFontSize * text.length() );
-  mTextX->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
-}
-
-void Qgs3DAxis::onTextYChanged( const QString &text )
-{
-  QFont f = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
-  f.setWeight( QFont::Weight::Black );
-  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
-  mTextY->setFont( f );
-  mTextY->setWidth( mAxisScaleFactor * mFontSize * text.length() );
-  mTextY->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
-}
-
-void Qgs3DAxis::onTextZChanged( const QString &text )
-{
-  QFont f = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
-  f.setWeight( QFont::Weight::Black );
-  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
-  mTextZ->setFont( f );
-  mTextZ->setWidth( mAxisScaleFactor * mFontSize * text.length() );
-  mTextZ->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
+  QFont font = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
+  font.setWeight( QFont::Weight::Black );
+  font.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
+  textEntity->setFont( font );
+  const float scaledFontSize = static_cast<float>( mAxisScaleFactor ) * static_cast<float>( mFontSize );
+  textEntity->setWidth( scaledFontSize * static_cast<float>( text.length() ) );
+  textEntity->setHeight( 1.5f * scaledFontSize );
 }
