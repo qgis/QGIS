@@ -123,7 +123,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Qt3DRender::QViewport *constructAxisViewport( Qt3DCore::QEntity *parent3DScene );
     Qt3DRender::QViewport *constructLabelViewport( Qt3DCore::QEntity *parent3DScene, const QRectF &parentViewportSize );
 
-    Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &f, const QMatrix4x4 &rotation, const QVector3D &translation );
+    Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &font, const QMatrix4x4 &rotation, const QVector3D &translation );
 
     // axis picking and menu
     void init3DObjectPicking( );
