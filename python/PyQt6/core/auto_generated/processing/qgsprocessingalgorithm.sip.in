@@ -1186,11 +1186,6 @@ checks based on the geometry type of the layer.
 .. versionadded:: 3.4
 %End
 
-  protected:
-
-    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
-
-
     virtual QString inputParameterName() const /HoldGIL/;
 %Docstring
 Returns the name of the parameter corresponding to the input layer.
@@ -1208,6 +1203,11 @@ By default this is a translated "Input layer" string.
 
 .. versionadded:: 3.12
 %End
+
+  protected:
+
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
+
 
     virtual QString outputName() const = 0 /HoldGIL/;
 %Docstring
