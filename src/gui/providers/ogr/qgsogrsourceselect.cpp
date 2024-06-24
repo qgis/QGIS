@@ -29,7 +29,7 @@
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "ogr/qgsnewogrconnection.h"
-#include "ogr/qgsogrhelperfunctions.h"
+#include "qgsgdalguiutils.h"
 #include "qgsgui.h"
 #include "qgsgdalutils.h"
 #include "qgsspinbox.h"

@@ -21,7 +21,7 @@
 #include <QMessageBox>
 
 #include "qgsproviderregistry.h"
-#include "ogr/qgsogrhelperfunctions.h"
+#include "qgsgdalguiutils.h"
 #include "qgsgdalutils.h"
 #include "qgsgdalcredentialoptionswidget.h"
 #include "qgsspinbox.h"

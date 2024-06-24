@@ -1,6 +1,5 @@
 /***************************************************************************
-                          qgsogrhelperfunctions.cpp
-    helper functions to create ogr uris for database and protocol drivers
+                          qgsgdalguiutils.cpp
                              -------------------
     begin                : Mon Jan 2 2009
     copyright            : (C) 2009 by Godofredo Contreras Nava
@@ -16,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsogrhelperfunctions.h"
+#include "qgsgdalguiutils.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
