@@ -17,6 +17,7 @@
 #define QGSDIFFUSESPECULARMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgs3dmapsettings.h"
 
 #include <QColor>
 #include <QObject>
@@ -56,7 +57,7 @@ class _3D_EXPORT QgsDiffuseSpecularMaterial : public Qt3DRender::QMaterial
     /**
      * Constructor for QgsDiffuseSpecularMaterial, with the specified \a parent node.
      */
-    explicit QgsDiffuseSpecularMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsDiffuseSpecularMaterial( const Qgs3DMapSettings &mapSettings, Qt3DCore::QNode *parent = nullptr );
     ~QgsDiffuseSpecularMaterial() override;
 
     QColor ambient() const;
@@ -77,7 +78,7 @@ class _3D_EXPORT QgsDiffuseSpecularMaterial : public Qt3DRender::QMaterial
     void shininessChanged( float shininess );
 
   private:
-    void init();
+    void init( const Qgs3DMapSettings &mapSettings );
 
     void handleAmbientChanged( const QVariant &var );
     void handleDiffuseChanged( const QVariant &var );

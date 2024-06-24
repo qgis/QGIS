@@ -24,10 +24,11 @@
 #include <Qt3DRender/QTexture>
 
 #include "qgsdiffusespecularmaterial.h"
+#include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 
 ///@cond PRIVATE
-QgsDiffuseSpecularMaterial::QgsDiffuseSpecularMaterial( QNode *parent )
+QgsDiffuseSpecularMaterial::QgsDiffuseSpecularMaterial( const Qgs3DMapSettings &mapSettings, QNode *parent )
   : QMaterial( parent )
   , mEffect( new Qt3DRender::QEffect() )
   , mAmbientParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
@@ -40,13 +41,13 @@ QgsDiffuseSpecularMaterial::QgsDiffuseSpecularMaterial( QNode *parent )
   , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
 {
-  init();
+  init( mapSettings );
 }
 
 QgsDiffuseSpecularMaterial::~QgsDiffuseSpecularMaterial() = default;
 
 
-void QgsDiffuseSpecularMaterial::init()
+void QgsDiffuseSpecularMaterial::init( const Qgs3DMapSettings &mapSettings )
 {
   connect( mAmbientParameter, &Qt3DRender::QParameter::valueChanged,
            this, &QgsDiffuseSpecularMaterial::handleAmbientChanged );
@@ -61,6 +62,7 @@ void QgsDiffuseSpecularMaterial::init()
   mEffect->addParameter( mDiffuseParameter );
   mEffect->addParameter( mSpecularParameter );
   mEffect->addParameter( mShininessParameter );
+  Qgs3DUtils::addBoundingBoxParametersToEffect( mEffect, mapSettings );
 
   mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
 
