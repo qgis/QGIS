@@ -64,7 +64,7 @@ class DoxygenParser():
                                          'QgsSQLStatement::NodeUnaryOperator',
                                          'QgsRuleBasedLabeling::Rule',
                                          'QgsSQLStatement::Visitor']
-        self.version_regex = re.compile(r'QGIS [\d\.]+.*')
+        self.version_regex = re.compile(r'.*QGIS\s+(?:<ref.*?>)?[\d\.]+.*', re.MULTILINE)
         self.parseFiles(path)
 
     def parseFiles(self, path):
@@ -257,7 +257,7 @@ class DoxygenParser():
         # test for brief description
         d = e.find('briefdescription')
         has_brief_description = False
-        if d:
+        if d is not None:
             has_brief_description = True
             for para in d.iter('para'):
                 if para.text and re.search(r'\btodo\b', para.text.lower()) is not None:
@@ -271,7 +271,7 @@ class DoxygenParser():
             for s in para.iter('simplesect'):
                 if s.get('kind') == 'since':
                     for p in s.iter('para'):
-                        if self.version_regex.match(p.text):
+                        if self.version_regex.match(ET.tostring(p).decode()):
                             found_version_added = True
                             break
 
@@ -529,6 +529,8 @@ class DoxygenParser():
                 decl_deprecated = True
         except:
             pass
+        if b'Q_DECL_DEPRECATED' in ET.tostring(type_elem):
+            decl_deprecated = True
 
         doxy_deprecated = False
         has_description = True
