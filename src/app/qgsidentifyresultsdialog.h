@@ -378,8 +378,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     static bool isFeatureInAncestors( QTreeWidgetItem *item, const QgsVectorLayer *vlayer, const QgsFeature &f );
 
-    friend class TestQgsMapToolIdentifyAction;
-    friend class TestQgsIdentifyResultsDialog;
+    friend class TestQgsIdentify;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction
