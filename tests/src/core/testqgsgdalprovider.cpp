@@ -920,6 +920,8 @@ void TestQgsGdalProvider::testVsiCredentialOptions()
   QString region( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QStringLiteral( "eu-central-1" ) );
 
+  QCOMPARE( rl->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ) );
+
   // different bucket
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QString() );
@@ -940,6 +942,8 @@ void TestQgsGdalProvider::testVsiCredentialOptions()
   QCOMPARE( noSign, QString() );
   region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QString() );
+
+  QCOMPARE( rl2->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/another/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ) );
 #endif
 }
 
