@@ -352,13 +352,13 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass(
   mAmbientOcclusionRenderLayerFilter = new Qt3DRender::QLayerFilter( mAmbientOcclusionRenderStateSet );
 
   mAmbientOcclusionRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mAmbientOcclusionRenderLayerFilter );
-  Qt3DRender::QRenderTarget *depthRenderTarget = new Qt3DRender::QRenderTarget( mAmbientOcclusionRenderCaptureTargetSelector );
+  Qt3DRender::QRenderTarget *colorRenderTarget = new Qt3DRender::QRenderTarget( mAmbientOcclusionRenderCaptureTargetSelector );
 
   // The lifetime of the objects created here is managed
   // automatically, as they become children of this object.
 
   // Create a render target output for rendering color.
-  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( depthRenderTarget );
+  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( colorRenderTarget );
   colorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
 
   // Create a texture to render into.
@@ -370,9 +370,9 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass(
 
   // Hook the texture up to our output, and the output up to this object.
   colorOutput->setTexture( mAmbientOcclusionRenderTexture );
-  depthRenderTarget->addOutput( colorOutput );
+  colorRenderTarget->addOutput( colorOutput );
 
-  mAmbientOcclusionRenderCaptureTargetSelector->setTarget( depthRenderTarget );
+  mAmbientOcclusionRenderCaptureTargetSelector->setTarget( colorRenderTarget );
 
   mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( mForwardDepthTexture, mMainCamera, mRootEntity );
   mAmbientOcclusionRenderLayerFilter->addLayer( mAmbientOcclusionRenderEntity->layer() );
