@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>shaders/diffuseSpecular.frag</file>
-        <file>shaders/diffuseSpecular.vert</file>
         <file>shaders/instanced.vert</file>
         <file>shaders/light.inc.frag</file>
         <file>shaders/lines.vert</file>

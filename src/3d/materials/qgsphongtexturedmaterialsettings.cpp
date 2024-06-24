@@ -141,7 +141,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( const Qgs3D
       Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
       //Load shader programs
-      const QUrl urlVert( QStringLiteral( "qrc:/shaders/diffuseSpecular.vert" ) );
+      const QUrl urlVert( QStringLiteral( "qrc:/shaders/default.vert" ) );
       shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
       const QUrl urlFrag( QStringLiteral( "qrc:/shaders/diffuseSpecular.frag" ) );
       shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
