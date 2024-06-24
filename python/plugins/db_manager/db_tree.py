@@ -25,8 +25,11 @@ from qgis.core import Qgis, QgsProject, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from .db_model import DBModel, PluginItem
+from .db_plugins.gpkg.plugin import GPKGRasterTable
 from .db_plugins.plugin import DBPlugin, Schema, Table
 from .db_plugins.vlayers.plugin import LTable
+
+from osgeo import gdal
 
 
 class DBTree(QTreeView):
@@ -122,7 +125,8 @@ class DBTree(QTreeView):
         menu = QMenu(self)
 
         if isinstance(item, (Table, Schema)) and not isinstance(item, LTable):
-            menu.addAction(QCoreApplication.translate("DBTree", "Rename…"), self.rename)
+            if not (isinstance(item, GPKGRasterTable) and int(gdal.VersionInfo()) < 3100000):
+                menu.addAction(QCoreApplication.translate("DBTree", "Rename…"), self.rename)
             menu.addAction(QCoreApplication.translate("DBTree", "Delete…"), self.delete)
 
             if isinstance(item, Table) and item.canBeAddedToCanvas():
