@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dmaterial_p.h"
+#include "qgs3dmapsettings.h"
 
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -110,13 +111,12 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
 
 QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer,
-                                      const QgsDateTimeRange &timeRange,
-                                      const QgsVector3D &origin,
+                                      const Qgs3DMapSettings &mapSettings,
                                       const QgsMesh3DSymbol *symbol,
                                       MagnitudeType magnitudeType )
   : mSymbol( symbol->clone() )
   , mMagnitudeType( magnitudeType )
-  , mOrigin( origin )
+  , mOrigin( mapSettings.origin() )
 {
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
 
@@ -124,7 +124,9 @@ QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer,
 
   // this method has to be called even if there isn't arrows (terrain) because it configures the parameter of shaders
   // If all the parameters ("uniform" in shaders) are not defined in QGIS, the shaders sometimes don't work (depends on hardware?)
-  configureArrows( layer, timeRange );
+  configureArrows( layer, mapSettings.temporalRange() );
+
+  Qgs3DUtils::addBoundingBoxParametersToEffect( eff, mapSettings );
 
   eff->addTechnique( mTechnique );
   setEffect( eff );

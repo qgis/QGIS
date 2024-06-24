@@ -16,6 +16,8 @@ out MeshVertex {
     float magnitude;
 } vs_out;
 
+#pragma include ../clipplane.inc
+
 void main()
 {
     gl_Position = mvp * vec4( vertexPosition, 1.0 );
@@ -28,4 +30,6 @@ void main()
         vs_out.magnitude=scalarMagnitude;
     else
         vs_out.magnitude=worldPosition.y;
+
+    setClipDistance(worldPosition);
 }

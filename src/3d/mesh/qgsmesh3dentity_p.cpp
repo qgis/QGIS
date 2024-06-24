@@ -67,7 +67,7 @@ void QgsMeshDataset3DEntity::applyMaterial()
     if ( datasetGroupIndex >= 0 )
       mSymbol->setColorRampShader( rendererSettings.scalarSettings( datasetGroupIndex ).colorRampShader() );
   }
-  QgsMesh3DMaterial *material = new QgsMesh3DMaterial( layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mSymbol.get(), QgsMesh3DMaterial::ScalarDataSet );
+  QgsMesh3DMaterial *material = new QgsMesh3DMaterial( layer(), mMapSettings, mSymbol.get(), QgsMesh3DMaterial::ScalarDataSet );
   addComponent( material );
 }
 
@@ -96,8 +96,8 @@ void QgsMesh3DTerrainTileEntity::buildGeometry()
 void QgsMesh3DTerrainTileEntity::applyMaterial()
 {
   QgsMesh3DMaterial *material = new QgsMesh3DMaterial(
-    nullptr, QgsDateTimeRange(),
-    mMapSettings.origin(),
+    nullptr,
+    mMapSettings,
     mSymbol.get(),
     QgsMesh3DMaterial::ZValue );
   addComponent( material );
