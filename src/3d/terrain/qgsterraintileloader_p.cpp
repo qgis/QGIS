@@ -73,7 +73,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     }
     else
     {
-      QgsTextureMaterial *textureMaterial = new QgsTextureMaterial;
+      QgsTextureMaterial *textureMaterial = new QgsTextureMaterial( mapSettings );
       textureMaterial->setTexture( texture );
       material = textureMaterial;
     }

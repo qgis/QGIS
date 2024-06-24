@@ -24,9 +24,11 @@
 #include <Qt3DRender/QTexture>
 
 #include "qgstexturematerial.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 
 ///@cond PRIVATE
-QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
+QgsTextureMaterial::QgsTextureMaterial( const Qgs3DMapSettings &mapSettings, QNode *parent )
   : QMaterial( parent )
   , mTextureParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseTexture" ), new Qt3DRender::QTexture2D ) )
   , mGL3Technique( new Qt3DRender::QTechnique( this ) )
@@ -34,13 +36,13 @@ QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
   , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
 {
-  init();
+  init( mapSettings );
 }
 
 QgsTextureMaterial::~QgsTextureMaterial() = default;
 
 
-void QgsTextureMaterial::init()
+void QgsTextureMaterial::init( const Qgs3DMapSettings &mapSettings )
 {
   connect( mTextureParameter, &Qt3DRender::QParameter::valueChanged,
            this, &QgsTextureMaterial::handleTextureChanged );
@@ -48,6 +50,7 @@ void QgsTextureMaterial::init()
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
 
   effect->addParameter( mTextureParameter );
+  Qgs3DUtils::addBoundingBoxParametersToEffect( effect, mapSettings );
 
   mGL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/texture.frag" ) ) ) );
   mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/texture.vert" ) ) ) );
