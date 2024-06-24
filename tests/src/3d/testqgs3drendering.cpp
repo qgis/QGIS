@@ -1201,8 +1201,6 @@ void TestQgs3DRendering::testAnimationExport()
 
 void TestQgs3DRendering::testInstancedRendering()
 {
-  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
-
   std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
@@ -1234,7 +1232,7 @@ void TestQgs3DRendering::testInstancedRendering()
 
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mProject->crs() );
-  mapSettings->setExtent( fullExtent );
+  mapSettings->setExtent( QgsRectangle( 900, 900, 2100, 2100 ) );
   mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1264,6 +1262,7 @@ void TestQgs3DRendering::testInstancedRendering()
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
+  mapSettings->setExtent( QgsRectangle( 980, 980, 2020, 2020 ) );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
