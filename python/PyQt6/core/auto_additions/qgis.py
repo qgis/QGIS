@@ -4845,6 +4845,16 @@ Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalen
 # --
 Qgis.GdalResampleAlgorithm.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VsiHandlerType.Invalid.__doc__ = "Invalid type, i.e. not a valid VSI handler"
+Qgis.VsiHandlerType.Archive.__doc__ = "File archive type (e.g. vsizip)"
+Qgis.VsiHandlerType.Network.__doc__ = "Generic network types (e.g. vsicurl)"
+Qgis.VsiHandlerType.Cloud.__doc__ = "Specific cloud provider types (e.g. vsis3)"
+Qgis.VsiHandlerType.Memory.__doc__ = "In-memory types (e.g. vsimem)"
+Qgis.VsiHandlerType.Other.__doc__ = "All other types"
+Qgis.VsiHandlerType.__doc__ = "GDAL VSI handler types.\n\n.. versionadded:: 3.40\n\n" + '* ``Invalid``: ' + Qgis.VsiHandlerType.Invalid.__doc__ + '\n' + '* ``Archive``: ' + Qgis.VsiHandlerType.Archive.__doc__ + '\n' + '* ``Network``: ' + Qgis.VsiHandlerType.Network.__doc__ + '\n' + '* ``Cloud``: ' + Qgis.VsiHandlerType.Cloud.__doc__ + '\n' + '* ``Memory``: ' + Qgis.VsiHandlerType.Memory.__doc__ + '\n' + '* ``Other``: ' + Qgis.VsiHandlerType.Other.__doc__
+# --
+Qgis.VsiHandlerType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ZonalStatistic.Count.__doc__ = "Pixel count"
 Qgis.ZonalStatistic.Sum.__doc__ = "Sum of pixel values"
 Qgis.ZonalStatistic.Mean.__doc__ = "Mean of pixel values"

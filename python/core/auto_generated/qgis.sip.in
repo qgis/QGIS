@@ -2730,6 +2730,15 @@ The development version
       RA_Q3,
     };
 
+    enum class VsiHandlerType
+    {
+      Invalid,
+      Archive,
+      Network,
+      Cloud,
+      Memory,
+      Other,
+    };
 
     enum class ZonalStatistic
     {

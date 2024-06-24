@@ -105,7 +105,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
 void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
 {
-  if ( QgsGdalUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() ) )
+  if ( QgsGdalUtils::vsiHandlerType( cmbProtocolTypes->currentData().toString() ) == Qgis::VsiHandlerType::Cloud )
   {
     labelProtocolURI->hide();
     protocolURI->hide();
@@ -360,7 +360,7 @@ void QgsGdalSourceSelect::computeDataSources()
   }
   else if ( radioSrcProtocol->isChecked() )
   {
-    bool cloudType = QgsGdalUtils::isProtocolCloudType( cmbProtocolTypes->currentData().toString() );
+    const bool cloudType = QgsGdalUtils::vsiHandlerType( cmbProtocolTypes->currentData().toString() ) == Qgis::VsiHandlerType::Cloud;
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
       return;
@@ -524,7 +524,7 @@ void QgsGdalSourceSelect::showHelp()
 void QgsGdalSourceSelect::updateProtocolOptions()
 {
   const QString currentProtocol = cmbProtocolTypes->currentData().toString();
-  if ( radioSrcProtocol->isChecked() && QgsGdalUtils::isProtocolCloudType( currentProtocol ) )
+  if ( radioSrcProtocol->isChecked() && QgsGdalUtils::vsiHandlerType( currentProtocol ) == Qgis::VsiHandlerType::Cloud )
   {
     mCredentialsWidget->setDriver( currentProtocol );
     mCredentialOptionsGroupBox->setVisible( true );

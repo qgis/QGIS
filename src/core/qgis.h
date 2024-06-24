@@ -4894,6 +4894,21 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( GdalResampleAlgorithm )
 
+    /**
+     * GDAL VSI handler types.
+     *
+     * \since QGIS 3.40
+     */
+    enum class VsiHandlerType : int
+    {
+      Invalid, //!< Invalid type, i.e. not a valid VSI handler
+      Archive, //!< File archive type (e.g. vsizip)
+      Network, //!< Generic network types (e.g. vsicurl)
+      Cloud, //!< Specific cloud provider types (e.g. vsis3)
+      Memory, //!< In-memory types (e.g. vsimem)
+      Other, //!< All other types
+    };
+    Q_ENUM( VsiHandlerType )
 
     /**
      * Statistics to be calculated during a zonal statistics operation.

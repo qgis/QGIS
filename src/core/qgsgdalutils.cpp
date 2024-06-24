@@ -965,21 +965,50 @@ bool QgsGdalUtils::isVsiArchiveFileExtension( const QString &extension )
   return vsiArchiveFileExtensions().contains( extWithDot.toLower() );
 }
 
-bool QgsGdalUtils::isProtocolCloudType( const QString &protocol )
+Qgis::VsiHandlerType QgsGdalUtils::vsiHandlerType( const QString &prefix )
 {
-  QString vsiPrefix = protocol;
+  if ( prefix.isEmpty() )
+    return Qgis::VsiHandlerType::Invalid;
+
+  QString vsiPrefix = prefix;
   if ( vsiPrefix.startsWith( '/' ) )
     vsiPrefix = vsiPrefix.mid( 1 );
   if ( vsiPrefix.endsWith( '/' ) )
     vsiPrefix.chop( 1 );
 
-  return ( vsiPrefix == QLatin1String( "vsis3" ) ||
-           vsiPrefix == QLatin1String( "vsigs" ) ||
-           vsiPrefix == QLatin1String( "vsiaz" ) ||
-           vsiPrefix == QLatin1String( "vsiadls" ) ||
-           vsiPrefix == QLatin1String( "vsioss" ) ||
-           vsiPrefix == QLatin1String( "vsiswift" ) ||
-           vsiPrefix == QLatin1String( "vsihdfs" ) );
+  if ( !vsiPrefix.startsWith( QLatin1String( "vsi" ) ) )
+    return Qgis::VsiHandlerType::Invalid;
+
+  if ( vsiPrefix == QLatin1String( "vsizip" ) ||
+       vsiPrefix == QLatin1String( "vsigzip" ) ||
+       vsiPrefix == QLatin1String( "vsitar" ) ||
+       vsiPrefix == QLatin1String( "vsi7z" ) ||
+       vsiPrefix == QLatin1String( "vsirar" ) )
+    return Qgis::VsiHandlerType::Archive;
+
+  else if ( vsiPrefix == QLatin1String( "vsicurl" ) ||
+            vsiPrefix == QLatin1String( "vsicurl_streaming" ) )
+    return Qgis::VsiHandlerType::Archive;
+
+  else if ( vsiPrefix == QLatin1String( "vsis3" ) ||
+            vsiPrefix == QLatin1String( "vsicurl_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsigs" ) ||
+            vsiPrefix == QLatin1String( "vsigs_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsiaz" ) ||
+            vsiPrefix == QLatin1String( "vsiaz_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsiadls" ) ||
+            vsiPrefix == QLatin1String( "vsioss" ) ||
+            vsiPrefix == QLatin1String( "vsioss_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsiswift" ) ||
+            vsiPrefix == QLatin1String( "vsiswift_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsihdfs" ) ||
+            vsiPrefix == QLatin1String( "vsiwebhdfs" ) )
+    return Qgis::VsiHandlerType::Cloud;
+
+  else if ( vsiPrefix == QLatin1String( "vsimem" ) )
+    return Qgis::VsiHandlerType::Memory;
+
+  return Qgis::VsiHandlerType::Other;
 }
 
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type )

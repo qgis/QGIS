@@ -342,11 +342,11 @@ class CORE_EXPORT QgsGdalUtils
     static bool isVsiArchiveFileExtension( const QString &extension );
 
     /**
-     * Returns TRUE if \a protocol (eg "vsis3") is considered a cloud type.
+     * Returns the VSI handler type for a given VSI \a prefix.
      *
      * \since QGIS 3.40
      */
-    static bool isProtocolCloudType( const QString &protocol );
+    static Qgis::VsiHandlerType vsiHandlerType( const QString &prefix );
 
     /**
      * Attempts to apply VSI credential \a options.

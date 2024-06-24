@@ -222,7 +222,7 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
   else
     setCapabilities( Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Fertile );
 
-  if ( !QgsGdalUtils::vsiPrefixForPath( path ).isEmpty() )
+  if ( QgsGdalUtils::vsiHandlerType( QgsGdalUtils::vsiPrefixForPath( path ) ) == Qgis::VsiHandlerType::Archive )
   {
     mIconName = QStringLiteral( "/mIconZip.svg" );
   }
