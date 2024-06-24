@@ -547,7 +547,7 @@ void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
 
   mDriver = driver;
 
-  if ( !QgsGdalUtils::isProtocolCloudType( mDriver ) )
+  if ( QgsGdalUtils::vsiHandlerType( mDriver ) != Qgis::VsiHandlerType::Cloud )
   {
     mModel->setAvailableOptions( {} );
     return;

@@ -853,7 +853,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
                          ? pathInfo.suffix().toLower()
                          : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
   bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
-  const bool isVsiNetworkProtocol = QgsGdalUtils::isProtocolCloudType( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() );
+  const Qgis::VsiHandlerType vsiHandlerType = QgsGdalUtils::vsiHandlerType( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() );
 
   bool forceDeepScanDir = false;
   if ( pathInfo.isDir() && !isOgrSupportedDirectory )
@@ -862,13 +862,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     forceDeepScanDir = it.hasNext();
   }
 
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() || isVsiNetworkProtocol ) && !forceDeepScanDir )
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() || vsiHandlerType == Qgis::VsiHandlerType::Cloud ) && !forceDeepScanDir )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
 
     // allow only normal files or supported directories to continue
-    if ( !isOgrSupportedDirectory && !pathInfo.isFile() && !isVsiNetworkProtocol )
+    if ( !isOgrSupportedDirectory && !pathInfo.isFile() && vsiHandlerType != Qgis::VsiHandlerType::Cloud )
       return {};
 
     if ( !fileExtensions.contains( suffix ) && !dirExtensions.contains( suffix ) )
