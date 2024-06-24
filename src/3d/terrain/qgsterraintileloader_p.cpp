@@ -25,12 +25,11 @@
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgscoordinatetransform.h"
+#include "qgstexturematerial.h"
 
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
-
-#include <Qt3DExtras/QTextureMaterial>
 
 /// @cond PRIVATE
 
@@ -70,7 +69,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     }
     else
     {
-      Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+      QgsTextureMaterial *textureMaterial = new QgsTextureMaterial;
       textureMaterial->setTexture( texture );
       material = textureMaterial;
     }
