@@ -276,7 +276,7 @@ class DoxygenParser():
                             break
             for s in para.iter('xrefsect'):
                 if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
-                    # can't have both deprecated and since, so if we've found deprecated then treat it as having satisified the "since" requirement too
+                    # can't have both deprecated and since, so if we've found deprecated then treat it as having satisfied the "since" requirement too
                     found_version_added = True
                     break
 
