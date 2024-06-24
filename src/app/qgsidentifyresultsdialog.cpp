@@ -22,6 +22,7 @@
 #include <QLabel>
 #include <QAction>
 #include <QTreeWidgetItem>
+#include <QTreeWidgetItemIterator>
 #include <QPixmap>
 #include <QMenu>
 #include <QClipboard>
@@ -106,6 +107,10 @@
 constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
+
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowReferencingRelations = new QgsSettingsEntryBool( QStringLiteral( "show-referencing-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show referencing relations in the identify feature result" ) );
+
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowReferencedRelations = new QgsSettingsEntryBool( QStringLiteral( "show-referenced-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show referenced relations in the identify feature result" ) );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
@@ -295,6 +300,14 @@ QgsIdentifyResultsFeatureItem::QgsIdentifyResultsFeatureItem( const QgsFields &f
 {
 }
 
+QgsIdentifyResultsRelationItem::QgsIdentifyResultsRelationItem( const QStringList &strings, const QgsRelation &relation, bool isReferencedRole, const QgsFeature &topFeature )
+  : QTreeWidgetItem( strings )
+  , mRelation( relation )
+  , mIsReferencedRole( isReferencedRole )
+  , mTopFeature( topFeature )
+{
+}
+
 void QgsIdentifyResultsWebViewItem::setHtml( const QString &html )
 {
   mWebView->setHtml( html );
@@ -361,6 +374,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
   connect( mActionHideNullValues, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideNullValues_toggled );
+  connect( mActionShowReferencingRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowReferencingRelations_toggled );
+  connect( mActionShowReferencedRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowReferencedRelations_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -442,6 +457,9 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( lstResults, &QTreeWidget::itemClicked,
            this, &QgsIdentifyResultsDialog::itemClicked );
 
+  connect( lstResults, &QTreeWidget::itemExpanded,
+           this, &QgsIdentifyResultsDialog::itemExpanded );
+
 #if defined( HAVE_QTPRINTER )
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
 #else
@@ -470,6 +488,10 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionHideDerivedAttributes->setChecked( mySettings.value( QStringLiteral( "Map/hideDerivedAttributes" ), false ).toBool() );
   settingsMenu->addAction( mActionHideNullValues );
   mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
+  settingsMenu->addAction( mActionShowReferencedRelations );
+  mActionShowReferencedRelations->setChecked( QgsIdentifyResultsDialog::settingShowReferencedRelations->value() );
+  settingsMenu->addAction( mActionShowReferencingRelations );
+  mActionShowReferencingRelations->setChecked( QgsIdentifyResultsDialog::settingShowReferencingRelations->value() );
 
 }
 
@@ -580,7 +602,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsIdentifyResultsDialog::editingToggled );
   }
 
-  QgsIdentifyResultsFeatureItem *featItem = createFeatureItem( vlayer, f, derivedAttributes, true, layItem );
+  QgsIdentifyResultsFeatureItem *featItem = createFeatureItem( vlayer, f, derivedAttributes, layItem );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->setFirstColumnSpanned( true );
@@ -649,7 +671,28 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   highlightFeature( featItem );
 }
 
-QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem )
+/**
+ * Given an item, returns if the provided feature matches the item or one of
+ * its ancestor in the tree
+ */
+/* static */
+bool QgsIdentifyResultsDialog::isFeatureInAncestors( QTreeWidgetItem *item, const QgsVectorLayer *vlayer, const QgsFeature &f )
+{
+  for ( ; item; item = item->parent() )
+  {
+    if ( item->data( 0, FeatureRole ).isValid() && item->parent() && vectorLayer( item->parent() ) == vlayer )
+    {
+      const QgsFeature otherF = item->data( 0, FeatureRole ).value< QgsFeature >();
+      if ( f.id() == otherF.id() )
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, QTreeWidgetItem *parentItem )
 {
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->fields(), f, vlayer->crs() );
   featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
@@ -748,6 +791,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     const QString originalValue = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
 
     QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << originalValue );
+
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
@@ -805,8 +849,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     }
   }
 
-  // add entries for related items
-  if ( includeRelations )
+  // add entries for related items coming from referenced relations
+  if ( QgsIdentifyResultsDialog::settingShowReferencedRelations->value() )
   {
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( vlayer );
     if ( !relations.empty() )
@@ -815,26 +859,44 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       {
         QgsFeatureIterator childIt = relation.getRelatedFeatures( f );
         QgsFeature childFeature;
-        QgsTreeWidgetItem *relationItem = nullptr;
-        while ( childIt.nextFeature( childFeature ) )
+        if ( childIt.nextFeature( childFeature ) && !isFeatureInAncestors( parentItem, relation.referencingLayer(), childFeature ) )
         {
-          if ( !relationItem )
-          {
-            relationItem = new QgsTreeWidgetItem( QStringList() << relation.name() );
-            QFont italicFont;
-            italicFont.setItalic( true );
-            relationItem->setFont( 0, italicFont );
-            relationItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( relation.referencingLayer() ) ) );
-            featItem->addChild( relationItem );
-          }
-
-          QgsIdentifyResultsFeatureItem *childItem = createFeatureItem( relation.referencingLayer(), childFeature, QMap<QString, QString>(), false, relationItem );
-          relationItem->addChild( childItem );
+          QgsIdentifyResultsRelationItem *relationItem = new QgsIdentifyResultsRelationItem( QStringList() << relation.name(), relation, true, f );
+          QFont italicFont;
+          italicFont.setItalic( true );
+          relationItem->setFont( 0, italicFont );
+          relationItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( relation.referencingLayer() ) ) );
+          relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencingLayer()->name() ).arg( relation.name() ).arg( childIt.nextFeature( childFeature ) ? "…" : "1" ) );
+          relationItem->setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
+          featItem->addChild( relationItem );
+          // setFirstColumnSpanned() to be done after addChild() to be effective
+          relationItem->setFirstColumnSpanned( true );
         }
+      }
+    }
+  }
 
-        if ( relationItem )
+  // add entries for related items coming from referencing relations
+  if ( QgsIdentifyResultsDialog::settingShowReferencingRelations->value() )
+  {
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( vlayer );
+    if ( !relations.empty() )
+    {
+      for ( const QgsRelation &relation : relations )
+      {
+        QgsFeature parentFeature = relation.getReferencedFeature( f );
+        if ( parentFeature.isValid() && !isFeatureInAncestors( parentItem, relation.referencedLayer(), parentFeature ) )
         {
-          relationItem->setText( 0, QStringLiteral( "%1 [%2]" ).arg( relation.name() ).arg( relationItem->childCount() ) );
+          QgsIdentifyResultsRelationItem *relationItem = new QgsIdentifyResultsRelationItem( QStringList() << relation.name(), relation, false, f );
+          QFont italicFont;
+          italicFont.setItalic( true );
+          relationItem->setFont( 0, italicFont );
+          relationItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( relation.referencedLayer() ) ) );
+          relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencedLayer()->name() ).arg( relation.name() ) .arg( 1 ) )  ;
+          relationItem->setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
+          featItem->addChild( relationItem );
+          // setFirstColumnSpanned() to be done after addChild() to be effective
+          relationItem->setFirstColumnSpanned( true );
         }
       }
     }
@@ -1506,7 +1568,7 @@ void QgsIdentifyResultsDialog::show()
   // expand all if enabled
   if ( mExpandNewAction->isChecked() )
   {
-    lstResults->expandAll();
+    expandAll();
   }
 
   QDialog::show();
@@ -1541,6 +1603,48 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   {
     QgsMapLayerAction *action = item->data( 0, Qt::UserRole + 1 ).value<QgsMapLayerAction *>();
     doMapLayerAction( item, action );
+  }
+}
+
+void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
+{
+  QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( item );
+  if ( relationItem && item->childCount() == 0 )
+  {
+    const QgsRelation &relation = relationItem->relation();
+    const QgsFeature &feat = relationItem->topFeature();
+
+    if ( relationItem->isReferencedRole() )
+    {
+      QgsFeatureIterator childIt = relation.getRelatedFeatures( feat );
+      QgsFeature childFeature;
+      while ( childIt.nextFeature( childFeature ) )
+      {
+        if ( !isFeatureInAncestors( relationItem, relation.referencingLayer(), childFeature ) )
+        {
+          QgsIdentifyResultsFeatureItem *childItem = createFeatureItem( relation.referencingLayer(), childFeature, QMap<QString, QString>(), relationItem );
+          relationItem->addChild( childItem );
+        }
+      }
+
+      if ( relationItem->childCount() > 1 )
+      {
+        relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencingLayer()->name() ).arg( relation.name() ).arg( relationItem->childCount() ) );
+      }
+    }
+    else
+    {
+      QgsFeature parentFeature = relation.getReferencedFeature( feat );
+      QgsIdentifyResultsFeatureItem *childItem = createFeatureItem( relation.referencedLayer(), parentFeature, QMap<QString, QString>(), relationItem );
+      relationItem->addChild( childItem );
+    }
+  }
+
+  if ( relationItem && item->childCount() == 1 )
+  {
+    // Small usability: when expanding a relation that has only one related
+    // feature, expand the feature.
+    lstResults->expandItem( item->child( 0 ) );
   }
 }
 
@@ -1591,6 +1695,10 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     if ( featItem->feature().isValid() )
     {
       mActionPopup->addAction( tr( "Zoom to Feature" ), this, &QgsIdentifyResultsDialog::zoomToFeature );
+      if ( vlayer && dynamic_cast<QgsIdentifyResultsRelationItem *>( featItem->parent() ) )
+      {
+        mActionPopup->addAction( tr( "Explore Feature" ), this, &QgsIdentifyResultsDialog::exploreFeature );
+      }
       mActionPopup->addAction( tr( "Copy Feature" ), this, &QgsIdentifyResultsDialog::copyFeature );
       if ( vlayer )
       {
@@ -2281,6 +2389,22 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   mCanvas->refresh();
 }
 
+void QgsIdentifyResultsDialog::exploreFeature()
+{
+  QTreeWidgetItem *item = lstResults->currentItem();
+  QgsVectorLayer *vlayer = QgsIdentifyResultsDialog::vectorLayer( item );
+  if ( !vlayer )
+    return;
+
+  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+  if ( !featItem )
+    return;
+
+  const QgsFeature feat = featItem->feature();
+  lstResults->clear();
+  addFeature( vlayer, feat, QMap<QString, QString>() );
+}
+
 void QgsIdentifyResultsDialog::featureForm()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
@@ -2369,7 +2493,16 @@ void QgsIdentifyResultsDialog::layerProperties( QTreeWidgetItem *item )
 
 void QgsIdentifyResultsDialog::expandAll()
 {
-  lstResults->expandAll();
+  // We can't use expandAll() as it would result in resolving nodes corresponding
+  // to related features, that we want the user to explicitly expand, to avoid
+  // creating a potential deeply nested tree.
+
+  QTreeWidgetItemIterator it( lstResults );
+  for ( ; *it ; ++it )
+  {
+    if ( ( *it )->childCount() )
+      lstResults->expandItem( *it );
+  }
 }
 
 void QgsIdentifyResultsDialog::collapseAll()
@@ -2516,6 +2649,16 @@ void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checke
 void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
 {
   QgsIdentifyResultsDialog::settingHideNullValues->setValue( checked );
+}
+
+void QgsIdentifyResultsDialog::mActionShowReferencedRelations_toggled( bool checked )
+{
+  QgsIdentifyResultsDialog::settingShowReferencedRelations->setValue( checked );
+}
+
+void QgsIdentifyResultsDialog::mActionShowReferencingRelations_toggled( bool checked )
+{
+  QgsIdentifyResultsDialog::settingShowReferencingRelations->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )

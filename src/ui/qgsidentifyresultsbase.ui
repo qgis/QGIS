@@ -383,6 +383,28 @@
     <string>Hide derived attributes from results</string>
    </property>
   </action>
+  <action name="mActionShowReferencingRelations">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show referencing relations</string>
+   </property>
+   <property name="toolTip">
+    <string>Show referencing relations</string>
+   </property>
+  </action>
+  <action name="mActionShowReferencedRelations">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show referenced relations</string>
+   </property>
+   <property name="toolTip">
+    <string>Show referenced relations</string>
+   </property>
+  </action>
   <action name="mHelpToolAction">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

@@ -19,6 +19,7 @@ set(TESTS
   testqgsdecorationscalebar.cpp
   testqgsdwgimportdialog.cpp
   testqgsfieldcalculator.cpp
+  testqgsidentifyresultsdialog.cpp
   testqgslayerpropertiesdialogs.cpp
   testqgsmapcanvasdockwidget.cpp
   testqgsmaptooladdpart.cpp

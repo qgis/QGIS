@@ -28,6 +28,7 @@
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaptoolselectionhandler.h"
+#include "qgsrelation.h"
 
 #include <QWidget>
 #include <QList>
@@ -86,6 +87,31 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
     QgsCoordinateReferenceSystem mCrs;
 };
 
+//! Tree widget item being the parent item of a referenced or referencing relation
+class APP_EXPORT QgsIdentifyResultsRelationItem: public QTreeWidgetItem
+{
+  public:
+    //! Constructor
+    QgsIdentifyResultsRelationItem( const QStringList &strings, const QgsRelation &relation, bool isReferencedRole, const QgsFeature &topFeature );
+
+    //! Return the relation
+    const QgsRelation &relation() const { return mRelation; }
+
+    /**
+     * Return true if getRelatedFeatures(mTopFeature) should be called on mRelation,
+      * or false if getReferencedFeature(mTopFeature) should be called.
+      */
+    bool isReferencedRole() const { return mIsReferencedRole; }
+
+    //! Return the feature that is the parent of this item.
+    const QgsFeature &topFeature() const { return mTopFeature; }
+
+  private:
+    QgsRelation mRelation;
+    bool mIsReferencedRole;
+    QgsFeature mTopFeature;
+};
+
 class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
 {
     Q_OBJECT
@@ -127,15 +153,15 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
   public:
 
     /**
-     * Constructor -
-     * takes its own copy of the QgsAttributeAction so
-     * that it is independent of whoever created it.
+     * Constructor
      */
     QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     ~QgsIdentifyResultsDialog() override;
 
     static const QgsSettingsEntryBool *settingHideNullValues;
+    static const QgsSettingsEntryBool *settingShowReferencingRelations;
+    static const QgsSettingsEntryBool *settingShowReferencedRelations;
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer,
@@ -241,6 +267,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void featureForm();
     void zoomToFeature();
+    void exploreFeature();
     void copyAttributeValue();
     void copyFeature();
     void toggleFeatureSelection();
@@ -260,6 +287,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
 
+    void itemExpanded( QTreeWidgetItem *item );
+
     QgsAttributeMap retrieveAttributes( QTreeWidgetItem *item );
     QVariant retrieveAttribute( QTreeWidgetItem *item );
 
@@ -274,6 +303,10 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void mActionHideDerivedAttributes_toggled( bool checked );
 
     void mActionHideNullValues_toggled( bool checked );
+
+    void mActionShowReferencingRelations_toggled( bool checked );
+
+    void mActionShowReferencedRelations_toggled( bool checked );
 
     void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
     void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
@@ -306,7 +339,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QToolButton *mSelectModeButton = nullptr;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
-    QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
+    static QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
     QgsMeshLayer *meshLayer( QTreeWidgetItem *item );
     QgsVectorTileLayer *vectorTileLayer( QTreeWidgetItem *item );
@@ -341,9 +374,12 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void setSelectionMode();
 
     void initSelectionModes();
-    QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem );
+    QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, QTreeWidgetItem *parentItem );
+
+    static bool isFeatureInAncestors( QTreeWidgetItem *item, const QgsVectorLayer *vlayer, const QgsFeature &f );
 
     friend class TestQgsMapToolIdentifyAction;
+    friend class TestQgsIdentifyResultsDialog;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction
