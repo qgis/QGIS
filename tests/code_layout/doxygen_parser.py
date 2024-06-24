@@ -274,6 +274,11 @@ class DoxygenParser():
                         if self.version_regex.match(ET.tostring(p).decode()):
                             found_version_added = True
                             break
+            for s in para.iter('xrefsect'):
+                if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
+                    # can't have both deprecated and since, so if we've found deprecated then treat it as having satisified the "since" requirement too
+                    found_version_added = True
+                    break
 
             if para.text and re.search(r'\btodo\b', para.text.lower()) is not None:
                 noncompliant_members.append({
