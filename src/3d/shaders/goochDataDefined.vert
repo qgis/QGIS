@@ -22,6 +22,8 @@ uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
 
+#pragma include clipplane.inc
+
 void main()
 {
     worldNormal = normalize( modelNormalMatrix * vertexNormal );
@@ -34,4 +36,6 @@ void main()
     vs_out.specular=dataDefinedSpecularColor;
 
     gl_Position = mvp * vec4( vertexPosition, 1.0 );
+
+    setClipDistance(worldPosition);
 }
