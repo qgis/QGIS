@@ -60,6 +60,13 @@ Set ``tolerance`` to 0 to disable simplification. (No simplification is the defa
 Returns the rendered geometry.
 %End
 
+    static QgsGeometry painterPathToGeometry( const QPainterPath &path );
+%Docstring
+Converts a painter ``path`` to a :py:class:`QgsGeometry`.
+
+.. versionadded:: 3.38.1
+%End
+
 };
 
 
