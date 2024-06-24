@@ -4353,10 +4353,11 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       uriParts = decodeUri( gdalUri );
     }
   }
+  const Qgis::VsiHandlerType vsiHandlerType = QgsGdalUtils::vsiHandlerType( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() );
 
   const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
   const QFileInfo pathInfo( path );
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() || vsiHandlerType == Qgis::VsiHandlerType::Cloud ) )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     static QString sFilterString;
