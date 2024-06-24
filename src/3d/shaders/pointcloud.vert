@@ -23,6 +23,8 @@ out vec3 pointColor;
 out vec3 worldPosition; //used when points are triangulated
 out vec3 vertNorm; //used when points are triangulated
 
+#pragma include clipplane.inc
+
 void main(void)
 {
     gl_Position = modelViewProjection * vec4(vertexPosition, 1);
@@ -49,4 +51,6 @@ void main(void)
       classParameter = int(vertexParameter);
       break;
     }
+
+    setClipDistance(worldPosition);
 }
