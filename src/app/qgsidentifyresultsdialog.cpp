@@ -871,6 +871,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
           featItem->addChild( relationItem );
           // setFirstColumnSpanned() to be done after addChild() to be effective
           relationItem->setFirstColumnSpanned( true );
+
+          connect( relation.referencingLayer(), &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
         }
       }
     }
@@ -897,6 +899,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
           featItem->addChild( relationItem );
           // setFirstColumnSpanned() to be done after addChild() to be effective
           relationItem->setFirstColumnSpanned( true );
+
+          connect( relation.referencedLayer(), &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
         }
       }
     }
@@ -2166,6 +2170,21 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
   }
 }
 
+static void deleteItemIfBelongingToLayer( QObject *senderObject, QTreeWidgetItem *item )
+{
+  if ( item->data( 0, Qt::UserRole ).value<QObject *>() == senderObject )
+  {
+    delete item;
+  }
+  else
+  {
+    for ( int i = item->childCount() - 1; i >= 0; i-- )
+    {
+      deleteItemIfBelongingToLayer( senderObject, item->child( i ) );
+    }
+  }
+}
+
 void QgsIdentifyResultsDialog::layerDestroyed()
 {
   QObject *senderObject = sender();
@@ -2184,9 +2203,15 @@ void QgsIdentifyResultsDialog::layerDestroyed()
   }
 
   disconnectLayer( senderObject );
-  delete layerItem( senderObject );
 
-  // remove items, starting from last
+  // remove items from the tree that are related to the layer
+  for ( int i = lstResults->topLevelItemCount() - 1; i >= 0; i-- )
+  {
+    QTreeWidgetItem *item = lstResults->topLevelItem( i );
+    deleteItemIfBelongingToLayer( senderObject, item );
+  }
+
+  // remove items from the table, starting from last
   for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
   {
     QgsDebugMsgLevel( QStringLiteral( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ), 3 );
