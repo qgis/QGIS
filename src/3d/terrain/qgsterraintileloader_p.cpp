@@ -51,8 +51,12 @@ void QgsTerrainTileLoader::loadTexture()
   mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
-void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, const Qgs3DMapSettings &mapSettings )
 {
+  const bool isShadingEnabled = mapSettings.isTerrainShadingEnabled();
+  const QgsPhongMaterialSettings &shadingMaterial = mapSettings.terrainShadingMaterial();
+  const bool useTexture = !mapSettings.layers().empty();
+
   Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity ) : nullptr;
 
   Qt3DRender::QMaterial *material = nullptr;
