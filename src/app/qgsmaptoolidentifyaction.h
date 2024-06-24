@@ -96,7 +96,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Qgis::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
 
-    friend class TestQgsMapToolIdentifyAction;
+    friend class TestQgsIdentify;
 };
 
 #endif

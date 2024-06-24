@@ -42,11 +42,11 @@
 
 #include "cpl_conv.h"
 
-class TestQgsMapToolIdentifyAction : public QObject
+class TestQgsIdentify : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolIdentifyAction() = default;
+    TestQgsIdentify() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -65,6 +65,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyInvalidPolygons(); // test selecting invalid polygons
     void clickxy(); // test if click_x and click_y variables are propagated
     void closestPoint();
+    void testRelations();
 
   private:
     void doAction();
@@ -101,7 +102,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     }
 };
 
-void TestQgsMapToolIdentifyAction::initTestCase()
+void TestQgsIdentify::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -119,22 +120,22 @@ void TestQgsMapToolIdentifyAction::initTestCase()
   mQgisApp = new QgisApp();
 }
 
-void TestQgsMapToolIdentifyAction::cleanupTestCase()
+void TestQgsIdentify::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolIdentifyAction::init()
+void TestQgsIdentify::init()
 {
   canvas = new QgsMapCanvas();
 }
 
-void TestQgsMapToolIdentifyAction::cleanup()
+void TestQgsIdentify::cleanup()
 {
   delete canvas;
 }
 
-void TestQgsMapToolIdentifyAction::doAction()
+void TestQgsIdentify::doAction()
 {
   bool ok = false;
   const int clickxOk = 2484588;
@@ -175,7 +176,7 @@ void TestQgsMapToolIdentifyAction::doAction()
   mIdentifyAction->identifyMenu()->close();
 }
 
-void TestQgsMapToolIdentifyAction::clickxy()
+void TestQgsIdentify::clickxy()
 {
   // create temp layer
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3111" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -216,11 +217,11 @@ void TestQgsMapToolIdentifyAction::clickxy()
   QgsMapMouseEvent mapReleases( nullptr, &releases );
 
   // simulate a click on the corresponding action
-  QTimer::singleShot( 2000, this, &TestQgsMapToolIdentifyAction::doAction );
+  QTimer::singleShot( 2000, this, &TestQgsIdentify::doAction );
   mIdentifyAction->canvasReleaseEvent( &mapReleases );
 }
 
-void TestQgsMapToolIdentifyAction::closestPoint()
+void TestQgsIdentify::closestPoint()
 {
   QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
@@ -325,7 +326,7 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800.000" ) );
 }
 
-void TestQgsMapToolIdentifyAction::lengthCalculation()
+void TestQgsIdentify::lengthCalculation()
 {
   QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
@@ -449,7 +450,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 
 }
 
-void TestQgsMapToolIdentifyAction::perimeterCalculation()
+void TestQgsIdentify::perimeterCalculation()
 {
   QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
@@ -526,7 +527,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QGSCOMPARENEAR( perimeter, 128282, 0.1 );
 }
 
-void TestQgsMapToolIdentifyAction::areaCalculation()
+void TestQgsIdentify::areaCalculation()
 {
   QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
@@ -606,7 +607,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 }
 
 // private
-QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref, bool roundToCanvasPixels )
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsIdentify::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref, bool roundToCanvasPixels )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -622,7 +623,7 @@ QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIden
 }
 
 // private
-QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref )
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsIdentify::testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -636,7 +637,7 @@ QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIden
 
 // private
 QList<QgsMapToolIdentify::IdentifyResult>
-TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
+TestQgsIdentify::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -649,7 +650,7 @@ TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double 
 
 // private
 QList<QgsMapToolIdentify::IdentifyResult>
-TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref )
+TestQgsIdentify::testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -660,7 +661,7 @@ TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer,
   return result;
 }
 
-void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
+void TestQgsIdentify::identifyRasterTemporal()
 {
   //create a temporary layer
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
@@ -687,7 +688,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 }
 
-void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
+void TestQgsIdentify::identifyRasterFloat32()
 {
   //create a temporary layer
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
@@ -722,7 +723,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678901234
 }
 
-void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
+void TestQgsIdentify::identifyRasterFloat64()
 {
   //create a temporary layer
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
@@ -746,7 +747,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678901234" ) );
 }
 
-void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
+void TestQgsIdentify::identifyRasterDerivedAttributes()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/dem.tif";
   std::unique_ptr< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
@@ -819,7 +820,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
   QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "141" ) );
 }
 
-void TestQgsMapToolIdentifyAction::identifyMesh()
+void TestQgsIdentify::identifyMesh()
 {
   //create a temporary layer
   const QString mesh = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle.2dm";
@@ -922,7 +923,7 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QCOMPARE( results[0].mDerivedAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 }
 
-void TestQgsMapToolIdentifyAction::identifyVectorTile()
+void TestQgsIdentify::identifyVectorTile()
 {
   //create a temporary layer
   const QString vtPath = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
@@ -951,7 +952,7 @@ void TestQgsMapToolIdentifyAction::identifyVectorTile()
   delete tempLayer;
 }
 
-void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()
+void TestQgsIdentify::identifyInvalidPolygons()
 {
   //create a temporary layer
   std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -978,9 +979,197 @@ void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()
 
 }
 
+void TestQgsIdentify::testRelations()
+{
+  QgsVectorLayer *layerA = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk_id:integer" ), QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerA->isValid() );
+  QgsFeature featureA( layerA->dataProvider()->fields() );
+  constexpr int PK_ID_A = 1;
+  constexpr int PK_ID_C = 2;
+  featureA.setAttribute( 0, PK_ID_A );
+  layerA->dataProvider()->addFeature( featureA );
 
-QGSTEST_MAIN( TestQgsMapToolIdentifyAction )
-#include "testqgsmaptoolidentifyaction.moc"
+  QgsVectorLayer *layerB = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=fk_id_to_A:integer&field=fk_id_to_C:integer&field=other_field:integer" ), QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerB->isValid() );
+  constexpr int IDX_OTHER_FIELD = 2;
+  constexpr int OTHER_FIELD = 100;
+  {
+    QgsFeature featureB( layerB->dataProvider()->fields() );
+    featureB.setAttribute( 0, PK_ID_A );
+    featureB.setAttribute( 1, PK_ID_C );
+    featureB.setAttribute( IDX_OTHER_FIELD, OTHER_FIELD );
+    layerB->dataProvider()->addFeature( featureB );
+  }
+  {
+    QgsFeature featureB( layerB->dataProvider()->fields() );
+    featureB.setAttribute( 0, PK_ID_A );
+    featureB.setAttribute( 1, PK_ID_C + 1 );
+    featureB.setAttribute( IDX_OTHER_FIELD, OTHER_FIELD + 1 );
+    layerB->dataProvider()->addFeature( featureB );
+  }
+
+  QgsVectorLayer *layerC = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk_id:integer" ), QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerC->isValid() );
+  {
+    QgsFeature featureC( layerC->dataProvider()->fields() );
+    featureC.setAttribute( 0, PK_ID_C );
+    layerC->dataProvider()->addFeature( featureC );
+  }
+  {
+    QgsFeature featureC( layerC->dataProvider()->fields() );
+    featureC.setAttribute( 0, PK_ID_C + 1 );
+    layerC->dataProvider()->addFeature( featureC );
+  }
+
+  QgsProject::instance()->layerStore()->addMapLayer( layerA, true );
+  QgsProject::instance()->layerStore()->addMapLayer( layerB, true );
+  QgsProject::instance()->layerStore()->addMapLayer( layerC, true );
+
+  QgsRelationManager *relationManager = QgsProject::instance()->relationManager();
+  {
+    QgsRelation relation;
+    relation.setId( "B-A-id" );
+    relation.setName( "B-A" );
+    relation.setReferencingLayer( layerB->id() );
+    relation.setReferencedLayer( layerA->id() );
+    relation.addFieldPair( QStringLiteral( "fk_id_to_A" ), QStringLiteral( "pk_id" ) );
+
+    relationManager->addRelation( relation );
+  }
+  {
+    QgsRelation relation;
+    relation.setId( "A-B-id" );
+    relation.setName( "A-B" );
+    relation.setReferencingLayer( layerA->id() );
+    relation.setReferencedLayer( layerB->id() );
+    relation.addFieldPair( QStringLiteral( "pk_id" ), QStringLiteral( "fk_id_to_A" ) );
+
+    relationManager->addRelation( relation );
+  }
+  {
+    QgsRelation relation;
+    relation.setId( "B-C-id" );
+    relation.setName( "B-C" );
+    relation.setReferencingLayer( layerB->id() );
+    relation.setReferencedLayer( layerC->id() );
+    relation.addFieldPair( QStringLiteral( "fk_id_to_C" ), QStringLiteral( "pk_id" ) );
+
+    relationManager->addRelation( relation );
+  }
+
+  std::unique_ptr<QgsIdentifyResultsDialog> dialog = std::make_unique<QgsIdentifyResultsDialog>( canvas );
+  dialog->addFeature( layerA, featureA, QMap< QString, QString>() );
+
+  QCOMPARE( dialog->lstResults->topLevelItemCount(), 1 );
+  QTreeWidgetItem *topLevelItem = dialog->lstResults->topLevelItem( 0 );
+  QCOMPARE( topLevelItem->childCount(), 1 );
+  QgsIdentifyResultsFeatureItem *featureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( topLevelItem->child( 0 ) );
+  QVERIFY( featureItem );
+  std::vector<QgsIdentifyResultsRelationItem *> relationItems;
+  for ( int i = 0; i < featureItem->childCount(); ++i )
+  {
+    QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( featureItem->child( i ) );
+    if ( relationItem )
+      relationItems.push_back( relationItem );
+  }
+  QCOMPARE( relationItems.size(), 2 );
+
+  QCOMPARE( relationItems[0]->text( 0 ), QStringLiteral( "layerB through B-A […]" ) );
+  QCOMPARE( relationItems[0]->childCount(), 0 );
+  QCOMPARE( relationItems[0]->childIndicatorPolicy(), QTreeWidgetItem::ShowIndicator );
+  QCOMPARE( relationItems[0]->isExpanded(), false );
+
+  QCOMPARE( relationItems[1]->text( 0 ), QStringLiteral( "layerB through A-B [1]" ) );
+  QCOMPARE( relationItems[1]->childCount(), 0 );
+  QCOMPARE( relationItems[1]->childIndicatorPolicy(), QTreeWidgetItem::ShowIndicator );
+  QCOMPARE( relationItems[1]->isExpanded(), false );
+
+  // Check referenced relation
+
+  // Check that expandAll() doesn't result in automatic resolution of relations
+  dialog->expandAll();
+  QCOMPARE( relationItems[0]->childCount(), 0 );
+
+  relationItems[0]->setExpanded( true );
+  QCOMPARE( relationItems[0]->text( 0 ), QStringLiteral( "layerB through B-A [2]" ) );
+  QCOMPARE( relationItems[0]->childCount(), 2 );
+
+  // Check that folding/unfolding after initial expansion works
+  relationItems[0]->setExpanded( false );
+  relationItems[0]->setExpanded( true );
+  QCOMPARE( relationItems[0]->text( 0 ), QStringLiteral( "layerB through B-A [2]" ) );
+  QCOMPARE( relationItems[0]->childCount(), 2 );
+
+  {
+    QgsIdentifyResultsFeatureItem *relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[0]->child( 0 ) );
+    QVERIFY( relatedFeatureItem );
+    QVERIFY( relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
+    const QgsFeature relatedFeature = relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value< QgsFeature >();
+    QCOMPARE( relatedFeature.attribute( IDX_OTHER_FIELD ), OTHER_FIELD );
+
+    {
+      std::vector<QgsIdentifyResultsRelationItem *> childRelationItems;
+      for ( int i = 0; i < relatedFeatureItem->childCount(); ++i )
+      {
+        QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( relatedFeatureItem->child( i ) );
+        if ( relationItem )
+          childRelationItems.push_back( relationItem );
+      }
+      QCOMPARE( childRelationItems.size(), 1 );
+
+      QCOMPARE( childRelationItems[0]->childCount(), 0 );
+      QCOMPARE( childRelationItems[0]->text( 0 ), QStringLiteral( "layerC through B-C [1]" ) );
+
+      childRelationItems[0]->setExpanded( true );
+      QCOMPARE( childRelationItems[0]->childCount(), 1 );
+      QCOMPARE( childRelationItems[0]->text( 0 ), QStringLiteral( "layerC through B-C [1]" ) );
+
+      {
+        QgsIdentifyResultsFeatureItem *childRelatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( childRelationItems[0]->child( 0 ) );
+        QVERIFY( childRelatedFeatureItem );
+        QVERIFY( childRelatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
+        const QgsFeature relatedFeature = childRelatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value< QgsFeature >();
+        QCOMPARE( relatedFeature.attribute( 0 ), PK_ID_C );
+
+        // Check that this child doesn't link back to parent feature A
+        std::vector<QgsIdentifyResultsRelationItem *> childChildRelationItems;
+        for ( int i = 0; i < childRelatedFeatureItem->childCount(); ++i )
+        {
+          QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( childRelatedFeatureItem->child( i ) );
+          if ( relationItem )
+            childChildRelationItems.push_back( relationItem );
+        }
+        QCOMPARE( childChildRelationItems.size(), 0 );
+      }
+    }
+
+  }
+
+  {
+    QgsIdentifyResultsFeatureItem *relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[0]->child( 1 ) );
+    QVERIFY( relatedFeatureItem );
+    QVERIFY( relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
+    const QgsFeature relatedFeature = relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value< QgsFeature >();
+    QCOMPARE( relatedFeature.attribute( IDX_OTHER_FIELD ), OTHER_FIELD + 1 );
+  }
+
+  // Check referencing relation
+  relationItems[1]->setExpanded( true );
+  QCOMPARE( relationItems[1]->text( 0 ), QStringLiteral( "layerB through A-B [1]" ) );
+  QCOMPARE( relationItems[1]->childCount(), 1 );
+
+  {
+    QgsIdentifyResultsFeatureItem *relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[1]->child( 0 ) );
+    QVERIFY( relatedFeatureItem );
+    QVERIFY( relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
+    const QgsFeature relatedFeature = relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value< QgsFeature >();
+    QCOMPARE( relatedFeature.attribute( IDX_OTHER_FIELD ), OTHER_FIELD );
+  }
+}
+
+
+QGSTEST_MAIN( TestQgsIdentify )
+#include "testqgsidentify.moc"
 
 
 
