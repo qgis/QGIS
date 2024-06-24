@@ -24,6 +24,7 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QAbstractTextureImage>
 
+#include "qgs3dmapsettings.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsvector3d.h"
 
@@ -41,6 +42,7 @@
 #define SIP_NO_FILE
 
 class QgsMeshLayer;
+class Qgs3DMapSettings;
 
 /**
  * \ingroup 3d
@@ -71,8 +73,7 @@ class QgsMesh3DMaterial : public Qt3DRender::QMaterial
 
     //! Constructor
     QgsMesh3DMaterial( QgsMeshLayer *layer,
-                       const QgsDateTimeRange &timeRange,
-                       const QgsVector3D &origin,
+                       const Qgs3DMapSettings &mapSettings,
                        const QgsMesh3DSymbol *symbol,
                        MagnitudeType magnitudeType = ZValue );
 
