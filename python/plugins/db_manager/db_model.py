@@ -49,6 +49,8 @@ try:
 except:
     isImportVectorAvail = False
 
+from osgeo import gdal
+
 
 class TreeItem(QObject):
     deleted = pyqtSignal()
@@ -398,7 +400,10 @@ class DBModel(QAbstractItemModel):
         if index.column() == 0:
             item = index.internalPointer()
 
-            if isinstance(item, SchemaItem) or isinstance(item, TableItem):
+            if isinstance(item, SchemaItem) \
+                    or (isinstance(item, TableItem)
+                        and not (self.hasGPKGSupport and item.getItemData().type == Table.RasterType
+                                 and int(gdal.VersionInfo()) < 3100000)):
                 flags |= Qt.ItemFlag.ItemIsEditable
 
             if isinstance(item, TableItem):
