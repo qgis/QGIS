@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include "qgsgdalcredentialoptionswidget.h"
-#include "ogr/qgsogrhelperfunctions.h"
+#include "qgsgdalguiutils.h"
 #include "qgsvariantutils.h"
 #include "qgsapplication.h"
 #include "qgsspinbox.h"

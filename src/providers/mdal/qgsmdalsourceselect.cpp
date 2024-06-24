@@ -19,7 +19,6 @@
 
 #include "qgsmdalsourceselect.h"
 #include "qgsproviderregistry.h"
-#include "ogr/qgsogrhelperfunctions.h"
 #include "qgshelp.h"
 
 QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):

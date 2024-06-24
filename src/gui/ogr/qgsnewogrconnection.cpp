@@ -21,7 +21,7 @@
 #include "qgsnewogrconnection.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
-#include "qgsogrhelperfunctions.h"
+#include "qgsgdalguiutils.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsgui.h"

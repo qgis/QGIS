@@ -349,7 +349,7 @@ set(QGIS_GUI_SRCS
   numericformats/qgsnumericformatwidget.cpp
   numericformats/qgsnumericformatguiregistry.cpp
 
-  ogr/qgsogrhelperfunctions.cpp
+  ogr/qgsgdalguiutils.cpp
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
@@ -1322,8 +1322,8 @@ set(QGIS_GUI_HDRS
   numericformats/qgsnumericformatwidget.h
   numericformats/qgsnumericformatguiregistry.h
 
+  ogr/qgsgdalguiutils.h
   ogr/qgsnewogrconnection.h
-  ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
 
   plot/qgsplotcanvas.h

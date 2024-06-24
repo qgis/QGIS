@@ -1,6 +1,5 @@
 /***************************************************************************
-                          qgsogrhelperfunctions.h
-    helper functions to create ogr uris for database and protocol drivers
+                          qgsgdalguiutils.h
                              -------------------
     begin                : Mon Jan 2 2009
     copyright            : (C) 2009 by Godofredo Contreras Nava
@@ -15,6 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#ifndef QGSGDALGUIUTILS_H
+#define QGSGDALGUIUTILS_H
 
 #include <QString>
 #include "qgis_gui.h"
@@ -58,3 +60,4 @@ class GUI_EXPORT QgsGdalGuiUtils
 
 };
 
+#endif // QGSGDALGUIUTILS_H
