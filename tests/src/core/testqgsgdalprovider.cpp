@@ -77,6 +77,7 @@ class TestQgsGdalProvider : public QgsTest
     void testGdalProviderQuerySublayersFastScan_NetCDF();
     void testGdalProviderAbsoluteRelativeUri();
     void testVsiCredentialOptions();
+    void testVsiCredentialOptionsQuerySublayers();
 
   private:
     QString mTestDataDir;
@@ -935,6 +936,33 @@ void TestQgsGdalProvider::testVsiCredentialOptions()
   QCOMPARE( noSign, QStringLiteral( "NO" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QStringLiteral( "eu-central-2" ) );
+#endif
+}
+
+void TestQgsGdalProvider::testVsiCredentialOptionsQuerySublayers()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+  QgsProviderMetadata *gdalMetadata = QgsProviderRegistry::instance()->providerMetadata( "gdal" );
+  QVERIFY( gdalMetadata );
+
+  // test that credential options are correctly handled when querying sublayers
+  QList< QgsProviderSublayerDetails> subLayers = gdalMetadata->querySublayers( QStringLiteral( "/vsis3/gdalsublayerstestbucket/test.tif|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
+  // ideally we'd test with a real dataset here!
+  QVERIFY( subLayers.isEmpty() );
+
+  // confirm that GDAL VSI configuration options are set
+  QString noSign( VSIGetPathSpecificOption( "/vsis3/gdalsublayerstestbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QStringLiteral( "YES" ) );
+  QString region( VSIGetPathSpecificOption( "/vsis3/gdalsublayerstestbucket", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QStringLiteral( "eu-central-3" ) );
+
+  subLayers = gdalMetadata->querySublayers( QStringLiteral( "/vsis3/gdalsublayerstestbucket/test.tif|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ), Qgis::SublayerQueryFlag::FastScan );
+  // ideally we'd test with a real dataset here!
+  QCOMPARE( subLayers.size(), 1 );
+  QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "test" ) );
+  QCOMPARE( subLayers.at( 0 ).uri(), QStringLiteral( "/vsis3/gdalsublayerstestbucket/test.tif|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
+  QCOMPARE( subLayers.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( subLayers.at( 0 ).type(), Qgis::LayerType::Raster );
 #endif
 }
 
