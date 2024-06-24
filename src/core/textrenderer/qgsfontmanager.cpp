@@ -1855,8 +1855,15 @@ void QgsFontManager::downloadAndInstallFont( const QgsFontDownloadDetails &detai
       QStringList thisUrlFamilies;
       const QByteArray fontData  = allFontData[i];
       const QString contentDispositionFilename = task->contentDispositionFilenames().at( i );
+      QString extension;
+      if ( contentDispositionFilename.isEmpty() )
+      {
+        const QUrl originalUrl = details.fontUrls().value( i );
+        const thread_local QRegularExpression rxExtension( QStringLiteral( "^.*\\.(\\w+?)$" ) );
+        extension = rxExtension.match( originalUrl.toString() ).captured( 1 );
+      }
       QString thisLicenseDetails;
-      if ( !installFontsFromData( fontData, errorMessage, thisUrlFamilies, thisLicenseDetails, contentDispositionFilename ) )
+      if ( !installFontsFromData( fontData, errorMessage, thisUrlFamilies, thisLicenseDetails, contentDispositionFilename, extension ) )
       {
         QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
         mPendingFontDownloads.remove( identifier );
@@ -1900,13 +1907,20 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
   downloadAndInstallFont( QgsFontDownloadDetails( identifier, { url.toString() } ) );
 }
 
-bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &errorMessage, QStringList &families, QString &licenseDetails, const QString &filename )
+bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &errorMessage, QStringList &families, QString &licenseDetails, const QString &filename, const QString &extension )
 {
   errorMessage.clear();
   families.clear();
   licenseDetails.clear();
 
   QTemporaryFile tempFile;
+  if ( !extension.isEmpty() )
+  {
+    QString cleanedExtension = extension;
+    if ( cleanedExtension.startsWith( '.' ) )
+      cleanedExtension = cleanedExtension.mid( 1 );
+    tempFile.setFileTemplate( QStringLiteral( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), cleanedExtension ) );
+  }
   QTemporaryDir tempDir;
 
   QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );

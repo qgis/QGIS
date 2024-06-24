@@ -278,7 +278,7 @@ tasks, e.g. the font family name if known.
 .. versionadded:: 3.38
 %End
 
-    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString() );
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString(), const QString &extension = QString() );
 %Docstring
 Installs local user fonts from the specified raw ``data``.
 
@@ -287,6 +287,7 @@ or a zipped archive of font files.
 
 :param data: raw font data or zipped font data
 :param filename: filename hint for destination file. Will be ignored for archived content (e.g. zip file data)
+:param extension: known file extension (eg "ttf", "otf") for font. Should be specified to avoid issues with font installation on Windows if filename is not specified (since QGIS 3.38)
 
 :return: - ``True`` if installation was successful.
          - errorMessage: will be set to a descriptive error message if the installation fails
