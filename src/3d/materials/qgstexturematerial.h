@@ -17,6 +17,7 @@
 #define QGSTEXTUREMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgs3dmapsettings.h"
 
 #include <Qt3DRender/QMaterial>
 #include <QObject>
@@ -36,6 +37,8 @@ namespace Qt3DRender
 
 } // namespace Qt3DRender
 
+class Qgs3DMapSettings;
+
 ///@cond PRIVATE
 
 /**
@@ -53,7 +56,7 @@ class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
     /**
      * Constructor for QgsTextureMaterial, with the specified \a parent node.
      */
-    explicit QgsTextureMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsTextureMaterial( const Qgs3DMapSettings &mapSettings, Qt3DCore::QNode *parent = nullptr );
     ~QgsTextureMaterial() override;
 
     Qt3DRender::QAbstractTexture *texture() const;
@@ -65,7 +68,7 @@ class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
     void textureChanged( Qt3DRender::QAbstractTexture *texture );
 
   private:
-    void init();
+    void init( const Qgs3DMapSettings &mapSettings );
 
     void handleTextureChanged( const QVariant &var );
 
