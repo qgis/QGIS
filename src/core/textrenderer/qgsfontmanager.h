@@ -328,10 +328,11 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \param families will be populated with a list of font families installed from the data
      * \param licenseDetails will be populated with font license details, if found
      * \param filename filename hint for destination file. Will be ignored for archived content (e.g. zip file data)
+     * \param extension known file extension (eg "ttf", "otf") for font. Should be specified to avoid issues with font installation on Windows if filename is not specified (since QGIS 3.38)
      *
      * \returns TRUE if installation was successful.
      */
-    bool installFontsFromData( const QByteArray &data, QString &errorMessage SIP_OUT, QStringList &families SIP_OUT, QString &licenseDetails SIP_OUT, const QString &filename = QString() );
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage SIP_OUT, QStringList &families SIP_OUT, QString &licenseDetails SIP_OUT, const QString &filename = QString(), const QString &extension = QString() );
 
     /**
      * Adds a \a directory to use for user fonts.
