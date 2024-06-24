@@ -64,7 +64,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   {
     if ( isShadingEnabled )
     {
-      QgsDiffuseSpecularMaterial *diffuseMapMaterial = new QgsDiffuseSpecularMaterial;
+      QgsDiffuseSpecularMaterial *diffuseMapMaterial = new QgsDiffuseSpecularMaterial( mapSettings );
       diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
       diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
       diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
@@ -80,7 +80,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   }
   else
   {
-    QgsDiffuseSpecularMaterial *diffuseMapMaterial  = new QgsDiffuseSpecularMaterial;
+    QgsDiffuseSpecularMaterial *diffuseMapMaterial  = new QgsDiffuseSpecularMaterial( mapSettings );
     diffuseMapMaterial->setDiffuse( shadingMaterial.diffuse() );
     diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
     diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
