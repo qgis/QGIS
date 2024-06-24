@@ -611,6 +611,7 @@ void QgsGeometryPaintEngine::drawPath( const QPainterPath &path )
   addSubpathGeometries( path, transform );
 }
 
+
 //
 // QgsGeometryPaintDevice
 //
@@ -686,5 +687,14 @@ int QgsGeometryPaintDevice::metric( PaintDeviceMetric m ) const
 const QgsAbstractGeometry &QgsGeometryPaintDevice::geometry() const
 {
   return mPaintEngine->geometry();
+}
+
+QgsGeometry QgsGeometryPaintDevice::painterPathToGeometry( const QPainterPath &path )
+{
+  QgsGeometryPaintDevice device;
+  QPainter painter( &device );
+  painter.drawPath( path );
+  painter.end();
+  return QgsGeometry( device.geometry().clone() );
 }
 

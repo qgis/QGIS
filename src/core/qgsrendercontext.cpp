@@ -24,6 +24,7 @@
 #include "qgselevationmap.h"
 #include "qgsunittypes.h"
 #include "qgssymbollayer.h"
+#include "qgsgeometrypaintdevice.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -82,7 +83,6 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRendererUsage( rh.mRendererUsage )
   , mFrameRate( rh.mFrameRate )
   , mCurrentFrame( rh.mCurrentFrame )
-  , mSymbolLayerClipPaths( rh.mSymbolLayerClipPaths )
   , mSymbolLayerClippingGeometries( rh.mSymbolLayerClippingGeometries )
   , mMaskRenderSettings( rh.mMaskRenderSettings )
 #ifdef QGISDEBUG
@@ -135,7 +135,6 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRendererUsage = rh.mRendererUsage;
   mFrameRate = rh.mFrameRate;
   mCurrentFrame = rh.mCurrentFrame;
-  mSymbolLayerClipPaths = rh.mSymbolLayerClipPaths;
   mSymbolLayerClippingGeometries = rh.mSymbolLayerClippingGeometries;
   mMaskRenderSettings = rh.mMaskRenderSettings;
   if ( isTemporal() )
@@ -736,12 +735,21 @@ void QgsRenderContext::setElevationMap( QgsElevationMap *map )
 
 void QgsRenderContext::addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path )
 {
-  mSymbolLayerClipPaths[ symbolLayerId ].append( path );
+  const QgsGeometry geometry = QgsGeometryPaintDevice::painterPathToGeometry( path );
+  if ( !geometry.isEmpty() )
+    addSymbolLayerClipGeometry( symbolLayerId, geometry );
 }
 
 QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QString &symbolLayerId ) const
 {
-  return mSymbolLayerClipPaths[ symbolLayerId ];
+  const QVector<QgsGeometry> geometries = symbolLayerClipGeometries( symbolLayerId );
+  QList<QPainterPath> res;
+  res.reserve( geometries.size() );
+  for ( const QgsGeometry &geometry : geometries )
+  {
+    res << geometry.constGet()->asQPainterPath();
+  }
+  return res;
 }
 
 void QgsRenderContext::addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry )
