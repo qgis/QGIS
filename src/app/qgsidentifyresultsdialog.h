@@ -266,7 +266,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void featureForm();
     void zoomToFeature();
-    void exploreFeature();
+    void identifyFeature();
     void copyAttributeValue();
     void copyFeature();
     void toggleFeatureSelection();

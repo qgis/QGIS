@@ -1696,7 +1696,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
       mActionPopup->addAction( tr( "Zoom to Feature" ), this, &QgsIdentifyResultsDialog::zoomToFeature );
       if ( vlayer && dynamic_cast<QgsIdentifyResultsRelationItem *>( featItem->parent() ) )
       {
-        mActionPopup->addAction( tr( "Explore Feature" ), this, &QgsIdentifyResultsDialog::exploreFeature );
+        mActionPopup->addAction( tr( "Identify Feature" ), this, &QgsIdentifyResultsDialog::identifyFeature );
       }
       mActionPopup->addAction( tr( "Copy Feature" ), this, &QgsIdentifyResultsDialog::copyFeature );
       if ( vlayer )
@@ -2409,7 +2409,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   mCanvas->refresh();
 }
 
-void QgsIdentifyResultsDialog::exploreFeature()
+void QgsIdentifyResultsDialog::identifyFeature()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
   QgsVectorLayer *vlayer = QgsIdentifyResultsDialog::vectorLayer( item );
