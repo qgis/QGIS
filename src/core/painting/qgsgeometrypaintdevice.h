@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometry.h"
 
 #include <QPainterPath>
 #include <QPaintDevice>
@@ -157,6 +158,13 @@ class CORE_EXPORT QgsGeometryPaintDevice: public QPaintDevice
      * Returns the rendered geometry.
      */
     const QgsAbstractGeometry &geometry() const;
+
+    /**
+     * Converts a painter \a path to a QgsGeometry.
+     *
+     * \since QGIS 3.38.1
+     */
+    static QgsGeometry painterPathToGeometry( const QPainterPath &path );
 
   private:
 

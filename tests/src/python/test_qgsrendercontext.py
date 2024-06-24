@@ -10,7 +10,7 @@ __date__ = '16/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from qgis.PyQt.QtCore import QDateTime, QSize
-from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtGui import QImage, QPainter, QPainterPath
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -810,6 +810,21 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(rc.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         rc2 = QgsRenderContext(rc)
         self.assertEqual(rc2.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+    def test_deprecated_mask_methods(self):
+        rc = QgsRenderContext()
+        self.assertFalse(rc.symbolLayerClipPaths('x'))
+        path = QPainterPath()
+        path.moveTo(1, 1)
+        path.lineTo(1, 10)
+        path.lineTo(10, 10)
+        path.lineTo(10, 1)
+        path.lineTo(1, 1)
+        rc.addSymbolLayerClipPath('x', path)
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((1 1, 1 10, 10 10, 10 1, 1 1))'])
+        self.assertEqual([p.elementCount() for p in rc.symbolLayerClipPaths('x')],
+                         [5])
 
     def testSetPainterFlags(self):
         rc = QgsRenderContext()
