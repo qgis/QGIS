@@ -108,9 +108,7 @@ constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
 
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowReferencingRelations = new QgsSettingsEntryBool( QStringLiteral( "show-referencing-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show referencing relations in the identify feature result" ) );
-
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowReferencedRelations = new QgsSettingsEntryBool( QStringLiteral( "show-referenced-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show referenced relations in the identify feature result" ) );
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations = new QgsSettingsEntryBool( QStringLiteral( "show-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show relations in the identify feature result" ) );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
@@ -374,8 +372,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
   connect( mActionHideNullValues, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideNullValues_toggled );
-  connect( mActionShowReferencingRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowReferencingRelations_toggled );
-  connect( mActionShowReferencedRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowReferencedRelations_toggled );
+  connect( mActionShowRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowRelations_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -488,10 +485,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionHideDerivedAttributes->setChecked( mySettings.value( QStringLiteral( "Map/hideDerivedAttributes" ), false ).toBool() );
   settingsMenu->addAction( mActionHideNullValues );
   mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
-  settingsMenu->addAction( mActionShowReferencedRelations );
-  mActionShowReferencedRelations->setChecked( QgsIdentifyResultsDialog::settingShowReferencedRelations->value() );
-  settingsMenu->addAction( mActionShowReferencingRelations );
-  mActionShowReferencingRelations->setChecked( QgsIdentifyResultsDialog::settingShowReferencingRelations->value() );
+  settingsMenu->addAction( mActionShowRelations );
+  mActionShowRelations->setChecked( QgsIdentifyResultsDialog::settingShowRelations->value() );
 
 }
 
@@ -850,7 +845,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
   }
 
   // add entries for related items coming from referenced relations
-  if ( QgsIdentifyResultsDialog::settingShowReferencedRelations->value() )
+  if ( QgsIdentifyResultsDialog::settingShowRelations->value() )
   {
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( vlayer );
     if ( !relations.empty() )
@@ -879,7 +874,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
   }
 
   // add entries for related items coming from referencing relations
-  if ( QgsIdentifyResultsDialog::settingShowReferencingRelations->value() )
+  if ( QgsIdentifyResultsDialog::settingShowRelations->value() )
   {
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( vlayer );
     if ( !relations.empty() )
@@ -2676,14 +2671,9 @@ void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
   QgsIdentifyResultsDialog::settingHideNullValues->setValue( checked );
 }
 
-void QgsIdentifyResultsDialog::mActionShowReferencedRelations_toggled( bool checked )
+void QgsIdentifyResultsDialog::mActionShowRelations_toggled( bool checked )
 {
-  QgsIdentifyResultsDialog::settingShowReferencedRelations->setValue( checked );
-}
-
-void QgsIdentifyResultsDialog::mActionShowReferencingRelations_toggled( bool checked )
-{
-  QgsIdentifyResultsDialog::settingShowReferencingRelations->setValue( checked );
+  QgsIdentifyResultsDialog::settingShowRelations->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
