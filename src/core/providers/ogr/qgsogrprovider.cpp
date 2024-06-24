@@ -418,7 +418,6 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   QgsDebugMsgLevel( "Data source uri is [" + uri + ']', 2 );
 
-  QVariantMap credentialOptions;
   mFilePath = QgsOgrProviderUtils::analyzeURI( uri,
               mIsSubLayer,
               mLayerIndex,
@@ -426,7 +425,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mSubsetString,
               mOgrGeometryTypeFilter,
               mOpenOptions,
-              credentialOptions );
+              mCredentialOptions );
 
   const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
   if ( parts.contains( QStringLiteral( "uniqueGeometryType" ) ) )
@@ -435,13 +434,13 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   }
 
   const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
-  if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
+  if ( !mCredentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
   {
     const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
     const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
     if ( bucketMatch.hasMatch() )
     {
-      QgsGdalUtils::applyVsiCredentialOptions( vsiPrefix, bucketMatch.captured( 1 ), credentialOptions );
+      QgsGdalUtils::applyVsiCredentialOptions( vsiPrefix, bucketMatch.captured( 1 ), mCredentialOptions );
     }
   }
 
@@ -2498,6 +2497,11 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( !mOpenOptions.isEmpty() )
   {
     parts.insert( QStringLiteral( "openOptions" ), mOpenOptions );
+  }
+
+  if ( !mCredentialOptions.isEmpty() )
+  {
+    parts.insert( QStringLiteral( "credentialOptions" ), mCredentialOptions );
   }
 
   QString uri = QgsOgrProviderMetadata().encodeUri( parts );
