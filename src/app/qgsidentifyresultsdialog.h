@@ -160,8 +160,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     ~QgsIdentifyResultsDialog() override;
 
     static const QgsSettingsEntryBool *settingHideNullValues;
-    static const QgsSettingsEntryBool *settingShowReferencingRelations;
-    static const QgsSettingsEntryBool *settingShowReferencedRelations;
+    static const QgsSettingsEntryBool *settingShowRelations;
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer,
@@ -304,9 +303,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void mActionHideNullValues_toggled( bool checked );
 
-    void mActionShowReferencingRelations_toggled( bool checked );
-
-    void mActionShowReferencedRelations_toggled( bool checked );
+    void mActionShowRelations_toggled( bool checked );
 
     void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
     void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
