@@ -26,6 +26,8 @@ uniform mat4 modelViewProjection;
 uniform float texCoordScale;
 uniform float opacity;
 
+#pragma include clipplane.inc
+
 void main()
 {
     // Transform position, normal, and tangent to world space
@@ -40,4 +42,6 @@ void main()
 
     // Calculate vertex position in clip coordinates
     gl_Position = modelViewProjection * vec4(vertexPosition, 1.0);
+
+    setClipDistance(worldPosition);
 }
