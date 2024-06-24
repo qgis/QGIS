@@ -653,186 +653,189 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       }
     }
 
-    QMenu *manageFileMenu = new QMenu( tr( "Manage" ), menu );
-
-    QStringList selectedFiles;
-    QList< QPointer< QgsDataItem > > selectedParents;
-    for ( QgsDataItem *selectedItem : selectedItems )
+    if ( !item->capabilities2().testFlag( Qgis::BrowserItemCapability::ReadOnly ) )
     {
-      if ( selectedItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+      QMenu *manageFileMenu = new QMenu( tr( "Manage" ), menu );
+
+      QStringList selectedFiles;
+      QList< QPointer< QgsDataItem > > selectedParents;
+      for ( QgsDataItem *selectedItem : selectedItems )
       {
-        selectedFiles.append( selectedItem->path() );
-        selectedParents << selectedItem->parent();
-      }
-    }
-
-    if ( selectedFiles.size() == 1 )
-    {
-      const QString renameText = tr( "Rename “%1”…" ).arg( fi.fileName() );
-      QAction *renameAction = new QAction( renameText, menu );
-      connect( renameAction, &QAction::triggered, this, [ = ]
-      {
-        const QString oldPath = selectedFiles.value( 0 );
-        const QStringList existingNames = QFileInfo( oldPath ).dir().entryList();
-
-        QgsNewNameDialog dlg( tr( "file" ), QFileInfo( oldPath ).fileName(), QStringList(), existingNames, Qt::CaseInsensitive, menu );
-        dlg.setWindowTitle( tr( "Rename %1" ).arg( QFileInfo( oldPath ).fileName() ) );
-        dlg.setHintString( tr( "Rename “%1” to" ).arg( QFileInfo( oldPath ).fileName() ) );
-        dlg.setOverwriteEnabled( false );
-        dlg.setConflictingNameWarning( tr( "A file with this name already exists." ) );
-        if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
-          return;
-
-        QString newName = dlg.name();
-        if ( QFileInfo( newName ).suffix().isEmpty() )
-          newName = newName + '.' + QFileInfo( oldPath ).suffix();
-
-        rename( oldPath, newName, context, selectedParents );
-      } );
-      manageFileMenu->addAction( renameAction );
-    }
-
-    const QString deleteText = selectedFiles.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() )
-                               : tr( "Delete Selected Files…" );
-    QAction *deleteAction = new QAction( deleteText, menu );
-    connect( deleteAction, &QAction::triggered, this, [ = ]
-    {
-      // Check if the files correspond to paths in the project
-      QList<QgsMapLayer *> layersList;
-      for ( const QString &path : std::as_const( selectedFiles ) )
-      {
-        layersList << QgsProjectUtils::layersMatchingPath( QgsProject::instance(), path );
-      }
-
-      // now expand out the list of files to include all sidecar files (e.g. .aux.xml files)
-      QSet< QString > allFilesWithSidecars;
-      for ( const QString &file : std::as_const( selectedFiles ) )
-      {
-        allFilesWithSidecars.insert( file );
-        allFilesWithSidecars.unite( QgsFileUtils::sidecarFilesForPath( file ) );
-      }
-      QStringList sortedAllFilesWithSidecars( qgis::setToList( allFilesWithSidecars ) );
-      std::sort( sortedAllFilesWithSidecars.begin(), sortedAllFilesWithSidecars.end(), []( const QString & a, const QString & b )
-      {
-        return a.compare( b, Qt::CaseInsensitive ) < 0;
-      } );
-
-      bool removeLayers = false;
-      if ( layersList.empty() )
-      {
-        // generic warning
-        QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
-                             sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %n file(s)?", nullptr, sortedAllFilesWithSidecars.size() )
-                             : tr( "Permanently delete “%1”?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
-                             QMessageBox::Yes | QMessageBox::No );
-        message.setDefaultButton( QMessageBox::No );
-
-        if ( sortedAllFilesWithSidecars.size() > 1 )
+        if ( selectedItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
         {
-          QStringList fileNames;
-          fileNames.reserve( sortedAllFilesWithSidecars.size() );
-          for ( const QString &file : std::as_const( sortedAllFilesWithSidecars ) )
+          selectedFiles.append( selectedItem->path() );
+          selectedParents << selectedItem->parent();
+        }
+      }
+
+      if ( selectedFiles.size() == 1 )
+      {
+        const QString renameText = tr( "Rename “%1”…" ).arg( fi.fileName() );
+        QAction *renameAction = new QAction( renameText, menu );
+        connect( renameAction, &QAction::triggered, this, [ = ]
+        {
+          const QString oldPath = selectedFiles.value( 0 );
+          const QStringList existingNames = QFileInfo( oldPath ).dir().entryList();
+
+          QgsNewNameDialog dlg( tr( "file" ), QFileInfo( oldPath ).fileName(), QStringList(), existingNames, Qt::CaseInsensitive, menu );
+          dlg.setWindowTitle( tr( "Rename %1" ).arg( QFileInfo( oldPath ).fileName() ) );
+          dlg.setHintString( tr( "Rename “%1” to" ).arg( QFileInfo( oldPath ).fileName() ) );
+          dlg.setOverwriteEnabled( false );
+          dlg.setConflictingNameWarning( tr( "A file with this name already exists." ) );
+          if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
+            return;
+
+          QString newName = dlg.name();
+          if ( QFileInfo( newName ).suffix().isEmpty() )
+            newName = newName + '.' + QFileInfo( oldPath ).suffix();
+
+          rename( oldPath, newName, context, selectedParents );
+        } );
+        manageFileMenu->addAction( renameAction );
+      }
+
+      const QString deleteText = selectedFiles.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() )
+                                 : tr( "Delete Selected Files…" );
+      QAction *deleteAction = new QAction( deleteText, menu );
+      connect( deleteAction, &QAction::triggered, this, [ = ]
+      {
+        // Check if the files correspond to paths in the project
+        QList<QgsMapLayer *> layersList;
+        for ( const QString &path : std::as_const( selectedFiles ) )
+        {
+          layersList << QgsProjectUtils::layersMatchingPath( QgsProject::instance(), path );
+        }
+
+        // now expand out the list of files to include all sidecar files (e.g. .aux.xml files)
+        QSet< QString > allFilesWithSidecars;
+        for ( const QString &file : std::as_const( selectedFiles ) )
+        {
+          allFilesWithSidecars.insert( file );
+          allFilesWithSidecars.unite( QgsFileUtils::sidecarFilesForPath( file ) );
+        }
+        QStringList sortedAllFilesWithSidecars( qgis::setToList( allFilesWithSidecars ) );
+        std::sort( sortedAllFilesWithSidecars.begin(), sortedAllFilesWithSidecars.end(), []( const QString & a, const QString & b )
+        {
+          return a.compare( b, Qt::CaseInsensitive ) < 0;
+        } );
+
+        bool removeLayers = false;
+        if ( layersList.empty() )
+        {
+          // generic warning
+          QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+                               sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %n file(s)?", nullptr, sortedAllFilesWithSidecars.size() )
+                               : tr( "Permanently delete “%1”?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+                               QMessageBox::Yes | QMessageBox::No );
+          message.setDefaultButton( QMessageBox::No );
+
+          if ( sortedAllFilesWithSidecars.size() > 1 )
           {
-            fileNames << QFileInfo( file ).fileName();
+            QStringList fileNames;
+            fileNames.reserve( sortedAllFilesWithSidecars.size() );
+            for ( const QString &file : std::as_const( sortedAllFilesWithSidecars ) )
+            {
+              fileNames << QFileInfo( file ).fileName();
+            }
+            message.setDetailedText( tr( "The following files will be deleted:" ) + QStringLiteral( "\n\n• %1" ).arg( fileNames.join( QStringLiteral( "\n• " ) ) ) );
           }
-          message.setDetailedText( tr( "The following files will be deleted:" ) + QStringLiteral( "\n\n• %1" ).arg( fileNames.join( QStringLiteral( "\n• " ) ) ) );
-        }
 
-        int res = message.exec();
-        if ( res == QMessageBox::No )
-          return;
-      }
-      else
-      {
-        QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
-                             sortedAllFilesWithSidecars.size() > 1 ? tr( "One or more selected files exist in the current project. Are you sure you want to delete these files?" )
-                             : tr( "The file %1 exists in the current project. Are you sure you want to delete it?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
-                             QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-        message.setDefaultButton( QMessageBox::Cancel );
-        message.setButtonText( QMessageBox::Yes, tr( "Delete and Remove Layers" ) );
-        message.setButtonText( QMessageBox::No, tr( "Delete and Retain Layers" ) );
-
-        QStringList layerNames;
-        layerNames.reserve( layersList.size() );
-        for ( const QgsMapLayer *layer : std::as_const( layersList ) )
-        {
-          layerNames << layer->name();
-        }
-        QString detailedText = tr( "The following layers will be affected:" ) + QStringLiteral( "\n\n• %1" ).arg( layerNames.join( QStringLiteral( "\n• " ) ) );
-
-        if ( sortedAllFilesWithSidecars.size() > 1 )
-        {
-          QStringList fileNames;
-          fileNames.reserve( sortedAllFilesWithSidecars.size() );
-          for ( const QString &file : std::as_const( sortedAllFilesWithSidecars ) )
-          {
-            fileNames << QFileInfo( file ).fileName();
-          }
-          detailedText += QStringLiteral( "\n\n" ) + tr( "The following files will be deleted:" ) + QStringLiteral( "\n\n• %1" ).arg( fileNames.join( QStringLiteral( "\n• " ) ) );
-        }
-        message.setDetailedText( detailedText );
-
-        int res = message.exec();
-        if ( res == QMessageBox::Cancel )
-          return;
-
-        if ( res == QMessageBox::Yes )
-          removeLayers = true;
-      }
-
-      QStringList errors;
-      errors.reserve( allFilesWithSidecars.size() );
-      for ( const QString &path : std::as_const( allFilesWithSidecars ) )
-      {
-        // delete file
-        const QFileInfo fi( path );
-        if ( fi.isFile() )
-        {
-          if ( !QFile::remove( path ) )
-            errors << path;
-        }
-        else if ( fi.isDir() )
-        {
-          QDir dir( path );
-          if ( !dir.removeRecursively() )
-            errors << path;
-        }
-      }
-
-      for ( const QPointer< QgsDataItem > &parent : selectedParents )
-      {
-        if ( parent )
-          parent->refresh();
-      }
-
-      if ( !layersList.empty() )
-      {
-        if ( removeLayers )
-        {
-          QgsProject::instance()->removeMapLayers( layersList );
-          QgsProject::instance()->setDirty( true );
+          int res = message.exec();
+          if ( res == QMessageBox::No )
+            return;
         }
         else
         {
-          // we just update the layer source to get it to recognize that it's now broken in the UI
-          for ( QgsMapLayer *layer : std::as_const( layersList ) )
+          QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+                               sortedAllFilesWithSidecars.size() > 1 ? tr( "One or more selected files exist in the current project. Are you sure you want to delete these files?" )
+                               : tr( "The file %1 exists in the current project. Are you sure you want to delete it?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+          message.setDefaultButton( QMessageBox::Cancel );
+          message.setButtonText( QMessageBox::Yes, tr( "Delete and Remove Layers" ) );
+          message.setButtonText( QMessageBox::No, tr( "Delete and Retain Layers" ) );
+
+          QStringList layerNames;
+          layerNames.reserve( layersList.size() );
+          for ( const QgsMapLayer *layer : std::as_const( layersList ) )
           {
-            layer->setDataSource( layer->source(), layer->name(), layer->providerType() );
+            layerNames << layer->name();
+          }
+          QString detailedText = tr( "The following layers will be affected:" ) + QStringLiteral( "\n\n• %1" ).arg( layerNames.join( QStringLiteral( "\n• " ) ) );
+
+          if ( sortedAllFilesWithSidecars.size() > 1 )
+          {
+            QStringList fileNames;
+            fileNames.reserve( sortedAllFilesWithSidecars.size() );
+            for ( const QString &file : std::as_const( sortedAllFilesWithSidecars ) )
+            {
+              fileNames << QFileInfo( file ).fileName();
+            }
+            detailedText += QStringLiteral( "\n\n" ) + tr( "The following files will be deleted:" ) + QStringLiteral( "\n\n• %1" ).arg( fileNames.join( QStringLiteral( "\n• " ) ) );
+          }
+          message.setDetailedText( detailedText );
+
+          int res = message.exec();
+          if ( res == QMessageBox::Cancel )
+            return;
+
+          if ( res == QMessageBox::Yes )
+            removeLayers = true;
+        }
+
+        QStringList errors;
+        errors.reserve( allFilesWithSidecars.size() );
+        for ( const QString &path : std::as_const( allFilesWithSidecars ) )
+        {
+          // delete file
+          const QFileInfo fi( path );
+          if ( fi.isFile() )
+          {
+            if ( !QFile::remove( path ) )
+              errors << path;
+          }
+          else if ( fi.isDir() )
+          {
+            QDir dir( path );
+            if ( !dir.removeRecursively() )
+              errors << path;
           }
         }
-      }
 
-      if ( !errors.empty() )
-      {
-        if ( errors.size() == 1 )
-          notify( QString(), tr( "Could not delete %1" ).arg( QFileInfo( errors.at( 0 ) ).fileName() ), context, Qgis::MessageLevel::Critical );
-        else
-          notify( QString(), tr( "Could not delete %n file(s)", nullptr, errors.size() ), context, Qgis::MessageLevel::Critical );
-      }
-    } );
-    manageFileMenu->addAction( deleteAction );
+        for ( const QPointer< QgsDataItem > &parent : selectedParents )
+        {
+          if ( parent )
+            parent->refresh();
+        }
 
-    menu->addMenu( manageFileMenu );
+        if ( !layersList.empty() )
+        {
+          if ( removeLayers )
+          {
+            QgsProject::instance()->removeMapLayers( layersList );
+            QgsProject::instance()->setDirty( true );
+          }
+          else
+          {
+            // we just update the layer source to get it to recognize that it's now broken in the UI
+            for ( QgsMapLayer *layer : std::as_const( layersList ) )
+            {
+              layer->setDataSource( layer->source(), layer->name(), layer->providerType() );
+            }
+          }
+        }
+
+        if ( !errors.empty() )
+        {
+          if ( errors.size() == 1 )
+            notify( QString(), tr( "Could not delete %1" ).arg( QFileInfo( errors.at( 0 ) ).fileName() ), context, Qgis::MessageLevel::Critical );
+          else
+            notify( QString(), tr( "Could not delete %n file(s)", nullptr, errors.size() ), context, Qgis::MessageLevel::Critical );
+        }
+      } );
+      manageFileMenu->addAction( deleteAction );
+
+      menu->addMenu( manageFileMenu );
+    }
 
     if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
     {
