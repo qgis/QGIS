@@ -306,7 +306,7 @@ class CORE_EXPORT QgsGdalUtils
      */
     struct VsiNetworkFileSystemDetails
     {
-      //! VSI driver identifier, eg "vsis3"
+      //! VSI handler identifier, eg "vsis3"
       QString identifier;
 
       //! Translated, user-friendly name.
