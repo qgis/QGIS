@@ -34,9 +34,9 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO qgis_test
 --- Create "CamelCase'singlequote'Schema" schema
 DROP SCHEMA IF EXISTS "CamelCase'singlequote'Schema" CASCADE;
 CREATE SCHEMA "CamelCase'singlequote'Schema";
-GRANT ALL ON SCHEMA "CamelCase'singlequote'Schema" TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON TABLES TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON SEQUENCES TO public;
+GRANT ALL ON SCHEMA "CamelCase'singlequote'Schema" TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON TABLES TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON SEQUENCES TO qgis_test_group;
 
 
 SET default_tablespace = '';
