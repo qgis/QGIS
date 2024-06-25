@@ -540,20 +540,20 @@ QgsGdalCredentialOptionsWidget::QgsGdalCredentialOptionsWidget( QWidget *parent 
   connect( mModel, &QgsGdalCredentialOptionsModel::optionsChanged, this, &QgsGdalCredentialOptionsWidget::modelOptionsChanged );
 }
 
-void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
+void QgsGdalCredentialOptionsWidget::setHandler( const QString &handler )
 {
-  if ( driver == mDriver )
+  if ( handler == mHandler )
     return;
 
-  mDriver = driver;
+  mHandler = handler;
 
-  if ( QgsGdalUtils::vsiHandlerType( mDriver ) != Qgis::VsiHandlerType::Cloud )
+  if ( QgsGdalUtils::vsiHandlerType( mHandler ) != Qgis::VsiHandlerType::Cloud )
   {
     mModel->setAvailableOptions( {} );
     return;
   }
 
-  const QString vsiPrefix = QStringLiteral( "/%1/" ).arg( mDriver );
+  const QString vsiPrefix = QStringLiteral( "/%1/" ).arg( mHandler );
   const char *pszVsiOptions( VSIGetFileSystemOptions( vsiPrefix.toLocal8Bit().constData() ) );
   if ( !pszVsiOptions )
     return;

@@ -30,7 +30,7 @@ class QgsGdalCloudConnectionDialog : public QDialog, public Ui::QgsGdalCloudConn
   public:
     explicit QgsGdalCloudConnectionDialog( QWidget *parent = nullptr );
 
-    void setDriver( const QString &driver );
+    void setVsiHandler( const QString &handler );
 
     void setConnection( const QString &name, const QString &uri );
 
@@ -44,7 +44,7 @@ class QgsGdalCloudConnectionDialog : public QDialog, public Ui::QgsGdalCloudConn
     void updateOkButtonState();
 
   private:
-    QString mDriver;
+    QString mHandler;
 
     QgsGdalCredentialOptionsWidget *mCredentialsWidget = nullptr;
 };
