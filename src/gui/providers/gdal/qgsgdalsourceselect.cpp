@@ -526,7 +526,7 @@ void QgsGdalSourceSelect::updateProtocolOptions()
   const QString currentProtocol = cmbProtocolTypes->currentData().toString();
   if ( radioSrcProtocol->isChecked() && QgsGdalUtils::vsiHandlerType( currentProtocol ) == Qgis::VsiHandlerType::Cloud )
   {
-    mCredentialsWidget->setDriver( currentProtocol );
+    mCredentialsWidget->setHandler( currentProtocol );
     mCredentialOptionsGroupBox->setVisible( true );
   }
   else

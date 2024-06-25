@@ -44,10 +44,10 @@ QgsGdalCloudConnectionDialog::QgsGdalCloudConnectionDialog( QWidget *parent )
   connect( mBucket, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );
 }
 
-void QgsGdalCloudConnectionDialog::setDriver( const QString &driver )
+void QgsGdalCloudConnectionDialog::setVsiHandler( const QString &handler )
 {
-  mDriver = driver;
-  mCredentialsWidget->setDriver( mDriver );
+  mHandler = handler;
+  mCredentialsWidget->setHandler( mHandler );
 }
 
 void QgsGdalCloudConnectionDialog::setConnection( const QString &name, const QString &uri )
@@ -55,7 +55,7 @@ void QgsGdalCloudConnectionDialog::setConnection( const QString &name, const QSt
   mEditName->setText( name );
 
   const QgsGdalCloudProviderConnection::Data conn = QgsGdalCloudProviderConnection::decodedUri( uri );
-  setDriver( conn.vsiHandler );
+  setVsiHandler( conn.vsiHandler );
 
   mBucket->setText( conn.container );
   mKey->setText( conn.rootPath );
@@ -66,7 +66,7 @@ void QgsGdalCloudConnectionDialog::setConnection( const QString &name, const QSt
 QString QgsGdalCloudConnectionDialog::connectionUri() const
 {
   QgsGdalCloudProviderConnection::Data conn;
-  conn.vsiHandler = mDriver;
+  conn.vsiHandler = mHandler;
   conn.container = mBucket->text();
   conn.rootPath = mKey->text();
   conn.credentialOptions = mCredentialsWidget->credentialOptions();
