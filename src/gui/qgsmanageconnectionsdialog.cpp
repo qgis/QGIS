@@ -29,6 +29,7 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgstiledsceneconnection.h"
 #include "qgssensorthingsconnection.h"
+#include "qgsgdalcloudconnection.h"
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )
@@ -155,6 +156,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case SensorThings:
         doc = saveSensorThingsConnections( items );
         break;
+      case CloudStorage:
+        doc = saveCloudStorageConnections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -238,6 +242,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case SensorThings:
         loadSensorThingsConnections( doc, items );
         break;
+      case CloudStorage:
+        loadCloudStorageConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -296,6 +303,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case SensorThings:
         connections = QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items();
+        break;
+      case CloudStorage:
+        connections = QgsGdalCloudProviderConnection::sTreeConnectionCloud->items();
         break;
     }
     for ( const QString &connection : std::as_const( connections ) )
@@ -441,6 +451,14 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
                                     tr( "The file is not a SensorThings connections exchange file." ) );
+          return false;
+        }
+        break;
+      case CloudStorage:
+        if ( root.tagName() != QLatin1String( "qgsCloudStorageConnections" ) )
+        {
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a cloud storage connections exchange file." ) );
           return false;
         }
         break;
@@ -832,6 +850,40 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
 
     QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+
+QDomDocument QgsManageConnectionsDialog::saveCloudStorageConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsCloudStorageConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    QDomElement el = doc.createElement( QStringLiteral( "cloudstorage" ) );
+
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "handler" ), QgsGdalCloudProviderConnection::settingsVsiHandler->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "container" ), QgsGdalCloudProviderConnection::settingsContainer->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "path" ), QgsGdalCloudProviderConnection::settingsPath->value( connections[ i ] ) );
+
+    const QVariantMap credentialOptions = QgsGdalCloudProviderConnection::settingsCredentialOptions->value( connections[ i ] );
+    QString credentialString;
+    for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
+    {
+      if ( !it.value().toString().isEmpty() )
+      {
+        credentialString += QStringLiteral( "|credential:%1=%2" ).arg( it.key(), it.value().toString() );
+      }
+    }
+    el.setAttribute( QStringLiteral( "credentials" ), credentialString );
 
     root.appendChild( el );
   }
@@ -1812,6 +1864,111 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
 
     QgsHttpHeaders httpHeader( child );
     QgsSensorThingsProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadCloudStorageConnections( const QDomDocument &doc, const QStringList &items )
+{
+  const QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsCloudStorageConnections" ) )
+  {
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a cloud storage connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/connections/cloud/items" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) )
+    {
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
+    }
+
+    QgsGdalCloudProviderConnection::settingsVsiHandler->setValue( child.attribute( QStringLiteral( "handler" ) ), connectionName );
+    QgsGdalCloudProviderConnection::settingsContainer->setValue( child.attribute( QStringLiteral( "container" ) ), connectionName );
+    QgsGdalCloudProviderConnection::settingsPath->setValue( child.attribute( QStringLiteral( "path" ) ), connectionName );
+
+    QString credentialString = child.attribute( QStringLiteral( "credentials" ) );
+
+    QVariantMap credentialOptions;
+    while ( true )
+    {
+      const thread_local QRegularExpression credentialOptionRegex( QStringLiteral( "\\|credential:([^|]*)" ) );
+      const thread_local QRegularExpression credentialOptionKeyValueRegex( QStringLiteral( "(.*?)=(.*)" ) );
+
+      const QRegularExpressionMatch match = credentialOptionRegex.match( credentialString );
+      if ( match.hasMatch() )
+      {
+        const QRegularExpressionMatch keyValueMatch = credentialOptionKeyValueRegex.match( match.captured( 1 ) );
+        if ( keyValueMatch.hasMatch() )
+        {
+          credentialOptions.insert( keyValueMatch.captured( 1 ), keyValueMatch.captured( 2 ) );
+        }
+        credentialString = credentialString.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    QgsGdalCloudProviderConnection::settingsCredentialOptions->setValue( credentialOptions, connectionName );
 
     child = child.nextSiblingElement();
   }

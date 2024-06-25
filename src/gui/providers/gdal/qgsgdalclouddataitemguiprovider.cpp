@@ -155,15 +155,12 @@ void QgsGdalCloudDataItemGuiProvider::newConnection( QgsDataItem *item, const Qg
 
 void QgsGdalCloudDataItemGuiProvider::saveConnections()
 {
-#if 0
-  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::SensorThings );
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::CloudStorage );
   dlg.exec();
-#endif
 }
 
-void QgsGdalCloudDataItemGuiProvider::loadConnections( QgsDataItem *item )
+void QgsGdalCloudDataItemGuiProvider::loadConnections( QgsGdalCloudRootItem *item )
 {
-#if 0
   const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
                            tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
@@ -171,10 +168,12 @@ void QgsGdalCloudDataItemGuiProvider::loadConnections( QgsDataItem *item )
     return;
   }
 
-  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::SensorThings, fileName );
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::CloudStorage, fileName );
   if ( dlg.exec() == QDialog::Accepted )
+  {
     item->refreshConnections();
-#endif
+    item->refresh();
+  }
 }
 
 ///@endcond

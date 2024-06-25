@@ -54,6 +54,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       VectorTile,
       TiledScene, //!< Tiled scene connection (since QGIS 3.34)
       SensorThings, //!< SensorThings connections (since QGIS 3.36)
+      CloudStorage, //!< Cloud storage connections (since QGIS 3.40)
     };
 
     /**
@@ -81,6 +82,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument saveVectorTileConnections( const QStringList &connections );
     QDomDocument saveTiledSceneConnections( const QStringList &connections );
     QDomDocument saveSensorThingsConnections( const QStringList &connections );
+    QDomDocument saveCloudStorageConnections( const QStringList &connections );
 
     void loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
     void loadWfsConnections( const QDomDocument &doc, const QStringList &items );
@@ -93,6 +95,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     void loadVectorTileConnections( const QDomDocument &doc, const QStringList &items );
     void loadTiledSceneConnections( const QDomDocument &doc, const QStringList &items );
     void loadSensorThingsConnections( const QDomDocument &doc, const QStringList &items );
+    void loadCloudStorageConnections( const QDomDocument &doc, const QStringList &items );
 
     QString mFileName;
     Mode mDialogMode;
