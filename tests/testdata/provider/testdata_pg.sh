@@ -28,7 +28,7 @@ SCRIPTS12="
 "
 
 echo "Dropping DB $DB"
-dropdb --if-exists "${DB}"
+dropdb --if-exists "${DB}" || exit 1
 echo "Creating DB $DB"
 createdb "${DB}" -E UTF8 -T template0 || exit 1
 
