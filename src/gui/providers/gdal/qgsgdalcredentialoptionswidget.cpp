@@ -18,7 +18,6 @@
 
 #include "qgsgdalcredentialoptionswidget.h"
 #include "qgsgdalguiutils.h"
-#include "qgsvariantutils.h"
 #include "qgsapplication.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
