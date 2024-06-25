@@ -437,7 +437,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
   if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
   {
-    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
     const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
     if ( bucketMatch.hasMatch() )
     {
