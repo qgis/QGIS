@@ -307,6 +307,7 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
 
+  providers/gdal/qgsgdalcloudconnection.cpp
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
 
@@ -1813,6 +1814,7 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
 
+  providers/gdal/qgsgdalcloudconnection.h
   providers/gdal/qgsgdalprovider.h
 
   providers/memory/qgsmemoryfeatureiterator.h

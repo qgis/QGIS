@@ -62,6 +62,7 @@ set(TESTS
  testqgsfilledmarker.cpp
  testqgsfontmarker.cpp
  testqgsfontutils.cpp
+ testqgsgdalcloudconnection.cpp
  testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
