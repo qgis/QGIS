@@ -505,15 +505,19 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   QCOMPARE( region, QString() );
 
   // credentials should be bucket specific
-  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/another/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "YES" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QStringLiteral( "eu-central-1" ) );
-  noSign = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  noSign = QString( VSIGetPathSpecificOption( "/vsis3/ogranother/subfolder/subfolder2", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "NO" ) );
-  region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
+  region = QString( VSIGetPathSpecificOption( "/vsis3/ogranother/subfolder/subfolder2", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QStringLiteral( "eu-central-2" ) );
+  noSign = QString( VSIGetPathSpecificOption( "/vsis3/ogranother", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QString() );
+  region = QString( VSIGetPathSpecificOption( "/vsis3/ogranother", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QString() );
 #endif
 }
 

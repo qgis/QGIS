@@ -955,7 +955,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   const QVariantMap credentialOptions = uriParts.value( QStringLiteral( "credentialOptions" ) ).toMap();
   if ( !credentialOptions.isEmpty() && !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
   {
-    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
     const QRegularExpressionMatch bucketMatch = bucketRx.match( uriParts.value( QStringLiteral( "path" ) ).toString() );
     if ( bucketMatch.hasMatch() )
     {

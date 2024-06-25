@@ -787,7 +787,7 @@ void QgsOgrSourceSelect::fillOpenOptions()
   parts.remove( QStringLiteral( "credentialOptions" ) );
   if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
   {
-    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*?)/" ) );
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
     const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
     if ( bucketMatch.hasMatch() )
     {
