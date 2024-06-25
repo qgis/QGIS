@@ -1941,7 +1941,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
   QString sourcePath = tempFile.fileName();
 
   //try to install the data directly as a font
-  int id = QFontDatabase::addApplicationFont( sourcePath );
+  int id = QFontDatabase::addApplicationFontFromData( data );
   if ( id != -1 )
   {
     // successfully loaded data as a font
