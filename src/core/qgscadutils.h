@@ -195,7 +195,6 @@ class CORE_EXPORT QgsCadUtils
          */
         QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
 
-
 #ifdef SIP_RUN
         SIP_PROPERTY( name = cadPointList, get = _cadPointList, set = _setCadPointList )
 #endif

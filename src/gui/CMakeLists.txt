@@ -513,6 +513,7 @@ set(QGIS_GUI_SRCS
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
   qgsadvanceddigitizingfloater.cpp
+  qgsadvanceddigitizingtools.cpp
   qgsaggregatetoolbutton.cpp
   qgsalignmentcombobox.cpp
   qgsapplicationexitblockerinterface.cpp
@@ -785,6 +786,7 @@ set(QGIS_GUI_HDRS
   qgsadvanceddigitizingcanvasitem.h
   qgsadvanceddigitizingdockwidget.h
   qgsadvanceddigitizingfloater.h
+  qgsadvanceddigitizingtools.h
   qgsaggregatetoolbutton.h
   qgsalignmentcombobox.h
   qgsapplicationexitblockerinterface.h

@@ -60,6 +60,8 @@ class TestQgsAdvancedDigitizing: public QObject
 
     void releaseLockAfterDisable();
 
+    void constructionGuides();
+
   private:
     TestQgsMapToolAdvancedDigitizingUtils getMapToolDigitizingUtils( QgsVectorLayer *layer );
     QString getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures );
@@ -1161,6 +1163,56 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
 
   // to be compliant with the integration
   mAdvancedDigitizingDockWidget->enableAction()->trigger();
+}
+
+void TestQgsAdvancedDigitizing::constructionGuides()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->constructionGuidesLayer()->featureCount(), 0 );
+
+  mAdvancedDigitizingDockWidget->mRecordConstructionGuides->setChecked( true );
+  mAdvancedDigitizingDockWidget->setConstructionMode( true );
+
+  // enter a few construction steps while guide recording is on
+  utils.mouseClick( 10, 10, Qt::LeftButton );
+  utils.mouseClick( 10, 11, Qt::LeftButton );
+  utils.mouseClick( 10, 12, Qt::LeftButton );
+  utils.mouseClick( 10, 13, Qt::LeftButton );
+  utils.mouseClick( 10, 14, Qt::LeftButton );
+  utils.mouseClick( 20, 01, Qt::RightButton );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->constructionGuidesLayer()->featureCount(), 1 );
+
+  mAdvancedDigitizingDockWidget->mRecordConstructionGuides->setChecked( false );
+
+  // enter a few construction steps while guide recording is off
+  utils.mouseClick( 10, 10, Qt::LeftButton );
+  utils.mouseClick( 10, 11, Qt::LeftButton );
+  utils.mouseClick( 10, 12, Qt::LeftButton );
+  utils.mouseClick( 10, 13, Qt::LeftButton );
+  utils.mouseClick( 10, 14, Qt::LeftButton );
+  utils.mouseClick( 20, 01, Qt::RightButton );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->constructionGuidesLayer()->featureCount(), 1 );
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  mAdvancedDigitizingDockWidget->mSnapToConstructionGuides->setChecked( true );
+
+  // snap on an existing constructio guide vertex
+  utils.mouseMove( 10.1, 10 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 10, 10 ) );
+
+  mAdvancedDigitizingDockWidget->mSnapToConstructionGuides->setChecked( false );
+
+  // do not snap on an existing construction guide vertex
+  utils.mouseMove( 10.5, 14.5 );
+  QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 10.5, 14.5 ), 0.1 );
 }
 
 QGSTEST_MAIN( TestQgsAdvancedDigitizing )
