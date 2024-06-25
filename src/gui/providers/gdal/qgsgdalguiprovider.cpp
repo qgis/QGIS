@@ -35,6 +35,7 @@
 #include "qgsgdalfilesourcewidget.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgslayeritem.h"
+#include "qgsgdalclouddataitemguiprovider.h"
 
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
 
@@ -240,9 +241,11 @@ QList<QgsSourceSelectProvider *> QgsGdalGuiProviderMetadata::sourceSelectProvide
 
 QList<QgsDataItemGuiProvider *> QgsGdalGuiProviderMetadata::dataItemGuiProviders()
 {
-  QList<QgsDataItemGuiProvider *> providers;
-  providers << new QgsGdalItemGuiProvider();
-  return providers;
+  return
+  {
+    new QgsGdalItemGuiProvider(),
+    new QgsGdalCloudDataItemGuiProvider()
+  };
 }
 
 QList<QgsProviderSourceWidgetProvider *> QgsGdalGuiProviderMetadata::sourceWidgetProviders()
