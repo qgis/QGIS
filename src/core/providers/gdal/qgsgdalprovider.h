@@ -410,6 +410,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QStringList sidecarFilesForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errCause SIP_OUT ) override;
