@@ -70,9 +70,16 @@ class TestQgsOgrProvider : public QgsTest
 //runs before all tests
 void TestQgsOgrProvider::initTestCase()
 {
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QgsSettings().clear();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 }
@@ -119,6 +126,10 @@ void TestQgsOgrProvider::setupProxy()
     QCOMPARE( proxyCredentials, "username" );
   }
 
+  // cleanup
+  QgsSettings().clear();
+  CPLSetConfigOption( "GDAL_HTTP_PROXY", nullptr );
+  CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", nullptr );
 }
 
 void TestQgsOgrProvider::decodeUri()
