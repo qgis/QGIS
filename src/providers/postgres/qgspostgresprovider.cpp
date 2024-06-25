@@ -1492,18 +1492,10 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   mEnabledCapabilities = QgsVectorDataProvider::Capability::ReloadData;
 
-  QString sql;
   QgsPostgresResult testAccess;
 
   bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
   bool inRecovery = false;
-  sql = QStringLiteral( "SELECT "
-                        "has_table_privilege(%1,'SELECT'),"   // 0
-                        "pg_is_in_recovery(),"                // 1
-                        "current_schema(), "                  // 2
-                        "has_table_privilege(%1,'INSERT'),"   // 3
-                        "has_table_privilege(%1,'DELETE')" ) // 4
-        .arg( quotedValue( mQuery ) );
 
   if ( !mIsQuery )
   {
@@ -1515,23 +1507,37 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
     }
 
+    QString sql = QStringLiteral(
+                    "SELECT "
+                    "has_table_privilege(%1,'SELECT')," // 0 (select priv)
+                    "pg_is_in_recovery(),"              // 1 (in recovery)
+                    "current_schema() "                 // 2 (current schema)
+                  ).arg( quotedValue( mQuery ) );
+
+
     if ( connectionRO()->pgVersion() >= 80400 )
     {
-      sql += QString( ",has_any_column_privilege(%1,'UPDATE')" // 5
-                      ",%2" ) // 6
-             .arg( quotedValue( mQuery ),
-                   mGeometryColumn.isNull()
-                   ? QStringLiteral( "'f'" )
-                   : QStringLiteral( "has_column_privilege(%1,%2,'UPDATE')" )
-                   .arg( quotedValue( mQuery ),
-                         quotedValue( mGeometryColumn ) )
-                 );
+      sql += QString(
+               ",has_any_column_privilege(%1,'INSERT')" // 3 (insert priv)
+               ",has_table_privilege(%1,'DELETE')"      // 4 (delete priv)
+               ",has_any_column_privilege(%1,'UPDATE')" // 5 (update priv)
+               ",%2"                                    // 6 (geom upd priv)
+             ).arg( quotedValue( mQuery ),
+                    mGeometryColumn.isNull()
+                    ? QStringLiteral( "'f'" )
+                    : QStringLiteral( "has_column_privilege(%1,%2,'UPDATE')" )
+                    .arg( quotedValue( mQuery ),
+                          quotedValue( mGeometryColumn ) )
+                  );
     }
     else
     {
-      sql += QString( ",has_table_privilege(%1,'UPDATE')" // 5
-                      ",has_table_privilege(%1,'UPDATE')" ) // 6
-             .arg( quotedValue( mQuery ) );
+      sql += QString(
+               ",has_table_privilege(%1,'INSERT')" // 3 (insert priv)
+               ",has_table_privilege(%1,'DELETE')" // 4 (delete priv)
+               ",has_table_privilege(%1,'UPDATE')" // 5 (update priv)
+               ",has_table_privilege(%1,'UPDATE')" // 6 (geom col priv)
+             ).arg( quotedValue( mQuery ) );
     }
 
     testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
