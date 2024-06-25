@@ -501,13 +501,16 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
   // test that credential options are correctly set when layer URI specifies them
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+
+  // if actual aws dataset proves flaky, use this instead:
+  // std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
 
   // confirm that GDAL VSI configuration options are set
-  QString noSign( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QString noSign( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "YES" ) );
-  QString region( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_REGION", nullptr ) );
-  QCOMPARE( region, QStringLiteral( "eu-central-1" ) );
+  QString region( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QString() );
 
   // different bucket
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_NO_SIGN_REQUEST", nullptr ) );
@@ -515,14 +518,14 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   region = QString( VSIGetPathSpecificOption( "/vsis3/another", "AWS_REGION", nullptr ) );
   QCOMPARE( region, QString() );
 
-  QCOMPARE( vl->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ) );
+  QCOMPARE( vl->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
 
   // credentials should be bucket specific
   std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
-  noSign = QString( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  noSign = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "YES" ) );
-  region = QString( VSIGetPathSpecificOption( "/vsis3/testbucket", "AWS_REGION", nullptr ) );
-  QCOMPARE( region, QStringLiteral( "eu-central-1" ) );
+  region = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QString() );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/ogranother/subfolder/subfolder2", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "NO" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/ogranother/subfolder/subfolder2", "AWS_REGION", nullptr ) );
@@ -533,6 +536,10 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   QCOMPARE( region, QString() );
 
   QCOMPARE( vl2->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ) );
+
+  // cleanup
+  VSIClearPathSpecificOptions( "/vsis3/cdn.proj.org" );
+  VSIClearPathSpecificOptions( "/vsis3/ogranother/subfolder/subfolder2" );
 #endif
 }
 
@@ -543,24 +550,35 @@ void TestQgsOgrProvider::testVsiCredentialOptionsQuerySublayers()
   QVERIFY( ogrMetadata );
 
   // test that credential options are correctly handled when querying sublayers
-  QList< QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
-  // ideally we'd test with a real dataset here!
-  QVERIFY( subLayers.isEmpty() );
 
-  // confirm that GDAL VSI configuration options are set
-  QString noSign( VSIGetPathSpecificOption( "/vsis3/sublayerstestbucket", "AWS_NO_SIGN_REQUEST", nullptr ) );
-  QCOMPARE( noSign, QStringLiteral( "YES" ) );
-  QString region( VSIGetPathSpecificOption( "/vsis3/sublayerstestbucket", "AWS_REGION", nullptr ) );
-  QCOMPARE( region, QStringLiteral( "eu-central-3" ) );
+  // if actual aws dataset proves flaky, use this instead:
+  // QList< QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
+  QList< QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
 
-  subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ), Qgis::SublayerQueryFlag::FastScan );
-  // ideally we'd test with a real dataset here!
   QCOMPARE( subLayers.size(), 1 );
-  QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "test" ) );
-  QCOMPARE( subLayers.at( 0 ).uri(), QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
+  QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "files" ) );
+  QCOMPARE( subLayers.at( 0 ).uri(), QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|layername=files|credential:AWS_NO_SIGN_REQUEST=YES" ) );
   QCOMPARE( subLayers.at( 0 ).providerKey(), QStringLiteral( "ogr" ) );
   QCOMPARE( subLayers.at( 0 ).type(), Qgis::LayerType::Vector );
+  QCOMPARE( subLayers.at( 0 ).wkbType(), Qgis::WkbType::Unknown );
 
+  // confirm that GDAL VSI configuration options are set
+  QString noSign( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
+  QCOMPARE( noSign, QStringLiteral( "YES" ) );
+  QString region( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );
+  QCOMPARE( region, QString() );
+
+  //subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ), Qgis::SublayerQueryFlag::FastScan );
+  subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ), Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( subLayers.size(), 1 );
+  QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "files" ) );
+  QCOMPARE( subLayers.at( 0 ).uri(), QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
+  QCOMPARE( subLayers.at( 0 ).providerKey(), QStringLiteral( "ogr" ) );
+  QCOMPARE( subLayers.at( 0 ).type(), Qgis::LayerType::Vector );
+  QCOMPARE( subLayers.at( 0 ).wkbType(), Qgis::WkbType::Unknown );
+
+  // cleanup
+  VSIClearPathSpecificOptions( "/vsis3/cdn.proj.org" );
 #endif
 }
 
