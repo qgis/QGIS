@@ -17,12 +17,14 @@
 #define QGSGDALCLOUDDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
+#include "qgsgdalclouddataitems.h"
 #define SIP_NO_FILE
 
 #include "qgsdataitemguiprovider.h"
 #include "qgsgdalutils.h"
 
 class QgsGdalCloudConnectionItem;
+class QgsGdalCloudRootItem;
 
 class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -38,7 +40,7 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
     static void editConnection( QgsGdalCloudConnectionItem *item );
     static void newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver );
     static void saveConnections();
-    static void loadConnections( QgsDataItem *item );
+    static void loadConnections( QgsGdalCloudRootItem *item );
 
 };
 
