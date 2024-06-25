@@ -289,7 +289,7 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
 
     QgsVectorLayerToolsContext context;
     context.setParentWidget( this );
-    context.setShowModal( true );
+    context.setShowModal( false );
     context.setHideParent( true );
     std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::parentFormScope( mFeatureList.first(), mEditorContext.attributeFormModeString() ) );
     context.setAdditionalExpressionContextScope( scope.get() );
