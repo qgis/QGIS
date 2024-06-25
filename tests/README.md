@@ -40,16 +40,18 @@ The test database must be initialized using the sql-scripts:
 
     tests/testdata/provider/testdata_pg*.sql
 
-They take care of activating PostGIS and creating some tables containing
-test data.
+They take care of creating database test users, activating PostGIS
+and creating some tables containing test data. For this reason the
+database role running them needs to have privileges to perform
+those operations.
 
 For convenience, a shell script is provided to create the database
 and initialize it as needed:
 
     tests/testdata/provider/testdata_pg.sh
 
-Some tests will attempt to create database users too and expect them to
-be allowed to connect using a password.
+Some tests will attempt to create database users too and expect them
+to be allowed to connect using a password.
 Most PostgreSQL installation by default use "ident" authentication
 model when connecting via unix sockets. Make sure the `qgis_test`
 service (or your `QGIS_PGTEST_DB` connection string) uses a connection
