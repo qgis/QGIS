@@ -4346,7 +4346,7 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   job.start();
   job.waitForFinished();
 
-  job.renderedImage().save( QString( "%s/renderer.png" ).arg( QDir::tempPath() ) );
+  job.renderedImage().save( QStringLiteral( "/tmp/renderer.png" ) );
 
   std::unique_ptr< QgsLabelingResults > results( job.takeLabelingResults() );
   QVERIFY( results );
