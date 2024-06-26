@@ -13,14 +13,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsauthmanager.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-
 #include "qgsapplication.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthconfig.h"
+
+#include <QObject>
+#include <QString>
+#include <QStringList>
 
 /**
  * \ingroup UnitTests
@@ -52,6 +53,7 @@ void TestQgsAuthConfig::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsApplication::authManager()->ensureInitialized();
   if ( QgsAuthCrypto::isDisabled() )
     QSKIP( "QCA's qca-ossl plugin is missing, skipping test case", SkipAll );
 }
