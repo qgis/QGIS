@@ -273,14 +273,14 @@ class TestGdalAlgorithms(QgisTestCase):
                 'port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
             self.assertEqual(name, 'city_data.edge')
 
-    def testOgrConnectionStringAndFormat(self):
+    def test_gdal_connection_details_from_uri(self):
         context = QgsProcessingContext()
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat('d:/test/test.shp', context)
-        self.assertEqual(output, 'd:/test/test.shp')
-        self.assertEqual(outputFormat, '"ESRI Shapefile"')
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat('d:/test/test.mif', context)
-        self.assertEqual(output, 'd:/test/test.mif')
-        self.assertEqual(outputFormat, '"MapInfo File"')
+        output_details = GdalUtils.gdal_connection_details_from_uri('d:/test/test.shp', context)
+        self.assertEqual(output_details.connection_string, 'd:/test/test.shp')
+        self.assertEqual(output_details.format, '"ESRI Shapefile"')
+        output_details = GdalUtils.gdal_connection_details_from_uri('d:/test/test.mif', context)
+        self.assertEqual(output_details.connection_string, 'd:/test/test.mif')
+        self.assertEqual(output_details.format, '"MapInfo File"')
 
     def testConnectionString(self):
         alg = OgrToPostGis()

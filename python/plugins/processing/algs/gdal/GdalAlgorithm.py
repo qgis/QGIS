@@ -111,7 +111,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 # either not using the selection, or
                 # not executing - don't worry about 'selected features only' handling. It has no meaning
                 # for the command line preview since it has no meaning outside of a QGIS session!
-                ogr_data_path = GdalUtils.ogrConnectionStringAndFormatFromLayer(input_layer)[0]
+                ogr_data_path = GdalUtils.gdal_connection_details_from_layer(input_layer).connection_string
                 ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         elif input_layer.dataProvider().name().lower() == 'wfs':
             uri = QgsDataSourceUri(input_layer.source())
@@ -121,7 +121,8 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!
-            ogr_data_path = GdalUtils.ogrConnectionStringFromLayer(input_layer)
+            connection_details = GdalUtils.gdal_connection_details_from_layer(input_layer)
+            ogr_data_path = connection_details.connection_string
             ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         return ogr_data_path, ogr_layer_name
 

@@ -112,14 +112,14 @@ class polygonize(GdalAlgorithm):
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
-        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
-        if outFormat:
-            arguments.append(f'-f {outFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
-        arguments.append(output)
+        arguments.append(output_details.format)
 
-        layerName = GdalUtils.ogrOutputLayerName(output)
+        layerName = GdalUtils.ogrOutputLayerName(output_details.connection_string)
         if layerName:
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))

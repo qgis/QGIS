@@ -84,19 +84,19 @@ class ogr2ogr(GdalAlgorithm):
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
-        if outputFormat in ('SQLite', 'GPKG') and os.path.isfile(output):
-            raise QgsProcessingException(self.tr('Output file "{}" already exists.').format(output))
+        if output_details.format in ('SQLite', 'GPKG') and os.path.isfile(output_details.connection_string):
+            raise QgsProcessingException(self.tr('Output file "{}" already exists.').format(output_details.connection_string))
 
         arguments = []
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         if options:
             arguments.append(options)
 
-        arguments.append(output)
+        arguments.append(output_details.connection_string)
         arguments.append(ogrLayer)
         if not convertAllLayers:
             arguments.append(layerName)
