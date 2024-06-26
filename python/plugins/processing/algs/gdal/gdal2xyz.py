@@ -122,7 +122,9 @@ class gdal2xyz(GdalAlgorithm):
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments.append(raster.source())
+        input_details = GdalUtils.gdal_connection_details_from_layer(raster)
+
+        arguments.append(input_details.connection_string)
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

@@ -79,6 +79,8 @@ class rgb2pct(GdalAlgorithm):
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(
+            raster)
 
         output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
         if not output_format:
@@ -89,7 +91,7 @@ class rgb2pct(GdalAlgorithm):
             str(self.parameterAsInt(parameters, self.NCOLORS, context)),
             '-of',
             output_format,
-            raster.source(),
+            input_details.connection_string,
             out
         ]
 

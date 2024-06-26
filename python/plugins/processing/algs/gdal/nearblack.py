@@ -99,6 +99,7 @@ class nearblack(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
@@ -108,7 +109,7 @@ class nearblack(GdalAlgorithm):
             raise QgsProcessingException(self.tr('Output format is invalid'))
 
         arguments = [
-            inLayer.source(),
+            input_details.connection_string,
             '-of',
             output_format,
             '-o',

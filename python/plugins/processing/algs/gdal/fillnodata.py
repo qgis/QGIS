@@ -121,12 +121,13 @@ class fillnodata(GdalAlgorithm):
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(raster)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
         arguments = [
-            raster.source(),
+            input_details.connection_string,
             out,
             '-md',
             str(self.parameterAsInt(parameters, self.DISTANCE, context)),
