@@ -226,27 +226,6 @@ tests:
           geometry:
             explode_collections: true
 
-  - algorithm: gdal:offsetcurve
-    name: Offset curve (right-sided) (GEOS < 3.11)
-    condition:
-      geos:
-        less_than: 31100
-    params:
-      DISTANCE: -0.5
-      GEOMETRY: geometry
-      INPUT:
-        name: lines.gml
-        type: vector
-      OPTIONS: ''
-    results:
-      OUTPUT:
-        name: expected/gdal/offset_lines.gml
-        type: vector
-        compare:
-          ignore_crs_check: true
-          geometry:
-            explode_collections: true
-
   - algorithm: gdal:ogrinfo
     name: ogrinfo
     params:
