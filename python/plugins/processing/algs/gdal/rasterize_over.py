@@ -98,7 +98,7 @@ class rasterize_over(GdalAlgorithm):
         return 'gdal_rasterize'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_RASTER))
@@ -108,7 +108,7 @@ class rasterize_over(GdalAlgorithm):
 
         arguments = [
             '-l',
-            layerName,
+            input_details.layer_name,
             '-a',
             fieldName
         ]
@@ -119,7 +119,7 @@ class rasterize_over(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(ogrLayer)
+        arguments.append(input_details.connection_string)
         arguments.append(inLayer.source())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

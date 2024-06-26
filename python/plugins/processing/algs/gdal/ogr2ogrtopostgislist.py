@@ -210,7 +210,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
         uri = conn.uri()
 
-        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
@@ -259,8 +259,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('PG:{}'.format(' '.join(connection_parts)))
 
         arguments.append(dimstring)
-        arguments.append(ogrLayer)
-        arguments.append(layername)
+        arguments.append(input_details.connection_string)
+        arguments.append(input_details.layer_name)
         if index:
             arguments.append(indexstring)
         if launder:
@@ -281,7 +281,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         elif primary_key:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = layername.lower()
+            table = input_details.layer_name.lower()
         if schema:
             table = f'{schema}.{table}'
         arguments.append('-nln')

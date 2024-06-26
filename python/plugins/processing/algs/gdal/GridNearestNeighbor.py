@@ -136,11 +136,11 @@ class GridNearestNeighbor(GdalAlgorithm):
         return 'gdal_grid'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
 
         arguments = [
             '-l',
-            layerName
+            input_details.layer_name
         ]
         fieldName = self.parameterAsString(parameters, self.Z_FIELD, context)
         if fieldName:
@@ -180,7 +180,7 @@ class GridNearestNeighbor(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(ogrLayer)
+        arguments.append(input_details.connection_string)
         arguments.append(out)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

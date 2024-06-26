@@ -171,10 +171,10 @@ class rasterize(GdalAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         arguments = [
             '-l',
-            layerName
+            input_details.layer_name
         ]
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         use_z = self.parameterAsBoolean(parameters, self.USE_Z, context)
@@ -243,7 +243,7 @@ class rasterize(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(ogrLayer)
+        arguments.append(input_details.connection_string)
         arguments.append(out)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

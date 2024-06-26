@@ -100,7 +100,8 @@ class Buffer(GdalAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        source_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
@@ -120,16 +121,16 @@ class Buffer(GdalAlgorithm):
 
         arguments = [
             output_details.connection_string,
-            ogrLayer,
+            source_details.connection_string,
             '-dialect',
             'sqlite',
             '-sql'
         ]
 
         if dissolve or fieldName:
-            sql = f'SELECT ST_Union(ST_Buffer({geometry}, {distance})) AS {geometry}{other_fields} FROM "{layerName}"'
+            sql = f'SELECT ST_Union(ST_Buffer({geometry}, {distance})) AS {geometry}{other_fields} FROM "{source_details.layer_name}"'
         else:
-            sql = f'SELECT ST_Buffer({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
+            sql = f'SELECT ST_Buffer({geometry}, {distance}) AS {geometry}{other_fields} FROM "{source_details.layer_name}"'
 
         if fieldName:
             sql = f'{sql} GROUP BY "{fieldName}"'

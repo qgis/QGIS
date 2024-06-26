@@ -111,7 +111,7 @@ class OneSideBuffer(GdalAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         side = self.parameterAsEnum(parameters, self.BUFFER_SIDE, context)
@@ -132,16 +132,16 @@ class OneSideBuffer(GdalAlgorithm):
 
         arguments = [
             output_details.connection_string,
-            ogrLayer,
+            input_details.connection_string,
             '-dialect',
             'sqlite',
             '-sql'
         ]
 
         if dissolve or fieldName:
-            sql = f'SELECT ST_Union(ST_SingleSidedBuffer({geometry}, {distance}, {side})) AS {geometry}{other_fields} FROM "{layerName}"'
+            sql = f'SELECT ST_Union(ST_SingleSidedBuffer({geometry}, {distance}, {side})) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
         else:
-            sql = f'SELECT ST_SingleSidedBuffer({geometry}, {distance}, {side}) AS {geometry}{other_fields} FROM "{layerName}"'
+            sql = f'SELECT ST_SingleSidedBuffer({geometry}, {distance}, {side}) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
 
         if fieldName:
             sql = f'{sql} GROUP BY "{fieldName}"'

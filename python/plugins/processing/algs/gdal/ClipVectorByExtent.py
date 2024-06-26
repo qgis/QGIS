@@ -72,7 +72,7 @@ class ClipVectorByExtent(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
@@ -95,8 +95,8 @@ class ClipVectorByExtent(GdalAlgorithm):
             '-clipsrc spat_extent',
 
             output_details.connection_string,
-            ogrLayer,
-            layerName
+            input_details.connection_string,
+            input_details.layer_name
         ]
 
         if options:

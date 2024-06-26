@@ -96,7 +96,7 @@ class rasterize_over_fixed_value(GdalAlgorithm):
         return 'gdal_rasterize'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_RASTER))
@@ -105,7 +105,7 @@ class rasterize_over_fixed_value(GdalAlgorithm):
 
         arguments = [
             '-l',
-            layerName,
+            input_details.layer_name,
             '-burn',
             str(self.parameterAsDouble(parameters, self.BURN, context)),
         ]
@@ -117,7 +117,7 @@ class rasterize_over_fixed_value(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(ogrLayer)
+        arguments.append(input_details.connection_string)
         arguments.append(inLayer.source())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

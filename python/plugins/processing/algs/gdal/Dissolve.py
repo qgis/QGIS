@@ -112,7 +112,7 @@ class Dissolve(GdalAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
@@ -131,7 +131,7 @@ class Dissolve(GdalAlgorithm):
 
         arguments = [
             output_details.connection_string,
-            ogrLayer,
+            input_details.connection_string,
             '-nlt PROMOTE_TO_MULTI',
             '-dialect',
             'sqlite',
@@ -158,10 +158,10 @@ class Dissolve(GdalAlgorithm):
             group_by = f' GROUP BY "{fieldName}"'
 
         if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
-            sql = f'SELECT ST_Union({geometry}) AS {geometry}{other_fields}{params} FROM "{layerName}"{group_by}'
+            sql = f'SELECT ST_Union({geometry}) AS {geometry}{other_fields}{params} FROM "{input_details.layer_name}"{group_by}'
         else:
             sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, f', "{fieldName}"' if fieldName else '',
-                                                                     params, layerName, group_by)
+                                                                     params, input_details.layer_name, group_by)
 
         arguments.append(sql)
 

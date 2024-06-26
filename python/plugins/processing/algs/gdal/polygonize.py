@@ -117,7 +117,7 @@ class polygonize(GdalAlgorithm):
         if output_details.format:
             arguments.append(f'-f {output_details.format}')
 
-        arguments.append(output_details.format)
+        arguments.append(output_details.connection_string)
 
         layerName = GdalUtils.ogrOutputLayerName(output_details.connection_string)
         if layerName:

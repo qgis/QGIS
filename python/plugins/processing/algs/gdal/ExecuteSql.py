@@ -81,7 +81,9 @@ class ExecuteSql(GdalAlgorithm):
         return "ogr2ogr"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT,
+                                                    parameters, context,
+                                                    feedback, executing)
         sql = self.parameterAsString(parameters, self.SQL, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -95,7 +97,7 @@ class ExecuteSql(GdalAlgorithm):
 
         arguments = [
             output_details.connection_string,
-            ogrLayer,
+            input_details.connection_string,
             '-sql',
             sql
         ]
