@@ -96,7 +96,7 @@ class PointsAlongLines(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, outFile)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         other_fields_exist = any(
             f for f in fields
@@ -106,7 +106,7 @@ class PointsAlongLines(GdalAlgorithm):
         other_fields = ',*' if other_fields_exist else ''
 
         arguments = [
-            output,
+            output_details.connection_string,
             ogrLayer,
             '-dialect',
             'sqlite',
@@ -117,7 +117,7 @@ class PointsAlongLines(GdalAlgorithm):
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

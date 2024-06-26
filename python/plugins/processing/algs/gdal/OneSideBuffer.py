@@ -121,7 +121,7 @@ class OneSideBuffer(GdalAlgorithm):
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         other_fields_exist = any(
             True for f in fields
@@ -131,7 +131,7 @@ class OneSideBuffer(GdalAlgorithm):
         other_fields = ',*' if other_fields_exist else ''
 
         arguments = [
-            output,
+            output_details.connection_string,
             ogrLayer,
             '-dialect',
             'sqlite',
@@ -154,7 +154,7 @@ class OneSideBuffer(GdalAlgorithm):
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

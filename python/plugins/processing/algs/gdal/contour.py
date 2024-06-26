@@ -150,7 +150,7 @@ class contour(GdalAlgorithm):
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
-        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         arguments = [
             '-b',
@@ -175,8 +175,8 @@ class contour(GdalAlgorithm):
         if offset:
             arguments.append(f'-off {offset}')
 
-        if outFormat:
-            arguments.append(f'-f {outFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
@@ -188,7 +188,7 @@ class contour(GdalAlgorithm):
             arguments.append(options)
 
         arguments.append(inLayer.source())
-        arguments.append(output)
+        arguments.append(output_details.connection_string)
         return arguments
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):

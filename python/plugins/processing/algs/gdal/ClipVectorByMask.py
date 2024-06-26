@@ -80,7 +80,7 @@ class ClipVectorByMask(GdalAlgorithm):
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         arguments = [
             '-clipsrc',
@@ -88,7 +88,7 @@ class ClipVectorByMask(GdalAlgorithm):
             '-clipsrclayer',
             maskLayerName,
 
-            output,
+            output_details.connection_string,
             inLayer,
             inLayerName,
         ]
@@ -96,7 +96,7 @@ class ClipVectorByMask(GdalAlgorithm):
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
