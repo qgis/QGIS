@@ -15310,7 +15310,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenTable->setEnabled( true );
       mMenuFilterTable->setEnabled( true );
       mActionOpenTableSelected->setEnabled( true );
-      mActionOpenTableVisible->setEnabled( true );
+      mActionOpenTableVisible->setEnabled( isSpatial );
       mActionOpenTableEdited->setEnabled( true );
       mActionSelectAll->setEnabled( true );
       mActionReselect->setEnabled( true );
