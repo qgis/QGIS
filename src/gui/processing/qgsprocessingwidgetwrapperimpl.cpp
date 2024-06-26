@@ -5663,7 +5663,7 @@ QVariant QgsProcessingDatabaseSchemaWidgetWrapper::widgetValue() const
 QStringList QgsProcessingDatabaseSchemaWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
-         << QgsProcessingParameterProviderConnection::typeName()
+         << QgsProcessingParameterDatabaseSchema::typeName()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterExpression::typeName();
 }
@@ -5947,7 +5947,7 @@ QVariant QgsProcessingDatabaseTableWidgetWrapper::widgetValue() const
 QStringList QgsProcessingDatabaseTableWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
-         << QgsProcessingParameterProviderConnection::typeName()
+         << QgsProcessingParameterDatabaseTable::typeName()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterExpression::typeName();
 }
