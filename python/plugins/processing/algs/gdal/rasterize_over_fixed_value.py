@@ -23,12 +23,9 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsRasterFileWriter,
-                       QgsProcessingContext,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterField,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
@@ -100,6 +97,8 @@ class rasterize_over_fixed_value(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_RASTER))
+        input_raster_details = GdalUtils.gdal_connection_details_from_layer(
+            inLayer)
 
         self.setOutputValue(self.OUTPUT, inLayer.source())
 
@@ -121,7 +120,7 @@ class rasterize_over_fixed_value(GdalAlgorithm):
             arguments.append(extra)
 
         arguments.append(input_details.connection_string)
-        arguments.append(inLayer.source())
+        arguments.append(input_raster_details.connection_string)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 

@@ -443,6 +443,14 @@ class GdalUtils:
                     format=f'"{format}"',
                     open_options=parts.get('openOptions', None)
                 )
+        elif provider.lower() == "gdal":
+            parts = QgsProviderRegistry.instance().decodeUri('gdal',
+                                                             layer.source())
+            if 'path' in parts:
+                return GdalConnectionDetails(
+                    connection_string=parts['path'],
+                    open_options=parts.get('openOptions', None)
+                )
 
         ogrstr = str(layer.source()).split("|")[0]
         path, ext = os.path.splitext(ogrstr)
@@ -514,10 +522,11 @@ class GdalUtils:
         if executing:
             layers = []
             for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                layer_details = GdalUtils.gdal_connection_details_from_layer(l)
                 if quote:
-                    layers.append('"' + l.source() + '"')
+                    layers.append('"' + layer_details.connection_string + '"')
                 else:
-                    layers.append(l.source())
+                    layers.append(layer_details.connection_string)
 
             with open(listFile, 'w') as f:
                 f.write('\n'.join(layers))

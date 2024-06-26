@@ -124,10 +124,9 @@ class gdaladdo(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
-        fileName = inLayer.source()
-
-        arguments = [fileName]
+        arguments = [input_details.connection_string]
         if self.RESAMPLING in parameters and parameters[self.RESAMPLING] is not None:
             arguments.append('-r')
             arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
@@ -147,6 +146,6 @@ class gdaladdo(GdalAlgorithm):
 
         arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))
 
-        self.setOutputValue(self.OUTPUT, fileName)
+        self.setOutputValue(self.OUTPUT, inLayer.source())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

@@ -115,7 +115,6 @@ class gdaltindex(GdalAlgorithm):
         return 'gdaltindex'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
         crs_field = self.parameterAsString(parameters, self.CRS_FIELD_NAME, context)
         crs_format = self.parameterAsEnum(parameters, self.CRS_FORMAT, context)
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)

@@ -149,6 +149,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-a_srs EPSG:3111 ' +
              source])
 
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                    'CRS': 'EPSG:3111'}, context, feedback),
+            ['gdal_edit.py',
+             '-a_srs EPSG:3111 ' +
+             source + ' -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
                      'gdal_edit.py: not found')
     def testRunAssignProjection(self):
@@ -306,6 +313,14 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                translate_alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                                  'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testClipRasterByExtent(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -391,6 +406,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'EXTENT': extent,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testClipRasterByMask(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -474,6 +498,14 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-overwrite -te 1.0 2.0 3.0 4.0 -te_srs EPSG:4236 -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
                  outdir + '/check.jpg'])
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'MASK': mask,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-overwrite -of JPEG -cutline ' +
+                 mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
     def testContourPolygon(self):
         context = QgsProcessingContext()
@@ -826,6 +858,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'EXTRA': '-proj4 -listmdd -checksum'}, context, feedback),
             ['gdalinfo',
              '-proj4 -listmdd -checksum "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '"' + source + '" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
     def testGdalTindex(self):
         context = QgsProcessingContext()
@@ -2219,6 +2260,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'SOURCE_CRS': 'EPSG:3111',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-overwrite -s_srs EPSG:3111 -r near -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testMerge(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -2354,6 +2404,14 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_translate', '-b 3 -b 2 -b 1 ' +
                  '-ot Float32 -of GTiff ' +
                  source + ' ' + outsource])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'BANDS': 1,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_translate', '-b 1 ' +
+                 '-of GTiff ' +
+                 source + ' ' + outsource + ' -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
     def testFillnodata(self):
         context = QgsProcessingContext()

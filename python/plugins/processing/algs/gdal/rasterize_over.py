@@ -102,6 +102,8 @@ class rasterize_over(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_RASTER))
+        input_raster_details = GdalUtils.gdal_connection_details_from_layer(
+            inLayer)
 
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         self.setOutputValue(self.OUTPUT, inLayer.source())
@@ -123,7 +125,7 @@ class rasterize_over(GdalAlgorithm):
             arguments.extend(input_details.open_options_as_arguments())
 
         arguments.append(input_details.connection_string)
-        arguments.append(inLayer.source())
+        arguments.append(input_raster_details.connection_string)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 

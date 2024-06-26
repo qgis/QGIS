@@ -219,7 +219,9 @@ class gdal2tiles(GdalAlgorithm):
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments.append(inLayer.source())
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+
+        arguments.append(input_details.connection_string)
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

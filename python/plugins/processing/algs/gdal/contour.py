@@ -140,6 +140,7 @@ class contour(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
@@ -187,7 +188,7 @@ class contour(GdalAlgorithm):
         if options:
             arguments.append(options)
 
-        arguments.append(inLayer.source())
+        arguments.append(input_details.connection_string)
         arguments.append(output_details.connection_string)
         return arguments
 

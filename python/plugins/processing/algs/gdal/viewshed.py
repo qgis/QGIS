@@ -117,6 +117,8 @@ class viewshed(GdalAlgorithm):
         dem = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if dem is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        dem_input_details = GdalUtils.gdal_connection_details_from_layer(
+            dem)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
@@ -149,7 +151,7 @@ class viewshed(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(dem.source())
+        arguments.append(dem_input_details.connection_string)
         arguments.append(out)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
