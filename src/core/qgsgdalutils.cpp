@@ -988,7 +988,7 @@ Qgis::VsiHandlerType QgsGdalUtils::vsiHandlerType( const QString &prefix )
 
   else if ( vsiPrefix == QLatin1String( "vsicurl" ) ||
             vsiPrefix == QLatin1String( "vsicurl_streaming" ) )
-    return Qgis::VsiHandlerType::Archive;
+    return Qgis::VsiHandlerType::Network;
 
   else if ( vsiPrefix == QLatin1String( "vsis3" ) ||
             vsiPrefix == QLatin1String( "vsicurl_streaming" ) ||
