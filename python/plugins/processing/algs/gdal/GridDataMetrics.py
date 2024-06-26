@@ -195,6 +195,9 @@ class GridDataMetrics(GdalAlgorithm):
         arguments.append(output_format)
 
         if input_details.open_options:
+            if GdalUtils.version() < 3070000:
+                raise QgsProcessingException(self.tr('Open options are not supported by gdal_grid version {} (requires GDAL version 3.7 or later)'.format(GdalUtils.readableVersion())))
+
             arguments.extend(input_details.open_options_as_arguments())
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)

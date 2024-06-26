@@ -113,6 +113,11 @@ class rasterize_over_fixed_value(GdalAlgorithm):
             arguments.append('-add')
 
         if input_details.open_options:
+            if GdalUtils.version() < 3070000:
+                raise QgsProcessingException(self.tr(
+                    'Open options are not supported by gdal_rasterize version {} (requires GDAL version 3.7 or later)'.format(
+                        GdalUtils.readableVersion())))
+
             arguments.extend(input_details.open_options_as_arguments())
 
         if input_details.credential_options:
