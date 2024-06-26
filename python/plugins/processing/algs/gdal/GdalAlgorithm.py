@@ -76,9 +76,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             parameters = {parameter_name: parameters[parameter_name].source}
 
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
-        ogr_data_path = None
-        ogr_layer_name = None
-        if input_layer is None or input_layer.dataProvider().name() == 'memory':
+        if input_layer is None or input_layer.providerType() == 'memory':
             if executing:
                 # parameter is not a vector layer - try to convert to a source compatible with OGR
                 # and extract selection if required
@@ -93,7 +91,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 # be run directly in the command line)
                 ogr_data_path = 'path_to_data_file'
                 ogr_layer_name = 'layer_name'
-        elif input_layer.dataProvider().name() == 'ogr':
+        elif input_layer.providerType() == 'ogr':
             if executing and (isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly) \
                     or input_layer.subsetString():
                 # parameter is a vector layer, with OGR data provider
@@ -112,8 +110,8 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 # not executing - don't worry about 'selected features only' handling. It has no meaning
                 # for the command line preview since it has no meaning outside of a QGIS session!
                 ogr_data_path = GdalUtils.gdal_connection_details_from_layer(input_layer).connection_string
-                ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
-        elif input_layer.dataProvider().name().lower() == 'wfs':
+                ogr_layer_name = GdalUtils.ogrLayerName(input_layer.source())
+        elif input_layer.providerType().lower() == 'wfs':
             uri = QgsDataSourceUri(input_layer.source())
             baseUrl = uri.param('url').split('?')[0]
             ogr_data_path = f"WFS:{baseUrl}"
@@ -123,7 +121,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             # TODO - handle "selected features only" mode!!
             connection_details = GdalUtils.gdal_connection_details_from_layer(input_layer)
             ogr_data_path = connection_details.connection_string
-            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.source())
         return ogr_data_path, ogr_layer_name
 
     def setOutputValue(self, name, value):
