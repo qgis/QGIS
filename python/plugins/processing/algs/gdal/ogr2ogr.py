@@ -93,6 +93,9 @@ class ogr2ogr(GdalAlgorithm):
         if output_details.format:
             arguments.append(f'-f {output_details.format}')
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 

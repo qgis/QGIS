@@ -93,6 +93,9 @@ class ClipVectorByMask(GdalAlgorithm):
             input_details.layer_name,
         ]
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 

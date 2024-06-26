@@ -121,17 +121,16 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                     ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
                 return GdalConnectionDetails(
                     connection_string=ogr_data_path,
-                    layer_name=ogr_layer_name
+                    layer_name=ogr_layer_name,
+                    open_options=parts.get('openOptions', None)
                 )
             else:
                 # either not using the selection, or
                 # not executing - don't worry about 'selected features only' handling. It has no meaning
                 # for the command line preview since it has no meaning outside of a QGIS session!
-                ogr_data_path = GdalUtils.gdal_connection_details_from_layer(input_layer).connection_string
-                return GdalConnectionDetails(
-                    connection_string=ogr_data_path,
-                    layer_name=GdalUtils.ogrLayerName(input_layer.source())
-                )
+                connection_details = GdalUtils.gdal_connection_details_from_layer(input_layer)
+                connection_details.layer_name = GdalUtils.ogrLayerName(input_layer.source())
+                return connection_details
         elif input_layer.providerType().lower() == 'wfs':
             uri = QgsDataSourceUri(input_layer.source())
             baseUrl = uri.param('url').split('?')[0]

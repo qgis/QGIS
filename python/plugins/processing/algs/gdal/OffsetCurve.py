@@ -111,6 +111,9 @@ class OffsetCurve(GdalAlgorithm):
         sql = f'SELECT ST_OffsetCurve({geometry}, {distance}) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
         arguments.append(sql)
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 

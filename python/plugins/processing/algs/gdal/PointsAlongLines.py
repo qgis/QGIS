@@ -114,6 +114,9 @@ class PointsAlongLines(GdalAlgorithm):
             f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
         ]
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 

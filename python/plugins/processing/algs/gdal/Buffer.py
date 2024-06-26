@@ -140,6 +140,9 @@ class Buffer(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append('-explodecollections')
 
+        if source_details.open_options:
+            arguments.extend(source_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 
