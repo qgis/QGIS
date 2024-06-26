@@ -168,6 +168,9 @@ class Dissolve(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append('-explodecollections')
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 

@@ -113,6 +113,9 @@ class rasterize_over_fixed_value(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.ADD, context):
             arguments.append('-add')
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)

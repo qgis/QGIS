@@ -119,6 +119,9 @@ class rasterize_over(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         arguments.append(input_details.connection_string)
         arguments.append(inLayer.source())
 

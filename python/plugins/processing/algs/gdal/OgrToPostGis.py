@@ -327,6 +327,10 @@ class OgrToPostGis(GdalAlgorithm):
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if len(options) > 0:
             arguments.append(options)
 

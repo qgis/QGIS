@@ -67,6 +67,16 @@ class GdalConnectionDetails:
     open_options: Optional[List[str]] = None
     layer_name: Optional[str] = None
 
+    def open_options_as_arguments(self) -> List[str]:
+        """
+        Returns any open options as a list of arguments
+        """
+        res = []
+        for option in self.open_options:
+            res.append(f'-oo {option}')
+
+        return res
+
 
 try:
     from osgeo import gdal, ogr

@@ -80,6 +80,10 @@ class ogrinfo(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         arguments.append(input_details.connection_string)
         arguments.append(input_details.layer_name)
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):

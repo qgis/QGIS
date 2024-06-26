@@ -180,6 +180,9 @@ class GridAverage(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(output_format)
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
