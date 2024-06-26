@@ -165,7 +165,7 @@ class ClipRasterByMask(GdalAlgorithm):
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
+        mask_details = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
 
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
@@ -235,9 +235,9 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append('-tap')
 
         arguments.append('-cutline')
-        arguments.append(maskLayer)
+        arguments.append(mask_details.connection_string)
         arguments.append('-cl')
-        arguments.append(maskLayerName)
+        arguments.append(mask_details.layer_name)
 
         if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')

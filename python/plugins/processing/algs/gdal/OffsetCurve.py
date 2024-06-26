@@ -85,7 +85,7 @@ class OffsetCurve(GdalAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
@@ -103,12 +103,12 @@ class OffsetCurve(GdalAlgorithm):
 
         arguments = [
             output_details.connection_string,
-            ogrLayer,
+            input_details.connection_string,
             '-dialect',
             'sqlite',
             '-sql'
         ]
-        sql = f'SELECT ST_OffsetCurve({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
+        sql = f'SELECT ST_OffsetCurve({geometry}, {distance}) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
         arguments.append(sql)
 
         if options:

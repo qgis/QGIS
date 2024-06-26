@@ -65,6 +65,7 @@ class GdalConnectionDetails:
     connection_string: Optional[str] = None
     format: Optional[str] = None
     open_options: Optional[List[str]] = None
+    layer_name: Optional[str] = None
 
 
 try:
@@ -300,8 +301,8 @@ class GdalUtils:
 
     @staticmethod
     def gdal_connection_details_from_uri(
-        uri: str,
-        context: QgsProcessingContext) -> GdalConnectionDetails:
+            uri: str,
+            context: QgsProcessingContext) -> GdalConnectionDetails:
         """
         Generates GDAL connection details from layer source
         """

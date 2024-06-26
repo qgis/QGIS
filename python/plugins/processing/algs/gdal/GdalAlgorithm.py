@@ -21,6 +21,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import re
+from typing import Dict
 
 from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
@@ -34,7 +35,10 @@ from qgis.core import (QgsApplication,
                        QgsDataSourceUri)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import (
+    GdalUtils,
+    GdalConnectionDetails
+)
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -64,10 +68,14 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
 
-    def getOgrCompatibleSource(self, parameter_name, parameters, context, feedback, executing):
+    def getOgrCompatibleSource(self,
+                               parameter_name: str,
+                               parameters: Dict,
+                               context: QgsProcessingContext,
+                               feedback: QgsProcessingFeedback,
+                               executing: bool) -> GdalConnectionDetails:
         """
-        Interprets a parameter as an OGR compatible source and layer name
-        :param executing:
+        Interprets a parameter as a GDAL connection details
         """
         if not executing and parameter_name in parameters and isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition):
             # if not executing, then we throw away all 'selected features only' settings
@@ -84,13 +92,19 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                                                                           QgsVectorFileWriter.supportedFormatExtensions(),
                                                                           QgsVectorFileWriter.supportedFormatExtensions()[0],
                                                                           feedback=feedback)
-                ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
+
+                return GdalConnectionDetails(
+                    connection_string=ogr_data_path,
+                    layer_name=GdalUtils.ogrLayerName(ogr_data_path)
+                )
             else:
                 # not executing - don't waste time converting incompatible sources, just return dummy strings
                 # for the command preview (since the source isn't compatible with OGR, it has no meaning anyway and can't
                 # be run directly in the command line)
-                ogr_data_path = 'path_to_data_file'
-                ogr_layer_name = 'layer_name'
+                return GdalConnectionDetails(
+                    connection_string='path_to_data_file',
+                    layer_name='layer_name'
+                )
         elif input_layer.providerType() == 'ogr':
             if executing and (isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly) \
                     or input_layer.subsetString():
@@ -105,24 +119,32 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                     ogr_layer_name = parts['layerName']
                 else:
                     ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
+                return GdalConnectionDetails(
+                    connection_string=ogr_data_path,
+                    layer_name=ogr_layer_name
+                )
             else:
                 # either not using the selection, or
                 # not executing - don't worry about 'selected features only' handling. It has no meaning
                 # for the command line preview since it has no meaning outside of a QGIS session!
                 ogr_data_path = GdalUtils.gdal_connection_details_from_layer(input_layer).connection_string
-                ogr_layer_name = GdalUtils.ogrLayerName(input_layer.source())
+                return GdalConnectionDetails(
+                    connection_string=ogr_data_path,
+                    layer_name=GdalUtils.ogrLayerName(input_layer.source())
+                )
         elif input_layer.providerType().lower() == 'wfs':
             uri = QgsDataSourceUri(input_layer.source())
             baseUrl = uri.param('url').split('?')[0]
-            ogr_data_path = f"WFS:{baseUrl}"
-            ogr_layer_name = uri.param('typename')
-        else:
-            # vector layer, but not OGR - get OGR compatible path
-            # TODO - handle "selected features only" mode!!
-            connection_details = GdalUtils.gdal_connection_details_from_layer(input_layer)
-            ogr_data_path = connection_details.connection_string
-            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.source())
-        return ogr_data_path, ogr_layer_name
+            return GdalConnectionDetails(
+                connection_string=f"WFS:{baseUrl}",
+                layer_name=uri.param('typename')
+            )
+
+        # vector layer, but not OGR - get OGR compatible path
+        # TODO - handle "selected features only" mode!!
+        connection_details = GdalUtils.gdal_connection_details_from_layer(input_layer)
+        connection_details.layer_name = GdalUtils.ogrLayerName(input_layer.source())
+        return connection_details
 
     def setOutputValue(self, name, value):
         self.output_values[name] = value

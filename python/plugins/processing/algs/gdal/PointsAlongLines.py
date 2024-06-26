@@ -89,7 +89,7 @@ class PointsAlongLines(GdalAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -107,11 +107,11 @@ class PointsAlongLines(GdalAlgorithm):
 
         arguments = [
             output_details.connection_string,
-            ogrLayer,
+            input_details.connection_string,
             '-dialect',
             'sqlite',
             '-sql',
-            f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
+            f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
         ]
 
         if options:

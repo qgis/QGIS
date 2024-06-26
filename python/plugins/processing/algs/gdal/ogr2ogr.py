@@ -78,7 +78,7 @@ class ogr2ogr(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         convertAllLayers = self.parameterAsBoolean(parameters, self.CONVERT_ALL_LAYERS, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -97,9 +97,9 @@ class ogr2ogr(GdalAlgorithm):
             arguments.append(options)
 
         arguments.append(output_details.connection_string)
-        arguments.append(ogrLayer)
+        arguments.append(input_details.connection_string)
         if not convertAllLayers:
-            arguments.append(layerName)
+            arguments.append(input_details.layer_name)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
