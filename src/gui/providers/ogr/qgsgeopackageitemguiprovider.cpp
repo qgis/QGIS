@@ -358,7 +358,7 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackage
 {
   if ( item )
   {
-    const QgsSettings settings;
+    QgsSettings settings;
     const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastGeoPackageDir" ), QDir::homePath() ).toString();
 
     QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New GeoPackage" ),
@@ -371,18 +371,20 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackage
 
     filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "gpkg" ) );
 
-    QString errorMsg;
+    const QFileInfo fileInfo( filename );
+    settings.setValue( QStringLiteral( "UI/lastGeoPackageDir" ), fileInfo.absoluteDir().absolutePath() );
+
     if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
     {
       QString error;
-      if ( ! ogrMetadata->createDatabase( filename, errorMsg ) )
+      if ( ! ogrMetadata->createDatabase( filename, error ) )
       {
-        QMessageBox::critical( nullptr, tr( "New GeoPackage" ), errorMsg );
+        QMessageBox::critical( nullptr, tr( "New GeoPackage" ), error );
         return;
       }
 
       // Call QFileInfo to normalize paths, see: https://github.com/qgis/QGIS/issues/36832
-      if ( QgsOgrProviderUtils::saveConnection( QFileInfo( filename ).filePath(), QStringLiteral( "GPKG" ) ) )
+      if ( QgsOgrProviderUtils::saveConnection( fileInfo.filePath(), QStringLiteral( "GPKG" ) ) )
       {
         item->refreshConnections();
       }
