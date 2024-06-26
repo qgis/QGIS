@@ -29,8 +29,9 @@ strings = {}
 d = et.parse('linux/org.qgis.qgis.appdata.xml.in')
 
 r = d.getroot()
-for elem in ['name', 'summary', 'description']:
-    for c in r.iter(elem):
+valuesNeeded = ['name', 'summary', 'description']
+for c in r:
+    if c.tag in valuesNeeded:
         if not c.attrib:
             l = list(c)
             t = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
@@ -68,8 +69,9 @@ for qm in sorted(glob(sys.argv[1] + "/output/i18n/qgis_*.qm")):
             continue
         strings[s][lang] = translation
 
-for elem in ['name', 'summary']:
-    for c in r.iter(elem):
+valuesOffered = ['name', 'summary']
+for c in r:
+    if c.tag in valuesOffered:
         if c.attrib:
             continue
 
@@ -77,7 +79,7 @@ for elem in ['name', 'summary']:
         s = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
 
         for lang in strings[s]:
-            e = et.Element(elem, attrib={"xml:lang": lang})
+            e = et.Element(c.tag, attrib={"xml:lang": lang})
             e.text = strings[s][lang]
             e.tail = c.tail
             r.append(e)
