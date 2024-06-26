@@ -26,11 +26,7 @@ if (ENABLE_TESTS)
       set_tests_properties(${TESTNAME} PROPERTIES LABELS ${ARG_QGIS_TEST_LABELS})
     endif()
 
-    set_tests_properties(${TESTNAME} PROPERTIES
-      FIXTURES_REQUIRED SOURCETREE
-      ENVIRONMENT "TMPDIR=${QGIS_TEST_TMP_DIR};QGIS_CUSTOM_CONFIG_PATH=${QGIS_TEST_TMP_DIR}/config"
-    )
-
+    set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
     target_compile_definitions(${TESTNAME} PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   endmacro()
 
