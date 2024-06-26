@@ -23,13 +23,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsRasterFileWriter,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
                        QgsProcessingOutputRasterLayer)
@@ -123,6 +121,9 @@ class rasterize_over(GdalAlgorithm):
 
         if input_details.open_options:
             arguments.extend(input_details.open_options_as_arguments())
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
 
         arguments.append(input_details.connection_string)
         arguments.append(input_raster_details.connection_string)

@@ -84,6 +84,9 @@ class ogrinfo(GdalAlgorithm):
         if input_details.open_options:
             arguments.extend(input_details.open_options_as_arguments())
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):

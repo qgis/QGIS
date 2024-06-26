@@ -146,6 +146,9 @@ class gdaladdo(GdalAlgorithm):
 
         arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         self.setOutputValue(self.OUTPUT, inLayer.source())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

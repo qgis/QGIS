@@ -25,7 +25,6 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingException,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -113,6 +112,9 @@ class OffsetCurve(GdalAlgorithm):
 
         if input_details.open_options:
             arguments.extend(input_details.open_options_as_arguments())
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
 
         if options:
             arguments.append(options)

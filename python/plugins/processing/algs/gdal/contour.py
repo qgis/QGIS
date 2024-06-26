@@ -33,7 +33,6 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -178,6 +177,9 @@ class contour(GdalAlgorithm):
 
         if output_details.format:
             arguments.append(f'-f {output_details.format}')
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)

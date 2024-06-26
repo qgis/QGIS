@@ -324,6 +324,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if input_details.open_options:
             arguments.extend(input_details.open_options_as_arguments())
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         if len(options) > 0:
             arguments.append(options)
 

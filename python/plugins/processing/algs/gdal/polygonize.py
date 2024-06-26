@@ -126,4 +126,7 @@ class polygonize(GdalAlgorithm):
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

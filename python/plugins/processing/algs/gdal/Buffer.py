@@ -143,6 +143,9 @@ class Buffer(GdalAlgorithm):
         if source_details.open_options:
             arguments.extend(source_details.open_options_as_arguments())
 
+        if source_details.credential_options:
+            arguments.extend(source_details.credential_options_as_arguments())
+
         if options:
             arguments.append(options)
 

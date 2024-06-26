@@ -153,6 +153,9 @@ class fillnodata(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(output_format)
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)

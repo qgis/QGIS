@@ -123,6 +123,14 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-f "GPKG" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' + outdir + '/check.gpkg ' +
                  source])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                        'CONVERT_ALL_LAYERS': True,
+                                        'OUTPUT': outdir + '/check.gpkg'}, context, feedback),
+                ['ogr2ogr',
+                 '-f "GPKG" --config X Y --config Z A ' + outdir + '/check.gpkg ' +
+                 source])
+
     def testOgrInfo(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -173,6 +181,15 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogrinfo',
              '-al -so -nomd "' +
              source + '" filename_with_spaces -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': True}, context, feedback),
+            ['ogrinfo',
+             '-al -so -nomd "' +
+             source + '" filename_with_spaces --config X Y --config Z A'])
 
     def testBuffer(self):
         context = QgsProcessingContext()
@@ -259,6 +276,16 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM """polys2"""" ' +
                  '-oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                        'DISTANCE': 5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM """polys2"""" ' +
+                 '--config X Y --config Z A -f "ESRI Shapefile"'])
 
     def testDissolve(self):
         context = QgsProcessingContext()
@@ -469,6 +496,17 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, """my_field""" FROM """polys2""" ' +
                  'GROUP BY """my_field"""" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y "my opts" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                        'FIELD': 'my_field',
+                                        'OPTIONS': 'my opts',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, """my_field""" FROM """polys2""" ' +
+                 'GROUP BY """my_field"""" --config X Y --config Z A "my opts" -f "ESRI Shapefile"'])
 
     def testOgr2PostGis(self):
         context = QgsProcessingContext()
@@ -817,6 +855,14 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                    'A_SRS': QgsCoordinateReferenceSystem('EPSG:3111')}, context, feedback),
+            ['ogr2ogr',
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-lco DIM=2 ' + source + ' polys2 '
+             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI --config X Y --config Z A'])
+
     def testOffsetCurve(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -844,6 +890,16 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  outdir + '/check.shp ' +
                  source + ' ' +
                  '-dialect sqlite -sql "SELECT ST_OffsetCurve(geometry, 5.0) AS geometry,* FROM """polys2"""" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                        'DISTANCE': 5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_OffsetCurve(geometry, 5.0) AS geometry,* FROM """polys2"""" --config X Y --config Z A ' +
                  '-f "ESRI Shapefile"'])
 
     def testOneSidedBuffer(self):
@@ -909,6 +965,17 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(geometry, 5.0, 0)) AS geometry,* ' +
                  'FROM """polys2""" GROUP BY """total population"""" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y -f "ESRI Shapefile"'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                        'DISTANCE': 5,
+                                        'FIELD': 'total population',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(geometry, 5.0, 0)) AS geometry,* ' +
+                 'FROM """polys2""" GROUP BY """total population"""" --config X Y --config Z A -f "ESRI Shapefile"'])
+
     def testPointsAlongLines(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -936,6 +1003,16 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  outdir + '/check.shp ' +
                  source + ' ' +
                  '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM """polys2"""" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                        'DISTANCE': 0.2,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM """polys2"""" --config X Y --config Z A ' +
                  '-f "ESRI Shapefile"'])
 
 

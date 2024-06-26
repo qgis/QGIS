@@ -95,4 +95,7 @@ class rgb2pct(GdalAlgorithm):
             out
         ]
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

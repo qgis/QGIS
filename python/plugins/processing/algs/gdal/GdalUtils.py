@@ -20,6 +20,7 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from typing import (
+    Dict,
     List,
     Optional
 )
@@ -66,6 +67,7 @@ class GdalConnectionDetails:
     format: Optional[str] = None
     open_options: Optional[List[str]] = None
     layer_name: Optional[str] = None
+    credential_options: Optional[Dict] = None
 
     def open_options_as_arguments(self) -> List[str]:
         """
@@ -74,6 +76,16 @@ class GdalConnectionDetails:
         res = []
         for option in self.open_options:
             res.append(f'-oo {option}')
+
+        return res
+
+    def credential_options_as_arguments(self) -> List[str]:
+        """
+        Returns any credential options as a list of arguments
+        """
+        res = []
+        for key, value in self.credential_options.items():
+            res.append(f'--config {key} {value}')
 
         return res
 
@@ -435,21 +447,30 @@ class GdalUtils:
                                                              layer.source())
             if 'path' in parts:
                 path = parts['path']
+                if 'vsiPrefix' in parts:
+                    path = parts['vsiPrefix'] + path
+
                 _, ext = os.path.splitext(parts['path'])
                 format = QgsVectorFileWriter.driverForExtension(ext)
 
                 return GdalConnectionDetails(
                     connection_string=path,
                     format=f'"{format}"',
-                    open_options=parts.get('openOptions', None)
+                    open_options=parts.get('openOptions', None),
+                    credential_options=parts.get('credentialOptions', None)
                 )
         elif provider.lower() == "gdal":
             parts = QgsProviderRegistry.instance().decodeUri('gdal',
                                                              layer.source())
             if 'path' in parts:
+                path = parts['path']
+                if 'vsiPrefix' in parts:
+                    path = parts['vsiPrefix'] + path
+
                 return GdalConnectionDetails(
-                    connection_string=parts['path'],
-                    open_options=parts.get('openOptions', None)
+                    connection_string=path,
+                    open_options=parts.get('openOptions', None),
+                    credential_options=parts.get('credentialOptions', None)
                 )
 
         ogrstr = str(layer.source()).split("|")[0]

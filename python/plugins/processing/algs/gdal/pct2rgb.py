@@ -100,4 +100,7 @@ class pct2rgb(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.RGBA, context):
             arguments.append('-rgba')
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

@@ -19,9 +19,7 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-from qgis.core import (QgsVectorLayer,
-                       QgsProcessing,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterExtent,
@@ -101,6 +99,9 @@ class ClipVectorByExtent(GdalAlgorithm):
 
         if input_details.open_options:
             arguments.extend(input_details.open_options_as_arguments())
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
 
         if options:
             arguments.append(options)

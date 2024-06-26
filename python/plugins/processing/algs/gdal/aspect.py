@@ -140,6 +140,9 @@ class aspect(GdalAlgorithm):
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)

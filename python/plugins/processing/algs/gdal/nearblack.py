@@ -121,6 +121,9 @@ class nearblack(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.WHITE, context):
             arguments.append('-white')
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
