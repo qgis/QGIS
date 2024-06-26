@@ -92,6 +92,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       RuleKey SIP_MONKEYPATCH_COMPAT_NAME( RuleKeyRole ) = Qt::UserRole, //!< Rule key of the node (QString)
       ParentRuleKey SIP_MONKEYPATCH_COMPAT_NAME( ParentRuleKeyRole ), //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
       NodeType SIP_MONKEYPATCH_COMPAT_NAME( NodeTypeRole ), //!< Type of node. Added in 3.16
+      IsDataDefinedSize SIP_MONKEYPATCH_COMPAT_NAME( IsDataDefinedSizeRole ), //!< Set when a node is related to data defined size (title or separated legend items). Added in 3.38
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

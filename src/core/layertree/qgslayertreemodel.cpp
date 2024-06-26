@@ -1301,7 +1301,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
     {
       for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
       {
-        switch ( node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).value<QgsLayerTreeModelLegendNode::NodeTypes>() )
+        const QgsLayerTreeModelLegendNode::NodeTypes nodeType = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).value<QgsLayerTreeModelLegendNode::NodeTypes>();
+        switch ( nodeType )
         {
           case QgsLayerTreeModelLegendNode::EmbeddedWidget:
             filtered << node;
@@ -1316,6 +1317,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
           case QgsLayerTreeModelLegendNode::ColorRampLegend:
           {
             const QString ruleKey = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+            const bool isDataDefinedSize = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ) ).toBool();
             const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
                                  || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
 
@@ -1324,7 +1326,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
                 auto it = mHitTestResults.constFind( vl->id() );
-                if ( it != mHitTestResults.constEnd() && it->contains( ruleKey ) )
+                if ( it != mHitTestResults.constEnd() &&
+                     ( it->contains( ruleKey ) ||
+                       ( !it->isEmpty() && isDataDefinedSize )
+                     )
+                   )
                 {
                   filtered << node;
                 }

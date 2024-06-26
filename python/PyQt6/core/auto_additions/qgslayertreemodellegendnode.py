@@ -13,7 +13,11 @@ QgsLayerTreeModelLegendNode.NodeTypeRole = QgsLayerTreeModelLegendNode.CustomRol
 QgsLayerTreeModelLegendNode.LegendNodeRoles.NodeTypeRole = QgsLayerTreeModelLegendNode.CustomRole.NodeType
 QgsLayerTreeModelLegendNode.NodeTypeRole.is_monkey_patched = True
 QgsLayerTreeModelLegendNode.NodeTypeRole.__doc__ = "Type of node. Added in 3.16"
-QgsLayerTreeModelLegendNode.CustomRole.__doc__ = "Legend node data roles\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsLayerTreeModelLegendNode.LegendNodeRoles\n\n.. versionadded:: 3.36\n\n" + '* ``RuleKeyRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.RuleKey.__doc__ + '\n' + '* ``ParentRuleKeyRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.ParentRuleKey.__doc__ + '\n' + '* ``NodeTypeRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.NodeType.__doc__
+QgsLayerTreeModelLegendNode.IsDataDefinedSizeRole = QgsLayerTreeModelLegendNode.CustomRole.IsDataDefinedSize
+QgsLayerTreeModelLegendNode.LegendNodeRoles.IsDataDefinedSizeRole = QgsLayerTreeModelLegendNode.CustomRole.IsDataDefinedSize
+QgsLayerTreeModelLegendNode.IsDataDefinedSizeRole.is_monkey_patched = True
+QgsLayerTreeModelLegendNode.IsDataDefinedSizeRole.__doc__ = "Set when a node is related to data defined size (title or separated legend items). Added in 3.38"
+QgsLayerTreeModelLegendNode.CustomRole.__doc__ = "Legend node data roles\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsLayerTreeModelLegendNode.LegendNodeRoles\n\n.. versionadded:: 3.36\n\n" + '* ``RuleKeyRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.RuleKey.__doc__ + '\n' + '* ``ParentRuleKeyRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.ParentRuleKey.__doc__ + '\n' + '* ``NodeTypeRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.NodeType.__doc__ + '\n' + '* ``IsDataDefinedSizeRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.IsDataDefinedSize.__doc__
 # --
 QgsLayerTreeModelLegendNode.CustomRole.baseClass = QgsLayerTreeModelLegendNode
 QgsLayerTreeModelLegendNode.SimpleLegend = QgsLayerTreeModelLegendNode.NodeTypes.SimpleLegend
