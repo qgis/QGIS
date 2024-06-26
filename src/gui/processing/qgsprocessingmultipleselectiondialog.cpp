@@ -464,6 +464,8 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
     if ( skipUrlData.contains( u.data() ) )
       continue;
 
+    // clang analyzer is not happy because of the multiple duplicate return branches, but it makes the code more readable
+    // NOLINTBEGIN(bugprone-branch-clone)
     if ( ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer
            || mParameter->layerType() == Qgis::ProcessingSourceType::Vector
            || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
@@ -514,6 +516,7 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
     else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::VectorTile )
               && u.layerType == QLatin1String( "vector-tile" ) )
       res.append( u.uri );
+    // NOLINTEND(bugprone-branch-clone)
   }
   if ( !uriList.isEmpty() )
     return res;
