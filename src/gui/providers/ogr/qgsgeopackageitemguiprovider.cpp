@@ -359,9 +359,9 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackage
   if ( item )
   {
     const QgsSettings settings;
-    const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastGeoPackageeDir" ), QDir::homePath() ).toString();
+    const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastGeoPackageDir" ), QDir::homePath() ).toString();
 
-    QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New GeoPackage Database File" ),
+    QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New GeoPackage" ),
                        lastUsedDir,
                        tr( "GeoPackage" ) + " (*.gpkg *.GPKG)" );
     if ( filename.isEmpty() )
@@ -377,7 +377,7 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackage
       QString error;
       if ( ! ogrMetadata->createDatabase( filename, errorMsg ) )
       {
-        QMessageBox::critical( nullptr, tr( "New GeoPackage Database" ), errorMsg );
+        QMessageBox::critical( nullptr, tr( "New GeoPackage" ), errorMsg );
         return;
       }
 
