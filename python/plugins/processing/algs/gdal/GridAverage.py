@@ -194,4 +194,7 @@ class GridAverage(GdalAlgorithm):
         arguments.append(input_details.connection_string)
         arguments.append(out)
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

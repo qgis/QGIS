@@ -21,8 +21,6 @@ __copyright__ = '(C) 2019, Alexander Bruy'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
@@ -35,8 +33,6 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
-from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -153,5 +149,8 @@ class viewshed(GdalAlgorithm):
 
         arguments.append(dem_input_details.connection_string)
         arguments.append(out)
+
+        if dem_input_details.credential_options:
+            arguments.extend(dem_input_details.credential_options_as_arguments())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

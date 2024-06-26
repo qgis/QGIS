@@ -127,4 +127,7 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append(input_details.connection_string)
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

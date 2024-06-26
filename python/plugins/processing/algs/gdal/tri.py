@@ -100,6 +100,9 @@ class tri(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))

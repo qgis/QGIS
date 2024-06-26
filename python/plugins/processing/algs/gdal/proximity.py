@@ -202,4 +202,7 @@ class proximity(GdalAlgorithm):
         arguments.append(input_details.connection_string)
         arguments.append(out)
 
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

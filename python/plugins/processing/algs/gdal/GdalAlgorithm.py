@@ -122,7 +122,8 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 return GdalConnectionDetails(
                     connection_string=ogr_data_path,
                     layer_name=ogr_layer_name,
-                    open_options=parts.get('openOptions', None)
+                    open_options=parts.get('openOptions', None),
+                    credential_options=parts.get('credentialOptions', None)
                 )
             else:
                 # either not using the selection, or

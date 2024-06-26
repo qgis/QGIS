@@ -129,6 +129,9 @@ class pansharp(GdalAlgorithm):
             output_format
         ]
 
+        if panchromatic_input_details.credential_options:
+            arguments.extend(panchromatic_input_details.credential_options_as_arguments())
+
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))

@@ -185,4 +185,8 @@ class hillshade(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
+        if input_details.credential_options:
+            arguments.extend(
+                input_details.credential_options_as_arguments())
+
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

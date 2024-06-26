@@ -21,7 +21,6 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 import os
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
@@ -236,6 +235,9 @@ class rasterize(GdalAlgorithm):
 
         if input_details.open_options:
             arguments.extend(input_details.open_options_as_arguments())
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:

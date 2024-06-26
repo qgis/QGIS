@@ -215,9 +215,15 @@ class retile(GdalAlgorithm):
 
         input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
         layers = []
+        credential_options = []
         for layer in input_layers:
             layer_details = GdalUtils.gdal_connection_details_from_layer(layer)
             layers.append(layer_details.connection_string)
+
+            if layer_details.credential_options:
+                credential_options.extend(
+                    layer_details.credential_options_as_arguments())
         arguments.extend(layers)
+        arguments.extend(credential_options)
 
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
