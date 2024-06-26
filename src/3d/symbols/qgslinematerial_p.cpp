@@ -53,17 +53,8 @@ QgsLineMaterial::QgsLineMaterial()
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/lines.frag" ) ) ) );
   shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/lines.geom" ) ) ) );
 
-  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation( this );
-  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
-
-  Qt3DRender::QBlendEquationArguments *blendEquationArgs = new Qt3DRender::QBlendEquationArguments( this );
-  blendEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
-  blendEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
-
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   renderPass->setShaderProgram( shaderProgram );
-  renderPass->addRenderState( blendEquation );
-  renderPass->addRenderState( blendEquationArgs );
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
