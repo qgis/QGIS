@@ -415,13 +415,15 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
   emit selectionChanged();
 }
 
-QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData( const QMimeData *data ) const
+QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData( const QMimeData *data, QgsMimeDataUtils::UriList &handledUrls ) const
 {
+  handledUrls.clear();
   const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
   QList<int> indexes;
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
+    bool matched = false;
     if ( QgsMapLayer *layer = u.mapLayer() )
     {
       for ( int i = 0; i < mModel->rowCount(); ++i )
@@ -431,11 +433,118 @@ QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData(
         if ( userRole == layer->id() || userRole == layer->source() )
         {
           indexes.append( i );
+          matched = true;
         }
       }
     }
+
+    if ( matched )
+    {
+      handledUrls.append( u );
+    }
   }
   return indexes;
+}
+
+
+QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( const QMimeData *data, const QgsMimeDataUtils::UriList &skipUrls ) const
+{
+  QStringList skipUrlData;
+  skipUrlData.reserve( skipUrls.size() );
+  for ( const QgsMimeDataUtils::Uri &u : skipUrls )
+  {
+    skipUrlData.append( u.data() );
+  }
+
+  QStringList res;
+
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    if ( skipUrlData.contains( u.data() ) )
+      continue;
+
+    if ( ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer
+           || mParameter->layerType() == Qgis::ProcessingSourceType::Vector
+           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
+           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorLine
+           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPoint
+           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
+         && u.layerType == QLatin1String( "vector" ) )
+    {
+      bool acceptable = false;
+      switch ( QgsWkbTypes::geometryType( u.wkbType ) )
+      {
+        case Qgis::GeometryType::Unknown:
+          acceptable = true;
+          break;
+
+        case Qgis::GeometryType::Point:
+          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPoint )
+            acceptable = true;
+          break;
+
+        case Qgis::GeometryType::Line:
+          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || mParameter->layerType() == Qgis::ProcessingSourceType::VectorLine )
+            acceptable = true;
+          break;
+
+        case Qgis::GeometryType::Polygon:
+          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
+            acceptable = true;
+          break;
+
+        case Qgis::GeometryType::Null:
+          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector )
+            acceptable = true;
+          break;
+      }
+      if ( acceptable )
+        res.append( u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri );
+    }
+    else if ( ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Raster )
+              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+      res.append( u.uri );
+    else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Mesh )
+              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+      res.append( u.uri );
+    else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::PointCloud )
+              && u.layerType == QLatin1String( "pointcloud" ) )
+      res.append( u.uri );
+    else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::VectorTile )
+              && u.layerType == QLatin1String( "vector-tile" ) )
+      res.append( u.uri );
+  }
+  if ( !uriList.isEmpty() )
+    return res;
+
+  // second chance -- files dragged from file explorer, outside of QGIS
+  QStringList rawPaths;
+  if ( data->hasUrls() )
+  {
+    const QList< QUrl > urls = data->urls();
+    rawPaths.reserve( urls.count() );
+    for ( const QUrl &url : urls )
+    {
+      const QString local =  url.toLocalFile();
+      if ( !rawPaths.contains( local ) )
+        rawPaths.append( local );
+    }
+  }
+  if ( !data->text().isEmpty() && !rawPaths.contains( data->text() ) )
+    rawPaths.append( data->text() );
+
+  for ( const QString &path : std::as_const( rawPaths ) )
+  {
+    QFileInfo file( path );
+    if ( file.isFile() )
+    {
+      // TODO - we should check to see if it's a valid extension for the parameter, but that's non-trivial
+      res.append( path );
+    }
+  }
+
+  return res;
 }
 
 void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *event )
@@ -443,8 +552,20 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData() );
+  // maybe dragging layers from the project
+  QgsMimeDataUtils::UriList handledUris;
+  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData(), handledUris );
   if ( !indexes.isEmpty() )
+  {
+    // dragged an acceptable layer, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    return;
+  }
+
+  // maybe dragging layers from browser or file explorer
+  const QStringList uris = compatibleUrisFromMimeData( event->mimeData(), handledUris );
+  if ( !uris.isEmpty() )
   {
     // dragged an acceptable layer, phew
     event->setDropAction( Qt::CopyAction );
@@ -457,7 +578,8 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData() );
+  QgsMimeDataUtils::UriList handledUris;
+  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData(), handledUris );
   if ( !indexes.isEmpty() )
   {
     // dropped an acceptable layer, phew
@@ -468,6 +590,17 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
     for ( const int i : indexes )
     {
       mModel->item( i )->setCheckState( Qt::Checked );
+    }
+    emit selectionChanged();
+  }
+
+  // maybe dragging layers from browser or file explorer
+  const QStringList uris = compatibleUrisFromMimeData( event->mimeData(), handledUris );
+  if ( !uris.isEmpty() )
+  {
+    for ( const QString &uri : uris )
+    {
+      addOption( uri, uri, true );
     }
     emit selectionChanged();
   }
