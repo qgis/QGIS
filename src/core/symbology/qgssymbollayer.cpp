@@ -976,12 +976,18 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
 #endif
     if ( !mergedGeom.isEmpty() )
     {
-      const QgsGeometry exterior = rect
-                                   ? QgsGeometry::fromRect( *rect )
-                                   : QgsGeometry::fromRect(
-                                     QgsRectangle( 0, 0,
-                                         renderContext.outputSize().width(),
-                                         renderContext.outputSize().height() ) );
+      QgsGeometry exterior;
+      const QgsRectangle contextBounds( 0, 0,
+                                        renderContext.outputSize().width(),
+                                        renderContext.outputSize().height() );
+      if ( rect )
+      {
+        exterior = QgsGeometry::fromRect( QgsRectangle( *rect ).intersect( contextBounds ) );
+      }
+      else
+      {
+        exterior = QgsGeometry::fromRect( contextBounds );
+      }
       const QgsGeometry maskGeom = exterior.difference( mergedGeom );
       if ( !maskGeom.isNull() )
       {
