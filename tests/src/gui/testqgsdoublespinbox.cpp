@@ -29,6 +29,7 @@ class TestQgsDoubleSpinBox: public QObject
 
     void clear();
     void expression();
+    void step();
 
   private:
 
@@ -142,6 +143,44 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "mm5/ll" ) ), 4.0 ); //invalid expression should reset to previous value
 
   delete spinBox;
+}
+
+void TestQgsDoubleSpinBox::step()
+{
+  // test step logic
+
+  QgsDoubleSpinBox spin;
+  spin.setMinimum( -1000 );
+  spin.setMaximum( 1000 );
+  spin.setSingleStep( 1 );
+
+  // no clear value
+  spin.setValue( 0 );
+  spin.stepBy( 1 );
+  QCOMPARE( spin.value(), 1 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), 0 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), -1 );
+
+  // with clear value
+  spin.setClearValue( -1000, QStringLiteral( "NULL" ) );
+  spin.setValue( 0 );
+  spin.stepBy( 1 );
+  QCOMPARE( spin.value(), 1 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), 0 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), -1 );
+  spin.clear();
+  QCOMPARE( spin.value(), -1000 );
+  // when cleared, a step should NOT go to -999 (which is annoying for users), but rather pretend that the initial value was 0, not NULL
+  spin.stepBy( 1 );
+  QCOMPARE( spin.value(), 1 );
+  spin.clear();
+  QCOMPARE( spin.value(), -1000 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), -1 );
 }
 
 QGSTEST_MAIN( TestQgsDoubleSpinBox )
