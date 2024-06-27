@@ -133,6 +133,8 @@ is equal to :py:func:`~QgsSpinBox.minimum`. Typical use is to indicate that this
 
     virtual QValidator::State validate( QString &input, int &pos ) const;
 
+    virtual void stepBy( int steps );
+
 
   protected:
 

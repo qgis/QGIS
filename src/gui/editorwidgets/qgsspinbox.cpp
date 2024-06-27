@@ -216,6 +216,20 @@ QValidator::State QgsSpinBox::validate( QString &input, int &pos ) const
   return QValidator::Acceptable;
 }
 
+void QgsSpinBox::stepBy( int steps )
+{
+  const bool wasNull = mShowClearButton && value() == clearValue();
+  if ( wasNull && minimum() < 0 && maximum() > 0 )
+  {
+    // value is currently null, and range allows both positive and negative numbers
+    // in this case we DON'T do the default step, as that would add one step to the NULL value,
+    // which is usually the minimum acceptable value... so the user will get a very large negative number!
+    // Instead, treat the initial value as 0 instead, and then perform the step.
+    whileBlocking( this )->setValue( 0 );
+  }
+  QSpinBox::stepBy( steps );
+}
+
 int QgsSpinBox::frameWidth() const
 {
   return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );

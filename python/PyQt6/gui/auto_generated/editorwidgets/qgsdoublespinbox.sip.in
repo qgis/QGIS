@@ -135,6 +135,8 @@ is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate tha
 
     virtual void paintEvent( QPaintEvent *e );
 
+    virtual void stepBy( int steps );
+
 
   protected:
     virtual void changeEvent( QEvent *event );
