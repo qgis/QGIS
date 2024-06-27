@@ -28,7 +28,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qobjectuniqueptr.h"
-
+#include "qgshighlightablelineedit.h"
 #include <QAbstractButton>
 
 class QCheckBox;
@@ -74,6 +74,7 @@ class QgsMapLayerComboBox;
 class QgsProcessingPointCloudExpressionLineEdit;
 class QgsProcessingRasterCalculatorExpressionLineEdit;
 class QgsRubberBand;
+class QgsHighlightableLineEdit;
 
 ///@cond PRIVATE
 
@@ -2057,6 +2058,23 @@ class GUI_EXPORT QgsProcessingBandWidgetWrapper : public QgsAbstractProcessingPa
 };
 
 
+class GUI_EXPORT QgsProcessingMultipleLayerLineEdit: public QgsHighlightableLineEdit
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingMultipleLayerLineEdit( QWidget *parent = nullptr, const QgsProcessingParameterMultipleLayers *param = nullptr );
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+
+  signals:
+
+    void layersDropped( const QVariantList &value );
+
+  private:
+    const QgsProcessingParameterMultipleLayers *mParam = nullptr;
+};
 
 class GUI_EXPORT QgsProcessingMultipleLayerPanelWidget : public QWidget
 {
@@ -2085,7 +2103,7 @@ class GUI_EXPORT QgsProcessingMultipleLayerPanelWidget : public QWidget
     void updateSummaryText();
 
     const QgsProcessingParameterMultipleLayers *mParam = nullptr;
-    QLineEdit *mLineEdit = nullptr;
+    QgsProcessingMultipleLayerLineEdit *mLineEdit = nullptr;
     QToolButton *mToolButton = nullptr;
 
     QVariantList mValue;
