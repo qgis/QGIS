@@ -447,7 +447,7 @@ QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData(
 }
 
 
-QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( const QMimeData *data, const QgsMimeDataUtils::UriList &skipUrls ) const
+QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( const QgsProcessingParameterMultipleLayers *parameter, const QMimeData *data, const QgsMimeDataUtils::UriList &skipUrls )
 {
   QStringList skipUrlData;
   skipUrlData.reserve( skipUrls.size() );
@@ -466,12 +466,12 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
 
     // clang analyzer is not happy because of the multiple duplicate return branches, but it makes the code more readable
     // NOLINTBEGIN(bugprone-branch-clone)
-    if ( ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer
-           || mParameter->layerType() == Qgis::ProcessingSourceType::Vector
-           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
-           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorLine
-           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPoint
-           || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
+    if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer
+           || parameter->layerType() == Qgis::ProcessingSourceType::Vector
+           || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
+           || parameter->layerType() == Qgis::ProcessingSourceType::VectorLine
+           || parameter->layerType() == Qgis::ProcessingSourceType::VectorPoint
+           || parameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
          && u.layerType == QLatin1String( "vector" ) )
     {
       bool acceptable = false;
@@ -482,38 +482,38 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
           break;
 
         case Qgis::GeometryType::Point:
-          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPoint )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || parameter->layerType() == Qgis::ProcessingSourceType::VectorPoint )
             acceptable = true;
           break;
 
         case Qgis::GeometryType::Line:
-          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || mParameter->layerType() == Qgis::ProcessingSourceType::VectorLine )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || parameter->layerType() == Qgis::ProcessingSourceType::VectorLine )
             acceptable = true;
           break;
 
         case Qgis::GeometryType::Polygon:
-          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector || mParameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || mParameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || parameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
             acceptable = true;
           break;
 
         case Qgis::GeometryType::Null:
-          if ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Vector )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector )
             acceptable = true;
           break;
       }
       if ( acceptable )
         res.append( u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri );
     }
-    else if ( ( mParameter->layerType() == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Raster )
+    else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Raster )
               && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
       res.append( u.uri );
-    else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::Mesh )
+    else if ( ( parameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Mesh )
               && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
       res.append( u.uri );
-    else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::PointCloud )
+    else if ( ( parameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::PointCloud )
               && u.layerType == QLatin1String( "pointcloud" ) )
       res.append( u.uri );
-    else if ( ( mParameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || mParameter->layerType() == Qgis::ProcessingSourceType::VectorTile )
+    else if ( ( parameter->layerType()  == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::VectorTile )
               && u.layerType == QLatin1String( "vector-tile" ) )
       res.append( u.uri );
     // NOLINTEND(bugprone-branch-clone)
@@ -567,7 +567,7 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
   }
 
   // maybe dragging layers from browser or file explorer
-  const QStringList uris = compatibleUrisFromMimeData( event->mimeData(), handledUris );
+  const QStringList uris = compatibleUrisFromMimeData( mParameter, event->mimeData(), handledUris );
   if ( !uris.isEmpty() )
   {
     // dragged an acceptable layer, phew
@@ -598,7 +598,7 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
   }
 
   // maybe dragging layers from browser or file explorer
-  const QStringList uris = compatibleUrisFromMimeData( event->mimeData(), handledUris );
+  const QStringList uris = compatibleUrisFromMimeData( mParameter, event->mimeData(), handledUris );
   if ( !uris.isEmpty() )
   {
     for ( const QString &uri : uris )

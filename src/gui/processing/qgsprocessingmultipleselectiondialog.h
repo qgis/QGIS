@@ -251,6 +251,16 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
      */
     void setProject( QgsProject *project );
 
+    /**
+     * Returns a list of layer URIs compatible with the \a parameter, from mime data.
+     *
+     * \since QGIS 3.40
+     */
+    static QStringList compatibleUrisFromMimeData(
+      const QgsProcessingParameterMultipleLayers *parameter,
+      const QMimeData *data,
+      const QgsMimeDataUtils::UriList &skipUrls ) SIP_SKIP;
+
   private slots:
 
     void addFiles();
@@ -267,7 +277,6 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
      * the specified mime \a data (if possible!).
      */
     QList<int> existingMapLayerFromMimeData( const QMimeData *data, QgsMimeDataUtils::UriList &handledUrls ) const;
-    QStringList compatibleUrisFromMimeData( const QMimeData *data, const QgsMimeDataUtils::UriList &skipUrls ) const;
     void populateFromProject( QgsProject *project );
 
     const QgsProcessingParameterMultipleLayers *mParameter = nullptr;

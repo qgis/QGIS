@@ -7124,7 +7124,54 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingBandWidgetWrapper::
   return new QgsProcessingBandParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
+//
+// QgsProcessingMultipleLayerLineEdit
+//
 
+QgsProcessingMultipleLayerLineEdit::QgsProcessingMultipleLayerLineEdit( QWidget *parent, const QgsProcessingParameterMultipleLayers *param )
+  : QgsHighlightableLineEdit( parent )
+  , mParam( param )
+{
+  setAcceptDrops( true );
+}
+
+void QgsProcessingMultipleLayerLineEdit::dragEnterEvent( QDragEnterEvent *event )
+{
+  const QStringList uris = QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( mParam, event->mimeData(), {} );
+  if ( !uris.isEmpty() )
+  {
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    setHighlighted( true );
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsProcessingMultipleLayerLineEdit::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QgsHighlightableLineEdit::dragLeaveEvent( event );
+  event->accept();
+  setHighlighted( false );
+}
+
+void QgsProcessingMultipleLayerLineEdit::dropEvent( QDropEvent *event )
+{
+  const QStringList uris = QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( mParam, event->mimeData(), {} );
+  if ( !uris.isEmpty() )
+  {
+    event->acceptProposedAction();
+    QVariantList uriList;
+    uriList.reserve( uris.size() );
+    for ( const QString &uri : uris )
+      uriList.append( QVariant( uri ) );
+    emit layersDropped( uriList );
+  }
+
+  setHighlighted( false );
+}
 
 //
 // QgsProcessingMultipleLayerPanelWidget
@@ -7137,9 +7184,12 @@ QgsProcessingMultipleLayerPanelWidget::QgsProcessingMultipleLayerPanelWidget( QW
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
 
-  mLineEdit = new QLineEdit();
-  mLineEdit->setEnabled( false );
+  mLineEdit = new QgsProcessingMultipleLayerLineEdit( nullptr, param );
+  mLineEdit->setEnabled( true );
+  mLineEdit->setReadOnly( true );
+
   hl->addWidget( mLineEdit, 1 );
+  connect( mLineEdit, &QgsProcessingMultipleLayerLineEdit::layersDropped, this, &QgsProcessingMultipleLayerPanelWidget::setValue );
 
   mToolButton = new QToolButton();
   mToolButton->setText( QString( QChar( 0x2026 ) ) );
