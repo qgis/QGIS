@@ -207,8 +207,8 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mUpdatingGui = false;
 
   // Set input validators
-  QDoubleValidator *dv = new QDoubleValidator( nullptr );
-  QIntValidator *iv = new QIntValidator( nullptr );
+  QDoubleValidator *dv = new QDoubleValidator( this );
+  QIntValidator *iv = new QIntValidator( this );
 
   mNorth->setValidator( dv );
   mSouth->setValidator( dv );
@@ -220,7 +220,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mCols->setValidator( iv );
 
   // Group radio buttons
-  mRadioGroup = new QButtonGroup();
+  mRadioGroup = new QButtonGroup( this );
   mRadioGroup->addButton( mResRadio );
   mRadioGroup->addButton( mRowsColsRadio );
   mResRadio->setChecked( true );
