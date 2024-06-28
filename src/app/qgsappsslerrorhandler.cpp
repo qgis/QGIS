@@ -25,8 +25,6 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 {
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
 
-  QgsDebugError( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
-
   const QString hostport( QStringLiteral( "%1:%2" )
                           .arg( reply->url().host() )
                           .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
@@ -64,6 +62,8 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
                       .arg( errenums.isEmpty() ? QStringLiteral( "not found" ) : QStringLiteral( "did not match" ),
                             hostport ), 2 );
   }
+
+  QgsDebugError( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
   QgsAuthSslErrorsDialog *dlg = new QgsAuthSslErrorsDialog( reply, errors, QgisApp::instance(), digest, hostport );
   dlg->setWindowModality( Qt::ApplicationModal );
