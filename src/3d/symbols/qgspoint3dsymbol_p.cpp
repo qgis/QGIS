@@ -108,10 +108,14 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
         }
     };
 
+    //!< Create a material from a point symbol and context. This is call by makeEntity().
     static Qt3DRender::QMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
+    //!< Create a geometry renderer from a point symbol, position and shape. This is call by makeEntity().
     static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const PointData &pointData );
+    //!< Create a geometry from a point symbol and shape. This is call by renderer().
     static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol, const PointData &pointData );
 
+    //!< Create one entity per PointData. This is called by finalize().
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QVector<PointData> &out, bool selected );
 
     // input specific for this class
