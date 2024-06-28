@@ -1704,7 +1704,7 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString &au
   {
     if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkReply ) )
     {
-      QgsDebugError( QStringLiteral( "Network reply updating not supported by authcfg: %1" ).arg( authcfg ) );
+      QgsDebugMsgLevel( QStringLiteral( "Network reply updating not supported by authcfg: %1" ).arg( authcfg ), 3 );
       return true;
     }
 
