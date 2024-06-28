@@ -90,19 +90,25 @@ Qgs3DAxis::~Qgs3DAxis()
   delete mMenu;
   mMenu = nullptr;
 
-  // If a root entity is not enabled, it means that it does not have a parent.
+  // When an object (axis or cube) is not enabled. It is still present but it does not have a parent.
   // In that case, it will never be automatically deleted. Therefore, it needs to be manually deleted.
   // See setEnableCube() and setEnableAxis().
-  if ( !mCubeRoot->isEnabled() )
+  switch ( mMapSettings->get3DAxisSettings().mode() )
   {
-    delete mCubeRoot;
-    mCubeRoot = nullptr;
-  }
-
-  if ( !mAxisRoot->isEnabled() )
-  {
-    delete mAxisRoot;
-    mAxisRoot = nullptr;
+    case Qgs3DAxisSettings::Mode::Crs:
+      delete mCubeRoot;
+      mCubeRoot = nullptr;
+      break;
+    case Qgs3DAxisSettings::Mode::Cube:
+      delete mAxisRoot;
+      mAxisRoot = nullptr;
+      break;
+    case Qgs3DAxisSettings::Mode::Off:
+      delete mAxisRoot;
+      mAxisRoot = nullptr;
+      delete mCubeRoot;
+      mCubeRoot = nullptr;
+      break;
   }
 }
 
