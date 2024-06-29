@@ -30,7 +30,7 @@ jobs:
       - name: 🐩 Install CMake and Ninja
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: 3.29.2
+          cmakeVersion: 3.29.6
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
@@ -87,6 +87,9 @@ jobs:
         shell: bash
         run: |
           cmake --build "${{ github.workspace }}/build" --config Release
+
+      - uses: m-kuhn/action-tmate@patch-1
+        if: failure()
 
       - name: 📦 Package
         shell: bash
