@@ -2,7 +2,6 @@
 # Files
 
 set (WFS3_SRCS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgswfs3.cpp
   qgswfs3handlers.cpp

@@ -21,7 +21,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsjsonutils.h"
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 #include "qgspdalindexingtask.h"
 #include "qgseptpointcloudindex.h"
 #include "qgstaskmanager.h"

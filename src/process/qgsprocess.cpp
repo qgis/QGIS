@@ -50,7 +50,7 @@
 #include <ogr_api.h>
 #include <gdal_version.h>
 #include <proj.h>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 ConsoleFeedback::ConsoleFeedback( bool useJson )
   : mUseJson( useJson )

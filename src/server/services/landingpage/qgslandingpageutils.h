@@ -20,7 +20,7 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "qgsserversettings.h"
 #include "qgsserverrequest.h"
 
