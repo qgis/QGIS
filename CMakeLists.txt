@@ -19,6 +19,11 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
+# This needs to be set before any add_directory in order to be visible
+# by the subdirectories
+set(QGIS_TEST_TMP_DIR "${CMAKE_BINARY_DIR}/tmp")
+message (STATUS "Ctest Temp Directory set to: ${QGIS_TEST_TMP_DIR}")
+
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
