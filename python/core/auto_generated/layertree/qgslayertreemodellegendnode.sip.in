@@ -51,6 +51,7 @@ and customized look.
       RuleKey,
       ParentRuleKey,
       NodeType,
+      IsDataDefinedSize,
     };
 
     enum NodeTypes
