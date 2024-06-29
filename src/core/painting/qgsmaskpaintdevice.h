@@ -31,7 +31,7 @@ class QgsMaskPaintEngine: public QPaintEngine
 
   public:
 
-    QgsMaskPaintEngine( bool usePathStroker = false );
+    Q_DECL_DEPRECATED QgsMaskPaintEngine( bool usePathStroker = false );
 
     bool begin( QPaintDevice * ) override { return true; };
     bool end() override { return true; };
@@ -58,7 +58,7 @@ class QgsMaskPaintEngine: public QPaintEngine
  * \ingroup core
  * \brief Mask painter device that can be used to register everything painted into a QPainterPath
  * used later as clip path
- * \since QGIS 3.26
+ * \deprecated QGIS 3.38, use QgsGeometryPaintDevice instead
  */
 class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice
 {
@@ -69,8 +69,9 @@ class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice
      * Constructor
      * If \a usePathStroker is TRUE, path will be considered with a stroke regarding QPainter
      * pen configuration
+     * \deprecated QGIS 3.38, use QgsGeometryPaintDevice instead
      */
-    QgsMaskPaintDevice( bool usePathStroker = false );
+    Q_DECL_DEPRECATED QgsMaskPaintDevice( bool usePathStroker = false ) SIP_DEPRECATED;
 
     QPaintEngine *paintEngine() const override;
 
@@ -78,8 +79,10 @@ class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice
 
     /**
      * Returns the mask painter path painted on this paint device
+     *
+     * \deprecated Use QgsGeometryPaintDevice instead
      */
-    QPainterPath maskPainterPath() const;
+    Q_DECL_DEPRECATED QPainterPath maskPainterPath() const SIP_DEPRECATED;
 
   private:
 

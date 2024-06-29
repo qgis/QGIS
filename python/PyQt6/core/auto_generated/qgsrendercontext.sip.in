@@ -972,22 +972,24 @@ are drawn and behave during render operations.
 .. versionadded:: 3.38
 %End
 
-    void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path );
+ void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path ) /Deprecated/;
 %Docstring
 Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
 
 .. seealso:: :py:func:`addSymbolLayerClipGeometry`
 
-.. versionadded:: 3.26
+.. deprecated::
+   QGIS 3.38, use :py:func:`~QgsRenderContext.addSymbolLayerClipGeometry` instead.
 %End
 
-    QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const;
+ QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const /Deprecated/;
 %Docstring
 Returns clip paths to be applied to the ``symbolLayer`` before rendering
 
 .. seealso:: :py:func:`symbolLayerClipGeometries`
 
-.. versionadded:: 3.26
+.. deprecated::
+   QGIS 3.38, use :py:func:`~QgsRenderContext.symbolLayerClipGeometries` instead.
 %End
 
     void addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry );

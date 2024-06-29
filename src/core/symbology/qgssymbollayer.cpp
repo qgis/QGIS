@@ -998,26 +998,6 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
 
   bool foundGeometries = false;
   mClipPath = generateClipPath( renderContext, id(), nullptr, foundGeometries );
-  if ( !foundGeometries )
-  {
-    const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( id() );
-    if ( !clipPaths.isEmpty() )
-    {
-      QPainterPath mergedPaths;
-      mergedPaths.setFillRule( Qt::WindingFill );
-      for ( const QPainterPath &path : clipPaths )
-      {
-        mergedPaths.addPath( path );
-      }
-
-      if ( !mergedPaths.isEmpty() )
-      {
-        mClipPath.addRect( 0, 0, renderContext.outputSize().width(),
-                           renderContext.outputSize().height() );
-        mClipPath = mClipPath.subtracted( mergedPaths );
-      }
-    }
-  }
 }
 
 bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect )

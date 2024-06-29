@@ -881,14 +881,11 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
     //    - we could add another special condition here to check whether the subsymbol actually does have unique
     //      clipping paths in its symbol layers, or whether they are identical to the parent symbol layer's clipping paths.
     // 2. When the symbol layer type doesn't explicitly state that it's compatible with per-feature mask geometries
-    // 3. When the older clipping mask approach using QPainterPaths is being used. (This last condition can be
-    //    safely removed when the older QPainterPath backend is removed.)
-    // 4. When per feature mask geometry is explicitly disabled for the render context
+    // 3. When per feature mask geometry is explicitly disabled for the render context
     // In other circumstances we do NOT prepare masks in advance, and instead calculate them in renderFeature().
     if ( mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol )
          || context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
-         || !layer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
-         || !context.symbolLayerClipPaths( layer->id() ).isEmpty() )
+         || !layer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature ) )
       layer->prepareMasks( symbolContext );
     layer->startRender( symbolContext );
   }
