@@ -50,7 +50,9 @@ if(NOT "${NUGET_TOKEN}" STREQUAL "" AND WIN32)
   file(TO_NATIVE_PATH "${_CONFIG_PATH}" _CONFIG_PATH_NATIVE)
   set(ENV{VCPKG_BINARY_SOURCES} "$ENV{VCPKG_BINARY_SOURCES};nugetconfig,${_CONFIG_PATH_NATIVE},readwrite")
 endif()
-
+if(NOT DEFINED ENV{VCPKG_ROOT})
+  message(FATAL_ERROR "Vcpkg is not available. Bootstrap vcpkg by following the 'Acquire vcpkg' section of https://devblogs.microsoft.com/cppblog/vcpkg-artifacts/#acquire-vcpkg")
+endif()
 set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/vcpkg")
 # Copies DLLs built by vcpkg when an install() command is run.
