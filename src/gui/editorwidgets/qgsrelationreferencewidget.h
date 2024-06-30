@@ -260,6 +260,12 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setFetchLimit( int fetchLimit ) {mFetchLimit = fetchLimit; }
 
+    /**
+     * Returns the referenced attribute form
+     * \since QGIS 3.38
+    */
+    QgsAttributeForm *referencedAttributeForm() { return mReferencedAttributeForm; }
+
 
   public slots:
     //! open the form of the related feature in a new dialog
