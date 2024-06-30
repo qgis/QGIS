@@ -367,6 +367,8 @@ if(WITH_CORE)
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
+  set (WITH_INTERNAL_NLOHMANN_JSON ON CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
+  find_package(nlohmann_json REQUIRED)
 
   find_package(Sqlite3)
   if (NOT SQLITE3_FOUND)

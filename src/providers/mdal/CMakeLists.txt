@@ -72,7 +72,6 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx.h
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx/libplyxx_internal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/textio.h
-    ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   )
 
   if(HDF5_FOUND)

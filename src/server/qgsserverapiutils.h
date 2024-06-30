@@ -41,7 +41,7 @@ class QgsCoordinateReferenceSystem;
 class QgsVectorLayer;
 
 #ifndef SIP_RUN
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 using namespace nlohmann;
 #endif
 

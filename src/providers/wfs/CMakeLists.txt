@@ -3,7 +3,6 @@
 # Files
 
 set(WFS_SRCS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   qgswfsprovider.cpp
   qgswfsprovidermetadata.cpp
   qgswfscapabilities.cpp

@@ -33,7 +33,7 @@
 #include <string>
 
 #ifndef SIP_RUN
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 #endif
 
 class QgsCoordinateReferenceSystem;

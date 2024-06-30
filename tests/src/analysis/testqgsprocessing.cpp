@@ -56,7 +56,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
 #include "qgsjsonutils.h"
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 #include "qgsspatialindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgsalignrasterdata.h"
