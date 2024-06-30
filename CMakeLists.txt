@@ -26,9 +26,27 @@ set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be bui
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
-if(WITH_VCPKG)
+set(WITH_VCPKG TRUE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+
+if(NOT SDK_PATH STREQUAL "")
+  message(STATUS "Building with SDK -- ${SDK_PATH}")
+  set(CMAKE_TOOLCHAIN_FILE "${SDK_PATH}/scripts/buildsystems/vcpkg.cmake")
+  if(APPLE AND NOT VCPKG_TARGET_TRIPLET)
+    set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
+  endif()
+  set(WITH_VCPKG ON)
+elseif(WITH_VCPKG)
+  message(STATUS "Building local dependencies with VCPKG --")
   include(VcpkgToolchain)
+else()
+  message(STATUS "Building with system libraries --")
 endif()
+
+if(WITH_VCPKG)
+  list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/")
+endif()
+
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
