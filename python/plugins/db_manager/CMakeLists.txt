@@ -6,5 +6,5 @@ file(GLOB PY_FILES *.py)
 
 file(GLOB UI_FILES ui/*.ui)
 
-PLUGIN_INSTALL(db_manager . ${OTHER_FILES} ${PY_FILES} ${PYRC_FILES} metadata.txt)
+PLUGIN_INSTALL(db_manager . ${OTHER_FILES} ${PY_FILES} metadata.txt)
 PLUGIN_INSTALL(db_manager ui ${UI_FILES})

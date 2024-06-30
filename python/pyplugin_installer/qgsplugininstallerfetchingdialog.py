@@ -24,13 +24,16 @@
  ***************************************************************************/
 """
 
+from pathlib import Path
+
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
-from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from .installer_data import repositories
 
 from qgis.gui import QgsGui
+Ui_QgsPluginInstallerFetchingDialogBase, _ = uic.loadUiType(Path(__file__).parent / 'qgsplugininstallerfetchingbase.ui')
 
 
 class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialogBase):
