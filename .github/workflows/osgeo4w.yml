@@ -1,0 +1,163 @@
+name: OSGeo4W Windows Build
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/osgeo4w.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  REPO: ${{ github.server_url }}/${{ github.repository }}
+  CTEST_CUSTOM_TESTS_IGNORE: 'ProcessingQgisAlgorithmsTestPt1;ProcessingQgisAlgorithmsTestPt2;ProcessingQgisAlgorithmsTestPt3;ProcessingQgisAlgorithmsTestPt4;ProcessingQgisAlgorithmsTestPt5;ProcessingGdalAlgorithmsRasterTest;ProcessingGdalAlgorithmsVectorTest;ProcessingScriptUtilsTest;ProcessingGrassAlgorithmsImageryTest;ProcessingGrassAlgorithmsRasterTestPt1;ProcessingGrassAlgorithmsRasterTestPt2;ProcessingGrassAlgorithmsVectorTest;test_core_browsermodel;test_core_callout;test_core_compositionconverter;test_core_diagram;test_core_dxfexport;test_core_expression;test_core_fontmarker;test_core_gdalprovider;test_core_imagecache;test_core_labelingengine;test_core_layoutlabel;test_core_layoutmanualtable;test_core_layoutmap;test_core_layoutmapgrid;test_core_layoutpicture;test_core_layoutscalebar;test_core_layouttable;test_core_legendrenderer;test_core_linefillsymbol;test_core_maprendererjob;test_core_maprotation;test_core_mapsettingsutils;test_core_mesheditor;test_core_meshlayer;test_core_pallabeling;test_core_project;test_core_svgcache;test_core_svgmarker;test_core_tiledownloadmanager;test_core_vectorfilewriter;test_core_vectortilelayer;test_core_layouthtml;test_core_openclutils;test_gui_attributeform;test_gui_processinggui;test_gui_filedownloader;test_gui_ogrprovidergui;test_gui_externalresourcewidgetwrapper;test_gui_queryresultwidget;test_gui_rasterlayersaveasdialog;test_3d_3dcameracontroller;test_3d_3drendering;test_3d_layout3dmap;test_3d_mesh3drendering;test_3d_pointcloud3drendering;test_analysis_processingalgspt1;test_analysis_processingalgspt2;test_analysis_processingmodelalgorithm;test_analysis_processing;test_provider_wcsprovider;test_provider_wmsprovider;test_provider_copcprovider;qgis_grassprovidertest8;test_app_qgisappclipboard;test_app_measurebearingtool;test_app_vertextool;PyQgsAnnotationLineTextItem;PyQgsAnnotationPointTextItem;PyQgsBlockingProcess;PyQgsCesium3dTilesLayer;PyQgsColorRampLegendNode;PyQgsDelimitedTextProvider;PyQgsExifTools;PyQgsExternalStorageWebDAV;PyQgsExternalStorageAWSS3;PyQgsFontManager;PyQgsProject;PyQgsFileUtils;PyQgsGeometryGeneratorSymbolLayer;PyQgsGeometryTest;PyQgsGoogleMapsGeocoder;PyQgsGpxProvider;PyQgsLayoutAtlas;PyQgsLayoutElevationProfile;PyQgsLayoutLegend;PyQgsLayoutMap;PyQgsLayoutMapGrid;PyQgsLineSymbolLayers;PyQgsMapLayer;PyQgsOGRProviderGpkg;PyQgsOrientedBox3D;PyQgsPalLabelingCanvas;PyQgsPalLabelingLayout;PyQgsPalLabelingPlacement;PyQgsPlot;PyQgsPointCloudAttributeByRampRenderer;PyQgsPointCloudClassifiedRenderer;PyQgsPointCloudRgbRenderer;PyQgsPointDisplacementRenderer;PyQgsProcessExecutablePt2;PyQgsProcessingPackageLayersAlgorithm;PyQgsProfileExporter;PyQgsProviderConnectionSpatialite;TestQgsRandomMarkerSymbolLayer;PyQgsRasterAttributeTable;PyQgsRasterFileWriter;PyQgsRasterLayer;PyQgsRasterResampler;PyQgsSvgCache;PyQgsTextRenderer;PyQgsSensorThingsProvider;PyQgsExternalStorageSimpleCopy;PyQgsSpatialiteProvider;PyQgsTiledSceneRender;PyQgsVectorFileWriter;PyQgsVectorLayerCache;PyQgsVectorLayerEditBuffer;PyQgsVectorLayerProfileGenerator;PyQgsVirtualLayerProvider;PyQgsSettings;PyQgsSettingsEntry;PyQgsSettingsTreeNode;PyQgsZipUtils;PyQgsAuthManagerProxy;PyQgsAuxiliaryStorage;PyQgsSelectiveMasking;PyQgsAuthSettingsWidget;PyQgsOGRProvider;PyQgsWFSProviderGUI;PyQgsAnnotation;PyQgsAuthenticationSystem;PyQgsProjectionSelectionWidgets;PyQgsRasterLayerProperties;PyQgsVectorLayer;PyQgsServer;PyQgsServerWMS;PyQgsServerApi;PyQgsServerWMSGetFeatureInfo;PyQgsServerWMSGetMap;PyQgsServerWMSGetMapDxf;PyQgsServerWMSGetLegendGraphic;PyQgsServerWMSGetPrint;PyQgsServerWMSGetPrintExtra;PyQgsServerWMSGetPrintOutputs;PyQgsServerWMSGetPrintAtlas;PyQgsServerWMSGetPrintMapTheme;PyQgsServerWMSDimension;PyQgsServerSettings;PyQgsServerSecurity;PyQgsServerCacheManager;PyQgsServerWMTS;PyQgsServerWFS;PyQgsServerLocaleOverride;PyQgsOfflineEditingWFS;PyQgsAuthManagerPasswordOWSTest;PyQgsAuthManagerPKIOWSTest;PyQgsAuthManagerOAuth2OWSTest;PyQgsServerRequest'
+
+jobs:
+  osgeo4w-packages:
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.osgeo4w-packages.outputs.matrix }}
+
+    steps:
+      - name: Determine package names
+        id: osgeo4w-packages
+        run: |
+          RELBRANCH=$(git ls-remote --heads $REPO "refs/heads/release-*_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/heads/release-#release-#p' | sort -V | tail -1)
+          LTRBRANCH=$(git ls-remote --tags $REPO | sed -e '/\^{}$/d' -ne 's#^.*refs/tags/ltr-#release-#p' | sort -V | fgrep -vx $RELBRANCH | tail -1)
+
+          if [ -n "$GITHUB_BASE_REF" ]; then
+            branch=$GITHUB_BASE_REF
+          else
+            branch=${GITHUB_REF##*/}
+          fi
+
+          case "$branch" in
+          $LTRBRANCH|queued_ltr_backports)
+            p=qgis-ltr-dev
+            ;;
+          $RELBRANCH)
+            p=qgis-rel-dev
+            ;;
+          master)
+            p="qgis-dev qgis-qt6-dev"
+            ;;
+          *)
+            echo "Could not determine package name"
+            exit 1
+            ;;
+          esac
+
+          echo "matrix={\"pkg\":[\"${p// /\",\"}\"]}">>$GITHUB_OUTPUT
+
+  osgeo4w-build:
+    name: OSGeo4W Windows Build
+    needs: osgeo4w-packages
+    runs-on: windows-latest
+    env:
+      O4W_REPO: jef-n/OSGeo4W
+
+    strategy:
+      matrix: ${{ fromJson(needs.osgeo4w-packages.outputs.matrix) }}
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ccache
+          key: build-ccache-osgeo4w-${{ matrix.pkg }}-${{ github.event.pull_request.base.ref || github.ref_name }}
+          restore-keys: |
+            build-ccache-osgeo4w-${{ matrix.pkg }}
+
+      - name: Build QGIS
+        shell: cmd
+        env:
+          PKG: ${{ matrix.pkg }}
+          GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+          REF: ${{ github.ref }}
+          PKGDESC: "QGIS build of ${{ github.ref }}"
+          OSGEO4W_BUILD_RDEPS: 0
+          PATH: C:\WINDOWS\system32;C:\Windows
+          CCACHE_DIR: ${{ github.workspace }}/ccache
+          SITE: github.com
+        run: |
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/%O4W_REPO%/master/bootstrap.cmd>bootstrap.cmd
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/%O4W_REPO%/master/bootstrap.sh>bootstrap.sh
+
+          set O4W_GIT_REPO=%GITHUB_SERVER_URL%/%O4W_REPO%
+          call bootstrap.cmd %PKG%
+
+          %GITHUB_WORKSPACE%\scripts\ccache -sv
+
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pkg }}
+          path: x86_64/
+          retention-days: 1
+
+      - name: Save build cache for push only
+        uses: actions/cache/save@v4
+        if: github.event_name == 'push'
+        with:
+          path: ccache
+          key: build-ccache-osgeo4w-${{ matrix.pkg }}-${{ github.ref_name }}-${{ github.run_id }}
+
+      - run: npm install xml-js
+        if: github.event_name == 'pull_request'
+      - name: 'Post artifact download link and test results as comment on PR'
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            let fs = require('fs');
+            let tag = String(fs.readFileSync("src/${{ matrix.pkg }}/osgeo4w/build/Testing/TAG")).split("\r\n")[0]
+            let buildId = require('xml-js').xml2js(fs.readFileSync("src/${{ matrix.pkg }}/osgeo4w/build/Testing/" + tag + "/Done.xml"), {compact:true, ignoreDeclaration:true})['Done']['buildId']['_text']
+
+            const prComments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            const PREFIX = "## OSGeo4W package ${{ matrix.pkg }} ready!";
+            let body = PREFIX + "\n\n" + "Package repository archive of this PR is available for testing [here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload.outputs.artifact-id }}).";
+            body += "\n\n*(Built from commit ${{ github.event.pull_request.head.sha }})*\n";
+            body += "\n\n*(Test results are [here](https://cdash.orfeo-toolbox.org/viewTest.php?buildid=" + buildId + "))*";
+
+            const winBuildComment = prComments.data?.find(c => c.body.startsWith(PREFIX));
+            if (!!winBuildComment) {
+              // update the existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: winBuildComment.id,
+                body: body
+              });
+            } else {
+              // submit a new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
