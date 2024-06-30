@@ -769,7 +769,7 @@ Qgis::DataItemProviderCapabilities QgsXyzTileDataItemProvider::capabilities() co
 QgsDataItem *QgsXyzTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsXyzTileRootItem( parentItem, QStringLiteral( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
+    return new QgsXyzTileRootItem( parentItem, QObject::tr( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
   return nullptr;
 }
 

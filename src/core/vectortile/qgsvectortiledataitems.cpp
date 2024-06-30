@@ -70,7 +70,7 @@ Qgis::DataItemProviderCapabilities QgsVectorTileDataItemProvider::capabilities()
 QgsDataItem *QgsVectorTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsVectorTileRootItem( parentItem, QStringLiteral( "Vector Tiles" ), QStringLiteral( "vectortile:" ) );
+    return new QgsVectorTileRootItem( parentItem, QObject::tr( "Vector Tiles" ), QStringLiteral( "vectortile:" ) );
   return nullptr;
 }
 

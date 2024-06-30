@@ -211,7 +211,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
   QgsDebugMsgLevel( "WFS path = " + path, 4 );
   if ( path.isEmpty() )
   {
-    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS / OGC API - Features" ), QStringLiteral( "wfs:" ) );
+    return new QgsWfsRootItem( parentItem, QObject::tr( "WFS / OGC API - Features" ), QStringLiteral( "wfs:" ) );
   }
 
   // path schema: wfs:/connection name (used by OWS)
