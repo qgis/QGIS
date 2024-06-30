@@ -62,6 +62,8 @@ class GUI_EXPORT QgsSymbolLayerSelectionWidget : public QWidget
 
     // Mapping between symbol layer id and tree elements
     QHash<QString, QTreeWidgetItem *> mItems;
+
+    friend class TestQgsMaskingWidget;
 };
 
 #endif

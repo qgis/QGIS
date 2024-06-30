@@ -50,13 +50,6 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     //! Applies the changes
     void apply();
 
-    //! Widget has been populated or not
-    bool hasBeenPopulated();
-
-  protected:
-
-    void showEvent( QShowEvent * ) override;
-
   private slots:
 
     /**
@@ -70,7 +63,8 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     void populate();
 
     QPointer<QgsMessageBarItem> mMessageBarItem;
-    bool mMustPopulate = false;
+
+    friend class TestQgsMaskingWidget;
 };
 
 
