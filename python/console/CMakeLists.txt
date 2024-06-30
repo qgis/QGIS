@@ -17,10 +17,20 @@ set(UI_FILES
 
 add_custom_target(pyconsole ALL)
 
+add_custom_command(TARGET pyconsole
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/console
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+add_custom_command(TARGET pyconsole
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy ${UI_FILES} ${PYTHON_OUTPUT_DIRECTORY}/console
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  DEPENDS ${UI_FILES}
+)
 foreach(pyfile ${PY_CONSOLE_FILES})
   add_custom_command(TARGET pyconsole
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/console
     COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${PYTHON_OUTPUT_DIRECTORY}/console
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${pyfile}

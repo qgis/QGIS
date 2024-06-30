@@ -29,6 +29,12 @@ add_custom_command(TARGET pyplugin-installer
   COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/pyplugin_installer
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
+add_custom_command(TARGET pyplugin-installer
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy ${UI_FILES} ${PYTHON_OUTPUT_DIRECTORY}/pyplugin_installer
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  DEPENDS ${UI_FILES}
+)
 
 foreach(pyfile ${PY_PLUGININSTALLER_FILES})
   add_custom_command(TARGET pyplugin-installer
