@@ -714,7 +714,7 @@ void TestQgsEptProvider::testPointCloudRequest()
 
   // Now let's repeat the counting with an extent
   QgsRectangle extent( 515390, 4918360, 515400, 4918370 );
-  request.setFilterRect( extent );
+  request.setFilterGeometry( QgsGeometry::fromRect( extent ) );
   count = 0;
   for ( IndexedPointCloudNode node : nodes )
   {
@@ -725,7 +725,7 @@ void TestQgsEptProvider::testPointCloudRequest()
 
   // Now let's repeat the counting with an extent away from the pointcloud
   extent = QgsRectangle( 0, 0, 1, 1 );
-  request.setFilterRect( extent );
+  request.setFilterGeometry( QgsGeometry::fromRect( extent ) );
   count = 0;
   for ( IndexedPointCloudNode node : nodes )
   {
@@ -737,7 +737,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   // An empty extent should fetch all points again
   count = 0;
   extent = QgsRectangle();
-  request.setFilterRect( extent );
+  request.setFilterGeometry( QgsGeometry::fromRect( extent ) );
   for ( IndexedPointCloudNode node : nodes )
   {
     std::unique_ptr< QgsPointCloudBlock> block( index->nodeData( node, request ) );

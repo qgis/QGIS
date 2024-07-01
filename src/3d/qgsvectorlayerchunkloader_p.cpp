@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsgeos.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -72,13 +73,8 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   }
 
   // build the feature request
-  QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs(), map.transformContext() );
-  req.setSubsetOfAttributes( attributeNames, layer->fields() );
-
-  // only a subset of data to be queried
-  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
-  req.setFilterRect( rect );
+  QgsFeatureRequest request;
+  QgsGeometry extentGeom = buildVectorFeatureRequest( layer, node, map, attributeNames, request );
 
   //
   // this will be run in a background thread
@@ -86,16 +82,26 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [req, this]
+  const QFuture<void> future = QtConcurrent::run( [request, extentGeom, this]
   {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
 
+    // The request was made on the boundingbox of extentGeom
+    // It is necessary to ensure that the features intersect
+    // with extentGeom.
+    QgsGeos extentIntersectionGeos( extentGeom.constGet() );
+    extentIntersectionGeos.prepareGeometry();
+
     QgsFeature f;
-    QgsFeatureIterator fi = mSource->getFeatures( req );
+    QgsFeatureIterator fi = mSource->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
         break;
+
+      if ( !extentIntersectionGeos.intersects( f.geometry().constGet() ) )
+        continue;
+
       mContext.expressionContext().setFeature( f );
       mHandler->processFeature( f, mContext );
     }

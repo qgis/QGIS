@@ -22,11 +22,13 @@
 #include "qgslogger.h"
 #include "qgslazinfo.h"
 #include "qgspointcloudexpression.h"
+#include "qgsgeometry.h"
 
 #include <QFile>
 #include <QDir>
 #include <QElapsedTimer>
 #include <QTemporaryFile>
+#include <QTransform>
 #include <iostream>
 #include <memory>
 #include <cstring>
@@ -504,7 +506,7 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
 }
 
 template<typename FileType>
-std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   if ( ! file.good() )
     return nullptr;
@@ -564,15 +566,19 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
     int xAttributeOffset, yAttributeOffset;
     const QgsPointCloudAttribute *attributeX = nullptr;
     const QgsPointCloudAttribute *attributeY = nullptr;
-    const bool hasFilterRect = !filterRect.isEmpty();
-    if ( hasFilterRect )
+    const bool hasFilterGeometry = !filterGeometry.isEmpty();
+    if ( hasFilterGeometry )
     {
       attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
       attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
-      filterRect.setXMinimum( ( filterRect.xMinimum() - offset.x() ) / scale.x() );
-      filterRect.setXMaximum( ( filterRect.xMaximum() - offset.x() ) / scale.x() );
-      filterRect.setYMinimum( ( filterRect.yMinimum() - offset.y() ) / scale.y() );
-      filterRect.setYMaximum( ( filterRect.yMaximum() - offset.y() ) / scale.y() );
+
+      // QgsGeometry::contains return False if a point is at the border of the geometry.
+      // Add a small buffer to keep those points.
+      filterGeometry = filterGeometry.buffer( 0.00001, 5 );
+      QTransform geometryTransform;
+      geometryTransform.scale( 1 / scale.x(), 1 / scale.y() );
+      geometryTransform.translate( -offset.x(), -offset.y() );
+      filterGeometry.transform( geometryTransform );
     }
 
     std::vector<char> rawExtrabytes = f.vlrData( "LASF_Spec", 4 );
@@ -587,11 +593,11 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
 
       // check if point needs to be filtered out
       bool skipThisPoint = false;
-      if ( hasFilterRect && attributeX && attributeY )
+      if ( hasFilterGeometry && attributeX && attributeY )
       {
         const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
         const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
-        if ( !filterRect.contains( x, y ) )
+        if ( !filterGeometry.contains( x, y ) )
           skipThisPoint = true;
       }
       if ( !skipThisPoint && filterIsValid )
@@ -624,22 +630,22 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
 
 std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &requestedAttributes,
-    QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+    QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   std::ifstream file( toNativePath( filename ), std::ios::binary );
 
-  return decompressLaz_<std::ifstream>( file, requestedAttributes, filterExpression, filterRect );
+  return decompressLaz_<std::ifstream>( file, requestedAttributes, filterExpression, filterGeometry );
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &requestedAttributes,
-    QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+    QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   std::istringstream file( byteArrayData.toStdString() );
-  return decompressLaz_<std::istringstream>( file, requestedAttributes, filterExpression, filterRect );
+  return decompressLaz_<std::istringstream>( file, requestedAttributes, filterExpression, filterGeometry );
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   // COPC only supports point formats 6, 7 and 8
   int lasPointFormat = lazInfo.pointFormat();
@@ -679,15 +685,19 @@ std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteAr
   int xAttributeOffset, yAttributeOffset;
   const QgsPointCloudAttribute *attributeX = nullptr;
   const QgsPointCloudAttribute *attributeY = nullptr;
-  const bool hasFilterRect = !filterRect.isEmpty();
-  if ( hasFilterRect )
+  const bool hasFilterGeometry = !filterGeometry.isEmpty();
+  if ( hasFilterGeometry )
   {
     attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
     attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
-    filterRect.setXMinimum( ( filterRect.xMinimum() - lazInfo.offset().x() ) / lazInfo.scale().x() );
-    filterRect.setXMaximum( ( filterRect.xMaximum() - lazInfo.offset().x() ) / lazInfo.scale().x() );
-    filterRect.setYMinimum( ( filterRect.yMinimum() - lazInfo.offset().y() ) / lazInfo.scale().y() );
-    filterRect.setYMaximum( ( filterRect.yMaximum() - lazInfo.offset().y() ) / lazInfo.scale().y() );
+
+    // QgsGeometry::contains return False if a point is at the border of the geometry.
+    // Add a small buffer to keep those points.
+    filterGeometry = filterGeometry.buffer( 0.00001, 5 );
+    QTransform geometryTransform;
+    geometryTransform.scale( 1 / lazInfo.scale().x(), 1 / lazInfo.scale().y() );
+    geometryTransform.translate( -lazInfo.offset().x(), -lazInfo.offset().y() );
+    filterGeometry.transform( geometryTransform );
   }
   for ( int i = 0 ; i < pointCount; ++i )
   {
@@ -699,11 +709,11 @@ std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteAr
     // check if point needs to be filtered out
     bool skipThisPoint = false;
 
-    if ( hasFilterRect && attributeX && attributeY )
+    if ( hasFilterGeometry && attributeX && attributeY )
     {
       const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
       const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
-      if ( !filterRect.contains( x, y ) )
+      if ( !filterGeometry.contains( x, y ) )
         skipThisPoint = true;
     }
     if ( !skipThisPoint && filterIsValid )

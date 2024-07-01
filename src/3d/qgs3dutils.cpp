@@ -902,3 +902,23 @@ Qt3DRender::QCullFace::CullingMode Qgs3DUtils::qt3DcullingMode( Qgs3DTypes::Cull
   }
   return Qt3DRender::QCullFace::NoCulling;
 }
+
+
+QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines )
+{
+  // There is one caveat to take care of - GLSL source code needs to start with #version as
+  // a first directive, otherwise we get the old GLSL 100 version. So we can't just prepend the
+  // shader source code, but insert our defines at the right place.
+
+  QStringList defineLines;
+  for ( const QString &define : defines )
+    defineLines += "#define " + define + "\n";
+
+  QString definesText = defineLines.join( QString() );
+
+  QByteArray newShaderCode = shaderCode;
+  int versionIndex = shaderCode.indexOf( "#version " );
+  int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
+  newShaderCode.insert( insertionIndex, definesText.toLatin1() );
+  return newShaderCode;
+}

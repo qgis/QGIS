@@ -21,8 +21,8 @@
 
 QgsCachedPointCloudBlockRequest::QgsCachedPointCloudBlockRequest( QgsPointCloudBlock *block, const IndexedPointCloudNode &node, const QString &uri,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
-  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect )
+    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsGeometry &filterGeometry )
+  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterGeometry )
 {
   mBlock.reset( block );
   QMetaObject::invokeMethod( this, &QgsCachedPointCloudBlockRequest::finished, Qt::QueuedConnection );

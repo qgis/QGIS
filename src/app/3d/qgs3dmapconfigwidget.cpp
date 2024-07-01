@@ -17,6 +17,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"
+#include "qgsextent3dwidget.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsmeshterraingenerator.h"
@@ -244,15 +245,30 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // ==================
   // Page: General
 
-  groupExtent->setOutputCrs( mMap->crs() );
-  groupExtent->setCurrentExtent( mMap->extent(), mMap->crs() );
-  groupExtent->setOutputExtentFromCurrent();
-  groupExtent->setMapCanvas( mMainCanvas );
+  mOldRotation = mMap->zRotation();
+  mOldExtent = mMap->extent();
 
-  // checkbox to display the extent in the 2D Map View
-  mShowExtentIn2DViewCheckbox = new QCheckBox( tr( "Show in 2D map view" ) );
-  mShowExtentIn2DViewCheckbox->setChecked( map->showExtentIn2DView() );
-  groupExtent->layout()->addWidget( mShowExtentIn2DViewCheckbox );
+  mExtent3D->setDefaultExtent( mMap->extent(), mMap->crs() );
+  mExtent3D->setMapCanvas( mMainCanvas );
+  mExtent3D->setRotation( mMap->zRotation() );
+  mExtent3D->setShowIn2DView( mMap->showExtentIn2DView() );
+
+  connect( mExtent3D, &QgsExtent3DWidget::extentChanged, this, [ = ]
+  {
+    mMap->setExtent( mExtent3D->extent() );
+    updateTerrain();
+  } );
+
+  connect( mExtent3D, &QgsExtent3DWidget::rotationChanged, this, [ = ]
+  {
+    mMap->setZRotation( mExtent3D->rotation() );
+    updateTerrain();
+  } );
+
+  connect( mExtent3D, &QgsExtent3DWidget::showIn2DViewChanged, this, [ = ]
+  {
+    mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
+  } );
 
   onTerrainTypeChanged();
 }
@@ -264,11 +280,8 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
   settings.setValue( QStringLiteral( "Windows/3DMapConfig/Tab" ), m3DOptionsListWidget->currentRow() );
 }
 
-void Qgs3DMapConfigWidget::apply()
+void Qgs3DMapConfigWidget::updateTerrain()
 {
-  mMap->setExtent( groupExtent->outputExtent() );
-  mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
-
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
   mMap->setTerrainRenderingEnabled( groupTerrain->isChecked() );
@@ -341,6 +354,26 @@ void Qgs3DMapConfigWidget::apply()
     }
     break;
   }
+}
+
+void Qgs3DMapConfigWidget::reject()
+{
+  if ( mExtent3D->extent() == mOldExtent && mExtent3D->rotation() == mOldRotation )
+    return;
+
+  mMap->setExtent( mOldExtent );
+  mMap->setZRotation( mOldRotation );
+
+  updateTerrain();
+}
+
+void Qgs3DMapConfigWidget::apply()
+{
+  mMap->setExtent( mExtent3D->extent() );
+  mMap->setZRotation( mExtent3D->rotation() );
+  mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
+
+  updateTerrain();
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
@@ -443,7 +476,7 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 {
-  const QgsRectangle te = groupExtent->outputExtent();
+  const QgsRectangle te = mExtent3D->extent();
 
   const double tile0width = std::max( te.width(), te.height() );
   const int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );

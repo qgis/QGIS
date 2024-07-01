@@ -104,7 +104,7 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
     return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
-           scale(), offset(), mFilterExpression, request.filterRect() );
+           scale(), offset(), mFilterExpression, request.filterGeometry() );
   }
 
   if ( !fetchNodeHierarchy( n ) )
@@ -121,7 +121,7 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
   int pointCount = mHierarchy.value( n );
 
   return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes,
-         scale(), offset(), filterExpression, request.filterRect(),
+         scale(), offset(), filterExpression, request.filterGeometry(),
          blockOffset, blockSize, pointCount, *mLazInfo.get() );
 }
 

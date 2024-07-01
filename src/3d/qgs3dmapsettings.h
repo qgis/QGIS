@@ -26,6 +26,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsrectangle.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 #include "qgs3daxissettings.h"
@@ -68,12 +69,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void resolveReferences( const QgsProject &project );
 
     /**
-     * Returns the 3D scene's 2D extent in the 3D scene's CRS
+     * Returns the 3D scene's 2D bounding box of the extent in the 3D scene's CRS.
+     * If the 3D scene is not rotated, this is similar to rotatedExtent(). Otherwise, this
+     * is the bounding box of rotatedExtent().
      *
      * \see crs()
+     * \see rotatedExtent()
      * \since QGIS 3.30
      */
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle extent() const;
 
     /**
      * Sets the 3D scene's 2D \a extent in the 3D scene's CRS, while also setting the scene's origin to the extent's center
@@ -100,6 +104,28 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setOrigin( const QgsVector3D &origin ) { mOrigin = origin; }
     //! Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
     QgsVector3D origin() const { return mOrigin; }
+
+    /**
+     * Sets the z rotation of the 3d scene
+     *
+     * \param rotation the z rotation in degrees clockwise from North
+     * \since QGIS 3.40
+     */
+    void setZRotation( double rotation );
+
+    /**
+     * Returns the z rotation of the 3d scene in degrees clockwise from North.
+     *
+     * \since QGIS 3.40
+     */
+    double zRotation() const { return mZRotation; }
+
+    /**
+     * Returns the 3D scene's 2D geometry in the 3D scene's CRS.
+     *
+     * \since QGIS 3.40
+     */
+    QgsGeometry rotatedExtent() const;
 
     //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
@@ -911,6 +937,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Connects the various changed signals of this widget to the settingsChanged signal
     void connectChangedSignalsToSettingsChanged();
 
+    //! Updates the terrain generator extent when the extent of the scene has changed
+    void updateTerrainGeneratorExtent();
+
+    //! Recomputes the extent of the scene when mExtent or mZRotation has changed
+    void updateRotatedExtent();
+
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
@@ -973,7 +1005,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     bool mIsDebugOverlayEnabled = false;
 
-    QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
+    QgsRectangle mExtent; //!< 2d extent used to limit the 3d view. It does not take into account mZRotation
+
+    double mZRotation = 0.0; // extent Z rotation in degrees clockwise from North
+
+    QgsGeometry mRotatedExtent; //!< 2d extent used to limit the 3d view. It takes into account mZRotation
+    mutable QgsRectangle mRotatedExtentBBox; //!< The bounding box of the rotated extent
 
     bool mShowExtentIn2DView = false;
 

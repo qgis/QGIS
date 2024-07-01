@@ -20,16 +20,17 @@
 #include "qgspointcloudattribute.h"
 #include "qgsvector3d.h"
 #include "qgspointcloudexpression.h"
-#include "qgsrectangle.h"
+#include "qgsgeometry.h"
 
 #include <QFile>
+#include <QTransform>
 
 #include <zstd.h>
 
 
 ///@cond PRIVATE
 
-std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   const std::size_t pointRecordSize = attributes.pointRecordSize( );
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -92,15 +93,19 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
   int xAttributeOffset, yAttributeOffset;
   const QgsPointCloudAttribute *attributeX = nullptr;
   const QgsPointCloudAttribute *attributeY = nullptr;
-  const bool hasFilterRect = !filterRect.isEmpty();
-  if ( hasFilterRect )
+  const bool hasFilterGeometry = !filterGeometry.isEmpty();
+  if ( hasFilterGeometry )
   {
     attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
     attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
-    filterRect.setXMinimum( ( filterRect.xMinimum() - offset.x() ) / scale.x() );
-    filterRect.setXMaximum( ( filterRect.xMaximum() - offset.x() ) / scale.x() );
-    filterRect.setYMinimum( ( filterRect.yMinimum() - offset.y() ) / scale.y() );
-    filterRect.setYMaximum( ( filterRect.yMaximum() - offset.y() ) / scale.y() );
+
+    // QgsGeometry::contains return False if a point is at the border of the geometry.
+    // Add a small buffer to keep those points.
+    filterGeometry = filterGeometry.buffer( 0.00001, 5 );
+    QTransform geometryTransform;
+    geometryTransform.scale( 1 / scale.x(), 1 / scale.y() );
+    geometryTransform.translate( -offset.x(), -offset.y() );
+    filterGeometry.transform( geometryTransform );
   }
 
   // now loop through points
@@ -118,11 +123,11 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
 
     // check if point needs to be filtered out
     bool skipThisPoint = false;
-    if ( hasFilterRect && attributeX && attributeY )
+    if ( hasFilterGeometry && attributeX && attributeY )
     {
       const double x = attributeX->convertValueToDouble( destinationBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
       const double y = attributeY->convertValueToDouble( destinationBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
-      if ( !filterRect.contains( x, y ) )
+      if ( !filterGeometry.contains( x, y ) )
         skipThisPoint = true;
     }
     if ( !skipThisPoint && filterIsValid )
@@ -143,7 +148,7 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
   return block;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -154,12 +159,12 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary( const QStri
     return nullptr;
 
   const QByteArray dataUncompressed = f.read( f.size() );
-  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterGeometry );
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
-  return decompressBinary_( data, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( data, attributes, requestedAttributes, scale, offset, filterExpression, filterGeometry );
 }
 
 /* *************************************************************************************** */
@@ -192,7 +197,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -204,13 +209,13 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard( const QS
 
   const QByteArray dataCompressed = f.readAll();
   const QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
-  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterGeometry );
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsGeometry &filterGeometry )
 {
   const QByteArray dataUncompressed = decompressZtdStream( data );
-  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterGeometry );
 }
 
 /* *************************************************************************************** */

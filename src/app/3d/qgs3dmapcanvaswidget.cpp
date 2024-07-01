@@ -476,7 +476,7 @@ void Qgs3DMapCanvasWidget::configure()
   QgsGui::enableAutoGeometryRestore( mConfigureDialog );
 
   Qgs3DMapSettings *map = mCanvas->mapSettings();
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, mConfigureDialog );
+  Qgs3DMapConfigWidget *configWidget = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, mConfigureDialog );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, mConfigureDialog );
 
   auto applyConfig = [ = ]()
@@ -487,7 +487,7 @@ void Qgs3DMapCanvasWidget::configure()
     const QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
 
     // update map
-    w->apply();
+    configWidget->apply();
 
     const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
                             oldLookingAt,
@@ -508,7 +508,11 @@ void Qgs3DMapCanvasWidget::configure()
                                    || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
-  connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, [ = ]()
+  {
+    configWidget->reject();
+    mConfigureDialog->reject();
+  } );
   connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [ = ]( QAbstractButton * button )
   {
     if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
@@ -516,16 +520,16 @@ void Qgs3DMapCanvasWidget::configure()
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
       mConfigureDialog->accept();
   } );
-  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
+  connect( buttons, &QDialogButtonBox::helpRequested, configWidget, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
 
-  connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
+  connect( configWidget, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
   {
     buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
     buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
   } );
 
   QVBoxLayout *layout = new QVBoxLayout( mConfigureDialog );
-  layout->addWidget( w, 1 );
+  layout->addWidget( configWidget, 1 );
   layout->addWidget( buttons );
 
   mConfigureDialog->show();
@@ -692,11 +696,11 @@ void Qgs3DMapCanvasWidget::onExtentChanged()
   mViewExtentHighlight->reset( Qgis::GeometryType::Polygon );
   if ( mapSettings->showExtentIn2DView() )
   {
-    QgsRectangle extent = mapSettings->extent();
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMinimum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMaximum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMaximum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMinimum() ), false );
+    QVector<QgsPointXY> points = mapSettings->rotatedExtent().asPolygon()[0].mid( 0, 4 );
+    for ( const QgsPointXY &point : points )
+    {
+      mViewExtentHighlight->addPoint( point, false );
+    }
     mViewExtentHighlight->closePoints();
   }
 }

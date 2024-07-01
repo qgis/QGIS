@@ -26,6 +26,7 @@
 #include <QJsonObject>
 
 #include "qgseptdecoder.h"
+#include "qgsgeometry.h"
 #include "qgslazdecoder.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudrequest.h"
@@ -167,9 +168,9 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const Inde
     QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mUri ) );
     return nullptr;
   }
-  QgsRectangle filterRect = request.filterRect();
+  QgsGeometry filterGeometry = request.filterGeometry();
 
-  std::unique_ptr<QgsPointCloudBlock> decoded = QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
+  std::unique_ptr<QgsPointCloudBlock> decoded = QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterGeometry );
   storeNodeDataToCache( decoded.get(), n, request );
   return decoded;
 }

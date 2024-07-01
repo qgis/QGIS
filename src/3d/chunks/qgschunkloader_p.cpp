@@ -15,9 +15,55 @@
 
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
+#include "qgscoordinatetransform.h"
+#include "qgs3dutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QVector>
 ///@cond PRIVATE
+
+
+// ===============================
+// QgsChunkLoader
+// ===============================
+
+QgsGeometry QgsChunkLoader::buildVectorFeatureRequest( const QgsVectorLayer *layer, const QgsChunkNode *node, const Qgs3DMapSettings &mapSettings, const QSet<QString> &attributeNames, QgsFeatureRequest &request )
+{
+  request.setDestinationCrs( mapSettings.crs(), mapSettings.transformContext() );
+  request.setSubsetOfAttributes( attributeNames, layer->fields() );
+
+  // only a subset of data to be queried
+  // data which are inside the node and the extent of the scene
+  QgsRectangle bboxExtent = Qgs3DUtils::worldToMapExtent( node->bbox(), mapSettings.origin() );
+  QgsGeometry sceneExtentGeom = mapSettings.rotatedExtent();
+  if ( mapSettings.crs() != layer->crs() )
+  {
+    QgsCoordinateTransform ct( mapSettings.crs(), layer->crs(), mapSettings.transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
+    try
+    {
+      bboxExtent = ct.transformBoundingBox( bboxExtent );
+      sceneExtentGeom.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
+    }
+  }
+
+  // Make a fast filterRect request with the bounding box of the intersect
+  // and then test if the features intersect with the extent to avoid
+  // a performance penalty.
+  QgsGeometry extentIntersection = sceneExtentGeom.intersection( QgsGeometry::fromRect( bboxExtent ) );
+  request.setFilterRect( extentIntersection.boundingBox() );
+
+  return extentIntersection;
+}
+
+
+// ===============================
+// QgsQuadtreeChunkLoaderFactory
+// ===============================
 
 QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
 

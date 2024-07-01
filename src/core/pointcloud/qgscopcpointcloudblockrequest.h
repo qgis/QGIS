@@ -20,6 +20,7 @@
 
 #include <QObject>
 
+#include "qgsgeometry.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgslazinfo.h"
 
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
      */
     QgsCopcPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri,
                                    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                                   const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
+                                   const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsGeometry &filterGeometry,
                                    uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo );
 
     ~QgsCopcPointCloudBlockRequest() = default;

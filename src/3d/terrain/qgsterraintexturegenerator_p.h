@@ -86,8 +86,6 @@ class QgsTerrainTextureGenerator : public QObject
   private:
     QgsMapSettings baseMapSettings();
 
-    const Qgs3DMapSettings &mMap;
-
     struct JobData
     {
       int jobId;
@@ -96,6 +94,10 @@ class QgsTerrainTextureGenerator : public QObject
       QgsRectangle extent;
       QString debugText;
     };
+
+    QImage generateRenderedImage( const QImage &initialImage, const JobData &jobData ) const;
+
+    const Qgs3DMapSettings &mMap;
 
     QHash<QgsMapRendererSequentialJob *, JobData> mJobs;
     int mLastJobId;

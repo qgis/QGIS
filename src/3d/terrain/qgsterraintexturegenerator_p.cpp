@@ -24,6 +24,9 @@
 #include "qgs3dmapsettings.h"
 
 #include "qgseventtracing.h"
+#include "qgsgeometry.h"
+#include "qgspointxy.h"
+#include "qgsrectangle.h"
 
 ///@cond PRIVATE
 
@@ -104,23 +107,10 @@ void QgsTerrainTextureGenerator::waitForFinished()
     toBeDeleted.push_back( mapJob );
 
     QImage img = mapJob->renderedImage();
-
-    if ( mMap.showTerrainTilesInfo() )
-    {
-      // extra tile information for debugging
-      QPainter p( &img );
-      p.setPen( Qt::red );
-      p.setBackgroundMode( Qt::OpaqueMode );
-      QFont font = p.font();
-      font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
-      p.setFont( font );
-      p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
-      p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
-      p.end();
-    }
+    QImage clippedImage = generateRenderedImage( img, jobData );
 
     // pass QImage further
-    emit tileReady( jobData.jobId, img );
+    emit tileReady( jobData.jobId, clippedImage );
   }
 
   for ( QgsMapRendererSequentialJob *mapJob : toBeDeleted )
@@ -138,20 +128,7 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   JobData jobData = mJobs.value( mapJob );
 
   QImage img = mapJob->renderedImage();
-
-  if ( mMap.showTerrainTilesInfo() )
-  {
-    // extra tile information for debugging
-    QPainter p( &img );
-    p.setPen( Qt::red );
-    p.setBackgroundMode( Qt::OpaqueMode );
-    QFont font = p.font();
-    font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
-    p.setFont( font );
-    p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
-    p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
-    p.end();
-  }
+  QImage clippedImage = generateRenderedImage( img, jobData );
 
   mapJob->deleteLater();
   mJobs.remove( mapJob );
@@ -161,7 +138,7 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), jobData.tileId.text() );
 
   // pass QImage further
-  emit tileReady( jobData.jobId, img );
+  emit tileReady( jobData.jobId, clippedImage );
 }
 
 QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
@@ -170,7 +147,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 
   mapSettings.setOutputSize( mTextureSize );
   mapSettings.setDestinationCrs( mMap.crs() );
-  mapSettings.setBackgroundColor( mMap.backgroundColor() );
+  mapSettings.setBackgroundColor( QColor( 0, 0, 0, 0 ) );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, mMap.showLabels() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::Render3DMap );
   mapSettings.setTransformContext( mMap.transformContext() );
@@ -196,6 +173,58 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   mapSettings.setLayers( layers );
 
   return mapSettings;
+}
+
+QImage QgsTerrainTextureGenerator::generateRenderedImage( const QImage &initialImage, const JobData &jobData ) const
+{
+  // the result texture is the intersection between the tile extent and 3D scene extent
+  // the intersection is in the 3D world coordinates
+  QgsRectangle textureExtent = jobData.extent;
+  QgsGeometry textureExtentGeom = QgsGeometry::fromRect( textureExtent );
+  QgsGeometry intersection = textureExtentGeom.intersection( mMap.rotatedExtent() );
+
+  // the intersection is in the 3D world coordinates
+  // the coordinates need to be to converted in the map coordinates
+  // 1. bring back the coordinates in the {0-resolution; 0-resolution} range
+  int resolution = std::max( initialImage.width(), initialImage.height() );
+  QTransform scaling = QTransform::fromScale( resolution / textureExtent.width(), resolution / textureExtent.height() );
+  scaling.translate( -textureExtent.xMinimum(), -textureExtent.yMinimum() );
+  intersection.transform( scaling );
+
+  // 2. the Y coordinates need to be inverted
+  QVector<QgsPointXY> invertedPoints;
+  QgsPolylineXY intersectionPolygon = intersection.asPolygon().at( 0 );
+  for ( int i = 0; i < intersectionPolygon.size(); i++ )
+  {
+    const QgsPointXY point = intersectionPolygon.at( i );
+    invertedPoints << QgsPointXY( point.x(), initialImage.height() - point.y() );
+  }
+  QgsPolygonXY invertedPolygon;
+  invertedPolygon << invertedPoints;
+  QgsGeometry intersectionMapCoords = QgsGeometry::fromPolygonXY( invertedPolygon );
+
+  // the pixels outside the intersection are transparent
+  // the painter uses the computed geometry to draw only the initialImage inside the intersection
+  QImage clippedImage( initialImage.size(), initialImage.format() );
+  clippedImage.fill( qRgba( 0, 0, 0, 0 ) );
+  QPainter imagePainter( &clippedImage );
+  imagePainter.setClipPath( intersectionMapCoords.constGet()->asQPainterPath() );
+  imagePainter.drawImage( QPoint( 0, 0 ), initialImage );
+
+  if ( mMap.showTerrainTilesInfo() )
+  {
+    // extra tile information for debugging
+    imagePainter.setPen( Qt::red );
+    imagePainter.setBackgroundMode( Qt::OpaqueMode );
+    QFont font = imagePainter.font();
+    font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
+    imagePainter.setFont( font );
+    imagePainter.drawRect( 0, 0, initialImage.width() - 1, initialImage.height() - 1 );
+    imagePainter.drawText( initialImage.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
+    imagePainter.end();
+  }
+
+  return clippedImage;
 }
 
 /// @endcond
