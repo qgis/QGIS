@@ -3475,6 +3475,38 @@ INSERT INTO public.test_geog_ext(g)
         cur.execute(sql_pk)
         self.assertEqual(cur.fetchall(), [('dep', 'character varying')])
 
+    def testColumnRestrictedLayerIsEditable(self):
+        """
+            Test editability of table with partial column insert privs
+            See https://github.com/qgis/QGIS/issues/28835
+        """
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.executeSql('''
+DROP TABLE IF EXISTS public.qgis_issue_gh_28835;
+CREATE UNLOGGED TABLE public.qgis_issue_gh_28835 (
+  id INT PRIMARY KEY,
+  restricted_column TEXT,
+  geom GEOMETRY(point, 4326)
+)
+            ''')
+
+        uri = QgsDataSourceUri(self.dbconn + ' table="public"."qgis_issue_gh_28835" (geom)')
+        uri.setUsername('qgis_test_unprivileged_user')
+        uri.setPassword('qgis_test_unprivileged_user_password')
+
+        conn.executeSql('GRANT SELECT ON public.qgis_issue_gh_28835 TO qgis_test_unprivileged_user')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid(), "qgis_issue_gh_28835 is an invalid layer")
+        self.assertFalse(vl.startEditing(), "qgis_issue_gh_28835 is unexpectedly editable by qgis_test_unprivileged_user before grants")
+
+        conn.executeSql('GRANT INSERT(geom) ON public.qgis_issue_gh_28835 TO qgis_test_unprivileged_user')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid(), "qgis_issue_gh_28835 is an invalid layer")
+        self.assertTrue(vl.startEditing(), "qgis_issue_gh_28835 is not editable by qgis_test_unprivileged_user after restricted-column insert grant")
+
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 
