@@ -124,7 +124,7 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -355,7 +355,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -466,7 +466,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
