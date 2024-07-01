@@ -28,7 +28,6 @@ from qgis.core import (QgsApplication,
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .BarPlot import BarPlot
-from .BasicStatistics import BasicStatisticsForField
 from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
@@ -89,7 +88,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         algs = [BarPlot(),
-                BasicStatisticsForField(),
                 BoxPlot(),
                 CheckValidity(),
                 Climb(),
