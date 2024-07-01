@@ -878,6 +878,12 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     {
       PictureAndPainter pictureAndPainter = allocatePictureAndPainter( job.context() );
       job.picture = std::move( pictureAndPainter.first );
+      if ( job.context()->painter()->hasClipping() )
+      {
+        // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
+        pictureAndPainter.second->setClipping( true );
+        pictureAndPainter.second->setClipPath( job.context()->painter()->clipPath() );
+      }
       job.context()->setPainter( pictureAndPainter.second );
       // force recreation of layer renderer so it initialize correctly the renderer
       // especially the RasterLayerRender that need logicalDpiX from painting device
@@ -955,6 +961,12 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     else
     {
       PictureAndPainter pictureAndPainter = allocatePictureAndPainter( job2.context() );
+      if ( job.context()->painter()->hasClipping() )
+      {
+        // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
+        pictureAndPainter.second->setClipping( true );
+        pictureAndPainter.second->setClipPath( job.context()->painter()->clipPath() );
+      }
       job2.picture = std::move( pictureAndPainter.first );
       job2.context()->setPainter( pictureAndPainter.second );
     }

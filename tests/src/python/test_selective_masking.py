@@ -174,14 +174,19 @@ class TestSelectiveMasking(QgisTestCase):
         symbollayer = self.get_symbollayer(layer, ruleId, symbollayer_ids)
         return QgsSymbolLayerReference(layer.id(), symbollayer.id())
 
-    def check_renderings(self, map_settings, control_name):
+    def check_renderings(self, map_settings, control_name, test_parallel_rendering: bool = True):
         """Test a rendering with different configurations:
         - parallel rendering, no cache
         - sequential rendering, no cache
         - parallel rendering, with cache (rendered two times)
         - sequential rendering, with cache (rendered two times)
         """
-        for do_parallel in [False, True]:
+        if test_parallel_rendering:
+            parallel_tests = [False, True]
+        else:
+            parallel_tests = [False]
+
+        for do_parallel in parallel_tests:
             for use_cache in [False, True]:
                 print("=== parallel", do_parallel, "cache", use_cache)
                 cache = None
@@ -823,7 +828,9 @@ class TestSelectiveMasking(QgisTestCase):
 
         # test that force vector output has no impact on the result
         self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
-        self.check_renderings(self.map_settings, "label_mask_with_effect")
+        # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
+        # is used
+        self.check_renderings(self.map_settings, "label_mask_with_effect", test_parallel_rendering=False)
 
     def test_different_dpi_target(self):
         """Test with raster layer and a target dpi"""
