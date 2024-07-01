@@ -1148,7 +1148,7 @@ tests:
         type: vector
         pk: intval
 
-  - algorithm: qgis:basicstatisticsforfields
+  - algorithm: native:basicstatisticsforfields
     name: Basic stats datetime
     params:
       FIELD_NAME: date_time
@@ -1156,6 +1156,9 @@ tests:
         name: custom/datetimes.tab
         type: table
     results:
+      OUTPUT:
+        name: expected/statistics_datetime.gml
+        type: vector
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_datetime.html
         type: regex
@@ -1167,7 +1170,7 @@ tests:
           - 'Maximum value: 2016-11-30T14:29:22'
           - 'NULL \(missing\) values: 1'
 
-  - algorithm: qgis:basicstatisticsforfields
+  - algorithm: native:basicstatisticsforfields
     name: Basic stats date
     params:
       FIELD_NAME: date
@@ -1175,6 +1178,9 @@ tests:
         name: custom/datetimes.tab
         type: table
     results:
+      OUTPUT:
+        name: expected/statistics_date.gml
+        type: vector
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_date.html
         type: regex
@@ -1186,7 +1192,7 @@ tests:
           - 'Maximum value: 2016-11-30T00:00:00'
           - 'NULL \(missing\) values: 1'
 
-  - algorithm: qgis:basicstatisticsforfields
+  - algorithm: native:basicstatisticsforfields
     name: Basic stats time
     params:
       FIELD_NAME: time
@@ -1194,6 +1200,9 @@ tests:
         name: custom/datetimes.tab
         type: table
     results:
+      OUTPUT:
+        name: expected/statistics_time.gml
+        type: vector
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_time.html
         type: regex
