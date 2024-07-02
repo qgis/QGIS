@@ -312,10 +312,10 @@ class TestQgsAttributeForm(QgisTestCase):
         # don't update numbers
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
-        # save form - this leads not to any updates (because it's a newly created features)
+        # save form - this leads to updates
         form.save()
 
-        # read the feature and check, that nothing updated after save
+        # read the feature and check, that other function expressions updated (pos and rand)
         feature = next(layer.getFeatures())
 
         # don't updated age
@@ -324,10 +324,10 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(feature.attribute('year'), 2024)
         # don't updated birthday
         self.assertEqual(feature.attribute('birthday'), 2014)
-        # don't updated pos (because newly created feature)
-        self.assertEqual(feature.attribute('pos'), 110)
-        # don't updated random (because newly created feature)
-        self.assertEqual(feature.attribute('random'), 100)
+        # updated pos (volatile)
+        self.assertEqual(feature.attribute('pos'), 120)
+        # updated random (volatile)
+        self.assertEqual(feature.attribute('random'), 200)
         # don't updated numbers
         self.assertEqual(feature.attribute('numbers'), [1, 10])
 
@@ -344,9 +344,9 @@ class TestQgsAttributeForm(QgisTestCase):
         # don't update birthday
         self.assertEqual(form.currentFormFeature()['birthday'], 2014)
         # don't update pos (because newly created feature)
-        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        self.assertEqual(form.currentFormFeature()['pos'], 120)
         # don't update random (because newly created feature)
-        self.assertEqual(form.currentFormFeature()['random'], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 200)
         # don't update numbers
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
@@ -359,9 +359,9 @@ class TestQgsAttributeForm(QgisTestCase):
         # don't update year
         self.assertEqual(form.currentFormFeature()['year'], 2024)
         # don't update pos
-        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        self.assertEqual(form.currentFormFeature()['pos'], 120)
         # don't update random
-        self.assertEqual(form.currentFormFeature()['random'], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 200)
 
         # editing age
         form.changeAttribute('age', 41)
@@ -372,13 +372,13 @@ class TestQgsAttributeForm(QgisTestCase):
         # update birthday because of age
         self.assertEqual(form.currentFormFeature()['birthday'], 1983)
         # update pos because of age
-        self.assertEqual(form.currentFormFeature()['pos'], 151)
+        self.assertEqual(form.currentFormFeature()['pos'], 161)
         # don't update random (yet)
-        self.assertEqual(form.currentFormFeature()['random'], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 200)
         # update number because of age
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 41])
 
-        # save form - this leads to updates, because existing feature
+        # save form - this leads to updates
         form.save()
 
         # read the feature and check, that other function expressions updated (pos and rand)
@@ -390,10 +390,10 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(feature.attribute('year'), 2024)
         # don't updated birthday
         self.assertEqual(feature.attribute('birthday'), 1983)
-        # again updated pos
-        self.assertEqual(feature.attribute('pos'), 192)
-        # updated random
-        self.assertEqual(feature.attribute('random'), 200)
+        # again updated pos (volatile)
+        self.assertEqual(feature.attribute('pos'), 202)
+        # updated random (volatile)
+        self.assertEqual(feature.attribute('random'), 400)
         # don't updated numbers
         self.assertEqual(feature.attribute('numbers'), [1, 41])
 

@@ -607,14 +607,13 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         feature = QgsVectorLayerUtils.createFeature(temp_layer,
                                                     QgsGeometry.fromWkt('LineString( 0 0, 10 0)'))
         feature[1] = 3301
-        feature[5] = 3305
         self.assertTrue(temp_layer.addFeature(feature))
 
         temp_layer.commitChanges()
 
         original_feature = next(temp_layer.getFeatures())
         self.assertEqual(original_feature.attributes(),
-                         [None, 3301.0, 302.0, 303.0, 304.0, 3305.0])
+                         [None, 3301.0, 302.0, 303.0, 304.0, 305.0])
 
         temp_layer.startEditing()
 
