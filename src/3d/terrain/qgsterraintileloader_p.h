@@ -36,9 +36,9 @@
 
 #define SIP_NO_FILE
 
-class QgsPhongMaterialSettings;
 class QgsTerrainEntity;
 class QgsTerrainTileEntity;
+class Qgs3DMapSettings;
 
 namespace Qt3DRender
 {
@@ -68,7 +68,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     //! Creates a new texture thaht is linked to the entity
     Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity );
     //! Creates material component for the entity with the rendered map as a texture
-    void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture );
+    void createTextureComponent( QgsTerrainTileEntity *entity, const Qgs3DMapSettings &mapSettings );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
 

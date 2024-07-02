@@ -40,6 +40,8 @@ namespace Qt3DCore
   class QEntity;
 }
 
+class Qgs3DMapSettings;
+
 /**
  * \ingroup 3d
  *
@@ -81,7 +83,7 @@ class _3D_EXPORT QgsGltf3DUtils
      * what QgsGltfUtils::accessorToMapCoordinates() does, it does an extra step of converting
      * map coordinates to 3D scene coordinates: P_SCENE = flip_ZY(P_MAP - sceneOriginTargetCrs)
      */
-    static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, QStringList *errors = nullptr );
+    static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, const Qgs3DMapSettings &mapSettings, QStringList *errors = nullptr );
 
 };
 

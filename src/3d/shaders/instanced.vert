@@ -7,12 +7,13 @@ in vec3 pos;
 out vec3 worldPosition;
 out vec3 worldNormal;
 
-uniform mat4 modelView;
-uniform mat3 modelViewNormal;
+uniform mat4 modelMatrix;
 uniform mat4 modelViewProjection;
 
 uniform mat4 inst;  // transform of individual object instance
 uniform mat4 instNormal;  // should be mat3 but Qt3D only supports mat4...
+
+#pragma include clipplane.inc
 
 void main()
 {
@@ -25,4 +26,7 @@ void main()
     worldPosition = vec3(offsetPos);
 
     gl_Position = modelViewProjection * offsetPos;
+
+    vec3 defaultWorldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
+    setClipDistance(defaultWorldPosition);
 }

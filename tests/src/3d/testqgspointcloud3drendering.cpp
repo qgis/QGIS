@@ -247,7 +247,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -283,7 +283,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -322,7 +322,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -359,7 +359,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -399,7 +399,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -440,7 +440,6 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( filteredExtent.center().x(), filteredExtent.center().y(), 0 ) );
   map->setExtent( filteredExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
