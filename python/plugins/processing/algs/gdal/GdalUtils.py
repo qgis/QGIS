@@ -451,6 +451,29 @@ class GdalUtils:
                     connection_string=parts['path'],
                     open_options=parts.get('openOptions', None)
                 )
+        elif provider == 'postgresraster':
+            gdal_source = ''
+            uri = layer.dataProvider().uri()
+            gdal_source = f"PG: {uri.connectionInfo()}"
+            schema = uri.schema()
+            if schema:
+                gdal_source += f" schema='{schema}'"
+            table = uri.table()
+            gdal_source += f" table='{table}'"
+            column = uri.param('column') or uri.geometryColumn()
+            if column:
+                gdal_source += f" column='{column}'"
+            is_tiled = any([layer.dataProvider().xSize() != layer.dataProvider().xBlockSize(),
+                            layer.dataProvider().ySize() != layer.dataProvider().yBlockSize()])
+            gdal_source += f" mode={2 if is_tiled else 1}"
+            where = layer.dataProvider().subsetString()
+            if where:
+                gdal_source += f" where='{where}'"
+
+            return GdalConnectionDetails(
+                connection_string=gdal_source,
+                format='"PostGISRaster"'
+            )
 
         ogrstr = str(layer.source()).split("|")[0]
         path, ext = os.path.splitext(ogrstr)
