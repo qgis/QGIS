@@ -135,7 +135,7 @@ Processing toolbox model node corresponding to the favorite algorithms group
 
    Not part of stable API and may change in future QGIS releases.
 
-.. versionadded:: 3.38
+.. versionadded:: 3.40
 %End
 
 %TypeHeaderCode
@@ -305,7 +305,7 @@ If ``recentLog`` is specified then it will be used to create a "Recently used" t
 level group containing recently used algorithms.
 
 If ``favoriteLog`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. Since QGIS 3.38
+level group containing favorite algorithms. Since QGIS 3.40
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -443,7 +443,7 @@ If ``recentLog`` is specified then it will be used to create a "Recently used" t
 level group containing recently used algorithms.
 
 If ``favoriteLog`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. SInce QGIS 3.38
+level group containing favorite algorithms. SInce QGIS 3.40
 %End
 
     QgsProcessingToolboxModel *toolboxModel();

@@ -51,7 +51,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      * level group containing recently used algorithms.
      *
      * If \a favoriteLog is specified then it will be used to create a "Favorites" top
-     * level group containing favorite algorithms. Since QGIS 3.38
+     * level group containing favorite algorithms. Since QGIS 3.40
      */
     QgsProcessingToolboxTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                   QgsProcessingRegistry *registry = nullptr,
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      * level group containing recently used algorithms.
      *
      * If \a favoriteLog is specified then it will be used to create a "Favorites" top
-     * level group containing favorite algorithms. Since QGIS 3.38
+     * level group containing favorite algorithms. Since QGIS 3.40
      */
     void setRegistry(
       QgsProcessingRegistry *registry,

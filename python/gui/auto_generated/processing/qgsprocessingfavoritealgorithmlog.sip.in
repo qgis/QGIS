@@ -24,7 +24,7 @@ The log contents are saved and restored via :py:class:`QgsSettings`.
 
    Not stable API
 
-.. versionadded:: 3.38
+.. versionadded:: 3.40
 %End
 
 %TypeHeaderCode
