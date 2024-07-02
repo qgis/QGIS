@@ -92,6 +92,13 @@ class CORE_EXPORT QgsFields
      */
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
+    /**
+     * Construct QgsFields from a list of \a fields.
+     *
+     * \since QGIS 3.40
+     */
+    QgsFields( const QList< QgsField > &fields ) SIP_HOLDGIL;
+
     virtual ~QgsFields();
 
     //! Removes all fields
@@ -109,6 +116,24 @@ class CORE_EXPORT QgsFields
      * - Qgis::FieldOrigin::Edit: The originIndex is the index in the list of added attributes
      */
     bool append( const QgsField &field, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider, int originIndex = -1 ) SIP_HOLDGIL;
+
+    /**
+     * Appends a list of \a fields.
+     *
+     * The fields must have unique names, otherwise it is rejected (returns FALSE).
+     *
+     * \since QGIS 3.40
+     */
+    bool append( const QList< QgsField > &fields, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider ) SIP_HOLDGIL;
+
+    /**
+     * Appends another set of \a fields to these fields.
+     *
+     * The fields must have unique names, otherwise it is rejected (returns FALSE).
+     *
+     * \since QGIS 3.40
+     */
+    bool append( const QgsFields &fields ) SIP_HOLDGIL;
 
     /**
      * Renames a name of field. The field must have unique name, otherwise change is rejected (returns FALSE)

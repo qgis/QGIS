@@ -45,6 +45,13 @@ Copy constructor
 %End
 
 
+    QgsFields( const QList< QgsField > &fields ) /HoldGIL/;
+%Docstring
+Construct QgsFields from a list of ``fields``.
+
+.. versionadded:: 3.40
+%End
+
     virtual ~QgsFields();
 
     void clear() /HoldGIL/;
@@ -63,6 +70,24 @@ The ``originIndex`` argument must be set to a value corresponding to the ``origi
 - :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the index in provider's fields.
 - :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
 - :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the list of added attributes
+%End
+
+    bool append( const QList< QgsField > &fields, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider ) /HoldGIL/;
+%Docstring
+Appends a list of ``fields``.
+
+The fields must have unique names, otherwise it is rejected (returns ``False``).
+
+.. versionadded:: 3.40
+%End
+
+    bool append( const QgsFields &fields ) /HoldGIL/;
+%Docstring
+Appends another set of ``fields`` to these fields.
+
+The fields must have unique names, otherwise it is rejected (returns ``False``).
+
+.. versionadded:: 3.40
 %End
 
     bool rename( int fieldIdx, const QString &name ) /HoldGIL/;
