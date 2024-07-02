@@ -234,6 +234,13 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnSizeOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="9" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -288,6 +295,13 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnBottomRadiusOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -319,6 +333,13 @@
        </property>
       </widget>
      </item>
+     <item row="6" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnLengthOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="cboShape"/>
      </item>
@@ -346,6 +367,13 @@
        </property>
        <property name="value">
         <double>5.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnMinorRadiusOverride">
+       <property name="text">
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -387,6 +415,13 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnRadiusOverride">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
      <item row="10" column="1">
       <widget class="QComboBox" name="cboAltClamping">
        <item>
@@ -410,6 +445,13 @@
       <widget class="QgsDoubleSpinBox" name="spinTopRadius">
        <property name="maximum">
         <double>99999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QgsPropertyOverrideButton" name="mBtnTopRadiusOverride">
+       <property name="text">
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -460,15 +502,26 @@
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboShape</tabstop>
   <tabstop>spinRadius</tabstop>
+  <tabstop>mBtnRadiusOverride</tabstop>
   <tabstop>spinMinorRadius</tabstop>
+  <tabstop>mBtnMinorRadiusOverride</tabstop>
   <tabstop>spinTopRadius</tabstop>
+  <tabstop>mBtnTopRadiusOverride</tabstop>
   <tabstop>spinBottomRadius</tabstop>
+  <tabstop>mBtnBottomRadiusOverride</tabstop>
   <tabstop>spinSize</tabstop>
+  <tabstop>mBtnSizeOverride</tabstop>
   <tabstop>spinLength</tabstop>
+  <tabstop>mBtnLengthOverride</tabstop>>
   <tabstop>spinBillboardHeight</tabstop>
   <tabstop>btnChangeSymbol</tabstop>
   <tabstop>cboAltClamping</tabstop>

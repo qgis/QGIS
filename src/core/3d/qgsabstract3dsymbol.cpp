@@ -46,6 +46,12 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
   {
     { static_cast< int >( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::Length ), QgsPropertyDefinition( "length", QObject::tr( "Length" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::Radius ), QgsPropertyDefinition( "radius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::BottomRadius ), QgsPropertyDefinition( "bottomRadius", QObject::tr( "BottomRadius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::MinorRadius ), QgsPropertyDefinition( "minorRadius", QObject::tr( "MinorRadius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::TopRadius ), QgsPropertyDefinition( "topRadius", QObject::tr( "TopRadius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::Size ), QgsPropertyDefinition( "size", QObject::tr( "Size" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 
 }

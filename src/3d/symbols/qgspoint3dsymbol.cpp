@@ -88,6 +88,10 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
 
     elem.appendChild( symbolElem );
   }
+
+  QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
+  mDataDefinedProperties.writeXml( elemDDP, propertyDefinitions() );
+  elem.appendChild( elemDDP );
 }
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -114,6 +118,10 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   const QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
   setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
+
+  const QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  if ( !elemDDP.isNull() )
+    mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 }
 
 QList<Qgis::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
