@@ -165,9 +165,10 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
     const QStringList parts = QString::fromStdString( it->toString() ).split( QRegularExpression( QStringLiteral( "\\s+" ) ) );
     if ( parts.size() == 3 )
     {
-      const int hour = readRational( it->value(), 0 );
-      const int minute = readRational( it->value(), 1 );
-      const int second = readRational( it->value(), 2 );
+      const int hour = std::max( 0, std::min( 23, static_cast< int >( readRational( it->value(), 0 ) ) ) );
+      const int minute = std::max( 0, std::min( 59, static_cast< int >( readRational( it->value(), 1 ) ) ) );
+      const int second = std::max( 0, std::min( 59, static_cast< int >( readRational( it->value(), 2 ) ) ) );
+
       val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" )
                                  .arg( QString::number( hour ).rightJustified( 2, '0' ) )
                                  .arg( QString::number( minute ).rightJustified( 2, '0' ) )
