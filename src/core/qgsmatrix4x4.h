@@ -76,6 +76,13 @@ class CORE_EXPORT QgsMatrix4x4
      */
     void translate( const QgsVector3D &vector );
 
+
+    /**
+     * Multiples this matrix by another that rotates coordinates through \a angle degrees about \a vector.
+     * \since QGIS 3.40
+     */
+    void rotate( double angle, const QgsVector3D &vector );
+
     //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
     QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
     {
