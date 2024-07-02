@@ -2270,7 +2270,7 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
 
     if ( invalid && errorMsg )
     {
-      // Copied from https://git.osgeo.org/gitea/geos/geos/src/branch/master/src/operation/valid/TopologyValidationError.cpp
+      // Copied from https://github.com/libgeos/geos/blob/main/src/operation/valid/TopologyValidationError.cpp
       static const std::map< QString, QString > sTranslatedErrors
       {
         { QStringLiteral( "topology validation error" ), QObject::tr( "Topology validation error", "GEOS Error" ) },
