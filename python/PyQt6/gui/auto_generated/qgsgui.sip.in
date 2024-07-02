@@ -112,7 +112,7 @@ Returns the global processing recent algorithm log, used for tracking recently u
 %Docstring
 Returns the global Processing favorite algorithm log, used for tracking favorite Processing algorithms.
 
-.. versionadded:: 3.38
+.. versionadded:: 3.40
 %End
 
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /KeepReference/;

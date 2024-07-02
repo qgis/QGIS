@@ -160,7 +160,7 @@ class GUI_EXPORT QgsGui : public QObject
 
     /**
      * Returns the global Processing favorite algorithm log, used for tracking favorite Processing algorithms.
-     * \since QGIS 3.38
+     * \since QGIS 3.40
      */
     static QgsProcessingFavoriteAlgorithmLog *processingFavoriteAlgorithmLog();
 

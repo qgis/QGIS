@@ -75,7 +75,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
       Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ), //!< Group node
       Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ), //!< Algorithm node
       Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ), //!< Recent algorithms node
-      Favorite SIP_MONKEYPATCH_COMPAT_NAME( NodeFavorite ), //!< Favorites algorithms node, since QGIS 3.38
+      Favorite SIP_MONKEYPATCH_COMPAT_NAME( NodeFavorite ), //!< Favorites algorithms node, since QGIS 3.40
     };
     Q_ENUM( NodeType )
     // *INDENT-ON*
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
  * \brief Processing toolbox model node corresponding to the favorite algorithms group
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
- * \since QGIS 3.38
+ * \since QGIS 3.40
  */
 class GUI_EXPORT QgsProcessingToolboxModelFavoriteNode : public QgsProcessingToolboxModelNode
 {
@@ -339,7 +339,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * level group containing recently used algorithms.
      *
      * If \a favoriteLog is specified then it will be used to create a "Favorites" top
-     * level group containing favorite algorithms. Since QGIS 3.38
+     * level group containing favorite algorithms. Since QGIS 3.40
      */
     QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr,
                                QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
@@ -497,7 +497,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      * level group containing recently used algorithms.
      *
      * If \a favoriteLog is specified then it will be used to create a "Favorites" top
-     * level group containing favorite algorithms. SInce QGIS 3.38
+     * level group containing favorite algorithms. SInce QGIS 3.40
      */
     explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
         QgsProcessingRegistry *registry = nullptr,

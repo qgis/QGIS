@@ -42,7 +42,7 @@ If ``recentLog`` is specified then it will be used to create a "Recently used" t
 level group containing recently used algorithms.
 
 If ``favoriteLog`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. Since QGIS 3.38
+level group containing favorite algorithms. Since QGIS 3.40
 %End
 
     void setRegistry(
@@ -56,7 +56,7 @@ If ``recentLog`` is specified then it will be used to create a "Recently used" t
 level group containing recently used algorithms.
 
 If ``favoriteLog`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. Since QGIS 3.38
+level group containing favorite algorithms. Since QGIS 3.40
 %End
 
     void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model /Transfer/ );

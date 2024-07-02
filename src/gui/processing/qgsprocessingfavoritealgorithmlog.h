@@ -33,7 +33,7 @@ class QgsSettingsEntryStringList;
  * The log contents are saved and restored via QgsSettings.
  *
  * \note Not stable API
- * \since QGIS 3.38
+ * \since QGIS 3.40
  */
 class GUI_EXPORT QgsProcessingFavoriteAlgorithmLog : public QObject
 {
