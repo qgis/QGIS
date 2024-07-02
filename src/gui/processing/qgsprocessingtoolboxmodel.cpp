@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingrecentalgorithmlog.h"
+#include "qgsprocessingfavoritealgorithmlog.h"
 #include <functional>
 #include <QPalette>
 #include <QMimeData>
@@ -115,16 +116,20 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm(
 // QgsProcessingToolboxModel
 //
 
-QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog )
+QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmLog *favoriteLog )
   : QAbstractItemModel( parent )
   , mRegistry( registry ? registry : QgsApplication::processingRegistry() )
   , mRecentLog( recentLog )
+  , mFavoriteLog( favoriteLog )
   , mRootNode( std::make_unique< QgsProcessingToolboxModelGroupNode >( QString(), QString() ) )
 {
   rebuild();
 
   if ( mRecentLog )
     connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [ = ] { repopulateRecentAlgorithms(); } );
+
+  if ( mFavoriteLog )
+    connect( mFavoriteLog, &QgsProcessingFavoriteAlgorithmLog::changed, this, [ = ] { repopulateFavoriteAlgorithms(); } );
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
@@ -136,6 +141,7 @@ void QgsProcessingToolboxModel::rebuild()
 
   mRootNode->deleteChildren();
   mRecentNode = nullptr;
+  mFavoriteNode = nullptr;
 
   if ( mRecentLog )
   {
@@ -144,6 +150,15 @@ void QgsProcessingToolboxModel::rebuild()
     mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
     repopulateRecentAlgorithms( true );
+  }
+
+  if ( mFavoriteLog )
+  {
+    std::unique_ptr< QgsProcessingToolboxModelFavoriteNode > favoriteNode = std::make_unique< QgsProcessingToolboxModelFavoriteNode >();
+    // cppcheck-suppress danglingLifetime
+    mFavoriteNode = favoriteNode.get();
+    mRootNode->addChildNode( favoriteNode.release() );
+    repopulateFavoriteAlgorithms( true );
   }
 
   if ( mRegistry )
@@ -210,6 +225,66 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
   {
     endInsertRows();
     emit recentAlgorithmAdded();
+  }
+}
+
+void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
+{
+  if ( !mFavoriteNode || !mFavoriteLog )
+    return;
+
+  // favorite node should be under the Recent node if it is precent or
+  // the first top-level item in the toolbox if Recent node is not present
+  int idx = ( mRecentNode && mRecentLog ) ? 1 : 0;
+
+  QModelIndex favoriteIndex = index( idx, 0 );
+  const int prevCount = rowCount( favoriteIndex );
+  if ( !resetting && prevCount > 0 )
+  {
+    beginRemoveRows( favoriteIndex, 0, prevCount - 1 );
+    mFavoriteNode->deleteChildren();
+    endRemoveRows();
+  }
+
+  if ( !mRegistry )
+  {
+    if ( !resetting )
+      emit favoriteAlgorithmAdded();
+    return;
+  }
+
+  const QStringList favoriteAlgIds = mFavoriteLog->favoriteAlgorithmIds();
+  QList< const QgsProcessingAlgorithm * > favoriteAlgorithms;
+  favoriteAlgorithms.reserve( favoriteAlgIds.count() );
+  for ( const QString &id : favoriteAlgIds )
+  {
+    const QgsProcessingAlgorithm *algorithm = mRegistry->algorithmById( id );
+    if ( algorithm )
+      favoriteAlgorithms << algorithm;
+  }
+
+  if ( favoriteAlgorithms.empty() )
+  {
+    if ( !resetting )
+      emit favoriteAlgorithmAdded();
+    return;
+  }
+
+  if ( !resetting )
+  {
+    beginInsertRows( favoriteIndex, 0, favoriteAlgorithms.count() - 1 );
+  }
+
+  for ( const QgsProcessingAlgorithm *algorithm : std::as_const( favoriteAlgorithms ) )
+  {
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    mFavoriteNode->addChildNode( algorithmNode.release() );
+  }
+
+  if ( !resetting )
+  {
+    endInsertRows();
+    emit favoriteAlgorithmAdded();
   }
 }
 
@@ -356,6 +431,10 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
   if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
     isRecentNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent;
 
+  bool isFavoriteNode = false;
+  if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
+    isFavoriteNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite;
+
   QgsProcessingProvider *provider = providerForIndex( index );
   QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast< QgsProcessingToolboxModelGroupNode * >( index2node( index ) );
   const QgsProcessingAlgorithm *algorithm = algorithmForIndex( index );
@@ -375,6 +454,8 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return groupNode->name();
           else if ( isRecentNode )
             return tr( "Recently used" );
+          else if ( isFavoriteNode )
+            return tr( "Favorites" );
           else
             return QVariant();
 
@@ -420,6 +501,8 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           }
           else if ( isRecentNode )
             return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
+          else if ( isFavoriteNode )
+            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
           else if ( !index.parent().isValid() )
             // top level groups get the QGIS icon
             return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
@@ -675,9 +758,9 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 //
 
 QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry,
-    QgsProcessingRecentAlgorithmLog *recentLog )
+    QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmLog *favoriteLog )
   : QSortFilterProxyModel( parent )
-  , mModel( new QgsProcessingToolboxModel( this, registry, recentLog ) )
+  , mModel( new QgsProcessingToolboxModel( this, registry, recentLog, favoriteLog ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
@@ -686,6 +769,7 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   sort( 0 );
 
   connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [ = ] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [ = ] { invalidateFilter(); } );
 }
 
 QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()
@@ -817,6 +901,10 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
     return true;
   else if ( rightType == QgsProcessingToolboxModelNode::NodeType::Recent )
     return false;
+  else if ( leftType == QgsProcessingToolboxModelNode::NodeType::Favorite )
+    return true;
+  else if ( rightType == QgsProcessingToolboxModelNode::NodeType::Favorite )
+    return false;
   else if ( leftType != rightType )
   {
     if ( leftType == QgsProcessingToolboxModelNode::NodeType::Provider )
@@ -845,7 +933,6 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   {
     return left.row() < right.row();
   }
-
 
   // default mode is alphabetical order
   QString leftStr = sourceModel()->data( left ).toString();

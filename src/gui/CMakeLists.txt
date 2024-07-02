@@ -380,6 +380,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
+  processing/qgsprocessingfavoritealgorithmlog.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
@@ -1352,6 +1353,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
+  processing/qgsprocessingfavoritealgorithmlog.h
   processing/qgsprocessingfeaturesourceoptionswidget.h
   processing/qgsprocessingfieldmapwidgetwrapper.h
   processing/qgsprocessinggui.h
