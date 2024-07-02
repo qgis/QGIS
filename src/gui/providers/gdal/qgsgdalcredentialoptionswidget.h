@@ -123,11 +123,11 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
     QgsGdalCredentialOptionsWidget( QWidget *parent = nullptr );
 
     /**
-     * Sets the corresponding \a driver.
+     * Sets the corresponding \a handler.
      *
-     * This should match a GDAL VSI driver, eg "vsis3".
+     * This should match a GDAL VSI handler, eg "vsis3".
      */
-    void setDriver( const QString &driver );
+    void setHandler( const QString &handler );
 
     /**
      * Returns the credential options configured in the widget.
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
 
   private:
 
-    QString mDriver;
+    QString mHandler;
     QgsGdalCredentialOptionsModel *mModel = nullptr;
     QgsGdalCredentialOptionsDelegate *mDelegate = nullptr;
 

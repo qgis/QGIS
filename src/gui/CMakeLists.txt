@@ -444,6 +444,8 @@ set(QGIS_GUI_SRCS
   providers/qgspointcloudproviderguimetadata.cpp
   providers/qgspointcloudsourceselect.cpp
 
+  providers/gdal/qgsgdalcloudconnectiondialog.cpp
+  providers/gdal/qgsgdalclouddataitemguiprovider.cpp
   providers/gdal/qgsgdalcredentialoptionswidget.cpp
   providers/gdal/qgsgdalfilesourcewidget.cpp
   providers/gdal/qgsgdalsourceselect.cpp
@@ -1417,6 +1419,8 @@ set(QGIS_GUI_HDRS
   providers/qgspointcloudsourceselect.h
   providers/qgspointcloudproviderguimetadata.h
 
+  providers/gdal/qgsgdalcloudconnectiondialog.h
+  providers/gdal/qgsgdalclouddataitemguiprovider.h
   providers/gdal/qgsgdalcredentialoptionswidget.h
   providers/gdal/qgsgdalfilesourcewidget.h
   providers/gdal/qgsgdalguiprovider.h
