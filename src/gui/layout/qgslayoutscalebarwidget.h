@@ -23,6 +23,7 @@
 #include "qgis_gui.h"
 #include "ui_qgslayoutscalebarwidgetbase.h"
 #include "qgslayoutitemwidget.h"
+#include "qgsscalebarsettings.h"
 
 #include <QButtonGroup>
 
@@ -66,8 +67,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void mStyleComboBox_currentIndexChanged( const QString &text );
     void mLabelBarSpaceSpinBox_valueChanged( double d );
     void mBoxSizeSpinBox_valueChanged( double d );
-    void mLabelVerticalPlacementComboBox_currentIndexChanged( int index );
-    void mLabelHorizontalPlacementComboBox_currentIndexChanged( int index );
+    void mDistanceLabelPlacementComboBox_currentIndexChanged( int index );
     void alignmentChanged();
     void mUnitsComboBox_currentIndexChanged( int index );
     void mMinWidthSpinBox_valueChanged( double d );
@@ -81,6 +81,15 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void changeNumberFormat();
 
   private:
+    enum class DistanceLabelPlacement : int
+    {
+      CenteredAboveSegmentEdges,
+      CenteredAboveSegmentCenters,
+      CenteredBelowSegmentEdges,
+      CenteredBelowSegmentCenters,
+    };
+    static DistanceLabelPlacement distanceLabelPlacement( QgsScaleBarSettings::LabelHorizontalPlacement horizontalPlacement, QgsScaleBarSettings::LabelVerticalPlacement verticalPlacement );
+
     QPointer< QgsLayoutItemScaleBar > mScalebar;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
