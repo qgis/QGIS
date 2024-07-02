@@ -3940,6 +3940,7 @@ class CORE_EXPORT QgsProcessingParameterCoordinateOperation : public QgsProcessi
     void setDestinationCrs( const QVariant &crs ) { mDestCrs = crs; }
 
   private:
+    QString valueAsPythonStringPrivate( const QVariant &value, QgsProcessingContext &context, bool allowNonStringValues ) const ;
 
     QString mSourceParameterName;
     QString mDestParameterName;
