@@ -125,6 +125,10 @@
 #define QGSVERIFYRENDERMAPSETTINGSCHECK(...) QVERIFY( renderMapSettingsCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
 
 // args are either:
+// const QString &name, const QString &referenceName, const QString &actualStr
+#define QGSCOMPARELONGSTR(...) QVERIFY (checkLongStr(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+
+// args are either:
 // const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
 // const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
 #define QGSIMAGECHECK(...) imageCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
@@ -290,6 +294,54 @@ class TEST_EXPORT QgsTest : public QObject
 
       }
       return result;
+    }
+
+    bool checkLongStr( const char *file, const char *function, int line, const QString &name, const QString &referenceName, const QByteArray &actualStr )
+    {
+      QString subPath = "control_images/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
+      QString expectedPath = testDataPath( subPath );
+      QFile expectedFile( expectedPath );
+      if ( ! expectedFile.open( QFile::ReadOnly  | QIODevice::Text ) )
+        return false;
+      QByteArray expectedStr = expectedFile.readAll();
+
+      if ( actualStr.size() != expectedStr.size() )
+        qWarning() << "Array have not the same length (actual vs expected): " << actualStr.size() << "vs" << expectedStr.size();
+
+      for ( int i = 0; ; i += 100 )
+      {
+        QByteArray act = actualStr.mid( i, 100 );
+        QByteArray exp = expectedStr.mid( i, 100 );
+        if ( act != exp )
+        {
+          QString actualPath = QDir::tempPath() + "/actual_" + name + "_" + referenceName;
+          QFile actualFile( actualPath );
+          if ( actualFile.open( QFile::WriteOnly | QIODevice::Text ) )
+            actualFile.write( actualStr );
+          else
+            qWarning() << "Unable to write actual data to file" << actualPath;
+          qWarning() << "Hex version of the parts of array that differ starting from char " << i
+                     << "(actual vs expected): " << "\n" << act.toHex() << "\n" << exp.toHex();
+          QString msg = QString( "Comparison failed in function '%1' starting from char %2." ).arg( function ).arg( i );
+
+          // create copy of data as QTest::compare_helper will delete them
+          char *actualCopy = new char[act.size() + 1];
+          memcpy( actualCopy, act.data(), act.size() );
+          char *expectedCopy = new char[exp.size() + 1];
+          memcpy( expectedCopy, exp.data(), exp.size() );
+
+          return QTest::compare_helper( act == exp, msg.toStdString().c_str(),
+                                        actualCopy, expectedCopy,
+                                        actualPath.toStdString().c_str(), subPath.toStdString().c_str(),
+                                        file, line );
+        }
+
+        if ( act.length() < 100 )
+        {
+          break;
+        }
+      }
+      return true;
     }
 
     /**
