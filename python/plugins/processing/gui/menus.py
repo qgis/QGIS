@@ -52,7 +52,7 @@ def initMenusAndToolbars():
                                'native:sumlinelengths': analysisToolsMenu,
                                'native:countpointsinpolygon': analysisToolsMenu,
                                'qgis:listuniquevalues': analysisToolsMenu,
-                               'qgis:basicstatisticsforfields': analysisToolsMenu,
+                               'native:basicstatisticsforfields': analysisToolsMenu,
                                'native:nearestneighbouranalysis': analysisToolsMenu,
                                'native:meancoordinates': analysisToolsMenu,
                                'native:lineintersections': analysisToolsMenu})

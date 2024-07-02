@@ -50,6 +50,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmattributeindex.cpp
   processing/qgsalgorithmb3dmtogltf.cpp
+  processing/qgsalgorithmbasicstatistics.cpp
   processing/qgsalgorithmbatchgeocode.cpp
   processing/qgsalgorithmbatchnominatimgeocode.cpp
   processing/qgsalgorithmboundary.cpp
