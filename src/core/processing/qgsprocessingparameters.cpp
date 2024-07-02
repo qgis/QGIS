@@ -8281,10 +8281,18 @@ QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOpera
 {
   QString def = definition;
 
-  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+  if ( def.startsWith( '"' ) )
+  {
     def = def.mid( 1 );
-  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
-    def.chop( 1 );
+    if ( def.endsWith( '"' ) )
+      def.chop( 1 );
+  }
+  else if ( def.startsWith( '\'' ) )
+  {
+    def = def.mid( 1 );
+    if ( def.endsWith( '\'' ) )
+      def.chop( 1 );
+  }
 
   QVariant defaultValue = def;
   if ( def == QLatin1String( "None" ) )
