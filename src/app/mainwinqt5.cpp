@@ -21,55 +21,55 @@
 #include <list>
 #include <memory>
 
-void showError( std::wstring message, std::wstring title )
+void showError( std::string message, std::string title )
 {
-  std::wstring newmessage = L"Oops, looks like an error loading QGIS \n\n Details: \n\n" + message;
-  MessageBoxW(
+  std::string newmessage = "Oops, looks like an error loading QGIS \n\n Details: \n\n" + message;
+  MessageBox(
     NULL,
     newmessage.c_str(),
     title.c_str(),
     MB_ICONERROR | MB_OK
   );
-  std::wcerr << message << std::endl;
+  std::cerr << message << std::endl;
 }
 
-std::wstring moduleExeBaseName( void )
+std::string moduleExeBaseName( void )
 {
   DWORD l = MAX_PATH;
-  std::unique_ptr<WCHAR> filepath;
+  std::unique_ptr<char> filepath;
   for ( ;; )
   {
-    filepath.reset( new WCHAR[l] );
-    if ( GetModuleFileNameW( nullptr, filepath.get(), l ) < l )
+    filepath.reset( new char[l] );
+    if ( GetModuleFileName( nullptr, filepath.get(), l ) < l )
       break;
 
     l += MAX_PATH;
   }
 
-  std::wstring basename( filepath.get() );
+  std::string basename( filepath.get() );
   return basename;
 }
 
 int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/ )
 {
-  std::wstring exename( moduleExeBaseName() );
-  std::wstring basename( exename.substr( 0, exename.size() - 4 ) );
+  std::string exename( moduleExeBaseName() );
+  std::string basename( exename.substr( 0, exename.size() - 4 ) );
 
   if ( getenv( "OSGEO4W_ROOT" ) && __argc == 2 && strcmp( __argv[1], "--postinstall" ) == 0 )
   {
-    std::wstring envfile( basename + L".env" );
+    std::string envfile( basename + ".env" );
 
     // write or update environment file
-    if ( _waccess( envfile.c_str(), 0 ) < 0 || _waccess( envfile.c_str(), 2 ) == 0 )
+    if ( _access( envfile.c_str(), 0 ) < 0 || _access( envfile.c_str(), 2 ) == 0 )
     {
-      std::list<std::wstring> vars;
+      std::list<std::string> vars;
 
       try
       {
-        std::wifstream varfile;
-        varfile.open( basename + L".vars" );
+        std::ifstream varfile;
+        varfile.open( basename + ".vars" );
 
-        std::wstring var;
+        std::string var;
         while ( std::getline( varfile, var ) )
         {
           vars.push_back( var );
@@ -77,28 +77,28 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
 
         varfile.close();
       }
-      catch ( std::wifstream::failure &e )
+      catch ( std::ifstream::failure &e )
       {
-        std::wstring message = L"Could not read environment variable list " + basename + L".vars" + L" [" + _wcserror( errno ) + L"]";
-        showError( message, L"Error loading QGIS" );
+        std::string message = "Could not read environment variable list " + basename + ".vars" + " [" + e.what() + "]";
+        showError( message, "Error loading QGIS" );
         return EXIT_FAILURE;
       }
 
       try
       {
-        std::wofstream file;
-        file.open( envfile, std::wifstream::out );
+        std::ofstream file;
+        file.open( envfile, std::ifstream::out );
 
-        for ( std::list<std::wstring>::const_iterator it = vars.begin();  it != vars.end(); ++it )
+        for ( std::list<std::string>::const_iterator it = vars.begin();  it != vars.end(); ++it )
         {
-          if ( _wgetenv( it->c_str() ) )
-            file << *it << "=" << _wgetenv( it->c_str() ) << std::endl;
+          if ( getenv( it->c_str() ) )
+            file << *it << "=" << getenv( it->c_str() ) << std::endl;
         }
       }
-      catch ( std::wifstream::failure &e )
+      catch ( std::ifstream::failure &e )
       {
-        std::wstring message = L"Could not write environment file " + basename + L".env" + L" [" + _wcserror( errno ) + L"]";
-        showError( message, L"Error loading QGIS" );
+        std::string message = "Could not write environment file " + basename + ".env" + " [" + e.what() + "]";
+        showError( message, "Error loading QGIS" );
         return EXIT_FAILURE;
       }
     }
@@ -108,31 +108,31 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
 
   try
   {
-    std::wifstream file;
-    file.open( basename + L".env" );
+    std::ifstream file;
+    file.open( basename + ".env" );
 
-    std::wstring var;
+    std::string var;
     while ( std::getline( file, var ) )
     {
-      if ( _wputenv( var.c_str() ) < 0 )
+      if ( _putenv( var.c_str() ) < 0 )
       {
-        std::wstring message = L"Could not set environment variable:" + var;
-        showError( message, L"Error loading QGIS" );
+        std::string message = "Could not set environment variable:" + var;
+        showError( message, "Error loading QGIS" );
         return EXIT_FAILURE;
       }
     }
   }
-  catch ( std::wifstream::failure &e )
+  catch ( std::ifstream::failure &e )
   {
-    std::wstring message = L"Could not read environment file " + basename + L".env" + L" [" + _wcserror( errno ) + L"]";
-    showError( message, L"Error loading QGIS" );
+    std::string message = "Could not read environment file " + basename + ".env" + " [" + e.what() + "]";
+    showError( message, "Error loading QGIS" );
     return EXIT_FAILURE;
   }
 
 #ifndef _MSC_VER // MinGW
 #pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
-  HINSTANCE hKernelDLL = LoadLibraryW( L"kernel32.dll" );
+  HINSTANCE hKernelDLL = LoadLibrary( "kernel32.dll" );
   BOOL ( *SetDefaultDllDirectories )( DWORD ) = hKernelDLL ? reinterpret_cast<BOOL( * )( DWORD )>( GetProcAddress( hKernelDLL, "SetDefaultDllDirectories" ) ) : 0;
   DLL_DIRECTORY_COOKIE( *AddDllDirectory )( PCWSTR ) = hKernelDLL ? reinterpret_cast<DLL_DIRECTORY_COOKIE( * )( PCWSTR )>( GetProcAddress( hKernelDLL, "AddDllDirectory" ) ) : 0;
 #ifndef _MSC_VER // MinGW
@@ -168,7 +168,7 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
 
 
 #ifdef _MSC_VER
-  HINSTANCE hGetProcIDDLL = LoadLibraryW( L"qgis_app.dll" );
+  HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
 #else
 // MinGW
   HINSTANCE hGetProcIDDLL = LoadLibrary( "libqgis_app.dll" );
@@ -188,9 +188,9 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
       0,
       NULL );
 
-    std::wstring message = L"Could not load qgis_app.dll \n Windows Error: " + std::wstring( errorText )
-                           + L"\n Help: \n\n Check " + basename + L".env for correct environment paths";
-    showError( message, L"Error loading QGIS" );
+    std::string message = "Could not load qgis_app.dll \n Windows Error: " + std::string( errorText )
+                          + "\n Help: \n\n Check " + basename + ".env for correct environment paths";
+    showError( message, "Error loading QGIS" );
 
     LocalFree( errorText );
     errorText = NULL;
@@ -207,7 +207,7 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
 
   if ( !realmain )
   {
-    showError( L"Could not locate main function in qgis_app.dll", L"Error loading QGIS" );
+    showError( "Could not locate main function in qgis_app.dll", "Error loading QGIS" );
     return EXIT_FAILURE;
   }
 

@@ -31,7 +31,7 @@
 
 #include "qgssqlstatement.h"
 struct sqlstatement_parser_context;
-#include "qgssqlstatementparser.hpp"
+#include "qgssqlstatementparser.h"
 #include <QLocale>
 
 // if not defined, searches for isatty()

@@ -30,7 +30,7 @@
 #define YYINCLUDED_STDLIB_H 1
 
 struct sqlstatement_parser_context;
-#include "qgssqlstatementparser.hpp"
+#include "qgssqlstatementparser.h"
 
 //! from lexer
 typedef void* yyscan_t;
