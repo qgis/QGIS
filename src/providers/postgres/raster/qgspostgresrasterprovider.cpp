@@ -2439,26 +2439,12 @@ Qgis::DataType QgsPostgresRasterProvider::sourceDataType( int bandNo ) const
 
 int QgsPostgresRasterProvider::xBlockSize() const
 {
-  if ( mInput )
-  {
-    return mInput->xBlockSize();
-  }
-  else
-  {
-    return static_cast<int>( mWidth );
-  }
+  return mTileWidth;
 }
 
 int QgsPostgresRasterProvider::yBlockSize() const
 {
-  if ( mInput )
-  {
-    return mInput->yBlockSize();
-  }
-  else
-  {
-    return static_cast<int>( mHeight );
-  }
+  return mTileHeight;
 }
 
 QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback )
