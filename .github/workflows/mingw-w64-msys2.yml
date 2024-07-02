@@ -52,6 +52,7 @@ jobs:
             protobuf:p proj:p qca-qt5:p qscintilla-qt5:p qt5-3d:p qt5-base:p qt5-declarative:p
             qt5-gamepad:p qt5-location:p qt5-serialport:p qt5-svg:p qtkeychain-qt5:p qtwebkit:p
             qwt-qt5:p spatialindex:p cc:p cmake:p ninja:p opencl-clhpp:p qt5-tools:p python:p ccache:p
+            python-gdal:p python-owslib:p python-pyqt5:p python-qscintilla-qt5:p pyqt-builder:p sip:p
           update: true
           release: false
 
@@ -73,7 +74,7 @@ jobs:
             -DWITH_DRACO=ON \
             -DWITH_PDAL=ON \
             -DWITH_CUSTOM_WIDGETS=ON \
-            -DWITH_BINDINGS=OFF \
+            -DWITH_BINDINGS=ON \
             -DWITH_GRASS=OFF \
             -DUSE_CCACHE=ON \
             -S . \
