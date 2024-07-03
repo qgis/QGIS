@@ -53,9 +53,9 @@ class QgsBasicStatisticsAlgorithm : public QgsProcessingAlgorithm
 
   private:
 
-    QVariantMap calculateNumericStatistics( QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
-    QVariantMap calculateDateTimeStatistics( QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
-    QVariantMap calculateStringStatistics( QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
+    QVariantMap calculateNumericStatistics( const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
+    QVariantMap calculateDateTimeStatistics( const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
+    QVariantMap calculateStringStatistics( const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
 };
 
 ///@endcond PRIVATE
