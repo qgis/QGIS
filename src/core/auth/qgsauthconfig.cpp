@@ -17,6 +17,7 @@
 #include "qgsauthconfig.h"
 #include "qgsauthcertutils.h"
 #include "qgsxmlutils.h"
+#include "qgslogger.h"
 
 #include <QtCrypto>
 
@@ -383,10 +384,12 @@ const QList<QSslError> QgsAuthConfigSslServer::sslIgnoredErrors() const
 
 const QString QgsAuthConfigSslServer::configString() const
 {
-  QStringList configlist;
-  configlist << QString::number( mVersion ) << QString::number( mQtVersion );
-
-  configlist << QString::number( static_cast< int >( mSslProtocol ) );
+  QStringList configlist
+  {
+    QString::number( mVersion ),
+    QString::number( mQtVersion ),
+    encodeSslProtocol( mSslProtocol )
+  };
 
   QStringList errs;
   for ( const auto err : mSslIgnoredErrors )
@@ -410,10 +413,7 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
 
   mVersion = configlist.at( 0 ).toInt();
   mQtVersion = configlist.at( 1 ).toInt();
-
-  // TODO: Conversion between 4.7 -> 4.8 protocol enum differences (and reverse?).
-  //       This is necessary for users upgrading from 4.7 to 4.8
-  mSslProtocol = static_cast< QSsl::SslProtocol >( configlist.at( 2 ).toInt() );
+  mSslProtocol = decodeSslProtocol( configlist.at( 2 ) );
 
   mSslIgnoredErrors.clear();
   const QStringList errs( configlist.at( 3 ).split( QStringLiteral( "~~" ) ) );
@@ -430,6 +430,163 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
 bool QgsAuthConfigSslServer::isNull() const
 {
   return mSslCert.isNull() && mSslHostPort.isEmpty();
+}
+
+QSsl::SslProtocol QgsAuthConfigSslServer::decodeSslProtocol( const QString &protocol )
+{
+  bool ok = false;
+  const int qt5EnumInt = protocol.toInt( &ok );
+  if ( ok )
+  {
+    // old qt5 enum value. We can't directly cast this to QSsl::SslProtocol, as those values
+    // have changed in qt6!
+    switch ( qt5EnumInt )
+    {
+      case 0: // SslV3
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        return QSsl::SslProtocol::SslV3;
+#else
+        return QSsl::SslProtocol::UnknownProtocol;
+#endif
+
+      case 1: // SslV2
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        return QSsl::SslProtocol::SslV2;
+#else
+
+#endif
+      case 2:
+        return QSsl::SslProtocol::TlsV1_0;
+      case 3:
+        return QSsl::SslProtocol::TlsV1_1;
+      case 4:
+        return QSsl::SslProtocol::TlsV1_2;
+      case 5:
+        return QSsl::SslProtocol::AnyProtocol;
+      case 6:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        return QSsl::SslProtocol::TlsV1SslV3;
+#else
+        return QSsl::SslProtocol::TlsV1_3;
+#endif
+      case 7:
+        return QSsl::SslProtocol::SecureProtocols;
+      case 8:
+        return QSsl::SslProtocol::TlsV1_0OrLater;
+      case 9:
+        return QSsl::SslProtocol::TlsV1_1OrLater;
+      case 10:
+        return QSsl::SslProtocol::TlsV1_2OrLater;
+      case 11:
+        return QSsl::SslProtocol::DtlsV1_0;
+      case 12:
+        return QSsl::SslProtocol::DtlsV1_0OrLater;
+      case 13:
+        return QSsl::SslProtocol::DtlsV1_2;
+      case 14:
+        return QSsl::SslProtocol::DtlsV1_2OrLater;
+      case 15:
+        return QSsl::SslProtocol::TlsV1_3;
+      case 16:
+        return QSsl::SslProtocol::TlsV1_3OrLater;
+      default:
+        return QSsl::SslProtocol::UnknownProtocol;
+    }
+  }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  if ( protocol == QLatin1String( "SslV3" ) )
+    return QSsl::SslProtocol::SslV3;
+  else if ( protocol == QLatin1String( "SslV2" ) )
+    return QSsl::SslProtocol::SslV2;
+#endif
+  if ( protocol == QLatin1String( "TlsV1_0" ) )
+    return QSsl::SslProtocol::TlsV1_0;
+  else if ( protocol == QLatin1String( "TlsV1_1" ) )
+    return QSsl::SslProtocol::TlsV1_1;
+  else if ( protocol == QLatin1String( "TlsV1_2" ) )
+    return QSsl::SslProtocol::TlsV1_2;
+  else if ( protocol == QLatin1String( "AnyProtocol" ) )
+    return QSsl::SslProtocol::AnyProtocol;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  else if ( protocol == QLatin1String( "TlsV1SslV3" ) )
+    return QSsl::SslProtocol::TlsV1SslV3;
+#endif
+  else if ( protocol == QLatin1String( "SecureProtocols" ) )
+    return QSsl::SslProtocol::SecureProtocols;
+  else if ( protocol == QLatin1String( "TlsV1_0OrLater" ) )
+    return QSsl::SslProtocol::TlsV1_0OrLater;
+  else if ( protocol == QLatin1String( "TlsV1_1OrLater" ) )
+    return QSsl::SslProtocol::TlsV1_1OrLater;
+  else if ( protocol == QLatin1String( "TlsV1_2OrLater" ) )
+    return QSsl::SslProtocol::TlsV1_2OrLater;
+  else if ( protocol == QLatin1String( "DtlsV1_0" ) )
+    return QSsl::SslProtocol::DtlsV1_0;
+  else if ( protocol == QLatin1String( "DtlsV1_0OrLater" ) )
+    return QSsl::SslProtocol::DtlsV1_0OrLater;
+  else if ( protocol == QLatin1String( "DtlsV1_2" ) )
+    return QSsl::SslProtocol::DtlsV1_2;
+  else if ( protocol == QLatin1String( "DtlsV1_2OrLater" ) )
+    return QSsl::SslProtocol::DtlsV1_2OrLater;
+  else if ( protocol == QLatin1String( "TlsV1_3" ) )
+    return QSsl::SslProtocol::TlsV1_3;
+  else if ( protocol == QLatin1String( "TlsV1_3OrLater" ) )
+    return QSsl::SslProtocol::TlsV1_3OrLater;
+
+  QgsDebugError( QStringLiteral( "Can't decode protocol \"%1\"" ).arg( protocol ) );
+
+  return QSsl::SslProtocol::UnknownProtocol;
+}
+
+QString QgsAuthConfigSslServer::encodeSslProtocol( QSsl::SslProtocol protocol )
+{
+  switch ( protocol )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    case QSsl::SslV3:
+      return QStringLiteral( "SslV3" );
+    case QSsl::SslV2:
+      return QStringLiteral( "SslV2" );
+#endif
+    case QSsl::TlsV1_0:
+      return QStringLiteral( "TlsV1_0" );
+    case QSsl::TlsV1_1:
+      return QStringLiteral( "TlsV1_1" );
+    case QSsl::TlsV1_2:
+      return QStringLiteral( "TlsV1_2" );
+    case QSsl::AnyProtocol:
+      return QStringLiteral( "AnyProtocol" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    case QSsl::TlsV1SslV3:
+      return QStringLiteral( "TlsV1SslV3" );
+#endif
+    case QSsl::SecureProtocols:
+      return QStringLiteral( "SecureProtocols" );
+    case QSsl::TlsV1_0OrLater:
+      return QStringLiteral( "TlsV1_0OrLater" );
+    case QSsl::TlsV1_1OrLater:
+      return QStringLiteral( "TlsV1_1OrLater" );
+    case QSsl::TlsV1_2OrLater:
+      return QStringLiteral( "TlsV1_2OrLater" );
+    case QSsl::DtlsV1_0:
+      return QStringLiteral( "DtlsV1_0" );
+    case QSsl::DtlsV1_0OrLater:
+      return QStringLiteral( "DtlsV1_0OrLater" );
+    case QSsl::DtlsV1_2:
+      return QStringLiteral( "DtlsV1_2" );
+    case QSsl::DtlsV1_2OrLater:
+      return QStringLiteral( "DtlsV1_2OrLater" );
+    case QSsl::TlsV1_3:
+      return QStringLiteral( "TlsV1_3" );
+    case QSsl::TlsV1_3OrLater:
+      return QStringLiteral( "TlsV1_3OrLater" );
+    case QSsl::UnknownProtocol:
+      return QStringLiteral( "UnknownProtocol" );
+  }
+
+  QgsDebugError( QStringLiteral( "Can't encode protocol: %1" ).arg( protocol ) );
+
+  return QStringLiteral( "UnknownProtocol" );
 }
 
 #endif

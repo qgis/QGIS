@@ -203,7 +203,6 @@ void TestQgsAuthConfig::testPkiConfigBundle()
 void TestQgsAuthConfig::testConfigSslServer()
 {
   const QString hostport( QStringLiteral( "localhost:443" ) );
-  const QString confstr( QStringLiteral( "2|||470|||2|||10~~19|||0~~2" ) );
   const QSslCertificate sslcert( QSslCertificate::fromPath( sPkiData + "/localhost_ssl_cert.pem" ).at( 0 ) );
 
   QgsAuthConfigSslServer sslconfig;
@@ -224,7 +223,7 @@ void TestQgsAuthConfig::testConfigSslServer()
   sslconfig.setSslIgnoredErrorEnums( sslerrenums );
   QVERIFY( !sslconfig.isNull() );
 
-  QCOMPARE( sslconfig.configString(), confstr );
+  QCOMPARE( sslconfig.configString(), QStringLiteral( "2|||470|||TlsV1_0|||10~~19|||0~~2" ) );
   QCOMPARE( sslconfig.sslHostPort(), hostport );
   QCOMPARE( sslconfig.sslCertificate(), sslcert );
   QCOMPARE( sslconfig.sslProtocol(), QSsl::TlsV1_0 );
@@ -235,14 +234,35 @@ void TestQgsAuthConfig::testConfigSslServer()
   QCOMPARE( sslconfig.sslIgnoredErrorEnums(), sslerrenums );
 
   QgsAuthConfigSslServer sslconfig2;
-  sslconfig2.loadConfigString( confstr );
+  // try loading the older format strings, used in QGIS < 3.40
+  sslconfig2.loadConfigString( QStringLiteral( "2|||470|||2|||10~~19|||0~~2" ) );
   QCOMPARE( sslconfig2.sslProtocol(), QSsl::TlsV1_0 );
   QCOMPARE( sslconfig2.version(), 2 );
   QCOMPARE( sslconfig2.qtVersion(), 470 );
   QCOMPARE( sslconfig2.sslPeerVerifyMode(), QSslSocket::VerifyNone );
   QCOMPARE( sslconfig2.sslPeerVerifyDepth(), 2 );
   QCOMPARE( sslconfig2.sslIgnoredErrorEnums(), sslerrenums );
-  QCOMPARE( sslconfig2.configString(), confstr );
+  QCOMPARE( sslconfig2.configString(), QStringLiteral( "2|||470|||TlsV1_0|||10~~19|||0~~2" ) );
+
+  sslconfig2.loadConfigString( QStringLiteral( "2|||470|||3|||10~~19|||0~~2" ) );
+  QCOMPARE( sslconfig2.sslProtocol(), QSsl::TlsV1_1 );
+  QCOMPARE( sslconfig2.version(), 2 );
+  QCOMPARE( sslconfig2.qtVersion(), 470 );
+  QCOMPARE( sslconfig2.sslPeerVerifyMode(), QSslSocket::VerifyNone );
+  QCOMPARE( sslconfig2.sslPeerVerifyDepth(), 2 );
+  QCOMPARE( sslconfig2.sslIgnoredErrorEnums(), sslerrenums );
+  QCOMPARE( sslconfig2.configString(), QStringLiteral( "2|||470|||TlsV1_1|||10~~19|||0~~2" ) );
+
+  QgsAuthConfigSslServer sslconfig3;
+  // try loading the newer format string, used in QGIS >= 3.40
+  sslconfig2.loadConfigString( QStringLiteral( "2|||470|||TlsV1_3|||10~~19|||0~~2" ) );
+  QCOMPARE( sslconfig2.sslProtocol(), QSsl::TlsV1_3 );
+  QCOMPARE( sslconfig2.version(), 2 );
+  QCOMPARE( sslconfig2.qtVersion(), 470 );
+  QCOMPARE( sslconfig2.sslPeerVerifyMode(), QSslSocket::VerifyNone );
+  QCOMPARE( sslconfig2.sslPeerVerifyDepth(), 2 );
+  QCOMPARE( sslconfig2.sslIgnoredErrorEnums(), sslerrenums );
+  QCOMPARE( sslconfig2.configString(), QStringLiteral( "2|||470|||TlsV1_3|||10~~19|||0~~2" ) );
 }
 
 QGSTEST_MAIN( TestQgsAuthConfig )
