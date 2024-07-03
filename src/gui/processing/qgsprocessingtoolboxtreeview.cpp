@@ -23,17 +23,17 @@
 QgsProcessingToolboxTreeView::QgsProcessingToolboxTreeView( QWidget *parent,
     QgsProcessingRegistry *registry,
     QgsProcessingRecentAlgorithmLog *recentLog,
-    QgsProcessingFavoriteAlgorithmManager *favoriteMnager )
+    QgsProcessingFavoriteAlgorithmManager *favoriteManager )
   : QTreeView( parent )
 {
-  mModel = new QgsProcessingToolboxProxyModel( this, registry, recentLog, favoriteMnager );
+  mModel = new QgsProcessingToolboxProxyModel( this, registry, recentLog, favoriteManager );
   mToolboxModel = mModel->toolboxModel();
   setModel( mModel );
 }
 
-void QgsProcessingToolboxTreeView::setRegistry( QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteMnager )
+void QgsProcessingToolboxTreeView::setRegistry( QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
 {
-  QgsProcessingToolboxProxyModel *newModel = new QgsProcessingToolboxProxyModel( this, registry, recentLog, favoriteMnager );
+  QgsProcessingToolboxProxyModel *newModel = new QgsProcessingToolboxProxyModel( this, registry, recentLog, favoriteManager );
   mToolboxModel = newModel->toolboxModel();
   setModel( newModel );
   mModel->deleteLater();
