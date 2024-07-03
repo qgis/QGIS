@@ -23,7 +23,6 @@
 #include "qgis_gui.h"
 #include "ui_qgslayoutscalebarwidgetbase.h"
 #include "qgslayoutitemwidget.h"
-#include "qgsscalebarsettings.h"
 
 #include <QButtonGroup>
 
@@ -88,7 +87,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
       CenteredBelowSegmentEdges,
       CenteredBelowSegmentCenters,
     };
-    static DistanceLabelPlacement distanceLabelPlacement( QgsScaleBarSettings::LabelHorizontalPlacement horizontalPlacement, QgsScaleBarSettings::LabelVerticalPlacement verticalPlacement );
+    static DistanceLabelPlacement distanceLabelPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement );
 
     QPointer< QgsLayoutItemScaleBar > mScalebar;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;

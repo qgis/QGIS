@@ -140,7 +140,7 @@ void QgsLayoutItemScaleBar::setUnitsPerSegment( double units )
 }
 
 
-void QgsLayoutItemScaleBar::setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode )
+void QgsLayoutItemScaleBar::setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode mode )
 {
   if ( !mStyle )
   {
@@ -523,14 +523,14 @@ void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
 
     switch ( mSettings.segmentSizeMode() )
     {
-      case QgsScaleBarSettings::SegmentSizeFixed:
+      case Qgis::ScaleBarSegmentSizeMode::Fixed:
       {
         //calculate size depending on mNumUnitsPerSegment
         mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
         break;
       }
 
-      case QgsScaleBarSettings::SegmentSizeFitWidth:
+      case Qgis::ScaleBarSegmentSizeMode::FitWidth:
       {
         if ( mSettings.maximumBarWidth() < mSettings.minimumBarWidth() )
         {
@@ -587,21 +587,21 @@ QgsScaleBarRenderer::ScaleBarContext QgsLayoutItemScaleBar::createScaleContext()
   return scaleContext;
 }
 
-void QgsLayoutItemScaleBar::setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement )
+void QgsLayoutItemScaleBar::setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement placement )
 {
   mSettings.setLabelVerticalPlacement( placement );
   refreshItemSize();
   emit changed();
 }
 
-void QgsLayoutItemScaleBar::setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement )
+void QgsLayoutItemScaleBar::setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement placement )
 {
   mSettings.setLabelHorizontalPlacement( placement );
   refreshItemSize();
   emit changed();
 }
 
-void QgsLayoutItemScaleBar::setAlignment( QgsScaleBarSettings::Alignment a )
+void QgsLayoutItemScaleBar::setAlignment( Qgis::ScaleBarAlignment a )
 {
   mSettings.setAlignment( a );
   refreshItemSize();
@@ -951,7 +951,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "numSubdivisions" ), mSettings.numberOfSubdivisions() );
   composerScaleBarElem.setAttribute( QStringLiteral( "subdivisionsHeight" ), mSettings.subdivisionsHeight() );
   composerScaleBarElem.setAttribute( QStringLiteral( "numUnitsPerSegment" ), QString::number( mSettings.unitsPerSegment() ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), mSettings.segmentSizeMode() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), static_cast< int >( mSettings.segmentSizeMode() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "minBarWidth" ), mSettings.minimumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mSettings.maximumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
@@ -1077,7 +1077,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setNumberOfSubdivisions( itemElem.attribute( QStringLiteral( "numSubdivisions" ), QStringLiteral( "1" ) ).toInt() );
   mSettings.setSubdivisionsHeight( itemElem.attribute( QStringLiteral( "subdivisionsHeight" ), QStringLiteral( "1.5" ) ).toDouble() );
   mSettings.setUnitsPerSegment( itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble() );
-  mSettings.setSegmentSizeMode( static_cast<QgsScaleBarSettings::SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setSegmentSizeMode( static_cast<Qgis::ScaleBarSegmentSizeMode >( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
   mSettings.setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toDouble() );
   mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
@@ -1365,10 +1365,10 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     mSettings.setUnits( QgsUnitTypes::decodeDistanceUnit( itemElem.attribute( QStringLiteral( "unitType" ) ) ) );
   }
 
-  mSettings.setLabelVerticalPlacement( static_cast< QgsScaleBarSettings::LabelVerticalPlacement >( itemElem.attribute( QStringLiteral( "labelVerticalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
-  mSettings.setLabelHorizontalPlacement( static_cast< QgsScaleBarSettings::LabelHorizontalPlacement >( itemElem.attribute( QStringLiteral( "labelHorizontalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setLabelVerticalPlacement( static_cast< Qgis::ScaleBarDistanceLabelVerticalPlacement >( itemElem.attribute( QStringLiteral( "labelVerticalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setLabelHorizontalPlacement( static_cast< Qgis::ScaleBarDistanceLabelHorizontalPlacement >( itemElem.attribute( QStringLiteral( "labelHorizontalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
 
-  mSettings.setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setAlignment( static_cast< Qgis::ScaleBarAlignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
   disconnectCurrentMap();

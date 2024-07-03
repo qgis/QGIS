@@ -4584,6 +4584,62 @@ QgsUnitTypes.LayoutScreenUnits.__doc__ = "Unit is a screen based measurement uni
 Qgis.LayoutUnitType.__doc__ = "Types of layout units\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.LayoutUnitType.\n\n.. versionadded:: 3.30\n\n" + '* ``LayoutPaperUnits``: ' + Qgis.LayoutUnitType.PaperUnits.__doc__ + '\n' + '* ``LayoutScreenUnits``: ' + Qgis.LayoutUnitType.ScreenUnits.__doc__
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+QgsScaleBarSettings.Alignment = Qgis.ScaleBarAlignment
+# monkey patching scoped based enum
+QgsScaleBarSettings.AlignLeft = Qgis.ScaleBarAlignment.Left
+QgsScaleBarSettings.Alignment.AlignLeft = Qgis.ScaleBarAlignment.Left
+QgsScaleBarSettings.AlignLeft.is_monkey_patched = True
+QgsScaleBarSettings.AlignLeft.__doc__ = "Left aligned"
+QgsScaleBarSettings.AlignMiddle = Qgis.ScaleBarAlignment.Middle
+QgsScaleBarSettings.Alignment.AlignMiddle = Qgis.ScaleBarAlignment.Middle
+QgsScaleBarSettings.AlignMiddle.is_monkey_patched = True
+QgsScaleBarSettings.AlignMiddle.__doc__ = "Center aligned"
+QgsScaleBarSettings.AlignRight = Qgis.ScaleBarAlignment.Right
+QgsScaleBarSettings.Alignment.AlignRight = Qgis.ScaleBarAlignment.Right
+QgsScaleBarSettings.AlignRight.is_monkey_patched = True
+QgsScaleBarSettings.AlignRight.__doc__ = "Right aligned"
+Qgis.ScaleBarAlignment.__doc__ = "Scalebar alignment.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.Alignment.\n\n.. versionadded:: 3.40\n\n" + '* ``AlignLeft``: ' + Qgis.ScaleBarAlignment.Left.__doc__ + '\n' + '* ``AlignMiddle``: ' + Qgis.ScaleBarAlignment.Middle.__doc__ + '\n' + '* ``AlignRight``: ' + Qgis.ScaleBarAlignment.Right.__doc__
+# --
+Qgis.ScaleBarAlignment.baseClass = Qgis
+QgsScaleBarSettings.SegmentSizeMode = Qgis.ScaleBarSegmentSizeMode
+# monkey patching scoped based enum
+QgsScaleBarSettings.SegmentSizeFixed = Qgis.ScaleBarSegmentSizeMode.Fixed
+QgsScaleBarSettings.SegmentSizeMode.SegmentSizeFixed = Qgis.ScaleBarSegmentSizeMode.Fixed
+QgsScaleBarSettings.SegmentSizeFixed.is_monkey_patched = True
+QgsScaleBarSettings.SegmentSizeFixed.__doc__ = "Scale bar segment size is fixed to a map unit"
+QgsScaleBarSettings.SegmentSizeFitWidth = Qgis.ScaleBarSegmentSizeMode.FitWidth
+QgsScaleBarSettings.SegmentSizeMode.SegmentSizeFitWidth = Qgis.ScaleBarSegmentSizeMode.FitWidth
+QgsScaleBarSettings.SegmentSizeFitWidth.is_monkey_patched = True
+QgsScaleBarSettings.SegmentSizeFitWidth.__doc__ = "Scale bar segment size is calculated to fit a size range"
+Qgis.ScaleBarSegmentSizeMode.__doc__ = "Modes for setting size for scale bar segments.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.SegmentSizeMode.\n\n.. versionadded:: 3.40\n\n" + '* ``SegmentSizeFixed``: ' + Qgis.ScaleBarSegmentSizeMode.Fixed.__doc__ + '\n' + '* ``SegmentSizeFitWidth``: ' + Qgis.ScaleBarSegmentSizeMode.FitWidth.__doc__
+# --
+Qgis.ScaleBarSegmentSizeMode.baseClass = Qgis
+QgsScaleBarSettings.LabelVerticalPlacement = Qgis.ScaleBarDistanceLabelVerticalPlacement
+# monkey patching scoped based enum
+QgsScaleBarSettings.LabelAboveSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.AboveSegment
+QgsScaleBarSettings.LabelVerticalPlacement.LabelAboveSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.AboveSegment
+QgsScaleBarSettings.LabelAboveSegment.is_monkey_patched = True
+QgsScaleBarSettings.LabelAboveSegment.__doc__ = "Labels are drawn above the scalebar"
+QgsScaleBarSettings.LabelBelowSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.BelowSegment
+QgsScaleBarSettings.LabelVerticalPlacement.LabelBelowSegment = Qgis.ScaleBarDistanceLabelVerticalPlacement.BelowSegment
+QgsScaleBarSettings.LabelBelowSegment.is_monkey_patched = True
+QgsScaleBarSettings.LabelBelowSegment.__doc__ = "Labels are drawn below the scalebar"
+Qgis.ScaleBarDistanceLabelVerticalPlacement.__doc__ = "Scale bar distance label vertical placement.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.LabelVerticalPlacement.\n\n.. versionadded:: 3.40\n\n" + '* ``LabelAboveSegment``: ' + Qgis.ScaleBarDistanceLabelVerticalPlacement.AboveSegment.__doc__ + '\n' + '* ``LabelBelowSegment``: ' + Qgis.ScaleBarDistanceLabelVerticalPlacement.BelowSegment.__doc__
+# --
+Qgis.ScaleBarDistanceLabelVerticalPlacement.baseClass = Qgis
+QgsScaleBarSettings.LabelHorizontalPlacement = Qgis.ScaleBarDistanceLabelHorizontalPlacement
+# monkey patching scoped based enum
+QgsScaleBarSettings.LabelCenteredEdge = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredEdge
+QgsScaleBarSettings.LabelHorizontalPlacement.LabelCenteredEdge = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredEdge
+QgsScaleBarSettings.LabelCenteredEdge.is_monkey_patched = True
+QgsScaleBarSettings.LabelCenteredEdge.__doc__ = "Labels are drawn centered relative to segment's edge"
+QgsScaleBarSettings.LabelCenteredSegment = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredSegment
+QgsScaleBarSettings.LabelHorizontalPlacement.LabelCenteredSegment = Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredSegment
+QgsScaleBarSettings.LabelCenteredSegment.is_monkey_patched = True
+QgsScaleBarSettings.LabelCenteredSegment.__doc__ = "Labels are drawn centered relative to segment"
+Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = "Scale bar distance label horizontal placement.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsScaleBarSettings`.LabelHorizontalPlacement.\n\n.. versionadded:: 3.40\n\n" + '* ``LabelCenteredEdge``: ' + Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredEdge.__doc__ + '\n' + '* ``LabelCenteredSegment``: ' + Qgis.ScaleBarDistanceLabelHorizontalPlacement.CenteredSegment.__doc__
+# --
+Qgis.ScaleBarDistanceLabelHorizontalPlacement.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"

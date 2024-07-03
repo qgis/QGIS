@@ -4538,6 +4538,63 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Scalebar alignment.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::Alignment.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, Alignment ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ) = 0, //!< Left aligned
+      Middle SIP_MONKEYPATCH_COMPAT_NAME( AlignMiddle ), //!< Center aligned
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right aligned
+    };
+    Q_ENUM( ScaleBarAlignment )
+
+    /**
+     * Modes for setting size for scale bar segments.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::SegmentSizeMode.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarSegmentSizeMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, SegmentSizeMode ) : int
+      {
+      Fixed SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFixed ) = 0, //!< Scale bar segment size is fixed to a map unit
+      FitWidth SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFitWidth ) = 1 //!< Scale bar segment size is calculated to fit a size range
+    };
+    Q_ENUM( ScaleBarSegmentSizeMode )
+
+    /**
+     * Scale bar distance label vertical placement.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::LabelVerticalPlacement.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarDistanceLabelVerticalPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, LabelVerticalPlacement ) : int
+      {
+      AboveSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelAboveSegment ) = 0, //!< Labels are drawn above the scalebar
+      BelowSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelBelowSegment ), //!< Labels are drawn below the scalebar
+    };
+    Q_ENUM( ScaleBarDistanceLabelVerticalPlacement )
+
+    /**
+     * Scale bar distance label horizontal placement.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::LabelHorizontalPlacement.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleBarDistanceLabelHorizontalPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, LabelHorizontalPlacement ) : int
+      {
+      CenteredEdge SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredEdge ) = 0, //!< Labels are drawn centered relative to segment's edge
+      CenteredSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredSegment ), //!< Labels are drawn centered relative to segment
+    };
+    Q_ENUM( ScaleBarDistanceLabelHorizontalPlacement )
+
+    /**
      * Input controller types.
      *
      * \since QGIS 3.34
