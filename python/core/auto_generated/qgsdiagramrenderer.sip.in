@@ -451,17 +451,17 @@ Returns the map unit scale for the content spacing.
 .. versionadded:: 3.12
 %End
 
-    double stackedSDiagramSpacing() const;
+    double stackedDiagramSpacing() const;
 %Docstring
 Returns the spacing between subdiagrams in a stacked diagram.
 
-Spacing units can be retrieved by calling :py:func:`~QgsDiagramSettings.spacingUnit`.
+Spacing units can be retrieved by calling :py:func:`~QgsDiagramSettings.stackedDiagramSpacingUnit`.
 
 .. seealso:: :py:func:`setStackedDiagramSpacing`
 
 .. seealso:: :py:func:`stackedDiagramSpacingUnit`
 
-.. seealso:: :py:func:`spacingMapUnitScale`
+.. seealso:: :py:func:`stackedDiagramSpacingMapUnitScale`
 
 .. versionadded:: 3.40
 %End
@@ -472,11 +472,11 @@ Sets the ``spacing`` between subdiagrams in a stacked diagram.
 
 Spacing units are set via :py:func:`~QgsDiagramSettings.setStackedDiagramSpacingUnit`.
 
-.. seealso:: :py:func:`stackedSDiagramSpacing`
+.. seealso:: :py:func:`stackedDiagramSpacing`
 
-.. seealso:: :py:func:`setStackedSDiagramSpacingUnit`
+.. seealso:: :py:func:`setStackedDiagramSpacingUnit`
 
-.. seealso:: :py:func:`setStackedSDiagramSpacingMapUnitScale`
+.. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale`
 
 .. versionadded:: 3.40
 %End
@@ -526,7 +526,7 @@ Returns the map unit scale for the spacing between subdiagrams in a stacked diag
 
 .. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale`
 
-.. seealso:: :py:func:`mStackedDiagramSpacing`
+.. seealso:: :py:func:`stackedDiagramSpacing`
 
 .. seealso:: :py:func:`stackedDiagramSpacingUnit`
 

@@ -92,7 +92,7 @@ QSizeF QgsStackedDiagram::diagramSize( const QgsFeature &feature, const QgsRende
   // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
-  const double spacing = c.convertToPainterUnits( s.stackedSDiagramSpacing(), s.stackedDiagramSpacingUnit(), s.stackedDiagramSpacingMapUnitScale() ) / painterUnitConversionScale;
+  const double spacing = c.convertToPainterUnits( s.stackedDiagramSpacing(), s.stackedDiagramSpacingUnit(), s.stackedDiagramSpacingMapUnitScale() ) / painterUnitConversionScale;
 
   switch ( s.stackedDiagramMode )
   {
@@ -156,7 +156,7 @@ QSizeF QgsStackedDiagram::diagramSize( const QgsAttributes &attributes, const Qg
   // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
-  const double spacing = c.convertToPainterUnits( s.stackedSDiagramSpacing(), s.stackedDiagramSpacingUnit(), s.stackedDiagramSpacingMapUnitScale() ) / painterUnitConversionScale;
+  const double spacing = c.convertToPainterUnits( s.stackedDiagramSpacing(), s.stackedDiagramSpacingUnit(), s.stackedDiagramSpacingMapUnitScale() ) / painterUnitConversionScale;
 
   switch ( s.stackedDiagramMode )
   {

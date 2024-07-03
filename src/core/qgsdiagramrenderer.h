@@ -378,7 +378,10 @@ class CORE_EXPORT QgsDiagramSettings
       Counterclockwise, //!< Counter-clockwise orientation
     };
 
-    //! Orientation of the stacked diagrams
+    /**
+     * Orientation of the stacked diagrams
+     * \since QGIS 3.40
+     */
     enum StackedDiagramMode
     {
       Horizontal,
@@ -525,24 +528,24 @@ class CORE_EXPORT QgsDiagramSettings
     /**
      * Returns the spacing between subdiagrams in a stacked diagram.
      *
-     * Spacing units can be retrieved by calling spacingUnit().
+     * Spacing units can be retrieved by calling stackedDiagramSpacingUnit().
      *
      * \see setStackedDiagramSpacing()
      * \see stackedDiagramSpacingUnit()
-     * \see spacingMapUnitScale()
+     * \see stackedDiagramSpacingMapUnitScale()
      *
      * \since QGIS 3.40
      */
-    double stackedSDiagramSpacing() const { return mStackedDiagramSpacing; }
+    double stackedDiagramSpacing() const { return mStackedDiagramSpacing; }
 
     /**
      * Sets the \a spacing between subdiagrams in a stacked diagram.
      *
      * Spacing units are set via setStackedDiagramSpacingUnit().
      *
-     * \see stackedSDiagramSpacing()
-     * \see setStackedSDiagramSpacingUnit()
-     * \see setStackedSDiagramSpacingMapUnitScale()
+     * \see stackedDiagramSpacing()
+     * \see setStackedDiagramSpacingUnit()
+     * \see setStackedDiagramSpacingMapUnitScale()
      *
      * \since QGIS 3.40
      */
@@ -563,6 +566,7 @@ class CORE_EXPORT QgsDiagramSettings
      * \see setStackedDiagramSpacingUnit()
      * \see stackedDiagramSpacing()
      * \see stackedDiagramSpacingMapUnitScale()
+     *
      * \since QGIS 3.40
     */
     Qgis::RenderUnit stackedDiagramSpacingUnit() const { return mStackedDiagramSpacingUnit; }
@@ -580,7 +584,7 @@ class CORE_EXPORT QgsDiagramSettings
     /**
      * Returns the map unit scale for the spacing between subdiagrams in a stacked diagram.
      * \see setStackedDiagramSpacingMapUnitScale();
-     * \see mStackedDiagramSpacing()
+     * \see stackedDiagramSpacing()
      * \see stackedDiagramSpacingUnit()
      *
      * \since QGIS 3.40
