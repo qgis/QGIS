@@ -664,6 +664,37 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertTrue(b.isNoData(0, 0))
         self.assertTrue(b.isNoData(0, 1))
 
+    def testBlockSize(self):
+        """Check that tiled raster returns correct block size"""
+
+        # untiled have blocksize == size
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 2".format(
+                table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
+
+        dp = rl.dataProvider()
+
+        self.assertEqual(dp.xSize(), 2)
+        self.assertEqual(dp.ySize(), 2)
+        self.assertEqual(dp.xBlockSize(), 2)
+        self.assertEqual(dp.yBlockSize(), 2)
+
+        # tiled have blocksize != size
+        rl = QgsRasterLayer(
+            self.dbconn + " srid=3035 sslmode=disable table={table} schema={schema}".format(
+                table='raster_3035_tiled_no_overviews', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
+
+        dp = rl.dataProvider()
+
+        self.assertEqual(dp.xSize(), 6)
+        self.assertEqual(dp.ySize(), 5)
+        self.assertEqual(dp.xBlockSize(), 2)
+        self.assertEqual(dp.yBlockSize(), 2)
+
 
 if __name__ == '__main__':
     unittest.main()
