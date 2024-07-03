@@ -770,7 +770,7 @@ Returns diagram settings for a feature (or ``False`` if the diagram for the feat
 :param feature: the feature
 :param c: render context
 :param s: out: diagram settings for the feature
-:param subDiagram: SubDiagram object for stacked diagram case
+:param subDiagram: subDiagram object for stacked diagram case
 %End
 
     virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagram *subDiagram = 0 ) const = 0;
@@ -779,7 +779,7 @@ Returns size of the diagram (in painter units) or an invalid size in case of err
 
 :param feature: the feature
 :param c: render context
-:param subDiagram: SubDiagram object for stacked diagram case
+:param subDiagram: subDiagram object for stacked diagram case
 %End
 
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;

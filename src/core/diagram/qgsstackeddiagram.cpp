@@ -48,7 +48,7 @@ QList< QgsDiagram * > QgsStackedDiagram::subDiagrams() const
   return diagrams;
 }
 
-QgsDiagramSettings *QgsStackedDiagram::subDiagramSettings( const QgsDiagram *diagram )
+QgsDiagramSettings *QgsStackedDiagram::subDiagramSettings( const QgsDiagram *diagram ) const
 {
   for ( const auto &item : std::as_const( mSubDiagrams ) )
   {

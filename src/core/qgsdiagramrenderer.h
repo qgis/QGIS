@@ -812,7 +812,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * \param feature the feature
      * \param c render context
      * \param s out: diagram settings for the feature
-     * \param subDiagram SubDiagram object for stacked diagram case
+     * \param subDiagram subDiagram object for stacked diagram case
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = nullptr ) const = 0;
 
@@ -820,7 +820,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * Returns size of the diagram (in painter units) or an invalid size in case of error
      * \param feature the feature
      * \param c render context
-     * \param subDiagram SubDiagram object for stacked diagram case
+     * \param subDiagram subDiagram object for stacked diagram case
      */
     virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagram *subDiagram = nullptr ) const = 0;
 

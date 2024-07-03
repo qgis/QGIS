@@ -511,7 +511,6 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
       subDiagram->renderDiagram( feature, c, subSettings, newPos );
       stackedDiagram->subDiagramPosition( newPos, c, s, subSettings );
     }
-    // TODO: Should we call stackedDiagram->renderDiagram as well? e.g., to paint axis, or container rectangle or sth
   }
   else
   {
