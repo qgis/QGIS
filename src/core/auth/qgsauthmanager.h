@@ -107,8 +107,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Performs lazy initialization of the authentication framework, if it has
      * not already been done.
      *
-     * \since QGIS 3.40
      * \see setup()
+     * \since QGIS 3.40
      */
     bool ensureInitialized() const;
 

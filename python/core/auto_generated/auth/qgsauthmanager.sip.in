@@ -70,9 +70,9 @@ to lazy-initialize when required.
 Performs lazy initialization of the authentication framework, if it has
 not already been done.
 
-.. versionadded:: 3.40
-
 .. seealso:: :py:func:`setup`
+
+.. versionadded:: 3.40
 %End
 
     ~QgsAuthManager();
