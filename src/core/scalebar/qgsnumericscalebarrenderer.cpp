@@ -64,13 +64,13 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
   switch ( settings.alignment() )
   {
-    case QgsScaleBarSettings::AlignLeft:
+    case Qgis::ScaleBarAlignment::Left:
       hAlign = Qgis::TextHorizontalAlignment::Left;
       break;
-    case QgsScaleBarSettings::AlignMiddle:
+    case Qgis::ScaleBarAlignment::Middle:
       hAlign = Qgis::TextHorizontalAlignment::Center;
       break;
-    case QgsScaleBarSettings::AlignRight:
+    case Qgis::ScaleBarAlignment::Right:
       hAlign = Qgis::TextHorizontalAlignment::Right;
       break;
   }

@@ -311,13 +311,13 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   Qt::Alignment a = Qt::AlignLeft;
   switch ( mScalebar->alignment() )
   {
-    case QgsScaleBarSettings::AlignLeft:
+    case Qgis::ScaleBarAlignment::Left:
       a = Qt::AlignLeft;
       break;
-    case QgsScaleBarSettings::AlignRight:
+    case Qgis::ScaleBarAlignment::Right:
       a = Qt::AlignRight;
       break;
-    case QgsScaleBarSettings::AlignMiddle:
+    case Qgis::ScaleBarAlignment::Middle:
       a = Qt::AlignHCenter;
       break;
   }
@@ -326,19 +326,25 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( static_cast< int >( mScalebar->units() ) ) );
 
-  if ( mScalebar->segmentSizeMode() == QgsScaleBarSettings::SegmentSizeFixed )
+  switch ( mScalebar->segmentSizeMode() )
   {
-    mFixedSizeRadio->setChecked( true );
-    mSegmentSizeWidget->setEnabled( true );
-    mMinWidthWidget->setEnabled( false );
-    mMaxWidthWidget->setEnabled( false );
-  }
-  else /*if(mComposerScaleBar->segmentSizeMode() == QgsComposerScaleBar::SegmentSizeFitWidth)*/
-  {
-    mFitWidthRadio->setChecked( true );
-    mSegmentSizeWidget->setEnabled( false );
-    mMinWidthWidget->setEnabled( true );
-    mMaxWidthWidget->setEnabled( true );
+    case Qgis::ScaleBarSegmentSizeMode::Fixed:
+    {
+      mFixedSizeRadio->setChecked( true );
+      mSegmentSizeWidget->setEnabled( true );
+      mMinWidthWidget->setEnabled( false );
+      mMaxWidthWidget->setEnabled( false );
+      break;
+    }
+
+    case Qgis::ScaleBarSegmentSizeMode::FitWidth:
+    {
+      mFitWidthRadio->setChecked( true );
+      mSegmentSizeWidget->setEnabled( false );
+      mMinWidthWidget->setEnabled( true );
+      mMaxWidthWidget->setEnabled( true );
+      break;
+    }
   }
   mMinWidthSpinBox->setValue( mScalebar->minimumBarWidth() );
   mMaxWidthSpinBox->setValue( mScalebar->maximumBarWidth() );
@@ -476,26 +482,26 @@ void QgsLayoutScaleBarWidget::changeNumberFormat()
   return;
 }
 
-QgsLayoutScaleBarWidget::DistanceLabelPlacement QgsLayoutScaleBarWidget::distanceLabelPlacement( QgsScaleBarSettings::LabelHorizontalPlacement horizontalPlacement, QgsScaleBarSettings::LabelVerticalPlacement verticalPlacement )
+QgsLayoutScaleBarWidget::DistanceLabelPlacement QgsLayoutScaleBarWidget::distanceLabelPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement )
 {
   switch ( horizontalPlacement )
   {
-    case QgsScaleBarSettings::LabelCenteredEdge:
+    case Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge:
       switch ( verticalPlacement )
       {
-        case QgsScaleBarSettings::LabelAboveSegment:
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment:
           return DistanceLabelPlacement::CenteredAboveSegmentEdges;
-        case QgsScaleBarSettings::LabelBelowSegment:
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment:
           return DistanceLabelPlacement::CenteredBelowSegmentEdges;
       }
       BUILTIN_UNREACHABLE
 
-    case QgsScaleBarSettings::LabelCenteredSegment:
+    case Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment:
       switch ( verticalPlacement )
       {
-        case QgsScaleBarSettings::LabelAboveSegment:
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment:
           return DistanceLabelPlacement::CenteredAboveSegmentCenters;
-        case QgsScaleBarSettings::LabelBelowSegment:
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment:
           return DistanceLabelPlacement::CenteredBelowSegmentCenters;
       }
       BUILTIN_UNREACHABLE
@@ -645,20 +651,20 @@ void QgsLayoutScaleBarWidget::mDistanceLabelPlacementComboBox_currentIndexChange
   switch ( placement )
   {
     case DistanceLabelPlacement::CenteredAboveSegmentEdges:
-      mScalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement::LabelAboveSegment );
-      mScalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement::LabelCenteredEdge );
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge );
       break;
     case DistanceLabelPlacement::CenteredAboveSegmentCenters:
-      mScalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement::LabelAboveSegment );
-      mScalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement::LabelCenteredSegment );
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment );
       break;
     case DistanceLabelPlacement::CenteredBelowSegmentEdges:
-      mScalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement::LabelBelowSegment );
-      mScalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement::LabelCenteredEdge );
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge );
       break;
     case DistanceLabelPlacement::CenteredBelowSegmentCenters:
-      mScalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement::LabelBelowSegment );
-      mScalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement::LabelCenteredSegment );
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment );
       break;
   }
 
@@ -677,8 +683,8 @@ void QgsLayoutScaleBarWidget::alignmentChanged()
   mScalebar->beginCommand( tr( "Set Scalebar Alignment" ) );
   disconnectUpdateSignal();
 
-  const QgsScaleBarSettings::Alignment a = mAlignmentComboBox->currentAlignment() & Qt::AlignLeft ? QgsScaleBarSettings::AlignLeft
-      : mAlignmentComboBox->currentAlignment() & Qt::AlignRight ? QgsScaleBarSettings::AlignRight : QgsScaleBarSettings::AlignMiddle;
+  const Qgis::ScaleBarAlignment a = mAlignmentComboBox->currentAlignment() & Qt::AlignLeft ? Qgis::ScaleBarAlignment::Left
+                                    : mAlignmentComboBox->currentAlignment() & Qt::AlignRight ? Qgis::ScaleBarAlignment::Right : Qgis::ScaleBarAlignment::Middle;
   mScalebar->setAlignment( a );
   mScalebar->update();
   connectUpdateSignal();
@@ -773,12 +779,12 @@ void QgsLayoutScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )
   disconnectUpdateSignal();
   if ( mFixedSizeRadio->isChecked() )
   {
-    mScalebar->setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeFixed );
+    mScalebar->setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode::Fixed );
     mScalebar->setUnitsPerSegment( mSegmentSizeSpinBox->value() );
   }
   else /*if(mFitWidthRadio->isChecked())*/
   {
-    mScalebar->setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeFitWidth );
+    mScalebar->setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode::FitWidth );
   }
   mScalebar->update();
   connectUpdateSignal();

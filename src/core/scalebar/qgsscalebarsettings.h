@@ -40,43 +40,6 @@ class CORE_EXPORT QgsScaleBarSettings
   public:
 
     /**
-     * Scalebar alignment.
-     */
-    enum Alignment
-    {
-      AlignLeft = 0, //!< Left aligned
-      AlignMiddle, //!< Center aligned
-      AlignRight, //!< Right aligned
-    };
-
-    /**
-     * Modes for setting size for scale bar segments.
-     */
-    enum SegmentSizeMode
-    {
-      SegmentSizeFixed = 0, //!< Scale bar segment size is fixed to a map unit
-      SegmentSizeFitWidth = 1 //!< Scale bar segment size is calculated to fit a size range
-    };
-
-    /**
-     * Label vertical placement.
-     */
-    enum LabelVerticalPlacement
-    {
-      LabelAboveSegment = 0, //!< Labels are drawn above the scalebar
-      LabelBelowSegment, //!< Labels are drawn below the scalebar
-    };
-
-    /**
-     * Label horizontal placement.
-     */
-    enum LabelHorizontalPlacement
-    {
-      LabelCenteredEdge = 0, //!< Labels are drawn centered relative to segment's edge
-      LabelCenteredSegment, //!< Labels are drawn centered relative to segment
-    };
-
-    /**
      * Constructor for QgsScaleBarSettings.
      */
     QgsScaleBarSettings();
@@ -172,7 +135,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see minimumBarWidth()
      * \see maximumBarWidth()
      */
-    SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+    Qgis::ScaleBarSegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
 
     /**
      * Sets the size \a mode for scale bar segments.
@@ -180,7 +143,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setMinimumBarWidth()
      * \see setMaximumBarWidth()
      */
-    void setSegmentSizeMode( SegmentSizeMode mode ) { mSegmentSizeMode = mode; }
+    void setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode mode ) { mSegmentSizeMode = mode; }
 
     /**
      * Returns the minimum width (in millimeters) for scale bar segments. This
@@ -570,28 +533,28 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setLabelVerticalPlacement()
      * \since QGIS 3.10
      */
-    LabelVerticalPlacement labelVerticalPlacement() const { return mLabelVerticalPlacement; }
+    Qgis::ScaleBarDistanceLabelVerticalPlacement labelVerticalPlacement() const { return mLabelVerticalPlacement; }
 
     /**
      * Sets the vertical \a placement of text labels.
      * \see labelVerticalPlacement()
      * \since QGIS 3.10
      */
-    void setLabelVerticalPlacement( LabelVerticalPlacement placement ) { mLabelVerticalPlacement = placement; }
+    void setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement placement ) { mLabelVerticalPlacement = placement; }
 
     /**
      * Returns the horizontal placement of text labels.
      * \see setLabelHorizontalPlacement()
      * \since QGIS 3.10
      */
-    LabelHorizontalPlacement labelHorizontalPlacement() const { return mLabelHorizontalPlacement; }
+    Qgis::ScaleBarDistanceLabelHorizontalPlacement labelHorizontalPlacement() const { return mLabelHorizontalPlacement; }
 
     /**
      * Sets the horizontal \a placement of text labels.
      * \see labelHorizontalPlacement()
      * \since QGIS 3.10
      */
-    void setLabelHorizontalPlacement( LabelHorizontalPlacement placement ) { mLabelHorizontalPlacement = placement; }
+    void setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement placement ) { mLabelHorizontalPlacement = placement; }
 
     /**
      * Returns the spacing (margin) between the scalebar box and content in millimeters.
@@ -609,13 +572,13 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the scalebar alignment.
      * \see setAlignment()
      */
-    Alignment alignment() const { return mAlignment; }
+    Qgis::ScaleBarAlignment alignment() const { return mAlignment; }
 
     /**
      * Sets the scalebar \a alignment.
      * \see alignment()
      */
-    void setAlignment( Alignment alignment ) { mAlignment = alignment; }
+    void setAlignment( Qgis::ScaleBarAlignment alignment ) { mAlignment = alignment; }
 
     /**
      * Returns the join style used for drawing lines in the scalebar.
@@ -678,7 +641,7 @@ class CORE_EXPORT QgsScaleBarSettings
     //! Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)
     double mNumMapUnitsPerScaleBarUnit = 1.0;
     //! Either fixed (i.e. mNumUnitsPerSegment) or try to best fit scale bar width (mMinBarWidth, mMaxBarWidth)
-    SegmentSizeMode mSegmentSizeMode = SegmentSizeFixed;
+    Qgis::ScaleBarSegmentSizeMode mSegmentSizeMode = Qgis::ScaleBarSegmentSizeMode::Fixed;
     //! Minimum allowed bar width, when mSegmentSizeMode is FitWidth
     double mMinBarWidth = 50.0;
     //! Maximum allowed bar width, when mSegmentSizeMode is FitWidth
@@ -702,17 +665,16 @@ class CORE_EXPORT QgsScaleBarSettings
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
     //! Label's vertical placement
-    LabelVerticalPlacement mLabelVerticalPlacement = LabelAboveSegment;
+    Qgis::ScaleBarDistanceLabelVerticalPlacement mLabelVerticalPlacement = Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment;
     //! Label's horizontal placement
-    LabelHorizontalPlacement mLabelHorizontalPlacement = LabelCenteredEdge;
+    Qgis::ScaleBarDistanceLabelHorizontalPlacement mLabelHorizontalPlacement = Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge;
 
     //! Space between content and item box
     double mBoxContentSpace = 1.0;
 
-    Alignment mAlignment = AlignLeft;
+    Qgis::ScaleBarAlignment mAlignment = Qgis::ScaleBarAlignment::Left;
 
     Qgis::DistanceUnit mUnits = Qgis::DistanceUnit::Meters;
-
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 

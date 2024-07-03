@@ -134,7 +134,7 @@ Sets the number of scalebar ``units`` per segment.
 .. seealso:: :py:func:`unitsPerSegment`
 %End
 
-    QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const;
+    Qgis::ScaleBarSegmentSizeMode segmentSizeMode() const;
 %Docstring
 Returns the size mode for the scale bar segments.
 
@@ -145,7 +145,7 @@ Returns the size mode for the scale bar segments.
 .. seealso:: :py:func:`maximumBarWidth`
 %End
 
-    void setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode );
+    void setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode mode );
 %Docstring
 Sets the size ``mode`` for scale bar segments.
 
@@ -617,7 +617,7 @@ Sets the ``space`` (margin) between the scalebar box and content in millimeters.
 .. seealso:: :py:func:`boxContentSpace`
 %End
 
-    QgsScaleBarSettings::LabelVerticalPlacement labelVerticalPlacement() const;
+    Qgis::ScaleBarDistanceLabelVerticalPlacement labelVerticalPlacement() const;
 %Docstring
 Returns the vertical placement of text labels.
 
@@ -626,7 +626,7 @@ Returns the vertical placement of text labels.
 .. versionadded:: 3.10
 %End
 
-    void setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement );
+    void setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement placement );
 %Docstring
 Sets the vertical ``placement`` of text labels.
 
@@ -635,7 +635,7 @@ Sets the vertical ``placement`` of text labels.
 .. versionadded:: 3.10
 %End
 
-    QgsScaleBarSettings::LabelHorizontalPlacement labelHorizontalPlacement() const;
+    Qgis::ScaleBarDistanceLabelHorizontalPlacement labelHorizontalPlacement() const;
 %Docstring
 Returns the horizontal placement of text labels.
 
@@ -644,7 +644,7 @@ Returns the horizontal placement of text labels.
 .. versionadded:: 3.10
 %End
 
-    void setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement );
+    void setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement placement );
 %Docstring
 Sets the horizontal ``placement`` of text labels.
 
@@ -653,14 +653,14 @@ Sets the horizontal ``placement`` of text labels.
 .. versionadded:: 3.10
 %End
 
-    QgsScaleBarSettings::Alignment alignment() const;
+    Qgis::ScaleBarAlignment alignment() const;
 %Docstring
 Returns the scalebar alignment.
 
 .. seealso:: :py:func:`setAlignment`
 %End
 
-    void setAlignment( QgsScaleBarSettings::Alignment alignment );
+    void setAlignment( Qgis::ScaleBarAlignment alignment );
 %Docstring
 Sets the scalebar ``alignment``.
 

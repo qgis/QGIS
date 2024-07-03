@@ -2542,6 +2542,31 @@ The development version
       ScreenUnits
     };
 
+    enum class ScaleBarAlignment
+      {
+      Left,
+      Middle,
+      Right,
+    };
+
+    enum class ScaleBarSegmentSizeMode
+      {
+      Fixed,
+      FitWidth
+    };
+
+    enum class ScaleBarDistanceLabelVerticalPlacement
+      {
+      AboveSegment,
+      BelowSegment,
+    };
+
+    enum class ScaleBarDistanceLabelHorizontalPlacement
+      {
+      CenteredEdge,
+      CenteredSegment,
+    };
+
     enum class InputControllerType
     {
       Map2D,
