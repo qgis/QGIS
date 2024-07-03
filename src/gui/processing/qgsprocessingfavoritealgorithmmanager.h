@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsprocessingfavoritealgorithmlog.h
+                             qgsprocessingfavoritealgorithmmanager.h
                              ----------------------------------
     Date                 : February 2024
     Copyright            : (C) 2024 Alexander Bruy
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPROCESSINGFAVORITEALGORITHMLOG_H
-#define QGSPROCESSINGFAVORITEALGORITHMLOG_H
+#ifndef QGSPROCESSINGFAVORITEALGORITHMMANAGER_H
+#define QGSPROCESSINGFAVORITEALGORITHMMANAGER_H
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -25,27 +25,27 @@ class QgsSettingsEntryStringList;
 
 /**
  * \ingroup gui
- * \brief A log for tracking favorite Processing algorithms.
+ * \brief A manager for tracking favorite Processing algorithms.
  *
- * QgsProcessingFavoriteAlgorithmLog is not usually directly created, instead
- * use the instance accessible through QgsGui::processingFavoriteAlgorithmLog().
+ * QgsProcessingFavoriteAlgorithmManager is not usually directly created, instead
+ * use the instance accessible through QgsGui::processingFavoriteAlgorithmManager().
  *
- * The log contents are saved and restored via QgsSettings.
+ * The favorite algorithms are saved and restored via QgsSettings.
  *
  * \note Not stable API
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsProcessingFavoriteAlgorithmLog : public QObject
+class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Constructor for QgsProcessingFavoriteAlgorithmLog, with the specified
+     * Constructor for QgsProcessingFavoriteAlgorithmManager, with the specified
      * \a parent object.
      */
-    QgsProcessingFavoriteAlgorithmLog( QObject *parent = nullptr );
+    QgsProcessingFavoriteAlgorithmManager( QObject *parent = nullptr );
 
     /**
      * Returns a list of the IDs of favorite Processing algorithms.
@@ -100,4 +100,4 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmLog : public QObject
 
 ///@endcond
 
-#endif // QGSPROCESSINGFAVORITEALGORITHMLOG_H
+#endif // QGSPROCESSINGFAVORITEALGORITHMMANAGER_H

@@ -34,7 +34,7 @@ class QgsLayoutItemGuiRegistry;
 class QgsAnnotationItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
-class QgsProcessingFavoriteAlgorithmLog;
+class QgsProcessingFavoriteAlgorithmManager;
 class QgsProcessingRecentAlgorithmLog;
 class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
@@ -159,10 +159,10 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 
     /**
-     * Returns the global Processing favorite algorithm log, used for tracking favorite Processing algorithms.
+     * Returns the global Processing favorite algorithm manager, used for tracking favorite Processing algorithms.
      * \since QGIS 3.40
      */
-    static QgsProcessingFavoriteAlgorithmLog *processingFavoriteAlgorithmLog();
+    static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager();
 
     /**
      * Returns the global data item GUI provider registry, used for tracking providers which affect the browser
@@ -330,7 +330,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsAnnotationItemGuiRegistry *mAnnotationItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
-    QgsProcessingFavoriteAlgorithmLog *mProcessingFavoriteAlgorithmLog = nullptr;
+    QgsProcessingFavoriteAlgorithmManager *mProcessingFavoriteAlgorithmManager = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
     QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
