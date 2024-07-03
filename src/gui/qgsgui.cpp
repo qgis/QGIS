@@ -43,7 +43,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
 #include "qgslogger.h"
-#include "qgsprocessingfavoritealgorithmlog.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgssettings.h"
@@ -157,9 +157,9 @@ QgsCodeEditorColorSchemeRegistry *QgsGui::codeEditorColorSchemeRegistry()
   return instance()->mCodeEditorColorSchemeRegistry;
 }
 
-QgsProcessingFavoriteAlgorithmLog *QgsGui::processingFavoriteAlgorithmLog()
+QgsProcessingFavoriteAlgorithmManager *QgsGui::processingFavoriteAlgorithmManager()
 {
-  return instance()->mProcessingFavoriteAlgorithmLog;
+  return instance()->mProcessingFavoriteAlgorithmManager;
 }
 
 QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
@@ -237,7 +237,7 @@ QgsGui::~QgsGui()
 {
   delete mProcessingGuiRegistry;
   delete mDataItemGuiProviderRegistry;
-  delete mProcessingFavoriteAlgorithmLog;
+  delete mProcessingFavoriteAlgorithmManager;
   delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
   delete mAnnotationItemGuiRegistry;
@@ -351,7 +351,7 @@ QgsGui::QgsGui()
   mAnnotationItemGuiRegistry->addDefaultItems();
 
   mWidgetStateHelper = new QgsWidgetStateHelper();
-  mProcessingFavoriteAlgorithmLog = new QgsProcessingFavoriteAlgorithmLog();
+  mProcessingFavoriteAlgorithmManager = new QgsProcessingFavoriteAlgorithmManager();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 

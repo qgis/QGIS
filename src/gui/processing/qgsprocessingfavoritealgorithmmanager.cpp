@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsprocessingfavoritealgorithmlog.cpp
+                             qgsprocessingfavoritealgorithmmanager.cpp
                              ------------------------------------
     Date                 : February 2024
     Copyright            : (C) 2024 Alexander Bruy
@@ -13,26 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingfavoritealgorithmlog.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE
 
-const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmLog::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( QStringLiteral( "favorite-algorithms" ), QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
+const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( QStringLiteral( "favorite-algorithms" ), QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
 
-QgsProcessingFavoriteAlgorithmLog::QgsProcessingFavoriteAlgorithmLog( QObject *parent )
+QgsProcessingFavoriteAlgorithmManager::QgsProcessingFavoriteAlgorithmManager( QObject *parent )
   : QObject( parent )
 {
-  mFavoriteAlgorithmIds = QgsProcessingFavoriteAlgorithmLog::settingsFavoriteAlgorithms->value();
+  mFavoriteAlgorithmIds = QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms->value();
 }
 
-QStringList QgsProcessingFavoriteAlgorithmLog::favoriteAlgorithmIds() const
+QStringList QgsProcessingFavoriteAlgorithmManager::favoriteAlgorithmIds() const
 {
   return mFavoriteAlgorithmIds;
 }
 
-void QgsProcessingFavoriteAlgorithmLog::add( const QString &id )
+void QgsProcessingFavoriteAlgorithmManager::add( const QString &id )
 {
   if ( mFavoriteAlgorithmIds.contains( id ) )
   {
@@ -40,11 +40,11 @@ void QgsProcessingFavoriteAlgorithmLog::add( const QString &id )
   }
 
   mFavoriteAlgorithmIds << id;
-  QgsProcessingFavoriteAlgorithmLog::settingsFavoriteAlgorithms->setValue( mFavoriteAlgorithmIds );
+  QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms->setValue( mFavoriteAlgorithmIds );
   emit changed();
 }
 
-void QgsProcessingFavoriteAlgorithmLog::remove( const QString &id )
+void QgsProcessingFavoriteAlgorithmManager::remove( const QString &id )
 {
   if ( !mFavoriteAlgorithmIds.contains( id ) )
   {
@@ -52,18 +52,18 @@ void QgsProcessingFavoriteAlgorithmLog::remove( const QString &id )
   }
 
   mFavoriteAlgorithmIds.removeAll( id );
-  QgsProcessingFavoriteAlgorithmLog::settingsFavoriteAlgorithms->setValue( mFavoriteAlgorithmIds );
+  QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms->setValue( mFavoriteAlgorithmIds );
   emit changed();
 }
 
-void QgsProcessingFavoriteAlgorithmLog::clear()
+void QgsProcessingFavoriteAlgorithmManager::clear()
 {
   mFavoriteAlgorithmIds.clear();
-  QgsProcessingFavoriteAlgorithmLog::settingsFavoriteAlgorithms->setValue( mFavoriteAlgorithmIds );
+  QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms->setValue( mFavoriteAlgorithmIds );
   emit changed();
 }
 
-bool QgsProcessingFavoriteAlgorithmLog::isFavorite( const QString &id )
+bool QgsProcessingFavoriteAlgorithmManager::isFavorite( const QString &id )
 {
   return mFavoriteAlgorithmIds.contains( id );
 }

@@ -28,7 +28,7 @@ class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
 class QgsProcessingToolboxModelGroupNode;
 class QgsProcessingRecentAlgorithmLog;
-class QgsProcessingFavoriteAlgorithmLog;
+class QgsProcessingFavoriteAlgorithmManager;
 
 ///@cond PRIVATE
 
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
       Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ), //!< Group node
       Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ), //!< Algorithm node
       Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ), //!< Recent algorithms node
-      Favorite SIP_MONKEYPATCH_COMPAT_NAME( NodeFavorite ), //!< Favorites algorithms node, since QGIS 3.40
+      Favorite, //!< Favorites algorithms node, since QGIS 3.40
     };
     Q_ENUM( NodeType )
     // *INDENT-ON*
@@ -338,12 +338,12 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * If \a recentLog is specified then it will be used to create a "Recently used" top
      * level group containing recently used algorithms.
      *
-     * If \a favoriteLog is specified then it will be used to create a "Favorites" top
+     * If \a favoriteManager is specified then it will be used to create a "Favorites" top
      * level group containing favorite algorithms. Since QGIS 3.40
      */
     QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr,
                                QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
-                               QgsProcessingFavoriteAlgorithmLog *favoriteLog = nullptr );
+                               QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -434,7 +434,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     QPointer< QgsProcessingRegistry > mRegistry;
     QPointer< QgsProcessingRecentAlgorithmLog > mRecentLog;
-    QPointer< QgsProcessingFavoriteAlgorithmLog > mFavoriteLog;
+    QPointer< QgsProcessingFavoriteAlgorithmManager > mFavoriteManager;
 
     std::unique_ptr< QgsProcessingToolboxModelGroupNode > mRootNode;
     QgsProcessingToolboxModelRecentNode *mRecentNode = nullptr;
@@ -496,13 +496,13 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      * If \a recentLog is specified then it will be used to create a "Recently used" top
      * level group containing recently used algorithms.
      *
-     * If \a favoriteLog is specified then it will be used to create a "Favorites" top
+     * If \a favoriteManager is specified then it will be used to create a "Favorites" top
      * level group containing favorite algorithms. SInce QGIS 3.40
      */
     explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
         QgsProcessingRegistry *registry = nullptr,
         QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
-        QgsProcessingFavoriteAlgorithmLog *favoriteLog = nullptr );
+        QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
 
     /**
      * Returns the underlying source Processing toolbox model.

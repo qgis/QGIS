@@ -18,7 +18,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingtoolboxmodel.h"
 #include "qgsprocessingrecentalgorithmlog.h"
-#include "qgsprocessingfavoritealgorithmlog.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingtoolboxtreeview.h"
 #include "qgssettings.h"
 
@@ -142,8 +142,8 @@ void TestQgsProcessingModel::testModel()
 {
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
-  QgsProcessingFavoriteAlgorithmLog favoriteLog;
-  QgsProcessingToolboxModel model( nullptr, &registry, &recentLog, &favoriteLog );
+  QgsProcessingFavoriteAlgorithmManager favoriteManager;
+  QgsProcessingToolboxModel model( nullptr, &registry, &recentLog, &favoriteManager );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( &model, this ); // for model validity checking
@@ -342,23 +342,23 @@ void TestQgsProcessingModel::testModel()
   QModelIndex favoriteIndex = model.index( 1, 0, QModelIndex() );
   QCOMPARE( model.data( favoriteIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Favorites" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 0 );
-  favoriteLog.add( QStringLiteral( "p5:a5" ) );
+  favoriteManager.add( QStringLiteral( "p5:a5" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p5:a5" ) );
-  favoriteLog.add( QStringLiteral( "not valid" ) );
+  favoriteManager.add( QStringLiteral( "not valid" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p5:a5" ) );
-  favoriteLog.add( QStringLiteral( "p4:a3" ) );
+  favoriteManager.add( QStringLiteral( "p4:a3" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 2 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p5:a5" ) );
   QCOMPARE( model.data( model.index( 1, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p4:a3" ) );
-  favoriteLog.remove( QStringLiteral( "p5:a5" ) );
+  favoriteManager.remove( QStringLiteral( "p5:a5" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p4:a3" ) );
-  favoriteLog.clear();
+  favoriteManager.clear();
   QCOMPARE( model.rowCount( favoriteIndex ), 0 );
-  favoriteLog.add( QStringLiteral( "p5:a5" ) );
-  favoriteLog.add( QStringLiteral( "p4:a3" ) );
+  favoriteManager.add( QStringLiteral( "p5:a5" ) );
+  favoriteManager.add( QStringLiteral( "p4:a3" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 2 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p5:a5" ) );
   QCOMPARE( model.data( model.index( 1, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p4:a3" ) );
@@ -431,8 +431,8 @@ void TestQgsProcessingModel::testProxyModel()
   QgsSettings().clear();
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
-  QgsProcessingFavoriteAlgorithmLog favoriteLog;
-  QgsProcessingToolboxProxyModel model( nullptr, &registry, &recentLog, &favoriteLog );
+  QgsProcessingFavoriteAlgorithmManager favoriteManager;
+  QgsProcessingToolboxProxyModel model( nullptr, &registry, &recentLog, &favoriteManager );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( &model, this ); // for model validity checking
@@ -589,26 +589,26 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 2, 0, recentIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p1:a2" ) );
 
   // check sort order of favorite algorithms
-  favoriteLog.add( QStringLiteral( "p2:a1" ) );
+  favoriteManager.add( QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.rowCount(), 6 );
   const QModelIndex favoriteIndex = model.index( 1, 0, QModelIndex() );
   QCOMPARE( model.data( favoriteIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Favorites" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p2:a1" ) );
-  favoriteLog.add( QStringLiteral( "p1:a2" ) );
+  favoriteManager.add( QStringLiteral( "p1:a2" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 2 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.data( model.index( 1, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p1:a2" ) );
-  favoriteLog.add( QStringLiteral( "qgis:a1" ) );
+  favoriteManager.add( QStringLiteral( "qgis:a1" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 3 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.data( model.index( 1, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "qgis:a1" ) );
   QCOMPARE( model.data( model.index( 2, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p1:a2" ) );
-  favoriteLog.remove( QStringLiteral( "p2:a1" ) );
+  favoriteManager.remove( QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 2 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "qgis:a1" ) );
   QCOMPARE( model.data( model.index( 1, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p1:a2" ) );
-  favoriteLog.add( QStringLiteral( "p2:a1" ) );
+  favoriteManager.add( QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 3 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "qgis:a1" ) );
   QCOMPARE( model.data( model.index( 1, 0, favoriteIndex ), static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p2:a1" ) );
@@ -628,8 +628,8 @@ void TestQgsProcessingModel::testView()
   QgsSettings().clear();
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
-  QgsProcessingFavoriteAlgorithmLog favoriteLog;
-  QgsProcessingToolboxTreeView view( nullptr, &registry, &recentLog, &favoriteLog );
+  QgsProcessingFavoriteAlgorithmManager favoriteManager;
+  QgsProcessingToolboxTreeView view( nullptr, &registry, &recentLog, &favoriteManager );
 
   // Check view model consistency
   QVERIFY( view.mModel );
@@ -727,8 +727,8 @@ void TestQgsProcessingModel::testKnownIssues()
 {
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
-  QgsProcessingFavoriteAlgorithmLog favoriteLog;
-  const QgsProcessingToolboxModel model( nullptr, &registry, &recentLog, &favoriteLog );
+  QgsProcessingFavoriteAlgorithmManager favoriteManager;
+  const QgsProcessingToolboxModel model( nullptr, &registry, &recentLog, &favoriteManager );
   DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", Qgis::ProcessingAlgorithmFlag::KnownIssues, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
   DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", Qgis::ProcessingAlgorithmFlags(), QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
   DummyProvider *p = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << a1 << a2 );
@@ -743,7 +743,7 @@ void TestQgsProcessingModel::testKnownIssues()
   QVERIFY( !model.data( model.index( 1, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
   QCOMPARE( model.data( model.index( 1, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#000000" ) );
 
-  QgsProcessingToolboxProxyModel proxyModel( nullptr, &registry, &recentLog, &favoriteLog );
+  QgsProcessingToolboxProxyModel proxyModel( nullptr, &registry, &recentLog, &favoriteManager );
   providerIndex = proxyModel.index( 0, 0, QModelIndex() );
   group1Index = proxyModel.index( 0, 0, providerIndex );
   // by default known issues are filtered out

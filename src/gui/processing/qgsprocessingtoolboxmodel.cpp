@@ -18,7 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingrecentalgorithmlog.h"
-#include "qgsprocessingfavoritealgorithmlog.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 #include <functional>
 #include <QPalette>
 #include <QMimeData>
@@ -116,11 +116,11 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm(
 // QgsProcessingToolboxModel
 //
 
-QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmLog *favoriteLog )
+QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
   : QAbstractItemModel( parent )
   , mRegistry( registry ? registry : QgsApplication::processingRegistry() )
   , mRecentLog( recentLog )
-  , mFavoriteLog( favoriteLog )
+  , mFavoriteManager( favoriteManager )
   , mRootNode( std::make_unique< QgsProcessingToolboxModelGroupNode >( QString(), QString() ) )
 {
   rebuild();
@@ -128,8 +128,8 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   if ( mRecentLog )
     connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [ = ] { repopulateRecentAlgorithms(); } );
 
-  if ( mFavoriteLog )
-    connect( mFavoriteLog, &QgsProcessingFavoriteAlgorithmLog::changed, this, [ = ] { repopulateFavoriteAlgorithms(); } );
+  if ( mFavoriteManager )
+    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [ = ] { repopulateFavoriteAlgorithms(); } );
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
@@ -152,7 +152,7 @@ void QgsProcessingToolboxModel::rebuild()
     repopulateRecentAlgorithms( true );
   }
 
-  if ( mFavoriteLog )
+  if ( mFavoriteManager )
   {
     std::unique_ptr< QgsProcessingToolboxModelFavoriteNode > favoriteNode = std::make_unique< QgsProcessingToolboxModelFavoriteNode >();
     // cppcheck-suppress danglingLifetime
@@ -230,10 +230,10 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
 void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
 {
-  if ( !mFavoriteNode || !mFavoriteLog )
+  if ( !mFavoriteNode || !mFavoriteManager )
     return;
 
-  // favorite node should be under the Recent node if it is precent or
+  // favorite node should be under the Recent node if it is present or
   // the first top-level item in the toolbox if Recent node is not present
   int idx = ( mRecentNode && mRecentLog ) ? 1 : 0;
 
@@ -253,7 +253,7 @@ void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
     return;
   }
 
-  const QStringList favoriteAlgIds = mFavoriteLog->favoriteAlgorithmIds();
+  const QStringList favoriteAlgIds = mFavoriteManager->favoriteAlgorithmIds();
   QList< const QgsProcessingAlgorithm * > favoriteAlgorithms;
   favoriteAlgorithms.reserve( favoriteAlgIds.count() );
   for ( const QString &id : favoriteAlgIds )
@@ -758,9 +758,9 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 //
 
 QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry,
-    QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmLog *favoriteLog )
+    QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
   : QSortFilterProxyModel( parent )
-  , mModel( new QgsProcessingToolboxModel( this, registry, recentLog, favoriteLog ) )
+  , mModel( new QgsProcessingToolboxModel( this, registry, recentLog, favoriteManager ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );

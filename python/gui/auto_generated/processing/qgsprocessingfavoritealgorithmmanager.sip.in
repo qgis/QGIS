@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/processing/qgsprocessingfavoritealgorithmlog.h               *
+ * src/gui/processing/qgsprocessingfavoritealgorithmmanager.h           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,15 +10,15 @@
 
 
 
-class QgsProcessingFavoriteAlgorithmLog : QObject
+class QgsProcessingFavoriteAlgorithmManager : QObject
 {
 %Docstring(signature="appended")
-A log for tracking favorite Processing algorithms.
+A manager for tracking favorite Processing algorithms.
 
-:py:class:`QgsProcessingFavoriteAlgorithmLog` is not usually directly created, instead
-use the instance accessible through :py:func:`QgsGui.processingFavoriteAlgorithmLog()`.
+:py:class:`QgsProcessingFavoriteAlgorithmManager` is not usually directly created, instead
+use the instance accessible through :py:func:`QgsGui.processingFavoriteAlgorithmManager()`.
 
-The log contents are saved and restored via :py:class:`QgsSettings`.
+The favorite algorithms are saved and restored via :py:class:`QgsSettings`.
 
 .. note::
 
@@ -28,13 +28,13 @@ The log contents are saved and restored via :py:class:`QgsSettings`.
 %End
 
 %TypeHeaderCode
-#include "qgsprocessingfavoritealgorithmlog.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 %End
   public:
 
-    QgsProcessingFavoriteAlgorithmLog( QObject *parent = 0 );
+    QgsProcessingFavoriteAlgorithmManager( QObject *parent = 0 );
 %Docstring
-Constructor for QgsProcessingFavoriteAlgorithmLog, with the specified
+Constructor for QgsProcessingFavoriteAlgorithmManager, with the specified
 ``parent`` object.
 %End
 
@@ -47,7 +47,7 @@ Returns a list of the IDs of favorite Processing algorithms.
 %Docstring
 Adds the algorithm with matching ``id`` to the favorite algorithms list.
 
-If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmLog.changed` signal
+If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal
 will be emitted.
 %End
 
@@ -55,7 +55,7 @@ will be emitted.
 %Docstring
 Removes the algorithm with matching ``id`` from the favorite algorithms list.
 
-If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmLog.changed` signal
+If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal
 will be emitted.
 %End
 
@@ -85,7 +85,7 @@ is removed from the list.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/processing/qgsprocessingfavoritealgorithmlog.h               *
+ * src/gui/processing/qgsprocessingfavoritealgorithmmanager.h           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

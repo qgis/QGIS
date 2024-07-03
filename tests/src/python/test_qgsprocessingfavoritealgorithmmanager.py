@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsProcessingFavoriteAlgorithmLog.
+"""QGIS Unit tests for QgsProcessingFavoriteAlgorithmManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -12,14 +12,14 @@ __copyright__ = 'Copyright 2024, The QGIS Project'
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsSettings
-from qgis.gui import QgsGui, QgsProcessingFavoriteAlgorithmLog
+from qgis.gui import QgsGui, QgsProcessingFavoriteAlgorithmManager
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProcessingFavoriteAlgorithmLog(QgisTestCase):
+class TestQgsProcessingFavoriteAlgorithmManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -31,7 +31,7 @@ class TestQgsProcessingFavoriteAlgorithmLog(QgisTestCase):
         QgsSettings().clear()
 
     def test_log(self):
-        log = QgsProcessingFavoriteAlgorithmLog()
+        log = QgsProcessingFavoriteAlgorithmManager()
         self.assertFalse(log.favoriteAlgorithmIds())
         spy = QSignalSpy(log.changed)
 
@@ -79,14 +79,14 @@ class TestQgsProcessingFavoriteAlgorithmLog(QgisTestCase):
         self.assertEqual(len(spy), 9)
 
         # test that log has been saved to QgsSettings
-        log2 = QgsProcessingFavoriteAlgorithmLog()
+        log2 = QgsProcessingFavoriteAlgorithmManager()
         self.assertEqual(log2.favoriteAlgorithmIds(), ['test2', 'test', 'test3', 'test4', 'test5', 'test6', 'test7'])
 
         log2.clear()
         self.assertEqual(log2.favoriteAlgorithmIds(), [])
 
     def test_gui_instance(self):
-        self.assertIsNotNone(QgsGui.instance().processingFavoriteAlgorithmLog())
+        self.assertIsNotNone(QgsGui.instance().processingFavoriteAlgorithmManager())
 
 
 if __name__ == '__main__':

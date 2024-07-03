@@ -16,11 +16,10 @@ QgsProcessingToolboxModelNode.NodeRecent = QgsProcessingToolboxModelNode.NodeTyp
 QgsProcessingToolboxModelNode.NodeType.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeRecent.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeRecent.__doc__ = "Recent algorithms node"
-QgsProcessingToolboxModelNode.NodeFavorite = QgsProcessingToolboxModelNode.NodeType.Favorite
-QgsProcessingToolboxModelNode.NodeType.NodeFavorite = QgsProcessingToolboxModelNode.NodeType.Favorite
-QgsProcessingToolboxModelNode.NodeFavorite.is_monkey_patched = True
-QgsProcessingToolboxModelNode.NodeFavorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
-QgsProcessingToolboxModelNode.NodeType.__doc__ = "Enumeration of possible model node types\n\n" + '* ``NodeProvider``: ' + QgsProcessingToolboxModelNode.NodeType.Provider.__doc__ + '\n' + '* ``NodeGroup``: ' + QgsProcessingToolboxModelNode.NodeType.Group.__doc__ + '\n' + '* ``NodeAlgorithm``: ' + QgsProcessingToolboxModelNode.NodeType.Algorithm.__doc__ + '\n' + '* ``NodeRecent``: ' + QgsProcessingToolboxModelNode.NodeType.Recent.__doc__ + '\n' + '* ``NodeFavorite``: ' + QgsProcessingToolboxModelNode.NodeType.Favorite.__doc__
+QgsProcessingToolboxModelNode.Favorite = QgsProcessingToolboxModelNode.NodeType.Favorite
+QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
+QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
+QgsProcessingToolboxModelNode.NodeType.__doc__ = "Enumeration of possible model node types\n\n" + '* ``NodeProvider``: ' + QgsProcessingToolboxModelNode.NodeType.Provider.__doc__ + '\n' + '* ``NodeGroup``: ' + QgsProcessingToolboxModelNode.NodeType.Group.__doc__ + '\n' + '* ``NodeAlgorithm``: ' + QgsProcessingToolboxModelNode.NodeType.Algorithm.__doc__ + '\n' + '* ``NodeRecent``: ' + QgsProcessingToolboxModelNode.NodeType.Recent.__doc__ + '\n' + '* ``Favorite``: ' + QgsProcessingToolboxModelNode.NodeType.Favorite.__doc__
 # --
 QgsProcessingToolboxModelNode.NodeType.baseClass = QgsProcessingToolboxModelNode
 QgsProcessingToolboxModel.Roles = QgsProcessingToolboxModel.CustomRole
