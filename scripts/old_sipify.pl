@@ -185,6 +185,7 @@ my @ALLOWED_NON_CLASS_ENUMS = (
   "QgsDiagramSettings::DiagramOrientation",
   "QgsDiagramSettings::Direction",
   "QgsDiagramSettings::LabelPlacementMethod",
+  "QgsDiagramSettings::StackedDiagramMode",
   "QgsDoubleSpinBox::ClearValueMode",
   "QgsDualView::FeatureListBrowsingAction",
   "QgsDualView::ViewMode",

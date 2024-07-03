@@ -141,6 +141,7 @@ set(QGIS_CORE_SRCS
   diagram/qgshistogramdiagram.cpp
   diagram/qgspiediagram.cpp
   diagram/qgsstackedbardiagram.cpp
+  diagram/qgsstackeddiagram.cpp
   diagram/qgstextdiagram.cpp
 
   editform/qgseditformconfig.cpp
@@ -1414,6 +1415,7 @@ set(QGIS_CORE_HDRS
   diagram/qgshistogramdiagram.h
   diagram/qgspiediagram.h
   diagram/qgsstackedbardiagram.h
+  diagram/qgsstackeddiagram.h
   diagram/qgstextdiagram.h
 
   dxf/qgsdxfexport.h

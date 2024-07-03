@@ -101,7 +101,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   icon = QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) );
   mDiagramTypeComboBox->addItem( icon, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
   icon = QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) );
-  mDiagramTypeComboBox->addItem( icon, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
+  mDiagramTypeComboBox->addItem( icon, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED_BAR );
   mDiagramTypeComboBox->blockSignals( false );
 
   mAxisLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
@@ -575,7 +575,7 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mDiagramFontButton->hide();
     }
 
-    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType || DIAGRAM_NAME_STACKED == mDiagramType )
+    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType || DIAGRAM_NAME_STACKED_BAR == mDiagramType )
     {
       mBarWidthLabel->show();
       mBarWidthSpinBox->show();
@@ -586,8 +586,8 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mShowAxisGroupBox->show();
       if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
         mAttributeBasedScalingRadio->setChecked( true );
-      mFixedSizeRadio->setEnabled( DIAGRAM_NAME_STACKED == mDiagramType );
-      mDiagramSizeSpinBox->setEnabled( DIAGRAM_NAME_STACKED == mDiagramType );
+      mFixedSizeRadio->setEnabled( DIAGRAM_NAME_STACKED_BAR == mDiagramType );
+      mDiagramSizeSpinBox->setEnabled( DIAGRAM_NAME_STACKED_BAR == mDiagramType );
       mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
       mSizeLabel->setText( tr( "Bar length" ) );
       mFrameIncreaseSize->setVisible( false );
@@ -796,7 +796,7 @@ void QgsDiagramProperties::apply()
   {
     diagram = std::make_unique< QgsPieDiagram >();
   }
-  else if ( mDiagramType == DIAGRAM_NAME_STACKED )
+  else if ( mDiagramType == DIAGRAM_NAME_STACKED_BAR )
   {
     diagram = std::make_unique< QgsStackedBarDiagram >();
   }
@@ -832,7 +832,7 @@ void QgsDiagramProperties::apply()
   ds.lineSizeUnit = mDiagramLineUnitComboBox->unit();
   ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
-  ds.scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED ) ? false : mScaleDependencyComboBox->currentData().toBool();
+  ds.scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED_BAR ) ? false : mScaleDependencyComboBox->currentData().toBool();
 
   if ( mIncreaseSmallDiagramsCheck->isChecked() )
   {

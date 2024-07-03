@@ -16,7 +16,7 @@
 #ifndef QGSSTACKEDBARDIAGRAM_H
 #define QGSSTACKEDBARDIAGRAM_H
 
-#define DIAGRAM_NAME_STACKED "Stacked"
+#define DIAGRAM_NAME_STACKED_BAR "StackedBar"
 
 #include "qgis_core.h"
 #include "qgis.h"

@@ -321,6 +321,12 @@ Stores the settings for rendering a single diagram.
       Counterclockwise,
     };
 
+    enum StackedDiagramMode /BaseType=IntEnum/
+    {
+      Horizontal,
+      Vertical
+    };
+
     QgsDiagramSettings();
     ~QgsDiagramSettings();
     QgsDiagramSettings( const QgsDiagramSettings &other );
@@ -346,6 +352,7 @@ Stores the settings for rendering a single diagram.
     double penWidth;
     LabelPlacementMethod labelPlacementMethod;
     DiagramOrientation diagramOrientation;
+    StackedDiagramMode stackedDiagramMode;
     double barWidth;
 
     double opacity;
@@ -442,6 +449,88 @@ Returns the map unit scale for the content spacing.
 .. seealso:: :py:func:`spacingUnit`
 
 .. versionadded:: 3.12
+%End
+
+    double stackedSDiagramSpacing() const;
+%Docstring
+Returns the spacing between subdiagrams in a stacked diagram.
+
+Spacing units can be retrieved by calling :py:func:`~QgsDiagramSettings.spacingUnit`.
+
+.. seealso:: :py:func:`setStackedDiagramSpacing`
+
+.. seealso:: :py:func:`stackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    void setStackedDiagramSpacing( double spacing );
+%Docstring
+Sets the ``spacing`` between subdiagrams in a stacked diagram.
+
+Spacing units are set via :py:func:`~QgsDiagramSettings.setStackedDiagramSpacingUnit`.
+
+.. seealso:: :py:func:`stackedSDiagramSpacing`
+
+.. seealso:: :py:func:`setStackedSDiagramSpacingUnit`
+
+.. seealso:: :py:func:`setStackedSDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    void setStackedDiagramSpacingUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`stackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`setStackedDiagramSpacing`
+
+.. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::RenderUnit stackedDiagramSpacingUnit() const;
+%Docstring
+Returns the units for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`setStackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`stackedDiagramSpacing`
+
+.. seealso:: :py:func:`stackedDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    void setStackedDiagramSpacingMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`stackedDiagramSpacingMapUnitScale`
+
+.. seealso:: :py:func:`setStackedDiagramSpacing`
+
+.. seealso:: :py:func:`setStackedDiagramSpacingUnit`
+
+.. versionadded:: 3.40
+%End
+
+    const QgsMapUnitScale &stackedDiagramSpacingMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale`
+
+.. seealso:: :py:func:`mStackedDiagramSpacing`
+
+.. seealso:: :py:func:`stackedDiagramSpacingUnit`
+
+.. versionadded:: 3.40
 %End
 
     Direction direction() const;
@@ -674,18 +763,23 @@ Sets whether the renderer will show legend items for diagram attributes.
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
 
-    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = 0 ) const = 0;
 %Docstring
 Returns diagram settings for a feature (or ``False`` if the diagram for the feature is not to be rendered). Used internally within :py:func:`~QgsDiagramRenderer.renderDiagram`
 
 :param feature: the feature
 :param c: render context
 :param s: out: diagram settings for the feature
+:param subDiagram: SubDiagram object for stacked diagram case
 %End
 
-    virtual QSizeF diagramSize( const QgsFeature &features, const QgsRenderContext &c ) const = 0;
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagram *subDiagram = 0 ) const = 0;
 %Docstring
 Returns size of the diagram (in painter units) or an invalid size in case of error
+
+:param feature: the feature
+:param c: render context
+:param subDiagram: SubDiagram object for stacked diagram case
 %End
 
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;
@@ -750,10 +844,10 @@ Renders the diagrams for all features with the same settings
 
 
   protected:
-    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = 0 ) const;
 
 
-    virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
+    virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c, QgsDiagram *subDiagram = 0 ) const;
 
 
 };
@@ -843,10 +937,10 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
 %End
 
   protected:
-    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = 0 ) const;
 
 
-    virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
+    virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c, QgsDiagram *subDiagram = 0 ) const;
 
 
 };

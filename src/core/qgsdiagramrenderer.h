@@ -378,6 +378,13 @@ class CORE_EXPORT QgsDiagramSettings
       Counterclockwise, //!< Counter-clockwise orientation
     };
 
+    //! Orientation of the stacked diagrams
+    enum StackedDiagramMode
+    {
+      Horizontal,
+      Vertical
+    };
+
     QgsDiagramSettings();
     ~QgsDiagramSettings();
     QgsDiagramSettings( const QgsDiagramSettings &other );
@@ -416,6 +423,7 @@ class CORE_EXPORT QgsDiagramSettings
     double penWidth = 0.0;
     LabelPlacementMethod labelPlacementMethod = QgsDiagramSettings::Height;
     DiagramOrientation diagramOrientation = QgsDiagramSettings::Up;
+    StackedDiagramMode stackedDiagramMode = QgsDiagramSettings::Horizontal;
     double barWidth = 5.0;
 
     //! Opacity, from 0 (transparent) to 1.0 (opaque)
@@ -515,6 +523,71 @@ class CORE_EXPORT QgsDiagramSettings
     const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
 
     /**
+     * Returns the spacing between subdiagrams in a stacked diagram.
+     *
+     * Spacing units can be retrieved by calling spacingUnit().
+     *
+     * \see setStackedDiagramSpacing()
+     * \see stackedDiagramSpacingUnit()
+     * \see spacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+     */
+    double stackedSDiagramSpacing() const { return mStackedDiagramSpacing; }
+
+    /**
+     * Sets the \a spacing between subdiagrams in a stacked diagram.
+     *
+     * Spacing units are set via setStackedDiagramSpacingUnit().
+     *
+     * \see stackedSDiagramSpacing()
+     * \see setStackedSDiagramSpacingUnit()
+     * \see setStackedSDiagramSpacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+     */
+    void setStackedDiagramSpacing( double spacing ) { mStackedDiagramSpacing = spacing; }
+
+    /**
+     * Sets the \a unit for the spacing between subdiagrams in a stacked diagram.
+     * \see stackedDiagramSpacingUnit()
+     * \see setStackedDiagramSpacing()
+     * \see setStackedDiagramSpacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+    */
+    void setStackedDiagramSpacingUnit( Qgis::RenderUnit unit ) { mStackedDiagramSpacingUnit = unit; }
+
+    /**
+     * Returns the units for the spacing between subdiagrams in a stacked diagram.
+     * \see setStackedDiagramSpacingUnit()
+     * \see stackedDiagramSpacing()
+     * \see stackedDiagramSpacingMapUnitScale()
+     * \since QGIS 3.40
+    */
+    Qgis::RenderUnit stackedDiagramSpacingUnit() const { return mStackedDiagramSpacingUnit; }
+
+    /**
+     * Sets the map unit \a scale for the spacing between subdiagrams in a stacked diagram.
+     * \see stackedDiagramSpacingMapUnitScale()
+     * \see setStackedDiagramSpacing()
+     * \see setStackedDiagramSpacingUnit()
+     *
+     * \since QGIS 3.40
+    */
+    void setStackedDiagramSpacingMapUnitScale( const QgsMapUnitScale &scale ) { mStackedDiagramSpacingMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the spacing between subdiagrams in a stacked diagram.
+     * \see setStackedDiagramSpacingMapUnitScale();
+     * \see mStackedDiagramSpacing()
+     * \see stackedDiagramSpacingUnit()
+     *
+     * \since QGIS 3.40
+    */
+    const QgsMapUnitScale &stackedDiagramSpacingMapUnitScale() const { return mStackedDiagramSpacingMapUnitScale; }
+
+    /**
      * Returns the chart's angular direction.
      *
      * \see setDirection()
@@ -608,6 +681,11 @@ class CORE_EXPORT QgsDiagramSettings
     double mSpacing = 0;
     Qgis::RenderUnit mSpacingUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSpacingMapUnitScale;
+
+    double mStackedDiagramSpacing = 0;
+    Qgis::RenderUnit mStackedDiagramSpacingUnit = Qgis::RenderUnit::Millimeters;
+    QgsMapUnitScale mStackedDiagramSpacingMapUnitScale;
+
     Direction mDirection = Counterclockwise;
 
     bool mShowAxis = false;
@@ -734,11 +812,17 @@ class CORE_EXPORT QgsDiagramRenderer
      * \param feature the feature
      * \param c render context
      * \param s out: diagram settings for the feature
+     * \param subDiagram SubDiagram object for stacked diagram case
      */
-    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = nullptr ) const = 0;
 
-    //! Returns size of the diagram (in painter units) or an invalid size in case of error
-    virtual QSizeF diagramSize( const QgsFeature &features, const QgsRenderContext &c ) const = 0;
+    /**
+     * Returns size of the diagram (in painter units) or an invalid size in case of error
+     * \param feature the feature
+     * \param c render context
+     * \param subDiagram SubDiagram object for stacked diagram case
+     */
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagram *subDiagram = nullptr ) const = 0;
 
     //! Converts size from mm to map units
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;
@@ -793,9 +877,9 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
   protected:
-    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = nullptr ) const override;
 
-    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
+    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c, QgsDiagram *subDiagram = nullptr ) const override;
 
   private:
     QgsDiagramSettings mSettings;
@@ -874,9 +958,9 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 
   protected:
-    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram = nullptr ) const override;
 
-    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
+    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c, QgsDiagram *subDiagram = nullptr ) const override;
 
   private:
     QgsDiagramSettings mSettings;

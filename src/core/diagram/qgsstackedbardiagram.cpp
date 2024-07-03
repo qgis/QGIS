@@ -117,7 +117,7 @@ double QgsStackedBarDiagram::legendSize( double value, const QgsDiagramSettings 
 
 QString QgsStackedBarDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_STACKED;
+  return DIAGRAM_NAME_STACKED_BAR;
 }
 
 QSizeF QgsStackedBarDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

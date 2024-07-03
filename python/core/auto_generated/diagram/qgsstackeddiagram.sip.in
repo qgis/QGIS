@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/diagram/qgsstackeddiagram.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsStackedDiagram : QgsDiagram /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+A diagram composed of several subdiagrams.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsstackeddiagram.h"
+%End
+  public:
+
+    struct DiagramData
+    {
+      QgsDiagram *diagram;
+      QgsDiagramSettings *settings;
+    };
+
+    QgsStackedDiagram();
+
+    virtual QgsStackedDiagram *clone() const /Factory/;
+
+
+    void addSubDiagram( QgsDiagram *diagram, QgsDiagramSettings *s );
+    QList< QgsDiagram * > subDiagrams() const;
+    QgsDiagramSettings *subDiagramSettings( const QgsDiagram *diagram );
+    void subDiagramPosition( QPointF &newPos, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramSettings &subSettings );
+
+    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position );
+
+
+    virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s );
+
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is );
+
+    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
+
+    virtual QString diagramName() const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/diagram/qgsstackeddiagram.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
