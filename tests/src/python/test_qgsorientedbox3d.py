@@ -316,6 +316,31 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertTrue(a1.intersects(b1))
         self.assertTrue(b1.intersects(a1))
 
+    def test_eulerangles(self):
+        # no rotation
+        box1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0), QgsVector3D(0, 0, 1)])
+        self.assertEqual(box1.eulerAngles(), QgsVector3D(0.0, 0.0, 0.0))
+
+        # 90 degree x axis rotation
+        box2 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 0, -1), QgsVector3D(0, 1, 0)])
+        self.assertAlmostEqual(box2.eulerAngles().x(), 90.0, delta=0.02)
+        self.assertEqual(box2.eulerAngles().y(), 0)
+        self.assertEqual(box2.eulerAngles().z(), 0)
+
+        # 45 degree z axis rotation
+        box3 = QgsOrientedBox3D(QgsVector3D(7, 5, 2), [QgsVector3D(0.7071, -0.7071, 0), QgsVector3D(0.7071, 0.7071, 0), QgsVector3D(0, 0, 1)])
+        self.assertEqual(box3.eulerAngles(), QgsVector3D(0.0, 0.0, 45.0))
+
+        # 30 degree x axis + 60 degree axis y axis rotation
+        box4 = QgsOrientedBox3D([1, 2, 3],
+                                [math.cos(math.pi / 3), math.sin(math.pi / 3) * math.sin(math.pi / 6), math.sin(math.pi / 3) * math.cos(math.pi / 6),
+                                 0, math.cos(math.pi / 6), -math.sin(math.pi / 6),
+                                 -math.sin(math.pi / 3), math.cos(math.pi / 3) * math.sin(math.pi / 6), math.cos(math.pi / 3) * math.cos(math.pi / 6)])
+        angles = box4.eulerAngles()
+        self.assertAlmostEqual(angles.x(), 30.0, delta=0.00001)
+        self.assertAlmostEqual(angles.y(), 60.0, delta=0.00001)
+        self.assertEqual(angles.z(), 0.0)
+
 
 if __name__ == '__main__':
     unittest.main()

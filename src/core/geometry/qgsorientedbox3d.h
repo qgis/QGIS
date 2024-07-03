@@ -161,6 +161,13 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     bool intersects( const QgsOrientedBox3D &other ) const SIP_HOLDGIL;
 
+
+    /**
+     * Calculates roll, pitch, and yaw Euler angles (in degrees) that corresponds to the rotation of the box
+     * \since QGIS 3.40
+     */
+    QgsVector3D eulerAngles() const SIP_HOLDGIL;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
