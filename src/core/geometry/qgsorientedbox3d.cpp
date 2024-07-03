@@ -22,6 +22,8 @@
 #include "qgsmatrix4x4.h"
 #include "qgsvector3d.h"
 
+#include <QQuaternion>
+
 QgsOrientedBox3D::QgsOrientedBox3D() = default;
 
 QgsOrientedBox3D::QgsOrientedBox3D( const QList<double> &center, const QList<double> &halfAxes )
@@ -242,4 +244,26 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
   }
 
   return true;
+}
+
+QgsVector3D QgsOrientedBox3D::eulerAngles() const
+{
+  QgsVector3D halfAxeX = QgsVector3D( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] );
+  QgsVector3D halfAxeY = QgsVector3D( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] );
+  QgsVector3D halfAxeZ = QgsVector3D( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] );
+  halfAxeX.normalize();
+  halfAxeY.normalize();
+  halfAxeZ.normalize();
+
+  const float rotationMatrixData[9] =
+  {
+    static_cast<float>( halfAxeX.x() ), static_cast<float>( halfAxeX.y() ), static_cast<float>( halfAxeX.z() ),
+    static_cast<float>( halfAxeY.x() ), static_cast<float>( halfAxeY.y() ), static_cast<float>( halfAxeY.z() ),
+    static_cast<float>( halfAxeZ.x() ), static_cast<float>( halfAxeZ.y() ), static_cast<float>( halfAxeZ.z() )
+  };
+
+  const QMatrix3x3 rotationMatrix( rotationMatrixData );
+  const QVector3D eulerAngles = QQuaternion::fromRotationMatrix( rotationMatrix ).toEulerAngles();
+
+  return QgsVector3D( eulerAngles );
 }
