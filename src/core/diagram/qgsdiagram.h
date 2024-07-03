@@ -119,7 +119,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     /**
      * Calculates a length to match the current settings and rendering context
      *  \param l    The length to convert
-     *  \param s    Unused
+     *  \param s    The settings that specify the size type
      *  \param c    The rendering specifying the proper scale units for pixel conversion
      *
      *  \returns The converted length for rendering

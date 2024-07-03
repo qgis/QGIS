@@ -117,7 +117,6 @@ QString QgsHistogramDiagram::diagramName() const
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c )
   QSizeF size;
 
   if ( attributes.isEmpty() )
@@ -207,7 +206,6 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     baseX += maxBleed;
     baseY -= maxBleed;
   }
-
 
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
