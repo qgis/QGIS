@@ -17,9 +17,9 @@
       <ogr:max>Test</ogr:max>
       <ogr:min_length>0</ogr:min_length>
       <ogr:max_length>4</ogr:max_length>
-      <ogr:mean_length xsi:nil="true"/>
-      <ogr:minority>Test</ogr:minority>
-      <ogr:majority xsi:nil="true"/>
+      <ogr:mean_length>3</ogr:mean_length>
+      <ogr:minority xsi:nil="true"/>
+      <ogr:majority>Test</ogr:majority>
     </ogr:statistics_text>
   </ogr:featureMember>
 </ogr:FeatureCollection>

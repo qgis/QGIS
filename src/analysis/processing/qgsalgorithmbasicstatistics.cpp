@@ -174,15 +174,15 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 
   if ( field.isNumeric() )
   {
-    outputs = calculateNumericStatistics( field, features, count, sink.get(), data, feedback );
+    outputs = calculateNumericStatistics( fieldIndex, features, count, sink.get(), data, feedback );
   }
   else if ( field.isDateOrTime() )
   {
-    outputs = calculateDateTimeStatistics( field, features, count, sink.get(), data, feedback );
+    outputs = calculateDateTimeStatistics( fieldIndex, field, features, count, sink.get(), data, feedback );
   }
   else
   {
-    outputs = calculateStringStatistics( field, features, count, sink.get(), data, feedback );
+    outputs = calculateStringStatistics( fieldIndex, features, count, sink.get(), data, feedback );
   }
 
   if ( !outputHtml.isEmpty() )
@@ -213,7 +213,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -228,7 +228,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( QgsField fi
       break;
     }
 
-    stat.addVariant( f.attribute( field.name() ) );
+    stat.addVariant( f.attribute( fieldIndex ) );
     feedback->setProgress( current * step );
     current++;
   }
@@ -299,7 +299,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( QgsField fi
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -314,7 +314,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( QgsField f
       break;
     }
 
-    stat.addValue( f.attribute( field.name() ) );
+    stat.addValue( f.attribute( fieldIndex ) );
     feedback->setProgress( current * step );
     current++;
   }
@@ -353,7 +353,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( QgsField f
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -368,7 +368,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( QgsField fie
       break;
     }
 
-    stat.addValue( f.attribute( field.name() ) );
+    stat.addValue( f.attribute( fieldIndex ) );
     feedback->setProgress( current * step );
     current++;
   }
@@ -410,6 +410,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( QgsField fie
                      << outputs.value( QStringLiteral( "MAX" ) )
                      << outputs.value( QStringLiteral( "MIN_LENGTH" ) )
                      << outputs.value( QStringLiteral( "MAX_LENGTH" ) )
+                     << outputs.value( QStringLiteral( "MEAN_LENGTH" ) )
                      << outputs.value( QStringLiteral( "MINORITY" ) )
                      << outputs.value( QStringLiteral( "MAJORITY" ) ) );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
