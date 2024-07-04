@@ -63,13 +63,15 @@ QgsDiagramSettings *QgsStackedDiagram::subDiagramSettings( const QgsDiagram *dia
 void QgsStackedDiagram::subDiagramPosition( QPointF &newPos, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramSettings &subSettings )
 {
   QSizeF size = sizePainterUnits( subSettings.size, subSettings, c );
+  const double spacing = c.convertToPainterUnits( s.stackedDiagramSpacing(), s.stackedDiagramSpacingUnit(), s.stackedDiagramSpacingMapUnitScale() );
+
   if ( s.stackedDiagramMode == QgsDiagramSettings::Horizontal )
   {
-    newPos += QPointF( size.width(), 0 );
+    newPos += QPointF( size.width() + spacing, 0 );
   }
   else
   {
-    newPos += QPointF( 0, size.height() );
+    newPos += QPointF( 0, size.height() + spacing );
   }
 }
 

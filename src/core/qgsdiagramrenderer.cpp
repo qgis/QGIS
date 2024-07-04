@@ -233,6 +233,10 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   mSpacingUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "spacingUnit" ) ) );
   mSpacingMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( QStringLiteral( "spacingUnitScale" ) ) );
 
+  mStackedDiagramSpacing = elem.attribute( QStringLiteral( "stackedDiagramSpacing" ) ).toDouble();
+  mStackedDiagramSpacingUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "stackedDiagramSpacingUnit" ) ) );
+  mStackedDiagramSpacingMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( QStringLiteral( "stackedDiagramSpacingUnitScale" ) ) );
+
   //label placement method
   if ( elem.attribute( QStringLiteral( "labelPlacementMethod" ) ) == QLatin1String( "Height" ) )
   {
@@ -363,6 +367,9 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc,
   categoryElem.setAttribute( QStringLiteral( "spacing" ), QString::number( mSpacing ) );
   categoryElem.setAttribute( QStringLiteral( "spacingUnit" ), QgsUnitTypes::encodeUnit( mSpacingUnit ) );
   categoryElem.setAttribute( QStringLiteral( "spacingUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSpacingMapUnitScale ) );
+  categoryElem.setAttribute( QStringLiteral( "stackedDiagramSpacing" ), QString::number( mStackedDiagramSpacing ) );
+  categoryElem.setAttribute( QStringLiteral( "stackedDiagramSpacingUnit" ), QgsUnitTypes::encodeUnit( mStackedDiagramSpacingUnit ) );
+  categoryElem.setAttribute( QStringLiteral( "stackedDiagramSpacingUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStackedDiagramSpacingMapUnitScale ) );
   categoryElem.setAttribute( QStringLiteral( "direction" ), QString::number( mDirection ) );
 
   //diagram size unit type and scale
@@ -970,6 +977,9 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
   , mSpacing( other.mSpacing )
   , mSpacingUnit( other.mSpacingUnit )
   , mSpacingMapUnitScale( other.mSpacingMapUnitScale )
+  , mStackedDiagramSpacing( other.mStackedDiagramSpacing )
+  , mStackedDiagramSpacingUnit( other.mStackedDiagramSpacingUnit )
+  , mStackedDiagramSpacingMapUnitScale( other.mStackedDiagramSpacingMapUnitScale )
   , mDirection( other.mDirection )
   , mShowAxis( other.mShowAxis )
   , mAxisLineSymbol( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr )
@@ -1006,6 +1016,9 @@ QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &oth
   mSpacing = other.mSpacing;
   mSpacingUnit = other.mSpacingUnit;
   mSpacingMapUnitScale = other.mSpacingMapUnitScale;
+  mStackedDiagramSpacing = other.mStackedDiagramSpacing;
+  mStackedDiagramSpacingUnit = other.mStackedDiagramSpacingUnit;
+  mStackedDiagramSpacingMapUnitScale = other.mStackedDiagramSpacingMapUnitScale;
   mDirection = other.mDirection;
   mAxisLineSymbol.reset( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr );
   mShowAxis = other.mShowAxis;
