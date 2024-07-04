@@ -29,6 +29,9 @@
 .pydevproject
 .venv
 .vscode
+.vs
+.devcontainer
+CMakePresets.json
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
 /build*
