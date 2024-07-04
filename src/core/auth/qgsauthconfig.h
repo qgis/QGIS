@@ -457,6 +457,9 @@ class CORE_EXPORT QgsAuthConfigSslServer
     QString mSslHostPort;
     QSslCertificate mSslCert;
 
+    static QSsl::SslProtocol decodeSslProtocol( const QString &protocol );
+    static QString encodeSslProtocol( QSsl::SslProtocol protocol );
+
     QSsl::SslProtocol mSslProtocol;
     int mQtVersion;
     QList<QSslError::SslError> mSslIgnoredErrors;

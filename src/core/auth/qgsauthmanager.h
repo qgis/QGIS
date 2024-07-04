@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return TRUE on success
      * \see QgsApplication::pluginPath
      * \see QgsApplication::qgisAuthDatabaseFilePath
-     * \deprecated Since QGIS 3.36, use setup() instead.
+     * \deprecated Since QGIS 3.36, use setup() or ensureInitialized() instead.
      */
     Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
 
@@ -99,8 +99,18 @@ class CORE_EXPORT QgsAuthManager : public QObject
      *
      * \param pluginPath the plugin path
      * \param authDatabasePath the authentication DB path
+     * \see ensureInitialized()
      */
     void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+
+    /**
+     * Performs lazy initialization of the authentication framework, if it has
+     * not already been done.
+     *
+     * \see setup()
+     * \since QGIS 3.40
+     */
+    bool ensureInitialized() const;
 
     ~QgsAuthManager() override;
 
@@ -786,12 +796,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
 #endif
 
   private:
-
-    /**
-     * Performs lazy initialization of the authentication framework, if it has
-     * not already been done.
-     */
-    bool ensureInitialized() const;
 
     bool initPrivate( const QString &pluginPath,  const QString &authDatabasePath );
 

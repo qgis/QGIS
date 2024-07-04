@@ -49,7 +49,7 @@ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authen
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
 
 .. deprecated:: QGIS 3.36
-  use :py:func:`~QgsAuthManager.setup` instead.
+  use :py:func:`~QgsAuthManager.setup` or :py:func:`~QgsAuthManager.ensureInitialized` instead.
 %End
 
     void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
@@ -61,6 +61,18 @@ to lazy-initialize when required.
 
 :param pluginPath: the plugin path
 :param authDatabasePath: the authentication DB path
+
+.. seealso:: :py:func:`ensureInitialized`
+%End
+
+    bool ensureInitialized() const;
+%Docstring
+Performs lazy initialization of the authentication framework, if it has
+not already been done.
+
+.. seealso:: :py:func:`setup`
+
+.. versionadded:: 3.40
 %End
 
     ~QgsAuthManager();
