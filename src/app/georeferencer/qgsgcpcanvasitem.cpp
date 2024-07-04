@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgcpcanvasitem.h"
+#include "qgsmapcanvas.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
