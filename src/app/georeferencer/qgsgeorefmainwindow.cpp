@@ -745,6 +745,7 @@ void QgsGeoreferencerMainWindow::movePoint( QPoint canvasPixels )
   if ( mvPoint )
   {
     mvPoint->moveTo( canvasPixels, pointType );
+    mGCPListWidget->updateResiduals();
   }
 }
 
