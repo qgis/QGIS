@@ -258,6 +258,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void show();
 
     void contextMenuEvent( QContextMenuEvent * ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
     void layerDestroyed();
     void editingToggled();
