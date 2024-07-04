@@ -82,7 +82,7 @@ from .Dissolve import Dissolve
 from .ExecuteSql import ExecuteSql
 from .OffsetCurve import OffsetCurve
 from .ogr2ogr import ogr2ogr
-from .ogrinfo import ogrinfo
+from .ogrinfo import ogrinfo, ogrinfojson
 from .OgrToPostGis import OgrToPostGis
 from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .OneSideBuffer import OneSideBuffer
@@ -204,6 +204,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
         if int(gdal.VersionInfo()) > 3010000:
             self.algs.append(viewshed())
+
+        if int(gdal.VersionInfo()) >= 3070000:
+            self.algs.append(ogrinfojson())
 
         for a in self.algs:
             self.addAlgorithm(a)
