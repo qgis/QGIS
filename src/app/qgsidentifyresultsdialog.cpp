@@ -1647,6 +1647,14 @@ void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
   }
 }
 
+void QgsIdentifyResultsDialog::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape )
+    clear();
+  else
+    QDialog::keyPressEvent( event );
+}
+
 // Popup (create if necessary) a context menu that contains a list of
 // actions that can be applied to the data in the identify results
 // dialog box.
