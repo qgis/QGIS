@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
+#include "qgsorientedbox3d.h"
 #include "qgstest.h"
 #include "qgsmultirenderchecker.h"
 
@@ -32,6 +33,7 @@
 #include "qgs3dutils.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgsmatrix4x4.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -434,6 +436,9 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
 
 void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
 {
+  /*
+   * first test: change the extent
+   */
   const QgsRectangle fullExtent = mLayer->extent();
   const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
                                       fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
@@ -470,6 +475,51 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_scene_extent", "pointcloud_3d_filtered_scene_extent", img, QString(), 80, QSize( 0, 0 ), 15 );
+
+  /*
+   * second test: change the orientation
+   */
+
+  Qgs3DMapSettings *mapSettings2 = new Qgs3DMapSettings;
+  mapSettings2->setCrs( mProject->crs() );
+  mapSettings2->setOrigin( QgsVector3D( filteredExtent.center().x(), filteredExtent.center().y(), 0 ) );
+
+  const QgsBox3D aaBox = QgsBox3D( filteredExtent, Qgs3DMapSettings::DEFAULT_MIN_DEPTH, Qgs3DMapSettings::DEFAULT_MAX_DEPTH );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( aaBox );
+  sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -35.0 );
+  mapSettings2->setBox( sceneBox );
+
+  mapSettings2->setLayers( QList<QgsMapLayer *>() << mLayer );
+  mapSettings2->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine2;
+  Qgs3DMapScene *scene2 = new Qgs3DMapScene( *mapSettings2, &engine2 );
+  engine2.setRootEntity( scene2 );
+
+  QgsClassificationPointCloud3DSymbol *symbol2 = new QgsClassificationPointCloud3DSymbol();
+  symbol2->setAttribute( QStringLiteral( "Classification" ) );
+  auto categories2 = QgsPointCloudClassifiedRenderer::defaultCategories();
+  symbol2->setCategoriesList( categories2 );
+  symbol2->setPointSize( 10 );
+
+  QgsPointCloudLayer3DRenderer *renderer2 = new QgsPointCloudLayer3DRenderer();
+  renderer2->setSymbol( symbol2 );
+  mLayer->setRenderer3D( renderer2 );
+
+  scene2->cameraController()->resetView( 90 );
+
+  // When running the test, it would sometimes return partially rendered image.
+  // It is probably based on how fast qt3d manages to upload the data to GPU...
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine2, scene2 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine2, scene2 );
+
+  delete scene2;
+  delete mapSettings2;
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_scene_extent_rotation", "pointcloud_3d_filtered_scene_extent_rotation", img2, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 QGSTEST_MAIN( TestQgsPointCloud3DRendering )
