@@ -56,7 +56,6 @@
 #include "qgsgeoreftooladdpoint.h"
 #include "qgsgeoreftooldeletepoint.h"
 #include "qgsgeoreftoolmovepoint.h"
-#include "qgsgcpcanvasitem.h"
 #include "qgscoordinateutils.h"
 
 #include "qgsgcplistwidget.h"
