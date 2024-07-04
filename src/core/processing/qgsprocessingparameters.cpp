@@ -8184,10 +8184,15 @@ QgsProcessingParameterDefinition *QgsProcessingParameterCoordinateOperation::clo
 
 QString QgsProcessingParameterCoordinateOperation::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  return valueAsPythonStringPrivate( value, context, false );
+}
+
+QString QgsProcessingParameterCoordinateOperation::valueAsPythonStringPrivate( const QVariant &value, QgsProcessingContext &context, bool allowNonStringValues ) const
+{
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "None" );
 
-  if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
+  if ( allowNonStringValues && value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
   {
     if ( !value.value< QgsCoordinateReferenceSystem >().isValid() )
       return QStringLiteral( "QgsCoordinateReferenceSystem()" );
@@ -8198,11 +8203,14 @@ QString QgsProcessingParameterCoordinateOperation::valueAsPythonString( const QV
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  QVariantMap p;
-  p.insert( name(), value );
-  QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
-  if ( layer )
-    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) );
+  if ( allowNonStringValues )
+  {
+    QVariantMap p;
+    p.insert( name(), value );
+    QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
+    if ( layer )
+      return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) );
+  }
 
   const QString s = value.toString();
   return QgsProcessingUtils::stringToPythonLiteral( s );
@@ -8231,16 +8239,16 @@ QString QgsProcessingParameterCoordinateOperation::asPythonString( QgsProcessing
       if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
         code += QLatin1String( ", optional=True" );
       if ( !mSourceParameterName.isEmpty() )
-        code += QStringLiteral( ", sourceCrsParameterName=%1" ).arg( valueAsPythonString( mSourceParameterName, c ) );
+        code += QStringLiteral( ", sourceCrsParameterName=%1" ).arg( valueAsPythonStringPrivate( mSourceParameterName, c, false ) );
       if ( !mDestParameterName.isEmpty() )
-        code += QStringLiteral( ", destinationCrsParameterName=%1" ).arg( valueAsPythonString( mDestParameterName, c ) );
+        code += QStringLiteral( ", destinationCrsParameterName=%1" ).arg( valueAsPythonStringPrivate( mDestParameterName, c, false ) );
 
       if ( mSourceCrs.isValid() )
-        code += QStringLiteral( ", staticSourceCrs=%1" ).arg( valueAsPythonString( mSourceCrs, c ) );
+        code += QStringLiteral( ", staticSourceCrs=%1" ).arg( valueAsPythonStringPrivate( mSourceCrs, c, true ) );
       if ( mDestCrs.isValid() )
-        code += QStringLiteral( ", staticDestinationCrs=%1" ).arg( valueAsPythonString( mDestCrs, c ) );
+        code += QStringLiteral( ", staticDestinationCrs=%1" ).arg( valueAsPythonStringPrivate( mDestCrs, c, true ) );
 
-      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonStringPrivate( mDefault, c, false ) );
       return code;
     }
   }
@@ -8281,10 +8289,18 @@ QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOpera
 {
   QString def = definition;
 
-  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+  if ( def.startsWith( '"' ) )
+  {
     def = def.mid( 1 );
-  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
-    def.chop( 1 );
+    if ( def.endsWith( '"' ) )
+      def.chop( 1 );
+  }
+  else if ( def.startsWith( '\'' ) )
+  {
+    def = def.mid( 1 );
+    if ( def.endsWith( '\'' ) )
+      def.chop( 1 );
+  }
 
   QVariant defaultValue = def;
   if ( def == QLatin1String( "None" ) )
