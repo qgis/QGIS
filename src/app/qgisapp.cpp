@@ -10357,10 +10357,10 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
     for ( int idx = 0; idx < layer->fields().count() && idx < it->attributeCount(); ++idx )
     {
       QVariant attr = it->attribute( idx );
-      if ( layer->fields().at( idx ).convertCompatible( attr ) )
-      {
-        it->setAttribute( idx, attr );
-      }
+      //if convertCompatible fails, it will replace attr with an appropriate null QVariant
+      //so we're calling setAttribute regardless, covering cases like 'Autogenerate' or 'nextVal()' on int fields.
+      layer->fields().at( idx ).convertCompatible( attr );
+      it->setAttribute( idx, attr );
     }
   }
 
