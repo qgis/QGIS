@@ -25,7 +25,7 @@
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource )
   : QgsMapCanvasItem( mapCanvas )
   , mDataPoint( dataPoint )
-  , mPointBrush( Qt::red )
+  , mPointBrush( mDataPoint && mDataPoint->id() < 0 ? QColor( 0, 200, 0 ) : Qt::red )
   , mLabelBrush( Qt::yellow )
   , mIsGCPSource( isGCPSource )
 {
@@ -63,6 +63,10 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   p->setPen( Qt::black );
   p->setBrush( mPointBrush );
   p->drawEllipse( -2, -2, 5, 5 );
+
+  // Don't draw point tip for temporary points
+  if ( id < 0 )
+    return;
 
   const QgsSettings s;
   const bool showIDs = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool();
