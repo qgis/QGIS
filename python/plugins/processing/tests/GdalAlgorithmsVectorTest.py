@@ -34,7 +34,7 @@ from qgis.testing import (QgisTestCase,
 
 import AlgorithmsTestBase
 from processing.algs.gdal.ogr2ogr import ogr2ogr
-from processing.algs.gdal.ogrinfo import ogrinfo
+from processing.algs.gdal.ogrinfo import ogrinfo, ogrinfojson
 from processing.algs.gdal.Buffer import Buffer
 from processing.algs.gdal.Dissolve import Dissolve
 from processing.algs.gdal.OffsetCurve import OffsetCurve
@@ -146,6 +146,27 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-al -so ' +
              source + ' polys2'])
 
+        source = os.path.join(testDataPath, 'polys.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'ALL_LAYERS': True,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al -so ' +
+             source])
+
+        source = os.path.join(testDataPath, 'polys.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'ALL_LAYERS': True,
+                                    'SUMMARY_ONLY': True,
+                                    'EXTRA': '-nocount',
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al -so -nocount ' +
+             source])
+
         source = os.path.join(testDataPath, 'filename with spaces.gml')
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -189,6 +210,87 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'NO_METADATA': True}, context, feedback),
             ['ogrinfo',
              '-al -so -nomd "' +
+             source + '" filename_with_spaces --config X Y --config Z A'])
+
+    def testOgrInfoJson(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        alg = ogrinfojson()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'FEATURES': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-json -features ' +
+             source + ' polys2'])
+
+        source = os.path.join(testDataPath, 'polys.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'ALL_LAYERS': True,
+                                    'FEATURES': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-json -features ' +
+             source])
+
+        source = os.path.join(testDataPath, 'polys.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'ALL_LAYERS': True,
+                                    'FEATURES': True,
+                                    'EXTRA': '-nocount',
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-json -features -nocount ' +
+             source])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'FEATURES': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-json -features "' +
+             source + '" filename_with_spaces'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'FEATURES': False,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-json "' +
+             source + '" filename_with_spaces'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'FEATURES': True,
+                                    'NO_METADATA': True}, context, feedback),
+            ['ogrinfo',
+             '-json -features -nomd "' +
+             source + '" filename_with_spaces'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                    'FEATURES': True,
+                                    'NO_METADATA': True}, context, feedback),
+            ['ogrinfo',
+             '-json -features -nomd "' +
+             source + '" filename_with_spaces -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
+                                    'FEATURES': True,
+                                    'NO_METADATA': True}, context, feedback),
+            ['ogrinfo',
+             '-json -features -nomd "' +
              source + '" filename_with_spaces --config X Y --config Z A'])
 
     def testBuffer(self):

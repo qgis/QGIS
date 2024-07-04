@@ -1,0 +1,279 @@
+{
+  "description":"C:/OSGeo4W/apps/qgis-dev/python/plugins/processing/tests/testdata/points_lines.gpkg",
+  "driverShortName":"GPKG",
+  "driverLongName":"GeoPackage",
+  "layers":[
+    {
+      "name":"points",
+      "metadata":{
+      },
+      "geometryFields":[
+        {
+          "name":"geom",
+          "type":"Point",
+          "nullable":true,
+          "extent":[
+            0.0,
+            -5.0,
+            8.0,
+            3.0
+          ],
+          "coordinateSystem":{
+            "wkt":"GEOGCRS[\"WGS 84\",\n    ENSEMBLE[\"World Geodetic System 1984 ensemble\",\n        MEMBER[\"World Geodetic System 1984 (Transit)\"],\n        MEMBER[\"World Geodetic System 1984 (G730)\"],\n        MEMBER[\"World Geodetic System 1984 (G873)\"],\n        MEMBER[\"World Geodetic System 1984 (G1150)\"],\n        MEMBER[\"World Geodetic System 1984 (G1674)\"],\n        MEMBER[\"World Geodetic System 1984 (G1762)\"],\n        MEMBER[\"World Geodetic System 1984 (G2139)\"],\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ENSEMBLEACCURACY[2.0]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    USAGE[\n        SCOPE[\"Horizontal component of 3D system.\"],\n        AREA[\"World.\"],\n        BBOX[-90,-180,90,180]],\n    ID[\"EPSG\",4326]]",
+            "projjson":{
+              "$schema":"https://proj.org/schemas/v0.7/projjson.schema.json",
+              "type":"GeographicCRS",
+              "name":"WGS 84",
+              "datum_ensemble":{
+                "name":"World Geodetic System 1984 ensemble",
+                "members":[
+                  {
+                    "name":"World Geodetic System 1984 (Transit)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1166
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G730)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1152
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G873)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1153
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G1150)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1154
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G1674)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1155
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G1762)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1156
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G2139)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1309
+                    }
+                  }
+                ],
+                "ellipsoid":{
+                  "name":"WGS 84",
+                  "semi_major_axis":6378137,
+                  "inverse_flattening":298.257223563
+                },
+                "accuracy":"2.0",
+                "id":{
+                  "authority":"EPSG",
+                  "code":6326
+                }
+              },
+              "coordinate_system":{
+                "subtype":"ellipsoidal",
+                "axis":[
+                  {
+                    "name":"Geodetic latitude",
+                    "abbreviation":"Lat",
+                    "direction":"north",
+                    "unit":"degree"
+                  },
+                  {
+                    "name":"Geodetic longitude",
+                    "abbreviation":"Lon",
+                    "direction":"east",
+                    "unit":"degree"
+                  }
+                ]
+              },
+              "scope":"Horizontal component of 3D system.",
+              "area":"World.",
+              "bbox":{
+                "south_latitude":-90,
+                "west_longitude":-180,
+                "north_latitude":90,
+                "east_longitude":180
+              },
+              "id":{
+                "authority":"EPSG",
+                "code":4326
+              }
+            },
+            "dataAxisToSRSAxisMapping":[
+              2,
+              1
+            ]
+          }
+        }
+      ],
+      "featureCount":9,
+      "fidColumnName":"fid",
+      "fields":[
+        {
+          "name":"id",
+          "type":"Integer",
+          "nullable":true,
+          "uniqueConstraint":false
+        },
+        {
+          "name":"id2",
+          "type":"Integer",
+          "nullable":true,
+          "uniqueConstraint":false
+        }
+      ]
+    },
+    {
+      "name":"lines",
+      "metadata":{
+      },
+      "geometryFields":[
+        {
+          "name":"geom",
+          "type":"LineString",
+          "nullable":true,
+          "extent":[
+            -1.0,
+            -3.0,
+            11.0,
+            5.0
+          ],
+          "coordinateSystem":{
+            "wkt":"GEOGCRS[\"WGS 84\",\n    ENSEMBLE[\"World Geodetic System 1984 ensemble\",\n        MEMBER[\"World Geodetic System 1984 (Transit)\"],\n        MEMBER[\"World Geodetic System 1984 (G730)\"],\n        MEMBER[\"World Geodetic System 1984 (G873)\"],\n        MEMBER[\"World Geodetic System 1984 (G1150)\"],\n        MEMBER[\"World Geodetic System 1984 (G1674)\"],\n        MEMBER[\"World Geodetic System 1984 (G1762)\"],\n        MEMBER[\"World Geodetic System 1984 (G2139)\"],\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ENSEMBLEACCURACY[2.0]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    USAGE[\n        SCOPE[\"Horizontal component of 3D system.\"],\n        AREA[\"World.\"],\n        BBOX[-90,-180,90,180]],\n    ID[\"EPSG\",4326]]",
+            "projjson":{
+              "$schema":"https://proj.org/schemas/v0.7/projjson.schema.json",
+              "type":"GeographicCRS",
+              "name":"WGS 84",
+              "datum_ensemble":{
+                "name":"World Geodetic System 1984 ensemble",
+                "members":[
+                  {
+                    "name":"World Geodetic System 1984 (Transit)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1166
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G730)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1152
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G873)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1153
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G1150)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1154
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G1674)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1155
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G1762)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1156
+                    }
+                  },
+                  {
+                    "name":"World Geodetic System 1984 (G2139)",
+                    "id":{
+                      "authority":"EPSG",
+                      "code":1309
+                    }
+                  }
+                ],
+                "ellipsoid":{
+                  "name":"WGS 84",
+                  "semi_major_axis":6378137,
+                  "inverse_flattening":298.257223563
+                },
+                "accuracy":"2.0",
+                "id":{
+                  "authority":"EPSG",
+                  "code":6326
+                }
+              },
+              "coordinate_system":{
+                "subtype":"ellipsoidal",
+                "axis":[
+                  {
+                    "name":"Geodetic latitude",
+                    "abbreviation":"Lat",
+                    "direction":"north",
+                    "unit":"degree"
+                  },
+                  {
+                    "name":"Geodetic longitude",
+                    "abbreviation":"Lon",
+                    "direction":"east",
+                    "unit":"degree"
+                  }
+                ]
+              },
+              "scope":"Horizontal component of 3D system.",
+              "area":"World.",
+              "bbox":{
+                "south_latitude":-90,
+                "west_longitude":-180,
+                "north_latitude":90,
+                "east_longitude":180
+              },
+              "id":{
+                "authority":"EPSG",
+                "code":4326
+              }
+            },
+            "dataAxisToSRSAxisMapping":[
+              2,
+              1
+            ]
+          }
+        }
+      ],
+      "featureCount":7,
+      "fidColumnName":"fid",
+      "fields":[
+      ]
+    }
+  ],
+  "metadata":{
+  },
+  "domains":{
+  },
+  "relationships":{
+  }
+}
