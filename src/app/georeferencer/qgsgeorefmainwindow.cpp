@@ -764,29 +764,32 @@ void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
 
 void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &sourceCoordinates )
 {
-  delete mNewlyAddedPointItem;
-  mNewlyAddedPointItem = nullptr;
+  if ( !mLayer )
+    return;
 
   // show a temporary marker at the clicked source point on the raster while we show the coordinate dialog.
-  mNewlyAddedPointItem = new QgsGCPCanvasItem( mCanvas, nullptr, true );
-  mNewlyAddedPointItem->setPointColor( QColor( 0, 200, 0 ) );
-  mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( sourceCoordinates ) );
+
 
   QgsCoordinateReferenceSystem lastProjection = mLastGCPProjection.isValid() ? mLastGCPProjection : mTargetCrs;
-  if ( mLayer && !mMapCoordsDialog )
+  if ( !mMapCoordsDialog )
   {
-    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), sourceCoordinates, lastProjection, this );
+    mNewlyAddedPoint = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), sourceCoordinates, QgsPointXY(), QgsCoordinateReferenceSystem(), true );
+    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), mNewlyAddedPoint, lastProjection, this );
     connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & sourceLayerCoordinate, const QgsPointXY & destinationCoordinate, const QgsCoordinateReferenceSystem & destinationCrs )
     {
       addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs );
     } );
     connect( mMapCoordsDialog, &QObject::destroyed, this, [ = ]
     {
-      delete mNewlyAddedPointItem;
-      mNewlyAddedPointItem = nullptr;
+      delete mNewlyAddedPoint;
+      mNewlyAddedPoint = nullptr;
     } );
-    mMapCoordsDialog->show();
   }
+  else
+  {
+    mMapCoordsDialog->updateSourceCoordinates( sourceCoordinates );
+  }
+  mMapCoordsDialog->show();
 }
 
 void QgsGeoreferencerMainWindow::loadGCPsDialog()
@@ -2483,8 +2486,8 @@ void QgsGeoreferencerMainWindow::clearGCPData()
   mPoints.clear();
   mGCPListWidget->setGCPList( &mPoints );
 
-  delete mNewlyAddedPointItem;
-  mNewlyAddedPointItem = nullptr;
+  delete mNewlyAddedPoint;
+  mNewlyAddedPoint = nullptr;
 
   QgisApp::instance()->mapCanvas()->refresh();
 }
