@@ -23,8 +23,7 @@
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsprojectionselectionwidget.h"
-#include "qgsproject.h"
-#include "qgsgeorefdatapoint.h""
+#include "qgsgeorefdatapoint.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataPoint *georefDataPoint, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
