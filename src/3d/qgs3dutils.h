@@ -324,6 +324,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.40
      */
     static void addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings );
+
+    /**
+     * This routines rotates \a box by \a rotationAngle around the Z axis. Rotation is counter-clockwise and returns a new box
+     *
+     * \param box oriented box to rotate
+     * \param rotationAngle counter-clockwise rotation angle around the Z axis.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsOrientedBox3D rotateOrientedBoundingBox3D( const QgsOrientedBox3D &box, double rotationAngle );
 };
 
 #endif // QGS3DUTILS_H

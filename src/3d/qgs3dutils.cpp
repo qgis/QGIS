@@ -34,6 +34,7 @@
 #include "qgschunkedentity_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsraycastingutils_p.h"
+#include "qgsmatrix4x4.h"
 
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
@@ -968,4 +969,36 @@ void Qgs3DUtils::addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, 
 
   Qt3DRender::QParameter *clipPlane = new Qt3DRender::QParameter( QStringLiteral( "clipPlane[0]" ), clipPlaneValues );
   effect->addParameter( clipPlane );
+}
+
+QgsOrientedBox3D Qgs3DUtils::rotateOrientedBoundingBox3D( const QgsOrientedBox3D &box, double rotationAngle )
+{
+  if ( rotationAngle == 0.0 )
+  {
+    return box;
+  }
+
+  QgsVector3D center = box.center();
+  QgsMatrix4x4 transformation;
+
+  QgsMatrix4x4 rotation;
+  rotation.rotate( rotationAngle, QgsVector3D( 0.0, 0.0, 1.0 ) );
+
+  if ( !center.isNull() )
+  {
+    QgsMatrix4x4 translation1;
+    translation1.translate( -center );
+
+    QgsMatrix4x4 translation2;
+    translation2.translate( center );
+
+    transformation = translation2 * rotation * translation1;
+  }
+  else
+  {
+    transformation = rotation;
+  }
+
+
+  return box.transformed( transformation );
 }
