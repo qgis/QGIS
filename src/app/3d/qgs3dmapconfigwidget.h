@@ -61,6 +61,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     QCheckBox *mShowExtentIn2DViewCheckbox = nullptr;
 
     void init3DAxisPage();
+    void updateTerrain();
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H
