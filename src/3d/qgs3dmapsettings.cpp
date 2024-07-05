@@ -512,21 +512,10 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
     aaBox.setZMaximum( mBox.size().z() / 2 );
     box = QgsOrientedBox3D::fromBox3D( aaBox );
 
-    if (mBox.eulerAngles().z() != 0.0 )
+    if ( mBox.eulerAngles().z() != 0.0 )
     {
-      QgsVector3D center = box.center();
-
-      QgsMatrix4x4 translation1;
-      translation1.translate( -center );
-
       // rotation is counter-clockwise
-      QgsMatrix4x4 rotation;
-      rotation.rotate( -mBox.eulerAngles().z(), QgsVector3D( 0.0, 0.0, 1.0 ) );
-
-      QgsMatrix4x4 translation2;
-      translation2.translate( center );
-
-      box = box.transformed( translation2 * rotation * translation1 );
+      box = Qgs3DUtils::rotateOrientedBoundingBox3D( box, -mBox.eulerAngles().z() );
     }
   }
   else
