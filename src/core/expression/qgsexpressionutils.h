@@ -96,13 +96,13 @@ class CORE_EXPORT QgsExpressionUtils
       //handle some special cases
       if ( value.type() == QVariant::UserType )
       {
-        if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+        if ( value.userType() == qMetaTypeId< QgsGeometry>() )
         {
           //geom is false if empty
           const QgsGeometry geom = value.value<QgsGeometry>();
           return geom.isNull() ? False : True;
         }
-        else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+        else if ( value.userType() == qMetaTypeId<QgsFeature>() )
         {
           //feat is false if non-valid
           const QgsFeature feat = value.value<QgsFeature>();
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isIntervalSafe( const QVariant &v )
     {
-      if ( v.userType() == QMetaType::type( "QgsInterval" ) )
+      if ( v.userType() == qMetaTypeId<QgsInterval>() )
       {
         return true;
       }
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsInterval getInterval( const QVariant &value, QgsExpression *parent, bool report_error = false )
     {
-      if ( value.userType() == QMetaType::type( "QgsInterval" ) )
+      if ( value.userType() == qMetaTypeId<QgsInterval>() )
         return value.value<QgsInterval>();
 
       QgsInterval inter = QgsInterval::fromString( value.toString() );
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+      if ( value.userType() == qMetaTypeId< QgsGeometry>() )
         return value.value<QgsGeometry>();
 
       parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsFeature getFeature( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+      if ( value.userType() == qMetaTypeId<QgsFeature>() )
         return value.value<QgsFeature>();
 
       parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );

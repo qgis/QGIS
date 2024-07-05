@@ -911,15 +911,15 @@ void TestQgsField::convertCompatible()
   QVERIFY( geometryValue.isNull() );
   geometryValue = QVariant::fromValue( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ) );
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
-  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
+  QCOMPARE( geometryValue.userType(), qMetaTypeId< QgsGeometry>() );
 
   geometryValue = QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
-  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
+  QCOMPARE( geometryValue.userType(), qMetaTypeId<QgsReferencedGeometry>() );
 
   geometryValue = QStringLiteral( "LineString( 1 2, 3 4 )" );
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
-  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
+  QCOMPARE( geometryValue.userType(), qMetaTypeId< QgsGeometry>() );
 }
 
 void TestQgsField::dataStream()

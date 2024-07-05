@@ -77,7 +77,7 @@ bool QgsLayoutItemManualTable::getTableContents( QgsLayoutTableContents &content
       {
         QVariant cellContent = row.at( columnNumber ).content();
 
-        if ( cellContent.userType() == QMetaType::type( "QgsProperty" ) )
+        if ( cellContent.userType() == qMetaTypeId<QgsProperty>() )
         {
           // expression based cell content, evaluate now
           QgsExpressionContextScopePopper popper( context, scopeForCell( rowNumber, columnNumber ) );

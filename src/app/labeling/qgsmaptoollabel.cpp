@@ -828,7 +828,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
            && !QgsVariantUtils::isNull( attributes.at( pointCol ) ) )
       {
         QVariant pointAsVariant = attributes.at( pointCol );
-        if ( pointAsVariant.userType() == QMetaType::type( "QgsGeometry" ) )
+        if ( pointAsVariant.userType() == qMetaTypeId< QgsGeometry>() )
         {
           const  QgsGeometry geometry = pointAsVariant.value<QgsGeometry>();
           if ( const QgsPoint *point  = ( geometry.constGet() ? qgsgeometry_cast<const QgsPoint *>( geometry.constGet()->simplifiedTypeRef() ) : nullptr ) )

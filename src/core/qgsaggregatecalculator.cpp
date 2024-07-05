@@ -874,7 +874,7 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
     Q_ASSERT( context );
     context->setFeature( f );
     const QVariant v = expression->evaluate( context );
-    if ( v.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( v.userType() == qMetaTypeId< QgsGeometry>() )
     {
       geometries << v.value<QgsGeometry>();
     }

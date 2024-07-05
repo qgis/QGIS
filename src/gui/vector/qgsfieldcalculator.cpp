@@ -313,7 +313,7 @@ void QgsFieldCalculator::accept()
       }
       else if ( updatingGeom )
       {
-        if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+        if ( value.userType() == qMetaTypeId< QgsGeometry>() )
         {
           QgsGeometry geom = value.value< QgsGeometry >();
           mVectorLayer->changeGeometry( feature.id(), geom );

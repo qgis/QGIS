@@ -34,7 +34,7 @@ QVariant QgsProcessingModelOutput::toVariant() const
   QVariantMap map;
   map.insert( QStringLiteral( "name" ), mName );
 
-  if ( mDefaultValue.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+  if ( mDefaultValue.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
   {
     QVariantMap defaultMap = mDefaultValue.value<QgsProcessingOutputLayerDefinition>().toVariant().toMap();
     defaultMap.insert( QStringLiteral( "class" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
