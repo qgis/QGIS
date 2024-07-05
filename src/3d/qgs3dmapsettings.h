@@ -689,6 +689,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setShowExtentIn2DView( bool show );
 
+#ifndef SIP_RUN
+    static constexpr double DEFAULT_MIN_DEPTH = -100000.0;
+    static constexpr double DEFAULT_MAX_DEPTH = 100000.0;
+#endif
   signals:
 
     /**
