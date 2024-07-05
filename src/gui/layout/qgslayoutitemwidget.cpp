@@ -789,7 +789,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
 
   if ( QgsLayout *layout = mItem->layout() )
   {
-    // collect export groups from layout, so that we can offer auto completion in the PDF export group drop down
+    // collect export groups from layout, so that we can offer auto completion in the PDF export group combo
     QList< QgsLayoutItem * > items;
     layout->layoutItems( items );
     QStringList existingGroups;
