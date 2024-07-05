@@ -163,11 +163,11 @@ QSizeF QgsStackedDiagram::diagramSize( const QgsAttributes &attributes, const Qg
   switch ( s.stackedDiagramMode )
   {
     case QgsDiagramSettings::Horizontal:
-      size.scale( size.width() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
+      size.scale( size.width() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Vertical:
-      size.scale( s.size.width(), size.height() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), Qt::IgnoreAspectRatio );
+      size.scale( size.width(), size.height() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 

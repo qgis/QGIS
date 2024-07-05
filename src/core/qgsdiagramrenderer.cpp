@@ -265,6 +265,16 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
     diagramOrientation = Up;
   }
 
+  // stacked mode
+  if ( elem.attribute( QStringLiteral( "stackedDiagramMode" ) ) == QLatin1String( "Horizontal" ) )
+  {
+    stackedDiagramMode = Horizontal;
+  }
+  else if ( elem.attribute( QStringLiteral( "stackedDiagramMode" ) ) == QLatin1String( "Vertical" ) )
+  {
+    stackedDiagramMode = Vertical;
+  }
+
   // scale dependency
   if ( elem.attribute( QStringLiteral( "scaleDependency" ) ) == QLatin1String( "Diameter" ) )
   {
@@ -416,6 +426,18 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc,
 
     case Up:
       categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
+      break;
+  }
+
+  // stacked mode
+  switch ( stackedDiagramMode )
+  {
+    case Horizontal:
+      categoryElem.setAttribute( QStringLiteral( "stackedDiagramMode" ), QStringLiteral( "Horizontal" ) );
+      break;
+
+    case Vertical:
+      categoryElem.setAttribute( QStringLiteral( "stackedDiagramMode" ), QStringLiteral( "Vertical" ) );
       break;
   }
 
@@ -966,6 +988,7 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
   , penWidth( other.penWidth )
   , labelPlacementMethod( other.labelPlacementMethod )
   , diagramOrientation( other.diagramOrientation )
+  , stackedDiagramMode( other.stackedDiagramMode )
   , barWidth( other.barWidth )
   , opacity( other.opacity )
   , scaleByArea( other.scaleByArea )
@@ -1005,6 +1028,7 @@ QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &oth
   penWidth = other.penWidth;
   labelPlacementMethod = other.labelPlacementMethod;
   diagramOrientation = other.diagramOrientation;
+  stackedDiagramMode = other.stackedDiagramMode;
   barWidth = other.barWidth;
   opacity = other.opacity;
   scaleByArea = other.scaleByArea;
