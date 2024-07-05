@@ -26,6 +26,7 @@
 #include "qgsexpression_p.h"
 #include "qgsvariantutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
 
@@ -1016,7 +1017,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
-  if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+  if ( value.userType() == qMetaTypeId< QgsGeometry>() )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
@@ -1034,13 +1035,13 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
-  else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+  else if ( value.userType() == qMetaTypeId< QgsFeature>() )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
-  else if ( value.userType() == QMetaType::type( "QgsInterval" ) )
+  else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
     QgsInterval interval = value.value<QgsInterval>();
     if ( interval.days() > 1 )
@@ -1060,7 +1061,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
     }
   }
-  else if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
+  else if ( value.userType() == qMetaTypeId< QgsGradientColorRamp>() )
   {
     return startToken + tr( "gradient ramp" ) + endToken;
   }

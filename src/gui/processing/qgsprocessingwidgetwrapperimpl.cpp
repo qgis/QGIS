@@ -2409,7 +2409,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   {
     case Qgis::ExpressionType::Qgis:
     {
-      if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+      if ( val.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
       {
         // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
         QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
@@ -4733,7 +4733,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
 
   QVariant value = parentWrapper->parameterValue();
 
-  if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
   {
     // input is a QgsProcessingFeatureSourceDefinition - source from it.
     // this is normally discouraged, and algorithms should NEVER do this -- but in this case we can make
@@ -7514,7 +7514,7 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &va
 
     for ( const QVariant &v : value.toList() )
     {
-      if ( v.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
+      if ( v.userType() == qMetaTypeId<QgsProcessingModelChildParameterSource>() )
       {
         const QgsProcessingModelChildParameterSource source = v.value< QgsProcessingModelChildParameterSource >();
         opts << QVariant::fromValue( source );
@@ -7743,7 +7743,7 @@ void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetValue( const QVariant &
     }
 
     QVariant val = value;
-    if ( val.userType() == QMetaType::type( "QgsProperty" ) )
+    if ( val.userType() == qMetaTypeId<QgsProperty>() )
     {
       if ( val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
       {

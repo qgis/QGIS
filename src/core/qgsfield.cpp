@@ -320,7 +320,7 @@ QString QgsField::displayString( const QVariant &v ) const
     return QgsApplication::nullRepresentation();
   }
 
-  if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  if ( v.userType() == qMetaTypeId<QgsReferencedGeometry>() )
   {
     QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
     if ( geom.isNull() )
@@ -662,7 +662,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
 
   // Handle referenced geometries (e.g. from additional geometry fields)
-  if ( d->type == QMetaType::Type::QString && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  if ( d->type == QMetaType::Type::QString && v.userType() == qMetaTypeId<QgsReferencedGeometry>() )
   {
     const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
     if ( geom.isNull() )
@@ -677,7 +677,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
   else if ( d->type == QMetaType::Type::User && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( v.userType() == qMetaTypeId<QgsReferencedGeometry>() || v.userType() == qMetaTypeId< QgsGeometry>() )
     {
       return true;
     }

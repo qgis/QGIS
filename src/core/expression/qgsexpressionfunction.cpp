@@ -1478,7 +1478,7 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // two variants, one for geometry, one for string
-  if ( values.at( 0 ).userType() == QMetaType::type( "QgsGeometry" ) )
+  if ( values.at( 0 ).userType() == qMetaTypeId< QgsGeometry>() )
   {
     //geometry variant
     QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3684,7 +3684,7 @@ static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpre
   parts.reserve( list.size() );
   for ( const QVariant &value : std::as_const( list ) )
   {
-    if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
     {
       parts << value.value<QgsGeometry>();
     }
@@ -5926,7 +5926,7 @@ QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *,
 {
   QgsGradientColorRamp expRamp;
   const QgsColorRamp *ramp = nullptr;
-  if ( values.at( 0 ).userType() == QMetaType::type( "QgsGradientColorRamp" ) )
+  if ( values.at( 0 ).userType() == qMetaTypeId< QgsGradientColorRamp>() )
   {
     expRamp = QgsExpressionUtils::getRamp( values.at( 0 ), parent );
     ramp = &expRamp;

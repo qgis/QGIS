@@ -833,14 +833,14 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     }
     case QMetaType::Type::User:
     {
-      if ( ret.userType() == QMetaType::type( "QgsGeometry" ) )
+      if ( ret.userType() == qMetaTypeId< QgsGeometry>() )
       {
         char *blob = nullptr;
         int size = 0;
         qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
         sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
       }
-      else if ( ret.userType() == QMetaType::type( "QgsInterval" ) )
+      else if ( ret.userType() == qMetaTypeId<QgsInterval>() )
       {
         sqlite3_result_double( ctxt, ret.value<QgsInterval>().seconds() );
       }

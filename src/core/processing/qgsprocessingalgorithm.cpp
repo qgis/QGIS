@@ -925,17 +925,17 @@ QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameter
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+    if ( var.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
     {
       QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
       var = fromVar.source;
     }
-    else if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+    else if ( var.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
       var = fromVar.sink;
     }
-    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == Qgis::PropertyType::Static )
@@ -957,7 +957,7 @@ QString QgsProcessingAlgorithm::invalidRasterError( const QVariantMap &parameter
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == Qgis::PropertyType::Static )
@@ -979,12 +979,12 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+    if ( var.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
       var = fromVar.sink;
     }
-    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == Qgis::PropertyType::Static )
@@ -1006,7 +1006,7 @@ QString QgsProcessingAlgorithm::invalidPointCloudError( const QVariantMap &param
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == Qgis::PropertyType::Static )
