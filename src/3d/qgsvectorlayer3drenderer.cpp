@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayer3drenderer.h"
 
+#include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunkedentity_p.h"
 #include "qgsvectorlayerchunkloader_p.h"
@@ -75,9 +76,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
   // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
   // height will exceed this amount!
-  constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
-  constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
-  return new QgsVectorLayerChunkedEntity( vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mSymbol.get(), map );
+  return new QgsVectorLayerChunkedEntity( vl, Qgs3DMapSettings::DEFAULT_MIN_DEPTH, Qgs3DMapSettings::DEFAULT_MAX_DEPTH, tilingSettings(), mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
