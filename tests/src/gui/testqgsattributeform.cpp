@@ -58,6 +58,7 @@ class TestQgsAttributeForm : public QObject
     void testAttributeFormInterface();
     void testDefaultValueUpdate();
     void testDefaultValueUpdateRecursion();
+    void testParentFeatureUpdate();
     void testSameFieldSync();
     void testZeroDoubles();
     void testMinimumWidth();
@@ -1109,6 +1110,38 @@ void TestQgsAttributeForm::testDefaultValueUpdateRecursion()
   QCOMPARE( ww1->value().toInt(), 41 );
   QCOMPARE( ww2->value().toInt(), 42 );
   QCOMPARE( ww3->value().toInt(), 43 );
+}
+
+void TestQgsAttributeForm::testParentFeatureUpdate()
+{
+  // make a temporary layer to check through
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->setDefaultValueDefinition( 0, QgsDefaultValue( QStringLiteral( "current_parent_value('colZero\')" ), true ) );
+  layer->startEditing();
+
+  // initalize parent feature
+  QgsFields parentFields;
+  parentFields.append( QgsField( QStringLiteral( "colZero" ), QMetaType::Type::Int ) );
+
+  QgsFeature parentFeature( parentFields, 1 );
+  parentFeature.setAttribute( QStringLiteral( "colZero" ), 10 );
+
+  // initalize child feature
+  QgsFeature feature( layer->dataProvider()->fields(), 1 );
+
+  // build a form
+  QgsAttributeEditorContext context;
+  context.setParentFormFeature( parentFeature );
+  QgsAttributeForm form( layer, feature, context );
+
+  // get wrappers for each widget
+  QgsEditorWidgetWrapper *ww0;
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+
+  form.parentFormValueChanged( QStringLiteral( "colZero" ), 20 );
+
+  QCOMPARE( ww0->value().toInt(), 20 );
 }
 
 void TestQgsAttributeForm::testSameFieldSync()
