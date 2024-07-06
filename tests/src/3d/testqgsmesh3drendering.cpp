@@ -292,6 +292,13 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
                                       fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
 
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+
+  /*
+   * first test: without rotation
+  */
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
@@ -305,9 +312,6 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setCrs( mProject->crs() );
   map->setExtent( filteredExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
-  QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -329,6 +333,49 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   delete map;
 
   QGSVERIFYIMAGECHECK( "mesh3d_filtered", "mesh3d_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  /*
+   * second test: with rotation
+   */
+  QgsMesh3DSymbol *symbolMesh3d2 = new QgsMesh3DSymbol;
+  symbolMesh3d2->setVerticalDatasetGroupIndex( 0 );
+  symbolMesh3d2->setVerticalScale( 10 );
+  symbolMesh3d2->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d2->setArrowsEnabled( true );
+  symbolMesh3d2->setArrowsSpacing( 300 );
+  QgsMeshLayer3DRenderer *meshDatasetRenderer3d2 = new QgsMeshLayer3DRenderer( symbolMesh3d2 );
+  mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d2 );
+
+  Qgs3DMapSettings *mapSettings2 = new Qgs3DMapSettings;
+  mapSettings2->setCrs( mProject->crs() );
+  mapSettings2->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
+  mapSettings2->setLightSources( { defaultLight.clone() } );
+
+  const QgsBox3D aaBox = QgsBox3D( filteredExtent, Qgs3DMapSettings::DEFAULT_MIN_DEPTH, Qgs3DMapSettings::DEFAULT_MAX_DEPTH );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( aaBox );
+  sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -35.0 );
+  mapSettings2->setBox( sceneBox );
+
+  QgsFlatTerrainGenerator *flatTerrain2 = new QgsFlatTerrainGenerator;
+  flatTerrain2->setCrs( mapSettings2->crs() );
+  mapSettings2->setTerrainGenerator( flatTerrain2 );
+
+  QgsOffscreen3DEngine engine2;
+  Qgs3DMapScene *scene2 = new Qgs3DMapScene( *mapSettings2, &engine2 );
+  engine2.setRootEntity( scene2 );
+  scene2->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine2, scene2 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine2, scene2 );
+  delete scene2;
+  delete mapSettings2;
+
+  QGSVERIFYIMAGECHECK( "mesh3d_filtered_rotation", "mesh3d_filtered_rotation", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
 }
 
 QGSTEST_MAIN( TestQgsMesh3DRendering )
