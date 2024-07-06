@@ -615,6 +615,28 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   }
 }
 
+void QgsAttributeForm::updateValuesDependenciesParent()
+{
+  // create updated Feature
+  QgsFeature updatedFeature = getUpdatedFeature();
+  QList<int> updatedFields;
+
+  // go through fields dependent to parent feature value(s)
+  const QSet<QgsEditorWidgetWrapper *> relevantWidgets = mParentDependencies;
+  for ( QgsEditorWidgetWrapper *eww : relevantWidgets )
+  {
+    //do not update when this widget is already updating (avoid recursions)
+    if ( updatedFields.contains( eww->fieldIdx() ) )
+      continue;
+
+    // Update value
+    updatedFields << eww->fieldIdx();
+    QgsExpressionContext context = createExpressionContext( updatedFeature );
+    const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
+    eww->setValue( value );
+  }
+}
+
 void QgsAttributeForm::updateRelatedLayerFields()
 {
   // Synchronize dependencies
@@ -1527,6 +1549,15 @@ void QgsAttributeForm::refreshFeature()
 
 void QgsAttributeForm::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
 {
+  if ( mContext.parentFormFeature().isValid() )
+  {
+    QgsFeature parentFormFeature = mContext.parentFormFeature();
+    parentFormFeature.setAttribute( attribute, newValue );
+    mContext.setParentFormFeature( parentFormFeature );
+  }
+
+  updateValuesDependenciesParent();
+
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
@@ -3147,6 +3178,7 @@ void QgsAttributeForm::updateFieldDependencies()
   mDefaultValueDependencies.clear();
   mVirtualFieldsDependencies.clear();
   mRelatedLayerFieldsDependencies.clear();
+  mParentDependencies.clear();
 
   //create defaultValueDependencies
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
@@ -3155,6 +3187,7 @@ void QgsAttributeForm::updateFieldDependencies()
     if ( ! eww )
       continue;
 
+    updateFieldDependenciesParent( eww );
     updateFieldDependenciesDefaultValue( eww );
     updateFieldDependenciesVirtualFields( eww );
     updateRelatedLayerFieldsDependencies( eww );
@@ -3241,6 +3274,18 @@ void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrap
         continue;
 
       updateRelatedLayerFieldsDependencies( editorWidgetWrapper );
+    }
+  }
+}
+
+void QgsAttributeForm::updateFieldDependenciesParent( QgsEditorWidgetWrapper *eww )
+{
+  if ( eww )
+  {
+    QString expression = eww->field().defaultValueDefinition().expression();
+    if ( expression.contains( QStringLiteral( "current_parent" ) ) )
+    {
+      mParentDependencies.insert( eww );
     }
   }
 }
