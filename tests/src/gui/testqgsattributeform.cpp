@@ -1120,14 +1120,14 @@ void TestQgsAttributeForm::testParentFeatureUpdate()
   layer->setDefaultValueDefinition( 0, QgsDefaultValue( QStringLiteral( "current_parent_value('colZero\')" ), true ) );
   layer->startEditing();
 
-  // initalize parent feature
+  // initialize parent feature
   QgsFields parentFields;
   parentFields.append( QgsField( QStringLiteral( "colZero" ), QMetaType::Type::Int ) );
 
   QgsFeature parentFeature( parentFields, 1 );
   parentFeature.setAttribute( QStringLiteral( "colZero" ), 10 );
 
-  // initalize child feature
+  // initialize child feature
   QgsFeature feature( layer->dataProvider()->fields(), 1 );
 
   // build a form
