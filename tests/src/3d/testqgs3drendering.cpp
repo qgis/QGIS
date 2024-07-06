@@ -51,6 +51,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgsorientedbox3d.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -1418,21 +1419,36 @@ void TestQgs3DRendering::testFilteredFlatTerrain()
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
 
+  /*
+   * first test: the extent has width > height
+   */
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "flat_terrain_filtered_1", "flat_terrain_filtered_1", img, QString(), 40, QSize( 0, 0 ), 2 );
 
-  // Now set the extent to have height > width and redo
+  /*
+   * second test: Now set the extent to have height > width and redo
+   */
   fullExtent = mLayerDtm->extent();
   fullExtent.setXMaximum( fullExtent.xMaximum() - fullExtent.width() / 3 );
   fullExtent.setXMinimum( fullExtent.xMinimum() + fullExtent.width() / 3 );
   map->setExtent( fullExtent );
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "flat_terrain_filtered_2", "flat_terrain_filtered_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  /*
+   * third test: Apply a rotation factor
+   */
+  const QgsBox3D aaBox = QgsBox3D( map->extent(), -50000.0, 50000.0 );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( aaBox );
+  sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -45.0 );
+  map->setBox( sceneBox );
+
+  QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "flat_terrain_filtered_3", "flat_terrain_filtered_3", img3, QString(), 40, QSize( 0, 0 ), 2 );
 
   delete scene;
   delete map;
-
-  QGSVERIFYIMAGECHECK( "flat_terrain_filtered_2", "flat_terrain_filtered_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testFilteredDemTerrain()
