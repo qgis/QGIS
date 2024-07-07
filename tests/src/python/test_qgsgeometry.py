@@ -277,7 +277,7 @@ class TestQgsGeometry(QgisTestCase):
 
     def testFromBox3D(self):
         myBox3D = QgsGeometry.fromBox3D(QgsBox3D(1, 2, 3, 4, 5, 6))
-        self.assertEqual(myBox3D.asWkt(), "MultiPolygonZ (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))")
+        self.assertEqual(myBox3D.asWkt(), "MultiPolygon Z (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))")
 
     def testLineStringPythonAdditions(self):
         """
@@ -478,27 +478,27 @@ class TestQgsGeometry(QgisTestCase):
 
         # array of QgsPoint with Z
         line = QgsLineString([QgsPoint(1, 2, 11), QgsPoint(3, 4, 13), QgsPoint(11, 12, 14)])
-        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 13, 11 12 14)')
+        self.assertEqual(line.asWkt(), 'LineString Z (1 2 11, 3 4 13, 11 12 14)')
 
         # array of QgsPoint with Z, only first has z
         line = QgsLineString([QgsPoint(1, 2, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
-        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 nan, 11 12 nan)')
+        self.assertEqual(line.asWkt(), 'LineString Z (1 2 11, 3 4 nan, 11 12 nan)')
 
         # array of QgsPoint with M
         line = QgsLineString([QgsPoint(1, 2, None, 11), QgsPoint(3, 4, None, 13), QgsPoint(11, 12, None, 14)])
-        self.assertEqual(line.asWkt(), 'LineStringM (1 2 11, 3 4 13, 11 12 14)')
+        self.assertEqual(line.asWkt(), 'LineString M (1 2 11, 3 4 13, 11 12 14)')
 
         # array of QgsPoint with M, only first has M
         line = QgsLineString([QgsPoint(1, 2, None, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
-        self.assertEqual(line.asWkt(), 'LineStringM (1 2 11, 3 4 nan, 11 12 nan)')
+        self.assertEqual(line.asWkt(), 'LineString M (1 2 11, 3 4 nan, 11 12 nan)')
 
         # array of QgsPoint with ZM
         line = QgsLineString([QgsPoint(1, 2, 22, 11), QgsPoint(3, 4, 23, 13), QgsPoint(11, 12, 24, 14)])
-        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 22 11, 3 4 23 13, 11 12 24 14)')
+        self.assertEqual(line.asWkt(), 'LineString ZM (1 2 22 11, 3 4 23 13, 11 12 24 14)')
 
         # array of QgsPoint with ZM, only first has ZM
         line = QgsLineString([QgsPoint(1, 2, 33, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
-        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 33 11, 3 4 nan nan, 11 12 nan nan)')
+        self.assertEqual(line.asWkt(), 'LineString ZM (1 2 33 11, 3 4 nan nan, 11 12 nan nan)')
 
         # array of QgsPointXY
         line = QgsLineString([QgsPointXY(1, 2), QgsPointXY(3, 4), QgsPointXY(11, 12)])
@@ -529,19 +529,19 @@ class TestQgsGeometry(QgisTestCase):
 
         # array of array of 3d floats
         line = QgsLineString([[1, 2, 11], [3, 4, 12], [5, 6, 13]])
-        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 12, 5 6 13)')
+        self.assertEqual(line.asWkt(), 'LineString Z (1 2 11, 3 4 12, 5 6 13)')
 
         # array of array of inconsistent 3d floats
         line = QgsLineString([[1, 2, 11], [3, 4], [5, 6]])
-        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 nan, 5 6 nan)')
+        self.assertEqual(line.asWkt(), 'LineString Z (1 2 11, 3 4 nan, 5 6 nan)')
 
         # array of array of 4d floats
         line = QgsLineString([[1, 2, 11, 21], [3, 4, 12, 22], [5, 6, 13, 23]])
-        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 11 21, 3 4 12 22, 5 6 13 23)')
+        self.assertEqual(line.asWkt(), 'LineString ZM (1 2 11 21, 3 4 12 22, 5 6 13 23)')
 
         # array of array of inconsistent 4d floats
         line = QgsLineString([[1, 2, 11, 21], [3, 4, 12], [5, 6]])
-        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 11 21, 3 4 12 nan, 5 6 nan nan)')
+        self.assertEqual(line.asWkt(), 'LineString ZM (1 2 11 21, 3 4 12 nan, 5 6 nan nan)')
 
         # array of array of 5 floats
         with self.assertRaises(TypeError):
@@ -572,27 +572,27 @@ class TestQgsGeometry(QgisTestCase):
 
         # array of QgsPoint with Z
         point = QgsMultiPoint([QgsPoint(1, 2, 11), QgsPoint(3, 4, 13), QgsPoint(11, 12, 14)])
-        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4 13),(11 12 14))')
+        self.assertEqual(point.asWkt(), 'MultiPoint Z ((1 2 11),(3 4 13),(11 12 14))')
 
         # array of QgsPoint with Z, only first has z
         point = QgsMultiPoint([QgsPoint(1, 2, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
-        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4),(11 12))')
+        self.assertEqual(point.asWkt(), 'MultiPoint Z ((1 2 11),(3 4),(11 12))')
 
         # array of QgsPoint with M
         point = QgsMultiPoint([QgsPoint(1, 2, None, 11), QgsPoint(3, 4, None, 13), QgsPoint(11, 12, None, 14)])
-        self.assertEqual(point.asWkt(), 'MultiPointM ((1 2 11),(3 4 13),(11 12 14))')
+        self.assertEqual(point.asWkt(), 'MultiPoint M ((1 2 11),(3 4 13),(11 12 14))')
 
         # array of QgsPoint with M, only first has M
         point = QgsMultiPoint([QgsPoint(1, 2, None, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
-        self.assertEqual(point.asWkt(), 'MultiPointM ((1 2 11),(3 4),(11 12))')
+        self.assertEqual(point.asWkt(), 'MultiPoint M ((1 2 11),(3 4),(11 12))')
 
         # array of QgsPoint with ZM
         point = QgsMultiPoint([QgsPoint(1, 2, 22, 11), QgsPoint(3, 4, 23, 13), QgsPoint(11, 12, 24, 14)])
-        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 22 11),(3 4 23 13),(11 12 24 14))')
+        self.assertEqual(point.asWkt(), 'MultiPoint ZM ((1 2 22 11),(3 4 23 13),(11 12 24 14))')
 
         # array of QgsPoint with ZM, only first has ZM
         point = QgsMultiPoint([QgsPoint(1, 2, 33, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
-        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 33 11),(3 4),(11 12))')
+        self.assertEqual(point.asWkt(), 'MultiPoint ZM ((1 2 33 11),(3 4),(11 12))')
 
         # array of QgsPointXY
         point = QgsMultiPoint([QgsPointXY(1, 2), QgsPointXY(3, 4), QgsPointXY(11, 12)])
@@ -623,19 +623,19 @@ class TestQgsGeometry(QgisTestCase):
 
         # array of array of 3d floats
         point = QgsMultiPoint([[1, 2, 11], [3, 4, 12], [5, 6, 13]])
-        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4 12),(5 6 13))')
+        self.assertEqual(point.asWkt(), 'MultiPoint Z ((1 2 11),(3 4 12),(5 6 13))')
 
         # array of array of inconsistent 3d floats
         point = QgsMultiPoint([[1, 2, 11], [3, 4], [5, 6]])
-        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4),(5 6))')
+        self.assertEqual(point.asWkt(), 'MultiPoint Z ((1 2 11),(3 4),(5 6))')
 
         # array of array of 4d floats
         point = QgsMultiPoint([[1, 2, 11, 21], [3, 4, 12, 22], [5, 6, 13, 23]])
-        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 11 21),(3 4 12 22),(5 6 13 23))')
+        self.assertEqual(point.asWkt(), 'MultiPoint ZM ((1 2 11 21),(3 4 12 22),(5 6 13 23))')
 
         # array of array of inconsistent 4d floats
         point = QgsMultiPoint([[1, 2, 11, 21], [3, 4, 12], [5, 6]])
-        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 11 21),(3 4 12),(5 6))')
+        self.assertEqual(point.asWkt(), 'MultiPoint ZM ((1 2 11 21),(3 4 12),(5 6))')
 
         # array of array of 5 floats
         with self.assertRaises(TypeError):
@@ -818,14 +818,14 @@ class TestQgsGeometry(QgisTestCase):
         Test the QgsPointXY conversion methods
         """
         self.assertEqual(QgsGeometry.fromWkt('Point(11 13)').asPoint(), QgsPointXY(11, 13))
-        self.assertEqual(QgsGeometry.fromWkt('PointZ(11 13 14)').asPoint(), QgsPointXY(11, 13))
-        self.assertEqual(QgsGeometry.fromWkt('PointM(11 13 14)').asPoint(), QgsPointXY(11, 13))
-        self.assertEqual(QgsGeometry.fromWkt('PointZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('Point Z(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('Point M(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('Point ZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
         # multipoint with single point should work too!
         self.assertEqual(QgsGeometry.fromWkt('MultiPoint(11 13)').asPoint(), QgsPointXY(11, 13))
-        self.assertEqual(QgsGeometry.fromWkt('MultiPointZ(11 13 14)').asPoint(), QgsPointXY(11, 13))
-        self.assertEqual(QgsGeometry.fromWkt('MultiPointM(11 13 14)').asPoint(), QgsPointXY(11, 13))
-        self.assertEqual(QgsGeometry.fromWkt('MultiPointZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint Z(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint M(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint ZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asPoint()
         with self.assertRaises(TypeError):
@@ -838,11 +838,11 @@ class TestQgsGeometry(QgisTestCase):
         # as polyline
         self.assertEqual(QgsGeometry.fromWkt('LineString(11 13,14 15)').asPolyline(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
-        self.assertEqual(QgsGeometry.fromWkt('LineStringZ(11 13 1,14 15 2)').asPolyline(),
+        self.assertEqual(QgsGeometry.fromWkt('LineString Z(11 13 1,14 15 2)').asPolyline(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
-        self.assertEqual(QgsGeometry.fromWkt('LineStringM(11 13 1,14 15 2)').asPolyline(),
+        self.assertEqual(QgsGeometry.fromWkt('LineString M(11 13 1,14 15 2)').asPolyline(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
-        self.assertEqual(QgsGeometry.fromWkt('LineStringZM(11 13 1 2,14 15 3 4)').asPolyline(),
+        self.assertEqual(QgsGeometry.fromWkt('LineString ZM(11 13 1 2,14 15 3 4)').asPolyline(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('Point(11 13)').asPolyline()
@@ -858,12 +858,12 @@ class TestQgsGeometry(QgisTestCase):
         # as polygon
         self.assertEqual(QgsGeometry.fromWkt('Polygon((11 13,14 15, 11 15, 11 13))').asPolygon(),
                          [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
-        self.assertEqual(QgsGeometry.fromWkt('PolygonZ((11 13 1,14 15 2, 11 15 3, 11 13 1))').asPolygon(),
+        self.assertEqual(QgsGeometry.fromWkt('Polygon Z((11 13 1,14 15 2, 11 15 3, 11 13 1))').asPolygon(),
                          [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
-        self.assertEqual(QgsGeometry.fromWkt('PolygonM((11 13 1,14 15 2, 11 15 3, 11 13 1))').asPolygon(),
+        self.assertEqual(QgsGeometry.fromWkt('Polygon M((11 13 1,14 15 2, 11 15 3, 11 13 1))').asPolygon(),
                          [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
         self.assertEqual(
-            QgsGeometry.fromWkt('PolygonZM((11 13 1 11,14 15 2 12 , 11 15 3 13 , 11 13 1 11))').asPolygon(),
+            QgsGeometry.fromWkt('Polygon ZM((11 13 1 11,14 15 2 12 , 11 15 3 13 , 11 13 1 11))').asPolygon(),
             [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('Point(11 13)').asPolygon()
@@ -881,11 +881,11 @@ class TestQgsGeometry(QgisTestCase):
         # as multipoint
         self.assertEqual(QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asMultiPoint(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
-        self.assertEqual(QgsGeometry.fromWkt('MultiPointZ(11 13 1,14 15 2)').asMultiPoint(),
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint Z(11 13 1,14 15 2)').asMultiPoint(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
-        self.assertEqual(QgsGeometry.fromWkt('MultiPointM(11 13 1,14 15 2)').asMultiPoint(),
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint M(11 13 1,14 15 2)').asMultiPoint(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
-        self.assertEqual(QgsGeometry.fromWkt('MultiPointZM(11 13 1 2,14 15 3 4)').asMultiPoint(),
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint ZM(11 13 1 2,14 15 3 4)').asMultiPoint(),
                          [QgsPointXY(11, 13), QgsPointXY(14, 15)])
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('Point(11 13)').asMultiPoint()
@@ -901,12 +901,12 @@ class TestQgsGeometry(QgisTestCase):
         # as multilinestring
         self.assertEqual(QgsGeometry.fromWkt('MultiLineString((11 13,14 15, 11 15, 11 13))').asMultiPolyline(),
                          [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
-        self.assertEqual(QgsGeometry.fromWkt('MultiLineStringZ((11 13 1,14 15 2, 11 15 3, 11 13 1))').asMultiPolyline(),
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineString Z((11 13 1,14 15 2, 11 15 3, 11 13 1))').asMultiPolyline(),
                          [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
-        self.assertEqual(QgsGeometry.fromWkt('MultiLineStringM((11 13 1,14 15 2, 11 15 3, 11 13 1))').asMultiPolyline(),
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineString M((11 13 1,14 15 2, 11 15 3, 11 13 1))').asMultiPolyline(),
                          [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
         self.assertEqual(QgsGeometry.fromWkt(
-            'MultiLineStringZM((11 13 1 11,14 15 2 12 , 11 15 3 13 , 11 13 1 11))').asMultiPolyline(),
+            'MultiLineString ZM((11 13 1 11,14 15 2 12 , 11 15 3 13 , 11 13 1 11))').asMultiPolyline(),
             [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('Point(11 13)').asMultiPolyline()
@@ -925,13 +925,13 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(QgsGeometry.fromWkt('MultiPolygon(((11 13,14 15, 11 15, 11 13)))').asMultiPolygon(),
                          [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
         self.assertEqual(
-            QgsGeometry.fromWkt('MultiPolygonZ(((11 13 1,14 15 2, 11 15 3 , 11 13 1)))').asMultiPolygon(),
+            QgsGeometry.fromWkt('MultiPolygon Z(((11 13 1,14 15 2, 11 15 3 , 11 13 1)))').asMultiPolygon(),
             [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
         self.assertEqual(
-            QgsGeometry.fromWkt('MultiPolygonM(((11 13 1,14 15 2, 11 15 3 , 11 13 1)))').asMultiPolygon(),
+            QgsGeometry.fromWkt('MultiPolygon M(((11 13 1,14 15 2, 11 15 3 , 11 13 1)))').asMultiPolygon(),
             [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
         self.assertEqual(QgsGeometry.fromWkt(
-            'MultiPolygonZM(((11 13 1 11,14 15 2 12, 11 15 3 13, 11 13 1 11)))').asMultiPolygon(),
+            'MultiPolygon ZM(((11 13 1 11,14 15 2 12, 11 15 3 13, 11 13 1 11)))').asMultiPolygon(),
             [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('Point(11 13)').asMultiPolygon()
@@ -2540,7 +2540,7 @@ class TestQgsGeometry(QgisTestCase):
         geoms[T] = polyline1_geom()
         geoms[T].get().addZValue(4.0)
         parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.Type.PointZ) for p in line_points[1]]
-        expec[T] = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
+        expec[T] = "MultiLineString Z ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
 
         T = 'linestring_add_curve'
         geoms[T] = polyline1_geom()
@@ -2745,7 +2745,7 @@ class TestQgsGeometry(QgisTestCase):
         geoms[T] = polyline1_geom()
         geoms[T].get().addZValue(4.0)
         parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.Type.PointZ) for p in line_points[1]]
-        expec[T] = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
+        expec[T] = "MultiLineString Z ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
 
         T = 'linestring_add_curve'
         geoms[T] = polyline1_geom()
@@ -5714,14 +5714,14 @@ class TestQgsGeometry(QgisTestCase):
         o.normalize()
         self.assertEqual(
             o.asWkt(5),
-            "GeometryCollection (PolygonZ ((10 20 2, 20 20 3, 20 10 1.5, 10 20 2)),PolygonZ ((10 10 1, 20 10 1.5, 20 0 2.5, 10 10 1)),PolygonZ ((10 10 1, 10 20 2, 20 10 1.5, 10 10 1)),PolygonZ ((10 0 3.5, 10 10 1, 20 0 2.5, 10 0 3.5)),PolygonZ ((0 20 0.25, 10 20 2, 10 10 1, 0 20 0.25)),PolygonZ ((0 10 0.5, 10 10 1, 10 0 3.5, 0 10 0.5)),PolygonZ ((0 10 0.5, 0 20 0.25, 10 10 1, 0 10 0.5)),PolygonZ ((0 0 0, 0 10 0.5, 10 0 3.5, 0 0 0)))"
+            "GeometryCollection (Polygon Z ((10 20 2, 20 20 3, 20 10 1.5, 10 20 2)),Polygon Z ((10 10 1, 20 10 1.5, 20 0 2.5, 10 10 1)),Polygon Z ((10 10 1, 10 20 2, 20 10 1.5, 10 10 1)),Polygon Z ((10 0 3.5, 10 10 1, 20 0 2.5, 10 0 3.5)),Polygon Z ((0 20 0.25, 10 20 2, 10 10 1, 0 20 0.25)),Polygon Z ((0 10 0.5, 10 10 1, 10 0 3.5, 0 10 0.5)),Polygon Z ((0 10 0.5, 0 20 0.25, 10 10 1, 0 10 0.5)),Polygon Z ((0 0 0, 0 10 0.5, 10 0 3.5, 0 0 0)))"
         )
 
         o = input.delaunayTriangulation(0, True)
         o.normalize()
         self.assertEqual(
             o.asWkt(5),
-            "MultiLineStringZ ((20 10 1.5, 20 20 3),(20 0 2.5, 20 10 1.5),(10 20 2, 20 20 3),(10 20 2, 20 10 1.5),(10 10 1, 20 10 1.5),(10 10 1, 20 0 2.5),(10 10 1, 10 20 2),(10 0 3.5, 20 0 2.5),(10 0 3.5, 10 10 1),(0 20 0.25, 10 20 2),(0 20 0.25, 10 10 1),(0 10 0.5, 10 10 1),(0 10 0.5, 10 0 3.5),(0 10 0.5, 0 20 0.25),(0 0 0, 10 0 3.5),(0 0 0, 0 10 0.5))"
+            "MultiLineString Z ((20 10 1.5, 20 20 3),(20 0 2.5, 20 10 1.5),(10 20 2, 20 20 3),(10 20 2, 20 10 1.5),(10 10 1, 20 10 1.5),(10 10 1, 20 0 2.5),(10 10 1, 10 20 2),(10 0 3.5, 20 0 2.5),(10 0 3.5, 10 10 1),(0 20 0.25, 10 20 2),(0 20 0.25, 10 10 1),(0 10 0.5, 10 10 1),(0 10 0.5, 10 0 3.5),(0 10 0.5, 0 20 0.25),(0 0 0, 10 0 3.5),(0 0 0, 0 10 0.5))"
         )
 
         input = QgsGeometry.fromWkt(
@@ -6502,9 +6502,9 @@ class TestQgsGeometry(QgisTestCase):
             [QgsPoint(1, 1, 2), QgsPoint(10, 1), QgsPoint(10, 10), QgsPoint(20, 10, 2), 5,
              'LineString (1 1, 5.5 1.9, 8.7 4.2, 11.6 6.8, 15 9.1, 20 10)'],
             [QgsPoint(1, 1, 1), QgsPoint(10, 1, 2), QgsPoint(10, 10, 3), QgsPoint(20, 10, 4), 5,
-             'LineStringZ (1 1 1, 5.5 1.9 1.6, 8.7 4.2 2.2, 11.6 6.8 2.8, 15 9.1 3.4, 20 10 4)'],
+             'LineString Z (1 1 1, 5.5 1.9 1.6, 8.7 4.2 2.2, 11.6 6.8 2.8, 15 9.1 3.4, 20 10 4)'],
             [QgsPoint(1, 1, 1, 10), QgsPoint(10, 1, 2, 9), QgsPoint(10, 10, 3, 2), QgsPoint(20, 10, 4, 1), 5,
-             'LineStringZM (1 1 1 10, 5.5 1.9 1.6 8.8, 8.7 4.2 2.2 6.7, 11.6 6.8 2.8 4.3, 15 9.1 3.4 2.2, 20 10 4 1)']
+             'LineString ZM (1 1 1 10, 5.5 1.9 1.6 8.8, 8.7 4.2 2.2 6.7, 11.6 6.8 2.8 4.3, 15 9.1 3.4 2.2, 20 10 4 1)']
         ]
         for t in tests:
             res = QgsLineString.fromBezierCurve(t[0], t[1], t[2], t[3], t[4])
@@ -6672,18 +6672,18 @@ class TestQgsGeometry(QgisTestCase):
                          ['LineString (1 1, 2 2, 1 2, 1 1)'])
 
         self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Type.Point), ['Point (1 1)'])
-        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Type.PointZ), ['PointZ (1 1 3)'])
+        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Type.PointZ), ['Point Z (1 1 3)'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZ), ['PointZ (1 1 0)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZ), ['Point Z (1 1 0)'])
 
         # Adding Z/M with defaults
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZ, defaultZ=222), ['PointZ (1 1 222)'])
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointM, defaultM=333), ['PointM (1 1 333)'])
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZM, defaultZ=222, defaultM=333), ['PointZM (1 1 222 333)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZ, defaultZ=222), ['Point Z (1 1 222)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointM, defaultM=333), ['Point M (1 1 333)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZM, defaultZ=222, defaultM=333), ['Point ZM (1 1 222 333)'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointM), ['PointM (1 1 0)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointM), ['Point M (1 1 0)'])
         self.assertEqual(coerce_to_wkt('Point m (1 1 3)', QgsWkbTypes.Type.Point), ['Point (1 1)'])
         self.assertEqual(coerce_to_wkt('Point(1 3)', QgsWkbTypes.Type.MultiPoint), ['MultiPoint ((1 3))'])
         self.assertEqual(coerce_to_wkt('MultiPoint((1 3), (2 2))', QgsWkbTypes.Type.MultiPoint),
@@ -6694,20 +6694,20 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
         self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.PolygonZ),
-                         ['PolygonZ ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
+                         ['Polygon Z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
 
         # Adding Z back
         self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.PolygonZ),
-                         ['PolygonZ ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
+                         ['Polygon Z ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
 
         # Adding M back
         self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.PolygonM),
-                         ['PolygonM ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
+                         ['Polygon M ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
 
         self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
         self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.PolygonM),
-                         ['PolygonM ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
+                         ['Polygon M ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
         self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.MultiPolygon),
                          ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)))'])
         self.assertEqual(
@@ -6719,19 +6719,19 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)'])
         self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineStringZ),
-                         ['LineStringZ (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
+                         ['LineString Z (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
         self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)'])
         self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineStringM),
-                         ['LineStringM (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
+                         ['LineString M (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
 
         # Adding Z back
         self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.LineStringZ),
-                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
+                         ['LineString Z (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         # Adding M back
         self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.LineStringM),
-                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
+                         ['LineString M (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.MultiLineString),
                          ['MultiLineString ((1 1, 2 2, 3 3, 1 1))'])
@@ -7252,7 +7252,7 @@ class TestQgsGeometry(QgisTestCase):
         """
         l1 = QgsGeometry.fromWkt('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)')
         self.assertEqual(l1.node().asWkt(6),
-                         'MultiLineStringZ ((0 0 0, 5 5 4.5),(5 5 4.5, 10 10 10, 0 10 5, 5 5 4.5),(5 5 4.5, 10 0 3))')
+                         'MultiLineString Z ((0 0 0, 5 5 4.5),(5 5 4.5, 10 10 10, 0 10 5, 5 5 4.5),(5 5 4.5, 10 0 3))')
         l1 = QgsGeometry.fromWkt('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))')
         self.assertEqual(l1.node().asWkt(6),
                          'MultiLineString ((2 5, 2 3),(2 3, 2 1, 4 1),(4 1, 6 1),(6 1, 7 1),(4 1, 2 3))')

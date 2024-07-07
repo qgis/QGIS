@@ -878,7 +878,7 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert vl.isValid(), f"{basetestfile} is invalid"
         assert vl.wkbType() == QgsWkbTypes.Type.PointZM, "wrong wkb type, should be PointZM"
-        assert vl.getFeature(2).geometry().asWkt() == "PointZM (-71.12300000000000466 78.23000000000000398 1 2)", "wrong PointZM geometry"
+        assert vl.getFeature(2).geometry().asWkt() == "Point ZM (-71.12300000000000466 78.23000000000000398 1 2)", "wrong PointZM geometry"
         self.assertAlmostEqual(vl.extent().xMinimum(), -71.12300000000000466, places=4)
         self.assertAlmostEqual(vl.extent().yMinimum(), 66.32999999999999829, places=4)
         self.assertAlmostEqual(vl.extent().xMaximum(), -65.31999999999999318, places=4)
@@ -908,7 +908,7 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert vl.isValid(), f"{basetestfile} is invalid"
         assert vl.wkbType() == QgsWkbTypes.Type.PointZ, "wrong wkb type, should be PointZ"
-        assert vl.getFeature(2).geometry().asWkt() == "PointZ (-71.12300000000000466 78.23000000000000398 1)", "wrong PointZ geometry"
+        assert vl.getFeature(2).geometry().asWkt() == "Point Z (-71.12300000000000466 78.23000000000000398 1)", "wrong PointZ geometry"
         self.assertEqual(vl.extent(), QgsRectangle(-71.12300000000000466, 66.32999999999999829, -65.31999999999999318, 78.29999999999999716))
         self.assertEqual(vl.extent3D(), QgsBox3D(-71.12300000000000466, 66.32999999999999829, 1, -65.31999999999999318, 78.29999999999999716, 3))
 
@@ -930,7 +930,7 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert vl.isValid(), f"{basetestfile} is invalid"
         assert vl.wkbType() == QgsWkbTypes.Type.PointM, "wrong wkb type, should be PointM"
-        assert vl.getFeature(2).geometry().asWkt() == "PointM (-71.12300000000000466 78.23000000000000398 2)", "wrong PointM geometry"
+        assert vl.getFeature(2).geometry().asWkt() == "Point M (-71.12300000000000466 78.23000000000000398 2)", "wrong PointM geometry"
         self.assertEqual(vl.extent(), QgsRectangle(-71.12300000000000466, 66.32999999999999829, -65.31999999999999318, 78.29999999999999716))
         self.assertEqual(vl.extent3D(), QgsBox3D(-71.12300000000000466, 66.32999999999999829, float('nan'), -65.31999999999999318, 78.29999999999999716, float('nan')))
 
