@@ -251,7 +251,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
           {
             uriParts.insert( it.key(), it.value() );
           }
-          QString updatedUri = metadata->encodeUri( uriParts );
+          const QString updatedUri = metadata->encodeUri( uriParts );
 
           sublayers.append( metadata->querySublayers( updatedUri.isEmpty() ? path() : updatedUri, Qgis::SublayerQueryFlag::ResolveGeometryType ) );
         }
