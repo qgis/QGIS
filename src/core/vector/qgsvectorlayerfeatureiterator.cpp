@@ -114,6 +114,7 @@ QgsVectorLayerFeatureSource::~QgsVectorLayerFeatureSource() = default;
 
 QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
+  QMutexLocker mutexLocker( &mGetFeatureMutex );
   // return feature iterator that does not own this source
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, false, request ) );
 }
