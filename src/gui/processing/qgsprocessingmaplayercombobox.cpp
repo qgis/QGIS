@@ -188,8 +188,6 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   if ( filters )
     mCombo->setFilters( filters );
 
-  mCombo->setExcludedProviders( QStringList() << QStringLiteral( "grass" ) ); // not sure if this is still required...
-
   // Check compatibility with virtualraster data provider
   // see https://github.com/qgis/QGIS/issues/55890
   if ( mayBeRaster &&
