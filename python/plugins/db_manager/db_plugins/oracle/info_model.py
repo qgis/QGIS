@@ -116,7 +116,7 @@ class ORTableInfo(TableInfo):
             self.table.blockSignals(False)
 
         relation_type = QApplication.translate(
-            "DBManagerPlugin", self.table.objectType)
+            "DBManagerPlugin", self.table.objectType) if isinstance(self.table.objectType, str) else QApplication.translate("DBManagerPlugin", "Unknown")
 
         tbl = [
             (QApplication.translate("DBManagerPlugin", "Object type:"),
