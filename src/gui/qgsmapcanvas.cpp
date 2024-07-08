@@ -3573,6 +3573,10 @@ void QgsMapCanvas::startPreviewJob( int number )
 
     previewLayers << layer;
   }
+  if ( QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
+  {
+    previewLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  }
   jobSettings.setLayers( previewLayers );
 
   QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
