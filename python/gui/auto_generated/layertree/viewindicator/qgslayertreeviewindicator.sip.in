@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layertree/qgslayertreeviewindicator.h                        *
+ * src/gui/layertree/viewindicator/qgslayertreeviewindicator.h          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -66,7 +66,7 @@ Emitted when the indicator changes state (e.g. icon).
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layertree/qgslayertreeviewindicator.h                        *
+ * src/gui/layertree/viewindicator/qgslayertreeviewindicator.h          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

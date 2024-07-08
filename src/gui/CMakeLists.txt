@@ -269,8 +269,10 @@ set(QGIS_GUI_SRCS
   layertree/qgslayertreemapcanvasbridge.cpp
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
-  layertree/qgslayertreeviewindicator.cpp
   layertree/qgslayertreeviewitemdelegate.cpp
+
+  layertree/viewindicator/qgslayertreeviewindicator.cpp
+  layertree/viewindicator/qgslayertreeviewindicatorprovider.cpp
 
   layout/qgsgeopdflayertreemodel.cpp
   layout/qgslayoutaddpagesdialog.cpp
@@ -1242,8 +1244,10 @@ set(QGIS_GUI_HDRS
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
-  layertree/qgslayertreeviewindicator.h
   layertree/qgslayertreeviewitemdelegate.h
+
+  layertree/viewindicator/qgslayertreeviewindicator.h
+  layertree/viewindicator/qgslayertreeviewindicatorprovider.h
 
   layout/qgsgeopdflayertreemodel.h
   layout/qgslayoutaddpagesdialog.h
@@ -1670,6 +1674,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/inputcontroller
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree/viewindicator
   ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/locator
   ${CMAKE_SOURCE_DIR}/src/gui/maptools

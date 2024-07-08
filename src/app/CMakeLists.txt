@@ -45,7 +45,6 @@ set(QGIS_APP_SRCS
   qgslayercapabilitiesmodel.cpp
   qgslayernotesmanager.cpp
   qgslayertreegrouppropertieswidget.cpp
-  qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewlowaccuracyindicator.cpp

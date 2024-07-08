@@ -1,0 +1,92 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/viewindicator/qgslayertreeviewindicatorprovider.h  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsLayerTreeViewIndicatorProvider : QObject
+{
+%Docstring(signature="appended")
+The :py:class:`QgsLayerTreeViewIndicatorProvider` class provides an interface for
+layer tree indicator providers.
+
+Subclasses must override:
+
+- :py:func:`~iconName`
+- :py:func:`~tooltipText`
+- :py:func:`~acceptLayer` filter function to determine whether the indicator must be added for the layer
+
+Subclasses may override:
+
+- :py:func:`~onIndicatorClicked` default implementation does nothing
+- :py:func:`~connectSignals` default implementation connects layers to :py:func:`~dataSourceChanged`
+- :py:func:`~disconnectSignals` default implementation disconnects layers from :py:func:`~dataSourceChanged`
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeviewindicatorprovider.h"
+%End
+  public:
+
+    explicit QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view );
+
+  protected:
+
+    virtual void connectSignals( QgsMapLayer *layer );
+%Docstring
+Connect signals, default implementation connects layers to :py:func:`~QgsLayerTreeViewIndicatorProvider.dataSourceChanged`
+%End
+    virtual void disconnectSignals( QgsMapLayer *layer );
+%Docstring
+Disconnect signals, default implementation disconnects layers from :py:func:`~QgsLayerTreeViewIndicatorProvider.dataSourceChanged`
+%End
+
+    void updateLayerIndicator( QgsMapLayer *layer );
+%Docstring
+Updates the state of a the indicator for the given ``layer``.
+%End
+
+  protected slots:
+
+    virtual void onIndicatorClicked( const QModelIndex &index );
+%Docstring
+Action on indicator clicked, default implementation does nothing
+%End
+
+    void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+%Docstring
+Connects to signals of layers newly added to the tree
+%End
+    void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+%Docstring
+Disconnects from layers about to be removed from the tree
+%End
+    void onLayerLoaded();
+    void onLayerChanged();
+%Docstring
+Adds/removes indicator of a layer
+%End
+
+  private:
+    virtual bool acceptLayer( QgsMapLayer *layer ) = 0;
+    virtual QString iconName( QgsMapLayer *layer ) = 0;
+    virtual QString tooltipText( QgsMapLayer *layer ) = 0;
+  protected:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/viewindicator/qgslayertreeviewindicatorprovider.h  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

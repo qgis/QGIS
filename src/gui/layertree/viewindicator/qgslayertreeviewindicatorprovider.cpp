@@ -24,7 +24,6 @@
 #include "qgspointcloudlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsmeshlayer.h"
-#include "qgisapp.h"
 #include "qgsapplication.h"
 
 QgsLayerTreeViewIndicatorProvider::QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view )
