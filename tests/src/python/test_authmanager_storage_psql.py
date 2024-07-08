@@ -15,15 +15,21 @@ import unittest
 
 from test_authmanager_storage_base import AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase
 from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import QgsAuthConfigurationStorageDb
+from qgis.core import (
+    QgsAuthConfigurationStorageDb,
+    QgsProviderRegistry,
+    QgsProviderConnectionException,
+)
 from qgis.testing import QgisTestCase
-
+from qgis.PyQt import QtSql
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '2024-06-24'
 __copyright__ = 'Copyright 2024, The QGIS Project'
 
 
+# Skip if driver QPSQL/QPSQL7 is not available
+@unittest.skipIf(not QtSql.QSqlDatabase.isDriverAvailable('QPSQL') and not QtSql.QSqlDatabase.isDriverAvailable('QPSQL7'), 'QPSQL/QPSQL7 driver not available')
 class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase):
 
     @classmethod
@@ -56,7 +62,7 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
                 key, value = item.split('=')
                 config[key] = value
 
-        config['driver'] = 'QPSQL'
+        config['driver'] = 'QPSQL' if QtSql.QSqlDatabase.isDriverAvailable('QPSQL') else 'QPSQL7'
         config['database'] = config['dbname']
 
         # Remove single quotes if present in user and password and database
@@ -64,7 +70,18 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
             if key in config and config[key].startswith("'") and config[key].endswith("'"):
                 config[key] = config[key][1:-1]
 
-        config['schema'] = 'qgis_test'
+        config['schema'] = 'qgis_auth_test'
+
+        # Make sure all tables are dropped by dropping the schema
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        # connection uri
+        uri = f"dbname='{config['dbname']}' host={config['host']} port={config['port']} user='{config['user']}' password='{config['password']}'"
+        conn = md.createConnection(uri, {})
+
+        if config['schema'] in conn.schemas():
+            conn.dropSchema(config['schema'], True)
+
+        conn.createSchema(config['schema'])
 
         cls.storage = QgsAuthConfigurationStorageDb(config)
 
