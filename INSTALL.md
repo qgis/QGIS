@@ -709,12 +709,83 @@ can also change the build and release directories.
 Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
 is required.
 
-# 4.3 Building with XXX
+## 4.3 Building on Windows with vcpkg
 
-- Install Microsoft Visual Studio Community Edition as explained in ...
-- Get all dependencies
-  - Download an SDK
-  - Build all dependencies yourself
+Vcpkg is a free and open source cross platform ecosystem for libraries.
+It provides precise control over the versions of dependencies that are used, more of that is covered below.
+
+### 4.3.1 Install Build Tools
+
+1. Download and install the free (as in free beer) [Microsoft Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022).
+2. Obtain [winflexbison](https://github.com/lexxmark/winflexbison/releases).
+
+### 4.3.2 Build QGIS
+
+There are two ways, to build with vcpkg. Either you download an sdk, which allows you
+to reuse dependencies that are already built. This is generally easier and recommended.
+It is also possible to build all dependencies yourself, which allows you more control
+over the dependencies.
+
+#### 4.3.2.1 Build with an SDK
+
+1. Download and unzip SDK (e.g. from a release, shall we do daily exports?)
+2. Build
+
+We will now configure QGIS.
+
+Open a _Developer PowerShell for VS 2022_
+
+```ps
+# We assume you have a copy of the QGIS source code available
+# and have changed the working directory into it
+
+# Configure
+cmake -S . \
+      -B build \
+      -DSDK_PATH="path/to/vcpkg-export-[date]" \
+      -DBUILD_WITH_QT6=ON \
+      -DWITH_QTWEBKIT=OFF \
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release
+```
+
+This will provide you with a configured project. You can either build it directly
+from the command line.
+
+```ps
+# Build
+cmake --build build --config Release
+```
+
+Or you can open the generated `.sln` file in the `build` folder with Visual Studio.
+This will allow you to use all the tools that this IDE has to offer.
+
+#### 4.3.2.1 Build all the dependencies locally
+
+It is also possible to build all the dependencies locally.
+This will require some time, cpu and disk space.
+
+```ps
+# We assume you have a copy of the QGIS source code available
+# and have changed the working directory into it
+
+# Configure
+cmake -S . \
+      -B build \
+      -D WITH_VCPKG \
+      -D BUILD_WITH_QT6=ON \
+      -D WITH_QTWEBKIT=OFF \
+      -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+      -D VCPKG_HOST_TRIPLET=x64-windows-release
+```
+
+**Manage dependency versions**
+
+The dependencies are defined in the file `vcpkg/vcpkg.json`.
+This file defines which versions of registries are used.
+To update to the most recent version, you can use the command `vcpkg x-update-baseline --x-manifest-root=vcpkg`.
+If you want to patch or update a specific dependency, you can copy the port for this
+dependency into the folder `vcpkg/ports`. Whenever the build is reconfigured, it will check for dependencies that need to be rebuilt.
+
 
 # 5. Building on MacOS X
 
