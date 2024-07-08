@@ -213,12 +213,12 @@ QString QgsAbstractGeometry::wktTypeStr() const
   QString wkt = geometryType();
   QString suffix;
   if ( is3D() )
-    sufixe += 'Z';
+    suffix += 'Z';
   if ( isMeasure() )
-    sufixe += 'M';
-  if ( !sufixe.isEmpty() )
+    suffix += 'M';
+  if ( !suffix.isEmpty() )
   {
-    wkt += ' ' + sufixe;
+    wkt += ' ' + suffix;
   }
   return wkt;
 }
