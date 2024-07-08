@@ -264,11 +264,9 @@ bool QgsExpressionFunction::allParamsStatic( const QgsExpressionNodeFunction *no
 }
 
 /**
- *
- * @param layerNode
- * @param parent
- * @param context
- * @return
+ * Helper function to prepare layer nodes. If the node is static, we obtain a featureSource
+ * for the layer which can then be reused through the evaluation of this expression
+ * without blocking the main thread.
  */
 bool prepareLayerNode( QgsExpressionNode *layerNode, QgsExpression *parent, const QgsExpressionContext *context )
 {
@@ -8986,8 +8984,6 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     getFeatureFunc->setPrepareFunction( []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
     {
-      Q_UNUSED( context )
-
       if ( node->args()->count() > 0 )
       {
         prepareLayerNode( node->args()->at( 0 ), parent, context );
