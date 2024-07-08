@@ -29,6 +29,7 @@ class QgsAuthConfigurationStorage;
  *
  * This class manages a list of authentication configuration storages.
  * It is a singleton class.
+ * \since QGIS 3.30
  */
 class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
 {
@@ -51,6 +52,13 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
      * \returns TRUE if the storage was added, FALSE if it was already present in the registry.
      */
     bool addStorage( QgsAuthConfigurationStorage *storage, QgsAuthConfigurationStorage *after = nullptr );
+
+    /**
+     * Remove an authentication configuration storage from the registry.
+     * \param storage The storage to remove
+     * \returns TRUE if the storage was removed, FALSE if it was not present in the registry.
+     */
+    bool removeStorage( QgsAuthConfigurationStorage *storage );
 
     /**
      * Returns a list of all registered authentication configuration storages.
@@ -77,7 +85,6 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
 
     /**
      * Emitted when a storage was removed
-     * \todo removal is not implemented yet
      */
     void storageRemoved( QgsAuthConfigurationStorage *storage );
 

@@ -80,7 +80,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool storeAuthSetting( const QString &key, const QString &value ) override;
     QString loadAuthSetting( const QString &key ) const override;
     bool removeAuthSetting( const QString &key ) override;
-    bool existsAuthSetting( const QString &key ) const override;
+    bool authSettingExists( const QString &key ) const override;
     bool clearMethodConfigs() override;
     bool erase() override;
     bool isReady() const override;
@@ -93,18 +93,19 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const override;
     const QList<QSslCertificate> certIdentities() const override;
     QStringList certIdentityIds() const override;
-    bool existsCertIdentity( const QString &id ) const override;
+    bool certIdentityExists( const QString &id ) const override;
     bool removeCertIdentity( const QString &id ) override;
     bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config ) override;
+    QStringList sslCertCustomConfigIds() const override;
     const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const override;
     const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const override;
     const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const override;
-    bool existsSslCertCustomConfig( const QString &id, const QString &hostport ) override;
+    bool sslCertCustomConfigExists( const QString &id, const QString &hostport ) override;
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport ) override;
 
     bool storeCertAuthority( const QSslCertificate &cert ) override;
     const QSslCertificate loadCertAuthority( const QString &id ) const override;
-    bool existsCertAuthority( const QSslCertificate &cert ) const override;
+    bool certAuthorityExists( const QSslCertificate &cert ) const override;
     bool removeCertAuthority( const QSslCertificate &cert ) override;
     const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const override;
     const QList<QSslCertificate> caCerts() const override;
@@ -112,7 +113,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy ) override;
     QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const override;
     bool removeCertTrustPolicy( const QSslCertificate &cert ) override;
-    bool existsCertTrustPolicy( const QSslCertificate &cert ) const override;
+    bool certTrustPolicyExists( const QSslCertificate &cert ) const override;
 
     const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const override;
     bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) override;

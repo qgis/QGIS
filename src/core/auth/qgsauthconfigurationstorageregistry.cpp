@@ -55,6 +55,20 @@ bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorag
   }
 }
 
+bool QgsAuthConfigurationStorageRegistry::removeStorage( QgsAuthConfigurationStorage *storage )
+{
+  if ( !mStorages.contains( storage ) )
+  {
+    return false;
+  }
+  else
+  {
+    mStorages.removeAll( storage );
+    emit storageRemoved( storage );
+    return true;
+  }
+}
+
 QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::storages() const
 {
   return mStorages;

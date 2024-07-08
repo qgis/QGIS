@@ -28,6 +28,7 @@
 
 
 /**
+ * \ingroup core
  *  Abstract class that defines the interface for all authentication configuration storage implementations.
  *  \since QGIS 3.40
  */
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     /**
      * Load an authentication configuration from the database.
      * \param id Configuration id.
-     * \param payload Encrypted payload.
+     * \param payload (possibly encrypted) payload.
      * \param full If TRUE, the full configuration is loaded and the (possibly encrypted) payload is populated, otherwise only the configuration metadata is loaded.
      * \returns Authentication configuration metadata.
      */
@@ -116,7 +117,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
 
     /**
      * Store an authentication config in the database.
-     * \param mconfig Authentication configuration.
+     * \param config Authentication configuration.
      * \param payload payload to store (possibly encrypted).
      * \returns Whether operation succeeded
      */
@@ -155,7 +156,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
      * \param key Setting key.
      * \returns TRUE if the setting exists, FALSE otherwise.
      */
-    virtual bool existsAuthSetting( const QString &key ) const = 0;
+    virtual bool authSettingExists( const QString &key ) const = 0;
 
 #ifndef QT_NO_SSL
 
@@ -182,7 +183,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual const QSslCertificate loadCertIdentity( const QString &id ) const = 0;
 
     /**
-     * Gets a certificate identity bundle by \a id (sha hash).
+     * Returns a certificate identity bundle by \a id (sha hash).
      * \param id sha shash
      * \return a pair with the certificate and its SSL key as an encrypted string
      * \note not available in Python bindings
@@ -202,7 +203,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual QStringList certIdentityIds() const = 0;
 
     //! Check if a certificate identity exists
-    virtual bool existsCertIdentity( const QString &id ) const = 0;
+    virtual bool certIdentityExists( const QString &id ) const = 0;
 
     //! Remove a certificate identity
     virtual bool removeCertIdentity( const QString &id ) = 0;
@@ -211,7 +212,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config ) = 0;
 
     /**
-     * \brief sslCertCustomConfig get an SSL certificate custom config by \a id (sha hash) and \a hostport (host:port)
+     * Loads an SSL certificate custom config by \a id (sha hash) and \a hostport (host:port)
      * \param id sha hash
      * \param hostport string host:port
      * \return a SSL certificate custom config
@@ -219,7 +220,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const = 0;
 
     /**
-     * \brief sslCertCustomConfigByHost get an SSL certificate custom config by \a hostport (host:port)
+     * Loads an SSL certificate custom config by \a hostport (host:port)
      * \param hostport host:port
      * \return a SSL certificate custom config
      */
@@ -231,16 +232,20 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
      */
     virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const = 0;
 
+    /**
+     * Returns the list of SSL certificate custom config ids.
+     * \return list of SSL certificate custom config ids
+     */
+    virtual QStringList sslCertCustomConfigIds() const = 0;
+
     //! Check if SSL certificate custom config exists
-    virtual bool existsSslCertCustomConfig( const QString &id, const QString &hostport ) = 0;
+    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport ) = 0;
 
     //! Remove an SSL certificate custom config
     virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport ) = 0;
 
     //! Store a certificate authority
     virtual bool storeCertAuthority( const QSslCertificate &cert ) = 0;
-
-    //! Gets a certificate authority by id (sha hash)
 
     /**
      * \brief certAuthority get a certificate authority by \a id (sha hash)
@@ -250,7 +255,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual const QSslCertificate loadCertAuthority( const QString &id ) const = 0;
 
     //! Check if a certificate authority exists
-    virtual bool existsCertAuthority( const QSslCertificate &cert ) const = 0;
+    virtual bool certAuthorityExists( const QSslCertificate &cert ) const = 0;
 
     //! Remove a certificate authority
     virtual bool removeCertAuthority( const QSslCertificate &cert ) = 0;
@@ -271,12 +276,12 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual bool removeCertTrustPolicy( const QSslCertificate &cert ) = 0;
 
     //! Check if certificate trust policy exists
-    virtual bool existsCertTrustPolicy( const QSslCertificate &cert ) const = 0;
+    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const = 0;
 
 #endif
 
     /**
-     * Get the list of (encrypted) master passwords stored in the database.
+     * Returns the list of (encrypted) master passwords stored in the database.
      * \returns list of master passwords
      */
     virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const = 0;
@@ -301,7 +306,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual bool erase() = 0;
 
     /**
-     * Removes all authentications configurations from the storage.
+     * Remove all authentications configurations from the storage.
      * \returns TRUE if authentications configurations were removed, FALSE otherwise.
      * \note This method does not remove certificate and other assets.
      */
@@ -344,7 +349,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     bool isEnabled() const;
 
     /**
-     * Sets the storage enabled status to \a enabled.
+     * Set the storage enabled status to \a enabled.
      * \note This is a user-controlled setting: the storage may be enabled but not ready to be used.
      */
     void setEnabled( bool enabled );
@@ -428,27 +433,27 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual QString loggerTag() const;
 
     /**
-     * Stores the implementation-specific configuration.
+     * Store the implementation-specific configuration.
      */
     QMap<QString, QString> mConfiguration;
 
     /**
-     * Stores the capabilities of the storage.
+     * Store the capabilities of the storage.
      */
     Qgis::AuthConfigurationStorageCapabilities mCapabilities = Qgis::AuthConfigurationStorageCapability::NoCapabilities;
 
     /**
-     * Stores the last error message.
+     * Store the last error message.
      */
     mutable QString mLastError;
 
     /**
-     * Stores whether the storage is encrypted.
+     * Store whether the storage is encrypted.
      */
     bool mIsEncrypted = true;
 
     /**
-     * Stores whether the storage is enabled.
+     * Store whether the storage is enabled.
      */
     bool mIsEnabled = true;
 
