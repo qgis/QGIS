@@ -49,7 +49,7 @@ QVector<QgsDataItem *> QgsGdalCloudRootItem::createChildren()
   {
     // only expose items for drivers with stored connections
     bool foundConnection = false;
-    for ( const QString &connName : connectionList )
+    for ( const QString &connName : std::as_const( connectionList ) )
     {
       const QgsGdalCloudProviderConnection::Data connectionData = QgsGdalCloudProviderConnection::connection( connName );
       if ( connectionData.vsiHandler == handler.identifier )
@@ -178,7 +178,7 @@ QVector<QgsDataItem *> QgsGdalCloudDirectoryItem::createChildren()
     extraUriParts.insert( QStringLiteral( "credentialOptions" ), connectionData.credentialOptions );
   }
 
-  for ( const QgsGdalCloudProviderConnection::DirectoryObject &object : objects )
+  for ( const QgsGdalCloudProviderConnection::DirectoryObject &object : std::as_const( objects ) )
   {
     const QString subPath = mDirectory + '/' + object.name;
     if ( object.isDir )
