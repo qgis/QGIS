@@ -768,7 +768,7 @@ void QgsElevationProfileWidget::exportAsPdf()
   pageLayout.setMode( QPageLayout::FullPageMode );
   pdfWriter.setPageLayout( pageLayout );
   pdfWriter.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
-  pdfWriter.setResolution( 300 );
+  pdfWriter.setResolution( 1200 );
 
   QPainter p;
   if ( !p.begin( &pdfWriter ) )
