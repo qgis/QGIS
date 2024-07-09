@@ -247,7 +247,7 @@
 %Include auto_generated/auth/qgsauthconfigurationstorageregistry.sip
 %Include auto_generated/auth/qgsauthmanager.sip
 %Include auto_generated/auth/qgsauthmethod.sip
-%Include auto_generated/auth/storage/qgsauthconfigurationstoragedb.sip
+%Include auto_generated/auth/qgsauthconfigurationstoragedb.sip
 %Include auto_generated/browser/qgsbrowsermodel.sip
 %Include auto_generated/browser/qgsbrowserproxymodel.sip
 %Include auto_generated/browser/qgsconnectionsitem.sip

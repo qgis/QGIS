@@ -17,12 +17,8 @@
 
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthconfigurationstorage.h"
-
-QgsAuthConfigurationStorageRegistry *QgsAuthConfigurationStorageRegistry::instance()
-{
-  static QgsAuthConfigurationStorageRegistry *const registry = new QgsAuthConfigurationStorageRegistry( );
-  return registry;
-}
+#include "qgslogger.h"
+#include "qgsthreadingutils.h"
 
 QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
 {
@@ -30,59 +26,129 @@ QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
 
 QgsAuthConfigurationStorageRegistry::~QgsAuthConfigurationStorageRegistry()
 {
-  qDeleteAll( mStorages );
 }
 
-bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorage *storage,  QgsAuthConfigurationStorage *after )
+bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorage *storage )
 {
-  if ( mStorages.contains( storage ) || ! storage || storage == after )
+
+  if ( ! storage )
   {
     return false;
   }
-  else
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  for ( const auto &s : mStorages )
   {
-    if ( after && mStorages.contains( after ) )
+    if ( s.get() == storage )
     {
-      mStorages.insert( mStorages.indexOf( after ) + 1, storage );
+      return false;
     }
-    else
+
+    if ( s->id() == storage->id() )
     {
-      mStorages.append( storage );
+      QgsDebugError( QStringLiteral( "A storage with the same ID (%1) already exists" ).arg( storage->id() ) );
+      return false;
     }
-    connect( storage, &QgsAuthConfigurationStorage::storageChanged, this, [this, storage] { emit storageChanged( storage ); } );
-    emit storageAdded( storage );
-    return true;
   }
+
+  mStorages.emplace_back( storage );
+
+  // Forward storageChanged signal from storage to the registry
+  connect( storage, &QgsAuthConfigurationStorage::storageChanged, this, &QgsAuthConfigurationStorageRegistry::storageChanged );
+
+  emit storageAdded( storage->id() );
+
+  return true;
 }
 
-bool QgsAuthConfigurationStorageRegistry::removeStorage( QgsAuthConfigurationStorage *storage )
+bool QgsAuthConfigurationStorageRegistry::removeStorage( const QString &id )
 {
-  if ( !mStorages.contains( storage ) )
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  for ( auto it = mStorages.begin(); it != mStorages.end(); ++it )
   {
-    return false;
+    if ( ( *it )->id() == id )
+    {
+      mStorages.erase( it );
+      emit storageRemoved( id );
+      return true;
+    }
   }
-  else
-  {
-    mStorages.removeAll( storage );
-    emit storageRemoved( storage );
-    return true;
-  }
+  return false;
 }
+
 
 QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::storages() const
 {
-  return mStorages;
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QList<QgsAuthConfigurationStorage *> storageList;
+  for ( const auto &s : mStorages )
+  {
+    storageList.append( s.get() );
+  }
+
+  return storageList;
 }
 
 QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::readyStorages() const
 {
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsAuthConfigurationStorage *> readyStorages;
-  for ( QgsAuthConfigurationStorage *storage : std::as_const( mStorages ) )
+  for ( const auto &s : std::as_const( mStorages ) )
   {
-    if ( storage->isReady() && storage->isEnabled() )
+    if ( s->isReady() && s->isEnabled() )
     {
-      readyStorages.append( storage );
+      readyStorages.append( s.get() );
     }
   }
+
   return readyStorages;
 }
+
+QgsAuthConfigurationStorage *QgsAuthConfigurationStorageRegistry::storage( const QString &id ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  for ( const auto &s : std::as_const( mStorages ) )
+  {
+    if ( s->id() == id )
+    {
+      return s.get();
+    }
+  }
+  return nullptr;
+}
+
+void QgsAuthConfigurationStorageRegistry::orderStorages( const QStringList &orderIds )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  std::vector<std::unique_ptr<QgsAuthConfigurationStorage>> orderedStorages;
+  for ( const auto &id : std::as_const( orderIds ) )
+  {
+    for ( auto it = mStorages.begin(); it != mStorages.end(); ++it )
+    {
+      if ( ( *it )->id() == id )
+      {
+        orderedStorages.push_back( std::move( *it ) );
+        mStorages.erase( it );
+        break;
+      }
+    }
+  }
+
+  // Append the remaining storages
+  for ( auto it = std::make_move_iterator( mStorages.begin() ); it != std::make_move_iterator( mStorages.end() ); ++it )
+  {
+    orderedStorages.push_back( std::move( *it ) );
+  }
+
+  mStorages = std::move( orderedStorages );
+}
+

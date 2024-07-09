@@ -96,9 +96,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.40
      */
-    enum class AuthConfigurationStorageCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAuthConfigurationStorage, Capability ): int SIP_ENUM_BASETYPE( IntFlag )
+    enum class AuthConfigurationStorageCapability: int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoCapabilities = 0, //!< Item has no capabilities
       ClearStorage = 1 << 0, //!< Can clear all configurations from storage
 
       ReadConfiguration = 1 << 1, //!< Can read an authentication configuration
@@ -139,7 +138,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( AuthConfigurationStorageCapability )
     //! Authentication configuration storage capabilities
-    Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsAuthConfigurationStorage, AuthConfigurationStorageCapability )
+    Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability )
     Q_FLAG( AuthConfigurationStorageCapabilities )
 
 

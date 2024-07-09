@@ -26,7 +26,10 @@
 #include <QRecursiveMutex>
 #include <QSqlDatabase>
 
-
+/**
+ * This class is not part of the API: is is just a thin convenience wrapper
+ * around a QSQLITE implementation of a QgsAuthConfigurationStorageDb.
+ */
 class QgsAuthConfigurationStorageSqlite : public QgsAuthConfigurationStorageDb
 {
     Q_OBJECT

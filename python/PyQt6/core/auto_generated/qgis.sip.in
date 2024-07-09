@@ -67,7 +67,6 @@ The development version
 
     enum class AuthConfigurationStorageCapability /BaseType=IntFlag/
     {
-      NoCapabilities,
       ClearStorage,
 
       ReadConfiguration,

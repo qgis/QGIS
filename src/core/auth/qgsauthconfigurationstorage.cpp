@@ -19,17 +19,37 @@ QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QS
   : mConfiguration( configuration )
 {
   // Forward all specific signals to the generic one
-  connect( this, &QgsAuthConfigurationStorage::methodConfigChanged, this, &QgsAuthConfigurationStorage::storageChanged );
-  connect( this, &QgsAuthConfigurationStorage::masterPasswordChanged, this, &QgsAuthConfigurationStorage::storageChanged );
-  connect( this, &QgsAuthConfigurationStorage::authSettingsChanged, this, &QgsAuthConfigurationStorage::storageChanged );
+  connect( this, &QgsAuthConfigurationStorage::methodConfigChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
+  connect( this, &QgsAuthConfigurationStorage::masterPasswordChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
+  connect( this, &QgsAuthConfigurationStorage::authSettingsChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
 
 #ifndef QT_NO_SSL
-  connect( this, &QgsAuthConfigurationStorage::certIdentityChanged, this, &QgsAuthConfigurationStorage::storageChanged );
-  connect( this, &QgsAuthConfigurationStorage::certAuthorityChanged, this, &QgsAuthConfigurationStorage::storageChanged );
-  connect( this, &QgsAuthConfigurationStorage::sslCertCustomConfigChanged, this, &QgsAuthConfigurationStorage::storageChanged );
-  connect( this, &QgsAuthConfigurationStorage::sslCertTrustPolicyChanged, this, &QgsAuthConfigurationStorage::storageChanged );
+  connect( this, &QgsAuthConfigurationStorage::certIdentityChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
+  connect( this, &QgsAuthConfigurationStorage::certAuthorityChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
+  connect( this, &QgsAuthConfigurationStorage::sslCertCustomConfigChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
+  connect( this, &QgsAuthConfigurationStorage::sslCertTrustPolicyChanged, this, [ = ]
+  {
+    emit storageChanged( id() );
+  } );
 #endif
-
 }
 
 QString QgsAuthConfigurationStorage::lastError() const
@@ -42,9 +62,9 @@ Qgis::AuthConfigurationStorageCapabilities QgsAuthConfigurationStorage::capabili
   return mCapabilities;
 }
 
-void QgsAuthConfigurationStorage::setCapabilities( const Qgis::AuthConfigurationStorageCapabilities &newCapabilities )
+void QgsAuthConfigurationStorage::setCapabilities( const Qgis::AuthConfigurationStorageCapabilities capabilities )
 {
-  mCapabilities = newCapabilities;
+  mCapabilities = capabilities;
 }
 
 void QgsAuthConfigurationStorage::setError( const QString &error, Qgis::MessageLevel level )
@@ -76,5 +96,5 @@ QMap<QString, QString> QgsAuthConfigurationStorage::settings() const
 
 QString QgsAuthConfigurationStorage::loggerTag() const
 {
-  return QStringLiteral( "Auth storage %1" ).arg( name() );
+  return tr( "Auth storage %1" ).arg( name() );
 }
