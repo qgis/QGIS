@@ -123,7 +123,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         cur.execute(sql)
         for i in range(2, 12):
             sql = "INSERT INTO test_z2 (id, name, geometry) "
-            sql += f"VALUES ({i-1}, 'toto 2', GeomFromText('POINT Z ({i-4} {i+1} {i})', 4326))"
+            sql += f"VALUES ({i - 1}, 'toto 2', GeomFromText('POINT Z ({i - 4} {i + 1} {i})', 4326))"
             cur.execute(sql)
 
         # table with M value geometry

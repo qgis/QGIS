@@ -563,8 +563,7 @@ QgsSymbol *QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
   }
   else if ( type == QLatin1String( "esriTS" ) )
   {
-    // text symbol - not supported
-    return nullptr;
+    return parseEsriTextMarkerSymbolJson( symbolData ).release();
   }
   return nullptr;
 }
@@ -742,6 +741,84 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
 
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  QgsSymbolLayerList layers;
+
+  QString fontFamily;
+  fontFamily = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+
+  QString chr;
+  chr = symbolData.value( QStringLiteral( "text" ) ).toString();
+
+  double pointSize;
+  pointSize = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toDouble();
+
+  QColor color = convertColor( symbolData.value( QStringLiteral( "color" ) ) );
+
+  double angle;
+  angle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
+
+  std::unique_ptr< QgsFontMarkerSymbolLayer > markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
+
+  QColor strokeColor = convertColor( symbolData.value( QStringLiteral( "borderLineColor" ) ) );
+  markerLayer->setStrokeColor( strokeColor );
+
+  double borderLineSize = symbolData.value( QStringLiteral( "borderLineSize" ) ).toDouble();
+  markerLayer->setStrokeWidth( borderLineSize );
+
+  const QString fontStyle = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
+  markerLayer->setFontStyle( fontStyle );
+
+  double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
+
+  markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
+
+  QgsMarkerSymbolLayer::HorizontalAnchorPoint hAlign;
+  QgsMarkerSymbolLayer::VerticalAnchorPoint vAlign;
+
+  QString horizontalAnchorPoint = symbolData.value( QStringLiteral( "horizontalAlignment" ) ).toString();
+  QString verticalAnchorPoint = symbolData.value( QStringLiteral( "verticalAlignment" ) ).toString();
+
+  if ( horizontalAnchorPoint == QString( "center" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
+  }
+  else if ( horizontalAnchorPoint == QString( "left" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left;
+  }
+  else if ( horizontalAnchorPoint == QString( "right" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Right;
+  }
+
+  if ( verticalAnchorPoint == QString( "center" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+  }
+  else if ( verticalAnchorPoint == QString( "top" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Top;
+  }
+  else if ( verticalAnchorPoint == QString( "bottom" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom;
+  }
+
+  markerLayer->setHorizontalAnchorPoint( hAlign );
+  markerLayer->setVerticalAnchorPoint( vAlign );
+
   layers.append( markerLayer.release() );
 
   std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
