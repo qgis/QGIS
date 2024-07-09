@@ -12672,11 +12672,18 @@ void TestQgsProcessing::convertCompatibleDuplicateFids()
   QVariantMap params;
   params.insert( QStringLiteral( "source" ), QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
 
-  QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "gpkg", QString( "gpkg" ), &feedback );
+  const QString temporaryFile = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "gpkg", QString( "gpkg" ), &feedback );
   const QStringList logs( feedback.textLog().split( '\n', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
-  QCOMPARE( logs.size(), 11 );
-  QVERIFY( logs.first().startsWith( QLatin1String( "Error writing feature # 2" ) ) );
-  QVERIFY( logs.last().startsWith( QLatin1String( "There were 11 errors writing features" ) ) );
+  QCOMPARE( logs.size(), 1 );
+  QCOMPARE( logs.at( 0 ), QStringLiteral( "Cannot store existing FID values in temporary GeoPackage layer, these will be moved to \"OLD_FID\" instead." ) );
+
+  QgsVectorLayer vl( temporaryFile );
+  QVERIFY( vl.isValid() );
+
+  QCOMPARE( vl.featureCount(), 12 );
+  QCOMPARE( vl.fields().at( 0 ).name(), QStringLiteral( "fid" ) );
+  QCOMPARE( vl.fields().at( 1 ).name(), QStringLiteral( "OLD_FID" ) );
+  QCOMPARE( vl.fields().at( 2 ).name(), QStringLiteral( "name" ) );
 }
 
 void TestQgsProcessing::create()
