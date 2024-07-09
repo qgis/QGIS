@@ -132,7 +132,7 @@ static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, d
 }
 
 
-static bool snapPoint( QgsPoint *pt, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts )
+static bool snapPoint( QgsPoint *pt, const QgsSpatialIndex &index, const QVector<AnchorPoint> &pnts )
 {
   // Find point ( should always find one point )
   QList<QgsFeatureId> fids = index.intersects( QgsRectangle( pt->x(), pt->y(), pt->x(), pt->y() ) );
@@ -153,8 +153,9 @@ static bool snapPoint( QgsPoint *pt, QgsSpatialIndex &index, QVector<AnchorPoint
 }
 
 
-static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, double thresh )
+static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &index, const QVector<AnchorPoint> &pnts, double thresh )
 {
+  const int lineStringSize = linestring->numPoints();
   QVector<QgsPoint> newPoints;
   QVector<int> anchors;  // indexes of anchors for vertices
   const double thresh2 = thresh * thresh;
@@ -162,7 +163,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
   bool changed = false;
 
   // snap vertices
-  for ( int v = 0; v < linestring->numPoints(); v++ )
+  for ( int v = 0; v < lineStringSize; v++ )
   {
     const double x = linestring->xAt( v );
     const double y = linestring->yAt( v );
@@ -267,7 +268,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
 }
 
 
-static bool snapGeometry( QgsAbstractGeometry *g, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, double thresh )
+static bool snapGeometry( QgsAbstractGeometry *g, const QgsSpatialIndex &index, const QVector<AnchorPoint> &pnts, double thresh )
 {
   bool changed = false;
   if ( QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( g ) )
