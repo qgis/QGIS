@@ -139,7 +139,7 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
   QFileInfo fileInfo( mDatabase );
   if ( ! fileInfo.exists() )
   {
-    mCapabilities = Qgis::AuthConfigurationStorageCapability::NoCapabilities;
+    mCapabilities = Qgis::AuthConfigurationStorageCapabilities();
     return;
   }
 

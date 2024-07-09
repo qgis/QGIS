@@ -212,8 +212,8 @@ set(QGIS_CORE_SRCS
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
-  auth/storage/qgsauthconfigurationstoragesqlite.cpp
-  auth/storage/qgsauthconfigurationstoragedb.cpp
+  auth/qgsauthconfigurationstoragesqlite.cpp
+  auth/qgsauthconfigurationstoragedb.cpp
 
   annotations/qgsannotation.cpp
   annotations/qgsannotationitem.cpp
@@ -1365,8 +1365,8 @@ set(QGIS_CORE_HDRS
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
 
-  auth/storage/qgsauthconfigurationstoragesqlite.h
-  auth/storage/qgsauthconfigurationstoragedb.h
+  auth/qgsauthconfigurationstoragesqlite.h
+  auth/qgsauthconfigurationstoragedb.h
 
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
@@ -2336,7 +2336,6 @@ target_include_directories(qgis_core PUBLIC
   actions
   annotations
   auth
-  auth/storage
   browser
   callouts
   classification

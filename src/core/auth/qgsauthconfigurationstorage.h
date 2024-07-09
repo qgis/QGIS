@@ -76,9 +76,8 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual QString description() const = 0;
 
     /**
-     * Returns the id of the storage implementation instance.
-     * The id is used to uniquely identify the storage implementation instance (e.g. the path or the connection URI to a storage configuration).
-     * \note Must be unique among implementations.
+     * Returns the unique identifier of the storage object.
+     * The id is used to uniquely identify the storage object (e.g. the path or the connection URI to a storage configuration).
      */
     virtual QString id() const = 0;
 
@@ -248,6 +247,12 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     virtual bool storeCertAuthority( const QSslCertificate &cert ) = 0;
 
     /**
+     * Returns the list of certificate authority IDs in the storage.
+     * \return list of certificate authority IDs
+     */
+    virtual QStringList certAuthorityIds() const = 0;
+
+    /**
      * \brief certAuthority get a certificate authority by \a id (sha hash)
      * \param id sha hash
      * \return a certificate
@@ -283,21 +288,24 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     /**
      * Returns the list of (encrypted) master passwords stored in the database.
      * \returns list of master passwords
+     * \note not available in Python bindings
      */
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const = 0;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const SIP_SKIP = 0;
 
     /**
      * Store a master password in the database.
      * \param config Master password configuration.
      * \returns TRUE if operation succeeded
+     * \note not available in Python bindings
      */
-    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) = 0;
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) SIP_SKIP = 0;
 
     /**
      * Remove all master passwords from the database.
      * \returns TRUE if operation succeeded
+     * \note not available in Python bindings
      */
-    virtual bool clearMasterPasswords() = 0;
+    virtual bool clearMasterPasswords() SIP_SKIP = 0;
 
     /**
      * Completely erase the storage removing all configurations/certs/settings etc.
@@ -367,17 +375,17 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
 
     /**
      * Emitted when the storage was updated.
-     *
+     * \param id The storage id
      * \note This is a generic changed signal and it is normally
      * emitted together with the dedicated signals which are
      * provided for specific changes on the individual tables.
      */
-    void storageChanged();
+    void storageChanged( const QString &id );
 
     /**
      * Emitted when the storage method config table was changed.
      */
-    void methodConfigChanged();
+    void methodConfigChanged( );
 
     /**
      * Emitted when the storage master password table was changed.
@@ -417,9 +425,9 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
   protected:
 
     /**
-     * Set the capabilities of the storage to \a newCapabilities.
+     * Set the capabilities of the storage to \a capabilities.
      */
-    void setCapabilities( const Qgis::AuthConfigurationStorageCapabilities &newCapabilities );
+    void setCapabilities( const Qgis::AuthConfigurationStorageCapabilities capabilities );
 
     /**
      * Set the last error message to \a error with message level \a level.
@@ -440,7 +448,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     /**
      * Store the capabilities of the storage.
      */
-    Qgis::AuthConfigurationStorageCapabilities mCapabilities = Qgis::AuthConfigurationStorageCapability::NoCapabilities;
+    Qgis::AuthConfigurationStorageCapabilities mCapabilities;
 
     /**
      * Store the last error message.

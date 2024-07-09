@@ -17,8 +17,11 @@
 #define QGSAUTHCONFIGURATIONSTORAGEREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QObject>
+#include <QMap>
+#include <memory>
 
 class QgsAuthConfigurationStorage;
 
@@ -36,10 +39,9 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
     Q_OBJECT
   public:
 
-    //! Means of accessing canonical single instance
-    static QgsAuthConfigurationStorageRegistry *instance( );
-
-
+    /**
+     * Creates a new QgsAuthConfigurationStorageRegistry instance.
+     */
     QgsAuthConfigurationStorageRegistry();
 
     virtual ~QgsAuthConfigurationStorageRegistry();
@@ -48,49 +50,69 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
      * Add an authentication configuration storage to the registry.
      * The registry takes ownership of the storage object.
      * \param storage The storage to add
-     * \param after The storage after which to add the new storage. If nullptr, the storage is added at the end.
      * \returns TRUE if the storage was added, FALSE if it was already present in the registry.
+     * \note The storage object must have a unique id.
+     * \note This method must be called from the same thread the registry was created in.
      */
-    bool addStorage( QgsAuthConfigurationStorage *storage, QgsAuthConfigurationStorage *after = nullptr );
+    bool addStorage( QgsAuthConfigurationStorage *storage SIP_TRANSFER );
 
     /**
-     * Remove an authentication configuration storage from the registry.
-     * \param storage The storage to remove
+     * Remove the authentication configuration storage identified by \a id from the registry.
      * \returns TRUE if the storage was removed, FALSE if it was not present in the registry.
+     * \note This method must be called from the same thread the registry was created in.
      */
-    bool removeStorage( QgsAuthConfigurationStorage *storage );
+    bool removeStorage( const QString &id );
 
     /**
-     * Returns a list of all registered authentication configuration storages.
+     * Returns the list of all registered authentication configuration storages.
+     * \note This method must be called from the same thread the registry was created in.
      */
     QList<QgsAuthConfigurationStorage *> storages() const;
 
     /**
-     * Returns a list of all ready (and enabled) authentication configuration storage.
+     * Returns the list of all ready (and enabled) authentication configuration storage.
+     * \note This method must be called from the same thread the registry was created in.
      */
     QList<QgsAuthConfigurationStorage *> readyStorages() const;
+
+    /**
+     * Returns the storage with the specified \a id or NULL if not found in the registry.
+     * \param id The id of the storage to retrieve
+     * \note This method must be called from the same thread the registry was created in.
+     */
+    QgsAuthConfigurationStorage *storage( const QString &id ) const;
+
+    /**
+     * Order the storages by the specified \a orderIds.
+     * \param orderIds The ordered list of storage Ids to apply, storages not in the list will be appended at the end.
+     * \note This method must be called from the same thread the registry was created in.
+     */
+    void orderStorages( const QStringList &orderIds );
 
 
   signals:
 
     /**
-     * Emitted when a storage was added
+     * Emitted after a storage was added
+     * \param id The id of the added storage
      */
-    void storageAdded( QgsAuthConfigurationStorage *storage );
+    void storageAdded( const QString &id );
 
     /**
-     * Emitted when a storage was changed
+     * Emitted after a storage was changed
+     * \param id The id of the changed storage
      */
-    void storageChanged( QgsAuthConfigurationStorage *storage );
+    void storageChanged( const QString &id );
 
     /**
-     * Emitted when a storage was removed
+     * Emitted after a storage was removed
+     * \param id The id of the removed storage
      */
-    void storageRemoved( QgsAuthConfigurationStorage *storage );
+    void storageRemoved( const QString &id );
 
   private:
 
-    QList<QgsAuthConfigurationStorage *> mStorages;
+    std::vector<std::unique_ptr<QgsAuthConfigurationStorage>> mStorages;
 };
 
 #endif // QGSAUTHCONFIGURATIONSTORAGEREGISTRY_H

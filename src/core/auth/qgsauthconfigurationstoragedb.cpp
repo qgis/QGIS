@@ -153,20 +153,35 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
   query->setForwardOnly( true );
   const bool result { sql.isEmpty() ? query->exec() : query->exec( sql ) };
 
+  auto boundQuery = []( const QSqlQuery * query ) -> QString
+  {
+#ifdef QGISDEBUG
+    QString str = query->lastQuery();
+    QMapIterator<QString, QVariant> it( query->boundValues() );
+    while ( it.hasNext() )
+    {
+      it.next();
+      str.replace( it.key(), it.value().toString() );
+    }
+    return str;
+#endif
+    return query->executedQuery();
+  };
+
   if ( !result )
   {
     if ( query->lastError().isValid() )
     {
       const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db query FAILED: %1\nError: %2" )
-          .arg( sql.isEmpty() ? query->executedQuery() : sql,
+          .arg( sql.isEmpty() ? boundQuery( query ) : sql,
                 query->lastError().text() ), Qgis::MessageLevel::Warning );
-      QgsDebugMsgLevel( QStringLiteral( "Auth db query FAILED: %1" ).arg( sql.isEmpty() ? query->executedQuery() : sql ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Auth db query FAILED: %1" ).arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
       return false;
     }
     else
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db query exec() FAILED: %1" ).arg( sql.isEmpty() ? query->executedQuery() : sql ), Qgis::MessageLevel::Warning );
-      QgsDebugMsgLevel( QStringLiteral( "Auth db query FAILED: %1" ).arg( sql.isEmpty() ? query->executedQuery() : sql ), 2 );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db query exec() FAILED: %1" ).arg( sql.isEmpty() ? boundQuery( query ) : sql ), Qgis::MessageLevel::Warning );
+      QgsDebugMsgLevel( QStringLiteral( "Auth db query FAILED: %1" ).arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
       return false;
     }
   }
@@ -245,16 +260,23 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
     return false;
   }
 
+  if ( cert.isNull() )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Certificate is NULL" ) );
+    return false;
+  }
+
   QSqlQuery query( authDatabaseConnection() );
 
-  const QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
+  const QString id{ QgsAuthCertUtils::shaHexForCert( cert ) };
+  const QString certPem{ cert.toPem() };
 
   removeCertIdentity( id );
 
   query.prepare( QStringLiteral( "INSERT INTO %1 (id, key, cert) VALUES (:id, :key, :cert)" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
   query.bindValue( QStringLiteral( ":id" ), id );
   query.bindValue( QStringLiteral( ":key" ), keyPem );
-  query.bindValue( QStringLiteral( ":cert" ), cert.toPem() );
+  query.bindValue( QStringLiteral( ":cert" ), certPem );
 
   if ( !authDbQuery( &query ) )
     return false;
@@ -321,10 +343,15 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertIdentity( const QSt
     {
       cert = QSslCertificate( query.value( 0 ).toByteArray(), QSsl::Pem );
       QgsDebugMsgLevel( QStringLiteral( "Certificate identity retrieved for id: %1" ).arg( id ), 2 );
+      if ( cert.isNull() )
+      {
+        const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to retrieve certificate identity for id: %1: certificate is NULL" ).arg( id ), Qgis::MessageLevel::Warning );
+        return emptycert;
+      }
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains duplicate certificate identityfor id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains more than one certificate identity for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       return emptycert;
     }
   }
@@ -364,7 +391,8 @@ const QPair<QSslCertificate, QString> QgsAuthConfigurationStorageDb::loadCertIde
       key = query.value( 0 ).toString();
       if ( key.isEmpty() )
       {
-        const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieve certificate identity bundle: FAILED to create private key" ), Qgis::MessageLevel::Warning );              return bundle;
+        const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieve certificate identity bundle: FAILED to create private key" ), Qgis::MessageLevel::Warning );
+        return bundle;
       }
       cert = QSslCertificate( query.value( 1 ).toByteArray(), QSsl::Pem );
       if ( cert.isNull() )
@@ -473,7 +501,7 @@ bool QgsAuthConfigurationStorageDb::certIdentityExists( const QString &id ) cons
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains duplicate certificate bundles for id: %1" ).arg( id ),  Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains more than one certificate bundles for id: %1" ).arg( id ),  Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -497,7 +525,13 @@ bool QgsAuthConfigurationStorageDb::removeCertIdentity( const QString &id )
 
   if ( !authDbQuery( &query ) )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to remove cert identity '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to remove certificate identity '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
+  if ( query.numRowsAffected() == 0 )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "No certificate identity found for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -649,7 +683,7 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains duplicate SSL cert custom config" ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains more than one SSL cert custom config" ), Qgis::MessageLevel::Warning );
       return QgsAuthConfigSslServer();
     }
   }
@@ -726,7 +760,7 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
     if ( query.next() )
     {
       QgsDebugError( QStringLiteral( "Select contains more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
-      emit messageLog( tr( "Authentication database contains duplicate SSL cert custom configs for host:port, id: %1, %2" )
+      emit messageLog( tr( "Authentication database contains more than one SSL cert custom configs for host:port, id: %1, %2" )
                        .arg( hostport, id ), loggerTag(), Qgis::MessageLevel::Warning );
       return false;
     }
@@ -760,13 +794,47 @@ bool QgsAuthConfigurationStorageDb::removeSslCertCustomConfig( const QString &id
 
   if ( !authDbQuery( &query ) )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to remove SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ), Qgis::MessageLevel::Critical );
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to remove SSL certificate custom config for host:port, id: %1, %2" ).arg( hostport, id ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
+  if ( query.numRowsAffected() == 0 )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "No SSL certificate custom config found for host:port, id: %1, %2" ).arg( hostport, id ), Qgis::MessageLevel::Warning );
     return false;
   }
 
   emit sslCertCustomConfigChanged();
 
   return true;
+}
+
+QStringList QgsAuthConfigurationStorageDb::certAuthorityIds() const
+{
+  QMutexLocker locker( &mMutex );
+
+  if ( !authDbOpen() )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
+    return {};
+  }
+
+  QSqlQuery query( authDatabaseConnection() );
+
+  query.prepare( QStringLiteral( "SELECT id FROM %1" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+
+  if ( !authDbQuery( &query ) )
+    return {};
+
+  QStringList ids;
+  if ( query.isActive() && query.isSelect() )
+  {
+    while ( query.next() )
+    {
+      ids.append( query.value( 0 ).toString() );
+    }
+  }
+  return ids;
 }
 
 bool QgsAuthConfigurationStorageDb::storeCertAuthority( const QSslCertificate &cert )
@@ -920,6 +988,12 @@ bool QgsAuthConfigurationStorageDb::removeCertAuthority( const QSslCertificate &
   if ( !authDbQuery( &query ) )
   {
     setError( tr( "Failed to remove certificate authority '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
+  if ( query.numRowsAffected() == 0 )
+  {
+    setError( tr( "No certificate authority found for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -1120,6 +1194,12 @@ bool QgsAuthConfigurationStorageDb::removeCertTrustPolicy( const QSslCertificate
   if ( !authDbQuery( &query ) )
   {
     setError( tr( "Failed to remove certificate trust policy '%1'" ).arg( id ) );
+    return false;
+  }
+
+  if ( query.numRowsAffected() == 0 )
+  {
+    setError( tr( "No certificate trust policy found for id: %1" ).arg( id ) );
     return false;
   }
 
@@ -1326,7 +1406,8 @@ QString QgsAuthConfigurationStorageDb::id() const
   {
     // Create a hash from the driver name, database name, port, hostname and username
     QCryptographicHash hash( QCryptographicHash::Sha256 );
-    hash.addData( name().toUtf8() );
+    hash.addData( mDriver.toUtf8() );
+    hash.addData( mDatabase.toUtf8() );
     hash.addData( mPort.toUtf8() );
     hash.addData( mHost.toUtf8() );
     hash.addData( mUser.toUtf8() );
@@ -1589,7 +1670,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
 {
   QMutexLocker locker( &mMutex );
 
-  mCapabilities = Qgis::AuthConfigurationStorageCapability::NoCapabilities;
+  mCapabilities = Qgis::AuthConfigurationStorageCapabilities();
 
   if ( ! isEnabled() || !isReady() )
     return;
@@ -1725,7 +1806,7 @@ QgsAuthMethodConfig QgsAuthConfigurationStorageDb::loadMethodConfig( const QStri
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains duplicate configuration IDs for '%1'" ).arg( id ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains more than one configuration IDs for '%1'" ).arg( id ), Qgis::MessageLevel::Warning );
     }
   }
 
@@ -1794,6 +1875,12 @@ bool QgsAuthConfigurationStorageDb::removeMethodConfig( const QString &id )
   if ( !authDbQuery( &query ) )
   {
     setError( tr( "Failed to remove config '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
+  if ( query.numRowsAffected() == 0 )
+  {
+    setError( tr( "Config '%1' does not exist" ).arg( id ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -1886,6 +1973,12 @@ bool QgsAuthConfigurationStorageDb::removeAuthSetting( const QString &key )
     return false;
   }
 
+  if ( query.numRowsAffected() == 0 )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Setting '%1' does not exist" ).arg( key ), Qgis::MessageLevel::Warning );
+    return false;
+  }
+
   emit authSettingsChanged();
 
   return true;
@@ -1933,8 +2026,6 @@ bool QgsAuthConfigurationStorageDb::clearTables( const QStringList &tables )
   }
 
   QSqlQuery query( authDatabaseConnection() );
-
-  // TODO: remove sqlite specifics
 
   for ( const auto &table : std::as_const( tables ) )
   {
@@ -2010,7 +2101,7 @@ bool QgsAuthConfigurationStorageDb::erase()
       QStringLiteral( "auth_trust" )
     }} ) )
   {
-    emit storageChanged();
+    emit storageChanged( id( ) );
     return true;
   }
   else

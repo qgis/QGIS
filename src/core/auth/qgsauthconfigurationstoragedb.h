@@ -26,7 +26,8 @@
 
 /**
  * \ingroup core
- * QsqlDatabase based implementation of QgsAuthConfigurationStorage.
+ * QSqlDatabase based implementation of QgsAuthConfigurationStorage.
+ * \since QGIS 3.40
  */
 class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationStorage
 {
@@ -35,15 +36,20 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
 
     /**
      * Creates a new QgsAuthConfigurationStorageDb instance from the specified \a settings.
-     * Settings should contain the following keys:
+     * Settings can contain the following keys:
+     *
+     * Mandatory settings:
      *
      * - driver: the database driver to use (default is "QSQLITE", see: https://doc.qt.io/qt-6/sql-driver.html)
      * - database: the database name (or path in case of QSQLITE)
+     *
+     * Optional settings:
+     *
      * - host: the database host
      * - user: the database user
      * - password: the database password
      * - port: the database port
-     * - schema: the database schema for all the tables (optional, ignored if not supported)
+     * - schema: the database schema for all the tables (ignored if not supported)
      * - options: the database connection options (see: https://doc.qt.io/qt-6/qsqldatabase.html#setConnectOptions)
      *
      * \note Even if this generic storage also works with a pre-existing SQLite DB,
@@ -54,7 +60,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
 
     /**
      * Creates a new QgsAuthConfigurationStorageDb instance from the specified \a uri.
-     * The URI should be in the format: <DRIVER>//<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]
+     * The URI should be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
      * \note It is not possible to set the schema in the URI, use the settings map instead.
      */
     QgsAuthConfigurationStorageDb( const QString &uri );
@@ -104,6 +110,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport ) override;
 
     bool storeCertAuthority( const QSslCertificate &cert ) override;
+    QStringList certAuthorityIds() const override;
     const QSslCertificate loadCertAuthority( const QString &id ) const override;
     bool certAuthorityExists( const QSslCertificate &cert ) const override;
     bool removeCertAuthority( const QSslCertificate &cert ) override;
@@ -207,11 +214,12 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     virtual void checkCapabilities();
 
     /**
-     * Returns the quoted identifier name of the \a table, prefixed with the schema
+     * Returns the quoted identifier, prefixed with the schema
      * (if not null), ready for the insertion into a SQL query.
+     * \param identifier the identifier to quote.
      * \param isIndex if TRUE, the identifier is treated as an index name.
      */
-    virtual QString quotedQualifiedIdentifier( const QString &name, bool isIndex = false ) const;
+    virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
 
     // From https://doc.qt.io/qt-6/sql-driver.html
     QString mDriver;
