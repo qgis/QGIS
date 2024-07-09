@@ -1992,18 +1992,21 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
   if ( leftOf )
     *leftOf = 0;
 
-  int size = mX.size();
+  const int size = mX.size();
   if ( size == 0 || size == 1 )
   {
     vertexAfter = QgsVertexId( 0, 0, 0 );
     return -1;
   }
+
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
   for ( int i = 1; i < size; ++i )
   {
-    double prevX = mX.at( i - 1 );
-    double prevY = mY.at( i - 1 );
-    double currentX = mX.at( i );
-    double currentY = mY.at( i );
+    double prevX = xData[ i - 1 ];
+    double prevY = yData[ i - 1 ];
+    double currentX = xData[ i ];
+    double currentY = yData[ i ];
     testDist = QgsGeometryUtilsBase::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
     if ( testDist < sqrDist )
     {
