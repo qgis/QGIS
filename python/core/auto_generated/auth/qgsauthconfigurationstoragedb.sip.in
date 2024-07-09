@@ -59,6 +59,9 @@ The URI should be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<P
 %End
 
 
+    ~QgsAuthConfigurationStorageDb();
+
+
     QSqlDatabase authDatabaseConnection() const;
 %Docstring
 Returns the database connection used by this storage.

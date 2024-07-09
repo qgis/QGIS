@@ -20,7 +20,6 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsProviderConnectionException,
 )
-from qgis.testing import QgisTestCase
 from qgis.PyQt import QtSql
 
 __author__ = 'Alessandro Pasotti'

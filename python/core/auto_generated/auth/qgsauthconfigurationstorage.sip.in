@@ -10,7 +10,7 @@
 
 
 
-class QgsAuthConfigurationStorage: QObject /Abstract/
+class QgsAuthConfigurationStorage: QObject
 {
 %Docstring(signature="appended")
 Abstract class that defines the interface for all authentication configuration storage implementations.
@@ -190,6 +190,14 @@ certIdentity get a certificate identity by ``id`` (sha hash)
 :return: the certificate
 %End
 
+    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const = 0;
+%Docstring
+Returns a certificate identity bundle by ``id`` (sha hash).
+
+:param id: sha shash
+
+:return: a pair with the certificate and its SSL key as an encrypted string
+%End
 
     virtual const QList<QSslCertificate> certIdentities() const = 0;
 %Docstring
@@ -325,8 +333,28 @@ Check if certificate trust policy exists
 %End
 
 
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const = 0;
+%Docstring
+Returns the list of (encrypted) master passwords stored in the database.
 
+:return: list of master passwords
+%End
 
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) = 0;
+%Docstring
+Store a master password in the database.
+
+:param config: Master password configuration.
+
+:return: ``True`` if operation succeeded
+%End
+
+    virtual bool clearMasterPasswords() = 0;
+%Docstring
+Remove all master passwords from the database.
+
+:return: ``True`` if operation succeeded
+%End
 
     virtual bool erase() = 0;
 %Docstring

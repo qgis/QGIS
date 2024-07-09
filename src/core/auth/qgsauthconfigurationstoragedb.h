@@ -66,6 +66,9 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QgsAuthConfigurationStorageDb( const QString &uri );
 
 
+    ~QgsAuthConfigurationStorageDb() override;
+
+
     /**
      * Returns the database connection used by this storage.
      */

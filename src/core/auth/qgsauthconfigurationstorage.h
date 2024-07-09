@@ -32,7 +32,7 @@
  *  Abstract class that defines the interface for all authentication configuration storage implementations.
  *  \since QGIS 3.40
  */
-class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
+class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
 {
     Q_OBJECT
 
@@ -185,9 +185,8 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
      * Returns a certificate identity bundle by \a id (sha hash).
      * \param id sha shash
      * \return a pair with the certificate and its SSL key as an encrypted string
-     * \note not available in Python bindings
      */
-    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const SIP_SKIP = 0;
+    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const = 0;
 
     /**
      * \brief certIdentities get certificate identities
@@ -288,24 +287,21 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject SIP_ABSTRACT
     /**
      * Returns the list of (encrypted) master passwords stored in the database.
      * \returns list of master passwords
-     * \note not available in Python bindings
      */
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const SIP_SKIP = 0;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const = 0;
 
     /**
      * Store a master password in the database.
      * \param config Master password configuration.
      * \returns TRUE if operation succeeded
-     * \note not available in Python bindings
      */
-    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) SIP_SKIP = 0;
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) = 0;
 
     /**
      * Remove all master passwords from the database.
      * \returns TRUE if operation succeeded
-     * \note not available in Python bindings
      */
-    virtual bool clearMasterPasswords() SIP_SKIP = 0;
+    virtual bool clearMasterPasswords() = 0;
 
     /**
      * Completely erase the storage removing all configurations/certs/settings etc.

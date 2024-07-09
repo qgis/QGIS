@@ -17,7 +17,6 @@ import unittest
 from test_authmanager_storage_base import AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import QgsAuthConfigurationStorageDb
-from qgis.testing import QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '2024-06-24'
