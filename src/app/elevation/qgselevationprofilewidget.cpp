@@ -769,7 +769,7 @@ void QgsElevationProfileWidget::exportAsPdf()
   printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
   printer.setFullPage( true );
   printer.setColorMode( QPrinter::Color );
-  printer.setResolution( 300 );
+  printer.setResolution( 1200 );
 
   QPainter p;
   if ( !p.begin( &printer ) )
