@@ -1350,7 +1350,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 }
 
 QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString *layerName,
-    long long featureLimit, const QString &filterExpression )
+    long long featureLimit, const QString &filterExpression, bool renameFid )
 {
   bool requiresTranslation = false;
 
@@ -1412,7 +1412,14 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
     QgsVectorFileWriter::SaveVectorOptions saveOptions;
     saveOptions.fileEncoding = context.defaultEncoding();
     saveOptions.driverName = QgsVectorFileWriter::driverForExtension( preferredFormat );
-    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( temp, vl->fields(), vl->wkbType(), vl->crs(), context.transformContext(), saveOptions ) );
+    QgsFields fields = vl->fields();
+    if ( renameFid )
+    {
+      const int fidIndex = fields.lookupField( QStringLiteral( "fid" ) );
+      if ( fidIndex >= 0 )
+        fields.rename( fidIndex, QStringLiteral( "OLD_FID" ) );
+    }
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( temp, fields, vl->wkbType(), vl->crs(), context.transformContext(), saveOptions ) );
     QgsFeature f;
     QgsFeatureIterator it;
     QgsFeatureRequest request;
@@ -1439,10 +1446,19 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
 
       if ( !writer->addFeature( f, QgsFeatureSink::FastInsert ) && feedback )
       {
+        const QString errorMessage = writer->errorMessage();
+        if ( !renameFid && saveOptions.driverName == QLatin1String( "GPKG" ) && errorMessage.contains( "fid", Qt::CaseInsensitive ) )
+        {
+          // try again, dropping the FID field
+          feedback->reportError( QObject::tr( "Cannot store existing FID values in temporary GeoPackage layer, these will be moved to \"OLD_FID\" instead." ), false );
+          return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, layerName,
+                 featureLimit, filterExpression, true );
+        }
+
         QString errorText;
         if ( errorCounter++ < maxErrors )
         {
-          errorText = QObject::tr( "Error writing feature # %1 to output layer: %2" ).arg( QString::number( f.id() ), writer->errorMessage() );
+          errorText = QObject::tr( "Error writing feature # %1 to output layer: %2" ).arg( QString::number( f.id() ), errorMessage );
 
           feedback->reportError( errorText );
         }
@@ -1462,13 +1478,13 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
 
 QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long long featureLimit, const QString &filterExpression )
 {
-  return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, nullptr, featureLimit, filterExpression );
+  return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, nullptr, featureLimit, filterExpression, false );
 }
 
 QString QgsProcessingUtils::convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString &layerName, long long featureLimit, const QString &filterExpression )
 {
   layerName.clear();
-  return convertToCompatibleFormatInternal( layer, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, &layerName, featureLimit, filterExpression );
+  return convertToCompatibleFormatInternal( layer, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, &layerName, featureLimit, filterExpression, false );
 }
 
 QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix )
