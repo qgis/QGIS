@@ -273,26 +273,26 @@ static bool snapGeometry( QgsAbstractGeometry *g, const QgsSpatialIndex &index, 
   bool changed = false;
   if ( QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( g ) )
   {
-    changed |= snapLineString( linestring, index, pnts, thresh );
+    changed = snapLineString( linestring, index, pnts, thresh ) | changed;
   }
   else if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( g ) )
   {
     if ( QgsLineString *exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() ) )
-      changed |= snapLineString( exteriorRing, index, pnts, thresh );
+      changed = snapLineString( exteriorRing, index, pnts, thresh ) | changed;
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
       if ( QgsLineString *interiorRing = qgsgeometry_cast<QgsLineString *>( polygon->interiorRing( i ) ) )
-        changed |= snapLineString( interiorRing, index, pnts, thresh );
+        changed = snapLineString( interiorRing, index, pnts, thresh ) | changed;
     }
   }
   else if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( g ) )
   {
     for ( int i = 0; i < collection->numGeometries(); ++i )
-      changed |= snapGeometry( collection->geometryN( i ), index, pnts, thresh );
+      changed = snapGeometry( collection->geometryN( i ), index, pnts, thresh ) | changed;
   }
   else if ( QgsPoint *pt = qgsgeometry_cast<QgsPoint *>( g ) )
   {
-    changed |= snapPoint( pt, index, pnts );
+    changed = snapPoint( pt, index, pnts ) | changed;
   }
 
   return changed;
