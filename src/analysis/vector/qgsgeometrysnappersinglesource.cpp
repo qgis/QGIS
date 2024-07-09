@@ -157,10 +157,13 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
 {
   const int lineStringSize = linestring->numPoints();
   QVector<QgsPoint> newPoints;
-  QVector<int> anchors;  // indexes of anchors for vertices
+  std::vector<int> anchors;  // indexes of anchors for vertices
+  anchors.reserve( lineStringSize );
   const double thresh2 = thresh * thresh;
   double minDistX, minDistY;   // coordinates of the closest point on the segment line
   bool changed = false;
+
+  const AnchorPoint *pntsData = pnts.constData();
 
   // snap vertices
   for ( int v = 0; v < lineStringSize; v++ )
@@ -174,18 +177,18 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
     Q_ASSERT( fids.count() == 1 );
 
     const int spoint = fids.first();
-    const int anchor = pnts[spoint].anchor;
+    const int anchor = pntsData[spoint].anchor;
     if ( anchor >= 0 )
     {
       // to be snapped
-      linestring->setXAt( v, pnts[anchor].x );
-      linestring->setYAt( v, pnts[anchor].y );
-      anchors.append( anchor ); // point on new location
+      linestring->setXAt( v, pntsData[anchor].x );
+      linestring->setYAt( v, pntsData[anchor].y );
+      anchors.push_back( anchor ); // point on new location
       changed = true;
     }
     else
     {
-      anchors.append( spoint ); // old point
+      anchors.push_back( spoint ); // old point
     }
   }
 
@@ -211,7 +214,7 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
     // Find points
     const QList<QgsFeatureId> fids = index.intersects( rect );
 
-    QVector<AnchorAlongSegment> newVerticesAlongSegment;
+    std::vector<AnchorAlongSegment> newVerticesAlongSegment;
 
     // Snap to anchor in threshold different from end points
     for ( const QgsFeatureId fid : fids )
@@ -235,11 +238,11 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
         AnchorAlongSegment item;
         item.anchor = spoint;
         item.along = QgsPointXY( x1, y1 ).distance( minDistX, minDistY );
-        newVerticesAlongSegment << item;
+        newVerticesAlongSegment.push_back( item );
       }
     }
 
-    if ( !newVerticesAlongSegment.isEmpty() )
+    if ( !newVerticesAlongSegment.empty() )
     {
       // sort by distance along the segment
       std::sort( newVerticesAlongSegment.begin(), newVerticesAlongSegment.end(), []( AnchorAlongSegment p1, AnchorAlongSegment p2 )
@@ -248,10 +251,10 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
       } );
 
       // insert new vertices
-      for ( int i = 0; i < newVerticesAlongSegment.count(); i++ )
+      for ( const AnchorAlongSegment &vertex : newVerticesAlongSegment )
       {
-        const int anchor = newVerticesAlongSegment[i].anchor;
-        newPoints << QgsPoint( pnts[anchor].x, pnts[anchor].y, 0 );
+        const int anchor = vertex.anchor;
+        newPoints << QgsPoint( pntsData[anchor].x, pntsData[anchor].y, 0 );
       }
       changed = true;
     }
