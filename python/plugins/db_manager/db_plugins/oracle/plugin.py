@@ -22,6 +22,11 @@ The content of this file is based on
 """
 
 # this will disable the dbplugin if the connector raise an ImportError
+from typing import (
+    Optional,
+    Union
+)
+
 from .connector import OracleDBConnector
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -282,7 +287,7 @@ class ORTable(Table):
         self.name, self.owner, isView = row
 
         self.estimatedRowCount = None
-        self.objectType = None
+        self.objectType: Optional[Union[str, bool]] = None
         self.isView = False
         self.isMaterializedView = False
         if isView == 1:
