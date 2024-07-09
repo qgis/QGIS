@@ -16270,7 +16270,7 @@ void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
     {
       QString smalltext = tr( "This project file was saved by QGIS version %1."
                               " When saving this project file, QGIS will update it to version %2, "
-                              "possibly rendering it useless for older versions of QGIS." ).arg( projectVersion, Qgis::version() );
+                              "possibly rendering it unusable with older versions of QGIS." ).arg( projectVersion, Qgis::version() );
 
       QString title = tr( "Project file is older" );
 
