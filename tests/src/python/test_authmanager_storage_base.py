@@ -8,12 +8,14 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     Qgis,
     QgsSettings,
     QgsAuthConfigurationStorage,
+    QgsAuthConfigurationStorageDb,
     QgsAuthMethodConfig,
     QgsAuthConfigSslServer,
     QgsAuthCertUtils,
@@ -51,14 +53,18 @@ class TestAuthManagerStorageBase():
 
         assert self.storage is not None
         self.assertTrue(self.storage.initialize())
-        for table in ['auth_authorities', 'auth_identities', 'auth_servers', 'auth_settings', 'auth_trust', 'auth_configs']:
-            self.assertTrue(self.storage.tableExists(table))
+        if issubclass(type(self.storage), QgsAuthConfigurationStorageDb):
+            for table in ['auth_authorities', 'auth_identities', 'auth_servers', 'auth_settings', 'auth_trust', 'auth_configs']:
+                self.assertTrue(self.storage.tableExists(table))
 
     def testAuthConfigs(self):
 
         assert self.storage is not None
 
         self.assertTrue(self.storage.initialize(), self.storage.lastError())
+
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadConfiguration):
+            raise unittest.SkipTest('Storage does not support reading configurations')
 
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadConfiguration))
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteConfiguration))
@@ -99,6 +105,15 @@ class TestAuthManagerStorageBase():
         self.assertEqual(configback.config('realm'), 'test realm')
         self.assertEqual(payloadback, payload)
 
+        configback, payloadback = self.storage.loadMethodConfig('test', False)
+        self.assertEqual(payloadback, '')
+        self.assertEqual(configback.id(), 'test')
+        self.assertEqual(configback.name(), 'test name')
+        self.assertEqual(configback.method(), 'basic')
+        self.assertEqual(configback.config('username'), '')
+        self.assertEqual(configback.config('password'), '')
+        self.assertEqual(configback.config('realm'), '')
+
         configs = self.storage.authMethodConfigs(['xxxx'])
         self.assertEqual(len(configs), 0)
 
@@ -135,6 +150,9 @@ class TestAuthManagerStorageBase():
 
         self.assertTrue(self.storage.initialize(), self.storage.lastError())
 
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadSetting):
+            raise unittest.SkipTest('Storage does not support reading settings')
+
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadSetting))
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteSetting))
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateSetting))
@@ -168,6 +186,9 @@ class TestAuthManagerStorageBase():
         assert self.storage is not None
 
         self.assertTrue(self.storage.initialize(), self.storage.lastError())
+
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity):
+            raise unittest.SkipTest('Storage does not support reading certificate identities')
 
         sslrootcert_path = os.path.join(self.certdata_path, 'qgis_ca.crt')
         sslcert = os.path.join(self.certdata_path, 'Gerardus.crt')
@@ -218,6 +239,9 @@ class TestAuthManagerStorageBase():
 
         self.assertTrue(self.storage.initialize(), self.storage.lastError())
 
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadSslCertificateCustomConfig):
+            raise unittest.SkipTest('Storage does not support reading ssl certificate custom configs')
+
         sslrootcert_path = os.path.join(self.certdata_path, 'qgis_ca.crt')
         sslcert = os.path.join(self.certdata_path, 'Gerardus.crt')
         sslkey_path = os.path.join(self.certdata_path, 'Gerardus.key')
@@ -263,6 +287,9 @@ class TestAuthManagerStorageBase():
 
         self.assertTrue(self.storage.initialize(), self.storage.lastError())
 
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateTrustPolicy):
+            raise unittest.SkipTest('Storage does not support reading certificate trust policies')
+
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateTrustPolicy))
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteCertificateTrustPolicy))
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateCertificateTrustPolicy))
@@ -303,6 +330,9 @@ class TestAuthManagerStorageBase():
         assert self.storage is not None
 
         self.assertTrue(self.storage.initialize(), self.storage.lastError())
+
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateAuthority):
+            raise unittest.SkipTest('Storage does not support reading certificate authorities')
 
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateAuthority))
         self.assertTrue(bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteCertificateAuthority))

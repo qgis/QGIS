@@ -19,33 +19,33 @@ QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QS
   : mConfiguration( configuration )
 {
   // Forward all specific signals to the generic one
-  connect( this, &QgsAuthConfigurationStorage::methodConfigChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::methodConfigChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );
-  connect( this, &QgsAuthConfigurationStorage::masterPasswordChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::masterPasswordChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );
-  connect( this, &QgsAuthConfigurationStorage::authSettingsChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::authSettingsChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );
 
 #ifndef QT_NO_SSL
-  connect( this, &QgsAuthConfigurationStorage::certIdentityChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::certIdentityChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );
-  connect( this, &QgsAuthConfigurationStorage::certAuthorityChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::certAuthorityChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );
-  connect( this, &QgsAuthConfigurationStorage::sslCertCustomConfigChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::sslCertCustomConfigChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );
-  connect( this, &QgsAuthConfigurationStorage::sslCertTrustPolicyChanged, this, [ = ]
+  connect( this, &QgsAuthConfigurationStorage::sslCertTrustPolicyChanged, this, [ this ]
   {
     emit storageChanged( id() );
   } );

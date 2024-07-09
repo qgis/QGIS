@@ -47,6 +47,18 @@ QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QString &uri
 {
 }
 
+QgsAuthConfigurationStorageDb::~QgsAuthConfigurationStorageDb()
+{
+  QMutexLocker locker( &mMutex );
+
+  QMapIterator<QThread *, QMetaObject::Connection> iterator( mConnectedThreads );
+  while ( iterator.hasNext() )
+  {
+    iterator.next();
+    QThread::disconnect( iterator.value() );
+  }
+}
+
 QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
 {
   QSqlDatabase authdb;
@@ -100,7 +112,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
       {
         QMutexLocker locker( &mMutex );
         QSqlDatabase::removeDatabase( connectionName );
-        mConnectedThreads.remove( QThread::currentThread() );
+        mConnectedThreads.remove( QThread::currentThread() ); // NOLINT(clang-analyzer-core.CallAndMessage)
       }, Qt::DirectConnection );
 
       mConnectedThreads.insert( QThread::currentThread(), connection );
