@@ -315,6 +315,10 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box15.yMaximum(), 6)
         self.assertEqual(box15.zMaximum(), 23)
 
+    def test_area(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box.area(), 42.0)
+
     def testVolume(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
         self.assertEqual(box.volume(), 336.0)
