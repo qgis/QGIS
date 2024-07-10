@@ -476,36 +476,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
     /**
-     * Returns the name for this item during exporting to layered exports (e.g. SVG or GeoPDF).
-     *
-     * By default this is an empty string, which indicates that the item does not need to be placed in any specific
-     * layer and will automatically be grouped with other items where possible.
-     *
-     * If the layer name is non-empty, then the item will be placed in a group with the corresponding name
-     * during layered exports.
-     *
-     * \see setExportLayerName()
-     * \see exportLayerBehavior()
-     * \since QGIS 3.40
-     */
-    QString exportLayerName() const;
-
-    /**
-     * Sets the \a name for this item during exporting to layered exports (e.g. SVG or GeoPDF).
-     *
-     * If \a name is an empty string then the item does not need to be placed in any specific
-     * layer and will automatically be grouped with other items where possible.
-     *
-     * If the layer \a name is non-empty, then the item will be placed in a group with the corresponding name
-     * during layered exports.
-     *
-     * \see exportLayerName()
-     * \see exportLayerBehavior()
-     * \since QGIS 3.40
-     */
-    void setExportLayerName( const QString &name );
-
-    /**
      * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
      * Returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
@@ -1347,8 +1317,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Whether item should be excluded in exports
     bool mExcludeFromExports = false;
-
-    QString mExportLayerName;
 
     /**
      * Temporary evaluated item exclusion. Data defined properties may mean

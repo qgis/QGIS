@@ -243,16 +243,6 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
   return CanGroupWithAnyOtherItem;
 }
 
-QString QgsLayoutItem::exportLayerName() const
-{
-  return mExportLayerName;
-}
-
-void QgsLayoutItem::setExportLayerName( const QString &name )
-{
-  mExportLayerName = name;
-}
-
 int QgsLayoutItem::numberExportLayers() const
 {
   return 0;
@@ -643,7 +633,6 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
   element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
   element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
-  element.setAttribute( QStringLiteral( "exportLayer" ), mExportLayerName );
 
   element.setAttribute( QStringLiteral( "zValue" ), QString::number( zValue() ) );
   element.setAttribute( QStringLiteral( "visibility" ), isVisible() );
@@ -834,7 +823,6 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
 
   mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
-  mExportLayerName = element.attribute( QStringLiteral( "exportLayer" ) );
 
   const bool result = readPropertiesFromElement( element, doc, context );
 
