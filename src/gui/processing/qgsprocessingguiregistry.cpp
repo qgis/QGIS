@@ -42,6 +42,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingNumericWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDistanceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingAreaWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVolumeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDurationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingScaleWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRangeWidgetWrapper() );

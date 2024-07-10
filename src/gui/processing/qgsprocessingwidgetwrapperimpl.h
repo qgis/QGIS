@@ -407,6 +407,127 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsProcessingAreaParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsProcessingAreaParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+
+  private:
+
+    QComboBox *mParentLayerComboBox = nullptr;
+    QLineEdit *mMinLineEdit = nullptr;
+    QLineEdit *mMaxLineEdit = nullptr;
+    QLineEdit *mDefaultLineEdit = nullptr;
+
+};
+
+class GUI_EXPORT QgsProcessingAreaWidgetWrapper : public QgsProcessingNumericWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingAreaWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                    QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+
+  public slots:
+    void setUnitParameterValue( const QVariant &value, const QgsAbstractProcessingParameterWidgetWrapper *unitParameterWrapper = nullptr );
+    void setUnits( Qgis::AreaUnit unit );
+
+  protected:
+
+    QVariant widgetValue() const override;
+
+  private:
+
+    Qgis::AreaUnit mBaseUnit = Qgis::AreaUnit::Unknown;
+    QLabel *mLabel = nullptr;
+    QWidget *mWarningLabel = nullptr;
+    QComboBox *mUnitsCombo = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingVolumeParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsProcessingVolumeParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+
+  private:
+
+    QComboBox *mParentLayerComboBox = nullptr;
+    QLineEdit *mMinLineEdit = nullptr;
+    QLineEdit *mMaxLineEdit = nullptr;
+    QLineEdit *mDefaultLineEdit = nullptr;
+
+};
+
+class GUI_EXPORT QgsProcessingVolumeWidgetWrapper : public QgsProcessingNumericWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingVolumeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+
+  public slots:
+    void setUnitParameterValue( const QVariant &value, const QgsAbstractProcessingParameterWidgetWrapper *unitParameterWrapper = nullptr );
+    void setUnits( Qgis::VolumeUnit unit );
+
+  protected:
+
+    QVariant widgetValue() const override;
+
+  private:
+
+    Qgis::VolumeUnit mBaseUnit = Qgis::VolumeUnit::Unknown;
+    QLabel *mLabel = nullptr;
+    QWidget *mWarningLabel = nullptr;
+    QComboBox *mUnitsCombo = nullptr;
+
+    friend class TestProcessingGui;
+};
+
 
 class GUI_EXPORT QgsProcessingDurationParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {

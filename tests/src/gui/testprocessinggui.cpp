@@ -263,6 +263,8 @@ class TestProcessingGui : public QObject
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
+    void testAreaWrapper();
+    void testVolumeWrapper();
     void testDurationWrapper();
     void testScaleWrapper();
     void testRangeWrapper();
@@ -2346,6 +2348,452 @@ void TestProcessingGui::testDistanceWrapper()
   QCOMPARE( static_cast< QgsProcessingParameterDistance * >( def.get() )->minimum(), 10.0 );
   QCOMPARE( static_cast< QgsProcessingParameterDistance * >( def.get() )->maximum(), 12.0 );
   QVERIFY( static_cast< QgsProcessingParameterDistance * >( def.get() )->parentParameterName().isEmpty() );
+}
+
+void TestProcessingGui::testAreaWrapper()
+{
+  QgsProcessingParameterArea param( QStringLiteral( "area" ), QStringLiteral( "area" ) );
+
+  // standard wrapper
+  QgsProcessingAreaWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingAreaWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( 55.5, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), 55.5 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), 55.5 );
+  wrapper.setWidgetValue( 3.0, context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), 3.0 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), 3.0 );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "area" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  wrapper.mDoubleSpinBox->setValue( 43.0 );
+  QCOMPARE( spy.count(), 3 );
+
+  // test unit handling
+  w->show();
+
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+
+  // crs values
+  wrapper.setUnitParameterValue( QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::AreaUnit >(), Qgis::AreaUnit::SquareMeters );
+
+  wrapper.setUnitParameterValue( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::AreaUnit >(), Qgis::AreaUnit::SquareMeters );
+
+  wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // layer values
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  wrapper.setUnitParameterValue( QVariant::fromValue( vl.get() ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::AreaUnit >(), Qgis::AreaUnit::SquareMeters );
+
+  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  wrapper.setUnitParameterValue( QVariant::fromValue( vl2.get() ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // unresolvable values
+  wrapper.setUnitParameterValue( QStringLiteral( "blah" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // resolvable text value
+  const QString id = vl->id();
+  QgsProject::instance()->addMapLayer( vl.release() );
+  context.setProject( QgsProject::instance() );
+
+  TestProcessingContextGenerator generator( context );
+  wrapper.registerProcessingContextGenerator( &generator );
+  wrapper.setUnitParameterValue( id );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "square meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::AreaUnit >(), Qgis::AreaUnit::SquareMeters );
+
+  // using unit choice
+  wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+  wrapper.mUnitsCombo->setCurrentIndex( wrapper.mUnitsCombo->findData( QVariant::fromValue( Qgis::AreaUnit::Hectares ) ) );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 50000.0 );
+  wrapper.setParameterValue( 2, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 20000.0 );
+
+  wrapper.setUnitParameterValue( id );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
+  wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+
+  delete w;
+
+  // with default unit
+  QgsProcessingParameterArea paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+  paramDefaultUnit.setDefaultUnit( Qgis::AreaUnit::SquareFeet );
+  QgsProcessingAreaWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  w = wrapperDefaultUnit.createWrappedWidget( context );
+  w->show();
+  QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "square feet" ) );
+  delete w;
+
+  // with decimals
+  QgsProcessingParameterArea paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), QString(), true, 1, 1.02 );
+  QVariantMap metadata;
+  QVariantMap wrapperMetadata;
+  wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+  metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+  paramDecimals.setMetadata( metadata );
+  QgsProcessingAreaWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  w = wrapperDecimals.createWrappedWidget( context );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
+  delete w;
+
+  // batch wrapper
+  QgsProcessingAreaWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingAreaWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( 34, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), 34.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), 34.0 );
+  wrapperB.setWidgetValue( 5, context );
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), 5.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), 5.0 );
+
+  // check signal
+  static_cast< QgsDoubleSpinBox * >( w )->setValue( 29 );
+  QCOMPARE( spy2.count(), 3 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingAreaWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingAreaWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( 29, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 29.0 );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 29.0 );
+  wrapperM.setWidgetValue( 4, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 4.0 );
+  QCOMPARE( spy3.count(), 2 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 4.0 );
+
+  // check signal
+  wrapperM.mDoubleSpinBox->setValue( 33 );
+  QCOMPARE( spy3.count(), 3 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "area" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "area" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Optional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Advanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterArea distParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), 1, QStringLiteral( "parent" ) );
+  distParam.setMinimum( 1 );
+  distParam.setMaximum( 100 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "area" ), context, widgetContext, &distParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Optional ) );
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Advanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->minimum(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->maximum(), 100.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->parentParameterName(), QStringLiteral( "parent" ) );
+  distParam.setFlags( Qgis::ProcessingParameterFlag::Advanced | Qgis::ProcessingParameterFlag::Optional );
+  distParam.setParentParameterName( QString() );
+  distParam.setMinimum( 10 );
+  distParam.setMaximum( 12 );
+  distParam.setDefaultValue( 11.5 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "area" ), context, widgetContext, &distParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & Qgis::ProcessingParameterFlag::Optional );
+  QVERIFY( def->flags() & Qgis::ProcessingParameterFlag::Advanced );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->defaultValue().toDouble(), 11.5 );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->minimum(), 10.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterArea * >( def.get() )->maximum(), 12.0 );
+  QVERIFY( static_cast< QgsProcessingParameterArea * >( def.get() )->parentParameterName().isEmpty() );
+}
+
+void TestProcessingGui::testVolumeWrapper()
+{
+  QgsProcessingParameterVolume param( QStringLiteral( "volume" ), QStringLiteral( "volume" ) );
+
+  // standard wrapper
+  QgsProcessingVolumeWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingVolumeWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( 55.5, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), 55.5 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), 55.5 );
+  wrapper.setWidgetValue( 3.0, context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), 3.0 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), 3.0 );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "volume" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  wrapper.mDoubleSpinBox->setValue( 43.0 );
+  QCOMPARE( spy.count(), 3 );
+
+  // test unit handling
+  w->show();
+
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+
+  // crs values
+  wrapper.setUnitParameterValue( QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::VolumeUnit >(), Qgis::VolumeUnit::CubicMeters );
+
+  wrapper.setUnitParameterValue( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::VolumeUnit >(), Qgis::VolumeUnit::CubicMeters );
+
+  wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // layer values
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  wrapper.setUnitParameterValue( QVariant::fromValue( vl.get() ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::VolumeUnit >(), Qgis::VolumeUnit::CubicMeters );
+
+  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  wrapper.setUnitParameterValue( QVariant::fromValue( vl2.get() ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // unresolvable values
+  wrapper.setUnitParameterValue( QStringLiteral( "blah" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // resolvable text value
+  const QString id = vl->id();
+  QgsProject::instance()->addMapLayer( vl.release() );
+  context.setProject( QgsProject::instance() );
+
+  TestProcessingContextGenerator generator( context );
+  wrapper.registerProcessingContextGenerator( &generator );
+  wrapper.setUnitParameterValue( id );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "cubic meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().value< Qgis::VolumeUnit >(), Qgis::VolumeUnit::CubicMeters );
+
+  // using unit choice
+  wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+  wrapper.mUnitsCombo->setCurrentIndex( wrapper.mUnitsCombo->findData( QVariant::fromValue( Qgis::VolumeUnit::Liters ) ) );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 0.005 );
+  wrapper.setParameterValue( 2, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 0.002 );
+
+  wrapper.setUnitParameterValue( id );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
+  wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+
+  delete w;
+
+  // with default unit
+  QgsProcessingParameterVolume paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+  paramDefaultUnit.setDefaultUnit( Qgis::VolumeUnit::CubicFeet );
+  QgsProcessingVolumeWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  w = wrapperDefaultUnit.createWrappedWidget( context );
+  w->show();
+  QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "cubic feet" ) );
+  delete w;
+
+  // with decimals
+  QgsProcessingParameterVolume paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), QString(), true, 1, 1.02 );
+  QVariantMap metadata;
+  QVariantMap wrapperMetadata;
+  wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+  metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+  paramDecimals.setMetadata( metadata );
+  QgsProcessingVolumeWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  w = wrapperDecimals.createWrappedWidget( context );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
+  delete w;
+
+  // batch wrapper
+  QgsProcessingVolumeWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingVolumeWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( 34, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), 34.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), 34.0 );
+  wrapperB.setWidgetValue( 5, context );
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), 5.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), 5.0 );
+
+  // check signal
+  static_cast< QgsDoubleSpinBox * >( w )->setValue( 29 );
+  QCOMPARE( spy2.count(), 3 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingVolumeWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingVolumeWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( 29, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 29.0 );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 29.0 );
+  wrapperM.setWidgetValue( 3, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 3.0 );
+  QCOMPARE( spy3.count(), 2 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 3.0 );
+
+  // check signal
+  wrapperM.mDoubleSpinBox->setValue( 33 );
+  QCOMPARE( spy3.count(), 3 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "volume" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "volume" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Optional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Advanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterVolume distParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), 1, QStringLiteral( "parent" ) );
+  distParam.setMinimum( 1 );
+  distParam.setMaximum( 100 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "volume" ), context, widgetContext, &distParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Optional ) );
+  QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Advanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->minimum(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->maximum(), 100.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->parentParameterName(), QStringLiteral( "parent" ) );
+  distParam.setFlags( Qgis::ProcessingParameterFlag::Advanced | Qgis::ProcessingParameterFlag::Optional );
+  distParam.setParentParameterName( QString() );
+  distParam.setMinimum( 10 );
+  distParam.setMaximum( 12 );
+  distParam.setDefaultValue( 11.5 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "volume" ), context, widgetContext, &distParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & Qgis::ProcessingParameterFlag::Optional );
+  QVERIFY( def->flags() & Qgis::ProcessingParameterFlag::Advanced );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->defaultValue().toDouble(), 11.5 );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->minimum(), 10.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterVolume * >( def.get() )->maximum(), 12.0 );
+  QVERIFY( static_cast< QgsProcessingParameterVolume * >( def.get() )->parentParameterName().isEmpty() );
 }
 
 void TestProcessingGui::testDurationWrapper()

@@ -2338,6 +2338,10 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterNumber::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "distance" ) )
     return QgsProcessingParameterDistance::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "area" ) )
+    return QgsProcessingParameterArea::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "volume" ) )
+    return QgsProcessingParameterVolume::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "duration" ) )
     return QgsProcessingParameterDuration::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "scale" ) )
@@ -7707,6 +7711,170 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterNumber::fromVariantMap( map );
   mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
   mDefaultUnit = static_cast< Qgis::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) ).toInt() );
+  return true;
+}
+
+
+
+//
+// QgsProcessingParameterArea
+//
+
+QgsProcessingParameterArea::QgsProcessingParameterArea( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentParameterName, bool optional, double minValue, double maxValue )
+  : QgsProcessingParameterNumber( name, description, Qgis::ProcessingNumberParameterType::Double, defaultValue, optional, minValue, maxValue )
+  , mParentParameterName( parentParameterName )
+{
+
+}
+
+QgsProcessingParameterArea *QgsProcessingParameterArea::clone() const
+{
+  return new QgsProcessingParameterArea( *this );
+}
+
+QString QgsProcessingParameterArea::type() const
+{
+  return typeName();
+}
+
+QStringList QgsProcessingParameterArea::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentParameterName.isEmpty() )
+    depends << mParentParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterArea::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterArea('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
+        code += QLatin1String( ", optional=True" );
+
+      code += QStringLiteral( ", parentParameterName='%1'" ).arg( mParentParameterName );
+
+      if ( minimum() != 0 )
+        code += QStringLiteral( ", minValue=%1" ).arg( minimum() );
+      if ( maximum() != std::numeric_limits<double>::max() )
+        code += QStringLiteral( ", maxValue=%1" ).arg( maximum() );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QString QgsProcessingParameterArea::parentParameterName() const
+{
+  return mParentParameterName;
+}
+
+void QgsProcessingParameterArea::setParentParameterName( const QString &parentParameterName )
+{
+  mParentParameterName = parentParameterName;
+}
+
+QVariantMap QgsProcessingParameterArea::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterNumber::toVariantMap();
+  map.insert( QStringLiteral( "parent" ), mParentParameterName );
+  map.insert( QStringLiteral( "default_unit" ), qgsEnumValueToKey( mDefaultUnit ) );
+  return map;
+}
+
+bool QgsProcessingParameterArea::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterNumber::fromVariantMap( map );
+  mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
+  mDefaultUnit = qgsEnumKeyToValue( map.value( QStringLiteral( "default_unit" ) ).toString(), Qgis::AreaUnit::Unknown );
+  return true;
+}
+
+
+
+//
+// QgsProcessingParameterVolume
+//
+
+QgsProcessingParameterVolume::QgsProcessingParameterVolume( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentParameterName, bool optional, double minValue, double maxValue )
+  : QgsProcessingParameterNumber( name, description, Qgis::ProcessingNumberParameterType::Double, defaultValue, optional, minValue, maxValue )
+  , mParentParameterName( parentParameterName )
+{
+
+}
+
+QgsProcessingParameterVolume *QgsProcessingParameterVolume::clone() const
+{
+  return new QgsProcessingParameterVolume( *this );
+}
+
+QString QgsProcessingParameterVolume::type() const
+{
+  return typeName();
+}
+
+QStringList QgsProcessingParameterVolume::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentParameterName.isEmpty() )
+    depends << mParentParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterVolume::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterVolume('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
+        code += QLatin1String( ", optional=True" );
+
+      code += QStringLiteral( ", parentParameterName='%1'" ).arg( mParentParameterName );
+
+      if ( minimum() != 0 )
+        code += QStringLiteral( ", minValue=%1" ).arg( minimum() );
+      if ( maximum() != std::numeric_limits<double>::max() )
+        code += QStringLiteral( ", maxValue=%1" ).arg( maximum() );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QString QgsProcessingParameterVolume::parentParameterName() const
+{
+  return mParentParameterName;
+}
+
+void QgsProcessingParameterVolume::setParentParameterName( const QString &parentParameterName )
+{
+  mParentParameterName = parentParameterName;
+}
+
+QVariantMap QgsProcessingParameterVolume::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterNumber::toVariantMap();
+  map.insert( QStringLiteral( "parent" ), mParentParameterName );
+  map.insert( QStringLiteral( "default_unit" ), qgsEnumValueToKey( mDefaultUnit ) );
+  return map;
+}
+
+bool QgsProcessingParameterVolume::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterNumber::fromVariantMap( map );
+  mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
+  mDefaultUnit = qgsEnumKeyToValue( map.value( QStringLiteral( "default_unit" ) ).toString(), Qgis::VolumeUnit::Unknown );
   return true;
 }
 
