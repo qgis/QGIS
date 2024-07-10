@@ -469,7 +469,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      *
      * \see numberExportLayers()
      * \see exportLayerDetails()
-     * \see exportLayerName()
      *
      * \since QGIS 3.10
      */

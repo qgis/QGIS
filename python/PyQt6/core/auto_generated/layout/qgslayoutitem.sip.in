@@ -439,8 +439,6 @@ Returns the behavior of this item during exporting to layered exports (e.g. SVG 
 
 .. seealso:: :py:func:`exportLayerDetails`
 
-.. seealso:: :py:func:`exportLayerName`
-
 .. versionadded:: 3.10
 %End
 
