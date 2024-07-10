@@ -2008,6 +2008,16 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
 
     write_output("NOR", "$LINE\n");
 
+    # append to class map file
+    if ( $class_map_file ne '' and $ACTUAL_CLASS ne '' ){
+        if ($LINE =~ m/^ *\w+ +(\w+)\(.*$/){
+          open(FH3, '>>', $class_map_file) or die $!;
+          my $method = $1;
+          print FH3 join(".", @CLASSNAME) . "." . $method .": $headerfile#L".$LINE_IDX."\n";
+          close(FH3);
+        }
+    }
+
     if ($PYTHON_SIGNATURE ne '') {
       write_output("PSI", "$PYTHON_SIGNATURE\n");
     }
