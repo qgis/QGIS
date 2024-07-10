@@ -3280,12 +3280,17 @@ void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrap
 
 void QgsAttributeForm::updateFieldDependenciesParent( QgsEditorWidgetWrapper *eww )
 {
-  if ( eww )
+  if ( eww && !eww->field().defaultValueDefinition().expression().isEmpty() )
   {
-    QString expression = eww->field().defaultValueDefinition().expression();
-    if ( expression.contains( QStringLiteral( "current_parent" ) ) )
+    const QgsExpression expression( eww->field().defaultValueDefinition().expression() );
+    const QSet< QString > referencedVariablesAndFunctions = expression.referencedVariables() + expression.referencedFunctions();
+    for ( const QString &referenced : referencedVariablesAndFunctions )
     {
-      mParentDependencies.insert( eww );
+      if ( referenced.startsWith( QStringLiteral( "current_parent" ) ) )
+      {
+        mParentDependencies.insert( eww );
+        break;
+      }
     }
   }
 }
