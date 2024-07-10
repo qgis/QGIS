@@ -365,6 +365,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterArea::typeName() )
+      sipType = sipType_QgsProcessingParameterArea;
+    else if ( sipCpp->type() == QgsProcessingParameterVolume::typeName() )
+      sipType = sipType_QgsProcessingParameterVolume;
     else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
       sipType = sipType_QgsProcessingParameterDuration;
     else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
@@ -2397,6 +2401,169 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
     Qgis::DistanceUnit mDefaultUnit = Qgis::DistanceUnit::Unknown;
 
 };
+
+
+/**
+ * \class QgsProcessingParameterArea
+ * \ingroup core
+ * \brief A double numeric parameter for area values. Linked to a source layer or CRS parameter
+ * to determine what units the area values are in.
+ *
+ * The number of decimals places shown in a area parameter's widget can be specified by
+ * setting the parameter's metadata. For example:
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterArea( 'VAL', 'Threshold')
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterArea.
+     */
+    explicit QgsProcessingParameterArea( const QString &name, const QString &description = QString(),
+                                         const QVariant &defaultValue = QVariant(),
+                                         const QString &parentParameterName = QString(),
+                                         bool optional = false,
+                                         double minValue = 0,
+                                         double maxValue = std::numeric_limits<double>::max() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "area" ); }
+
+    QgsProcessingParameterArea *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QStringList dependsOnOtherParameters() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Returns the name of the parent parameter, or an empty string if this is not set.
+     * \see setParentParameterName()
+     */
+    QString parentParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentParameterName()
+     */
+    void setParentParameterName( const QString &parentParameterName );
+
+    /**
+     * Returns the default area unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     */
+    Qgis::AreaUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default area \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     */
+    void setDefaultUnit( Qgis::AreaUnit unit ) { mDefaultUnit = unit; }
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QString mParentParameterName;
+    Qgis::AreaUnit mDefaultUnit = Qgis::AreaUnit::Unknown;
+
+};
+
+
+/**
+ * \class QgsProcessingParameterVolume
+ * \ingroup core
+ * \brief A double numeric parameter for volume values. Linked to a source layer or CRS parameter
+ * to determine what units the volume values are in.
+ *
+ * The number of decimals places shown in a volume parameter's widget can be specified by
+ * setting the parameter's metadata. For example:
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterVolume( 'VAL', 'Threshold')
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterVolume.
+     */
+    explicit QgsProcessingParameterVolume( const QString &name, const QString &description = QString(),
+                                           const QVariant &defaultValue = QVariant(),
+                                           const QString &parentParameterName = QString(),
+                                           bool optional = false,
+                                           double minValue = 0,
+                                           double maxValue = std::numeric_limits<double>::max() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "volume" ); }
+
+    QgsProcessingParameterVolume *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QStringList dependsOnOtherParameters() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Returns the name of the parent parameter, or an empty string if this is not set.
+     * \see setParentParameterName()
+     */
+    QString parentParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentParameterName()
+     */
+    void setParentParameterName( const QString &parentParameterName );
+
+    /**
+     * Returns the default volume unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     */
+    Qgis::VolumeUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default volume \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     */
+    void setDefaultUnit( Qgis::VolumeUnit unit ) { mDefaultUnit = unit; }
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QString mParentParameterName;
+    Qgis::VolumeUnit mDefaultUnit = Qgis::VolumeUnit::Unknown;
+
+};
+
 
 /**
  * \class QgsProcessingParameterDuration
