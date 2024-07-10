@@ -414,7 +414,7 @@ void QgsGrassNewMapset::setGrassProjection()
 
       Q_UNUSED( ret )
       QgsDebugMsgLevel( QString( "ret = %1" ).arg( ret ), 2 );
-      QgsDebugMsgLevel( QString( "mProjInfo = %1" ).arg( QString::number( ( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ), 2 );
+      QgsDebugMsgLevel( QString( "mProjInfo = %1" ).arg( QString::number( static_cast<qulonglong>( mProjInfo ), 16 ).toLocal8Bit().constData() ), 2 );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
