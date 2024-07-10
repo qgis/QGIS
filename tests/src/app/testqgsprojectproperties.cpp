@@ -278,9 +278,11 @@ void TestQgsProjectProperties::testColorSettings()
   pp->addIccProfile( iccProfileFilePath );
   QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "sRGB2014" ) );
   QVERIFY( pp->mRemoveIccProfile->isEnabled() );
+  QVERIFY( !pp->mColorModel->isEnabled() );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Rgb );
 
   pp->apply();
-  QCOMPARE( QgsProject::instance()->styleSettings()->colorModel(), Qgis::ColorModel::Cmyk );
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorModel(), Qgis::ColorModel::Rgb );
   QVERIFY( QgsProject::instance()->styleSettings()->colorSpace().isValid() );
   QCOMPARE( QgsProject::instance()->styleSettings()->colorSpace().description(), QStringLiteral( "sRGB2014" ) );
 

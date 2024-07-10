@@ -2740,6 +2740,15 @@ void QgsProjectProperties::updateColorSpaceWidget()
 {
   mColorSpaceName->setText( mColorSpace.isValid() ? mColorSpace.description() : tr( "<i>None</i>" ) );
   mRemoveIccProfile->setEnabled( mColorSpace.isValid() );
+
+  // force color model index according to color space one
+  if ( mColorSpace.isValid() )
+  {
+    const Qgis::ColorModel colorModel = QgsColorUtils::toColorModel( mColorSpace.colorModel() );
+    mColorModel->setCurrentIndex( mColorModel->findData( QVariant::fromValue( colorModel ) ) );
+  }
+
+  mColorModel->setEnabled( !mColorSpace.isValid() );
 }
 
 #endif
