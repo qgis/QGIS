@@ -1404,7 +1404,7 @@ while ($LINE_IDX < $LINE_COUNT){
         # append to class map file
         if ( $class_map_file ne '' ){
             open(FH3, '>>', $class_map_file) or die $!;
-            print FH3 join(".", @CLASSNAME) . ": $headerfile\n";
+            print FH3 join(".", @CLASSNAME) . ": $headerfile#L".$LINE_IDX."\n";
             close(FH3);
         }
         # Inheritance
