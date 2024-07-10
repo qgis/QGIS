@@ -50,8 +50,10 @@ for root_dir in python python/PyQt6; do
   fi
 
   for module in "${modules[@]}"; do
-
     module_dir=${root_dir}/${module}
+
+    rm ${module_dir}/class_map.yaml || true
+    touch ${module_dir}/class_map.yaml
 
     # clean auto_additions and auto_generated folders
     rm -rf ${module_dir}/auto_additions/*.py
@@ -71,10 +73,11 @@ It is not aimed to be manually edited
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl $IS_QT6 -s ${root_dir}/$sipfile.in -p ${module_dir}/auto_additions/${pyfile} $header &
+        ./scripts/sipify.pl $IS_QT6 -s ${root_dir}/$sipfile.in -p ${module_dir}/auto_additions/${pyfile} -c ${module_dir}/class_map.yaml $header &
       fi
       count=$((count+1))
     done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
+    ${GP}sort -o ${module_dir}/class_map.yaml ${module_dir}/class_map.yaml
   done
 done
 wait # wait for sipify processes to finish

@@ -34,10 +34,11 @@ my $debug = 0;
 my $sip_output = '';
 my $is_qt6 = 0;
 my $python_output = '';
+my $class_map_file = '';
 #my $SUPPORT_TEMPLATE_DOCSTRING = 0;
 #die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
-die("usage: $0 [-debug] [-qt6] [-sip_output FILE] [-python_output FILE] headerfile\n")
-    unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "qt6" => \$is_qt6) && @ARGV == 1;
+die("usage: $0 [-debug] [-qt6] [-sip_output FILE] [-python_output FILE] [-class_map FILE] headerfile\n")
+    unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "qt6" => \$is_qt6, "class_map=s" => \$class_map_file) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -1400,6 +1401,12 @@ while ($LINE_IDX < $LINE_COUNT){
             }
         };
         $LINE = "$1 $+{classname}";
+        # append to class map file
+        if ( $class_map_file ne '' ){
+            open(FH3, '>>', $class_map_file) or die $!;
+            print FH3 join(".", @CLASSNAME) . ": $headerfile\n";
+            close(FH3);
+        }
         # Inheritance
         if (defined $+{domain}){
             my $m = $+{domain};
