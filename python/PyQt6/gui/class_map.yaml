@@ -372,6 +372,7 @@ QgsAbstractProcessingParameterWidgetWrapper.createWidget: src/gui/processing/qgs
 QgsAbstractProcessingParameterWidgetWrapper.createWrappedLabel: src/gui/processing/qgsprocessingwidgetwrapper.h#L343
 QgsAbstractProcessingParameterWidgetWrapper.createWrappedWidget: src/gui/processing/qgsprocessingwidgetwrapper.h#L329
 QgsAbstractProcessingParameterWidgetWrapper.customProperties: src/gui/processing/qgsprocessingwidgetwrapper.h#L387
+QgsAbstractProcessingParameterWidgetWrapper.linkedVectorLayer: src/gui/processing/qgsprocessingwidgetwrapper.h#L489
 QgsAbstractProcessingParameterWidgetWrapper.parameterDefinition: src/gui/processing/qgsprocessingwidgetwrapper.h#L360
 QgsAbstractProcessingParameterWidgetWrapper.parameterValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L382
 QgsAbstractProcessingParameterWidgetWrapper.postInitialize: src/gui/processing/qgsprocessingwidgetwrapper.h#L410
@@ -5514,6 +5515,7 @@ QgsProcessingGuiRegistry.removeParameterWidgetFactory: src/gui/processing/qgspro
 QgsProcessingGuiRegistry: src/gui/processing/qgsprocessingguiregistry.h#L44
 QgsProcessingHiddenWidgetWrapper.createLabel: src/gui/processing/qgsprocessingwidgetwrapper.h#L710
 QgsProcessingHiddenWidgetWrapper.createWidget: src/gui/processing/qgsprocessingwidgetwrapper.h#L709
+QgsProcessingHiddenWidgetWrapper.linkedVectorLayer: src/gui/processing/qgsprocessingwidgetwrapper.h#L701
 QgsProcessingHiddenWidgetWrapper.setLinkedVectorLayer: src/gui/processing/qgsprocessingwidgetwrapper.h#L706
 QgsProcessingHiddenWidgetWrapper.setWidgetValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L698
 QgsProcessingHiddenWidgetWrapper.widgetValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L699
@@ -6333,6 +6335,7 @@ QgsRendererWidget.changeSymbolSize: src/gui/symbology/qgsrendererwidget.h#L175
 QgsRendererWidget.changeSymbolUnit: src/gui/symbology/qgsrendererwidget.h#L171
 QgsRendererWidget.changeSymbolWidth: src/gui/symbology/qgsrendererwidget.h#L173
 QgsRendererWidget.context: src/gui/symbology/qgsrendererwidget.h#L73
+QgsRendererWidget.contextMenuViewCategories: src/gui/symbology/qgsrendererwidget.h#L165
 QgsRendererWidget.copy: src/gui/symbology/qgsrendererwidget.h#L180
 QgsRendererWidget.createDataDefinedSizeLegendWidget: src/gui/symbology/qgsrendererwidget.h#L144
 QgsRendererWidget.createExpressionContext: src/gui/symbology/qgsrendererwidget.h#L52

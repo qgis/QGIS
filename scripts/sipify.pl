@@ -2010,7 +2010,7 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
 
     # append to class map file
     if ( $class_map_file ne '' && defined $ACTUAL_CLASS && $ACTUAL_CLASS ne '' ){
-        if ($LINE =~ m/^ *(const|virtual|static)* *[\w::]+ \*?+(?<method>\w+)\(.*$/){
+        if ($LINE =~ m/^ *(const |virtual |static )* *[\w:]+ +\*?(?<method>\w+)\(.*$/){
           open(FH3, '>>', $class_map_file) or die $!;
           print FH3 join(".", @CLASSNAME) . "." . $+{method} .": $headerfile#L".$LINE_IDX."\n";
           close(FH3);

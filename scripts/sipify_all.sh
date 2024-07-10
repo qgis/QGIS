@@ -81,9 +81,12 @@ It is not aimed to be manually edited
 done
 wait # wait for sipify processes to finish
 
-for module in "${modules[@]}"; do
-  module_dir=${root_dir}/${module}
-  ${GP}sort -o ${module_dir}/class_map.yaml ${module_dir}/class_map.yaml
+for root_dir in python python/PyQt6; do
+  for module in "${modules[@]}"; do
+    module_dir=${root_dir}/${module}
+    echo "sorting ${module_dir}/class_map.yaml"
+    sort -n -o ${module_dir}/class_map.yaml ${module_dir}/class_map.yaml
+  done
 done
 
 echo " => $count files sipified! 🍺"

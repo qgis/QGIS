@@ -48,7 +48,7 @@ for root_dir in python python/PyQt6; do
     done < <(
       ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" $root_dir/${module}/${module}_auto.sip
     )
-    ${GP}sort -o ${module_dir}/class_map.dat.test ${module_dir}/class_map.dat.test
+    sort -n -o ${module_dir}/class_map.dat.test ${module_dir}/class_map.dat.test
     outdiff3=$($root_dir/${module}/class_map.yaml $root_dir/${module}/class_map.yaml.test)
     if [[ -n "$outdiff3" ]]; then
       echo " *** Class map not up to date: $root_dir/${module}/class_map.yaml. Run sipify_all.sh <module> to fix this."

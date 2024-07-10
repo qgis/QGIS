@@ -312,6 +312,7 @@ QgsAbstractGeometry.ringCount: src/core/geometry/qgsabstractgeometry.h#L703
 QgsAbstractGeometry.segmentLength: src/core/geometry/qgsabstractgeometry.h#L576
 QgsAbstractGeometry.segmentize: src/core/geometry/qgsabstractgeometry.h#L617
 QgsAbstractGeometry.setZMTypeFromSubGeometry: src/core/geometry/qgsabstractgeometry.h#L1163
+QgsAbstractGeometry.simplifiedTypeRef: src/core/geometry/qgsabstractgeometry.h#L778
 QgsAbstractGeometry.simplifyByDistance: src/core/geometry/qgsabstractgeometry.h#L663
 QgsAbstractGeometry.snappedToGrid: src/core/geometry/qgsabstractgeometry.h#L649
 QgsAbstractGeometry.sortIndex: src/core/geometry/qgsabstractgeometry.h#L1119
@@ -2288,6 +2289,7 @@ QgsCompoundCurve.removeDuplicateNodes: src/core/geometry/qgscompoundcurve.h#L126
 QgsCompoundCurve.reversed: src/core/geometry/qgscompoundcurve.h#L198
 QgsCompoundCurve.scroll: src/core/geometry/qgscompoundcurve.h#L215
 QgsCompoundCurve.segmentLength: src/core/geometry/qgscompoundcurve.h#L197
+QgsCompoundCurve.simplifiedTypeRef: src/core/geometry/qgscompoundcurve.h#L128
 QgsCompoundCurve.simplifyByDistance: src/core/geometry/qgscompoundcurve.h#L125
 QgsCompoundCurve.snappedToGrid: src/core/geometry/qgscompoundcurve.h#L124
 QgsCompoundCurve.startPoint: src/core/geometry/qgscompoundcurve.h#L108
@@ -2819,6 +2821,7 @@ QgsCustomColorScheme.setColors: src/core/qgscolorscheme.h#L279
 QgsCustomColorScheme: src/core/qgscolorscheme.h#L261
 QgsDartMeasurement.send: src/core/qgsdartmeasurement.h#L44
 QgsDartMeasurement.toString: src/core/qgsdartmeasurement.h#L42
+QgsDartMeasurement.typeToString: src/core/qgsdartmeasurement.h#L51
 QgsDartMeasurement: src/core/qgsdartmeasurement.h#L27
 QgsDataCollectionItem.__repr__: src/core/browser/qgsdatacollectionitem.h#L49
 QgsDataCollectionItem.addChild: src/core/browser/qgsdatacollectionitem.h#L56
@@ -4046,6 +4049,7 @@ QgsFeatureRenderer.convertSymbolSizeScale: src/core/symbology/qgsrenderer.h#L702
 QgsFeatureRenderer.copyRendererData: src/core/symbology/qgsrenderer.h#L646
 QgsFeatureRenderer.defaultRenderer: src/core/symbology/qgsrenderer.h#L161
 QgsFeatureRenderer.dump: src/core/symbology/qgsrenderer.h#L283
+QgsFeatureRenderer.embeddedRenderer: src/core/symbology/qgsrenderer.h#L618
 QgsFeatureRenderer.filter: src/core/symbology/qgsrenderer.h#L234
 QgsFeatureRenderer.filterNeedsGeometry: src/core/symbology/qgsrenderer.h#L255
 QgsFeatureRenderer.forceRasterRender: src/core/symbology/qgsrenderer.h#L492
@@ -4869,6 +4873,7 @@ QgsGeometryCollection.reserve: src/core/geometry/qgsgeometrycollection.h#L202
 QgsGeometryCollection.ringCount: src/core/geometry/qgsgeometrycollection.h#L309
 QgsGeometryCollection.segmentLength: src/core/geometry/qgsgeometrycollection.h#L307
 QgsGeometryCollection.segmentize: src/core/geometry/qgsgeometrycollection.h#L304
+QgsGeometryCollection.simplifiedTypeRef: src/core/geometry/qgsgeometrycollection.h#L320
 QgsGeometryCollection.simplifyByDistance: src/core/geometry/qgsgeometrycollection.h#L321
 QgsGeometryCollection.snappedToGrid: src/core/geometry/qgsgeometrycollection.h#L187
 QgsGeometryCollection.swapXy: src/core/geometry/qgsgeometrycollection.h#L318
@@ -8773,6 +8778,7 @@ QgsMapLayerServerProperties.copyTo: src/core/qgsmaplayerserverproperties.h#L290
 QgsMapLayerServerProperties.dataUrl: src/core/qgsmaplayerserverproperties.h#L421
 QgsMapLayerServerProperties.dataUrlFormat: src/core/qgsmaplayerserverproperties.h#L443
 QgsMapLayerServerProperties.keywordList: src/core/qgsmaplayerserverproperties.h#L399
+QgsMapLayerServerProperties.layer: src/core/qgsmaplayerserverproperties.h#L491
 QgsMapLayerServerProperties.readXml: src/core/qgsmaplayerserverproperties.h#L302
 QgsMapLayerServerProperties.reset: src/core/qgsmaplayerserverproperties.h#L308
 QgsMapLayerServerProperties.setAbstract: src/core/qgsmaplayerserverproperties.h#L372
@@ -9255,6 +9261,7 @@ QgsMergedFeatureRenderer.clone: src/core/symbology/qgsmergedfeaturerenderer.h#L5
 QgsMergedFeatureRenderer.convertFromRenderer: src/core/symbology/qgsmergedfeaturerenderer.h#L105
 QgsMergedFeatureRenderer.create: src/core/symbology/qgsmergedfeaturerenderer.h#L56
 QgsMergedFeatureRenderer.dump: src/core/symbology/qgsmergedfeaturerenderer.h#L79
+QgsMergedFeatureRenderer.embeddedRenderer: src/core/symbology/qgsmergedfeaturerenderer.h#L94
 QgsMergedFeatureRenderer.filterNeedsGeometry: src/core/symbology/qgsmergedfeaturerenderer.h#L81
 QgsMergedFeatureRenderer.legendKeyToExpression: src/core/symbology/qgsmergedfeaturerenderer.h#L89
 QgsMergedFeatureRenderer.legendSymbolItemChecked: src/core/symbology/qgsmergedfeaturerenderer.h#L97
@@ -10399,6 +10406,8 @@ QgsPieDiagram: src/core/diagram/qgspiediagram.h#L38
 QgsPkiBundle.certId: src/core/auth/qgsauthconfig.h#L251
 QgsPkiBundle.clientCert: src/core/auth/qgsauthconfig.h#L254
 QgsPkiBundle.clientKey: src/core/auth/qgsauthconfig.h#L259
+QgsPkiBundle.fromPemPaths: src/core/auth/qgsauthconfig.h#L231
+QgsPkiBundle.fromPkcs12Paths: src/core/auth/qgsauthconfig.h#L241
 QgsPkiBundle.isNull: src/core/auth/qgsauthconfig.h#L245
 QgsPkiBundle.isValid: src/core/auth/qgsauthconfig.h#L248
 QgsPkiBundle.setCaChain: src/core/auth/qgsauthconfig.h#L266
@@ -10899,6 +10908,7 @@ QgsPointDistanceRenderer.capabilities: src/core/symbology/qgspointdistancerender
 QgsPointDistanceRenderer.checkLegendSymbolItem: src/core/symbology/qgspointdistancerenderer.h#L105
 QgsPointDistanceRenderer.drawGroup: src/core/symbology/qgspointdistancerenderer.h#L285
 QgsPointDistanceRenderer.drawLabels: src/core/symbology/qgspointdistancerenderer.h#L275
+QgsPointDistanceRenderer.embeddedRenderer: src/core/symbology/qgspointdistancerenderer.h#L101
 QgsPointDistanceRenderer.filter: src/core/symbology/qgspointdistancerenderer.h#L106
 QgsPointDistanceRenderer.filterNeedsGeometry: src/core/symbology/qgspointdistancerenderer.h#L87
 QgsPointDistanceRenderer.labelAttributeName: src/core/symbology/qgspointdistancerenderer.h#L127
@@ -11995,6 +12005,7 @@ QgsProcessingParameterFolderDestination.toOutputDefinition: src/core/processing/
 QgsProcessingParameterFolderDestination.type: src/core/processing/qgsprocessingparameters.h#L3587
 QgsProcessingParameterFolderDestination.typeName: src/core/processing/qgsprocessingparameters.h#L3585
 QgsProcessingParameterFolderDestination: src/core/processing/qgsprocessingparameters.h#L3570
+QgsProcessingParameterGeometry.allowMultipart: src/core/processing/qgsprocessingparameters.h#L1951
 QgsProcessingParameterGeometry.asPythonString: src/core/processing/qgsprocessingparameters.h#L1931
 QgsProcessingParameterGeometry.asScriptCode: src/core/processing/qgsprocessingparameters.h#L1930
 QgsProcessingParameterGeometry.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L1928
@@ -13800,6 +13811,7 @@ QgsRasterLayer.clone: src/core/raster/qgsrasterlayer.h#L183
 QgsRasterLayer.createMapRenderer: src/core/raster/qgsrasterlayer.h#L336
 QgsRasterLayer.createProfileGenerator: src/core/raster/qgsrasterlayer.h#L185
 QgsRasterLayer.dataProvider: src/core/raster/qgsrasterlayer.h#L326
+QgsRasterLayer.dataProvider: src/core/raster/qgsrasterlayer.h#L333
 QgsRasterLayer.decodedSource: src/core/raster/qgsrasterlayer.h#L505
 QgsRasterLayer.defaultContrastEnhancementSettings: src/core/raster/qgsrasterlayer.h#L433
 QgsRasterLayer.draw: src/core/raster/qgsrasterlayer.h#L339
@@ -15206,10 +15218,12 @@ QgsSerialPortSensor.type: src/core/sensor/qgsiodevicesensor.h#L251
 QgsSerialPortSensor.writePropertiesToElement: src/core/sensor/qgsiodevicesensor.h#L293
 QgsSerialPortSensor: src/core/sensor/qgsiodevicesensor.h#L231
 QgsServerMetadataUrlProperties.addMetadataUrl: src/core/qgsmaplayerserverproperties.h#L103
+QgsServerMetadataUrlProperties.layer: src/core/qgsmaplayerserverproperties.h#L105
 QgsServerMetadataUrlProperties.setMetadataUrls: src/core/qgsmaplayerserverproperties.h#L97
 QgsServerMetadataUrlProperties: src/core/qgsmaplayerserverproperties.h#L38
 QgsServerWmsDimensionProperties.QgsServerWmsDimensionProperties.WmsDimensionInfo: src/core/qgsmaplayerserverproperties.h#L174
 QgsServerWmsDimensionProperties.addWmsDimension: src/core/qgsmaplayerserverproperties.h#L212
+QgsServerWmsDimensionProperties.layer: src/core/qgsmaplayerserverproperties.h#L235
 QgsServerWmsDimensionProperties.removeWmsDimension: src/core/qgsmaplayerserverproperties.h#L219
 QgsServerWmsDimensionProperties.setWmsDimensions: src/core/qgsmaplayerserverproperties.h#L226
 QgsServerWmsDimensionProperties: src/core/qgsmaplayerserverproperties.h#L135
@@ -15342,6 +15356,7 @@ QgsSettingsRegistry.settingsEntry: src/core/settings/qgssettingsregistry.h#L62
 QgsSettingsRegistry: src/core/settings/qgssettingsregistry.h#L38
 QgsSettingsRegistryCore: src/core/settings/qgssettingsregistrycore.h#L42
 QgsSettingsTree.createPluginTreeNode: src/core/settings/qgssettingstree.h#L78
+QgsSettingsTree.node: src/core/settings/qgssettingstree.h#L73
 QgsSettingsTree.unregisterPluginTreeNode: src/core/settings/qgssettingstree.h#L84
 QgsSettingsTree: src/core/settings/qgssettingstree.h#L30
 QgsSettingsTreeNamedListNode.deleteAllItems: src/core/settings/qgssettingstreenode.h#L239
@@ -15837,6 +15852,7 @@ QgsSpatialIndex.deleteFeature: src/core/qgsspatialindex.h#L184
 QgsSpatialIndex.geometry: src/core/qgsspatialindex.h#L257
 QgsSpatialIndex.insertFeature: src/core/qgsspatialindex.h#L140
 QgsSpatialIndex.insertFeature: src/core/qgsspatialindex.h#L165
+QgsSpatialIndex.refs: src/core/qgsspatialindex.h#L275
 QgsSpatialIndex: src/core/qgsspatialindex.h#L67
 QgsSpatialIndexKDBush.QgsSpatialIndexKDBush: src/core/qgsspatialindexkdbush.h#L67
 QgsSpatialIndexKDBush.QgsSpatialIndexKDBush: src/core/qgsspatialindexkdbush.h#L78
@@ -17167,6 +17183,7 @@ QgsTiledSceneBoundingVolume: src/core/tiledscene/qgstiledsceneboundingvolume.h#L
 QgsTiledSceneDataProvider.capabilities: src/core/tiledscene/qgstiledscenedataprovider.h#L61
 QgsTiledSceneDataProvider.clone: src/core/tiledscene/qgstiledscenedataprovider.h#L66
 QgsTiledSceneDataProvider.index: src/core/tiledscene/qgstiledscenedataprovider.h#L97
+QgsTiledSceneDataProvider.sceneCrs: src/core/tiledscene/qgstiledscenedataprovider.h#L77
 QgsTiledSceneDataProvider.zRange: src/core/tiledscene/qgstiledscenedataprovider.h#L102
 QgsTiledSceneDataProvider: src/core/tiledscene/qgstiledscenedataprovider.h#L35
 QgsTiledSceneIndex.childAvailability: src/core/tiledscene/qgstiledsceneindex.h#L209
