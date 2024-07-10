@@ -265,6 +265,13 @@ class CORE_EXPORT QgsBox3D
     QgsVector3D center() const SIP_HOLDGIL;
 
     /**
+     * Returns the area of the box.
+     *
+     * \since QGIS 3.40
+     */
+    double area() const SIP_HOLDGIL { return mBounds2d.area(); }
+
+    /**
      * Returns the volume of the box.
      */
     double volume() const SIP_HOLDGIL { return mBounds2d.area() * ( mZmax - mZmin ); }

@@ -264,6 +264,13 @@ Returns the center of the box as a vector.
 .. versionadded:: 3.34
 %End
 
+    double area() const /HoldGIL/;
+%Docstring
+Returns the area of the box.
+
+.. versionadded:: 3.40
+%End
+
     double volume() const /HoldGIL/;
 %Docstring
 Returns the volume of the box.
