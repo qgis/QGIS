@@ -89,7 +89,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
   double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 0;
   QHash< QgsFeatureId, QgsGeometry > geometries;
@@ -170,7 +170,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
   step = outputFeatureIds.empty() ? 1 : 100.0 / outputFeatureIds.size();
 
   const QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( outputFeatureIds ).setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  it = mSource->getFeatures( request );
+  it = mSource->getFeatures( request, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   current = 0;
   while ( it.nextFeature( f ) )
   {
