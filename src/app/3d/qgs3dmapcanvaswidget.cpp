@@ -29,11 +29,14 @@
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
+#include "qgsgeometryutils.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolextent.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
+#include "qgsorientedbox3d.h"
+#include "qgspointxy.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsmapthemecollection.h"
@@ -692,11 +695,29 @@ void Qgs3DMapCanvasWidget::onExtentChanged()
   mViewExtentHighlight->reset( Qgis::GeometryType::Polygon );
   if ( mapSettings->showExtentIn2DView() )
   {
-    QgsRectangle extent = mapSettings->extent();
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMinimum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMaximum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMaximum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMinimum() ), false );
+    QgsOrientedBox3D box3D = mapSettings->box();
+
+    QList<QgsPoint> pts;
+    for ( const QgsVector3D corner : box3D.corners().mid( 0, 4 ) )
+    {
+      pts.append( QgsPoint( corner.x(), corner.y() ) );
+    }
+
+    // Ensure that this is not an antiparallelogram
+    QgsPoint inter;
+    if ( bool isIntersection1234 = QgsGeometryUtils::segmentIntersection( pts[0], pts[1], pts[2], pts[3], inter, isIntersection1234 ) )
+    {
+      pts.swapItemsAt( 1, 2 );
+    }
+    else if ( bool isIntersection2341 = QgsGeometryUtils::segmentIntersection( pts[1], pts[2], pts[3], pts[0], inter, isIntersection2341 ) )
+    {
+      pts.swapItemsAt( 0, 1 );
+    }
+
+    for ( const QgsPoint &point : pts )
+    {
+      mViewExtentHighlight->addPoint( point, false );
+    }
     mViewExtentHighlight->closePoints();
   }
 }
