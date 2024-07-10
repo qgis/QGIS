@@ -443,9 +443,9 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 {
-  const QgsRectangle te = groupExtent->outputExtent();
+  const QgsRectangle tileExtent = mMap->extent();
 
-  const double tile0width = std::max( te.width(), te.height() );
+  const double tile0width = std::max( tileExtent.width(), tileExtent.height() );
   const int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
