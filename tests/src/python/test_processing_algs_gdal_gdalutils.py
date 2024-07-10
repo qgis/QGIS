@@ -10,6 +10,10 @@ __date__ = '03/07/2024'
 __copyright__ = 'Copyright 2024, The QGIS Project'
 
 
+import os
+import tempfile
+from shutil import rmtree
+
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from qgis.core import QgsApplication, QgsRasterLayer, QgsDataSourceUri, QgsAuthMethodConfig
@@ -18,10 +22,20 @@ from processing.algs.gdal.GdalUtils import (
     GdalConnectionDetails
 )
 
+QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
+os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
+
 start_app()
 
 
 class TestProcessingAlgsGdalGdalUtils(QgisTestCase):
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        rmtree(QGIS_AUTH_DB_DIR_PATH)
+        del os.environ['QGIS_AUTH_DB_DIR_PATH']
+        super().tearDownClass()
 
     def test_gdal_connection_details_from_layer_postgresraster(self):
         """
