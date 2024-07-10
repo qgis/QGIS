@@ -776,7 +776,10 @@ class CORE_EXPORT QgsLayoutExporter
     bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                                     const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
 
-    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc );
+    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items,
+                                      const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc,
+                                      const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc
+                                    );
 
     static QgsVectorSimplifyMethod createExportSimplifyMethod();
     static QgsMaskRenderSettings createExportMaskSettings();

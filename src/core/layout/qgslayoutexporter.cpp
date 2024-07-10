@@ -628,7 +628,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       p.end();
       return layerExportResult;
     };
-    result = handleLayeredExport( items, exportFunc );
+    auto getExportGroupNameFunc = []( QgsLayoutItem * item )->QString
+    {
+      return item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+    };
+    result = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
     if ( result != Success )
       return result;
 
@@ -1113,7 +1117,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
       {
         return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerDetail.name, svg, svgDocRoot, settings.exportMetadata );
       };
-      ExportResult res = handleLayeredExport( items, exportFunc );
+      auto getExportGroupNameFunc = []( QgsLayoutItem * )->QString
+      {
+        return QString();
+      };
+      ExportResult res = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
       if ( res != Success )
         return res;
 
@@ -1771,7 +1779,8 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
-    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc )
+    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc,
+    const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc )
 {
   LayoutItemHider itemHider( items );
   ( void )itemHider;
@@ -1793,7 +1802,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
     if ( layoutItem )
     {
       QgsLayoutItem::ExportLayerBehavior itemExportBehavior = layoutItem->exportLayerBehavior();
-      thisItemExportGroupName = layoutItem->exportLayerName();
+      thisItemExportGroupName = getItemExportGroupFunc( layoutItem );
       if ( !thisItemExportGroupName.isEmpty() )
       {
         if ( thisItemExportGroupName != previousItemGroup && !currentLayerItems.empty() )

@@ -170,7 +170,6 @@ class TestQgsLayoutItem: public QgsTest
     void blendMode();
     void opacity();
     void excludeFromExports();
-    void exportName();
     void setSceneRect();
     void page();
     void itemVariablesFunction();
@@ -1744,7 +1743,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setBlendMode( QPainter::CompositionMode_Darken );
   original->setExcludeFromExports( true );
   original->setItemOpacity( 0.75 );
-  original->setExportLayerName( QStringLiteral( "_export_layer_" ) );
+  original->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "_export_layer_" ) );
 
   std::unique_ptr< QgsLayoutItem > copy = createCopyViaXml( &l, original );
 
@@ -1774,7 +1773,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
   QVERIFY( copy->excludeFromExports( ) );
   QCOMPARE( copy->itemOpacity(), 0.75 );
-  QCOMPARE( copy->exportLayerName(), QStringLiteral( "_export_layer_" ) );
+  QCOMPARE( copy->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString(), QStringLiteral( "_export_layer_" ) );
   delete original;
 }
 
@@ -2097,18 +2096,6 @@ void TestQgsLayoutItem::excludeFromExports()
 
   mControlPathPrefix = QStringLiteral( "layouts" );
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "layoutitem_excluded" ), &l, 0, 0, QSize( 400, 400 ) );
-}
-
-void TestQgsLayoutItem::exportName()
-{
-  QgsProject proj;
-  QgsLayout l( &proj );
-  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
-  l.addLayoutItem( item );
-
-  QCOMPARE( item->exportLayerName(), QString() );
-  item->setExportLayerName( QStringLiteral( "my export group" ) );
-  QCOMPARE( item->exportLayerName(), QStringLiteral( "my export group" ) );
 }
 
 std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
