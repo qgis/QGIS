@@ -3658,6 +3658,9 @@ QgsProviderSublayersDialog.setNonLayerItems: src/gui/qgsprovidersublayersdialog.
 QgsProviderSublayersDialog: src/gui/qgsprovidersublayersdialog.h#L72
 QgsProxyStyle.QgsProxyStyle: src/gui/qgsproxystyle.h#L41
 QgsProxyStyle: src/gui/qgsproxystyle.h#L30
+QgsQmlWidgetWrapper.reinitWidget: src/gui/editorwidgets/qgsqmlwidgetwrapper.h#L52
+QgsQmlWidgetWrapper.setQmlCode: src/gui/editorwidgets/qgsqmlwidgetwrapper.h#L55
+QgsQmlWidgetWrapper: src/gui/editorwidgets/qgsqmlwidgetwrapper.h#L30
 QgsQueryBuilder.clear: src/gui/qgsquerybuilder.h#L112
 QgsQueryBuilder.loadQuery: src/gui/qgsquerybuilder.h#L133
 QgsQueryBuilder.saveQuery: src/gui/qgsquerybuilder.h#L127
@@ -4627,6 +4630,8 @@ QgsTiledSceneRendererPropertiesWidget.setContext: src/gui/tiledscene/qgstiledsce
 QgsTiledSceneRendererPropertiesWidget.setDockMode: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L55
 QgsTiledSceneRendererPropertiesWidget.syncToLayer: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L54
 QgsTiledSceneRendererPropertiesWidget: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L38
+QgsTiledSceneRendererWidget.context: src/gui/tiledscene/qgstiledscenerendererwidget.h#L64
+QgsTiledSceneRendererWidget: src/gui/tiledscene/qgstiledscenerendererwidget.h#L36
 QgsTimeEdit.QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L245
 QgsTimeEdit.setTime: src/gui/editorwidgets/qgsdatetimeedit.h#L251
 QgsTimeEdit.timeValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L258
@@ -4709,6 +4714,10 @@ QgsVectorLayerSaveAsDialog: src/gui/ogr/qgsvectorlayersaveasdialog.h#L32
 QgsVectorLayerTemporalPropertiesWidget.saveTemporalProperties: src/gui/qgsvectorlayertemporalpropertieswidget.h#L47
 QgsVectorLayerTemporalPropertiesWidget.syncToLayer: src/gui/qgsvectorlayertemporalpropertieswidget.h#L54
 QgsVectorLayerTemporalPropertiesWidget: src/gui/qgsvectorlayertemporalpropertieswidget.h#L34
+QgsVectorTileLayerProperties.loadStyle: src/gui/vectortile/qgsvectortilelayerproperties.h#L57
+QgsVectorTileLayerProperties.saveDefaultStyle: src/gui/vectortile/qgsvectortilelayerproperties.h#L50
+QgsVectorTileLayerProperties.saveStyleAs: src/gui/vectortile/qgsvectortilelayerproperties.h#L64
+QgsVectorTileLayerProperties: src/gui/vectortile/qgsvectortilelayerproperties.h#L38
 QgsVertexMarker.center: src/gui/qgsvertexmarker.h#L78
 QgsVertexMarker.color: src/gui/qgsvertexmarker.h#L96
 QgsVertexMarker.fillColor: src/gui/qgsvertexmarker.h#L112
@@ -4729,12 +4738,3 @@ QgsWidgetWrapper.setContext: src/gui/editorwidgets/core/qgswidgetwrapper.h#L133
 QgsWidgetWrapper.setDataDefinedProperties: src/gui/editorwidgets/core/qgswidgetwrapper.h#L201
 QgsWidgetWrapper: src/gui/editorwidgets/core/qgswidgetwrapper.h#L52
 QgsWindowManagerInterface: src/gui/qgswindowmanagerinterface.h#L38
-QgsTiledSceneRendererWidget: src/gui/tiledscene/qgstiledscenerendererwidget.h#L36
-QgsTiledSceneRendererWidget.context: src/gui/tiledscene/qgstiledscenerendererwidget.h#L64
-QgsVectorTileLayerProperties: src/gui/vectortile/qgsvectortilelayerproperties.h#L38
-QgsVectorTileLayerProperties.saveDefaultStyle: src/gui/vectortile/qgsvectortilelayerproperties.h#L50
-QgsVectorTileLayerProperties.loadStyle: src/gui/vectortile/qgsvectortilelayerproperties.h#L57
-QgsVectorTileLayerProperties.saveStyleAs: src/gui/vectortile/qgsvectortilelayerproperties.h#L64
-QgsQmlWidgetWrapper: src/gui/editorwidgets/qgsqmlwidgetwrapper.h#L30
-QgsQmlWidgetWrapper.reinitWidget: src/gui/editorwidgets/qgsqmlwidgetwrapper.h#L52
-QgsQmlWidgetWrapper.setQmlCode: src/gui/editorwidgets/qgsqmlwidgetwrapper.h#L55

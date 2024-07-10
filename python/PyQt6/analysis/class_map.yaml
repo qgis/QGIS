@@ -93,9 +93,11 @@ QgsGeometryCheckerUtils.LayerFeature.useMapCrs: src/analysis/vector/geometry_che
 QgsGeometryCheckerUtils.LayerFeature: src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h#L51
 QgsGeometryCheckerUtils.LayerFeatures: src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h#L112
 QgsGeometryCheckerUtils: src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h#L39
+QgsGeometrySnapper.featureSnapped: src/analysis/vector/qgsgeometrysnapper.h#L88
 QgsGeometrySnapper.snapFeatures: src/analysis/vector/qgsgeometrysnapper.h#L78
 QgsGeometrySnapper.snapGeometry: src/analysis/vector/qgsgeometrysnapper.h#L71
 QgsGeometrySnapper: src/analysis/vector/qgsgeometrysnapper.h#L41
+QgsGeometrySnapperSingleSource: src/analysis/vector/qgsgeometrysnappersinglesource.h#L44
 QgsGraph.addEdge: src/analysis/network/qgsgraph.h#L159
 QgsGraph.addVertex: src/analysis/network/qgsgraph.h#L153
 QgsGraph.edge: src/analysis/network/qgsgraph.h#L245
@@ -137,6 +139,9 @@ QgsHillshadeFilter: src/analysis/raster/qgshillshadefilter.h#L29
 QgsIDWInterpolator.distanceCoefficient: src/analysis/interpolation/qgsidwinterpolator.h#L59
 QgsIDWInterpolator.setDistanceCoefficient: src/analysis/interpolation/qgsidwinterpolator.h#L48
 QgsIDWInterpolator: src/analysis/interpolation/qgsidwinterpolator.h#L29
+QgsInternalGeometrySnapper.snapFeature: src/analysis/vector/qgsgeometrysnapper.h#L149
+QgsInternalGeometrySnapper.snappedGeometries: src/analysis/vector/qgsgeometrysnapper.h#L154
+QgsInternalGeometrySnapper: src/analysis/vector/qgsgeometrysnapper.h#L134
 QgsInterpolator.cacheBaseData: src/analysis/interpolation/qgsinterpolator.h#L150
 QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L73
 QgsKernelDensityEstimation.addFeature: src/analysis/raster/qgskde.h#L127
@@ -171,6 +176,7 @@ QgsNineCellFilter.setOutputNodataValue: src/analysis/raster/qgsninecellfilter.h#
 QgsNineCellFilter.setZFactor: src/analysis/raster/qgsninecellfilter.h#L57
 QgsNineCellFilter.zFactor: src/analysis/raster/qgsninecellfilter.h#L56
 QgsNineCellFilter: src/analysis/raster/qgsninecellfilter.h#L37
+QgsPdalAlgorithms: src/analysis/processing/pdal/qgspdalalgorithms.h#L34
 QgsRasterCalcNode.cleanRasterReferences: src/analysis/raster/qgsrastercalcnode.h#L143
 QgsRasterCalcNode.referencedLayerNames: src/analysis/raster/qgsrastercalcnode.h#L137
 QgsRasterCalcNode.setLeft: src/analysis/raster/qgsrastercalcnode.h#L104
@@ -246,11 +252,5 @@ QgsVectorWarper: src/analysis/georeferencing/qgsvectorwarper.h#L35
 QgsVectorWarperTask.errorMessage: src/analysis/georeferencing/qgsvectorwarper.h#L119
 QgsVectorWarperTask.result: src/analysis/georeferencing/qgsvectorwarper.h#L114
 QgsVectorWarperTask: src/analysis/georeferencing/qgsvectorwarper.h#L81
-QgsGeometrySnapper.featureSnapped: src/analysis/vector/qgsgeometrysnapper.h#L88
-QgsInternalGeometrySnapper: src/analysis/vector/qgsgeometrysnapper.h#L134
-QgsInternalGeometrySnapper.snapFeature: src/analysis/vector/qgsgeometrysnapper.h#L149
-QgsInternalGeometrySnapper.snappedGeometries: src/analysis/vector/qgsgeometrysnapper.h#L154
-QgsGeometrySnapperSingleSource: src/analysis/vector/qgsgeometrysnappersinglesource.h#L44
-QgsZonalStatistics: src/analysis/vector/qgszonalstatistics.h#L46
 QgsZonalStatistics.FeatureStats: src/analysis/vector/qgszonalstatistics.h#L148
-QgsPdalAlgorithms: src/analysis/processing/pdal/qgspdalalgorithms.h#L34
+QgsZonalStatistics: src/analysis/vector/qgszonalstatistics.h#L46

@@ -77,10 +77,14 @@ It is not aimed to be manually edited
       fi
       count=$((count+1))
     done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
-    ${GP}sort -o ${module_dir}/class_map.yaml ${module_dir}/class_map.yaml
   done
 done
 wait # wait for sipify processes to finish
+
+for module in "${modules[@]}"; do
+  module_dir=${root_dir}/${module}
+  ${GP}sort -o ${module_dir}/class_map.yaml ${module_dir}/class_map.yaml
+done
 
 echo " => $count files sipified! 🍺"
 
