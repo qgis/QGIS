@@ -48,6 +48,7 @@ class QgsExplodeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 
     std::vector< QgsGeometry > extractAsParts( const QgsGeometry &geometry ) const;
