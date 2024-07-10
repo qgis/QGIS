@@ -30,7 +30,7 @@ for root_dir in python python/PyQt6; do
       if [ ! -f $header ]; then
         echo "*** Missing header: $header for sipfile $sipfile"
       else
-        outdiff=$(./scripts/sipify.pl $IS_QT6 -p $root_dir/${module}/auto_additions/${pyfile}.temp -c $root_dir/${module}/class_map.yaml.test $header | diff $root_dir/$sipfile.in -)
+        outdiff=$(./scripts/sipify.pl $IS_QT6 -p $root_dir/${module}/auto_additions/${pyfile}.temp $header | diff $root_dir/$sipfile.in -)
         if [[ -n "$outdiff" ]]; then
           echo " *** SIP file not up to date: $root_dir/$sipfile"
           echo " $outdiff "
@@ -48,13 +48,6 @@ for root_dir in python python/PyQt6; do
     done < <(
       ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" $root_dir/${module}/${module}_auto.sip
     )
-    sort -n -o ${module_dir}/class_map.dat.test ${module_dir}/class_map.dat.test
-    outdiff3=$($root_dir/${module}/class_map.yaml $root_dir/${module}/class_map.yaml.test)
-    if [[ -n "$outdiff3" ]]; then
-      echo " *** Class map not up to date: $root_dir/${module}/class_map.yaml. Run sipify_all.sh <module> to fix this."
-      echo " $outdiff3 "
-      code=1
-    fi
   done
 done
 

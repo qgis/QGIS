@@ -1,23 +1,28 @@
-name: Run sipify on PR
+name: Run sipify
 
 on:
   issue_comment:
     types: [created]
+  push:
+    branches:
+      - master
+      - release-*
 
 jobs:
   sipify:
-    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/sipify')
+    if: github.event_name == 'push' || (contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/sipify'))
     runs-on: [ubuntu-latest]
     steps:
 
       - name: Get PR branch
         uses: alessbell/pull-request-comment-branch@v2.1.0
+        if: ${{ github.event_name == 'issue_comment' }}
         id: comment-branch
 
       - uses: actions/checkout@v4
         with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
-          repository: ${{ steps.comment-branch.outputs.head_owner }}/${{ steps.comment-branch.outputs.head_repo }}
+          ref: ${{ steps.comment-branch.outputs.head_ref || github.ref_name }}
+          repository: ${{ steps.comment-branch.outputs.head_owner || 'qgis' }}/${{ steps.comment-branch.outputs.head_repo || 'QGIS' }}
           token: ${{ secrets.GH_TOKEN_BOT }}
 
       - name: Install Requirements
@@ -39,7 +44,7 @@ jobs:
               libtry-tiny-perl
 
       - name: run sipify
-        run: ./scripts/sipify_all.sh
+        run: ./scripts/sipify_all.sh -m
 
       - name: commit
         run: |
