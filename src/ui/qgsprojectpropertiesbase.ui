@@ -298,7 +298,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>673</width>
+                <width>522</width>
                 <height>852</height>
                </rect>
               </property>
@@ -1413,6 +1413,9 @@
                   </item>
                   <item row="1" column="2">
                    <widget class="QToolButton" name="mRemoveIccProfile">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove selected ICC profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string>...</string>
                     </property>
@@ -1445,6 +1448,9 @@
                   </item>
                   <item row="1" column="3">
                    <widget class="QToolButton" name="mAddIccProfile">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load an ICC profile file and attach it to the project.&lt;/p&gt;&lt;p&gt;Color model will be updated accordingly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string/>
                     </property>
@@ -1455,7 +1461,11 @@
                    </widget>
                   </item>
                   <item row="0" column="1" colspan="3">
-                   <widget class="QComboBox" name="mColorModel"/>
+                   <widget class="QComboBox" name="mColorModel">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color model used as default when selecting a color in the whole application.&lt;/p&gt;&lt;p&gt;Any color defined in a different color model than the one specified here will be converted to this color model when exporting a layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="3" column="1" colspan="3">
                    <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
@@ -1977,7 +1987,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>673</width>
+                <width>627</width>
                 <height>1503</height>
                </rect>
               </property>
@@ -3488,31 +3498,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QgsCollapsibleGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -3521,19 +3509,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -3558,6 +3536,38 @@
    <extends>QWidget</extends>
    <header>qgsdatumtransformtablewidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionTreeWidget</class>
