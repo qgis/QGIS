@@ -105,6 +105,11 @@ QgsFeatureList QgsExplodeAlgorithm::processFeature( const QgsFeature &f, QgsProc
   }
 }
 
+Qgis::ProcessingFeatureSourceFlags QgsExplodeAlgorithm::sourceFlags() const
+{
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
+}
+
 QgsFeatureSink::SinkFlags QgsExplodeAlgorithm::sinkFlags() const
 {
   return QgsFeatureSink::RegeneratePrimaryKey;
