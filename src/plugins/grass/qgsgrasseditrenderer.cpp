@@ -157,7 +157,8 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, Qg
 
 void QgsGrassEditRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  Q_UNUSED( fields )
+  QgsFeatureRenderer::startRender( context, fields );
+
   // TODO better
   //QgsFields topoFields;
   //topoFields.append( QgsField( "topo_symbol", QVariant::Int, "int" ) );
@@ -167,6 +168,8 @@ void QgsGrassEditRenderer::startRender( QgsRenderContext &context, const QgsFiel
 
 void QgsGrassEditRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   mLineRenderer->stopRender( context );
   mMarkerRenderer->stopRender( context );
 }
