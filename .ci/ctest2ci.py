@@ -27,6 +27,7 @@ __copyright__ = '(C) 2017, Matthias Kuhn'
 #  - Colors for failing unit tests and test cases
 #  - Group control sequences to hide uninteresting output by default
 
+import os
 import sys
 import re
 import subprocess
@@ -36,6 +37,9 @@ import string
 fold_stack = list()
 printable = set(string.printable)
 
+def set_output(name, value):
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+        print(f'{name}={value}', file=fh)
 
 def start_fold(tag):
     sys.stdout.write('::group::{}\n'.format(tag))
@@ -111,7 +115,7 @@ for line in p.stdout:
 
     if not in_failing_test and re.search('[0-9]+% tests passed, [0-9]+ tests failed out of', updated_line):
         tests_failing = re.match(r'.* ([0-9]+) tests failed', updated_line).group(1)
-        updated_line += '\n::set-output name=TESTS_FAILING::{}'.format(tests_failing)
+        set_output(TESTS_FAILING, tests_failing)
         end_fold()
 
         if re.search('100% tests passed', updated_line):
@@ -121,7 +125,7 @@ for line in p.stdout:
         start_fold('submit')
     elif re.search('Test results submitted to', updated_line):
         cdash_url = re.match(r'.*(http.*)$', updated_line).group(1)
-        updated_line += '\n::set-output name=CDASH_URL::{}'.format(cdash_url)
+        set_output(CDASH_URL, cdash_url)
         end_fold()
 
     sys.stdout.write(updated_line)
