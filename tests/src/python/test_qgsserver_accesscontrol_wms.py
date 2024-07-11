@@ -276,9 +276,30 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             f"Content type for GetMap is wrong: {headers.get('Content-Type')}")
         self.assertTrue(
-            str(response).find('<ServiceException code="Security">') != -1,
+            str(response).find('<ServiceException code="LayerNotDefined">') != -1,
             "Not allowed do a GetMap on Country_grp"
         )
+
+        # Check group ACL.
+        # The whole group should not fail since it contains
+        # allowed layers.
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "project_grp",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-6318936.5,5696513,16195283.5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857"
+        }.items())])
+        response, headers = self._get_restricted(query_string)
+        self.assertEqual(
+            headers.get("Content-Type"), "image/png",
+            f"Content type for GetMap is wrong: {headers.get('Content-Type')}")
 
     def test_wms_getfeatureinfo_hello(self):
         query_string = "&".join(["%s=%s" % i for i in list({
