@@ -381,7 +381,7 @@ QColorSpace QgsColorUtils::iccProfile( const QString &iccProfileFilePath, QStrin
 
 Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel, bool *ok )
 {
-  bool lok;
+  bool lok = false;
   Qgis::ColorModel res;
   switch ( colorModel )
   {

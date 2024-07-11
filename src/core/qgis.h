@@ -5137,8 +5137,8 @@ class CORE_EXPORT Qgis
      */
     enum class ColorModel : int
     {
-      Rgb,
-      Cmyk
+      Rgb, //!< RGB color model
+      Cmyk, //!< CMYK color model
     };
     Q_ENUM( ColorModel )
 
