@@ -292,7 +292,17 @@ namespace QgsWms
       void searchLayersToRenderStyle();
       void removeUnwantedLayers();
 
-      void checkLayerReadPermissions();
+      /**
+       * Adds the layer to the list of layers to be rendered if the layer is readable
+       * Returns true if the layer is readable, false otherwise
+       */
+      bool addLayerToRender( QgsMapLayer *layer );
+
+      /**
+       * Check layer read permissions
+       * Returns true if the layer is readable, false otherwise
+       */
+      bool checkLayerReadPermissions( QgsMapLayer *layer );
 
       bool layerScaleVisibility( const QString &name ) const;
 
