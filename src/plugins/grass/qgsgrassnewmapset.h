@@ -195,6 +195,8 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     struct Cell_head mCellHead;
     struct Key_Value *mProjInfo = nullptr;
     struct Key_Value *mProjUnits = nullptr;
+    QString mProjSrid;
+    QString mProjWkt;
 
     //! Previous page
     int mPreviousPage = -1;
