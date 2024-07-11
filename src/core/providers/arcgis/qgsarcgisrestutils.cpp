@@ -1004,7 +1004,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           symbolData = classBreakInfos.at( 0 ).toMap().value( QStringLiteral( "symbol" ) ).toMap();
       }
       std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
-      double transparency = rendererData.value( QStringLiteral( "transparency" ) ).toFloat();
+      double transparency = rendererData.value( QStringLiteral( "transparency" ) ).toDouble();
 
       double opacity = (100.0 - transparency) / 100.0;
 
