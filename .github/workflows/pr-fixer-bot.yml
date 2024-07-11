@@ -1,0 +1,50 @@
+name: Run sipify on PR
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  sipify:
+    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/sipify')
+    runs-on: [ubuntu-latest]
+    steps:
+
+      - name: Get PR branch
+        uses: alessbell/pull-request-comment-branch@v2.1.0
+        id: comment-branch
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+          repository: ${{ steps.comment-branch.outputs.head_owner }}/${{ steps.comment-branch.outputs.head_repo }}
+          token: ${{ secrets.GH_TOKEN_BOT }}
+
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              cpanminus \
+              libyaml-tiny-perl \
+              libio-socket-ssl-perl \
+              libhttp-date-perl \
+              libgetopt-long-descriptive-perl \
+              libmoo-perl \
+              libnamespace-clean-perl \
+              libpath-tiny-perl \
+              libpod-constants-perl \
+              libscalar-list-utils-perl \
+              libsort-key-perl \
+              libstrictures-perl \
+              libstring-escape-perl \
+              libtry-tiny-perl
+
+      - name: run sipify
+        run: ./scripts/sipify_all.sh
+
+      - name: commit
+        run: |
+          git config user.name qgis-bot
+          git config user.email bot@qgis.org
+          git add .
+          git commit -m "auto sipify 🍺"
+          git push
