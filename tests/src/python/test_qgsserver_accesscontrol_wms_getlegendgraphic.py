@@ -99,7 +99,7 @@ class TestQgsServerAccessControlWMSGetlegendgraphic(TestQgsServerAccessControl):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             f"Content type for GetMap is wrong: {headers.get('Content-Type')}")
         self.assertTrue(
-            str(response).find('<ServiceException code="Security">') != -1,
+            str(response).find('<ServiceException code="LayerNotDefined">') != -1,
             "Not allowed GetLegendGraphic"
         )
 

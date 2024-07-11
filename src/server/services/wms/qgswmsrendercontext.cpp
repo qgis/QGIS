@@ -47,10 +47,20 @@ void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
 
   searchLayersToRender();
   removeUnwantedLayers();
-  checkLayerReadPermissions();
 
   std::reverse( mLayersToRender.begin(), mLayersToRender.end() );
 }
+
+bool QgsWmsRenderContext::addLayerToRender( QgsMapLayer *layer )
+{
+  bool allowed = checkLayerReadPermissions( layer );
+  if ( allowed )
+  {
+    mLayersToRender.append( layer );
+  }
+  return allowed;
+}
+
 
 void QgsWmsRenderContext::setFlag( const Flag flag, const bool on )
 {
@@ -186,6 +196,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
 
 QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerNames ) const
 {
+
   QStringList result;
   std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
   {
@@ -335,7 +346,7 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
 {
   if ( !groupName.isEmpty() )
   {
-    mLayerGroups[groupName] = QList<QgsMapLayer *>();
+    QList<QgsMapLayer *> layerGroup;
     const auto projectLayerTreeRoot { mProject->layerTreeRoot() };
     const auto treeGroupLayers { group->findLayers() };
     // Fast track if there is no custom layer order,
@@ -344,7 +355,11 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
     {
       for ( const auto &tl : treeGroupLayers )
       {
-        mLayerGroups[groupName].push_back( tl->layer() );
+        auto layer = tl->layer();
+        if ( checkLayerReadPermissions( layer ) )
+        {
+          layerGroup.push_back( layer );
+        }
       }
     }
     else
@@ -354,15 +369,24 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
       QList<QgsMapLayer *> groupLayersList;
       for ( const auto &tl : treeGroupLayers )
       {
-        groupLayersList << tl->layer();
+        auto layer = tl->layer();
+        if ( checkLayerReadPermissions( layer ) )
+        {
+          groupLayersList << layer;
+        }
       }
       for ( const auto &l : projectLayerOrder )
       {
         if ( groupLayersList.contains( l ) )
         {
-          mLayerGroups[groupName].push_back( l );
+          layerGroup.push_back( l );
         }
       }
+    }
+
+    if ( !layerGroup.empty() )
+    {
+      mLayerGroups[groupName] = layerGroup;
     }
   }
 
@@ -442,10 +466,16 @@ void QgsWmsRenderContext::searchLayersToRender()
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
       for ( QgsMapLayer *lyr : layers )
+      {
         if ( !mLayersToRender.contains( lyr ) )
         {
-          mLayersToRender.append( lyr );
+          if ( !addLayerToRender( lyr ) )
+          {
+            throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( lyr->name() ) );
+
+          }
         }
+      }
     }
   }
 
@@ -456,10 +486,16 @@ void QgsWmsRenderContext::searchLayersToRender()
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
       for ( QgsMapLayer *lyr : layers )
+      {
         if ( !mLayersToRender.contains( lyr ) )
         {
-          mLayersToRender.append( lyr );
+          if ( !addLayerToRender( lyr ) )
+          {
+            throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( lyr->name() ) );
+
+          }
         }
+      }
     }
   }
 }
@@ -495,7 +531,13 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       if ( mNicknameLayers.contains( lname ) )
       {
         mSlds[lname] = namedElem;
-        mLayersToRender.append( mNicknameLayers.values( lname ) );
+        for ( const auto layer : mNicknameLayers.values( lname ) )
+        {
+          if ( !addLayerToRender( layer ) )
+          {
+            throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( layer->name() ) );
+          }
+        }
       }
       else if ( mLayerGroups.contains( lname ) )
       {
@@ -533,7 +575,12 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
       {
         // to delete later
         mExternalLayers.append( layer.release() );
-        mLayersToRender.append( mExternalLayers.last() );
+        auto lyr = mExternalLayers.last();
+        if ( !addLayerToRender( lyr ) )
+        {
+          throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( lyr->name() ) );
+
+        }
       }
     }
     else if ( mNicknameLayers.contains( nickname ) )
@@ -543,7 +590,13 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         mStyles[nickname] = style;
       }
 
-      mLayersToRender.append( mNicknameLayers.values( nickname ) );
+      for ( const auto layer : mNicknameLayers.values( nickname ) )
+      {
+        if ( !addLayerToRender( layer ) )
+        {
+          throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( layer->name() ) );
+        }
+      }
     }
     else if ( mLayerGroups.contains( nickname ) )
     {
@@ -561,7 +614,10 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
       for ( const auto &name : layersFromGroup )
       {
-        mLayersToRender.append( mNicknameLayers.values( name ) );
+        for ( const auto layer : mNicknameLayers.values( name ) )
+        {
+          addLayerToRender( layer );
+        }
       }
     }
     else
@@ -838,17 +894,17 @@ bool QgsWmsRenderContext::isExternalLayer( const QString &name ) const
   return false;
 }
 
-void QgsWmsRenderContext::checkLayerReadPermissions()
+bool QgsWmsRenderContext::checkLayerReadPermissions( QgsMapLayer *layer )
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  for ( const auto layer : mLayersToRender )
+  if ( !accessControl()->layerReadPermission( layer ) )
   {
-    if ( !accessControl()->layerReadPermission( layer ) )
-    {
-      throw QgsSecurityException( QStringLiteral( "You are not allowed to access to the layer: %1" ).arg( layer->name() ) );
-    }
+    QString msg = QStringLiteral( "Checking forbidden access for layer: %1" ).arg( layer->name() );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
+    return false;
   }
 #endif
+  return true;
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
