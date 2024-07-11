@@ -115,7 +115,7 @@ for line in p.stdout:
 
     if not in_failing_test and re.search('[0-9]+% tests passed, [0-9]+ tests failed out of', updated_line):
         tests_failing = re.match(r'.* ([0-9]+) tests failed', updated_line).group(1)
-        set_output(TESTS_FAILING, tests_failing)
+        set_output('TESTS_FAILING', tests_failing)
         end_fold()
 
         if re.search('100% tests passed', updated_line):
@@ -125,7 +125,7 @@ for line in p.stdout:
         start_fold('submit')
     elif re.search('Test results submitted to', updated_line):
         cdash_url = re.match(r'.*(http.*)$', updated_line).group(1)
-        set_output(CDASH_URL, cdash_url)
+        set_output('CDASH_URL', cdash_url)
         end_fold()
 
     sys.stdout.write(updated_line)
