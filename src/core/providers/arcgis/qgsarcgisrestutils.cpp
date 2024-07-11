@@ -45,14 +45,13 @@
 
 #include <QRegularExpression>
 #include <QUrl>
-#include <qgsapplication.h>
-#include <qgsclassificationcustom.h>
-#include <qgsclassificationequalinterval.h>
-#include <qgsclassificationfixedinterval.h>
-#include <qgsclassificationjenks.h>
-#include <qgsclassificationquantile.h>
-#include <qgsclassificationstandarddeviation.h>
-#include <qgsgraduatedsymbolrenderer.h>
+#include "qgsclassificationcustom.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationfixedinterval.h"
+#include "qgsclassificationjenks.h"
+#include "qgsclassificationquantile.h"
+#include "qgsclassificationstandarddeviation.h"
+#include "qgsgraduatedsymbolrenderer.h"
 
 QMetaType::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
