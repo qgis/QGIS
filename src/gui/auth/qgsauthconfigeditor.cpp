@@ -48,8 +48,10 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     setShowUtilitiesButton( showUtilities );
 
+    Q_NOWARN_DEPRECATED_PUSH
     mConfigModel = new QSqlTableModel( this, QgsApplication::authManager()->authDatabaseConnection() );
     mConfigModel->setTable( QgsApplication::authManager()->authDatabaseConfigTable() );
+    Q_NOWARN_DEPRECATED_POP
     mConfigModel->select();
 
     mConfigModel->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );
@@ -80,8 +82,8 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     if ( mRelayMessages )
     {
-      connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-               this, &QgsAuthConfigEditor::authMessageOut );
+      connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+               this, &QgsAuthConfigEditor::authMessageLog );
     }
 
     connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
@@ -166,10 +168,9 @@ void QgsAuthConfigEditor::eraseAuthenticationDatabase()
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), this );
 }
 
-void QgsAuthConfigEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthConfigEditor::authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
-  const int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
+  messageBar()->pushMessage( authtag, message, level );
 }
 
 void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
@@ -212,14 +213,14 @@ void QgsAuthConfigEditor::setRelayMessages( bool relay )
 
   if ( mRelayMessages )
   {
-    disconnect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-                this, &QgsAuthConfigEditor::authMessageOut );
+    disconnect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+                this, &QgsAuthConfigEditor::authMessageLog );
     mRelayMessages = relay;
     return;
   }
 
-  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-           this, &QgsAuthConfigEditor::authMessageOut );
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+           this, &QgsAuthConfigEditor::authMessageLog );
   mRelayMessages = relay;
 }
 

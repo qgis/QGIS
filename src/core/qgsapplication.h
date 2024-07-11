@@ -868,6 +868,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsAuthManager *authManager();
 
     /**
+     * Returns the application's authentication configuration storage registry
+     * \since QGIS 3.40
+     */
+    static QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry();
+
+    /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
      */

@@ -144,8 +144,8 @@ void QgsAuthEditorWidgets::btnAuthPlugins_clicked()
 
 void QgsAuthEditorWidgets::setupUtilitiesMenu()
 {
-  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-           this, &QgsAuthEditorWidgets::authMessageOut );
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+           this, &QgsAuthEditorWidgets::authMessageLog );
 
   // set up utility actions menu
   mActionImportAuthenticationConfigs = new QAction( tr( "Import Authentication Configurations from File…" ), this );
@@ -268,11 +268,10 @@ void QgsAuthEditorWidgets::eraseAuthenticationDatabase()
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), this );
 }
 
-void QgsAuthEditorWidgets::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthEditorWidgets::authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
-  const int levelint = static_cast<int>( level );
   messageBar()->clearWidgets();
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
+  messageBar()->pushMessage( authtag, message, level );
 }
 
 void QgsAuthEditorWidgets::passwordHelperDelete()
