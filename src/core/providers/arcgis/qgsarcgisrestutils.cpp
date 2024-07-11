@@ -1026,7 +1026,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           {
               const QVariantMap stopData = stop.toMap();
               const QString label = stopData.value( QStringLiteral( "label" ) ).toString();
-              const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toFloat();
+              const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toDouble();
               std::unique_ptr< QgsSymbol > symbolForStop( graduatedRenderer->sourceSymbol()->clone() );
 
               if ( visualVariable.toMap().value( QStringLiteral( "type" ) ).toString() == QStringLiteral( "colorInfo" ) )
