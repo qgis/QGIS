@@ -107,7 +107,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param title Title for the color chooser dialog
      * \see colorDialogTitle
      */
-    void setColorDialogTitle( const QString &title );
+    void setColorDialogTitle( const QString &title ) SIP_SKIP;
 
     /**
      * Returns the title for the color chooser dialog window.
