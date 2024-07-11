@@ -621,7 +621,7 @@ void TestQgsGrassProvider::crsEpsg3857()
   QString error;
   const QgsCoordinateReferenceSystem crs = QgsGrass::crs( mGisdbase,  QStringLiteral( "webmerc" ), error );
   QCOMPARE( error, QString() );
-  QCOMPARE( crs.authid(), QStringLiteral("EPSG:3857") );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3857" ) );
 }
 
 
