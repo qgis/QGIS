@@ -37,9 +37,11 @@ import string
 fold_stack = list()
 printable = set(string.printable)
 
+
 def set_output(name, value):
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
         print(f'{name}={value}', file=fh)
+
 
 def start_fold(tag):
     sys.stdout.write('::group::{}\n'.format(tag))
