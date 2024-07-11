@@ -961,7 +961,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
 
       const QString esriMode = rendererData.value( QStringLiteral( "authoringInfo" ) ).toString();
       if (esriMode.isEmpty()){
-          const QString esriMode = rendererData.value( QStringLiteral( "classificationMethod" ) ).toString();
+          esriMode = rendererData.value( QStringLiteral( "classificationMethod" ) ).toString();
       }
 
 
