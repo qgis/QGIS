@@ -24,6 +24,7 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgsfeedback.h"
+#include "qgs3dutils.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -316,6 +317,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   technique->addParameter( new Qt3DRender::QParameter( "triangulate", !out.triangles.isEmpty() ) );
 
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect;
+  Qgs3DUtils::addBoundingBoxParametersToEffect( eff, context.map() );
   eff->addTechnique( technique );
   mat->setEffect( eff );
 

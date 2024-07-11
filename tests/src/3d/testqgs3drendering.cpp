@@ -51,6 +51,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgsorientedbox3d.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -1121,6 +1122,10 @@ void TestQgs3DRendering::testFilteredRuleBasedRenderer()
   QgsRuleBased3DRenderer *renderer3d = new QgsRuleBased3DRenderer( root );
   mLayerBuildings->setRenderer3D( renderer3d );
 
+  /*
+   * first test: change the extent
+   */
+
   QgsRectangle fullExtent = mLayerBuildings->extent();
   const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
                                       fullExtent.xMinimum() + 0.8 * fullExtent.width(), fullExtent.yMinimum() + 0.7 * fullExtent.height() );
@@ -1157,6 +1162,43 @@ void TestQgs3DRendering::testFilteredRuleBasedRenderer()
   delete map;
 
   QGSVERIFYIMAGECHECK( "rulebased_filtered", "rulebased_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  /*
+   * second test: change the rotation
+   */
+
+  Qgs3DMapSettings *mapSettings2 = new Qgs3DMapSettings;
+  mapSettings2->setCrs( mProject->crs() );
+  mapSettings2->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+  mapSettings2->setLightSources( { defaultLight.clone() } );
+
+  const QgsBox3D aaBox = QgsBox3D( fullExtent, -50000.0, 50000.0 );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( aaBox );
+  sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -35.0 );
+  mapSettings2->setBox( sceneBox );
+
+  QgsFlatTerrainGenerator *flatTerrain2 = new QgsFlatTerrainGenerator;
+  flatTerrain2->setCrs( mapSettings2->crs() );
+  mapSettings2->setTerrainGenerator( flatTerrain2 );
+
+  QgsOffscreen3DEngine engine2;
+  Qgs3DMapScene *scene2 = new Qgs3DMapScene( *mapSettings2, &engine2 );
+  engine2.setRootEntity( scene2 );
+
+  scene2->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  // When running the test, it would sometimes return partially rendered image.
+  // It is probably based on how fast qt3d manages to upload the data to GPU...
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine2, scene2 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine2, scene2 );
+
+  delete scene2;
+  delete mapSettings2;
+
+  QGSVERIFYIMAGECHECK( "rulebased_filtered_rotation", "rulebased_filtered_rotation", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testAnimationExport()
@@ -1201,8 +1243,6 @@ void TestQgs3DRendering::testAnimationExport()
 
 void TestQgs3DRendering::testInstancedRendering()
 {
-  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
-
   std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
@@ -1234,7 +1274,7 @@ void TestQgs3DRendering::testInstancedRendering()
 
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mProject->crs() );
-  mapSettings->setExtent( fullExtent );
+  mapSettings->setExtent( QgsRectangle( 900, 900, 2100, 2100 ) );
   mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1264,6 +1304,7 @@ void TestQgs3DRendering::testInstancedRendering()
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
+  mapSettings->setExtent( QgsRectangle( 980, 980, 2020, 2020 ) );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
@@ -1419,21 +1460,36 @@ void TestQgs3DRendering::testFilteredFlatTerrain()
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
 
+  /*
+   * first test: the extent has width > height
+   */
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "flat_terrain_filtered_1", "flat_terrain_filtered_1", img, QString(), 40, QSize( 0, 0 ), 2 );
 
-  // Now set the extent to have height > width and redo
+  /*
+   * second test: Now set the extent to have height > width and redo
+   */
   fullExtent = mLayerDtm->extent();
   fullExtent.setXMaximum( fullExtent.xMaximum() - fullExtent.width() / 3 );
   fullExtent.setXMinimum( fullExtent.xMinimum() + fullExtent.width() / 3 );
   map->setExtent( fullExtent );
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "flat_terrain_filtered_2", "flat_terrain_filtered_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  /*
+   * third test: Apply a rotation factor
+   */
+  const QgsBox3D aaBox = QgsBox3D( map->extent(), -50000.0, 50000.0 );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( aaBox );
+  sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -45.0 );
+  map->setBox( sceneBox );
+
+  QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "flat_terrain_filtered_3", "flat_terrain_filtered_3", img3, QString(), 40, QSize( 0, 0 ), 2 );
 
   delete scene;
   delete map;
-
-  QGSVERIFYIMAGECHECK( "flat_terrain_filtered_2", "flat_terrain_filtered_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testFilteredDemTerrain()
@@ -1484,6 +1540,9 @@ void TestQgs3DRendering::testFilteredDemTerrain()
 
 void TestQgs3DRendering::testFilteredExtrudedPolygons()
 {
+  /*
+   * first test: without rotation
+  */
   const QgsRectangle fullExtent = QgsRectangle( 321720, 129190, 322560, 130060 );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -1523,6 +1582,45 @@ void TestQgs3DRendering::testFilteredExtrudedPolygons()
   delete map;
 
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_filtered", "polygon3d_extrusion_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  /*
+   * second test: with rotation
+   */
+  Qgs3DMapSettings *mapSettings2 = new Qgs3DMapSettings;
+  const QgsBox3D aaBox = QgsBox3D( 321720, 129190, -50000, 322560, 130060, 50000 );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( aaBox );
+  sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -30.0 );
+
+  mapSettings2->setCrs( mProject->crs() );
+  mapSettings2->setBox( sceneBox );
+  mapSettings2->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  mapSettings2->setLightSources( {defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain2 = new QgsFlatTerrainGenerator;
+  flatTerrain2->setCrs( mapSettings2->crs() );
+  mapSettings2->setTerrainGenerator( flatTerrain2 );
+
+  QgsOffscreen3DEngine engine2;
+  Qgs3DMapScene *scene2 = new Qgs3DMapScene( *mapSettings2, &engine2 );
+  engine2.setRootEntity( scene2 );
+
+  scene2->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 1500, 45, 0 );
+
+  QgsPolygon3DSymbol *symbol3d2 = new QgsPolygon3DSymbol;
+  symbol3d2->setMaterialSettings( materialSettings.clone() );
+  symbol3d2->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d2 = new QgsVectorLayer3DRenderer( symbol3d2 );
+  mLayerBuildings->setRenderer3D( renderer3d2 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine2, scene2 );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine2, scene2 );
+
+  delete scene2;
+  delete mapSettings2;
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_filtered_rotation", "polygon3d_extrusion_filtered_rotation", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testAmbientOcclusion()

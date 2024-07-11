@@ -54,7 +54,7 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
   public:
-    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
+    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset, const Qgs3DMapSettings &mapSettings );
 
     ~QgsTiledSceneChunkLoader();
 

@@ -20,6 +20,8 @@
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgs3dutils.h"
+
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
@@ -93,7 +95,7 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( const Qgs3DMapSettings &mapSettings, QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -118,7 +120,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
         phongSettings.setOpacity( mOpacity );
         phongSettings.setShininess( mShininess );
         phongSettings.setSpecular( mSpecular );
-        Qt3DRender::QMaterial *material = phongSettings.toMaterial( technique, context );
+        Qt3DRender::QMaterial *material = phongSettings.toMaterial( mapSettings, technique, context );
         return material;
       }
 
@@ -141,7 +143,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
       //Load shader programs
-      const QUrl urlVert( QStringLiteral( "qrc:/shaders/diffuseSpecular.vert" ) );
+      const QUrl urlVert( QStringLiteral( "qrc:/shaders/default.vert" ) );
       shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
       const QUrl urlFrag( QStringLiteral( "qrc:/shaders/diffuseSpecular.frag" ) );
       shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
@@ -155,6 +157,8 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+
+      Qgs3DUtils::addBoundingBoxParametersToEffect( effect, mapSettings );
 
       // TODO : if ( context.isSelected() ) dampen the color of diffuse texture
       // with context.map().selectionColor()

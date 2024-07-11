@@ -230,7 +230,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   // add entity for edges
   if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() )
   {
-    QgsLineMaterial *mat = new QgsLineMaterial;
+    QgsLineMaterial *mat = new QgsLineMaterial( context.map() );
     mat->setLineColor( mSymbol->edgeColor() );
     mat->setLineWidth( mSymbol->edgeWidth() );
 
@@ -314,9 +314,8 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
   materialContext.setSelectionColor( context.map().selectionColor() );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
-  Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ?
-                                    QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles,
-                                    materialContext );
+  const QgsMaterialSettingsRenderingTechnique technique = dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles;
+  Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( context.map(), technique, materialContext );
   applyCullingMode( symbol->cullingMode(), material );
   return material;
 }

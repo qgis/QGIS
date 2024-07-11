@@ -15,7 +15,9 @@
 
 #include "qgsmatrix4x4.h"
 
-// the implementation is partially based on Qt's QMatrix4x4 (simplified)
+#include <QtMath>
+
+// the implementation is partially based on Qt'angleSin QMatrix4x4 (simplified)
 
 
 QgsMatrix4x4::QgsMatrix4x4( double m11, double m12, double m13, double m14,
@@ -181,4 +183,123 @@ QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 )
               + m1.m[2][3] * m2.m[3][2]
               + m1.m[3][3] * m2.m[3][3];
   return m;
+}
+
+void QgsMatrix4x4::rotate( double angle, const QgsVector3D &vector )
+{
+  if ( angle == 0.0 )
+    return;
+
+  double angleCos, angleSin;
+  if ( angle == 90.0 || angle == -270.0 )
+  {
+    angleSin = 1.0;
+    angleCos = 0.0;
+  }
+  else if ( angle == -90.0 || angle == 270.0 )
+  {
+    angleSin = -1.0;
+    angleCos = 0.0;
+  }
+  else if ( angle == 180.0 || angle == -180.0 )
+  {
+    angleSin = 0.0;
+    angleCos = -1.0;
+  }
+  else
+  {
+    double angleRadians = qDegreesToRadians( angle );
+    angleCos = std::cos( angleRadians );
+    angleSin = std::sin( angleRadians );
+  }
+
+  if ( vector.x() == 0.0 )
+  {
+    if ( vector.y() == 0.0 )
+    {
+      if ( vector.z() != 0.0 )
+      {
+        // Rotate around the Z axis.
+        if ( vector.z() < 0 )
+          angleSin = -angleSin;
+
+        double tmp;
+        m[0][0] = ( tmp = m[0][0] ) * angleCos + m[1][0] * angleSin;
+        m[1][0] = m[1][0] * angleCos - tmp * angleSin;
+        m[0][1] = ( tmp = m[0][1] ) * angleCos + m[1][1] * angleSin;
+        m[1][1] = m[1][1] * angleCos - tmp * angleSin;
+        m[0][2] = ( tmp = m[0][2] ) * angleCos + m[1][2] * angleSin;
+        m[1][2] = m[1][2] * angleCos - tmp * angleSin;
+        m[0][3] = ( tmp = m[0][3] ) * angleCos + m[1][3] * angleSin;
+        m[1][3] = m[1][3] * angleCos - tmp * angleSin;
+        return;
+      }
+    }
+    else if ( vector.z() == 0.0 )
+    {
+      // Rotate around the Y axis.
+      if ( vector.y() < 0 )
+        angleSin = -angleSin;
+
+      double tmp;
+      m[2][0] = ( tmp = m[2][0] ) * angleCos + m[0][0] * angleSin;
+      m[0][0] = m[0][0] * angleCos - tmp * angleSin;
+      m[2][1] = ( tmp = m[2][1] ) * angleCos + m[0][1] * angleSin;
+      m[0][1] = m[0][1] * angleCos - tmp * angleSin;
+      m[2][2] = ( tmp = m[2][2] ) * angleCos + m[0][2] * angleSin;
+      m[0][2] = m[0][2] * angleCos - tmp * angleSin;
+      m[2][3] = ( tmp = m[2][3] ) * angleCos + m[0][3] * angleSin;
+      m[0][3] = m[0][3] * angleCos - tmp * angleSin;
+      return;
+    }
+  }
+  else if ( vector.y() == 0.0 && vector.z() == 0.0 )
+  {
+    // Rotate around the X axis.
+    if ( vector.x() < 0 )
+      angleSin = -angleSin;
+
+    double tmp;
+    m[1][0] = ( tmp = m[1][0] ) * angleCos + m[2][0] * angleSin;
+    m[2][0] = m[2][0] * angleCos - tmp * angleSin;
+    m[1][1] = ( tmp = m[1][1] ) * angleCos + m[2][1] * angleSin;
+    m[2][1] = m[2][1] * angleCos - tmp * angleSin;
+    m[1][2] = ( tmp = m[1][2] ) * angleCos + m[2][2] * angleSin;
+    m[2][2] = m[2][2] * angleCos - tmp * angleSin;
+    m[1][3] = ( tmp = m[1][3] ) * angleCos + m[2][3] * angleSin;
+    m[2][3] = m[2][3] * angleCos - tmp * angleSin;
+    return;
+  }
+
+  double x = vector.x();
+  double y = vector.x();
+  double z = vector.x();
+  double len = x * x + y * y + z * z;
+  if ( !qFuzzyCompare( len, 1.0 ) && !qFuzzyIsNull( len ) )
+  {
+    len = std::sqrt( len );
+    x = vector.x() / len;
+    y = vector.y() / len;
+    z = vector.z() / len;
+  }
+
+  double ic = 1.0 - angleCos;
+  QgsMatrix4x4 rot( 1 );
+  rot.m[0][0] = x * x * ic + angleCos;
+  rot.m[1][0] = x * y * ic - z * angleSin;
+  rot.m[2][0] = x * z * ic + y * angleSin;
+  rot.m[3][0] = 0.0;
+  rot.m[0][1] = y * x * ic + z * angleSin;
+  rot.m[1][1] = y * y * ic + angleCos;
+  rot.m[2][1] = y * z * ic - x * angleSin;
+  rot.m[3][1] = 0.0;
+  rot.m[0][2] = x * z * ic - y * angleSin;
+  rot.m[1][2] = y * z * ic + x * angleSin;
+  rot.m[2][2] = z * z * ic + angleCos;
+  rot.m[3][2] = 0.0;
+  rot.m[0][3] = 0.0;
+  rot.m[1][3] = 0.0;
+  rot.m[2][3] = 0.0;
+  rot.m[3][3] = 1.0;
+  *this = *this * rot;
 }

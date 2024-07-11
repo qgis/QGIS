@@ -304,6 +304,36 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.34
      */
     static Qt3DRender::QCullFace::CullingMode qt3DcullingMode( Qgs3DTypes::CullingMode mode );
+
+    /**
+     * Insert some define macros into a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to add
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Insert clip plane equation as uniform into a an effect.
+     *
+     * \param effect effect used in a material which needs to use gl_ClipDistance
+     * \param mapSettings 3D Scene configuration
+     *
+     * \since QGIS 3.40
+     */
+    static void addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings );
+
+    /**
+     * This routines rotates \a box by \a rotationAngle around the Z axis. Rotation is counter-clockwise and returns a new box
+     *
+     * \param box oriented box to rotate
+     * \param rotationAngle counter-clockwise rotation angle around the Z axis.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsOrientedBox3D rotateOrientedBoundingBox3D( const QgsOrientedBox3D &box, double rotationAngle );
 };
 
 #endif // QGS3DUTILS_H

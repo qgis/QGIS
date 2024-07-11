@@ -16,11 +16,13 @@
 #include "qgs3dutils.h"
 
 #include "qgslinestring.h"
+#include "qgsorientedbox3d.h"
 #include "qgspolygon.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
+#include "qgsvector3d.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -32,6 +34,7 @@
 #include "qgschunkedentity_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsraycastingutils_p.h"
+#include "qgsmatrix4x4.h"
 
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
@@ -47,6 +50,8 @@
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QShaderData>
+#include <limits>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
@@ -901,4 +906,89 @@ Qt3DRender::QCullFace::CullingMode Qgs3DUtils::qt3DcullingMode( Qgs3DTypes::Cull
     case Qgs3DTypes::FrontAndBack: return Qt3DRender::QCullFace::FrontAndBack;
   }
   return Qt3DRender::QCullFace::NoCulling;
+}
+
+
+QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines )
+{
+  // There is one caveat to take care of - GLSL source code needs to start with #version as
+  // a first directive, otherwise we get the old GLSL 100 version. So we can't just prepend the
+  // shader source code, but insert our defines at the right place.
+
+  QStringList defineLines;
+  for ( const QString &define : defines )
+    defineLines += "#define " + define + "\n";
+
+  QString definesText = defineLines.join( QString() );
+
+  QByteArray newShaderCode = shaderCode;
+  int versionIndex = shaderCode.indexOf( "#version " );
+  int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
+  newShaderCode.insert( insertionIndex, definesText.toLatin1() );
+  return newShaderCode;
+}
+
+void Qgs3DUtils::addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings )
+{
+  QgsOrientedBox3D box = mapSettings.box();
+  // If the extent is not defined, set the clip plane at a very great distance.
+  if ( box.isNull() )
+  {
+    QList<QgsVector3D> maxHalfAxes =
+    {
+      QgsVector3D( std::numeric_limits<float>::max(), 0.0, 0.0 ),
+      QgsVector3D( 0.0, std::numeric_limits<float>::max(), 0.0 ),
+      QgsVector3D( 0.0, 0.0, std::numeric_limits<float>::max() )
+    };
+    box = QgsOrientedBox3D( QgsVector3D( 0.0, 0.0, 0.0 ), maxHalfAxes );
+  }
+
+  const double *halfAxes = box.halfAxes();
+  QVariantList clipPlaneValues = QVariantList();
+  for ( int i = 0, idx = 0; i < 2; ++i, idx += 3 )
+  {
+    const QgsVector3D axeMap = mapSettings.origin() + QgsVector3D( static_cast<float>( halfAxes[idx] ), static_cast<float>( halfAxes[idx + 1] ), static_cast<float>( halfAxes[idx + 2] ) );
+    const QgsVector3D axeWorld = mapSettings.mapToWorldCoordinates( axeMap );
+
+    const QVector3D normal = axeWorld.toVector3D().normalized();
+    const float distance = QVector3D::dotProduct( normal, axeWorld.toVector3D() );
+    const QVector4D  equation1( normal, distance );
+    const QVector4D  equation2( -normal, distance );
+    clipPlaneValues << equation1 << equation2;
+  }
+
+  Qt3DRender::QParameter *clipPlane = new Qt3DRender::QParameter( QStringLiteral( "clipPlane[0]" ), clipPlaneValues );
+  effect->addParameter( clipPlane );
+}
+
+QgsOrientedBox3D Qgs3DUtils::rotateOrientedBoundingBox3D( const QgsOrientedBox3D &box, double rotationAngle )
+{
+  if ( rotationAngle == 0.0 )
+  {
+    return box;
+  }
+
+  QgsVector3D center = box.center();
+  QgsMatrix4x4 transformation;
+
+  QgsMatrix4x4 rotation;
+  rotation.rotate( rotationAngle, QgsVector3D( 0.0, 0.0, 1.0 ) );
+
+  if ( !center.isNull() )
+  {
+    QgsMatrix4x4 translation1;
+    translation1.translate( -center );
+
+    QgsMatrix4x4 translation2;
+    translation2.translate( center );
+
+    transformation = translation2 * rotation * translation1;
+  }
+  else
+  {
+    transformation = rotation;
+  }
+
+
+  return box.transformed( transformation );
 }

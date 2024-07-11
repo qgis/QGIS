@@ -393,10 +393,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
   // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
   // height will exceed this amount!
-  constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
-  constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
-
-  return new QgsRuleBasedChunkedEntity( vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule, map );
+  return new QgsRuleBasedChunkedEntity( vl, Qgs3DMapSettings::DEFAULT_MIN_DEPTH, Qgs3DMapSettings::DEFAULT_MAX_DEPTH, tilingSettings(), mRootRule, map );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

@@ -16,6 +16,7 @@
 
 #include "qgsgltf3dutils.h"
 
+#include "qgs3dmapsettings.h"
 #include "qgsgltfutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
@@ -292,12 +293,12 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
 }
 
 // Returns NULLPTR if primitive should not be rendered
-static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
+static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors, const Qgs3DMapSettings &mapSettings )
 {
   if ( materialIndex < 0 )
   {
     // material unspecified - using default
-    QgsMetalRoughMaterial *defaultMaterial = new QgsMetalRoughMaterial;
+    QgsMetalRoughMaterial *defaultMaterial = new QgsMetalRoughMaterial( mapSettings );
     defaultMaterial->setMetalness( 1 );
     defaultMaterial->setRoughness( 1 );
     defaultMaterial->setBaseColor( QColor::fromRgbF( 1, 1, 1 ) );
@@ -330,7 +331,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
 
     if ( img.image.empty() )
     {
-      QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial;
+      QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial( mapSettings );
       pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
       pbrMaterial->setRoughness( pbr.roughnessFactor );
       pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -370,7 +371,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
   if ( qgsDoubleNear( pbr.baseColorFactor[3], 0 ) )
     return nullptr; // completely transparent primitive, just skip it
 
-  QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial;
+  QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial( mapSettings );
   pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
   pbrMaterial->setRoughness( pbr.roughnessFactor );
   pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -378,7 +379,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
 }
 
 
-static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QString baseUri, QMatrix4x4 parentTransform, QStringList *errors )
+static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QString baseUri, QMatrix4x4 parentTransform, QStringList *errors, const Qgs3DMapSettings &mapSettings )
 {
   tinygltf::Node &node = model.nodes[nodeIndex];
 
@@ -422,7 +423,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
         continue;
       }
 
-      Qt3DRender::QMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
+      Qt3DRender::QMaterial *material = parseMaterial( model, primitive.material, baseUri, errors, mapSettings );
       if ( !material )
       {
         // primitive should be skipped, eg fully transparent material
@@ -488,14 +489,14 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
   // recursively add children
   for ( int childNodeIndex : node.children )
   {
-    entities << parseNode( model, childNodeIndex, transform, tileTranslationEcef, baseUri, matrix ? *matrix : QMatrix4x4(), errors );
+    entities << parseNode( model, childNodeIndex, transform, tileTranslationEcef, baseUri, matrix ? *matrix : QMatrix4x4(), errors, mapSettings );
   }
 
   return entities;
 }
 
 
-static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
+static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors, const Qgs3DMapSettings &mapSettings )
 {
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
@@ -520,7 +521,7 @@ static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUti
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
   for ( const int nodeIndex : scene.nodes )
   {
-    const QVector<Qt3DCore::QEntity *> entities = parseNode( model, nodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
+    const QVector<Qt3DCore::QEntity *> entities = parseNode( model, nodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors, mapSettings );
     for ( Qt3DCore::QEntity *e : entities )
       e->setParent( rootEntity );
   }
@@ -528,7 +529,7 @@ static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUti
 }
 
 
-Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors )
+Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, const Qgs3DMapSettings &mapSettings, QStringList *errors )
 {
   tinygltf::Model model;
   QString gltfErrors, gltfWarnings;
@@ -551,7 +552,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
     return nullptr;
   }
 
-  return parseModel( model, transform, baseUri, errors );
+  return parseModel( model, transform, baseUri, errors, mapSettings );
 }
 
 // For TinyGltfTextureImage

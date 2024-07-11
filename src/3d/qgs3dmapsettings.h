@@ -26,6 +26,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsrectangle.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 #include "qgs3daxissettings.h"
@@ -33,6 +34,7 @@
 #include "qgsshadowsettings.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsambientocclusionsettings.h"
+#include "qgsorientedbox3d.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -68,20 +70,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void resolveReferences( const QgsProject &project );
 
     /**
-     * Returns the 3D scene's 2D extent in the 3D scene's CRS
+     * Returns the 3D scene's 2D bounding box of the extent in the 3D scene's CRS.
      *
      * \see crs()
      * \since QGIS 3.30
      */
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle extent() const;
 
     /**
-     * Sets the 3D scene's 2D \a extent in the 3D scene's CRS, while also setting the scene's origin to the extent's center
-     * This needs to be called during initialization, as terrain will only be generated
-     * within this extent and layer 3D data will only be loaded within this extent too.
+     * Sets the 3D scene's 2D \a extent in the 3D scene's CRS
+     * This calls setBox to set 3D scene box.
      *
-     * \see setOrigin()
-     * \see setCrs()
+     * \see setBox()
      * \since QGIS 3.30
      */
     void setExtent( const QgsRectangle &extent );
@@ -100,6 +100,24 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setOrigin( const QgsVector3D &origin ) { mOrigin = origin; }
     //! Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
     QgsVector3D origin() const { return mOrigin; }
+
+    /**
+     * Sets the 3D scene's \a box in the 3D scene's CRS, while also setting the scene's origin to the box's center
+     * This needs to be called during initialization, as terrain will only be generated
+     * within this extent and layer 3D data will only be loaded within this extent too.
+     *
+     * \see setOrigin()
+     * \see setCrs()
+     * \since QGIS 3.40
+     */
+    void setBox( const QgsOrientedBox3D &box );
+
+    /**
+     * Returns the 3D scene's box in the 3D scene's CRS.
+     *
+     * \since QGIS 3.40
+     */
+    QgsOrientedBox3D box() const { return mBox; }
 
     //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
@@ -689,6 +707,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setShowExtentIn2DView( bool show );
 
+#ifndef SIP_RUN
+    static constexpr double DEFAULT_MIN_DEPTH = -100000.0;
+    static constexpr double DEFAULT_MAX_DEPTH = 100000.0;
+#endif
   signals:
 
     /**
@@ -889,8 +911,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void debugOverlayEnabledChanged( bool debugOverlayEnabled );
 
     /**
-     * Emitted when the 3d view's 2d extent has changed
-     * \see setExtent()
+     * Emitted when the 3d view's extent has changed
+     * \see setBox()
      * \since QGIS 3.30
      */
     void extentChanged();
@@ -910,6 +932,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   private:
     //! Connects the various changed signals of this widget to the settingsChanged signal
     void connectChangedSignalsToSettingsChanged();
+
+    //! Updates the terrain generator extent when the extent of the scene has changed
+    void updateTerrainGeneratorExtent();
 
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
@@ -973,7 +998,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     bool mIsDebugOverlayEnabled = false;
 
-    QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
+    QgsOrientedBox3D mBox; // <3d extent used limit the 3d view.
+    mutable QgsRectangle mExtent; // <2d horizontal bounding box of mBox
 
     bool mShowExtentIn2DView = false;
 

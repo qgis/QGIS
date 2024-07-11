@@ -93,6 +93,33 @@ class TestQgsMatrix4x4(QgisTestCase):
         m.translate(QgsVector3D(1, 2, 3))
         self.assertEqual(m.data(), [1.0, 5.0, 9.0, 0.0, 2.0, 6.0, 10.0, 0.0, 3.0, 7.0, 11.0, 0.0, 18.0, 46.0, 74.0, 1.0])
 
+    def test_rotate(self):
+        """
+        Test matrix rotation
+        """
+        m = QgsMatrix4x4()
+        m.rotate(30, QgsVector3D(1, 0, 0))
+        data = m.data()
+        expected_result = [1.0, 0.0, 0.0, 0.0,
+                           0.0, 0.8660254037844387, 0.5, 0.0,
+                           0.0, -0.5, 0.8660254037844387, 0.0,
+                           0.0, 0.0, 0.0, 1.0]
+        for idx in range(16):
+            self.assertAlmostEqual(data[idx], expected_result[idx])
+
+        m = QgsMatrix4x4(1, 2, 3, 4,
+                         5, 6, 7, 8,
+                         9, 10, 11, 12,
+                         0, 0, 0, 1)
+        m.rotate(20, QgsVector3D(0, 0, 1))
+        data = m.data()
+        expected_result = [1.6237329074372457, 6.750583963883555, 11.877435020329862, 0.0,
+                           1.5373650982461482, 3.928055008087107, 6.318744917928067, 0.0,
+                           3.0, 7.0, 11.0, 0.0,
+                           4.0, 8.0, 12.0, 1.0]
+        for idx in range(16):
+            self.assertAlmostEqual(data[idx], expected_result[idx])
+
 
 if __name__ == '__main__':
     unittest.main()

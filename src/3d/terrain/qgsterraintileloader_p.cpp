@@ -24,14 +24,13 @@
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgscoordinatetransform.h"
+#include "qgstexturematerial.h"
+#include "qgsdiffusespecularmaterial.h"
 
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
 
-#include <Qt3DExtras/QTextureMaterial>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QPhongMaterial>
 
 /// @cond PRIVATE
 
@@ -52,8 +51,12 @@ void QgsTerrainTileLoader::loadTexture()
   mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
-void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, const Qgs3DMapSettings &mapSettings )
 {
+  const bool isShadingEnabled = mapSettings.isTerrainShadingEnabled();
+  const QgsPhongMaterialSettings &shadingMaterial = mapSettings.terrainShadingMaterial();
+  const bool useTexture = !mapSettings.layers().empty();
+
   Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity ) : nullptr;
 
   Qt3DRender::QMaterial *material = nullptr;
@@ -61,7 +64,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   {
     if ( isShadingEnabled )
     {
-      Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
+      QgsDiffuseSpecularMaterial *diffuseMapMaterial = new QgsDiffuseSpecularMaterial( mapSettings );
       diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
       diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
       diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
@@ -70,19 +73,19 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     }
     else
     {
-      Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+      QgsTextureMaterial *textureMaterial = new QgsTextureMaterial( mapSettings );
       textureMaterial->setTexture( texture );
       material = textureMaterial;
     }
   }
   else
   {
-    Qt3DExtras::QPhongMaterial *phongMaterial  = new Qt3DExtras::QPhongMaterial;
-    phongMaterial->setDiffuse( shadingMaterial.diffuse() );
-    phongMaterial->setAmbient( shadingMaterial.ambient() );
-    phongMaterial->setSpecular( shadingMaterial.specular() );
-    phongMaterial->setShininess( shadingMaterial.shininess() );
-    material = phongMaterial;
+    QgsDiffuseSpecularMaterial *diffuseMapMaterial  = new QgsDiffuseSpecularMaterial( mapSettings );
+    diffuseMapMaterial->setDiffuse( shadingMaterial.diffuse() );
+    diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
+    diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
+    diffuseMapMaterial->setShininess( static_cast<float>( shadingMaterial.shininess() ) );
+    material = diffuseMapMaterial;
   }
 
   // no backface culling on terrain, to allow terrain to be viewed from underground

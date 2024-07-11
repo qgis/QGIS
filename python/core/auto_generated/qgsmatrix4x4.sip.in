@@ -58,6 +58,14 @@ Returns matrix data (in column-major order)
 Multiplies this matrix by another that translates coordinates by the components of a ``vector``.
 %End
 
+
+    void rotate( double angle, const QgsVector3D &vector );
+%Docstring
+Multiples this matrix by another that rotates coordinates through ``angle`` degrees about ``vector``.
+
+.. versionadded:: 3.40
+%End
+
     QgsVector3D map( const QgsVector3D &vector ) const /HoldGIL/;
 %Docstring
 Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
