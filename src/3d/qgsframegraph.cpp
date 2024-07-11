@@ -60,6 +60,15 @@ namespace
     return QLatin1String( "{%1/%2}" ).arg( QString::number( id ) ).arg( n );
   }
 
+  QString formatIdName( const Qt3DRender::QAbstractTexture *texture )
+  {
+    QString n = texture->objectName().isEmpty() ? QLatin1String( "<no_name>" ) : texture->objectName();
+    return QLatin1String( "{%1[%2]/%3" )
+           .arg( QString::number( texture->id().id() )
+                 , QString( QMetaEnum::fromType<Qt3DRender::QAbstractTexture::TextureFormat>().valueToKey( texture->format() ) )
+                 , n );
+  }
+
   QString formatNode( const Qt3DCore::QNode *n )
   {
     QString res = QLatin1String( "(%1%2)" )
@@ -107,7 +116,7 @@ namespace
         if ( strstr( param->value().typeName(), "QAbstractTexture*" ) != nullptr )
         {
           const Qt3DRender::QAbstractTexture *tex = param->value().value<Qt3DRender::QAbstractTexture *>();
-          fl += formatField( param->name(), formatIdName( tex->id().id(), tex->objectName() ) );
+          fl += formatField( param->name(), formatIdName( tex ) );
         }
       }
     };
@@ -293,7 +302,7 @@ namespace
         for ( auto o : outputs )
         {
           sl += formatField( QMetaEnum::fromType<Qt3DRender::QRenderTargetOutput::AttachmentPoint>().valueToKey( o->attachmentPoint() ),
-                             formatIdName( o->texture()->id().id(), o->texture()->objectName() ) );
+                             formatIdName( o->texture() ) );
         }
         QStringList fl;
         fl +=  formatField( QLatin1String( "outputs" ),
