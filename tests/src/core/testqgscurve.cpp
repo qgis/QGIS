@@ -90,7 +90,7 @@ void TestQgsCurve::curveToLine()
 
   /* op: Maximum of 10 units of difference, symmetric */
   TEST_C2L( circularString, 10, QgsAbstractGeometry::MaximumDifference,
-            "LineString (0 0, 29.29 70.71, 100 100, 170.71 70.71, 200 0)", 2 );
+            "LineString (1 0, 29.29 70.71, 100 100, 170.71 70.71, 200 0)", 2 );
 
   /* op: Maximum of 300 units (higher than sagitta) of difference, symmetric */
   /* See https://github.com/qgis/QGIS/issues/31832 */
