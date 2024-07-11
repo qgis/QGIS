@@ -993,6 +993,10 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           QgsClassificationStandardDeviation* method = new QgsClassificationStandardDeviation();
           graduatedRenderer->setClassificationMethod(method);
       }
+      else
+      {
+         QgsDebugError( QStringLiteral( "ESRI classification mode %1 is not currently supported" ).arg( esriMode ) );
+      }
 
 
       if ( !classBreakInfos.isEmpty() )
