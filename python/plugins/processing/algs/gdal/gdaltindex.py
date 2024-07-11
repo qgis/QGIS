@@ -115,14 +115,13 @@ class gdaltindex(GdalAlgorithm):
         return 'gdaltindex'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
         crs_field = self.parameterAsString(parameters, self.CRS_FIELD_NAME, context)
         crs_format = self.parameterAsEnum(parameters, self.CRS_FORMAT, context)
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
-        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         arguments = [
             '-tileindex',
@@ -145,10 +144,10 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-t_srs')
             arguments.append(GdalUtils.gdal_crs_string(target_crs))
 
-        if outFormat:
-            arguments.append(f'-f {outFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
-        arguments.append(output)
+        arguments.append(output_details.connection_string)
 
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt

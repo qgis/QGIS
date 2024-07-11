@@ -119,6 +119,7 @@ class ClipRasterByExtent(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException('Invalid input layer {}'.format(parameters[self.INPUT] if self.INPUT in parameters else 'INPUT'))
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
         override_crs = self.parameterAsBoolean(parameters, self.OVERCRS, context)
@@ -169,7 +170,10 @@ class ClipRasterByExtent(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(inLayer.source())
+        arguments.append(input_details.connection_string)
         arguments.append(out)
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

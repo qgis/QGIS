@@ -117,7 +117,8 @@ class Datasources2Vrt(GdalAlgorithm):
             if feedback.isCanceled():
                 break
 
-            basePath = GdalUtils.ogrConnectionStringFromLayer(layer)
+            connection_details = GdalUtils.gdal_connection_details_from_layer(layer)
+            basePath = connection_details.connection_string
             layerName = GdalUtils.ogrLayerName(layer.source())
 
             vrt += f'<OGRVRTLayer name="{html.escape(layerName, True)}">'

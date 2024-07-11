@@ -140,6 +140,7 @@ class contour(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
@@ -150,7 +151,7 @@ class contour(GdalAlgorithm):
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
-        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         arguments = [
             '-b',
@@ -175,8 +176,8 @@ class contour(GdalAlgorithm):
         if offset:
             arguments.append(f'-off {offset}')
 
-        if outFormat:
-            arguments.append(f'-f {outFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
@@ -187,8 +188,8 @@ class contour(GdalAlgorithm):
         if options:
             arguments.append(options)
 
-        arguments.append(inLayer.source())
-        arguments.append(output)
+        arguments.append(input_details.connection_string)
+        arguments.append(output_details.connection_string)
         return arguments
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):

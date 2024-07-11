@@ -104,22 +104,24 @@ class polygonize(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        input_details = GdalUtils.gdal_connection_details_from_layer(
+            inLayer)
 
-        arguments.append(inLayer.source())
+        arguments.append(input_details.connection_string)
 
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
-        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
-        if outFormat:
-            arguments.append(f'-f {outFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
-        arguments.append(output)
+        arguments.append(output_details.connection_string)
 
-        layerName = GdalUtils.ogrOutputLayerName(output)
+        layerName = GdalUtils.ogrOutputLayerName(output_details.connection_string)
         if layerName:
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))

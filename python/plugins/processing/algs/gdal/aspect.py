@@ -107,7 +107,9 @@ class aspect(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
-        arguments.append(inLayer.source())
+
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+        arguments.append(input_details.connection_string)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(out)

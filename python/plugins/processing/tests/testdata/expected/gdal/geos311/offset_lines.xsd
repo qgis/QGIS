@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema
+<xs:schema 
     targetNamespace="http://ogr.maptools.org/"
     xmlns:ogr="http://ogr.maptools.org/"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -39,7 +39,8 @@
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:CurvePropertyType" nillable="true" minOccurs="0" maxOccurs="1"/> <!-- restricted to LineString --><!-- srsName="urn:ogc:def:crs:EPSG::4326" -->
+        <xs:element name="geometry" type="gml:GeometryPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/><!-- srsName="urn:ogc:def:crs:EPSG::4326" -->
+        <xs:element name="GEOMETRY" type="gml:CurvePropertyType" nillable="true" minOccurs="0" maxOccurs="1"/> <!-- restricted to LineString --><!-- srsName="urn:ogc:def:crs:EPSG::4326" -->
         <xs:element name="fid" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">

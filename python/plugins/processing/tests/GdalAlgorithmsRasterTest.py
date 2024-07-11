@@ -149,6 +149,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-a_srs EPSG:3111 ' +
              source])
 
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                    'CRS': 'EPSG:3111'}, context, feedback),
+            ['gdal_edit.py',
+             '-a_srs EPSG:3111 ' +
+             source + ' -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
                      'gdal_edit.py: not found')
     def testRunAssignProjection(self):
@@ -306,6 +313,14 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                translate_alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                                  'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testClipRasterByExtent(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -391,6 +406,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'EXTENT': extent,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testClipRasterByMask(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -474,6 +498,14 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-overwrite -te 1.0 2.0 3.0 4.0 -te_srs EPSG:4236 -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
                  outdir + '/check.jpg'])
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'MASK': mask,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-overwrite -of JPEG -cutline ' +
+                 mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
     def testContourPolygon(self):
         context = QgsProcessingContext()
@@ -827,6 +859,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['gdalinfo',
              '-proj4 -listmdd -checksum "' + source + '"'])
 
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '"' + source + '" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testGdalTindex(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -927,6 +968,16 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                            'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                    ['gdal_grid',
+                     '-l points -a average:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y -z_multiply 1.5 -outsize 1754 1394 ' +
+                     source + ' ' +
+                     outdir + '/check.jpg'])
+
     def testGridDataMetrics(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -981,6 +1032,17 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.tif'])
 
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                            'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                    ['gdal_grid',
+                     '-l points -a minimum:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 ' +
+                     '-ot Float32 -of GTiff -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y -z_multiply 1.5 -outsize 1754 1394 ' +
+                     source + ' ' +
+                     outdir + '/check.tif'])
+
     def testGridInverseDistance(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1025,6 +1087,17 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-ot Float32 -of GTiff -z_multiply 1.5 -outsize 1754 1394 ' +
                  source + ' ' +
                  outdir + '/check.tif'])
+
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                            'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                    ['gdal_grid',
+                     '-l points -a invdist:power=2.0:smoothing=0.0:radius1=0.0:radius2=0.0:angle=0.0:max_points=0:min_points=0:nodata=0.0 ' +
+                     '-ot Float32 -of GTiff -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y -z_multiply 1.5 -outsize 1754 1394 ' +
+                     source + ' ' +
+                     outdir + '/check.tif'])
 
     def testGridInverseDistanceNearestNeighbour(self):
         context = QgsProcessingContext()
@@ -1071,6 +1144,17 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.tif'])
 
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                            'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                    ['gdal_grid',
+                     '-l points -a invdistnn:power=2.0:smoothing=0.0:radius=1.0:max_points=12:min_points=0:nodata=0.0 ' +
+                     '-ot Float32 -of GTiff -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y -z_multiply 1.5 -outsize 1754 1394 ' +
+                     source + ' ' +
+                     outdir + '/check.tif'])
+
     def testGridLinear(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1116,6 +1200,17 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.tif'])
 
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                            'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                    ['gdal_grid',
+                     '-l points -a linear:radius=-1.0:nodata=0.0 -ot Float32 -of GTiff -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                     '-z_multiply 1.5 -outsize 1754 1394 ' +
+                     source + ' ' +
+                     outdir + '/check.tif'])
+
     def testGridNearestNeighbour(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1160,6 +1255,17 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-z_multiply 1.5 -outsize 1754 1394 ' +
                  source + ' ' +
                  outdir + '/check.tif'])
+
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                            'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                    ['gdal_grid',
+                     '-l points -a nearest:radius1=0.0:radius2=0.0:angle=0.0:nodata=0.0 -ot Float32 -of GTiff -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                     '-z_multiply 1.5 -outsize 1754 1394 ' +
+                     source + ' ' +
+                     outdir + '/check.tif'])
 
     def testHillshade(self):
         context = QgsProcessingContext()
@@ -1711,6 +1817,16 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'FIELD': 'id',
+                                            'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                    ['gdal_rasterize',
+                     '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                     source + ' ' +
+                     outdir + '/check.jpg'])
+
     def testRasterizeOver(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1746,6 +1862,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-l polys2 -a id -i ' +
                  vector + ' ' + raster])
 
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': vector + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'FIELD': 'id',
+                                            'INPUT_RASTER': raster}, context, feedback),
+                    ['gdal_rasterize',
+                     '-l polys2 -a id -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                     vector + ' ' + raster])
+
     def testRasterizeOverFixed(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1780,6 +1905,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_rasterize',
                  '-l polys2 -burn 100.0 -i ' +
                  vector + ' ' + raster])
+
+            if GdalUtils.version() >= 3070000:
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': vector + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                            'BURN': 100,
+                                            'INPUT_RASTER': raster}, context, feedback),
+                    ['gdal_rasterize',
+                     '-l polys2 -burn 100.0 -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' +
+                     vector + ' ' + raster])
 
     def testRasterizeOverRun(self):
         # Check that rasterize over tools update QgsRasterLayer
@@ -2135,6 +2269,15 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'SOURCE_CRS': 'EPSG:3111',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-overwrite -s_srs EPSG:3111 -r near -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+
     def testMerge(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -2270,6 +2413,14 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_translate', '-b 3 -b 2 -b 1 ' +
                  '-ot Float32 -of GTiff ' +
                  source + ' ' + outsource])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                                        'BANDS': 1,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_translate', '-b 1 ' +
+                 '-of GTiff ' +
+                 source + ' ' + outsource + ' -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
     def testFillnodata(self):
         context = QgsProcessingContext()

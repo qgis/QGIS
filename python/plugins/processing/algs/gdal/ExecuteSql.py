@@ -81,21 +81,23 @@ class ExecuteSql(GdalAlgorithm):
         return "ogr2ogr"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT,
+                                                    parameters, context,
+                                                    feedback, executing)
         sql = self.parameterAsString(parameters, self.SQL, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         if not sql:
             raise QgsProcessingException(
                 self.tr('Empty SQL. Please enter valid SQL expression and try again.'))
 
         arguments = [
-            output,
-            ogrLayer,
+            output_details.connection_string,
+            input_details.connection_string,
             '-sql',
             sql
         ]
@@ -104,10 +106,13 @@ class ExecuteSql(GdalAlgorithm):
             arguments.append('-dialect')
             arguments.append(dialect)
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

@@ -21,8 +21,6 @@ __copyright__ = '(C) 2019, Alexander Bruy'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
@@ -108,10 +106,13 @@ class pansharp(GdalAlgorithm):
         spectral = self.parameterAsRasterLayer(parameters, self.SPECTRAL, context)
         if spectral is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.SPECTRAL))
+        spectral_input_details = GdalUtils.gdal_connection_details_from_layer(spectral)
 
         panchromatic = self.parameterAsRasterLayer(parameters, self.PANCHROMATIC, context)
         if panchromatic is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.PANCHROMATIC))
+        panchromatic_input_details = GdalUtils.gdal_connection_details_from_layer(
+            panchromatic)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
@@ -121,8 +122,8 @@ class pansharp(GdalAlgorithm):
             raise QgsProcessingException(self.tr('Output format is invalid'))
 
         arguments = [
-            panchromatic.source(),
-            spectral.source(),
+            panchromatic_input_details.connection_string,
+            spectral_input_details.connection_string,
             out,
             '-r',
             self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1],
