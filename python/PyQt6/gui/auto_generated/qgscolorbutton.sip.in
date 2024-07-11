@@ -76,14 +76,6 @@ for the color.
 .. seealso:: :py:func:`setAllowOpacity`
 %End
 
-    void setColorDialogTitle( const QString &title );
-%Docstring
-Set the title for the color chooser dialog window.
-
-:param title: Title for the color chooser dialog
-
-.. seealso:: :py:func:`colorDialogTitle`
-%End
 
     QString colorDialogTitle() const;
 %Docstring
