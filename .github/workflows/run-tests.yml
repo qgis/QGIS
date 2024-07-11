@@ -227,59 +227,6 @@ jobs:
 #          set -e # switch back
 #          docker stop qgis-testing-environment
 
-
-#  tests-report-comment:
-#    name: Write tests report in a comment
-#    needs: build
-#    runs-on: ubuntu-latest
-#    if: always() && ( needs.build.result == 'failure' || needs.build.result == 'success' ) && github.event_name == 'pull_request'
-#    steps:
-#      - name: Find Comment
-#        uses: peter-evans/find-comment@v1
-#        id: find-comment
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          comment-author: 'github-actions[bot]'
-#          body-includes: Tests report
-#
-#      - name: Create comment
-#        if: ${{ steps.find-comment.outputs.comment-id == 0 }}
-#        uses: peter-evans/create-or-update-comment@v1
-#        id: create-comment
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          body: |
-#            **Tests report**
-#
-#      - name: Process
-#        id: process-vars
-#        env:
-#          COMMENT_FOUND: ${{ steps.find-comment.outputs.comment-id }}
-#          COMMENT_CREATED: ${{ steps.create-comment.outputs.comment-id }}
-#          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-#          CDASH_URL: ${{ needs.build.outputs.cdash_url }}
-#          COMPILE_OUTCOME: ${{ needs.build.outputs.compile_outcome }}
-#          TESTS_FAILING: ${{ needs.build.outputs.tests_failing }}
-#          RUNNERS_OUTCOME: ${{ needs.build.outputs.runners_outcome }}
-#        run: |
-#          echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
-#          if [[ ${COMPILE_OUTCOME} != "success" ]]; then
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :scream: compilation failed"
-#          elif [[ ${TESTS_FAILING} != "0" ]]; then
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :fire: ${TESTS_FAILING} unit-tests are failing ${CDASH_URL}"
-#          elif [[ ${RUNNERS_OUTCOME} != "success" ]]; then
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :broken_heart: QGIS runners test failed"
-#          else
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :sunglasses: unit-tests succeeded"
-#          fi
-#
-#      - name: Update comment
-#        uses: peter-evans/create-or-update-comment@v1
-#        with:
-#          comment-id: ${{ steps.process-vars.outputs.COMMENT_ID }}
-#          edit-mode: append
-#          body: ${{ steps.process-vars.outputs.COMMENT_BODY }}
-
   run-tests:
     name: Run tests
     env:
