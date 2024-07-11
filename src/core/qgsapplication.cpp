@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgslocalizeddatapathregistry.h"
 #include "qgsdataitemproviderregistry.h"
@@ -1565,6 +1566,11 @@ QgsAuthManager *QgsApplication::authManager()
       sAuthManager = QgsAuthManager::instance();
     return sAuthManager;
   }
+}
+
+QgsAuthConfigurationStorageRegistry *QgsApplication::authConfigurationStorageRegistry()
+{
+  return authManager()->authConfigurationStorageRegistry();
 }
 
 

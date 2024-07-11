@@ -90,7 +90,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     void eraseAuthenticationDatabase();
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
     //! Pass selection change on to UI update
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );

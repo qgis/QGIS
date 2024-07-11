@@ -52,6 +52,8 @@ QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QS
 #endif
 }
 
+
+
 QString QgsAuthConfigurationStorage::lastError() const
 {
   return mLastError;
