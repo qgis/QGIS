@@ -6,6 +6,9 @@ concurrency:
 
 on:
   push:
+    branches:
+      - master
+      - release-*
     paths:
       - '**.py'
   pull_request:
