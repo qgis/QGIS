@@ -74,29 +74,32 @@ class ClipVectorByMask(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        inLayer, inLayerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
-        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        mask_details = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         arguments = [
             '-clipsrc',
-            maskLayer,
+            mask_details.connection_string,
             '-clipsrclayer',
-            maskLayerName,
+            mask_details.layer_name,
 
-            output,
-            inLayer,
-            inLayerName,
+            output_details.connection_string,
+            input_details.connection_string,
+            input_details.layer_name,
         ]
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
 
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

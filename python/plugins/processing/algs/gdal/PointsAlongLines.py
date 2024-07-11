@@ -89,14 +89,14 @@ class PointsAlongLines(GdalAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         other_fields_exist = any(
             f for f in fields
@@ -106,18 +106,21 @@ class PointsAlongLines(GdalAlgorithm):
         other_fields = ',*' if other_fields_exist else ''
 
         arguments = [
-            output,
-            ogrLayer,
+            output_details.connection_string,
+            input_details.connection_string,
             '-dialect',
             'sqlite',
             '-sql',
-            f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
+            f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{input_details.layer_name}"'
         ]
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
 
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

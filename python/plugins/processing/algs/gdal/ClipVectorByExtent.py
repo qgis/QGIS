@@ -72,7 +72,7 @@ class ClipVectorByExtent(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
@@ -82,7 +82,9 @@ class ClipVectorByExtent(GdalAlgorithm):
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(
+            outFile,
+            context)
 
         arguments = [
             '-spat',
@@ -92,15 +94,18 @@ class ClipVectorByExtent(GdalAlgorithm):
             str(extent.yMinimum()),
             '-clipsrc spat_extent',
 
-            output,
-            ogrLayer,
-            layerName
+            output_details.connection_string,
+            input_details.connection_string,
+            input_details.layer_name
         ]
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
 
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

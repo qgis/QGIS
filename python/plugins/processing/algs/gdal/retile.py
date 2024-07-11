@@ -215,7 +215,11 @@ class retile(GdalAlgorithm):
         arguments.append('-targetDir')
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
-        layers = [l.source() for l in self.parameterAsLayerList(parameters, self.INPUT, context)]
+        input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
+        layers = []
+        for layer in input_layers:
+            layer_details = GdalUtils.gdal_connection_details_from_layer(layer)
+            layers.append(layer_details.connection_string)
         arguments.extend(layers)
 
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

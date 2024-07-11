@@ -235,6 +235,7 @@ class gdalcalc(GdalAlgorithm):
         layer_a = self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
         if layer_a is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
+        layer_a_details = GdalUtils.gdal_connection_details_from_layer(layer_a)
 
         def all_equal(iterator):
             iterator = iter(iterator)
@@ -277,7 +278,7 @@ class gdalcalc(GdalAlgorithm):
             arguments.append(str(bbox.yMinimum()))
 
         arguments.append('-A')
-        arguments.append(layer_a.source())
+        arguments.append(layer_a_details.connection_string)
         if self.parameterAsString(parameters, self.BAND_A, context):
             arguments.append('--A_band ' + self.parameterAsString(parameters, self.BAND_A, context))
 
@@ -285,8 +286,10 @@ class gdalcalc(GdalAlgorithm):
             layer_b = self.parameterAsRasterLayer(parameters, self.INPUT_B, context)
             if layer_b is None:
                 raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_B))
+            input_b_details = GdalUtils.gdal_connection_details_from_layer(
+                layer_b)
             arguments.append('-B')
-            arguments.append(layer_b.source())
+            arguments.append(input_b_details.connection_string)
             if self.parameterAsString(parameters, self.BAND_B, context):
                 arguments.append('--B_band ' + self.parameterAsString(parameters, self.BAND_B, context))
 
@@ -294,8 +297,10 @@ class gdalcalc(GdalAlgorithm):
             layer_c = self.parameterAsRasterLayer(parameters, self.INPUT_C, context)
             if layer_c is None:
                 raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_C))
+            input_c_details = GdalUtils.gdal_connection_details_from_layer(
+                layer_c)
             arguments.append('-C')
-            arguments.append(layer_c.source())
+            arguments.append(input_c_details.connection_string)
             if self.parameterAsString(parameters, self.BAND_C, context):
                 arguments.append('--C_band ' + self.parameterAsString(parameters, self.BAND_C, context))
 
@@ -303,8 +308,10 @@ class gdalcalc(GdalAlgorithm):
             layer_d = self.parameterAsRasterLayer(parameters, self.INPUT_D, context)
             if layer_d is None:
                 raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_D))
+            input_d_details = GdalUtils.gdal_connection_details_from_layer(
+                layer_d)
             arguments.append('-D')
-            arguments.append(layer_d.source())
+            arguments.append(input_d_details.connection_string)
             if self.parameterAsString(parameters, self.BAND_D, context):
                 arguments.append('--D_band ' + self.parameterAsString(parameters, self.BAND_D, context))
 
@@ -312,8 +319,10 @@ class gdalcalc(GdalAlgorithm):
             layer_e = self.parameterAsRasterLayer(parameters, self.INPUT_E, context)
             if layer_e is None:
                 raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_E))
+            input_e_details = GdalUtils.gdal_connection_details_from_layer(
+                layer_e)
             arguments.append('-E')
-            arguments.append(layer_e.source())
+            arguments.append(input_e_details.connection_string)
             if self.parameterAsString(parameters, self.BAND_E, context):
                 arguments.append('--E_band ' + self.parameterAsString(parameters, self.BAND_E, context))
 
@@ -321,8 +330,10 @@ class gdalcalc(GdalAlgorithm):
             layer_f = self.parameterAsRasterLayer(parameters, self.INPUT_F, context)
             if layer_f is None:
                 raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_F))
+            input_f_details = GdalUtils.gdal_connection_details_from_layer(
+                layer_f)
             arguments.append('-F')
-            arguments.append(layer_f.source())
+            arguments.append(input_f_details.connection_string)
             if self.parameterAsString(parameters, self.BAND_F, context):
                 arguments.append('--F_band ' + self.parameterAsString(parameters, self.BAND_F, context))
 

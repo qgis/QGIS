@@ -112,7 +112,7 @@ class Dissolve(GdalAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
@@ -120,7 +120,7 @@ class Dissolve(GdalAlgorithm):
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
 
-        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         other_fields_exist = any(
             True for f in fields
@@ -130,8 +130,8 @@ class Dissolve(GdalAlgorithm):
         other_fields = ',*' if other_fields_exist else ''
 
         arguments = [
-            output,
-            ogrLayer,
+            output_details.connection_string,
+            input_details.connection_string,
             '-nlt PROMOTE_TO_MULTI',
             '-dialect',
             'sqlite',
@@ -158,20 +158,23 @@ class Dissolve(GdalAlgorithm):
             group_by = f' GROUP BY "{fieldName}"'
 
         if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
-            sql = f'SELECT ST_Union({geometry}) AS {geometry}{other_fields}{params} FROM "{layerName}"{group_by}'
+            sql = f'SELECT ST_Union({geometry}) AS {geometry}{other_fields}{params} FROM "{input_details.layer_name}"{group_by}'
         else:
             sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, f', "{fieldName}"' if fieldName else '',
-                                                                     params, layerName, group_by)
+                                                                     params, input_details.layer_name, group_by)
 
         arguments.append(sql)
 
         if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append('-explodecollections')
 
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if options:
             arguments.append(options)
 
-        if outputFormat:
-            arguments.append(f'-f {outputFormat}')
+        if output_details.format:
+            arguments.append(f'-f {output_details.format}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

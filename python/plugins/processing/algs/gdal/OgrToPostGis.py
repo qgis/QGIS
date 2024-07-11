@@ -214,8 +214,8 @@ class OgrToPostGis(GdalAlgorithm):
         return GdalUtils.escapeAndJoin(arguments)
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
-        if not layername:
+        input_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        if not input_details.layer_name:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
@@ -264,8 +264,8 @@ class OgrToPostGis(GdalAlgorithm):
         arguments.append('PostgreSQL')
         arguments.append('PG:' + self.getConnectionString(parameters, context))
         arguments.append(dimstring)
-        arguments.append(ogrLayer)
-        arguments.append(layername)
+        arguments.append(input_details.connection_string)
+        arguments.append(input_details.layer_name)
         if index:
             arguments.append(indexstring)
         if launder:
@@ -288,7 +288,7 @@ class OgrToPostGis(GdalAlgorithm):
         elif primary_key:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = layername.lower()
+            table = input_details.layer_name.lower()
         if schema:
             table = f'{schema}.{table}'
         arguments.append('-nln')
@@ -327,6 +327,10 @@ class OgrToPostGis(GdalAlgorithm):
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
         if len(options) > 0:
             arguments.append(options)
 
