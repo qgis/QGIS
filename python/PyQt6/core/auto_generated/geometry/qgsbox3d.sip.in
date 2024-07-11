@@ -110,6 +110,13 @@ the normalization step will not be applied automatically.
     }
 %End
 
+    void set( double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, bool normalize = true );
+%Docstring
+Sets the box from a set of (x,y,z) minimum and maximum coordinates.
+
+.. versionadded:: 3.40
+%End
+
     void setXMinimum( double x ) /HoldGIL/;
 %Docstring
 Sets the minimum ``x`` value.

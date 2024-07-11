@@ -141,6 +141,22 @@ class CORE_EXPORT QgsBox3D
 #endif
 
     /**
+     * Sets the box from a set of (x,y,z) minimum and maximum coordinates.
+     *
+     * \since QGIS 3.40
+     */
+    void set( double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, bool normalize = true )
+    {
+      mBounds2d.set( xMin, yMin, xMax, yMax, false );
+      mZmin = zMin;
+      mZmax = zMax;
+      if ( normalize )
+      {
+        QgsBox3D::normalize();
+      }
+    }
+
+    /**
      * Sets the minimum \a x value.
      * \see xMinimum()
      * \see setXMaximum()
