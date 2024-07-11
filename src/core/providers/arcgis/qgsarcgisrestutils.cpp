@@ -1022,9 +1022,8 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           const QVariantList stops = visualVariable.toMap().value( QStringLiteral( "stops" ) ).toList();
           QString lastLabel = nullptr;
 
-          for (int i = 0; i < stops.size(); ++i)
+          for ( const QVariant &stop : stops )
           {
-              const QVariant& stop = stops.at(i);
               const QVariantMap stopData = stop.toMap();
               const QString label = stopData.value( QStringLiteral( "label" ) ).toString();
               const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toFloat();
