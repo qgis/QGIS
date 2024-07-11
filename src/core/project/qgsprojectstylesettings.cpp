@@ -172,7 +172,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
 {
   mRandomizeDefaultSymbolColor = element.attribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), QStringLiteral( "0" ) ).toInt();
   mDefaultSymbolOpacity = element.attribute( QStringLiteral( "DefaultSymbolOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
-  mColorModel = QgsXmlUtils::readFlagAttribute( element, QStringLiteral( "colorModel" ), Qgis::ColorModel::Rgb );
+  mColorModel = qgsEnumKeyToValue( element.attribute( QStringLiteral( "colorModel" ) ), Qgis::ColorModel::Rgb );
 
   QDomElement elem = element.firstChildElement( QStringLiteral( "markerSymbol" ) );
   if ( !elem.isNull() )
@@ -268,6 +268,9 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   {
     QString errorMsg;
     QColorSpace colorSpace = QgsColorUtils::iccProfile( mIccProfileFilePath, errorMsg );
+    if ( !errorMsg.isEmpty() )
+      context.pushMessage( errorMsg );
+
     setColorSpace( colorSpace );
   }
 
@@ -283,9 +286,7 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
   element.setAttribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), mRandomizeDefaultSymbolColor ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "DefaultSymbolOpacity" ), QString::number( mDefaultSymbolOpacity ) );
 
-  const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::ColorModel>();
-  const QString colorModel( metaEnum.valueToKeys( static_cast<int>( mColorModel ) ) );
-  element.setAttribute( QStringLiteral( "colorModel" ), colorModel );
+  element.setAttribute( QStringLiteral( "colorModel" ), qgsEnumValueToKey( mColorModel ) );
 
   if ( mDefaultMarkerSymbol )
   {
@@ -336,7 +337,10 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
     element.setAttribute( QStringLiteral( "projectStyleId" ), mProject->attachmentIdentifier( mProjectStyle->fileName() ) );
   }
 
-  element.setAttribute( QStringLiteral( "iccProfileId" ), mProject->attachmentIdentifier( mIccProfileFilePath ) );
+  if ( mProject )
+  {
+    element.setAttribute( QStringLiteral( "iccProfileId" ), mProject->attachmentIdentifier( mIccProfileFilePath ) );
+  }
 
   return element;
 }

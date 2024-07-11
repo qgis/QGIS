@@ -5063,8 +5063,8 @@ Qgis.SensorThingsEntity.__doc__ = "OGC SensorThings API entity types.\n\n.. vers
 # --
 Qgis.SensorThingsEntity.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.ColorModel.Rgb.__doc__ = ""
-Qgis.ColorModel.Cmyk.__doc__ = ""
+Qgis.ColorModel.Rgb.__doc__ = "RGB color model"
+Qgis.ColorModel.Cmyk.__doc__ = "CMYK color model"
 Qgis.ColorModel.__doc__ = "Color model types\n\n.. versionadded:: 3.40\n\n" + '* ``Rgb``: ' + Qgis.ColorModel.Rgb.__doc__ + '\n' + '* ``Cmyk``: ' + Qgis.ColorModel.Cmyk.__doc__
 # --
 Qgis.ColorModel.baseClass = Qgis

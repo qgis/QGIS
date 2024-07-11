@@ -146,16 +146,17 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     QgsStyle *projectStyle();
 
     /**
-     * Set project \a colorModel
+     * Set the project's color model to \a colorModel
      *
-     * It would serve as default color model when selecting a color in the whole application.
+     * This sets the default color model used when selecting a color in the whole application.
      * Any color defined in a different color model than the one specified here will be converted to
      * this color model when exporting a layout.
      *
-     * If a color space has already been set and its color model differs from \a colorModel, project
-     * color space is set to invalid one. \see setColorSpace() colorSpace()
+     * If a color space has already been set and its color model differs from \a colorModel, the project
+     * color space will be reset to invalid one (This is only true if QGIS is built against
+     * Qt 6.8.0 or greater). \see setColorSpace() colorSpace()
      *
-     * defaults to Qgis::ColorModel::Rgb
+     * The color model defaults to Qgis::ColorModel::Rgb
      *
      * \see colorModel()
      * \since QGIS 3.40
@@ -163,13 +164,13 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     void setColorModel( Qgis::ColorModel colorModel );
 
     /**
-     * Returns project color model
+     * Returns the project's color model
      *
-     * Used as default color model when selecting a color in the whole application.
-     * Any color defined in a different color model than the returned will be converted to
-     * this color model when exporting a layout
+     * This model is used as the default color model when selecting a color in the whole application.
+     * Any color defined in a different color model than the returned model will be converted to
+     * this color model when exporting a layout.
      *
-     * defaults to Qgis::ColorModel::Rgb
+     * The color model defaults to Qgis::ColorModel::Rgb
      *
      * \see setColorModel()
      * \since QGIS 3.40
@@ -177,16 +178,17 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     Qgis::ColorModel colorModel() const;
 
     /**
-     * Set project current \a colorSpace. \a colorSpace must be a valid RGB or CMYK color space.
-     * Color space ICC profile will be added as a project attached file.
+     * Set the project's current color space to \a colorSpace. \a colorSpace must be a valid RGB or CMYK color space.
+     * The color space's ICC profile will be added as a project attached file.
      *
-     * Project color space will be added to PDF layout export if defined (meaning different from
+     * The project color's space will be added to PDF layout exports when it is defined (i.e. it is different from
      * the default invalid QColorSpace).
      *
-     * If a color model has already been set and it differs from \a colorSpace color model, project
-     * color model is set to \a colorSpace one. \see setColorModel() colorModel()
+     * If a color model has already been set and it differs from \a colorSpace's color model, the project's
+     * color model is set to match the color space's color model (This is only true if QGIS is built against
+     * Qt 6.8.0 or greater). \see setColorModel() colorModel()
      *
-     * defaults to invalid color space
+     * The color space defaults to an invalid color space.
      *
      * \see colorSpace()
      * \since QGIS 3.40
@@ -194,12 +196,12 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     void setColorSpace( const QColorSpace &colorSpace );
 
     /**
-     * Returns current project color space.
+     * Returns the project's color space.
      *
-     * Project color space will be added to PDF layout export if defined (meaning different from
+     * The project color's space will be added to PDF layout exports when it is defined (i.e. it is different from
      * the default invalid QColorSpace).
      *
-     * defaults to invalid color space
+     * The color space defaults to an invalid color space.
      *
      * \see setColorSpace()
      * \since QGIS 3.40

@@ -2889,7 +2889,7 @@ The development version
     enum class ColorModel /BaseType=IntEnum/
     {
       Rgb,
-      Cmyk
+      Cmyk,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
