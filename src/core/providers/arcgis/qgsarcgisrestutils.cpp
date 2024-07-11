@@ -1016,7 +1016,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
       }
 
       const QVariantList visualVariablesData = rendererData.value( QStringLiteral( "visualVariables" ) ).toList();
-      double lastValue = 0;
+      double lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
       for ( const QVariant& visualVariable : visualVariablesData )
       {
           const QVariantList stops = visualVariable.toMap().value( QStringLiteral( "stops" ) ).toList();
@@ -1047,7 +1047,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
               }
           }
       }
-      lastValue = 0;
+      lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
       for ( const QVariant& classBreakInfo : classBreakInfos )
       {
           const QVariantMap symbolData = classBreakInfo.toMap().value( QStringLiteral( "symbol" ) ).toMap();
