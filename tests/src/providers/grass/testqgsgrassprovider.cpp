@@ -204,6 +204,7 @@ class TestQgsGrassProvider: public QgsTest
     void invalidLayer();
     void region();
     void info();
+    void crsEpsg3857();
     void rasterImport();
     void vectorImport();
     void edit();
@@ -352,15 +353,8 @@ void TestQgsGrassProvider::fatalError()
 
 void TestQgsGrassProvider::locations()
 {
-  reportHeader( QStringLiteral( "TestQgsGrassProvider::locations" ) );
-  bool ok = true;
-  QStringList expectedLocations;
-  expectedLocations << QStringLiteral( "wgs84" );
-  QStringList locations = QgsGrass::locations( mGisdbase );
-  reportRow( "expectedLocations: " + expectedLocations.join( QLatin1String( ", " ) ) );
-  reportRow( "locations: " + locations.join( QLatin1String( ", " ) ) );
-  compare( expectedLocations, locations, ok );
-  GVERIFY( ok );
+  const QStringList locations = QgsGrass::locations( mGisdbase );
+  QCOMPARE( locations, QStringList() << QStringLiteral( "webmerc" ) << QStringLiteral( "wgs84" ) );
 }
 
 void TestQgsGrassProvider::mapsets()
@@ -620,6 +614,14 @@ void TestQgsGrassProvider::info()
     }
   }
   GVERIFY( ok );
+}
+
+void TestQgsGrassProvider::crsEpsg3857()
+{
+  QString error;
+  const QgsCoordinateReferenceSystem crs = QgsGrass::crs( mGisdbase,  QStringLiteral( "webmerc" ), error );
+  QCOMPARE( error, QString() );
+  QCOMPARE( crs.authid(), QStringLiteral("EPSG:3857") );
 }
 
 
