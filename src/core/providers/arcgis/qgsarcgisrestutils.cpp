@@ -969,27 +969,27 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           QgsClassificationFixedInterval* method = new QgsClassificationFixedInterval();
           graduatedRenderer->setClassificationMethod(method);
       }
-      if (esriMode == QLatin1String("esriClassifyEqualInterval")){
+      else if (esriMode == QLatin1String("esriClassifyEqualInterval")){
           QgsClassificationEqualInterval* method = new QgsClassificationEqualInterval();
           graduatedRenderer->setClassificationMethod(method);
       }
-      if (esriMode == QLatin1String("esriClassifyGeometricalInterval")){
+      else if (esriMode == QLatin1String("esriClassifyGeometricalInterval")){
           QgsClassificationCustom* method = new QgsClassificationCustom();
           graduatedRenderer->setClassificationMethod(method);
       }
-      if (esriMode == QLatin1String("esriClassifyManual")){
+      else if (esriMode == QLatin1String("esriClassifyManual")){
           QgsClassificationCustom* method = new QgsClassificationCustom();
           graduatedRenderer->setClassificationMethod(method);
       }
-      if (esriMode == QLatin1String("esriClassifyNaturalBreaks")){
+      else if (esriMode == QLatin1String("esriClassifyNaturalBreaks")){
           QgsClassificationJenks* method = new QgsClassificationJenks();
           graduatedRenderer->setClassificationMethod(method);
       }
-      if (esriMode == QLatin1String("esriClassifyQuantile")){
+      else if (esriMode == QLatin1String("esriClassifyQuantile")){
           QgsClassificationQuantile* method = new QgsClassificationQuantile();
           graduatedRenderer->setClassificationMethod(method);
       }
-      if (esriMode == QLatin1String("esriClassifyStandardDeviation")){
+      else if (esriMode == QLatin1String("esriClassifyStandardDeviation")){
           QgsClassificationStandardDeviation* method = new QgsClassificationStandardDeviation();
           graduatedRenderer->setClassificationMethod(method);
       }
