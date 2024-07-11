@@ -526,6 +526,39 @@ class TestQgsBox3d(unittest.TestCase):
                           QgsVector3D(11, 6, 15),
                           QgsVector3D(11, 13, 15)])
 
+    def test_set(self):
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box1.xMinimum(), 5.0)
+        self.assertEqual(box1.yMinimum(), 6.0)
+        self.assertEqual(box1.zMinimum(), 7.0)
+        self.assertEqual(box1.xMaximum(), 11.0)
+        self.assertEqual(box1.yMaximum(), 13.0)
+        self.assertEqual(box1.zMaximum(), 15.0)
+
+        box1.set(23, 42, 43, 22, 24, 25, False)
+        self.assertEqual(box1.xMinimum(), 23.0)
+        self.assertEqual(box1.yMinimum(), 42.0)
+        self.assertEqual(box1.zMinimum(), 43.0)
+        self.assertEqual(box1.xMaximum(), 22.0)
+        self.assertEqual(box1.yMaximum(), 24.0)
+        self.assertEqual(box1.zMaximum(), 25.0)
+
+        box1.normalize()
+        self.assertEqual(box1.xMinimum(), 22.0)
+        self.assertEqual(box1.yMinimum(), 24.0)
+        self.assertEqual(box1.zMinimum(), 25.0)
+        self.assertEqual(box1.xMaximum(), 23.0)
+        self.assertEqual(box1.yMaximum(), 42.0)
+        self.assertEqual(box1.zMaximum(), 43.0)
+
+        box1.set(12, 13, 14, -5, -6, -7)
+        self.assertEqual(box1.xMinimum(), -5.0)
+        self.assertEqual(box1.yMinimum(), -6.0)
+        self.assertEqual(box1.zMinimum(), -7.0)
+        self.assertEqual(box1.xMaximum(), 12.0)
+        self.assertEqual(box1.yMaximum(), 13.0)
+        self.assertEqual(box1.zMaximum(), 14.0)
+
 
 if __name__ == '__main__':
     unittest.main()
