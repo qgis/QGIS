@@ -147,6 +147,9 @@ class CORE_EXPORT QgsCoordinateTransform
 
     ~QgsCoordinateTransform();
 
+    bool operator==( const QgsCoordinateTransform &other ) const;
+    bool operator!=( const QgsCoordinateTransform &other ) const;
+
     /**
      * Returns TRUE if it is theoretically possible to transform between \a source and \a destination CRSes.
      *
