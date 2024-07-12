@@ -89,6 +89,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mSimplifyMethod = rh.mSimplifyMethod;
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
+  mTransform = rh.mTransform;
   mCrs = rh.mCrs;
   mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
@@ -118,11 +119,11 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
          mSimplifyMethod == rh.mSimplifyMethod &&
          mLimit == rh.mLimit &&
          mOrderBy == rh.mOrderBy &&
+         mTransform == rh.mTransform &&
          mCrs == rh.mCrs &&
          mTransformContext == rh.mTransformContext &&
          mTimeout == rh.mTimeout &&
          mRequestMayBeNested == rh.mRequestMayBeNested;
-
 }
 
 
@@ -315,6 +316,10 @@ QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
   return *this;
 }
 
+QgsCoordinateTransform QgsFeatureRequest::coordinateTransform() const
+{
+  return mTransform;
+}
 
 QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
 {
@@ -324,6 +329,12 @@ QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
 QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
 {
   return mTransformContext;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setCoordinateTransform( const QgsCoordinateTransform &transform )
+{
+  mTransform = transform;
+  return *this;
 }
 
 QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
