@@ -382,6 +382,14 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /**
+     * Returns TRUE if the transform includes a vertical component, i.e. if both the sourceCrs()
+     * and destinationCrs() have a vertical axis.
+     *
+     * \since QGIS 3.40
+     */
+    bool hasVerticalComponent() const;
+
+    /**
      * Returns a Proj string representing the coordinate operation which will be used to transform
      * coordinates.
      *

@@ -161,6 +161,53 @@ class TestQgsCoordinateTransform(QgisTestCase):
         self.assertAlmostEqual(transformedExtent.xMaximum(), 20037508.343, delta=1e-3)
         self.assertAlmostEqual(transformedExtent.yMaximum(), 44927335.427, delta=1e-3)
 
+    def test_has_vertical_component(self):
+        transform = QgsCoordinateTransform()
+        self.assertFalse(transform.hasVerticalComponent())
+
+        # 2d to 2d
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem('EPSG:4326'),
+            QgsCoordinateReferenceSystem('EPSG:3857'),
+            QgsCoordinateTransformContext()
+        )
+        self.assertFalse(transform.hasVerticalComponent())
+
+        # 2d to 3d
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem('EPSG:4326'),
+            QgsCoordinateReferenceSystem('EPSG:7843'),
+            QgsCoordinateTransformContext()
+        )
+        self.assertFalse(transform.hasVerticalComponent())
+
+        # 3d to 2d
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem('EPSG:7843'),
+            QgsCoordinateReferenceSystem('EPSG:4326'),
+            QgsCoordinateTransformContext()
+        )
+        self.assertFalse(transform.hasVerticalComponent())
+
+        # 3d to 3d
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem('EPSG:7843'),
+            QgsCoordinateReferenceSystem.createCompoundCrs(
+                QgsCoordinateReferenceSystem('EPSG:7844'),
+                QgsCoordinateReferenceSystem('EPSG:9458'))[0],
+            QgsCoordinateTransformContext()
+        )
+        self.assertTrue(transform.hasVerticalComponent())
+
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem.createCompoundCrs(
+                QgsCoordinateReferenceSystem('EPSG:7844'),
+                QgsCoordinateReferenceSystem('EPSG:5711'))[0],
+            QgsCoordinateReferenceSystem('EPSG:7843'),
+            QgsCoordinateTransformContext()
+        )
+        self.assertTrue(transform.hasVerticalComponent())
+
 
 if __name__ == '__main__':
     unittest.main()
