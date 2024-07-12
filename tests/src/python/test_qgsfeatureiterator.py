@@ -538,6 +538,45 @@ class TestQgsFeatureIterator(QgisTestCase):
         self.assertEqual(res, ['a', 'b'])
         layer.rollBack()
 
+    def test_vertical_transformation_4978_to_4979(self):
+        """
+        Test vertical transformations are correctly handled during iteration
+
+        EPSG:4978 to EPSG:4979
+        """
+
+        vl = QgsVectorLayer('PointZ?crs=EPSG:4978', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:4978')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:4978')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        dest_crs = QgsCoordinateReferenceSystem('EPSG:4979')
+        self.assertTrue(dest_crs.isValid())
+        self.assertEqual(dest_crs.horizontalCrs().authid(), 'EPSG:4979')
+
+        transform = QgsCoordinateTransform(
+            vl.crs3D(),
+            dest_crs,
+            QgsCoordinateTransformContext()
+        )
+
+        request = QgsFeatureRequest().setCoordinateTransform(
+            transform)
+
+        transformed_features = list(vl.getFeatures(request))
+        self.assertEqual(len(transformed_features), 1)
+        geom = transformed_features[0].geometry()
+        self.assertAlmostEqual(geom.constGet().x(), -9.8921668708, 4)
+        self.assertAlmostEqual(geom.constGet().y(), 89.839008, 4)
+        self.assertAlmostEqual(geom.constGet().z(), -6351023.00373, 3)
+
     def test_vertical_transformation_gda2020_to_AVWS(self):
         """
         Test vertical transformations are correctly handled during iteration
