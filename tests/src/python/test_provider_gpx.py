@@ -64,6 +64,10 @@ class TestPyQgsGpxProvider(QgisTestCase, ProviderTestCase):
         pass
 
     @unittest.skip('Base provider test is not suitable for GPX provider')
+    def testGetFeaturesCoordinateTransform(self):
+        pass
+
+    @unittest.skip('Base provider test is not suitable for GPX provider')
     def testGetFeaturesLimit(self):
         pass
 

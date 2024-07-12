@@ -43,9 +43,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         self._request = request if request is not None else QgsFeatureRequest()
         self._source = source
         self._index = 0
-        self._transform = QgsCoordinateTransform()
-        if self._request.destinationCrs().isValid() and self._request.destinationCrs() != self._source._provider.crs():
-            self._transform = QgsCoordinateTransform(self._source._provider.crs(), self._request.destinationCrs(), self._request.transformContext())
+        self._transform = request.calculateTransform(self._source._provider.crs())
         try:
             self._filter_rect = self.filterRectToSourceCrs(self._transform)
         except QgsCsException as e:
