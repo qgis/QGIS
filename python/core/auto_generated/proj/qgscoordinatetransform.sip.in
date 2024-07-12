@@ -138,6 +138,9 @@ Copy constructor
 
     ~QgsCoordinateTransform();
 
+    bool operator==( const QgsCoordinateTransform &other ) const;
+    bool operator!=( const QgsCoordinateTransform &other ) const;
+
     static bool isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 %Docstring
 Returns ``True`` if it is theoretically possible to transform between ``source`` and ``destination`` CRSes.
