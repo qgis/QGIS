@@ -529,7 +529,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Display</string>
+          <string>Appearance</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
