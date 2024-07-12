@@ -32,9 +32,6 @@
 #include "qgsgui.h"
 #include "qgsextentwidget.h"
 
-#include "cpl_conv.h"
-#include "ogr_srs_api.h"
-
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -402,19 +399,9 @@ void QgsGrassNewMapset::setGrassProjection()
     const QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WktVariant::WKT_PREFERRED );
     QgsDebugMsgLevel( QStringLiteral( "wkt = %1" ).arg( crs.toWkt( Qgis::CrsWktVariant::Preferred ) ), 3 );
 
-    // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
-    //       cannot be set
-
     G_TRY
     {
-      // There was a bug in GRASS, it is present in 6.0.x line
-      int ret = GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt.toUtf8().constData(), 0 );
-      // Note: It seems that GPJ_osr_to_grass()returns always 1,
-      //   -> test if mProjInfo was set
-
-      Q_UNUSED( ret )
-      QgsDebugMsgLevel( QString( "ret = %1" ).arg( ret ), 2 );
-      QgsDebugMsgLevel( QString( "mProjInfo = %1" ).arg( QString::number( static_cast<qulonglong>( mProjInfo ), 16 ).toLocal8Bit().constData() ), 2 );
+      GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt.toUtf8().constData(), 0 );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -426,6 +413,11 @@ void QgsGrassNewMapset::setGrassProjection()
     {
       setError( mProjErrorLabel, tr( "Selected projection is not supported by GRASS!" ) );
     }
+    else
+    {
+      mProjSrid = crs.authid().toUpper();
+      mProjWkt = wkt;
+    }
   }
   else // Nothing selected
   {
@@ -433,6 +425,8 @@ void QgsGrassNewMapset::setGrassProjection()
     mCellHead.zone = 0;
     mProjInfo = nullptr;
     mProjUnits = nullptr;
+    mProjSrid.clear();
+    mProjWkt.clear();
   }
   button( QWizard::NextButton )->setEnabled( mProjInfo && mProjUnits );
 }
@@ -1110,7 +1104,10 @@ void QgsGrassNewMapset::createMapset()
     QString error;
     G_TRY
     {
-      ret = G_make_location( location.toUtf8().constData(), &mCellHead, mProjInfo, mProjUnits );
+      ret = G_make_location_crs( location.toUtf8().constData(),
+                                 &mCellHead, mProjInfo, mProjUnits,
+                                 mProjSrid.toUtf8().constData(),
+                                 mProjWkt.toUtf8().constData() );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
