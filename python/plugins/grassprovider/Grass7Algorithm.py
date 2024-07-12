@@ -931,6 +931,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             os.path.normpath(file_path),
             ' layer="{}"'.format(layer_name) if layer_name else '',
             destFilename)
+        if layer.subsetString():
+            escaped_subset = layer.subsetString().replace('"', '\\"')
+            command += f' where="{escaped_subset}"'
+
         self.commands.append(command)
 
     def exportVectorLayerFromParameter(self, name, parameters, context, layer=None, nocats=False):
