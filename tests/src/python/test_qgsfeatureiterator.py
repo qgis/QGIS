@@ -27,6 +27,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
+    QgsDatumTransform,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -566,6 +567,12 @@ class TestQgsFeatureIterator(QgisTestCase):
         self.assertEqual(dest_crs.horizontalCrs().authid(), 'EPSG:7844')
         self.assertEqual(dest_crs.verticalCrs().authid(), 'EPSG:9458')
 
+        available_operations = QgsDatumTransform.operations(vl.crs3D(), dest_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AGQG_20201120.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
         transform = QgsCoordinateTransform(
             vl.crs3D(),
             dest_crs,
@@ -610,6 +617,13 @@ class TestQgsFeatureIterator(QgisTestCase):
         self.assertTrue(source_crs.isValid())
         self.assertEqual(source_crs.horizontalCrs().authid(), 'EPSG:7844')
         self.assertEqual(source_crs.verticalCrs().authid(), 'EPSG:9458')
+
+        available_operations = QgsDatumTransform.operations(source_crs,
+                                                            QgsCoordinateReferenceSystem('EPSG:7843'))
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AGQG_20201120.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
 
         # dest CRS is GDA2020
 
@@ -661,6 +675,13 @@ class TestQgsFeatureIterator(QgisTestCase):
         self.assertEqual(dest_crs.horizontalCrs().authid(), 'EPSG:7844')
         self.assertEqual(dest_crs.verticalCrs().authid(), 'EPSG:5711')
 
+        available_operations = QgsDatumTransform.operations(vl.crs3D(),
+                                                            dest_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AUSGeoid2020_20180201.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
         transform = QgsCoordinateTransform(
             vl.crs3D(),
             dest_crs,
@@ -707,6 +728,13 @@ class TestQgsFeatureIterator(QgisTestCase):
         self.assertEqual(source_crs.verticalCrs().authid(), 'EPSG:5711')
 
         # dest CRS is GDA2020
+
+        available_operations = QgsDatumTransform.operations(source_crs,
+                                                            QgsCoordinateReferenceSystem('EPSG:7843'))
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AUSGeoid2020_20180201.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
 
         transform = QgsCoordinateTransform(
             source_crs,
