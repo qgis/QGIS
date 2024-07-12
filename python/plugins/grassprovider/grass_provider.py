@@ -150,6 +150,9 @@ class GrassProvider(QgsProcessingProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("/providerGrass.svg")
 
+    def versionInfo(self):
+        return GrassUtils.installedVersion() or None
+
     def defaultVectorFileExtension(self, hasGeometry=True):
         # By default,'gpkg', but if OGR has not been compiled with sqlite3, then
         # we take "SHP"
