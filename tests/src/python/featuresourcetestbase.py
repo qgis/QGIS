@@ -15,6 +15,7 @@ from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
@@ -681,6 +682,17 @@ class FeatureSourceTestCase:
         self.assertEqual(set(features), {2, 5})
         self.assertTrue(all_valid)
 
+        # using coordinate transform
+        request = QgsFeatureRequest().setCoordinateTransform(
+            QgsCoordinateTransform(
+                self.source.sourceCrs(),
+                QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext()
+            )).setDistanceWithin(QgsGeometry.fromWkt('LineString (-7035391 11036245, -7622045 11023301, -7763421 15092839)'), 250000)
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        self.assertEqual(set(features), {2, 5})
+        self.assertTrue(all_valid)
+
         # point geometry
         request = QgsFeatureRequest().setDistanceWithin(
             QgsGeometry.fromWkt('Point (-68.1 78.1)'), 3.6)
@@ -787,7 +799,7 @@ class FeatureSourceTestCase:
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
     def testGetFeaturesDestinationCrs(self):
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'),
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3857'),
                                                         QgsProject.instance().transformContext())
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         # test that features have been reprojected
@@ -803,7 +815,7 @@ class FeatureSourceTestCase:
 
         # when destination crs is set, filter rect should be in destination crs
         rect = QgsRectangle(-7650000, 10500000, -7200000, 15000000)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'),
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3857'),
                                                         QgsProject.instance().transformContext()).setFilterRect(rect)
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         self.assertEqual(set(features.keys()), {2, 4})
@@ -817,6 +829,52 @@ class FeatureSourceTestCase:
         rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
         request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356'),
                                                         QgsProject.instance().transformContext()).setFilterRect(rect)
+        features = [f for f in self.source.getFeatures(request)]
+        self.assertFalse(features)
+
+    def testGetFeaturesCoordinateTransform(self):
+        request = QgsFeatureRequest().setCoordinateTransform(
+            QgsCoordinateTransform(
+                self.source.sourceCrs(),
+                QgsCoordinateReferenceSystem('epsg:3857'),
+                QgsProject.instance().transformContext())
+        )
+        features = {f['pk']: f for f in self.source.getFeatures(request)}
+        # test that features have been reprojected
+        self.assertAlmostEqual(features[1].geometry().constGet().x(), -7829322, -5)
+        self.assertAlmostEqual(features[1].geometry().constGet().y(), 9967753, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().y(), 11334232, -5)
+        self.assertFalse(features[3].hasGeometry())
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().y(), 14531322, -5)
+        self.assertAlmostEqual(features[5].geometry().constGet().x(), -7917376, -5)
+        self.assertAlmostEqual(features[5].geometry().constGet().y(), 14493008, -5)
+
+        # when destination crs is set, filter rect should be in destination crs
+        rect = QgsRectangle(-7650000, 10500000, -7200000, 15000000)
+        request = QgsFeatureRequest().setCoordinateTransform(
+            QgsCoordinateTransform(
+                self.source.sourceCrs(),
+                QgsCoordinateReferenceSystem('epsg:3857'),
+                QgsProject.instance().transformContext())
+        ).setFilterRect(rect)
+        features = {f['pk']: f for f in self.source.getFeatures(request)}
+        self.assertEqual(set(features.keys()), {2, 4})
+        # test that features have been reprojected
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().y(), 11334232, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().y(), 14531322, -5)
+
+        # bad rect for transform
+        rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
+        request = QgsFeatureRequest().setCoordinateTransform(
+            QgsCoordinateTransform(
+                self.source.sourceCrs(),
+                QgsCoordinateReferenceSystem('epsg:28356'),
+                QgsProject.instance().transformContext())
+        ).setFilterRect(rect)
         features = [f for f in self.source.getFeatures(request)]
         self.assertFalse(features)
 

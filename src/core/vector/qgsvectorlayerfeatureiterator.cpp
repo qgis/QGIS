@@ -138,11 +138,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
   , mFetchedFid( false )
 {
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
-  {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
-    mHasValidTransform = mTransform.isValid();
-  }
+  mTransform = mRequest.calculateTransform( mSource->mCrs );
+  mHasValidTransform = mTransform.isValid();
 
   // prepare spatial filter geometries for optimal speed
   // since the mDistanceWithin* constraint member variables are all in the DESTINATION CRS,
@@ -238,8 +235,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   // but we remove any destination CRS parameter - that is handled in QgsVectorLayerFeatureIterator,
   // not at the provider level. Otherwise virtual fields depending on geometry would have incorrect
   // values
-  if ( mRequest.destinationCrs().isValid() )
+  if ( mRequest.coordinateTransform().isValid() || mRequest.destinationCrs().isValid() )
   {
+    mProviderRequest.setCoordinateTransform( QgsCoordinateTransform() );
     mProviderRequest.setDestinationCrs( QgsCoordinateReferenceSystem(), mRequest.transformContext() );
   }
 
