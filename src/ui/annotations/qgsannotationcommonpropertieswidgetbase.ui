@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>321</width>
-    <height>325</height>
+    <height>155</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,29 +26,7 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QGroupBox" name="mReferenceScaleGroup">
-     <property name="title">
-      <string>Reference Scale</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QgsScaleWidget" name="mReferenceScaleWidget" native="true">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-        <property name="toolTip">
-         <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="5" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Rendering</string>
@@ -68,6 +46,46 @@
         </property>
         <property name="maximum">
          <number>9999999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="mCalloutCheckBox">
+       <property name="text">
+        <string>Show callout</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mCalloutPropertiesButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="mReferenceScaleGroup">
+     <property name="title">
+      <string>Reference Scale</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsScaleWidget" name="mReferenceScaleWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
         </property>
        </widget>
       </item>

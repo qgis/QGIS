@@ -2180,6 +2180,7 @@ class CORE_EXPORT Qgis
     {
       ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
       SupportsReferenceScale = 1 << 1, //!< Item supports reference scale based rendering (since QGIS 3.40)
+      SupportsCallouts = 1 << 2, //!< Item supports callouts (since QGIS 3.40)
     };
     //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
@@ -2220,6 +2221,7 @@ class CORE_EXPORT Qgis
     enum class AnnotationItemNodeType : int
     {
       VertexHandle, //!< Node is a handle for manipulating vertices
+      CalloutHandle, //!< Node is a handle for manipulating callouts (since QGIS 3.40)
     };
     Q_ENUM( AnnotationItemNodeType )
 

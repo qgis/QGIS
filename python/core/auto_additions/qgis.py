@@ -2151,7 +2151,8 @@ Qgis.Axis.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
 Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__ = "Item supports reference scale based rendering (since QGIS 3.40)"
-Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ + '\n' + '* ``SupportsReferenceScale``: ' + Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__
+Qgis.AnnotationItemFlag.SupportsCallouts.__doc__ = "Item supports callouts (since QGIS 3.40)"
+Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ + '\n' + '* ``SupportsReferenceScale``: ' + Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__ + '\n' + '* ``SupportsCallouts``: ' + Qgis.AnnotationItemFlag.SupportsCallouts.__doc__
 # --
 Qgis.AnnotationItemFlag.baseClass = Qgis
 Qgis.AnnotationItemFlags.baseClass = Qgis
@@ -2171,7 +2172,8 @@ Qgis.AnnotationItemGuiFlags.baseClass = Qgis
 AnnotationItemGuiFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipulating vertices"
-Qgis.AnnotationItemNodeType.__doc__ = "Annotation item node types.\n\n.. versionadded:: 3.22\n\n" + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__
+Qgis.AnnotationItemNodeType.CalloutHandle.__doc__ = "Node is a handle for manipulating callouts (since QGIS 3.40)"
+Qgis.AnnotationItemNodeType.__doc__ = "Annotation item node types.\n\n.. versionadded:: 3.22\n\n" + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__ + '\n' + '* ``CalloutHandle``: ' + Qgis.AnnotationItemNodeType.CalloutHandle.__doc__
 # --
 Qgis.AnnotationItemNodeType.baseClass = Qgis
 # monkey patching scoped based enum

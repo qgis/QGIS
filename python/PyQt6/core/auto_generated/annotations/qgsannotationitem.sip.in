@@ -256,6 +256,76 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 .. seealso:: :py:func:`setUseSymbologyReferenceScale`
 %End
 
+    QgsCallout *callout() const;
+%Docstring
+Returns the item's callout renderer, responsible for drawing item callouts.
+
+Ownership is not transferred.
+
+By default items do not have a callout, and it is necessary to be explicitly set
+a callout style (via :py:func:`~QgsAnnotationItem.setCallout` ) and set the callout anchor geometry (via set
+:py:func:`~QgsAnnotationItem.setCalloutAnchor` ).
+
+.. note::
+
+   Callouts are only supported by items which return :py:class:`Qgis`.AnnotationItemFlag.SupportsCallouts from :py:func:`~QgsAnnotationItem.flags`.
+
+.. seealso:: :py:func:`setCallout`
+
+.. seealso:: :py:func:`calloutAnchor`
+
+.. versionadded:: 3.40
+%End
+
+    void setCallout( QgsCallout *callout /Transfer/ );
+%Docstring
+Sets the item's ``callout`` renderer, responsible for drawing item callouts.
+
+Ownership of ``callout`` is transferred to the item.
+
+.. note::
+
+   Callouts are only supported by items which return :py:class:`Qgis`.AnnotationItemFlag.SupportsCallouts from :py:func:`~QgsAnnotationItem.flags`.
+
+.. seealso:: :py:func:`callout`
+
+.. seealso:: :py:func:`setCalloutAnchor`
+
+.. versionadded:: 3.40
+%End
+
+    QgsGeometry calloutAnchor() const;
+%Docstring
+Returns the callout's anchor geometry.
+
+The anchor dictates the geometry which the option item :py:func:`~QgsAnnotationItem.callout` should connect to. Depending on the
+callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+
+The callout anchor geometry is in the parent layer's coordinate reference system.
+
+.. seealso:: :py:func:`callout`
+
+.. seealso:: :py:func:`setCalloutAnchor`
+
+.. versionadded:: 3.40
+%End
+
+    void setCalloutAnchor( const QgsGeometry &anchor );
+%Docstring
+Sets the callout's ``anchor`` geometry.
+
+The anchor dictates the geometry which the option item :py:func:`~QgsAnnotationItem.callout` should connect to. Depending on the
+callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+
+The callout ``anchor`` geometry must be specified in the parent layer's coordinate reference system.
+
+.. seealso:: :py:func:`setCallout`
+
+.. seealso:: :py:func:`calloutAnchor`
+
+.. versionadded:: 3.40
+%End
+
   protected:
 
     void copyCommonProperties( const QgsAnnotationItem *other );
@@ -282,6 +352,8 @@ Reads common properties from the base class from the given DOM ``element``.
 
 .. versionadded:: 3.22
 %End
+
+    void renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback *feedback );
 
   private:
     QgsAnnotationItem( const QgsAnnotationItem &other );
