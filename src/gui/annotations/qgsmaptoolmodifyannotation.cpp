@@ -647,6 +647,13 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   vertexNodeBand->setIconSize( scaleFactor * 5 );
   vertexNodeBand->setColor( QColor( 200, 0, 120, 255 ) );
 
+  QgsRubberBand *calloutNodeBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
+  calloutNodeBand->setWidth( scaleFactor );
+  calloutNodeBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+  calloutNodeBand->setColor( QColor( 120, 200, 0, 255 ) );
+  calloutNodeBand->setIcon( QgsRubberBand::ICON_X );
+  calloutNodeBand->setIconSize( scaleFactor * 5 );
+
   // store item nodes in a spatial index for quick searching
   mHoveredItemNodesSpatialIndex = std::make_unique< QgsAnnotationItemNodesSpatialIndex >();
   int index = 0;
@@ -669,6 +676,10 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
       case Qgis::AnnotationItemNodeType::VertexHandle:
         vertexNodeBand->addPoint( nodeMapPoint );
         break;
+
+      case Qgis::AnnotationItemNodeType::CalloutHandle:
+        calloutNodeBand->addPoint( nodeMapPoint );
+        break;
     }
 
     mHoveredItemNodesSpatialIndex->insert( index, QgsRectangle( nodeMapPoint.x(), nodeMapPoint.y(),
@@ -682,6 +693,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   }
 
   mHoveredItemNodeRubberBands.emplace_back( vertexNodeBand );
+  mHoveredItemNodeRubberBands.emplace_back( calloutNodeBand );
 }
 
 QSizeF QgsMapToolModifyAnnotation::deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event )

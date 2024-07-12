@@ -27,6 +27,7 @@ A widget for configuring common properties for :py:class:`QgsAnnotationItems`
 %Docstring
 Constructor for QgsAnnotationItemCommonPropertiesWidget.
 %End
+    ~QgsAnnotationItemCommonPropertiesWidget();
 
     void setItem( QgsAnnotationItem *item );
 %Docstring

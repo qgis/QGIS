@@ -1281,6 +1281,7 @@ The development version
     {
       ScaleDependentBoundingBox,
       SupportsReferenceScale,
+      SupportsCallouts,
     };
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
@@ -1301,6 +1302,7 @@ The development version
     enum class AnnotationItemNodeType /BaseType=IntEnum/
     {
       VertexHandle,
+      CalloutHandle,
     };
 
     enum class AnnotationItemEditOperationResult /BaseType=IntEnum/

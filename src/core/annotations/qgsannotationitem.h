@@ -20,6 +20,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
+#include "qgscallout.h"
 
 class QgsFeedback;
 class QgsMarkerSymbol;
@@ -80,14 +82,14 @@ class CORE_EXPORT QgsAnnotationItem
 
   public:
 
-    QgsAnnotationItem() = default;
+    QgsAnnotationItem();
 
 #ifndef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other ) = delete;
     QgsAnnotationItem &operator=( const QgsAnnotationItem &other ) = delete;
 #endif
 
-    virtual ~QgsAnnotationItem() = default;
+    virtual ~QgsAnnotationItem();
 
     /**
      * Returns item flags.
@@ -272,6 +274,66 @@ class CORE_EXPORT QgsAnnotationItem
      */
     void setSymbologyReferenceScale( double scale ) { mReferenceScale = scale; }
 
+    /**
+     * Returns the item's callout renderer, responsible for drawing item callouts.
+     *
+     * Ownership is not transferred.
+     *
+     * By default items do not have a callout, and it is necessary to be explicitly set
+     * a callout style (via setCallout() ) and set the callout anchor geometry (via set
+     * setCalloutAnchor() ).
+     *
+     * \note Callouts are only supported by items which return Qgis::AnnotationItemFlag::SupportsCallouts from flags().
+     *
+     * \see setCallout()
+     * \see calloutAnchor()
+     * \since QGIS 3.40
+     */
+    QgsCallout *callout() const;
+
+    /**
+     * Sets the item's \a callout renderer, responsible for drawing item callouts.
+     *
+     * Ownership of \a callout is transferred to the item.
+     *
+     * \note Callouts are only supported by items which return Qgis::AnnotationItemFlag::SupportsCallouts from flags().
+     *
+     * \see callout()
+     * \see setCalloutAnchor()
+     * \since QGIS 3.40
+     */
+    void setCallout( QgsCallout *callout SIP_TRANSFER );
+
+    /**
+     * Returns the callout's anchor geometry.
+     *
+     * The anchor dictates the geometry which the option item callout() should connect to. Depending on the
+     * callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+     *
+     * The callout anchor geometry is in the parent layer's coordinate reference system.
+     *
+     * \see callout()
+     * \see setCalloutAnchor()
+     *
+     * \since QGIS 3.40
+     */
+    QgsGeometry calloutAnchor() const;
+
+    /**
+     * Sets the callout's \a anchor geometry.
+     *
+     * The anchor dictates the geometry which the option item callout() should connect to. Depending on the
+     * callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+     *
+     * The callout \a anchor geometry must be specified in the parent layer's coordinate reference system.
+     *
+     * \see setCallout()
+     * \see calloutAnchor()
+     *
+     * \since QGIS 3.40
+     */
+    void setCalloutAnchor( const QgsGeometry &anchor );
+
   protected:
 
     /**
@@ -297,12 +359,17 @@ class CORE_EXPORT QgsAnnotationItem
      */
     bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 
+    void renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback *feedback );
+
   private:
 
     int mZIndex = 0;
     bool mEnabled = true;
     bool mUseReferenceScale = false;
     double mReferenceScale = 0;
+
+    std::unique_ptr< QgsCallout > mCallout;
+    QgsGeometry mCalloutAnchor;
 
 #ifdef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other );

@@ -34,6 +34,10 @@ from qgis.core import (
     QgsRenderContext,
     QgsTextFormat,
     QgsVertexId,
+    QgsCallout,
+    QgsBalloonCallout,
+    QgsGeometry,
+    QgsSimpleLineCallout
 )
 
 import unittest
@@ -83,7 +87,11 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         Test nodes for item
         """
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
-        self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+        context = QgsAnnotationItemEditContext()
+        context.setCurrentItemBounds(QgsRectangle(12, 13, 20, 23))
+        self.assertEqual(item.nodesV2(context),
+                         [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                          QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(16, 18), Qgis.AnnotationItemNodeType.CalloutHandle)])
 
     def test_transform(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
@@ -98,6 +106,13 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
 
         self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(14, 13), QgsPoint(17, 18)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.point().asWkt(), 'POINT(17 18)')
+
+        # move callout handle
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(1, 3)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.point().asWkt(), 'POINT(17 18)')
+        self.assertEqual(item.calloutAnchor().asWkt(), 'Point (1 3)')
+        # callout should have been automatically created
+        self.assertIsInstance(item.callout(), QgsCallout)
 
     def test_transient_move_operation(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
@@ -137,6 +152,8 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         item.setUseSymbologyReferenceScale(True)
         item.setSymbologyReferenceScale(5000)
         item.setRotationMode(Qgis.SymbolRotationMode.RespectMapRotation)
+        item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 3)'))
+        item.setCallout(QgsBalloonCallout())
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -152,6 +169,8 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         self.assertTrue(s2.useSymbologyReferenceScale())
         self.assertEqual(s2.symbologyReferenceScale(), 5000)
         self.assertEqual(s2.rotationMode(), Qgis.SymbolRotationMode.RespectMapRotation)
+        self.assertEqual(s2.calloutAnchor().asWkt(), 'Point (1 3)')
+        self.assertIsInstance(s2.callout(), QgsBalloonCallout)
 
     def testClone(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
@@ -164,6 +183,8 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         item.setUseSymbologyReferenceScale(True)
         item.setSymbologyReferenceScale(5000)
         item.setRotationMode(Qgis.SymbolRotationMode.RespectMapRotation)
+        item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 3)'))
+        item.setCallout(QgsBalloonCallout())
 
         item2 = item.clone()
         self.assertEqual(item2.text(), 'my text')
@@ -176,6 +197,8 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         self.assertTrue(item2.useSymbologyReferenceScale())
         self.assertEqual(item2.symbologyReferenceScale(), 5000)
         self.assertEqual(item2.rotationMode(), Qgis.SymbolRotationMode.RespectMapRotation)
+        self.assertEqual(item2.calloutAnchor().asWkt(), 'Point (1 3)')
+        self.assertIsInstance(item2.callout(), QgsBalloonCallout)
 
     def testRenderMarker(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12.3, 13.2))
@@ -356,6 +379,42 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
             painter.end()
 
         self.assertTrue(self.image_check('pointtext_item_transform', 'pointtext_item_transform', image))
+
+    def testRenderCallout(self):
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12.3, 13.2))
+        item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 5)'))
+        callout = QgsSimpleLineCallout()
+        callout.lineSymbol().setWidth(1)
+        item.setCallout(callout)
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(20)
+        item.setFormat(format)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(0, 5, 26, 11))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('pointtext_callout', 'pointtext_callout', image))
 
 
 if __name__ == '__main__':

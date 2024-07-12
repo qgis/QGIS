@@ -17,6 +17,13 @@
 
 #include "qgsannotationitem.h"
 #include "qgsannotationitemnode.h"
+#include "qgscalloutsregistry.h"
+#include "qgsapplication.h"
+#include "qgsrendercontext.h"
+
+QgsAnnotationItem::QgsAnnotationItem() = default;
+
+QgsAnnotationItem::~QgsAnnotationItem() = default;
 
 Qgis::AnnotationItemFlags QgsAnnotationItem::flags() const
 {
@@ -59,28 +66,104 @@ QList<QgsAnnotationItemNode> QgsAnnotationItem::nodesV2( const QgsAnnotationItem
   Q_NOWARN_DEPRECATED_POP
 }
 
+QgsCallout *QgsAnnotationItem::callout() const
+{
+  return mCallout.get();
+}
+
+void QgsAnnotationItem::setCallout( QgsCallout *callout )
+{
+  mCallout.reset( callout );
+}
+
+QgsGeometry QgsAnnotationItem::calloutAnchor() const
+{
+  return mCalloutAnchor;
+}
+
+void QgsAnnotationItem::setCalloutAnchor( const QgsGeometry &anchor )
+{
+  mCalloutAnchor = anchor;
+}
+
 void QgsAnnotationItem::copyCommonProperties( const QgsAnnotationItem *other )
 {
   setEnabled( other->enabled() );
   setZIndex( other->zIndex() );
   setUseSymbologyReferenceScale( other->useSymbologyReferenceScale() );
   setSymbologyReferenceScale( other->symbologyReferenceScale() );
+  if ( QgsCallout *callout = other->callout() )
+    setCallout( callout->clone() );
+  else
+    setCallout( nullptr );
+  setCalloutAnchor( other->calloutAnchor() );
 }
 
-bool QgsAnnotationItem::writeCommonProperties( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
+bool QgsAnnotationItem::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "enabled" ), static_cast<int>( enabled() ) );
   element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.setAttribute( QStringLiteral( "useReferenceScale" ), useSymbologyReferenceScale() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "referenceScale" ), qgsDoubleToString( symbologyReferenceScale() ) );
+
+  if ( mCallout )
+  {
+    element.setAttribute( QStringLiteral( "calloutType" ), mCallout->type() );
+    mCallout->saveProperties( doc, element, context );
+  }
+  if ( !mCalloutAnchor.isEmpty() )
+  {
+    element.setAttribute( QStringLiteral( "calloutAnchor" ), mCalloutAnchor.asWkt() );
+  }
   return true;
 }
 
-bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
 {
   setEnabled( element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() );
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
   setUseSymbologyReferenceScale( element.attribute( QStringLiteral( "useReferenceScale" ), QStringLiteral( "0" ) ).toInt() );
   setSymbologyReferenceScale( element.attribute( QStringLiteral( "referenceScale" ) ).toDouble() );
+
+  const QString calloutType = element.attribute( QStringLiteral( "calloutType" ) );
+  if ( calloutType.isEmpty() )
+  {
+    mCallout.reset();
+  }
+  else
+  {
+    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, element.firstChildElement( QStringLiteral( "callout" ) ), context ) );
+    if ( !mCallout )
+      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+  }
+
+  const QString calloutAnchorWkt = element.attribute( QStringLiteral( "calloutAnchor" ) );
+  setCalloutAnchor( calloutAnchorWkt.isEmpty() ? QgsGeometry() : QgsGeometry::fromWkt( calloutAnchorWkt ) );
+
   return true;
+}
+
+void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback * )
+{
+  if ( !mCallout || mCalloutAnchor.isEmpty() )
+    return;
+
+  // anchor must be in painter coordinates
+  QgsGeometry anchor = mCalloutAnchor;
+  if ( context.coordinateTransform().isValid() )
+  {
+    try
+    {
+      anchor.transform( context.coordinateTransform() );
+    }
+    catch ( QgsCsException & )
+    {
+      return;
+    }
+  }
+  anchor.transform( context.mapToPixel().transform() );
+
+  mCallout->startRender( context );
+  mCallout->render( context, rect, angle, anchor, calloutContext );
+  mCallout->stopRender( context );
 }
