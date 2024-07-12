@@ -761,6 +761,17 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateTransformContext transformContext() const;
 
     /**
+     * Calculates the coordinate transform to use to transform geometries
+     * when they are originally in \a sourceCrs.
+     *
+     * This method will return coordinateTransform() if it is set (ignoring \a sourceCrs), otherwise
+     * it will calculate an appriopriate transform from \a sourceCrs to destinationCrs().
+     *
+     * \since QGIS 3.40
+     */
+    QgsCoordinateTransform calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const;
+
+    /**
      * Sets the coordinate \a transform which will be used to transform
      * the feature's geometries.
      *

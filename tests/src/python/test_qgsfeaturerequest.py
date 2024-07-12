@@ -381,7 +381,7 @@ class TestQgsFeatureRequest(QgisTestCase):
             QgsCoordinateTransform(
                 QgsCoordinateReferenceSystem('EPSG:3111'),
                 QgsCoordinateReferenceSystem('EPSG:3857'),
-            QgsCoordinateTransformContext()
+                QgsCoordinateTransformContext()
             )
         )
         self.assertTrue(req.coordinateTransform().isValid())
@@ -405,7 +405,7 @@ class TestQgsFeatureRequest(QgisTestCase):
             QgsCoordinateTransform(
                 QgsCoordinateReferenceSystem('EPSG:3111'),
                 QgsCoordinateReferenceSystem('EPSG:3857'),
-            QgsCoordinateTransformContext()
+                QgsCoordinateTransformContext()
             )
         )
 
@@ -501,7 +501,7 @@ class TestQgsFeatureRequest(QgisTestCase):
             QgsCoordinateTransform(
                 QgsCoordinateReferenceSystem('EPSG:3111'),
                 QgsCoordinateReferenceSystem('EPSG:3857'),
-            QgsCoordinateTransformContext()
+                QgsCoordinateTransformContext()
             )
         )
         self.assertFalse(req3.compare(req2))
@@ -527,6 +527,37 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertFalse(order1 == order2)
         order2 = QgsFeatureRequest.OrderBy([orderClause1, orderClause2])
         self.assertFalse(order1 == order2)
+
+    def test_calculate_transform(self):
+        """
+        Test transform calculation
+        """
+        req = QgsFeatureRequest()
+        # no transformation
+        transform = req.calculateTransform(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertFalse(transform.isValid())
+
+        # transform using destination crs
+        req.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'),
+                              QgsCoordinateTransformContext())
+        transform = req.calculateTransform(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertTrue(transform.isValid())
+        self.assertEqual(transform.sourceCrs().authid(), 'EPSG:4326')
+        self.assertEqual(transform.destinationCrs().authid(), 'EPSG:3857')
+
+        # transform using a specific coordinate transform, must take precedence
+        req.setCoordinateTransform(
+            QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem('EPSG:3111'),
+                QgsCoordinateReferenceSystem('EPSG:3857'),
+                QgsCoordinateTransformContext()
+            )
+        )
+        # source crs is ignored
+        transform = req.calculateTransform(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertTrue(transform.isValid())
+        self.assertEqual(transform.sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(transform.destinationCrs().authid(), 'EPSG:3857')
 
 
 if __name__ == '__main__':
