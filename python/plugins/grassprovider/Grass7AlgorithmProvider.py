@@ -131,7 +131,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.iconPath("/providerGrass.svg")
 
     def versionInfo(self):
-        return GrassUtils.installedVersion() or None
+        return Grass7Utils.installedVersion() or None
 
     def defaultVectorFileExtension(self, hasGeometry=True):
         # By default,'gpkg', but if OGR has not been compiled with sqlite3, then
