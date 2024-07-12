@@ -331,6 +331,19 @@ QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
   return mTransformContext;
 }
 
+QgsCoordinateTransform QgsFeatureRequest::calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const
+{
+  if ( mTransform.isValid() )
+  {
+    return mTransform;
+  }
+  else if ( sourceCrs.isValid() && mCrs != sourceCrs )
+  {
+    return QgsCoordinateTransform( sourceCrs, mCrs, mTransformContext );
+  }
+  return QgsCoordinateTransform();
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setCoordinateTransform( const QgsCoordinateTransform &transform )
 {
   mTransform = transform;
