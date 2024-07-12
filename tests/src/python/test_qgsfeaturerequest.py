@@ -22,6 +22,7 @@ from qgis.core import (
     QgsGeometry,
     QgsRectangle,
     QgsSimplifyMethod,
+    QgsCoordinateTransform
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -373,6 +374,20 @@ class TestQgsFeatureRequest(QgisTestCase):
         req.setRequestMayBeNested(True)
         self.assertTrue(req.requestMayBeNested())
 
+    def testCoordinateTransform(self):
+        req = QgsFeatureRequest()
+        self.assertFalse(req.coordinateTransform().isValid())
+        req.setCoordinateTransform(
+            QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem('EPSG:3111'),
+                QgsCoordinateReferenceSystem('EPSG:3857'),
+            QgsCoordinateTransformContext()
+            )
+        )
+        self.assertTrue(req.coordinateTransform().isValid())
+        self.assertEqual(req.coordinateTransform().sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(req.coordinateTransform().destinationCrs().authid(), 'EPSG:3857')
+
     def testAssignment(self):
         req = QgsFeatureRequest().setFilterFids([8, 9]).setFilterRect(QgsRectangle(1, 2, 3, 4)).setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid).setLimit(6).setFlags(QgsFeatureRequest.Flag.ExactIntersect).setSubsetOfAttributes([1, 4]).setTimeout(6).setRequestMayBeNested(True)
 
@@ -386,6 +401,13 @@ class TestQgsFeatureRequest(QgisTestCase):
         req.setSimplifyMethod(method)
         context = QgsCoordinateTransformContext()
         req.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'), context)
+        req.setCoordinateTransform(
+            QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem('EPSG:3111'),
+                QgsCoordinateReferenceSystem('EPSG:3857'),
+            QgsCoordinateTransformContext()
+            )
+        )
 
         req2 = QgsFeatureRequest(req)
         self.assertEqual(req2.limit(), 6)
@@ -401,6 +423,8 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertEqual(req2.destinationCrs().authid(), 'EPSG:3857')
         self.assertEqual(req2.timeout(), 6)
         self.assertTrue(req2.requestMayBeNested())
+        self.assertEqual(req2.coordinateTransform().sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(req2.coordinateTransform().destinationCrs().authid(), 'EPSG:3857')
 
         # copy distance within request
         req = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString( 0 0, 10 0, 11 2)'), 1.2)
@@ -411,7 +435,6 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertEqual(req2.filterRect(), QgsRectangle(-1.2, -1.2, 12.2, 3.2))
 
     def test_compare(self):
-
         req1 = QgsFeatureRequest().setFilterFids([8, 9]).setFilterRect(QgsRectangle(1, 2, 3, 4)).setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid).setLimit(6).setFlags(QgsFeatureRequest.Flag.ExactIntersect).setSubsetOfAttributes([1, 4]).setTimeout(6).setRequestMayBeNested(True)
         req2 = QgsFeatureRequest(req1)
         self.assertTrue(req1.compare(req1))
@@ -471,6 +494,21 @@ class TestQgsFeatureRequest(QgisTestCase):
         context.appendScope(scope)
         req3.setExpressionContext(context)
         self.assertTrue(req3.compare(req1))
+
+        # coordinate transform
+        req3 = QgsFeatureRequest(req2)
+        req2.setCoordinateTransform(
+            QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem('EPSG:3111'),
+                QgsCoordinateReferenceSystem('EPSG:3857'),
+            QgsCoordinateTransformContext()
+            )
+        )
+        self.assertFalse(req3.compare(req2))
+        req3.setCoordinateTransform(
+            req2.coordinateTransform()
+        )
+        self.assertTrue(req3.compare(req2))
 
     def test_order_by_equality(self):
 

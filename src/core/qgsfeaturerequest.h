@@ -29,7 +29,7 @@
 #include "qgssimplifymethod.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgscoordinatetransform.h"
 
 /**
  * \ingroup core
@@ -724,9 +724,29 @@ class CORE_EXPORT QgsFeatureRequest
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
+     * Returns the coordinate transform which will be used to transform
+     * the feature's geometries.
+     *
+     * If this transform is valid  then it will always be used to transform
+     * features, regardless of the destinationCrs() setting or the underlying
+     * feature source's actual CRS.
+     *
+     * \see setCoordinateTransform()
+     *
+     * \since QGIS 3.40
+     */
+    QgsCoordinateTransform coordinateTransform() const;
+
+    /**
      * Returns the destination coordinate reference system for feature's geometries,
      * or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
      * and all features will be left with their original geometry.
+     *
+     * \warning if coordinateTransform() returns a valid transform then the
+     * destinationCrs() will have no effect, and the coordinateTransform() will
+     * always be used to transform features.
+     *
+     * \see calculateTransform()
      * \see setDestinationCrs()
      * \see transformContext()
      */
@@ -739,6 +759,38 @@ class CORE_EXPORT QgsFeatureRequest
      * \see destinationCrs()
      */
     QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Sets the coordinate \a transform which will be used to transform
+     * the feature's geometries.
+     *
+     * If this transform is valid then it will always be used to transform
+     * features, regardless of the destinationCrs() setting or the underlying
+     * feature source's actual CRS.
+     *
+     * When a \a transform is set using setCoordinateTransform(), then any filterRect()
+     * or referenceGeometry() set on the request is expected to be in the
+     * same CRS as the destination CRS for the \a transform.
+     *
+     * The feature geometry transformation is performed
+     * after all filter expressions are tested and any virtual fields are
+     * calculated. Accordingly, any geometric expressions used in
+     * filterExpression() will be performed in the original
+     * source CRS. This ensures consistent results are returned regardless of the
+     * destination CRS. Similarly, virtual field values will be calculated using the
+     * original geometry in the source CRS, so these values are not affected by
+     * any destination CRS transform present in the feature request.
+     *
+     * \warning This method should be used with caution, and it is recommended
+     * to use the high-level setDestinationCrs() method instead. Setting a specific
+     * transform should only be done when there is a requirement to use a particular
+     * transform.
+     *
+     * \see coordinateTransform()
+     *
+     * \since QGIS 3.40
+     */
+    QgsFeatureRequest &setCoordinateTransform( const QgsCoordinateTransform &transform );
 
     /**
      * Sets the destination \a crs for feature's geometries. If set, all
@@ -759,6 +811,10 @@ class CORE_EXPORT QgsFeatureRequest
      * destination CRS. Similarly, virtual field values will be calculated using the
      * original geometry in the source CRS, so these values are not affected by
      * any destination CRS transform present in the feature request.
+     *
+     * \warning if coordinateTransform() returns a valid transform then the
+     * destinationCrs() will have no effect, and the coordinateTransform() will
+     * always be used to transform features.
      *
      * \see destinationCrs()
      */
@@ -952,6 +1008,7 @@ class CORE_EXPORT QgsFeatureRequest
     Qgis::InvalidGeometryCheck mInvalidGeometryFilter = Qgis::InvalidGeometryCheck::NoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+    QgsCoordinateTransform mTransform;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     int mTimeout = -1;
