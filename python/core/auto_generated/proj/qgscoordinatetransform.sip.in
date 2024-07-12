@@ -351,6 +351,14 @@ otherwise points are transformed from destination to source CRS.
 Returns ``True`` if the transform short circuits because the source and destination are equivalent.
 %End
 
+    bool hasVerticalComponent() const;
+%Docstring
+Returns ``True`` if the transform includes a vertical component, i.e. if both the :py:func:`~QgsCoordinateTransform.sourceCrs`
+and :py:func:`~QgsCoordinateTransform.destinationCrs` have a vertical axis.
+
+.. versionadded:: 3.40
+%End
+
     QString coordinateOperation() const;
 %Docstring
 Returns a Proj string representing the coordinate operation which will be used to transform

@@ -935,6 +935,11 @@ bool QgsCoordinateTransform::isShortCircuited() const
   return !d->mIsValid || d->mShortCircuit;
 }
 
+bool QgsCoordinateTransform::hasVerticalComponent() const
+{
+  return d->mIsValid && d->mHasVerticalComponent;
+}
+
 QString QgsCoordinateTransform::coordinateOperation() const
 {
   return d->mProjCoordinateOperation;
