@@ -20,6 +20,8 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgscoordinatetransform.h"
+#include "qgsvectorlayercache.h"
+#include <QPointer>
 
 class QgsVectorLayerCache;
 
@@ -84,7 +86,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 #endif
 
     QList< QgsFeatureId > mFeatureIds;
-    QgsVectorLayerCache *mVectorLayerCache = nullptr;
+    QPointer< QgsVectorLayerCache > mVectorLayerCache = nullptr;
     QList< QgsFeatureId >::ConstIterator mFeatureIdIterator;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
@@ -140,7 +142,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
 
   private:
     QgsFeatureIterator mFeatIt;
-    QgsVectorLayerCache *mVectorLayerCache = nullptr;
+    QPointer< QgsVectorLayerCache > mVectorLayerCache;
     QgsFeatureIds mFids;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;

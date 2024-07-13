@@ -99,7 +99,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
 {
   f.setValid( false );
 
-  if ( mClosed )
+  if ( mClosed || !mVectorLayerCache )
     return false;
 
   while ( mFeatureIdIterator != mFeatureIds.constEnd() )
@@ -174,7 +174,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
 
 bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
 {
-  if ( mClosed )
+  if ( mClosed || !mVectorLayerCache )
   {
     f.setValid( false );
     return false;
