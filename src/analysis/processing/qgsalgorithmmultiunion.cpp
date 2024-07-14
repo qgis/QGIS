@@ -60,6 +60,11 @@ QString QgsMultiUnionAlgorithm::shortHelpString() const
                         "for non-overlapping features, and attribute values from both layers for overlapping features." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiUnionAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsProcessingAlgorithm *QgsMultiUnionAlgorithm::createInstance() const
 {
   return new QgsMultiUnionAlgorithm();

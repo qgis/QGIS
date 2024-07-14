@@ -85,6 +85,11 @@ QString QgsTransectAlgorithm::shortHelpString() const
 
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsTransectAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsTransectAlgorithm *QgsTransectAlgorithm::createInstance() const
 {
   return new QgsTransectAlgorithm();

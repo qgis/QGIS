@@ -62,6 +62,11 @@ QString QgsSplitWithLinesAlgorithm::shortHelpString() const
                       "Intersection between geometries in both layers are considered as split points." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitWithLinesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
 {
   return new QgsSplitWithLinesAlgorithm();

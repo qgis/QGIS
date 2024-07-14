@@ -64,6 +64,11 @@ QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
                       "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractSpecificVerticesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QString QgsExtractSpecificVerticesAlgorithm::outputName() const
 {
   return QObject::tr( "Vertices" );

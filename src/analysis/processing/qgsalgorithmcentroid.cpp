@@ -64,6 +64,11 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsCentroidAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;
+}
+
 QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 {
   return new QgsCentroidAlgorithm();

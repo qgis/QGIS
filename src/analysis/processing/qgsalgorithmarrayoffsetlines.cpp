@@ -60,6 +60,11 @@ QString QgsCreateArrayOffsetLinesAlgorithm::shortDescription() const
   return QObject::tr( "Creates multiple offset copies of lines from a layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsCreateArrayOffsetLinesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsCreateArrayOffsetLinesAlgorithm *QgsCreateArrayOffsetLinesAlgorithm::createInstance() const
 {
   return new QgsCreateArrayOffsetLinesAlgorithm();

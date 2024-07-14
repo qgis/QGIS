@@ -182,6 +182,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QString helpUrl() const SIP_HOLDGIL;
 
     /**
+     * Returns the flags describing algorithm behavior for documentation purposes.
+     *
+     * The default is to return no flags.
+     *
+     * \since QGIS 3.40
+     */
+    virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
+
+    /**
      * Returns an icon for the algorithm.
      * \see svgIconPath()
     */

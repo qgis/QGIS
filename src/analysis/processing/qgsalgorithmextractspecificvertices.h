@@ -41,6 +41,7 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsExtractSpecificVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 

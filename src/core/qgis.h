@@ -3077,6 +3077,26 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProcessingAlgorithmFlags )
 
     /**
+     * Flags describing algorithm behavior for documentation purposes.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ProcessingAlgorithmDocumentationFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RegeneratesPrimaryKey = 1 << 0, //!< Algorithm always drops any existing primary keys or FID values and regenerates them in outputs
+      RegeneratesPrimaryKeyInSomeScenarios = 1 << 1, //!< Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters
+    };
+    Q_ENUM( ProcessingAlgorithmDocumentationFlag )
+
+    /**
+     * Flags describing algorithm behavior for documentation purposes.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( ProcessingAlgorithmDocumentationFlags, ProcessingAlgorithmDocumentationFlag )
+    Q_FLAG( ProcessingAlgorithmDocumentationFlags )
+
+    /**
      * Property availability, used for QgsProcessingAlgorithm::VectorProperties
      * in order to determine if properties are available or not.
      *
@@ -5373,6 +5393,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterInterfaceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmDocumentationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )

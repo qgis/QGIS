@@ -96,6 +96,11 @@ QString QgsJoinByAttributeAlgorithm::shortHelpString() const
                       "in each of them to define the join criteria." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsJoinByAttributeAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 {
   return new QgsJoinByAttributeAlgorithm();
