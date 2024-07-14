@@ -783,11 +783,7 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
   if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
   {
     QStringList flags;
-    for ( Qgis::ProcessingAlgorithmDocumentationFlag flag :
-          {
-            Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey,
-            Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios
-          } )
+    for (  Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList< Qgis::ProcessingAlgorithmDocumentationFlag>() )
     {
       if ( algorithm->documentationFlags() & flag )
       {
