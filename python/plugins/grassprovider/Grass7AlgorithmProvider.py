@@ -140,11 +140,11 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return False
 
     def supportedOutputVectorLayerExtensions(self):
-        # We use the same extensions than QGIS because:
+        # We use the same extensions as QGIS because:
         # - QGIS is using OGR like GRASS
         # - There are very chances than OGR version used in GRASS is
         # different from QGIS OGR version.
-        return QgsVectorFileWriter.supportedFormatExtensions()
+        return super().supportedOutputVectorLayerExtensions()
 
     def supportedOutputRasterLayerExtensions(self):
         return Grass7Utils.getSupportedOutputRasterExtensions()
