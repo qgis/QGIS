@@ -24,7 +24,8 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsField,
                        QgsFeatureSink,
                        QgsFeature,
@@ -89,6 +90,9 @@ class RandomPointsLayer(QgisAlgorithm):
 
     def displayName(self):
         return self.tr('Random points in layer bounds')
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

@@ -22,7 +22,8 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 import random
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsField,
+from qgis.core import (Qgis,
+                       QgsField,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsFields,
@@ -80,6 +81,9 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
     def displayName(self):
         return self.tr('Random points along line')
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
