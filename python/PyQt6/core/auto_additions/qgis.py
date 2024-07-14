@@ -3134,6 +3134,15 @@ Qgis.ProcessingAlgorithmFlags = lambda flags=0: Qgis.ProcessingAlgorithmFlag(fla
 QgsProcessingAlgorithm.Flags = Qgis.ProcessingAlgorithmFlags
 Qgis.ProcessingAlgorithmFlags.baseClass = Qgis
 ProcessingAlgorithmFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey.__doc__ = "Algorithm always drops any existing primary keys or FID values and regenerates them in outputs"
+Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKeyInSomeScenarios.__doc__ = "Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters"
+Qgis.ProcessingAlgorithmDocumentationFlag.__doc__ = "Flags describing algorithm behavior for documentation purposes.\n\n.. versionadded:: 3.40\n\n" + '* ``RegeneratesPrimaryKey``: ' + Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey.__doc__ + '\n' + '* ``RegeneratesPrimaryKeyInSomeScenarios``: ' + Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKeyInSomeScenarios.__doc__
+# --
+Qgis.ProcessingAlgorithmDocumentationFlag.baseClass = Qgis
+Qgis.ProcessingAlgorithmDocumentationFlags = lambda flags=0: Qgis.ProcessingAlgorithmDocumentationFlag(flags)
+Qgis.ProcessingAlgorithmDocumentationFlags.baseClass = Qgis
+ProcessingAlgorithmDocumentationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsProcessingAlgorithm.PropertyAvailability = Qgis.ProcessingPropertyAvailability
 # monkey patching scoped based enum
 QgsProcessingAlgorithm.NotAvailable = Qgis.ProcessingPropertyAvailability.NotAvailable

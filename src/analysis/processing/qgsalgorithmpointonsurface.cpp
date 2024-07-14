@@ -63,6 +63,11 @@ QString QgsPointOnSurfaceAlgorithm::shortHelpString() const
   return QObject::tr( "Returns a point guaranteed to lie on the surface of a geometry." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsPointOnSurfaceAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;
+}
+
 QgsPointOnSurfaceAlgorithm *QgsPointOnSurfaceAlgorithm::createInstance() const
 {
   return new QgsPointOnSurfaceAlgorithm();

@@ -52,6 +52,11 @@ QString QgsPixelCentroidsFromPolygonsAlgorithm::shortHelpString() const
                       "for further raster sampling." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsPixelCentroidsFromPolygonsAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsPixelCentroidsFromPolygonsAlgorithm *QgsPixelCentroidsFromPolygonsAlgorithm::createInstance() const
 {
   return new QgsPixelCentroidsFromPolygonsAlgorithm();

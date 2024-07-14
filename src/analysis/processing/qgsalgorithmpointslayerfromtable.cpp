@@ -56,6 +56,11 @@ QString QgsPointsLayerFromTableAlgorithm::shortHelpString() const
                         "the resulting layer will be the input table." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsPointsLayerFromTableAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsPointsLayerFromTableAlgorithm *QgsPointsLayerFromTableAlgorithm::createInstance() const
 {
   return new QgsPointsLayerFromTableAlgorithm();

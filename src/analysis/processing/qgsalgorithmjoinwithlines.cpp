@@ -102,6 +102,11 @@ QString QgsJoinWithLinesAlgorithm::shortDescription() const
   return QObject::tr( "Creates lines joining two point layers, based on a common attribute value." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsJoinWithLinesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsJoinWithLinesAlgorithm *QgsJoinWithLinesAlgorithm::createInstance() const
 {
   return new QgsJoinWithLinesAlgorithm();

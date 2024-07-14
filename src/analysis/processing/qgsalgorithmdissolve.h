@@ -56,6 +56,7 @@ class QgsDissolveAlgorithm : public QgsCollectorAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsDissolveAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -83,6 +84,7 @@ class QgsCollectAlgorithm : public QgsCollectorAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsCollectAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

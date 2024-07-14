@@ -76,6 +76,11 @@ QString QgsLineIntersectionAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsLineIntersectionAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsLineIntersectionAlgorithm *QgsLineIntersectionAlgorithm::createInstance() const
 {
   return new QgsLineIntersectionAlgorithm();

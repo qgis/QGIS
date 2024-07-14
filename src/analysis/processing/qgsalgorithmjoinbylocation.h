@@ -46,6 +46,7 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsJoinByLocationAlgorithm *createInstance() const override SIP_FACTORY;
 
     /**

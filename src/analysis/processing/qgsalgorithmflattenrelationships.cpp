@@ -59,6 +59,11 @@ QString QgsFlattenRelationshipsAlgorithm::shortHelpString() const
                       "the attributes for the related features." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsFlattenRelationshipsAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 Qgis::ProcessingAlgorithmFlags QgsFlattenRelationshipsAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;

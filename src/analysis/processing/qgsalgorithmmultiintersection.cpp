@@ -55,6 +55,11 @@ QString QgsMultiIntersectionAlgorithm::shortHelpString() const
                       "from both the Input and Overlay layers." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiIntersectionAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsProcessingAlgorithm *QgsMultiIntersectionAlgorithm::createInstance() const
 {
   return new QgsMultiIntersectionAlgorithm();

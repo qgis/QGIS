@@ -43,6 +43,7 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsExtractVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

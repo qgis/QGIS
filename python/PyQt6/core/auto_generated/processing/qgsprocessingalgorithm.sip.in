@@ -148,6 +148,15 @@ Returns a url pointing to the algorithm's help page.
 .. seealso:: :py:func:`shortHelpString`
 %End
 
+    virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const /HoldGIL/;
+%Docstring
+Returns the flags describing algorithm behavior for documentation purposes.
+
+The default is to return no flags.
+
+.. versionadded:: 3.40
+%End
+
     virtual QIcon icon() const /HoldGIL/;
 %Docstring
 Returns an icon for the algorithm.

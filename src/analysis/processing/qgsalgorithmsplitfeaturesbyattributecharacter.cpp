@@ -64,6 +64,11 @@ QString QgsSplitFeaturesByAttributeCharacterAlgorithm::shortDescription() const
   return QObject::tr( "Splits features into multiple output features by splitting a field by a character." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitFeaturesByAttributeCharacterAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QList<int> QgsSplitFeaturesByAttributeCharacterAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );

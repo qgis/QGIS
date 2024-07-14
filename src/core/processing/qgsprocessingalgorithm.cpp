@@ -77,6 +77,11 @@ QString QgsProcessingAlgorithm::helpUrl() const
   return QString();
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsProcessingAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlags();
+}
+
 QIcon QgsProcessingAlgorithm::icon() const
 {
   return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );

@@ -41,6 +41,7 @@ class QgsArrayTranslatedFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsArrayTranslatedFeaturesAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 

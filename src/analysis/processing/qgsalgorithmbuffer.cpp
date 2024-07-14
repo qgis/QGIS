@@ -81,6 +81,11 @@ QString QgsBufferAlgorithm::shortHelpString() const
                       "The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsBufferAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;
+}
+
 QgsBufferAlgorithm *QgsBufferAlgorithm::createInstance() const
 {
   return new QgsBufferAlgorithm();

@@ -1773,6 +1773,15 @@ The development version
     typedef QFlags<Qgis::ProcessingAlgorithmFlag> ProcessingAlgorithmFlags;
 
 
+    enum class ProcessingAlgorithmDocumentationFlag
+    {
+      RegeneratesPrimaryKey,
+      RegeneratesPrimaryKeyInSomeScenarios,
+    };
+
+    typedef QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> ProcessingAlgorithmDocumentationFlags;
+
+
     enum class ProcessingPropertyAvailability
       {
       NotAvailable,
@@ -3116,6 +3125,8 @@ QFlags<Qgis::RasterProviderCapability> operator|(Qgis::RasterProviderCapability 
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 
 QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
+
+QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> operator|(Qgis::ProcessingAlgorithmDocumentationFlag f1, QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> f2);
 
 QFlags<Qgis::ProcessingFeatureSourceFlag> operator|(Qgis::ProcessingFeatureSourceFlag f1, QFlags<Qgis::ProcessingFeatureSourceFlag> f2);
 

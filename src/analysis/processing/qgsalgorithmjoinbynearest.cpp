@@ -110,6 +110,11 @@ QString QgsJoinByNearestAlgorithm::shortDescription() const
   return QObject::tr( "Joins a layer to another layer, using the closest features (nearest neighbors)." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsJoinByNearestAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsJoinByNearestAlgorithm *QgsJoinByNearestAlgorithm::createInstance() const
 {
   return new QgsJoinByNearestAlgorithm();

@@ -41,6 +41,7 @@ class QgsSplitLinesByLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QList<int> inputLayerTypes() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     QgsSplitLinesByLengthAlgorithm *createInstance() const override SIP_FACTORY;
