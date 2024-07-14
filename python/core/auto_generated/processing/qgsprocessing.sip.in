@@ -46,6 +46,13 @@ Converts a source ``type`` to a string representation.
 .. versionadded:: 3.6
 %End
 
+    static QString documentationFlagToString( Qgis::ProcessingAlgorithmDocumentationFlag flag );
+%Docstring
+Converts a documentation ``flag`` to a translated string.
+
+.. versionadded:: 3.40
+%End
+
     static const QString TEMPORARY_OUTPUT;
 
 };

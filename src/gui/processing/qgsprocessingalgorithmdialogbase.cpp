@@ -783,13 +783,16 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
   if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
   {
     QStringList flags;
-    if ( algorithm->documentationFlags() & Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey )
+    for ( Qgis::ProcessingAlgorithmDocumentationFlag flag :
+          {
+            Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey,
+            Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios
+          } )
     {
-      flags << tr( "This algorithm drops existing primary keys or FID values and regenerates them in output layers." );
-    }
-    if ( algorithm->documentationFlags() & Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios )
-    {
-      flags << tr( "This algorithm may drop existing primary keys or FID values and regenerate them in output layers, depending on the input parameters." );
+      if ( algorithm->documentationFlags() & flag )
+      {
+        flags << QgsProcessing::documentationFlagToString( flag );
+      }
     }
     result += QStringLiteral( "<ul><li><i>%1</i></li></ul>" ).arg( flags.join( QStringLiteral( "</i></li><li><i>" ) ) );
   }
