@@ -2420,6 +2420,10 @@ endif()
 
 if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
   install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+
+  if(WITH_INTERNAL_NLOHMANN_JSON)
+    install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
+  endif()
 else()
 
   set_target_properties(qgis_core PROPERTIES
