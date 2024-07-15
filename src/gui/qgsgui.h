@@ -296,6 +296,14 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
+    /**
+     * Initializes callout widgets.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.40
+     */
+    static void initCalloutWidgets() SIP_SKIP;
+
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;
     ///@endcond

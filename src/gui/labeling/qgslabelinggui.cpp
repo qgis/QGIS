@@ -30,8 +30,7 @@
 #include "qgslabelobstaclesettingswidget.h"
 #include "qgslabellineanchorwidget.h"
 #include "qgsprojectstylesettings.h"
-
-#include <mutex>
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -65,34 +64,6 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR );
 
   return expContext;
-}
-
-static bool _initCalloutWidgetFunction( const QString &name, QgsCalloutWidgetFunc f )
-{
-  QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-
-  QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
-  if ( !abstractMetadata )
-  {
-    QgsDebugError( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
-    return false;
-  }
-  QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
-  if ( !metadata )
-  {
-    QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ) .arg( name ) );
-    return false;
-  }
-  metadata->setWidgetFunction( f );
-  return true;
-}
-
-void QgsLabelingGui::initCalloutWidgets()
-{
-  _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
-  _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
-  _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
-  _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
 }
 
 void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
@@ -265,12 +236,9 @@ QgsLabelingGui::QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, con
   , mMode( NoLabels )
   , mCanvas( mapCanvas )
 {
+  QgsGui::initCalloutWidgets();
+
   mGeomType = geomType;
-  static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-    initCalloutWidgets();
-  } );
 
   mFontMultiLineAlignComboBox->addItem( tr( "Left" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Left ) );
   mFontMultiLineAlignComboBox->addItem( tr( "Center" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Center ) );
