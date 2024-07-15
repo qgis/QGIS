@@ -149,7 +149,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       renderPass->setShaderProgram( shaderProgram );
       technique->addRenderPass( renderPass );
 
-      int opacity = mOpacity * 255;
+      int opacity = static_cast<int>( mOpacity * 255.0 );
       QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
