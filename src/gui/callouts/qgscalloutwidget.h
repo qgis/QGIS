@@ -51,7 +51,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      * Sets the \a callout to show in the widget. Ownership is not transferred.
      * \see callout()
      */
-    virtual void setCallout( QgsCallout *callout ) = 0;
+    virtual void setCallout( const QgsCallout *callout ) = 0;
 
     /**
      * Returns the callout defined by the current settings in the widget. Ownership is not transferred,
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsSimpleLineCalloutWidget( vl ); }
 
-    void setCallout( QgsCallout *callout ) override;
+    void setCallout( const QgsCallout *callout ) override;
 
     QgsCallout *callout() override;
 
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsCurvedLineCalloutWidget( vl ); }
 
-    void setCallout( QgsCallout *callout ) override;
+    void setCallout( const QgsCallout *callout ) override;
 
     QgsCallout *callout() override;
 
@@ -241,7 +241,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsBalloonCalloutWidget( vl ); }
 
-    void setCallout( QgsCallout *callout ) override;
+    void setCallout( const QgsCallout *callout ) override;
 
     QgsCallout *callout() override;
 

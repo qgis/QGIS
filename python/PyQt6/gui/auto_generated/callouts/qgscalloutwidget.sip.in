@@ -29,7 +29,7 @@ Constructor for QgsCalloutWidget.
 :param parent: parent widget
 %End
 
-    virtual void setCallout( QgsCallout *callout ) = 0;
+    virtual void setCallout( const QgsCallout *callout ) = 0;
 %Docstring
 Sets the ``callout`` to show in the widget. Ownership is not transferred.
 

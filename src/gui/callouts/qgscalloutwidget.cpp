@@ -186,7 +186,7 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsMapLayer *vl, QWidget
   mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
 }
 
-void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
+void QgsSimpleLineCalloutWidget::setCallout( const QgsCallout *callout )
 {
   if ( !callout )
     return;
@@ -408,7 +408,7 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget
   mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
 }
 
-void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
+void QgsCurvedLineCalloutWidget::setCallout( const QgsCallout *callout )
 {
   if ( !callout )
     return;
@@ -657,7 +657,7 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *pare
   mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
 }
 
-void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
+void QgsBalloonCalloutWidget::setCallout( const QgsCallout *callout )
 {
   if ( !callout )
     return;
