@@ -453,7 +453,10 @@ void QgsGui::initCalloutWidgets()
       {
         QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ) .arg( name ) );
       }
-      metadata->setWidgetFunction( f );
+      else
+      {
+        metadata->setWidgetFunction( f );
+      }
     };
 
     _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
