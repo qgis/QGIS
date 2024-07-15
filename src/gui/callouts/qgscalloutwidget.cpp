@@ -29,7 +29,7 @@ QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
   if ( auto *lExpressionContext = mContext.expressionContext() )
     return *lExpressionContext;
 
-  QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( vectorLayer() ) );
+  QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( layer() ) );
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, QColor(), true ) );
   expContext << symbolScope;
@@ -72,7 +72,7 @@ QgsSymbolWidgetContext QgsCalloutWidget::context() const
 
 void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key )
 {
-  button->init( static_cast< int >( key ), callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), mVectorLayer, true );
+  button->init( static_cast< int >( key ), callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), qobject_cast< QgsVectorLayer * >( mLayer ), true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsCalloutWidget::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsCalloutWidget::createAuxiliaryField );
 
@@ -82,14 +82,18 @@ void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *but
 void QgsCalloutWidget::createAuxiliaryField()
 {
   // try to create an auxiliary layer if not yet created
-  if ( !mVectorLayer->auxiliaryLayer() )
+  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  if ( !vectorLayer )
+    return;
+
+  if ( !vectorLayer->auxiliaryLayer() )
   {
-    QgsNewAuxiliaryLayerDialog dlg( mVectorLayer, this );
+    QgsNewAuxiliaryLayerDialog dlg( vectorLayer, this );
     dlg.exec();
   }
 
   // return if still not exists
-  if ( !mVectorLayer->auxiliaryLayer() )
+  if ( !vectorLayer->auxiliaryLayer() )
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
@@ -97,9 +101,9 @@ void QgsCalloutWidget::createAuxiliaryField()
   const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
-  if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
+  if ( !vectorLayer->auxiliaryLayer()->exists( def ) )
   {
-    mVectorLayer->auxiliaryLayer()->addAuxiliaryField( def );
+    vectorLayer->auxiliaryLayer()->addAuxiliaryField( def );
   }
 
   // update property with join field name from auxiliary storage
@@ -128,7 +132,7 @@ void QgsCalloutWidget::updateDataDefinedProperty()
 // QgsSimpleLineCalloutWidget
 //
 
-QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsMapLayer *vl, QWidget *parent )
   : QgsCalloutWidget( parent, vl )
 {
   setupUi( this );
@@ -138,7 +142,7 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
-  mCalloutLineStyleButton->setLayer( vl );
+  mCalloutLineStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
   mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
@@ -178,6 +182,8 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
 
   connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
+
+  mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
 }
 
 void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
@@ -320,7 +326,7 @@ void QgsSimpleLineCalloutWidget::drawToAllPartsToggled( bool active )
 // QgsManhattanLineCalloutWidget
 //
 
-QgsManhattanLineCalloutWidget::QgsManhattanLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+QgsManhattanLineCalloutWidget::QgsManhattanLineCalloutWidget( QgsMapLayer *vl, QWidget *parent )
   : QgsSimpleLineCalloutWidget( vl, parent )
 {
 
@@ -331,7 +337,7 @@ QgsManhattanLineCalloutWidget::QgsManhattanLineCalloutWidget( QgsVectorLayer *vl
 // QgsCurvedLineCalloutWidget
 //
 
-QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget *parent )
   : QgsCalloutWidget( parent, vl )
 {
   setupUi( this );
@@ -341,7 +347,7 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWid
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
-  mCalloutLineStyleButton->setLayer( vl );
+  mCalloutLineStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
   mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
@@ -398,6 +404,8 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWid
   } );
 
   connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCurvedLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
+
+  mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
 }
 
 void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
@@ -547,7 +555,7 @@ void QgsCurvedLineCalloutWidget::drawToAllPartsToggled( bool active )
 // QgsBalloonCalloutWidget
 //
 
-QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *parent )
   : QgsCalloutWidget( parent, vl )
 {
   setupUi( this );
@@ -557,7 +565,7 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
   mCalloutFillStyleButton->setDialogTitle( tr( "Balloon Symbol" ) );
   mCalloutFillStyleButton->registerExpressionContextGenerator( this );
 
-  mCalloutFillStyleButton->setLayer( vl );
+  mCalloutFillStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
   mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                          << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
@@ -645,6 +653,8 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
   } );
 
   connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBalloonCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
+
+  mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
 }
 
 void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
