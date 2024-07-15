@@ -277,6 +277,7 @@
 %Include auto_generated/auth/qgsauthsslerrorsdialog.sip
 %Include auto_generated/auth/qgsauthsslimportdialog.sip
 %Include auto_generated/auth/qgsauthtrustedcasdialog.sip
+%Include auto_generated/callouts/qgscalloutpanelwidget.sip
 %Include auto_generated/callouts/qgscalloutwidget.sip
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditor.sip

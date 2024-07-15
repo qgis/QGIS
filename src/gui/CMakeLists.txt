@@ -87,6 +87,7 @@ set(QGIS_GUI_SRCS
   effects/qgspainteffectpropertieswidget.cpp
   effects/qgspainteffectwidget.cpp
 
+  callouts/qgscalloutpanelwidget.cpp
   callouts/qgscalloutwidget.cpp
 
   attributeformconfig/qgsattributeformcontaineredit.cpp
@@ -1106,6 +1107,7 @@ set(QGIS_GUI_HDRS
   auth/qgsauthsslimportdialog.h
   auth/qgsauthtrustedcasdialog.h
 
+  callouts/qgscalloutpanelwidget.h
   callouts/qgscalloutwidget.h
 
   codeeditors/qgscodeeditor.h
