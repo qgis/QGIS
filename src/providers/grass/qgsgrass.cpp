@@ -2068,48 +2068,13 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString &gisdbase, const QStri
     QString &error )
 {
   QgsDebugMsgLevel( QStringLiteral( "gisdbase = %1 location = %2" ).arg( gisdbase, location ), 2 );
-  QgsCoordinateReferenceSystem crs;
-
-  // try getting SRID directly first
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem();
   try
   {
-    const QString srid = getInfo( QStringLiteral( "srid" ), gisdbase, location );
-    QgsDebugMsgLevel( QStringLiteral( "srid: %1" ).arg( srid ), 2 );
-    crs = QgsCoordinateReferenceSystem( srid );
-    if ( crs.isValid() )
-      return crs;
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    error = tr( "Cannot get SRID" ) + "\n" + e.what();
-    QgsDebugError( error );
-  }
-
-  // else try WKT
-  try
-  {
-    const QString wkt = getInfo( QStringLiteral( "wkt" ), gisdbase, location );
-    QgsDebugMsgLevel( QStringLiteral( "wkt: %1" ).arg( wkt ), 2 );
+    QString wkt = getInfo( QStringLiteral( "proj" ), gisdbase, location );
+    QgsDebugMsgLevel( "wkt: " + wkt, 2 );
     crs = QgsCoordinateReferenceSystem::fromWkt( wkt );
     QgsDebugMsgLevel( "crs.toWkt: " + crs.toWkt(), 2 );
-    if ( crs.isValid() )
-      return crs;
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    error = tr( "Cannot get projection" ) + "\n" + e.what();
-    QgsDebugError( error );
-  }
-
-  //else try lossy old proj properties approach
-  try
-  {
-    const QString wktFromProjString = getInfo( QStringLiteral( "proj" ), gisdbase, location );
-    QgsDebugMsgLevel( QStringLiteral( "WKT from proj string: %1" ).arg( wktFromProjString ), 2 );
-    crs = QgsCoordinateReferenceSystem::fromWkt( wktFromProjString );
-    QgsDebugMsgLevel( "crs.toWkt: " + crs.toWkt(), 2 );
-    if ( crs.isValid() )
-      return crs;
   }
   catch ( QgsGrass::Exception &e )
   {
