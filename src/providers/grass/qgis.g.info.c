@@ -53,7 +53,7 @@ int main( int argc, char **argv )
   info_opt->key = "info";
   info_opt->type = TYPE_STRING;
   info_opt->description = "info key";
-  info_opt->options = "proj,wkt,srid,window,size,query,info,colors,stats";
+  info_opt->options = "proj,window,size,query,info,colors,stats";
 
   rast_opt = G_define_standard_option( G_OPT_R_INPUT );
   rast_opt->key = "rast";
@@ -107,6 +107,7 @@ int main( int argc, char **argv )
   if ( strcmp( "proj", info_opt->answer ) == 0 )
   {
     G_get_window( &window );
+    /* code from g.proj */
     if ( window.proj != PROJECTION_XY )
     {
       struct Key_Value *projinfo, *projunits;
@@ -115,30 +116,6 @@ int main( int argc, char **argv )
       projunits = G_get_projunits();
       wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
       fprintf( stdout, "%s", wkt );
-    }
-  }
-  else if ( strcmp( "wkt", info_opt->answer ) == 0 )
-  {
-    G_get_window( &window );
-    if ( window.proj != PROJECTION_XY )
-    {
-      char *wkt = G_get_projwkt();
-      if ( wkt )
-      {
-        fprintf( stdout, "%s", wkt );
-      }
-    }
-  }
-  else if ( strcmp( "srid", info_opt->answer ) == 0 )
-  {
-    G_get_window( &window );
-    if ( window.proj != PROJECTION_XY )
-    {
-      char *srid = G_get_projsrid();
-      if ( srid )
-      {
-        fprintf( stdout, "%s", srid );
-      }
     }
   }
   else if ( strcmp( "window", info_opt->answer ) == 0 )
