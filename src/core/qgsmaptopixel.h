@@ -120,7 +120,7 @@ class CORE_EXPORT QgsMapToPixel
     }
 
     /**
-     * Transforms device coordinates to map coordinates.
+     * Transforms map coordinates to device coordinates.
      *
      * This method modifies the given coordinates in place. It is intended as a fast way to do the
      * transform.
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsMapToPixel
 #ifndef SIP_RUN
 
     /**
-     * Transforms device coordinates to map coordinates.
+     * Transforms map coordinates to device coordinates.
      *
      * This method modifies the given coordinates in place. It is intended as a fast way to do the
      * transform.
