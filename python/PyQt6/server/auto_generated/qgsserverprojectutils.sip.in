@@ -432,6 +432,17 @@ Returns the WMS output CRS list.
 :return: the WMS output CRS list.
 %End
 
+    static QStringList wmsOutputCrsListAsOgcUrn( const QgsProject &project );
+%Docstring
+Returns the WMS output CRS list as OGC URNs.
+
+:param project: the QGIS project
+
+:return: the WMS output CRS list.
+
+.. versionadded:: 3.44
+%End
+
     static QgsRectangle wmsExtent( const QgsProject &project );
 %Docstring
 Returns the WMS Extent restriction.
