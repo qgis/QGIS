@@ -15,7 +15,7 @@ import os
 import tempfile
 
 from qgis.PyQt.QtCore import QFileInfo, qDebug
-from qgis.PyQt.QtNetwork import QSsl, QSslCertificate, QSslError, QSslSocket
+from qgis.PyQt.QtNetwork import QSsl, QSslCertificate, QSslError, QSslSocket, QSslConfiguration
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 from qgis.core import (
@@ -63,6 +63,16 @@ class TestQgsAuthManager(QgisTestCase):
         if (not self.authm.masterPasswordIsSet() or
                 not self.authm.masterPasswordHashInDatabase()):
             self.set_master_password()
+
+    def checkCA(self):
+        """For debugging the test"""
+
+        cert_ids = set([QgsAuthCertUtils.shaHexForCert(c) for c in QgsAuthCertUtils.certsFromFile(PKIDATA + '/chain_subissuer-issuer-root.pem')])
+        cfg = QSslConfiguration.defaultConfiguration()
+        # Get list of CA certificates
+        ids = set([QgsAuthCertUtils.shaHexForCert(c) for c in cfg.caCertificates()])
+        for c in cert_ids:
+            self.assertNotIn(c, ids, f'CA certificate {c} is already in the system')
 
     def widget_dialog(self, widget):
         dlg = QDialog()
@@ -139,6 +149,8 @@ class TestQgsAuthManager(QgisTestCase):
         msg = 'No system root CAs'
         self.assertIsNotNone(self.authm.systemRootCAs())
 
+        self.checkCA()
+
         # TODO: add more tests
         full_chain = 'chains_subissuer-issuer-root_issuer2-root2.pem'
         full_chain_path = os.path.join(PKIDATA, full_chain)
@@ -195,6 +207,18 @@ class TestQgsAuthManager(QgisTestCase):
         msg = 'Stored authorities not in trusted authorities cache'
         self.assertFalse(not_cached, msg)
 
+        # Cleanup
+        msg = "Authority certs could not be removed from database"
+        for c in ca_certs:
+            self.assertTrue(self.authm.removeCertAuthority(c), msg)
+
+        rebuild_caches()
+        trusted_certs = trusted_ca_certs()
+
+        still_cached = any([ca in trusted_certs for ca in ca_certs])
+        msg = 'Stored authorities still in trusted authorities cache'
+        self.assertFalse(still_cached, msg)
+
         # dlg = QgsAuthTrustedCAsDialog()
         # dlg.exec_()
 
@@ -203,6 +227,9 @@ class TestQgsAuthManager(QgisTestCase):
 
     # noinspection PyArgumentList
     def test_060_identities(self):
+
+        self.checkCA()
+
         client_cert_path = os.path.join(PKIDATA, 'fra_cert.pem')
         client_key_path = os.path.join(PKIDATA, 'fra_key_w-pass.pem')
         client_key_pass = 'password'
@@ -317,7 +344,9 @@ class TestQgsAuthManager(QgisTestCase):
             self.authm.removeAuthenticationConfig(bundle_configid), msg)
 
     def test_070_servers(self):
-        # return
+
+        self.checkCA()
+
         ssl_cert_path = os.path.join(PKIDATA, 'localhost_ssl_cert.pem')
 
         ssl_cert = QgsAuthCertUtils.certsFromFile(ssl_cert_path)[0]
@@ -385,6 +414,9 @@ class TestQgsAuthManager(QgisTestCase):
             self.authm.existsSslCertCustomConfig(cert_sha, hostport), msg)
 
     def test_080_auth_configid(self):
+
+        self.checkCA()
+
         msg = 'Could not generate a config id'
         self.assertIsNotNone(self.authm.uniqueConfigId(), msg)
 
@@ -509,6 +541,8 @@ class TestQgsAuthManager(QgisTestCase):
 
     def test_100_auth_db(self):
 
+        self.checkCA()
+
         for kind in self.config_list():
             config = self.config_obj(kind, base=False)
             msg = f'Could not store {kind} config'
@@ -562,6 +596,8 @@ class TestQgsAuthManager(QgisTestCase):
                         not self.authm.masterPasswordHashInDatabase(), msg)
 
         self.set_master_password()
+
+        self.checkCA()
 
     def test_110_pkcs12_cas(self):
         """Test if CAs can be read from a pkcs12 bundle"""
@@ -632,9 +668,10 @@ class TestQgsAuthManager(QgisTestCase):
             self.assertEqual(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), None, True)), 0)
 
             # Test that a chain with an untrusted CA is not valid when the addRootCa argument is true
-            # and a wrong domainis true
+            # and a wrong domain is true
             self.assertGreater(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'my.wrong.domain', True)), 0)
 
+        self.checkCA()
         testChain(PKIDATA + '/chain_subissuer-issuer-root.pem')
         testChain(PKIDATA + '/localhost_ssl_w-chain.pem')
         testChain(PKIDATA + '/fra_w-chain.pem')

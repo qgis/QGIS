@@ -2231,6 +2231,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate &cert )
 
   return false;
 }
+
 const QSslCertificate QgsAuthManager::certAuthority( const QString &id )
 {
   ensureInitialized();
@@ -3268,7 +3269,7 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
       return false;
     }
 
-    return defaultStorage->storeMethodConfig( authcfg, configstring );
+    return true;
   }
   else
   {
