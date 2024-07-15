@@ -392,6 +392,29 @@ class TestQgsFeature(QgisTestCase):
         self.assertTrue(f.isUnsetValue(3))
         self.assertTrue(f.isUnsetValue(4))
 
+    def test_geo_interface(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field', QVariant.String)
+        fields.append(field1)
+        field2 = QgsField('my_field2', QVariant.String)
+        fields.append(field2)
+        field3 = QgsField('my_field3', QVariant.Int)
+        fields.append(field3)
+
+        feat = QgsFeature(fields)
+        feat.setAttributes(['abc', 'def', 123])
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+        self.assertEqual(feat.__geo_interface__, {'geometry': {'coordinates': [123.0, 456.0], 'type': 'Point'},
+                                                  'properties': {'my_field': 'abc', 'my_field2': 'def', 'my_field3': 123},
+                                                  'type': 'Feature'})
+
+        feat.setAttributes([NULL, None, NULL])
+        self.assertEqual(feat.__geo_interface__, {
+            'geometry': {'coordinates': [123.0, 456.0], 'type': 'Point'},
+            'properties': {'my_field': None, 'my_field2': None,
+                           'my_field3': None},
+            'type': 'Feature'})
+
 
 if __name__ == '__main__':
     unittest.main()
