@@ -272,6 +272,8 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      */
     QgsAbstractRenderView *renderView( const QString &name );
 
+    static const QString AXIS3D_RENDERVIEW;
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
