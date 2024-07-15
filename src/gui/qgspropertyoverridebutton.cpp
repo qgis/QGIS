@@ -42,6 +42,12 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 {
   setFocusPolicy( Qt::StrongFocus );
 
+  QString ss = QStringLiteral( "QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }" );
+#ifdef Q_OS_MACX
+  ss += QLatin1String( "QgsPropertyOverrideButton::menu-indicator { width: 5px; }" );
+#endif
+  setStyleSheet( ss );
+
   int iconSize = QgsGuiUtils::scaleIconSize( 24 );
 
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
