@@ -14,9 +14,24 @@
  ***************************************************************************/
 
 #include "qgsabstractrenderview.h"
+#include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/qsubtreeenabler.h>
 
 QgsAbstractRenderView::QgsAbstractRenderView( QObject *parent )
   : QObject( parent )
 {
 
+}
+
+std::pair<Qt3DRender::QFrameGraphNode *, Qt3DRender::QSubtreeEnabler *> QgsAbstractRenderView::createSubtreeEnabler( Qt3DRender::QFrameGraphNode *parent )
+{
+  // in order to avoid a render pass on the render view, we add a NoDraw node
+  // which is disabled when the enabler is enabled, and vice versa
+  using namespace Qt3DRender;
+  auto noDraw = new QNoDraw( parent );
+  noDraw->setEnabled( false );
+  auto enabler = new QSubtreeEnabler( noDraw );
+  enabler->setEnablement( QSubtreeEnabler::Persistent );
+  connect( enabler, &QSubtreeEnabler::enabledChanged, noDraw, [noDraw]( bool enable ) { noDraw->setEnabled( !enable ); } );
+  return std::make_pair( noDraw, enabler );
 }

@@ -38,6 +38,7 @@ namespace Qt3DRender
   class QFrameGraphNode;
   class QLayer;
   class QViewport;
+  class QSubtreeEnabler;
 }
 
 class QgsFrameGraph;
@@ -67,7 +68,7 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
     //! Returns the viewport associated to this renderview
     virtual Qt3DRender::QViewport *viewport() = 0;
 
-    //! Returns the top node of this renderview branch. Should be a QSubtreeEnabler. Will be used to register the renderview.
+    //! Returns the top node of this renderview branch. Will be used to register the renderview.
     virtual Qt3DRender::QFrameGraphNode *topGraphNode() = 0;
 
     //! Enable or disable via \a enable the renderview sub tree
@@ -75,7 +76,9 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
 
     //! Returns true if renderview is enabled
     virtual bool isSubTreeEnabled() = 0;
-};
 
+  protected:
+    std::pair<Qt3DRender::QFrameGraphNode *, Qt3DRender::QSubtreeEnabler *> createSubtreeEnabler( Qt3DRender::QFrameGraphNode *parent = nullptr );
+};
 
 #endif // QGSABSTRACTRENDERVIEW_H
