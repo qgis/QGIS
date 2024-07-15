@@ -125,11 +125,16 @@ void QgsLayerPropertiesDialog::saveMetadataAsDefault()
   mMetadataWidget->acceptMetadata();
 
   bool defaultSavedFlag = false;
+  const QString infoWindowTitle = QObject::tr( "Save default metadata" );
   const QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
   if ( !defaultSavedFlag )
   {
-    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
+    QMessageBox::warning( this, infoWindowTitle, errorMsg );
     refocusDialog();
+  }
+  else
+  {
+    QMessageBox::information( this, infoWindowTitle, tr( "Metadata saved." ) );
   }
 }
 
