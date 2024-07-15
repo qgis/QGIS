@@ -18,7 +18,8 @@
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthconfigurationstorage.h"
 #include "qgslogger.h"
-#include "qgsthreadingutils.h"
+
+#include <QMutexLocker>
 
 QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
 {
@@ -36,7 +37,7 @@ bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorag
     return false;
   }
 
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QMutexLocker locker( &mMutex );
 
   for ( const auto &s : mStorages )
   {
@@ -65,7 +66,7 @@ bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorag
 bool QgsAuthConfigurationStorageRegistry::removeStorage( const QString &id )
 {
 
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QMutexLocker locker( &mMutex );
 
   for ( auto it = mStorages.begin(); it != mStorages.end(); ++it )
   {
@@ -83,7 +84,7 @@ bool QgsAuthConfigurationStorageRegistry::removeStorage( const QString &id )
 QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::storages() const
 {
 
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QMutexLocker locker( &mMutex );
 
   QList<QgsAuthConfigurationStorage *> storageList;
   for ( const auto &s : mStorages )
@@ -97,7 +98,7 @@ QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::storag
 QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::readyStorages() const
 {
 
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QMutexLocker locker( &mMutex );
 
   QList<QgsAuthConfigurationStorage *> readyStorages;
   for ( const auto &s : std::as_const( mStorages ) )
@@ -113,7 +114,8 @@ QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::readyS
 
 QgsAuthConfigurationStorage *QgsAuthConfigurationStorageRegistry::storage( const QString &id ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QMutexLocker locker( &mMutex );
 
   for ( const auto &s : std::as_const( mStorages ) )
   {
@@ -127,7 +129,8 @@ QgsAuthConfigurationStorage *QgsAuthConfigurationStorageRegistry::storage( const
 
 void QgsAuthConfigurationStorageRegistry::orderStorages( const QStringList &orderIds )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QMutexLocker locker( &mMutex );
 
   std::vector<std::unique_ptr<QgsAuthConfigurationStorage>> orderedStorages;
   for ( const auto &id : std::as_const( orderIds ) )

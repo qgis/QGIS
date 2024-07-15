@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QMutex>
 #include <memory>
 
 class QgsAuthConfigurationStorage;
@@ -111,6 +112,8 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
     void storageRemoved( const QString &id );
 
   private:
+
+    mutable QMutex mMutex;
 
     std::vector<std::unique_ptr<QgsAuthConfigurationStorage>> mStorages;
 };
