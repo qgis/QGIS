@@ -199,6 +199,11 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
   return nullptr;
 }
 
+Qgis::AnnotationItemFlags QgsAnnotationPolygonItem::flags() const
+{
+  return Qgis::AnnotationItemFlag::SupportsReferenceScale;
+}
+
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 {
   return new QgsAnnotationPolygonItem( new QgsPolygon() );

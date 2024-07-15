@@ -1,0 +1,376 @@
+"""QGIS Unit tests for QgsAnnotationPictureItem.
+
+From build dir, run: ctest -R QgsAnnotationPictureItem -V
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsAnnotationItemEditOperationAddNode,
+    QgsAnnotationItemEditOperationDeleteNode,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationTranslateItem,
+    QgsAnnotationItemNode,
+    QgsAnnotationPictureItem,
+    QgsCircularString,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCurvePolygon,
+    QgsFillSymbol,
+    QgsLineString,
+    QgsMapSettings,
+    QgsPoint,
+    QgsPointXY,
+    QgsPolygon,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsVertexId,
+)
+import unittest
+from qgis.testing import start_app, QgisTestCase
+
+from utilities import unitTestDataPath
+
+start_app()
+TEST_DATA_DIR = unitTestDataPath()
+
+
+class TestQgsAnnotationPictureItem(QgisTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return "annotation_layer"
+
+    def testBasic(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+
+        self.assertEqual(item.path(), self.get_test_data_path('rgb256x256.png').as_posix())
+        self.assertEqual(item.format(), Qgis.PictureFormat.Raster)
+        self.assertEqual(item.boundingBox().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        item.setBounds(QgsRectangle(100, 200, 300, 400))
+        item.setZIndex(11)
+        item.setPath(Qgis.PictureFormat.SVG, self.get_test_data_path('sample_svg.svg').as_posix())
+        item.setLockAspectRatio(False)
+        item.setBackgroundEnabled(True)
+        item.setFrameEnabled(True)
+        self.assertEqual(item.boundingBox().toString(3), '100.000,200.000 : 300.000,400.000')
+        self.assertEqual(item.path(), self.get_test_data_path('sample_svg.svg').as_posix())
+        self.assertEqual(item.format(), Qgis.PictureFormat.SVG)
+        self.assertEqual(item.zIndex(), 11)
+        self.assertFalse(item.lockAspectRatio())
+        self.assertTrue(item.backgroundEnabled())
+        self.assertTrue(item.frameEnabled())
+
+        item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
+        item.setFrameSymbol(QgsFillSymbol.createSimple(
+            {'color': '100,200,250', 'outline_color': 'black'}))
+        self.assertEqual(item.backgroundSymbol()[0].color(), QColor(200, 100, 100))
+        self.assertEqual(item.frameSymbol()[0].color(),
+                         QColor(100, 200, 250))
+
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        # nodes shouldn't form a closed ring
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(10, 20), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(30, 20), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(30, 40), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 3), QgsPointXY(10, 40), Qgis.AnnotationItemNodeType.VertexHandle)])
+
+    def test_transform(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.bounds().toString(3), '110.000,220.000 : 130.000,240.000')
+
+    def test_apply_move_node_edit(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.bounds().toString(3), '10.000,18.000 : 17.000,40.000')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(10, 18), QgsPoint(5, 13))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.bounds().toString(3), '5.000,13.000 : 17.000,40.000')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPoint(17, 14), QgsPoint(18, 38))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.bounds().toString(3), '5.000,13.000 : 18.000,38.000')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(5, 38), QgsPoint(2, 39))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.bounds().toString(3), '2.000,13.000 : 18.000,39.000')
+
+    def test_apply_delete_node_edit(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13))), Qgis.AnnotationItemEditOperationResult.Invalid)
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(15, 16))), Qgis.AnnotationItemEditOperationResult.Invalid)
+
+    def test_transient_move_operation(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((10 18, 17 18, 17 40, 10 40, 10 18))')
+
+    def test_transient_translate_operation(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((110 220, 130 220, 130 240, 110 240, 110 220))')
+
+    def testReadWriteXml(self):
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        item.setBackgroundEnabled(True)
+        item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
+        item.setFrameEnabled(True)
+        item.setFrameSymbol(QgsFillSymbol.createSimple({'color': '100,200,150', 'outline_color': 'black'}))
+        item.setZIndex(11)
+        item.setLockAspectRatio(False)
+
+        self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
+
+        s2 = QgsAnnotationPictureItem.create()
+        self.assertTrue(s2.readXml(elem, QgsReadWriteContext()))
+
+        self.assertEqual(s2.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+        self.assertEqual(s2.path(), self.get_test_data_path('rgb256x256.png').as_posix())
+        self.assertEqual(s2.format(), Qgis.PictureFormat.Raster)
+        self.assertEqual(s2.backgroundSymbol()[0].color(), QColor(200, 100, 100))
+        self.assertEqual(s2.frameSymbol()[0].color(),
+                         QColor(100, 200, 150))
+        self.assertEqual(s2.zIndex(), 11)
+        self.assertTrue(s2.frameEnabled())
+        self.assertTrue(s2.backgroundEnabled())
+        self.assertFalse(s2.lockAspectRatio())
+
+    def testClone(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        item.setBackgroundEnabled(True)
+        item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
+        item.setFrameEnabled(True)
+        item.setFrameSymbol(QgsFillSymbol.createSimple({'color': '100,200,150', 'outline_color': 'black'}))
+        item.setZIndex(11)
+        item.setLockAspectRatio(False)
+
+        s2 = item.clone()
+        self.assertEqual(s2.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+        self.assertEqual(s2.path(), self.get_test_data_path('rgb256x256.png').as_posix())
+        self.assertEqual(s2.format(), Qgis.PictureFormat.Raster)
+        self.assertEqual(s2.backgroundSymbol()[0].color(), QColor(200, 100, 100))
+        self.assertEqual(s2.frameSymbol()[0].color(),
+                         QColor(100, 200, 150))
+        self.assertEqual(s2.zIndex(), 11)
+        self.assertTrue(s2.frameEnabled())
+        self.assertTrue(s2.backgroundEnabled())
+        self.assertFalse(s2.lockAspectRatio())
+
+    def testRenderRasterLockedAspect(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(12, 13, 16, 15))
+        item.setLockAspectRatio(True)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('picture_raster_locked_aspect', 'picture_raster_locked_aspect', image))
+
+    def testRenderRasterUnlockedAspect(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(12, 13, 16, 15))
+        item.setLockAspectRatio(False)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('picture_raster_unlocked_aspect', 'picture_raster_unlocked_aspect', image))
+
+    def testRenderSvgLockedAspect(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.SVG, self.get_test_data_path('sample_svg.svg').as_posix(),
+                                        QgsRectangle(12, 13, 16, 15))
+        item.setLockAspectRatio(True)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('picture_svg_locked_aspect', 'picture_svg_locked_aspect', image))
+
+    def testRenderSvgUnlockedAspect(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.SVG, self.get_test_data_path('sample_svg.svg').as_posix(),
+                                        QgsRectangle(12, 13, 16, 15))
+        item.setLockAspectRatio(False)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('picture_svg_unlocked_aspect', 'picture_svg_unlocked_aspect', image))
+
+    def testRenderWithTransform(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(11.5, 13, 12, 13.5))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        settings.setExtent(QgsRectangle(1250958, 1386945, 1420709, 1532518))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('picture_transform', 'picture_transform', image))
+
+    def testRenderBackgroundFrame(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
+                                        QgsRectangle(12, 13, 16, 15))
+        item.setLockAspectRatio(True)
+        item.setFrameEnabled(True)
+        item.setBackgroundEnabled(True)
+        item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
+        item.setFrameSymbol(QgsFillSymbol.createSimple(
+            {'color': '100,200,250,120', 'outline_color': 'black', 'outline_width': 2}))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('picture_frame_background', 'picture_frame_background', image))
+
+
+if __name__ == '__main__':
+    unittest.main()

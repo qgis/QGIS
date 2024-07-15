@@ -46,6 +46,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const override;
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override SIP_FACTORY;
+    Qgis::AnnotationItemFlags flags() const override;
 
     /**
      * Creates a new linestring annotation item.

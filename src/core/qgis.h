@@ -2178,6 +2178,7 @@ class CORE_EXPORT Qgis
     enum class AnnotationItemFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
+      SupportsReferenceScale = 1 << 1, //!< Item supports reference scale based rendering (since QGIS 3.40)
     };
     //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )

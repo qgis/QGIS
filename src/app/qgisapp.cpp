@@ -834,6 +834,12 @@ void QgisApp::annotationItemTypeAdded( int id )
       return;
 
     QgsCreateAnnotationItemMapToolInterface *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+    if ( !tool )
+    {
+      action->setChecked( false );
+      return;
+    }
+
     tool->mapTool()->setAction( action );
     mMapCanvas->setMapTool( tool->mapTool() );
     if ( qobject_cast< QgsMapToolCapture * >( tool->mapTool() ) )

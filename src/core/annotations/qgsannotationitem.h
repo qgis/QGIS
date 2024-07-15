@@ -63,6 +63,10 @@ class CORE_EXPORT QgsAnnotationItem
     {
       sipType = sipType_QgsAnnotationLineTextItem;
     }
+    else if ( sipCpp->type() == QLatin1String( "picture" ) )
+    {
+      sipType = sipType_QgsAnnotationPictureItem;
+    }
     else
     {
       sipType = 0;

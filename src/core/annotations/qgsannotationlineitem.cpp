@@ -169,6 +169,11 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
   return nullptr;
 }
 
+Qgis::AnnotationItemFlags QgsAnnotationLineItem::flags() const
+{
+  return Qgis::AnnotationItemFlag::SupportsReferenceScale;
+}
+
 QgsAnnotationLineItem *QgsAnnotationLineItem::create()
 {
   return new QgsAnnotationLineItem( new QgsLineString() );

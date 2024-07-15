@@ -45,6 +45,7 @@ void QgsAnnotationItemCommonPropertiesWidget::setItem( QgsAnnotationItem *item )
   mSpinZIndex->setValue( item->zIndex() );
   mReferenceScaleGroup->setChecked( item->useSymbologyReferenceScale() );
   mReferenceScaleWidget->setScale( item->symbologyReferenceScale() );
+  mReferenceScaleGroup->setVisible( item->flags() & Qgis::AnnotationItemFlag::SupportsReferenceScale );
 }
 
 void QgsAnnotationItemCommonPropertiesWidget::updateItem( QgsAnnotationItem *item )

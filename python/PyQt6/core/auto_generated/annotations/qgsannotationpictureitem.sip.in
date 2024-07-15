@@ -1,0 +1,195 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpictureitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationPictureItem : QgsAnnotationItem
+{
+%Docstring(signature="appended")
+An annotation item which renders a picture.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationpictureitem.h"
+%End
+  public:
+
+    QgsAnnotationPictureItem( Qgis::PictureFormat format, const QString &path, const QgsRectangle &bounds );
+%Docstring
+Constructor for QgsAnnotationPictureItem, rendering the specified image ``path``
+within the specified ``bounds`` geometry.
+%End
+    ~QgsAnnotationPictureItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+
+
+    static QgsAnnotationPictureItem *create() /Factory/;
+%Docstring
+Creates a new polygon annotation item.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsAnnotationPictureItem *clone() const /Factory/;
+
+    virtual QgsRectangle boundingBox() const;
+
+
+    QgsRectangle bounds() const;
+%Docstring
+Returns the bounds of the picture.
+
+The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`setBounds`
+%End
+
+    void setBounds( const QgsRectangle &bounds );
+%Docstring
+Sets the ``bounds`` of the picture.
+
+The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`bounds`
+%End
+
+    QString path() const;
+%Docstring
+Returns the path of the image used to render the item.
+
+.. seealso:: :py:func:`setPath`
+%End
+
+    Qgis::PictureFormat format() const;
+%Docstring
+Returns the picture format.
+%End
+
+    void setPath( Qgis::PictureFormat format, const QString &path );
+%Docstring
+Sets the ``format`` and ``path`` of the image used to render the item.
+
+.. seealso:: :py:func:`path`
+
+.. seealso:: :py:func:`format`
+%End
+
+    bool lockAspectRatio() const;
+%Docstring
+Returns ``True`` if the aspect ratio of the picture will be retained.
+
+.. seealso:: :py:func:`setLockAspectRatio`
+%End
+
+    void setLockAspectRatio( bool locked );
+%Docstring
+Sets whether the aspect ratio of the picture will be retained.
+
+.. seealso:: :py:func:`lockAspectRatio`
+%End
+
+    bool backgroundEnabled() const;
+%Docstring
+Returns ``True`` if the item's background should be rendered.
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+
+.. seealso:: :py:func:`backgroundSymbol`
+%End
+
+    void setBackgroundEnabled( bool enabled );
+%Docstring
+Sets whether the item's background should be rendered.
+
+.. seealso:: :py:func:`backgroundEnabled`
+
+.. seealso:: :py:func:`setBackgroundSymbol`
+%End
+
+    const QgsFillSymbol *backgroundSymbol() const;
+%Docstring
+Returns the symbol used to render the item's background.
+
+.. seealso:: :py:func:`backgroundEnabled`
+
+.. seealso:: :py:func:`setBackgroundSymbol`
+%End
+
+    void setBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the item's background.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`backgroundSymbol`
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+%End
+
+    bool frameEnabled() const;
+%Docstring
+Returns ``True`` if the item's frame should be rendered.
+
+.. seealso:: :py:func:`setFrameEnabled`
+
+.. seealso:: :py:func:`frameSymbol`
+%End
+
+    void setFrameEnabled( bool enabled );
+%Docstring
+Sets whether the item's frame should be rendered.
+
+.. seealso:: :py:func:`frameEnabled`
+
+.. seealso:: :py:func:`setFrameSymbol`
+%End
+
+    const QgsFillSymbol *frameSymbol() const;
+%Docstring
+Returns the symbol used to render the item's frame.
+
+.. seealso:: :py:func:`frameEnabled`
+
+.. seealso:: :py:func:`setFrameSymbol`
+%End
+
+    void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the item's frame.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`frameSymbol`
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+%End
+
+  private:
+    QgsAnnotationPictureItem( const QgsAnnotationPictureItem &other );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpictureitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

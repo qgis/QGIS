@@ -72,7 +72,8 @@ bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &docu
 Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 {
   // in truth this should depend on whether the marker symbol is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
+         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodesV2( const QgsAnnotationItemEditContext & ) const

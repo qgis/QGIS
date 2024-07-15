@@ -1279,6 +1279,7 @@ The development version
     enum class AnnotationItemFlag
     {
       ScaleDependentBoundingBox,
+      SupportsReferenceScale,
     };
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 

@@ -24,6 +24,7 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationlinetextitem.h"
+#include "qgsannotationpictureitem.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgstextformatwidget.h"
 #include "qgsapplication.h"
@@ -604,6 +605,188 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
       mTextEdit->insertPlainText( "[%" + expression + "%]" );
     }
   }
+}
+
+
+//
+// QgsAnnotationPictureItemWidget
+//
+
+QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent )
+  : QgsAnnotationItemBaseWidget( parent )
+{
+  setupUi( this );
+
+  mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
+  mBackgroundSymbolButton->registerExpressionContextGenerator( this );
+  mBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  mBorderSymbolButton->setDialogTitle( tr( "Frame" ) );
+  mBorderSymbolButton->registerExpressionContextGenerator( this );
+
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
+  connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
+  connect( mSourceLineEdit, &QgsPictureSourceLineEditBase::sourceChanged, this, [ = ]( const QString & source )
+  {
+
+    if ( !mRadioSVG->isChecked() && QFileInfo( source ).suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      mRadioSVG->setChecked( true );
+    }
+
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mLockAspectRatioCheck, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mBorderCheckbox, &QGroupBox::toggled, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mBackgroundCheckbox, &QGroupBox::toggled, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mBackgroundSymbolButton, &QgsSymbolButton::changed, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mBorderSymbolButton, &QgsSymbolButton::changed, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+}
+
+QgsAnnotationPictureItemWidget::~QgsAnnotationPictureItemWidget() = default;
+
+QgsAnnotationItem *QgsAnnotationPictureItemWidget::createItem()
+{
+  QgsAnnotationPictureItem *newItem = mItem->clone();
+  updateItem( newItem );
+  return newItem;
+}
+
+void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationPictureItem *pictureItem = dynamic_cast< QgsAnnotationPictureItem * >( item ) )
+  {
+    pictureItem->setLockAspectRatio( mLockAspectRatioCheck->isChecked() );
+    const bool svg = mRadioSVG->isChecked();
+    const Qgis::PictureFormat newFormat = svg ? Qgis::PictureFormat::SVG : Qgis::PictureFormat::Raster;
+    const QString path = mSourceLineEdit->source();
+    pictureItem->setPath( newFormat, path );
+
+    pictureItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
+    pictureItem->setFrameEnabled( mBorderCheckbox->isChecked() );
+    pictureItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol< QgsFillSymbol >() );
+    pictureItem->setFrameSymbol( mBorderSymbolButton->clonedSymbol< QgsFillSymbol >() );
+
+    mPropertiesWidget->updateItem( pictureItem );
+  }
+}
+
+void QgsAnnotationPictureItemWidget::setDockMode( bool dockMode )
+{
+  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
+}
+
+void QgsAnnotationPictureItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  mPropertiesWidget->setContext( context );
+  mBackgroundSymbolButton->setMapCanvas( context.mapCanvas() );
+  mBackgroundSymbolButton->setMessageBar( context.messageBar() );
+  mBorderSymbolButton->setMapCanvas( context.mapCanvas() );
+  mBorderSymbolButton->setMessageBar( context.messageBar() );
+}
+
+QgsExpressionContext QgsAnnotationPictureItemWidget::createExpressionContext() const
+{
+  QgsExpressionContext expressionContext;
+  if ( context().expressionContext() )
+    expressionContext = *( context().expressionContext() );
+  else
+    expressionContext = QgsProject::instance()->createExpressionContext();
+  return expressionContext;
+}
+
+void QgsAnnotationPictureItemWidget::focusDefaultWidget()
+{
+  mSourceLineEdit->setFocus();
+}
+
+bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
+{
+  QgsAnnotationPictureItem *pictureItem = dynamic_cast< QgsAnnotationPictureItem * >( item );
+  if ( !pictureItem )
+    return false;
+
+  mItem.reset( pictureItem->clone() );
+
+  mBlockChangedSignal = true;
+  mPropertiesWidget->setItem( mItem.get() );
+
+  mLockAspectRatioCheck->setChecked( mItem->lockAspectRatio() );
+  switch ( pictureItem->format() )
+  {
+    case Qgis::PictureFormat::SVG:
+      mRadioSVG->setChecked( true );
+      break;
+    case Qgis::PictureFormat::Raster:
+      mRadioRaster->setChecked( true );
+      break;
+    case Qgis::PictureFormat::Unknown:
+      break;
+  }
+
+  mSourceLineEdit->setSource( pictureItem->path() );
+
+  mBackgroundCheckbox->setChecked( pictureItem->backgroundEnabled() );
+  if ( const QgsSymbol *symbol = pictureItem->backgroundSymbol() )
+    mBackgroundSymbolButton->setSymbol( symbol->clone() );
+
+  mBorderCheckbox->setChecked( pictureItem->frameEnabled() );
+  if ( const QgsSymbol *symbol = pictureItem->frameSymbol() )
+    mBorderSymbolButton->setSymbol( symbol->clone() );
+
+  mBlockChangedSignal = false;
+
+  return true;
+}
+
+void QgsAnnotationPictureItemWidget::modeChanged( bool checked )
+{
+  if ( !checked )
+    return;
+
+  const bool svg = mRadioSVG->isChecked();
+
+  if ( svg )
+    mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Svg );
+  else
+    mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Image );
+
+  if ( !mBlockChangedSignal )
+    emit itemChanged();
 }
 
 ///@endcond PRIVATE
