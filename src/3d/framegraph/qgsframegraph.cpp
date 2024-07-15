@@ -56,6 +56,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QClipPlane>
 #include "qgsabstractrenderview.h"
 
+const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
@@ -751,7 +752,7 @@ void QgsFrameGraph::unregisterRenderView( const QString &name )
   std::shared_ptr<QgsAbstractRenderView> renderView = mRenderViewMap.find( name ).value();
   if ( renderView )
   {
-    renderView->topGraphNode()->setParent( ( QNode * )nullptr );
+    renderView->topGraphNode()->setParent( ( QNode * ) nullptr );
     mRenderViewMap.remove( name );
   }
 }
@@ -774,9 +775,9 @@ bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const
 
 void QgsFrameGraph::setRenderViewEnabled( const QString &name, bool enable )
 {
-  if ( mRenderViewMap [name] != nullptr )
+  if ( mRenderViewMap[name] != nullptr )
   {
-    mRenderViewMap [name]->setEnabled( enable );
+    mRenderViewMap[name]->setEnabled( enable );
   }
 }
 
@@ -787,7 +788,7 @@ QgsAbstractRenderView *QgsFrameGraph::renderView( const QString &name )
 
 bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
 {
-  return mRenderViewMap [name] != nullptr && mRenderViewMap [name]->isEnabled();
+  return mRenderViewMap[name] != nullptr && mRenderViewMap[name]->isEnabled();
 }
 
 QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerTexCoords, const QSizeF &sizeTexCoords, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
