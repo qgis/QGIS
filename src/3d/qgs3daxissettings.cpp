@@ -41,13 +41,21 @@ void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteC
   if ( !sizeStr.isEmpty() )
     mDefaultViewportSize = sizeStr.toInt();
 
+  double minViewportRatio = 0.0;
+  double maxViewportRatio = 0.0;
   sizeStr = element.attribute( QStringLiteral( "minViewportRatio" ) );
-  if ( !sizeStr.isEmpty() )
-    mMinViewportRatio = sizeStr.toDouble();
+  if ( !sizeStr.isEmpty() && sizeStr.toDouble() != 0.0 )
+    minViewportRatio = sizeStr.toDouble();
 
   sizeStr = element.attribute( QStringLiteral( "maxViewportRatio" ) );
-  if ( !sizeStr.isEmpty() )
-    mMaxViewportRatio = sizeStr.toDouble();
+  if ( !sizeStr.isEmpty() && sizeStr.toDouble() != 0.0 )
+    maxViewportRatio = sizeStr.toDouble();
+
+  if ( maxViewportRatio > 0.0 )
+    mMaxViewportRatio = maxViewportRatio;
+
+  if ( minViewportRatio > 0.0 && mMaxViewportRatio > minViewportRatio )
+    mMinViewportRatio = minViewportRatio;
 
   const QString modeStr = element.attribute( QStringLiteral( "mode" ) );
   if ( modeStr == QLatin1String( "Off" ) )
