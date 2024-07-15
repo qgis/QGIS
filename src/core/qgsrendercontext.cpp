@@ -295,6 +295,10 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.mFrameRate = mapSettings.frameRate();
   ctx.mCurrentFrame = mapSettings.currentFrame();
 
+  const QStringList layerIds = mapSettings.layerIds( true );
+  if ( !layerIds.empty() )
+    ctx.setCustomRenderingFlag( QStringLiteral( "visible_layer_ids" ), layerIds );
+
   return ctx;
 }
 

@@ -28,6 +28,7 @@ from qgis.core import (
     QgsRenderedFeatureHandlerInterface,
     QgsUnitTypes,
     QgsVectorSimplifyMethod,
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -186,6 +187,11 @@ class TestQgsRenderContext(QgisTestCase):
         ms.setFrameRate(30)
         ms.setCurrentFrame(6)
 
+        layer1 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        layer2 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        layer3 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        ms.setLayers([layer1, layer2, layer3])
+
         ms.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
@@ -200,6 +206,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(rc.imageFormat(), QImage.Format.Format_Alpha8)
         self.assertEqual(rc.frameRate(), 30)
         self.assertEqual(rc.currentFrame(), 6)
+        self.assertEqual(rc.customRenderingFlags()['visible_layer_ids'], [layer1.id(), layer2.id(), layer3.id()])
 
         # should have an valid mapToPixel
         self.assertTrue(rc.mapToPixel().isValid())
