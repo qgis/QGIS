@@ -162,7 +162,7 @@ class GrassProvider(QgsProcessingProvider):
     def supportedOutputVectorLayerExtensions(self):
         # We use the same extensions as QGIS because:
         # - QGIS is using OGR like GRASS
-        # - There are very few chances than OGR version used in GRASS is
+        # - There are very few chances that OGR version used in GRASS is
         # different from QGIS OGR version.
         return super().supportedOutputVectorLayerExtensions()
 
