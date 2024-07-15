@@ -19,11 +19,13 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgstextformat.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <memory>
 
 #include "ui_qgsannotationpointtextwidgetbase.h"
 #include "ui_qgsannotationsymbolwidgetbase.h"
 #include "ui_qgsannotationlinetextwidgetbase.h"
+#include "ui_qgsannotationpicturewidgetbase.h"
 
 class QgsSymbolSelectorWidget;
 class QgsFillSymbol;
@@ -34,6 +36,7 @@ class QgsAnnotationLineItem;
 class QgsAnnotationMarkerItem;
 class QgsAnnotationPointTextItem;
 class QgsAnnotationLineTextItem;
+class QgsAnnotationPictureItem;
 class QgsTextFormatWidget;
 
 #define SIP_NO_FILE
@@ -165,6 +168,34 @@ class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, priv
     std::unique_ptr< QgsAnnotationLineTextItem> mItem;
 };
 
+
+class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationPictureWidgetBase, private QgsExpressionContextGenerator
+{
+    Q_OBJECT
+
+  public:
+    QgsAnnotationPictureItemWidget( QWidget *parent );
+    ~QgsAnnotationPictureItemWidget() override;
+    QgsAnnotationItem *createItem() override;
+    void updateItem( QgsAnnotationItem *item ) override;
+    void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+    QgsExpressionContext createExpressionContext() const override;
+  public slots:
+
+    void focusDefaultWidget() override;
+
+  protected:
+    bool setNewItem( QgsAnnotationItem *item ) override;
+
+  private slots:
+
+    void modeChanged( bool checked );
+  private:
+
+    bool mBlockChangedSignal = false;
+    std::unique_ptr< QgsAnnotationPictureItem> mItem;
+};
 
 ///@endcond
 

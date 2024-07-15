@@ -32,7 +32,8 @@ QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, Qgs
 Qgis::AnnotationItemFlags QgsAnnotationPointTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
+         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationPointTextItem::~QgsAnnotationPointTextItem() = default;

@@ -89,7 +89,7 @@ bool QgsAnnotationLayerRenderer::render()
       continue;
 
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-    if ( item.second->useSymbologyReferenceScale() )
+    if ( item.second->useSymbologyReferenceScale() && item.second->flags() & Qgis::AnnotationItemFlag::SupportsReferenceScale )
     {
       referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, item.second->symbologyReferenceScale() ) );
     }

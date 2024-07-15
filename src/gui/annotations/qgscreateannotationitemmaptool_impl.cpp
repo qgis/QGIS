@@ -20,6 +20,7 @@
 #include "qgsannotationlineitem.h"
 #include "qgsannotationpolygonitem.h"
 #include "qgsannotationlinetextitem.h"
+#include "qgsannotationpictureitem.h"
 #include "qgsannotationlayer.h"
 #include "qgsstyle.h"
 #include "qgsmapcanvas.h"
@@ -30,6 +31,11 @@
 #include "qgsapplication.h"
 #include "qgsrecentstylehandler.h"
 #include "qgscurvepolygon.h"
+#include "qgsrubberband.h"
+#include "qgssettingsregistrycore.h"
+
+#include <QFileDialog>
+#include <QImageReader>
 
 ///@cond PRIVATE
 
@@ -219,6 +225,131 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
     mHandler->pushCreatedItem( createdItem.release() );
   }
 }
+
+
+//
+// QgsCreatePictureItemMapTool
+//
+
+const QgsSettingsEntryString *QgsCreatePictureItemMapTool::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreePicture, QString(), QStringLiteral( "Last used folder for picture annotation source files" ) );
+
+QgsCreatePictureItemMapTool::QgsCreatePictureItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this ) )
+{
+  setUseSnappingIndicator( true );
+}
+
+void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
+{
+  if ( event->button() == Qt::RightButton && mRubberBand )
+  {
+    mRubberBand.reset();
+    cadDockWidget()->clearPoints();
+    return;
+  }
+
+  if ( event->button() != Qt::LeftButton )
+    return;
+
+  if ( !mRubberBand )
+  {
+    mFirstPoint = event->snapPoint();
+    mRect.setRect( mFirstPoint.x(), mFirstPoint.y(), mFirstPoint.x(), mFirstPoint.y() );
+
+    mRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+    mRubberBand->setWidth( digitizingStrokeWidth() );
+    QColor color = digitizingStrokeColor();
+
+    const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale->value();
+    color.setAlphaF( color.alphaF() * alphaScale );
+    mRubberBand->setLineStyle( Qt::DotLine );
+    mRubberBand->setStrokeColor( color );
+
+    const QColor fillColor = digitizingFillColor();
+    mRubberBand->setFillColor( fillColor );
+  }
+  else
+  {
+    mRubberBand.reset();
+
+    QStringList formatsFilter;
+    formatsFilter.append( QStringLiteral( "*.svg" ) );
+    const QByteArrayList supportedFormats = QImageReader::supportedImageFormats();
+    for ( const auto &format : supportedFormats )
+    {
+      formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+    }
+    const QString dialogFilter = QStringLiteral( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+    const QString initialDir = settingLastSourceFolder->value();
+    const QString imagePath = QFileDialog::getOpenFileName( nullptr, tr( "Add Picture Annotation" ), initialDir.isEmpty() ? QDir::homePath() : initialDir, dialogFilter );
+
+    if ( imagePath.isEmpty() )
+    {
+      return; //canceled by the user
+    }
+
+    settingLastSourceFolder->setValue( QFileInfo( imagePath ).path() );
+
+    const QgsPointXY point1 = toLayerCoordinates( mHandler->targetLayer(), mFirstPoint );
+    const QgsPointXY point2 = toLayerCoordinates( mHandler->targetLayer(), event->snapPoint() );
+
+    const QFileInfo pathInfo( imagePath );
+    Qgis::PictureFormat format = Qgis::PictureFormat::Unknown;
+    if ( pathInfo.suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      format = Qgis::PictureFormat::SVG;
+    }
+    else
+    {
+      format = Qgis::PictureFormat::Raster;
+    }
+
+    cadDockWidget()->clearPoints();
+
+    std::unique_ptr< QgsAnnotationPictureItem > createdItem = std::make_unique< QgsAnnotationPictureItem >( format, imagePath, QgsRectangle( point1, point2 ) );
+    mHandler->pushCreatedItem( createdItem.release() );
+  }
+}
+
+void QgsCreatePictureItemMapTool::cadCanvasMoveEvent( QgsMapMouseEvent *event )
+{
+  if ( !mRubberBand )
+    return;
+
+  const QgsPointXY mapPoint = event->snapPoint();
+  mRect.setBottomRight( mapPoint.toQPointF() );
+
+  mRubberBand->reset( Qgis::GeometryType::Polygon );
+  mRubberBand->addPoint( mRect.bottomLeft(), false );
+  mRubberBand->addPoint( mRect.bottomRight(), false );
+  mRubberBand->addPoint( mRect.topRight(), false );
+  mRubberBand->addPoint( mRect.topLeft(), true );
+}
+
+void QgsCreatePictureItemMapTool::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape )
+  {
+    if ( mRubberBand )
+    {
+      mRubberBand.reset();
+      cadDockWidget()->clearPoints();
+      event->ignore();
+    }
+  }
+}
+
+QgsCreateAnnotationItemMapToolHandler *QgsCreatePictureItemMapTool::handler()
+{
+  return mHandler;
+}
+
+QgsMapTool *QgsCreatePictureItemMapTool::mapTool()
+{
+  return this;
+}
+
 
 //
 // QgsCreateLineTextItemMapTool

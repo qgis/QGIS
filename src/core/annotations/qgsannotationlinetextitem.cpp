@@ -36,7 +36,8 @@ QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCu
 Qgis::AnnotationItemFlags QgsAnnotationLineTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
+         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationLineTextItem::~QgsAnnotationLineTextItem() = default;

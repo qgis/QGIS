@@ -41,6 +41,8 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometr
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
+    virtual Qgis::AnnotationItemFlags flags() const;
+
 
     static QgsAnnotationPolygonItem *create() /Factory/;
 %Docstring

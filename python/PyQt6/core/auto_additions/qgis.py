@@ -2187,7 +2187,8 @@ Qgis.Axis.__doc__ = "Cartesian axes.\n\n.. versionadded:: 3.34\n\n" + '* ``X``: 
 Qgis.Axis.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
-Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
+Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__ = "Item supports reference scale based rendering (since QGIS 3.40)"
+Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ + '\n' + '* ``SupportsReferenceScale``: ' + Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__
 # --
 Qgis.AnnotationItemFlags = lambda flags=0: Qgis.AnnotationItemFlag(flags)
 Qgis.AnnotationItemFlag.baseClass = Qgis

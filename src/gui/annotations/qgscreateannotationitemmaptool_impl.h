@@ -19,8 +19,12 @@
 #include "qgis_sip.h"
 #include "qgscreateannotationitemmaptool.h"
 #include "qgsmaptoolcapture.h"
+#include "qgssettingstree.h"
 
 #define SIP_NO_FILE
+
+class QgsSettingsEntryString;
+class QgsSettingsTreeNode;
 
 ///@cond PRIVATE
 
@@ -96,6 +100,34 @@ class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
   private slots:
     void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 };
+
+
+class QgsCreatePictureItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+    static inline QgsSettingsTreeNode *sTreePicture = QgsCreateAnnotationItemMapToolInterface::sTreeAnnotationTools->createChildNode( QStringLiteral( "picture-item" ) );
+    static const QgsSettingsEntryString *settingLastSourceFolder;
+
+    QgsCreatePictureItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+
+    void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+    QRectF mRect;
+    QgsPointXY mFirstPoint;
+    QObjectUniquePtr< QgsRubberBand > mRubberBand;
+};
+
 
 
 class QgsCreateLineTextItemMapTool: public QgsMapToolCaptureAnnotationItem

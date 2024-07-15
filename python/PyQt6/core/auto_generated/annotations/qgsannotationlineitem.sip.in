@@ -41,6 +41,8 @@ Constructor for QgsAnnotationLineItem, with the specified ``curve``.
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
+    virtual Qgis::AnnotationItemFlags flags() const;
+
 
     static QgsAnnotationLineItem *create() /Factory/;
 %Docstring
