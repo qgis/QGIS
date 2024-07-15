@@ -31,7 +31,6 @@
 
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QPhongMaterial>
 
 /// @cond PRIVATE
 
@@ -77,12 +76,9 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   }
   else
   {
-    Qt3DExtras::QPhongMaterial *phongMaterial  = new Qt3DExtras::QPhongMaterial;
-    phongMaterial->setDiffuse( shadingMaterial.diffuse() );
-    phongMaterial->setAmbient( shadingMaterial.ambient() );
-    phongMaterial->setSpecular( shadingMaterial.specular() );
-    phongMaterial->setShininess( shadingMaterial.shininess() );
-    material = phongMaterial;
+    QgsMaterialContext materialContext;
+    materialContext.setIsSelected( false );
+    material = shadingMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
   }
 
   // no backface culling on terrain, to allow terrain to be viewed from underground
