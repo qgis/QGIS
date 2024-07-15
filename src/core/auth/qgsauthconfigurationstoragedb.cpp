@@ -1958,7 +1958,9 @@ QString QgsAuthConfigurationStorageDb::loadAuthSetting( const QString &key ) con
     return query.value( 0 ).toString();
   }
 
-  const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Setting '%1' does not exist" ).arg( key ), Qgis::MessageLevel::Warning );
+  // Not sure we need this warning, as it's not necessarily an error if the setting doesn't exist
+  // const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Setting '%1' does not exist" ).arg( key ), Qgis::MessageLevel::Warning );
+  QgsDebugMsgLevel( QStringLiteral( "Setting '%1' does not exist" ).arg( key ), 2 );
 
   return QString();
 }
