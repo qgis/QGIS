@@ -57,6 +57,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QNoDraw>
 #include "qgsabstractrenderview.h"
 
+const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {

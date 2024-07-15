@@ -238,6 +238,8 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns the layer used to assign entities to the render view named \a name, if any
     Qt3DRender::QLayer *filterLayer( const QString &name );
 
+    static const QString AXIS3D_RENDERVIEW;
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
