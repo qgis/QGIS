@@ -266,15 +266,21 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateCertificateIdentity ) )
+  {
+    setError( tr( "Storage does not support creating certificate identities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( !authDbOpen() )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
+    setError( tr( "Auth db could not be opened" ) );
     return false;
   }
 
   if ( cert.isNull() )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Certificate is NULL" ) );
+    setError( tr( "Certificate is NULL" ) );
     return false;
   }
 
@@ -301,6 +307,12 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
 bool QgsAuthConfigurationStorageDb::removeCertIdentity( const QSslCertificate &cert )
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity ) )
+  {
+    setError( tr( "Storage does not support deleting certificate identities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
 
   if ( !authDbOpen() )
   {
@@ -329,9 +341,15 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertIdentity( const QSt
   QMutexLocker locker( &mMutex );
 
   QSslCertificate emptycert;
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate identities" ), Qgis::MessageLevel::Critical );
+    return emptycert;
+  }
+
   if ( id.isEmpty() )
     return emptycert;
-
 
   if ( !authDbOpen() )
   {
@@ -375,6 +393,12 @@ const QPair<QSslCertificate, QString> QgsAuthConfigurationStorageDb::loadCertIde
   QMutexLocker locker( &mMutex );
 
   QPair<QSslCertificate, QString> bundle;
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate identities" ), Qgis::MessageLevel::Critical );
+    return bundle;
+  }
 
   if ( id.isEmpty() )
     return bundle;
@@ -430,6 +454,12 @@ const QList<QSslCertificate> QgsAuthConfigurationStorageDb::certIdentities() con
 
   QList<QSslCertificate> certs;
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate identities" ), Qgis::MessageLevel::Critical );
+    return certs;
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -461,6 +491,12 @@ QStringList QgsAuthConfigurationStorageDb::certIdentityIds() const
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate identities" ), Qgis::MessageLevel::Critical );
+    return {};
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -488,6 +524,15 @@ QStringList QgsAuthConfigurationStorageDb::certIdentityIds() const
 bool QgsAuthConfigurationStorageDb::certIdentityExists( const QString &id ) const
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate identities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
+  if ( id.isEmpty() )
+    return false;
 
   if ( !authDbOpen() )
   {
@@ -524,9 +569,15 @@ bool QgsAuthConfigurationStorageDb::removeCertIdentity( const QString &id )
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity ) )
+  {
+    setError( tr( "Storage does not support deleting certificate identities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( !authDbOpen() )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
+    setError( tr( "Auth db could not be opened" ) );
     return {};
   }
 
@@ -537,13 +588,13 @@ bool QgsAuthConfigurationStorageDb::removeCertIdentity( const QString &id )
 
   if ( !authDbQuery( &query ) )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to remove certificate identity '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
+    setError( tr( "Failed to remove certificate identity '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
     return false;
   }
 
   if ( query.numRowsAffected() == 0 )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "No certificate identity found for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
+    setError( tr( "No certificate identity found for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -556,9 +607,15 @@ bool QgsAuthConfigurationStorageDb::storeSslCertCustomConfig( const QgsAuthConfi
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig ) )
+  {
+    setError( tr( "Storage does not support creating SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( !authDbOpen() )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
+    setError( tr( "Auth db could not be opened" ) );
     return false;
   }
 
@@ -592,6 +649,12 @@ QStringList QgsAuthConfigurationStorageDb::sslCertCustomConfigIds() const
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return {};
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -622,6 +685,12 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
   QMutexLocker locker( &mMutex );
 
   QgsAuthConfigSslServer config;
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return config;
+  }
 
   if ( id.isEmpty() || hostport.isEmpty() )
   {
@@ -669,6 +738,12 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
 
   QgsAuthConfigSslServer config;
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return config;
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -709,6 +784,12 @@ const QList<QgsAuthConfigSslServer> QgsAuthConfigurationStorageDb::sslCertCustom
 
   QList<QgsAuthConfigSslServer> configs;
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return configs;
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -740,6 +821,12 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig ) )
+  {
+    setError( tr( "Storage does not support reading SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( id.isEmpty() || hostport.isEmpty() )
   {
     QgsDebugError( QStringLiteral( "Passed config ID or host:port is empty" ) );
@@ -748,7 +835,7 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
 
   if ( !authDbOpen() )
   {
-    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
+    setError( tr( "Auth db could not be opened" ) );
     return false;
   }
 
@@ -783,6 +870,12 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
 bool QgsAuthConfigurationStorageDb::removeSslCertCustomConfig( const QString &id, const QString &hostport )
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig ) )
+  {
+    setError( tr( "Storage does not support deleting SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
 
   if ( id.isEmpty() || hostport.isEmpty() )
   {
@@ -825,6 +918,12 @@ QStringList QgsAuthConfigurationStorageDb::certAuthorityIds() const
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate authorities" ), Qgis::MessageLevel::Critical );
+    return {};
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -852,6 +951,12 @@ QStringList QgsAuthConfigurationStorageDb::certAuthorityIds() const
 bool QgsAuthConfigurationStorageDb::storeCertAuthority( const QSslCertificate &cert )
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateCertificateAuthority ) )
+  {
+    setError( tr( "Storage does not support creating certificate authorities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
 
   // don't refuse !cert.isValid() (actually just expired) CAs,
   // as user may want to ignore that SSL connection error
@@ -894,6 +999,12 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertAuthority( const QS
 
   QSslCertificate emptycert;
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate authorities" ), Qgis::MessageLevel::Critical );
+    return emptycert;
+  }
+
   if ( id.isEmpty() )
     return emptycert;
 
@@ -932,6 +1043,12 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertAuthority( const QS
 bool QgsAuthConfigurationStorageDb::certAuthorityExists( const QSslCertificate &cert ) const
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate authorities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
 
   if ( cert.isNull() )
   {
@@ -977,6 +1094,12 @@ bool QgsAuthConfigurationStorageDb::removeCertAuthority( const QSslCertificate &
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority ) )
+  {
+    setError( tr( "Storage does not support deleting certificate authorities" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( cert.isNull() )
   {
     QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
@@ -1020,6 +1143,12 @@ const  QMap<QString, QgsAuthCertUtils::CertTrustPolicy> QgsAuthConfigurationStor
 
   QMap<QString, QgsAuthCertUtils::CertTrustPolicy> trustedCerts;
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate authorities trust policies" ), Qgis::MessageLevel::Critical );
+    return trustedCerts;
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -1052,6 +1181,12 @@ const QList<QSslCertificate> QgsAuthConfigurationStorageDb::caCerts() const
   QMutexLocker locker( &mMutex );
 
   QList<QSslCertificate> authorities;
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate authorities" ), Qgis::MessageLevel::Critical );
+    return authorities;
+  }
 
   if ( !authDbOpen() )
   {
@@ -1088,6 +1223,12 @@ const QList<QSslCertificate> QgsAuthConfigurationStorageDb::caCerts() const
 bool QgsAuthConfigurationStorageDb::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy )
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateCertificateTrustPolicy ) )
+  {
+    setError( tr( "Storage does not support creating certificate trust policies" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
 
   if ( cert.isNull() )
   {
@@ -1141,6 +1282,12 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthConfigurationStorageDb::loadCertTrustPo
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate trust policies" ), Qgis::MessageLevel::Critical );
+    return QgsAuthCertUtils::DefaultTrust;
+  }
+
   if ( cert.isNull() )
   {
     QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
@@ -1184,6 +1331,12 @@ bool QgsAuthConfigurationStorageDb::removeCertTrustPolicy( const QSslCertificate
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy ) )
+  {
+    setError( tr( "Storage does not support deleting certificate trust policies" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( cert.isNull() )
   {
     QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
@@ -1223,6 +1376,12 @@ bool QgsAuthConfigurationStorageDb::removeCertTrustPolicy( const QSslCertificate
 bool QgsAuthConfigurationStorageDb::certTrustPolicyExists( const QSslCertificate &cert ) const
 {
   QMutexLocker locker( &mMutex );
+
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading certificate trust policies" ), Qgis::MessageLevel::Critical );
+    return QgsAuthCertUtils::DefaultTrust;
+  }
 
   if ( cert.isNull() )
   {
@@ -1264,6 +1423,12 @@ const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> QgsAuthConfigurat
 
   QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords;
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Storage does not support reading master passwords" ), Qgis::MessageLevel::Critical );
+    return passwords;
+  }
+
   if ( !authDbOpen() )
   {
     const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
@@ -1293,6 +1458,12 @@ bool QgsAuthConfigurationStorageDb::storeMasterPassword( const QgsAuthConfigurat
 {
   QMutexLocker locker( &mMutex );
 
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateMasterPassword ) )
+  {
+    setError( tr( "Storage does not support creating master passwords" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( !authDbOpen() )
   {
     setError( tr( "Auth db could not be opened" ) );
@@ -1318,24 +1489,20 @@ bool QgsAuthConfigurationStorageDb::clearMasterPasswords()
 {
   QMutexLocker locker( &mMutex );
 
-  if ( !authDbOpen() )
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword ) )
   {
-    setError( tr( "Auth db could not be opened" ) );
+    setError( tr( "Storage does not support deleting master passwords" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
-  QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "DELETE FROM %1" ).arg( quotedQualifiedIdentifier( masterPasswordTableName() ) ) );
+  const bool ret { clearTables( { masterPasswordTableName() } ) };
 
-  if ( !authDbQuery( &query ) )
+  if ( ret )
   {
-    setError( tr( "Failed to clear master password table" ) );
-    return false;
+    emit masterPasswordChanged();
   }
 
-  emit masterPasswordChanged();
-
-  return true;
+  return ret;
 }
 
 QString QgsAuthConfigurationStorageDb::methodConfigTableName() const
