@@ -29,13 +29,11 @@
 #include "qgstextmetrics.h"
 #include "qgstextrendererutils.h"
 #include "qgsgeos.h"
-
+#include "qgspainting.h"
 #include <optional>
 
 #include <QTextBoundaryFinder>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
 
 static void _fixQPictureDPI( QPainter *p )
 {
@@ -43,8 +41,8 @@ static void _fixQPictureDPI( QPainter *p )
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
+  p->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / p->device()->logicalDpiX(),
+            static_cast< double >( QgsPainting::qtDefaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
 Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )

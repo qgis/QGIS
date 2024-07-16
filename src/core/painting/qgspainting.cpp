@@ -18,6 +18,9 @@
 
 #include <QTransform>
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+Q_GUI_EXPORT extern int qt_defaultDpiY();
+
 QPainter::CompositionMode QgsPainting::getCompositionMode( Qgis::BlendMode blendMode )
 {
   // Map Qgis::BlendMode::Normal to QPainter::CompositionMode
@@ -218,4 +221,14 @@ bool QgsPainting::drawTriangleUsingTexture( QPainter *painter, const QPolygonF &
   painter->setBrush( previousBrush );
 
   return true;
+}
+
+int QgsPainting::qtDefaultDpiX()
+{
+  return qt_defaultDpiX();
+}
+
+int QgsPainting::qtDefaultDpiY()
+{
+  return qt_defaultDpiY();
 }

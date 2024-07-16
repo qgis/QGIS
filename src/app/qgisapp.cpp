@@ -177,8 +177,6 @@
 #include <QNetworkProxy>
 #include <QAuthenticator>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-
 //
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'

@@ -87,6 +87,31 @@ Returns ``True`` if the triangle could be rendered, or ``False`` if it could not
 .. versionadded:: 3.34
 %End
 
+    static int qtDefaultDpiX();
+%Docstring
+Returns the default Qt horizontal DPI.
+
+.. note::
+
+   This method proxies the internal Qt :py:func:`~QgsPainting.qt_defaultDpiX` function.
+
+.. seealso:: :py:func:`qtDefaultDpiY`
+
+.. versionadded:: 3.40
+%End
+
+    static int qtDefaultDpiY();
+%Docstring
+Returns the default Qt vertical DPI.
+
+.. note::
+
+   This method proxies the internal Qt :py:func:`~QgsPainting.qt_defaultDpiY` function.
+
+.. seealso:: :py:func:`qtDefaultDpiX`
+
+.. versionadded:: 3.40
+%End
 };
 
 /************************************************************************

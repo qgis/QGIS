@@ -98,6 +98,25 @@ class CORE_EXPORT QgsPainting
       float textureX3, float textureY3
     );
 
+    /**
+     * Returns the default Qt horizontal DPI.
+     *
+     * \note This method proxies the internal Qt qt_defaultDpiX() function.
+     *
+     * \see qtDefaultDpiY()
+     * \since QGIS 3.40
+     */
+    static int qtDefaultDpiX();
+
+    /**
+     * Returns the default Qt vertical DPI.
+     *
+     * \note This method proxies the internal Qt qt_defaultDpiY() function.
+     *
+     * \see qtDefaultDpiX()
+     * \since QGIS 3.40
+     */
+    static int qtDefaultDpiY();
 };
 
 #endif // QGSPAINTING_H

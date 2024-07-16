@@ -29,6 +29,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfontmanager.h"
 #include "qgscolorutils.h"
+#include "qgspainting.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -40,9 +41,6 @@
 
 #include <cmath>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
-
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
 
 static void _fixQPictureDPI( QPainter *p )
@@ -51,8 +49,8 @@ static void _fixQPictureDPI( QPainter *p )
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
+  p->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / p->device()->logicalDpiX(),
+            static_cast< double >( QgsPainting::qtDefaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
 

@@ -19,9 +19,7 @@
 #include "qgsgeos.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultilinestring.h"
-
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
+#include "qgspainting.h"
 
 //
 // QgsGeometryPaintEngine
@@ -652,18 +650,18 @@ int QgsGeometryPaintDevice::metric( PaintDeviceMetric m ) const
       val = static_cast< int >( mPaintEngine->geometry().boundingBox().height() );
       break;
     case PdmWidthMM:
-      val = static_cast< int >( 25.4 / qt_defaultDpiX() * mPaintEngine->geometry().boundingBox().width() );
+      val = static_cast< int >( 25.4 / QgsPainting::qtDefaultDpiX() * mPaintEngine->geometry().boundingBox().width() );
       break;
     case PdmHeightMM:
-      val = static_cast< int >( 25.4 / qt_defaultDpiY() * mPaintEngine->geometry().boundingBox().height() );
+      val = static_cast< int >( 25.4 / QgsPainting::qtDefaultDpiY() * mPaintEngine->geometry().boundingBox().height() );
       break;
     case PdmDpiX:
     case PdmPhysicalDpiX:
-      val = qt_defaultDpiX();
+      val = QgsPainting::qtDefaultDpiX();
       break;
     case PdmDpiY:
     case PdmPhysicalDpiY:
-      val = qt_defaultDpiY();
+      val = QgsPainting::qtDefaultDpiY();
       break;
     case PdmNumColors:
       val = 16777216;

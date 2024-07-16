@@ -28,8 +28,6 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-
 QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList< QgsMapDecoration * > &decorations )
   : QDialog( parent )
   , mMapCanvas( mapCanvas )
