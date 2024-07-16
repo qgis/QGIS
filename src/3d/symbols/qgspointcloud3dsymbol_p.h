@@ -28,7 +28,6 @@
 #include <Qt3DCore/QGeometry>
 #include <Qt3DCore/QBuffer>
 #endif
-#include <Qt3DRender/QMaterial>
 #include <QVector3D>
 
 #define SIP_NO_FILE

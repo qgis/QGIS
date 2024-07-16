@@ -18,8 +18,6 @@
 #include "qgsmeshterraingenerator.h"
 #include "qgsmeshterraintileloader_p.h"
 
-#include <Qt3DRender/QMaterial>
-
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"

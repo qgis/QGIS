@@ -41,7 +41,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DCore/QTransform>
-#include <Qt3DRender/QMaterial>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QTextureImage>

@@ -39,7 +39,6 @@
 #endif
 
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QMaterial>
 #include <QColor>
 
 
