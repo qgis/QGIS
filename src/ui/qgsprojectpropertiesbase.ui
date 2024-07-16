@@ -163,6 +163,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Colors</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/colors.svg</normaloff>:/images/themes/default/propertyicons/colors.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Data Sources</string>
           </property>
           <property name="toolTip">
@@ -269,7 +278,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>6</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -298,7 +307,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>522</width>
+                <width>673</width>
                 <height>852</height>
                </rect>
               </property>
@@ -1042,8 +1051,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>279</width>
-                <height>52</height>
+                <width>694</width>
+                <height>789</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1107,8 +1116,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>523</width>
-                <height>80</height>
+                <width>694</width>
+                <height>789</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1179,11 +1188,11 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>673</width>
-                <height>846</height>
+                <width>694</width>
+                <height>789</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1,1">
+              <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,1">
                <property name="leftMargin">
                 <number>0</number>
                </property>
@@ -1389,207 +1398,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-                 <property name="title">
-                  <string>Options</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projstyles</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_4">
-                  <item row="6" column="0" colspan="3">
-                   <widget class="QCheckBox" name="cbxStyleRandomColors">
-                    <property name="text">
-                     <string>Assign random colors to symbols</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_14">
-                    <property name="text">
-                     <string>Color model</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QToolButton" name="mRemoveIccProfile">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove selected ICC profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string>...</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLabel" name="mColorSpaceName">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_27">
-                    <property name="text">
-                     <string>Opacity</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="mIccProfileLabel">
-                    <property name="text">
-                     <string>ICC Profile</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="3">
-                   <widget class="QToolButton" name="mAddIccProfile">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load an ICC profile file and attach it to the project.&lt;/p&gt;&lt;p&gt;Color model will be updated accordingly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1" colspan="3">
-                   <widget class="QComboBox" name="mColorModel">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color model used as default when selecting a color in the whole application.&lt;/p&gt;&lt;p&gt;Any color defined in a different color model than the one specified here will be converted to this color model when exporting a layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1" colspan="3">
-                   <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
-                 <property name="title">
-                  <string>Project Colors</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="2" column="1">
-                   <widget class="QToolButton" name="mButtonCopyColors">
-                    <property name="toolTip">
-                     <string>Copy colors</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="1">
-                   <spacer name="verticalSpacer_12">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QToolButton" name="mButtonAddColor">
-                    <property name="toolTip">
-                     <string>Add color</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QToolButton" name="mButtonPasteColors">
-                    <property name="toolTip">
-                     <string>Paste colors</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QToolButton" name="mButtonRemoveColor">
-                    <property name="toolTip">
-                     <string>Remove color</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeProjectColors" native="true"/>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QToolButton" name="mButtonImportColors">
-                    <property name="toolTip">
-                     <string>Import colors</string>
-                    </property>
-                    <property name="statusTip">
-                     <string/>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
-                   <widget class="QToolButton" name="mButtonExportColors">
-                    <property name="toolTip">
-                     <string>Export colors</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mGroupBoxStyleDatabases">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1677,6 +1485,211 @@
                </item>
               </layout>
              </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mTabColors">
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Options</string>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string notr="true">projstyles</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="6" column="0" colspan="3">
+               <widget class="QCheckBox" name="cbxStyleRandomColors">
+                <property name="text">
+                 <string>Assign random colors to symbols</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Color model</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QToolButton" name="mRemoveIccProfile">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove selected ICC profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="mColorSpaceName">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_27">
+                <property name="text">
+                 <string>Opacity</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="mIccProfileLabel">
+                <property name="text">
+                 <string>ICC Profile</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QToolButton" name="mAddIccProfile">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load an ICC profile file and attach it to the project.&lt;/p&gt;&lt;p&gt;Color model will be updated accordingly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" colspan="3">
+               <widget class="QComboBox" name="mColorModel">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color model used as default when selecting a color in the whole application.&lt;/p&gt;&lt;p&gt;Any color defined in a different color model than the one specified here will be converted to this color model when exporting a layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1" colspan="3">
+               <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
+             <property name="title">
+              <string>Project Colors</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="2" column="1">
+               <widget class="QToolButton" name="mButtonCopyColors">
+                <property name="toolTip">
+                 <string>Copy colors</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <spacer name="verticalSpacer_12">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="1">
+               <widget class="QToolButton" name="mButtonAddColor">
+                <property name="toolTip">
+                 <string>Add color</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QToolButton" name="mButtonPasteColors">
+                <property name="toolTip">
+                 <string>Paste colors</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QToolButton" name="mButtonRemoveColor">
+                <property name="toolTip">
+                 <string>Remove color</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="8">
+               <widget class="QgsColorSchemeList" name="mTreeProjectColors" native="true"/>
+              </item>
+              <item row="4" column="1">
+               <widget class="QToolButton" name="mButtonImportColors">
+                <property name="toolTip">
+                 <string>Import colors</string>
+                </property>
+                <property name="statusTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QToolButton" name="mButtonExportColors">
+                <property name="toolTip">
+                 <string>Export colors</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -1904,8 +1917,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>42</height>
+                <width>694</width>
+                <height>789</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1987,7 +2000,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
+                <width>673</width>
                 <height>1503</height>
                </rect>
               </property>
@@ -3643,14 +3656,6 @@
   <tabstop>mStyleFillSymbol</tabstop>
   <tabstop>mStyleColorRampSymbol</tabstop>
   <tabstop>mStyleTextFormat</tabstop>
-  <tabstop>mDefaultOpacityWidget</tabstop>
-  <tabstop>cbxStyleRandomColors</tabstop>
-  <tabstop>mButtonAddColor</tabstop>
-  <tabstop>mButtonRemoveColor</tabstop>
-  <tabstop>mButtonCopyColors</tabstop>
-  <tabstop>mButtonPasteColors</tabstop>
-  <tabstop>mButtonImportColors</tabstop>
-  <tabstop>mButtonExportColors</tabstop>
   <tabstop>mListStyleDatabases</tabstop>
   <tabstop>mButtonAddStyleDatabase</tabstop>
   <tabstop>mButtonRemoveStyleDatabase</tabstop>
