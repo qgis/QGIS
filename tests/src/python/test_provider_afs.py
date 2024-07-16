@@ -1335,6 +1335,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             }
           ],
           "authoringInfo": {
+            "classificationMethod": "esriClassifyEqualInterval",
             "visualVariables": [
               {
                 "type": "colorInfo",
