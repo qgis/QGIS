@@ -61,7 +61,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     /**
      * Creates a new QgsAuthConfigurationStorageDb instance from the specified \a uri.
      * The URI should be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
-     * \note It is not possible to set the schema in the URI, use the settings map instead.
+     * \note It is not possible to set the schema in the URI, pass SCHEMA=\verbatim<SCHEMA>\endverbatim in the options instead.
      */
     QgsAuthConfigurationStorageDb( const QString &uri );
 
