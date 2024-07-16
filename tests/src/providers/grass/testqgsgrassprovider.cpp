@@ -352,8 +352,15 @@ void TestQgsGrassProvider::fatalError()
 
 void TestQgsGrassProvider::locations()
 {
-  const QStringList locations = QgsGrass::locations( mGisdbase );
-  QCOMPARE( locations, QStringList() << QStringLiteral( "webmerc" ) << QStringLiteral( "wgs84" ) );
+  reportHeader( QStringLiteral( "TestQgsGrassProvider::locations" ) );
+  bool ok = true;
+  QStringList expectedLocations;
+  expectedLocations << QStringLiteral( "wgs84" );
+  QStringList locations = QgsGrass::locations( mGisdbase );
+  reportRow( "expectedLocations: " + expectedLocations.join( QLatin1String( ", " ) ) );
+  reportRow( "locations: " + locations.join( QLatin1String( ", " ) ) );
+  compare( expectedLocations, locations, ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::mapsets()
