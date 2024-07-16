@@ -779,6 +779,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
 
   markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
+  markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
 
   QgsMarkerSymbolLayer::HorizontalAnchorPoint hAlign;
   QgsMarkerSymbolLayer::VerticalAnchorPoint vAlign;
