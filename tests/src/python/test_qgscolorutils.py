@@ -9,10 +9,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '06/07/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
+import os
+
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import QgsColorUtils, QgsReadWriteContext, QgsSymbolLayerUtils
 from qgis.testing import unittest
+
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsColorUtils(unittest.TestCase):
@@ -287,6 +294,21 @@ class TestQgsColorUtils(unittest.TestCase):
         self.assertEqual(res.green(), 33)
         self.assertAlmostEqual(res.blue(), 23, delta=1)
         self.assertEqual(res.alpha(), 220)
+
+    def test_icc_profile(self):
+        """
+        Test ICC profile load and save method
+        """
+
+        iccProfileFilePath = os.path.join(TEST_DATA_DIR, "sRGB2014.icc")
+        colorSpace, errorMsg = QgsColorUtils.iccProfile(iccProfileFilePath)
+        self.assertTrue(colorSpace.isValid())
+
+        tmpDir = QTemporaryDir()
+        tmpFile = f"{tmpDir.path()}/test.icc"
+
+        error = QgsColorUtils.saveIccProfile(colorSpace, tmpFile)
+        self.assertTrue(not error)
 
 
 if __name__ == '__main__':

@@ -377,6 +377,22 @@ QColorSpace QgsColorUtils::iccProfile( const QString &iccProfileFilePath, QStrin
   return colorSpace;
 }
 
+
+QString QgsColorUtils::saveIccProfile( const QColorSpace &colorSpace, const QString &iccProfileFilePath )
+{
+  if ( !colorSpace.isValid() )
+    return QObject::tr( "Invalid ICC profile" );
+
+  QFile iccProfile( iccProfileFilePath );
+  if ( !iccProfile.open( QIODevice::WriteOnly ) )
+    return QObject::tr( "File access error '%1'" ).arg( iccProfileFilePath );
+
+  if ( iccProfile.write( colorSpace.iccProfile() ) < 0 )
+    return QObject::tr( "Error while writing to file '%1'" ).arg( iccProfileFilePath );
+
+  return QString();
+}
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 
 Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel, bool *ok )

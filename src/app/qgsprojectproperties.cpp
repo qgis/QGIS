@@ -138,6 +138,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
   connect( mAddIccProfile, &QToolButton::clicked, this, static_cast<void ( QgsProjectProperties::* )()>( &QgsProjectProperties::addIccProfile ) );
   connect( mRemoveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::removeIccProfile );
+  connect( mSaveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::saveIccProfile );
 #endif
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -1042,6 +1043,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mColorSpaceName->setVisible( false );
   mAddIccProfile->setVisible( false );
   mRemoveIccProfile->setVisible( false );
+  mSaveIccProfile->setVisible( false );
 #endif
   // Default alpha transparency
   mDefaultOpacityWidget->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
@@ -2736,10 +2738,27 @@ void QgsProjectProperties::removeIccProfile()
   updateColorSpaceWidgets();
 }
 
+void QgsProjectProperties::saveIccProfile()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save ICC profile" ), QDir::homePath(),
+                     tr( "ICC profile files (*.icc *.ICC)" ) );
+
+  if ( fileName.isEmpty() )
+    return;
+
+  const QString error = QgsColorUtils::saveIccProfile( mColorSpace, fileName );
+  if ( !error.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Save ICC profile" ), error );
+  }
+}
+
+
 void QgsProjectProperties::updateColorSpaceWidgets()
 {
   mColorSpaceName->setText( mColorSpace.isValid() ? mColorSpace.description() : tr( "<i>None</i>" ) );
   mRemoveIccProfile->setEnabled( mColorSpace.isValid() );
+  mSaveIccProfile->setEnabled( mColorSpace.isValid() );
 
   // force color model index according to color space one
   if ( mColorSpace.isValid() )

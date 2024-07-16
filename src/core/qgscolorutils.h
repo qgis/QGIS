@@ -108,6 +108,15 @@ class CORE_EXPORT QgsColorUtils
      */
     static QColorSpace iccProfile( const QString &iccProfileFilePath, QString &errorMsg SIP_OUT );
 
+    /**
+     * Save color space \a colorSpace to an ICC profile file \a iccProfileFilePath.
+     * \returns error message if an error occurred else empty string.
+     *
+     * \since QGIS 3.40
+     */
+    static QString saveIccProfile( const QColorSpace &colorSpace, const QString &iccProfileFilePath );
+
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 
     /**

@@ -1500,17 +1500,45 @@
               <string notr="true">projstyles</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="6" column="0" colspan="3">
-               <widget class="QCheckBox" name="cbxStyleRandomColors">
+              <item row="1" column="0">
+               <widget class="QLabel" name="mIccProfileLabel">
                 <property name="text">
-                 <string>Assign random colors to symbols</string>
+                 <string>ICC Profile</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_14">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_27">
                 <property name="text">
-                 <string>Color model</string>
+                 <string>Opacity</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1" colspan="4">
+               <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="4">
+               <widget class="QToolButton" name="mAddIccProfile">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load an ICC profile file and attach it to the project.&lt;/p&gt;&lt;p&gt;Color model will be updated accordingly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" colspan="4">
+               <widget class="QComboBox" name="mColorModel">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color model used as default when selecting a color in the whole application.&lt;/p&gt;&lt;p&gt;Any color defined in a different color model than the one specified here will be converted to this color model when exporting a layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -1535,45 +1563,31 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_27">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_14">
                 <property name="text">
-                 <string>Opacity</string>
+                 <string>Color model</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="mIccProfileLabel">
+              <item row="6" column="0" colspan="3">
+               <widget class="QCheckBox" name="cbxStyleRandomColors">
                 <property name="text">
-                 <string>ICC Profile</string>
+                 <string>Assign random colors to symbols</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QToolButton" name="mAddIccProfile">
+               <widget class="QToolButton" name="mSaveIccProfile">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load an ICC profile file and attach it to the project.&lt;/p&gt;&lt;p&gt;Color model will be updated accordingly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save ICC profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1" colspan="3">
-               <widget class="QComboBox" name="mColorModel">
-                <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color model used as default when selecting a color in the whole application.&lt;/p&gt;&lt;p&gt;Any color defined in a different color model than the one specified here will be converted to this color model when exporting a layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1" colspan="3">
-               <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
+                  <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                 </property>
                </widget>
               </item>

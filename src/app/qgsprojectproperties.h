@@ -223,6 +223,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void removeIccProfile();
 
     /**
+     * Called whenever user select the save ICC profile button
+     */
+    void saveIccProfile();
+
+    /**
      * Update color space widget according to current project color space
      */
     void updateColorSpaceWidgets();
