@@ -19,10 +19,12 @@
 
 #include "qgsmaptooledit.h"
 #include "qgis_gui.h"
+#include <memory>
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnapToGridCanvasItem;
+class QgsSnapIndicator;
 
 /**
  * \ingroup gui
@@ -44,6 +46,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \param cadDockWidget  The cad dock widget which will be used to adjust mouse events
      */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsMapToolAdvancedDigitizing() override;
 
     //! Catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
@@ -83,6 +86,9 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * If TRUE is returned, that does not mean that advanced digitizing is actually active,
      * because it is up to the user to enable/disable it when it is allowed.
+     *
+     * The default is that advanced digitizing is allowed.
+     *
      * \see setAdvancedDigitizingAllowed()
      */
     bool isAdvancedDigitizingAllowed() const { return mAdvancedDigitizingAllowed; }
@@ -92,15 +98,31 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * (according to the snapping configuration of map canvas) before passing the mouse coordinates
      * to the tool. This may be desirable default behavior for some map tools, but not for other map tools.
      * It is therefore possible to configure the behavior by the map tool.
+     *
+     * The default is that auto snapping is enabled.
+     *
      * \see isAutoSnapEnabled()
      */
     bool isAutoSnapEnabled() const { return mAutoSnapEnabled; }
+
+    /**
+     * Returns whether the snapping indicator should automatically be used.
+     *
+     * The default is that a snap indicator is not used.
+     *
+     * \see setUseSnappingIndicator()
+     * \since QGIS 3.40
+     */
+    bool useSnappingIndicator() const;
 
   protected:
 
     /**
      * Sets whether functionality of advanced digitizing dock widget is currently allowed.
      * This method is protected because it should be a decision of the map tool and not from elsewhere.
+     *
+     * The default is that advanced digitizing is allowed.
+     *
      * \see isAdvancedDigitizingAllowed()
      */
     void setAdvancedDigitizingAllowed( bool allowed ) { mAdvancedDigitizingAllowed = allowed; }
@@ -108,9 +130,22 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     /**
      * Sets whether mouse events (press/move/release) should automatically try to snap mouse position
      * This method is protected because it should be a decision of the map tool and not from elsewhere.
+     *
+     * The default is that auto snapping is enabled.
+     *
      * \see isAutoSnapEnabled()
      */
     void setAutoSnapEnabled( bool enabled ) { mAutoSnapEnabled = enabled; }
+
+    /**
+     * Sets whether a snapping indicator should automatically be used.
+     *
+     * The default is that a snap indicator is not used.
+     *
+     * \see useSnappingIndicator()
+     * \since QGIS 3.40
+     */
+    void setUseSnappingIndicator( bool enabled );
 
 
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
@@ -188,6 +223,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     //! Whether to snap to grid before passing coordinates to cadCanvas*Event()
     bool mSnapToLayerGridEnabled = true;
     QgsSnapToGridCanvasItem *mSnapToGridCanvasItem = nullptr;
+
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H

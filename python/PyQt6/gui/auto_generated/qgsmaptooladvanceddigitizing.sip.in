@@ -39,6 +39,7 @@ Creates an advanced digitizing maptool
 :param canvas: The map canvas on which the tool works
 :param cadDockWidget: The cad dock widget which will be used to adjust mouse events
 %End
+    ~QgsMapToolAdvancedDigitizing();
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
@@ -91,6 +92,8 @@ may keep advanced digitizing allowed all the time.
 If ``True`` is returned, that does not mean that advanced digitizing is actually active,
 because it is up to the user to enable/disable it when it is allowed.
 
+The default is that advanced digitizing is allowed.
+
 .. seealso:: :py:func:`setAdvancedDigitizingAllowed`
 %End
 
@@ -101,7 +104,20 @@ Returns whether mouse events (press/move/release) should automatically try to sn
 to the tool. This may be desirable default behavior for some map tools, but not for other map tools.
 It is therefore possible to configure the behavior by the map tool.
 
+The default is that auto snapping is enabled.
+
 .. seealso:: :py:func:`isAutoSnapEnabled`
+%End
+
+    bool useSnappingIndicator() const;
+%Docstring
+Returns whether the snapping indicator should automatically be used.
+
+The default is that a snap indicator is not used.
+
+.. seealso:: :py:func:`setUseSnappingIndicator`
+
+.. versionadded:: 3.40
 %End
 
   protected:
@@ -111,6 +127,8 @@ It is therefore possible to configure the behavior by the map tool.
 Sets whether functionality of advanced digitizing dock widget is currently allowed.
 This method is protected because it should be a decision of the map tool and not from elsewhere.
 
+The default is that advanced digitizing is allowed.
+
 .. seealso:: :py:func:`isAdvancedDigitizingAllowed`
 %End
 
@@ -119,7 +137,20 @@ This method is protected because it should be a decision of the map tool and not
 Sets whether mouse events (press/move/release) should automatically try to snap mouse position
 This method is protected because it should be a decision of the map tool and not from elsewhere.
 
+The default is that auto snapping is enabled.
+
 .. seealso:: :py:func:`isAutoSnapEnabled`
+%End
+
+    void setUseSnappingIndicator( bool enabled );
+%Docstring
+Sets whether a snapping indicator should automatically be used.
+
+The default is that a snap indicator is not used.
+
+.. seealso:: :py:func:`useSnappingIndicator`
+
+.. versionadded:: 3.40
 %End
 
 

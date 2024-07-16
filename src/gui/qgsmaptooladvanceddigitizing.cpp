@@ -29,6 +29,8 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolAdvancedDigitizing::onCurrentLayerChanged );
 }
 
+QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing() = default;
+
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
@@ -115,6 +117,11 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
     mSnapToGridCanvasItem->setPoint( e->mapPoint() );
   }
 
+  if ( mSnapIndicator )
+  {
+    mSnapIndicator->setMatch( e->mapPointMatch() );
+  }
+
   cadCanvasMoveEvent( e );
 }
 
@@ -140,11 +147,31 @@ void QgsMapToolAdvancedDigitizing::deactivate()
   mCadDockWidget->disable();
   delete mSnapToGridCanvasItem;
   mSnapToGridCanvasItem = nullptr;
+
+  if ( mSnapIndicator )
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
 QgsMapLayer *QgsMapToolAdvancedDigitizing::layer() const
 {
   return canvas()->currentLayer();
+}
+
+bool QgsMapToolAdvancedDigitizing::useSnappingIndicator() const
+{
+  return static_cast< bool >( mSnapIndicator.get() );
+}
+
+void QgsMapToolAdvancedDigitizing::setUseSnappingIndicator( bool enabled )
+{
+  if ( enabled && !mSnapIndicator )
+  {
+    mSnapIndicator = std::make_unique< QgsSnapIndicator >( mCanvas );
+  }
+  else if ( !enabled && mSnapIndicator )
+  {
+    mSnapIndicator.reset();
+  }
 }
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
