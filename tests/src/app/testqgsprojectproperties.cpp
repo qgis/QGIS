@@ -266,8 +266,15 @@ void TestQgsProjectProperties::testColorSettings()
   std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Rgb );
   QVERIFY( !pp->mColorSpace.isValid() );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
   QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "<i>None</i>" ) );
   QVERIFY( !pp->mRemoveIccProfile->isEnabled() );
+#else
+  QVERIFY( !pp->mRemoveIccProfile->isVisible() );
+  QVERIFY( !pp->mAddIccProfile->isVisible() );
+  QVERIFY( !pp->mColorSpaceName->isVisible() );
+  QVERIFY( !pp->mIccProfileLabel->isVisible() );
+#endif
 
   pp->mColorModel->setCurrentIndex( pp->mColorModel->findData( QVariant::fromValue( Qgis::ColorModel::Cmyk ) ) );
   QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Cmyk );
