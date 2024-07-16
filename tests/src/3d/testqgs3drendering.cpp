@@ -52,6 +52,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -76,6 +77,7 @@ class TestQgs3DRendering : public QgsTest
     void testEpsg4978LineRendering();
     void testExtrudedPolygons();
     void testPhongShading();
+    void testExtrudedPolygonsTexturedPhong();
     void testExtrudedPolygonsDataDefinedPhong();
     void testExtrudedPolygonsDataDefinedGooch();
     void testExtrudedPolygonsGoochShading();
@@ -486,6 +488,59 @@ void TestQgs3DRendering::testPhongShading()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "phong_shading", "phong_shading", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
+{
+  // In Qt 5, this test does not work on CI
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  if ( QgsTest::isCIRun() )
+  {
+    QSKIP( "fails on CI" );
+  }
+#endif
+
+  QgsPhongTexturedMaterialSettings materialSettings;
+  materialSettings.setAmbient( QColor( 26, 26, 26 ) );
+  materialSettings.setSpecular( QColor( 10, 10, 10 ) );
+  materialSettings.setShininess( 1.0 );
+  materialSettings.setDiffuseTexturePath( testDataPath( "/sample_image.png" ) );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 1.0 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, 10, 360 ), 100, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_phong", "polygon3d_extrusion_textured_phong", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhong()
