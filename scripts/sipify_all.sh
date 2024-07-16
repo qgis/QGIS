@@ -15,15 +15,19 @@
 ###########################################################################
 set -e
 
-# TEMPLATE_DOC=""
-# while :; do
-#     case $1 in
-#         -t|--template-doc) TEMPLATE_DOC="-template-doc"
-#         ;;
-#         *) break
-#     esac
-#     shift
-# done
+CLASS_MAP=0
+while getopts "m" opt; do
+  case $opt in
+  m)
+    CLASS_MAP=1
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND-1))
 
 DIR=$(git rev-parse --show-toplevel)
 
@@ -50,8 +54,10 @@ for root_dir in python python/PyQt6; do
   fi
 
   for module in "${modules[@]}"; do
-
     module_dir=${root_dir}/${module}
+
+    rm ${module_dir}/class_map.yaml || true
+    touch ${module_dir}/class_map.yaml
 
     # clean auto_additions and auto_generated folders
     rm -rf ${module_dir}/auto_additions/*.py
@@ -71,13 +77,27 @@ It is not aimed to be manually edited
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl $IS_QT6 -s ${root_dir}/$sipfile.in -p ${module_dir}/auto_additions/${pyfile} $header &
+        CLASS_MAP_CALL=
+        if [[ ${CLASS_MAP} -eq 1 ]]; then
+          CLASS_MAP_CALL="-c ${module_dir}/class_map.yaml"
+        fi
+        ./scripts/sipify.pl $IS_QT6 -s ${root_dir}/${sipfile}.in -p ${module_dir}/auto_additions/${pyfile} ${CLASS_MAP_CALL} ${header} &
       fi
       count=$((count+1))
     done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
   done
 done
 wait # wait for sipify processes to finish
+
+if [[ ${CLASS_MAP} -eq 1 ]]; then
+  for root_dir in python python/PyQt6; do
+    for module in "${modules[@]}"; do
+      module_dir=${root_dir}/${module}
+      echo "sorting ${module_dir}/class_map.yaml"
+      sort -n -o ${module_dir}/class_map.yaml ${module_dir}/class_map.yaml
+    done
+  done
+fi
 
 echo " => $count files sipified! 🍺"
 
