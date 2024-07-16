@@ -13,6 +13,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsSettings,
     QgsAuthConfigurationStorage,
     QgsAuthConfigurationStorageDb,
@@ -32,11 +33,16 @@ class AuthManagerStorageBaseTestCase(QgisTestCase):
 
     # This must be populated by the derived class and be an instance of QgsAuthConfigurationStorage
     storage = None
+    # If not None, it will be used to test the storage integration with QgsAuthManager
+    storage_uri = None
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
+
+        if cls.storage_uri is not None:
+            os.environ['QGIS_AUTH_DB_URI'] = cls.storage_uri
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("%s.com" % __name__)
@@ -56,6 +62,23 @@ class TestAuthManagerStorageBase():
         if issubclass(type(self.storage), QgsAuthConfigurationStorageDb):
             for table in ['auth_authorities', 'auth_identities', 'auth_servers', 'auth_settings', 'auth_trust', 'auth_configs']:
                 self.assertTrue(self.storage.tableExists(table))
+
+    def testDefaultStorage(self):
+
+        if self.storage_uri is None:
+            raise unittest.SkipTest('No storage URI defined')
+
+        auth_manager = QgsApplication.authManager()
+        auth_manager.ensureInitialized()
+
+        # Verify that the default storage is the one we set
+        self.assertEqual(auth_manager.authenticationDatabaseUri(), self.storage_uri)
+
+        # Verify that the registry has the storage
+        registry = QgsApplication.authConfigurationStorageRegistry()
+        storage = registry.readyStorages()[0]
+        self.assertEqual(storage.settings()['database'], self.storage.settings()['database'])
+        self.assertEqual(storage.settings()['driver'], self.storage.settings()['driver'])
 
     def testAuthConfigs(self):
 
@@ -93,6 +116,10 @@ class TestAuthManagerStorageBase():
         config2.setConfig('realm', 'test realm 2')
         payload2 = config2.configString()
         self.assertTrue(self.storage.storeMethodConfig(config2, payload2))
+
+        # Test exists
+        self.assertTrue(self.storage.methodConfigExists('test'))
+        self.assertFalse(self.storage.methodConfigExists('xxxx'))
 
         # Read it back
         configback, payloadback = self.storage.loadMethodConfig('test', True)

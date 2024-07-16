@@ -86,6 +86,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload SIP_OUT, bool full = false ) const override;
     bool storeMethodConfig( const QgsAuthMethodConfig &mconfig, const QString &payload ) override;
     bool removeMethodConfig( const QString &id ) override;
+    bool methodConfigExists( const QString &id ) const override;
     bool storeAuthSetting( const QString &key, const QString &value ) override;
     QString loadAuthSetting( const QString &key ) const override;
     bool removeAuthSetting( const QString &key ) override;
@@ -172,6 +173,14 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
      */
     virtual bool tableExists( const QString &table ) const;
 
+    /**
+     * Returns the quoted identifier, prefixed with the schema
+     * (if not null), ready for the insertion into a SQL query.
+     * \param identifier the identifier to quote.
+     * \param isIndex if TRUE, the identifier is treated as an index name.
+     */
+    virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
+
   private:
 
     bool clearTables( const QStringList &tables );
@@ -215,14 +224,6 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
      * Checks the capabilities of the storage.
      */
     virtual void checkCapabilities();
-
-    /**
-     * Returns the quoted identifier, prefixed with the schema
-     * (if not null), ready for the insertion into a SQL query.
-     * \param identifier the identifier to quote.
-     * \param isIndex if TRUE, the identifier is treated as an index name.
-     */
-    virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
 
     // From https://doc.qt.io/qt-6/sql-driver.html
     QString mDriver;

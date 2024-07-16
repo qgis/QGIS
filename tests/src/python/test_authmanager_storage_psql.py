@@ -33,9 +33,7 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
 
     @classmethod
     def setUpClass(cls):
-        """Run before each tests"""
-
-        super().setUpClass()
+        """Run before tests"""
 
         if 'QGIS_PGTEST_DB' not in os.environ:
             raise unittest.SkipTest('QGIS_PGTEST_DB not defined')
@@ -65,11 +63,17 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
         config['database'] = config['dbname']
 
         # Remove single quotes if present in user and password and database
-        for key in ['user', 'password', 'database']:
+        for key in ['user', 'password', 'database', 'dbname']:
             if key in config and config[key].startswith("'") and config[key].endswith("'"):
                 config[key] = config[key][1:-1]
 
         config['schema'] = 'qgis_auth_test'
+
+        cls.storage_uri = f"{config['driver']}://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['dbname']}?schema={config['schema']}"
+
+        # Parent setup initializes QgsApplication and needs the storage URI set, but we need
+        # to initialize the application before using the provider registry
+        super().setUpClass()
 
         # Make sure all tables are dropped by dropping the schema
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
@@ -83,6 +87,8 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
         conn.createSchema(config['schema'])
 
         cls.storage = QgsAuthConfigurationStorageDb(config)
+
+        assert cls.storage.methodConfigTableName() == '"qgis_auth_test"."auth_method_configs"'
 
         assert cls.storage.type() == 'DB-QPSQL'
 

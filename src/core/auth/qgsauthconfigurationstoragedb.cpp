@@ -290,7 +290,10 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
   const QString id{ QgsAuthCertUtils::shaHexForCert( cert ) };
   const QString certPem{ cert.toPem() };
 
-  removeCertIdentity( id );
+  if ( certIdentityExists( id ) )
+  {
+    removeCertIdentity( id );
+  }
 
   query.prepare( QStringLiteral( "INSERT INTO %1 (id, key, cert) VALUES (:id, :key, :cert)" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
   query.bindValue( QStringLiteral( ":id" ), id );
@@ -623,7 +626,10 @@ bool QgsAuthConfigurationStorageDb::storeSslCertCustomConfig( const QgsAuthConfi
   QSslCertificate cert( config.sslCertificate() );
   QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
-  removeSslCertCustomConfig( id, config.sslHostPort().trimmed() );
+  if ( sslCertCustomConfigExists( id, config.sslHostPort() ) )
+  {
+    removeSslCertCustomConfig( id, config.sslHostPort().trimmed() );
+  }
 
   QString certpem( cert.toPem() );
   QSqlQuery query( authDatabaseConnection() );
@@ -973,7 +979,10 @@ bool QgsAuthConfigurationStorageDb::storeCertAuthority( const QSslCertificate &c
     return false;
   }
 
-  removeCertAuthority( cert );
+  if ( certAuthorityExists( cert ) )
+  {
+    removeCertAuthority( cert );
+  }
 
   const QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
   const QString pem( cert.toPem() );
@@ -1262,7 +1271,10 @@ bool QgsAuthConfigurationStorageDb::storeCertTrustPolicy( const QSslCertificate 
     return true;
   }
 
-  removeCertTrustPolicy( cert );
+  if ( certTrustPolicyExists( cert ) )
+  {
+    removeCertTrustPolicy( cert );
+  }
 
   QSqlQuery query( authDatabaseConnection() );
   query.prepare( QStringLiteral( "INSERT INTO %1 (id, policy) VALUES (:id, :policy)" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
@@ -2015,7 +2027,10 @@ bool QgsAuthConfigurationStorageDb::storeMethodConfig( const QgsAuthMethodConfig
     return false;
   }
 
-  removeMethodConfig( config.id() );
+  if ( methodConfigExists( config.id() ) )
+  {
+    removeMethodConfig( config.id() );
+  }
 
   QSqlQuery query( authDatabaseConnection() );
   query.prepare( QStringLiteral( "INSERT INTO %1 (id, name, uri, type, version, config) VALUES (:id, :name, :uri, :type, :version, :config)" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
@@ -2069,6 +2084,35 @@ bool QgsAuthConfigurationStorageDb::removeMethodConfig( const QString &id )
   return true;
 }
 
+bool QgsAuthConfigurationStorageDb::methodConfigExists( const QString &id ) const
+{
+  QMutexLocker locker( &mMutex );
+
+  if ( !authDbOpen() )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db could not be opened" ) );
+    return false;
+  }
+
+  QSqlQuery query( authDatabaseConnection() );
+
+  query.prepare( QStringLiteral( "SELECT COUNT( id ) FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+  query.bindValue( QStringLiteral( ":id" ), id );
+
+  if ( !authDbQuery( &query ) )
+  {
+    const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to query for config '%1'" ).arg( id ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
+  if ( query.next() )
+  {
+    return query.value( 0 ).toInt() > 0;
+  }
+
+  return false;
+}
+
 bool QgsAuthConfigurationStorageDb::storeAuthSetting( const QString &key, const QString &value )
 {
   QMutexLocker locker( &mMutex );
@@ -2079,7 +2123,10 @@ bool QgsAuthConfigurationStorageDb::storeAuthSetting( const QString &key, const 
     return false;
   }
 
-  removeAuthSetting( key );
+  if ( authSettingExists( key ) )
+  {
+    removeAuthSetting( key );
+  }
 
   QSqlQuery query( authDatabaseConnection() );
 
@@ -2251,8 +2298,10 @@ const QMap<QString, QString> QgsAuthConfigurationStorageDb::uriToSettings( const
     settings.insert( QStringLiteral( "host" ), url.host() );
     settings.insert( QStringLiteral( "port" ), QString::number( url.port() ) );
     QString path { url.path() };
-    // Remove leading slash
-    if ( path.startsWith( QStringLiteral( "/" ) ) )
+    // Remove leading slash from the path unless the driver is QSQLITE or QSPATIALITE
+    if ( path.startsWith( QStringLiteral( "/" ) ) &&
+         !( settings.value( QStringLiteral( "driver" ) ) == QStringLiteral( "QSQLITE" ) ||
+            settings.value( QStringLiteral( "driver" ) ) == QStringLiteral( "QSPATIALITE" ) ) )
     {
       path = path.mid( 1 );
     }
