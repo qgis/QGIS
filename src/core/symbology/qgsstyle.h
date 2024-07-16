@@ -173,7 +173,11 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  The enumerator is used for identifying the entity being operated on when generic
      *  database functions are being run.
-     *  \sa rename(), remove(), symbolsOfFavorite(), symbolsWithTag(), symbolsOfSmartgroup()
+     *  \see rename()
+     *  \see remove()
+     *  \see symbolsOfFavorite()
+     *  \see symbolsWithTag()
+     *  \see symbolsOfSmartgroup()
      */
     enum StyleEntity
     {

@@ -90,7 +90,8 @@ may keep advanced digitizing allowed all the time.
 
 If ``True`` is returned, that does not mean that advanced digitizing is actually active,
 because it is up to the user to enable/disable it when it is allowed.
-\sa :py:func:`~QgsMapToolAdvancedDigitizing.setAdvancedDigitizingAllowed`
+
+.. seealso:: :py:func:`setAdvancedDigitizingAllowed`
 %End
 
     bool isAutoSnapEnabled() const;
@@ -99,7 +100,8 @@ Returns whether mouse events (press/move/release) should automatically try to sn
 (according to the snapping configuration of map canvas) before passing the mouse coordinates
 to the tool. This may be desirable default behavior for some map tools, but not for other map tools.
 It is therefore possible to configure the behavior by the map tool.
-\sa :py:func:`~QgsMapToolAdvancedDigitizing.isAutoSnapEnabled`
+
+.. seealso:: :py:func:`isAutoSnapEnabled`
 %End
 
   protected:
@@ -108,14 +110,16 @@ It is therefore possible to configure the behavior by the map tool.
 %Docstring
 Sets whether functionality of advanced digitizing dock widget is currently allowed.
 This method is protected because it should be a decision of the map tool and not from elsewhere.
-\sa :py:func:`~QgsMapToolAdvancedDigitizing.isAdvancedDigitizingAllowed`
+
+.. seealso:: :py:func:`isAdvancedDigitizingAllowed`
 %End
 
     void setAutoSnapEnabled( bool enabled );
 %Docstring
 Sets whether mouse events (press/move/release) should automatically try to snap mouse position
 This method is protected because it should be a decision of the map tool and not from elsewhere.
-\sa :py:func:`~QgsMapToolAdvancedDigitizing.isAutoSnapEnabled`
+
+.. seealso:: :py:func:`isAutoSnapEnabled`
 %End
 
 

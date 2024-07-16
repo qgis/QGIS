@@ -103,7 +103,7 @@ May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointClou
 %Docstring
 Triggers loading of the point cloud index
 
-\sa :py:func:`~QgsPointCloudDataProvider.index`
+.. seealso:: :py:func:`index`
 %End
 
     virtual void generateIndex( ) = 0;
@@ -112,7 +112,7 @@ Triggers generation of the point cloud index
 
 emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 
-\sa :py:func:`~QgsPointCloudDataProvider.index`
+.. seealso:: :py:func:`index`
 %End
 
 

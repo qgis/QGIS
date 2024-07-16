@@ -136,7 +136,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Triggers loading of the point cloud index
      *
-     * \sa index()
+     * \see index()
      */
     virtual void loadIndex( ) = 0;
 
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * emits indexGenerationStateChanged()
      *
-     * \sa index()
+     * \see index()
      */
     virtual void generateIndex( ) = 0;
 
