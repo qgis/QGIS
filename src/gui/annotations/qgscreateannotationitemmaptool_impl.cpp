@@ -20,6 +20,7 @@
 #include "qgsannotationlineitem.h"
 #include "qgsannotationpolygonitem.h"
 #include "qgsannotationlinetextitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsannotationpictureitem.h"
 #include "qgsannotationlayer.h"
 #include "qgsstyle.h"
@@ -371,6 +372,103 @@ QgsCreateAnnotationItemMapToolHandler *QgsCreatePictureItemMapTool::handler()
 }
 
 QgsMapTool *QgsCreatePictureItemMapTool::mapTool()
+{
+  return this;
+}
+
+
+
+//
+// QgsCreateRectangleTextItemMapTool
+//
+
+QgsCreateRectangleTextItemMapTool::QgsCreateRectangleTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this ) )
+{
+  setUseSnappingIndicator( true );
+}
+
+void QgsCreateRectangleTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
+{
+  if ( event->button() == Qt::RightButton && mRubberBand )
+  {
+    mRubberBand.reset();
+    cadDockWidget()->clearPoints();
+    return;
+  }
+
+  if ( event->button() != Qt::LeftButton )
+    return;
+
+  if ( !mRubberBand )
+  {
+    mFirstPoint = event->snapPoint();
+    mRect.setRect( mFirstPoint.x(), mFirstPoint.y(), mFirstPoint.x(), mFirstPoint.y() );
+
+    mRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+    mRubberBand->setWidth( digitizingStrokeWidth() );
+    QColor color = digitizingStrokeColor();
+
+    const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale->value();
+    color.setAlphaF( color.alphaF() * alphaScale );
+    mRubberBand->setLineStyle( Qt::DotLine );
+    mRubberBand->setStrokeColor( color );
+
+    const QColor fillColor = digitizingFillColor();
+    mRubberBand->setFillColor( fillColor );
+  }
+  else
+  {
+    mRubberBand.reset();
+
+    const QgsPointXY point1 = toLayerCoordinates( mHandler->targetLayer(), mFirstPoint );
+    const QgsPointXY point2 = toLayerCoordinates( mHandler->targetLayer(), event->snapPoint() );
+
+    cadDockWidget()->clearPoints();
+
+    std::unique_ptr< QgsAnnotationRectangleTextItem > createdItem = std::make_unique< QgsAnnotationRectangleTextItem >( tr( "Text" ), QgsRectangle( point1, point2 ) );
+    // newly created rect text items default to using symbology reference scale at the current map scale
+    createdItem->setUseSymbologyReferenceScale( true );
+    createdItem->setSymbologyReferenceScale( canvas()->scale() );
+    mHandler->pushCreatedItem( createdItem.release() );
+  }
+}
+
+void QgsCreateRectangleTextItemMapTool::cadCanvasMoveEvent( QgsMapMouseEvent *event )
+{
+  if ( !mRubberBand )
+    return;
+
+  const QgsPointXY mapPoint = event->snapPoint();
+  mRect.setBottomRight( mapPoint.toQPointF() );
+
+  mRubberBand->reset( Qgis::GeometryType::Polygon );
+  mRubberBand->addPoint( mRect.bottomLeft(), false );
+  mRubberBand->addPoint( mRect.bottomRight(), false );
+  mRubberBand->addPoint( mRect.topRight(), false );
+  mRubberBand->addPoint( mRect.topLeft(), true );
+}
+
+void QgsCreateRectangleTextItemMapTool::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape )
+  {
+    if ( mRubberBand )
+    {
+      mRubberBand.reset();
+      cadDockWidget()->clearPoints();
+      event->ignore();
+    }
+  }
+}
+
+QgsCreateAnnotationItemMapToolHandler *QgsCreateRectangleTextItemMapTool::handler()
+{
+  return mHandler;
+}
+
+QgsMapTool *QgsCreateRectangleTextItemMapTool::mapTool()
 {
   return this;
 }
