@@ -87,7 +87,7 @@ QgsCreatePointTextItemMapTool::QgsCreatePointTextItemMapTool( QgsMapCanvas *canv
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
 {
-
+  setUseSnappingIndicator( true );
 }
 
 QgsCreatePointTextItemMapTool::~QgsCreatePointTextItemMapTool() = default;
