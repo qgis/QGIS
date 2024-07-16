@@ -751,19 +751,15 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
 {
   QgsSymbolLayerList layers;
 
-  QString fontFamily;
-  fontFamily = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+  const QString fontFamily = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
 
-  QString chr;
-  chr = symbolData.value( QStringLiteral( "text" ) ).toString();
+  const QString chr = symbolData.value( QStringLiteral( "text" ) ).toString();
 
-  double pointSize;
-  pointSize = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toDouble();
+  const double pointSize = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toDouble();
 
-  QColor color = convertColor( symbolData.value( QStringLiteral( "color" ) ) );
+  const QColor color = convertColor( symbolData.value( QStringLiteral( "color" ) ) );
 
-  double angle;
-  angle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
+  const double angle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
 
   std::unique_ptr< QgsFontMarkerSymbolLayer > markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
 
