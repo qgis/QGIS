@@ -314,7 +314,7 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QColor mainColor = fontMarkerLayer->color();
   QCOMPARE( mainColor.name(), QStringLiteral("#4e4e4e" ) );
   QColor strokeColor = fontMarkerLayer->strokeColor();
-  QCOMPARE( strokeColor.name(), QStringLiteral("#ff0000" ) );
+  QCOMPARE( strokeColor.name(), QStringLiteral("#ff00ff" ) );
   QCOMPARE( fontMarkerLayer->strokeWidth(), 2 );
   QCOMPARE( fontMarkerLayer->character(), QString( "text" ) );
 
