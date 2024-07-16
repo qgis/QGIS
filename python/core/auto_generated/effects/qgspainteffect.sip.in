@@ -305,13 +305,16 @@ effects.
 .. seealso:: :py:func:`sourceAsImage`
 %End
 
-    void fixQPictureDpi( QPainter *painter ) const;
+ void fixQPictureDpi( QPainter *painter ) const /Deprecated/;
 %Docstring
 Applies a workaround to a QPainter to avoid an issue with incorrect scaling
 when drawing QPictures. This may need to be called by derived classes prior
 to rendering results onto a painter.
 
 :param painter: destination painter
+
+.. deprecated::
+   QGIS 3.40, use :py:func:`QgsPainting.drawPicture()` or :py:func:`QgsPainting.applyScaleFixForQPictureDpi()` instead.
 %End
 
 };

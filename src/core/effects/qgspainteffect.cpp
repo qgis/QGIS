@@ -131,9 +131,7 @@ void QgsPaintEffect::drawSource( QPainter &painter )
 {
   if ( requiresQPainterDpiFix )
   {
-    const QgsScopedQPainterState painterState( &painter );
-    fixQPictureDpi( &painter );
-    painter.drawPicture( 0, 0, *mPicture );
+    QgsPainting::drawPicture( &painter, QPointF( 0, 0 ), *mPicture );
   }
   else
   {
