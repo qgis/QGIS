@@ -725,7 +725,7 @@ const QgsRenderedAnnotationItemDetails *QgsMapToolModifyAnnotation::findClosestI
 {
   const QgsRenderedAnnotationItemDetails *closestItem = nullptr;
   double closestItemDistance = std::numeric_limits< double >::max();
-  int closestItemZ = 0;
+  double closestItemArea = std::numeric_limits< double >::max();
 
   for ( const QgsRenderedAnnotationItemDetails *item : items )
   {
@@ -735,11 +735,11 @@ const QgsRenderedAnnotationItemDetails *QgsMapToolModifyAnnotation::findClosestI
 
     const QgsRectangle itemBounds = item->boundingBox();
     const double itemDistance = itemBounds.contains( mapPoint ) ? 0 : itemBounds.distance( mapPoint );
-    if ( !closestItem || itemDistance < closestItemDistance || ( itemDistance == closestItemDistance && annotationItem->zIndex() > closestItemZ ) )
+    if ( !closestItem || itemDistance < closestItemDistance || ( itemDistance == closestItemDistance && itemBounds.area() < closestItemArea ) )
     {
       closestItem = item;
       closestItemDistance = itemDistance;
-      closestItemZ = annotationItem->zIndex();
+      closestItemArea = itemBounds.area();
       bounds = itemBounds;
     }
   }
