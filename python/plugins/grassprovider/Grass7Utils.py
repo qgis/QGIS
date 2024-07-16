@@ -601,7 +601,7 @@ class Grass7Utils:
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
-        # We use the same extensions than GDAL because:
+        # We use the same extensions as GDAL because:
         # - GRASS is also using GDAL for raster imports.
         # - Chances that GRASS is compiled with another version of
         # GDAL than QGIS are very limited!
