@@ -87,6 +87,8 @@ Returns the database connection used by this storage.
 
     virtual bool removeMethodConfig( const QString &id );
 
+    virtual bool methodConfigExists( const QString &id ) const;
+
     virtual bool storeAuthSetting( const QString &key, const QString &value );
 
     virtual QString loadAuthSetting( const QString &key ) const;
@@ -213,6 +215,15 @@ Returns ``True`` if the specified ``table`` exists in the database, ``False`` ot
    The schema is automatically prepended to the table name.
 %End
 
+    virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
+%Docstring
+Returns the quoted identifier, prefixed with the schema
+(if not null), ready for the insertion into a SQL query.
+
+:param identifier: the identifier to quote.
+:param isIndex: if ``True``, the identifier is treated as an index name.
+%End
+
   protected:
 
     bool authDbOpen() const;
@@ -253,15 +264,6 @@ Creates the certificate tables in the database.
     virtual void checkCapabilities();
 %Docstring
 Checks the capabilities of the storage.
-%End
-
-    virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
-%Docstring
-Returns the quoted identifier, prefixed with the schema
-(if not null), ready for the insertion into a SQL query.
-
-:param identifier: the identifier to quote.
-:param isIndex: if ``True``, the identifier is treated as an index name.
 %End
 
 

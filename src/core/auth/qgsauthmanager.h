@@ -100,7 +100,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * to lazy-initialize when required.
      *
      * \param pluginPath the plugin path
-     * \param authDatabasePath the authentication DB path
+     * \param authDatabasePath the authentication DB URI (or just the file path for SQLite)
      * \see ensureInitialized()
      */
     void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
@@ -131,9 +131,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Name of the authentication database table that stores configs
-     * \deprecated Since QGIS 3.40, direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
+     * \deprecated Since QGIS 3.40, direct access to the DB is not allowed, use methodConfigTableName() instead.
      */
     Q_DECL_DEPRECATED const QString authDatabaseConfigTable() const SIP_DEPRECATED { return AUTH_CONFIG_TABLE; }
+
+    /**
+     * Returns the database table from the first ready storage that stores authentication configs,
+     * or an empty string if none available. The table is prefixed with schema and escaped if necessary.
+     * \since QGIS 3.40
+     */
+    const QString methodConfigTableName() const;
 
     /**
      * Name of the authentication database table that stores server exceptions/configs
@@ -164,7 +171,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Returns the authentication database connection URI.
      * \since QGIS 3.40
      */
-    const QString authenticationDatabaseUri() const { return mAuthDatabaseConnectionUri; }
+    const QString authenticationDatabaseUri() const;
 
     /**
      * Main call to initially set or continually check master password is set
@@ -849,7 +856,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
   private:
 
-    bool initPrivate( const QString &pluginPath,  const QString &authDatabasePath );
+    bool initPrivate( const QString &pluginPath );
 
     //////////////////////////////////////////////////////////////////////////////
     // Password Helper methods
@@ -915,7 +922,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QgsAuthConfigurationStorageDb *defaultDbStorage() const;
 
     /**
-     * Returns the path to the authentication database file or an empty string if the database is not file-based.
+     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
      */
     const QString sqliteDatabasePath() const;
 

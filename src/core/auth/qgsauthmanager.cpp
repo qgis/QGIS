@@ -113,25 +113,45 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   // that the connection cleanup on thread finalization happens in a predictable order
   QMutexLocker locker( mMutex.get() );
 
-  // Get the first enabled sqlite storage from the registry
-  const QList<QgsAuthConfigurationStorage *> storages { authConfigurationStorageRegistry()->storages() };
-
-  for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
+  // Get the first enabled DB storage from the registry
+  if ( QgsAuthConfigurationStorageDb *storage = defaultDbStorage() )
   {
-    if ( qobject_cast<QgsAuthConfigurationStorageSqlite *>( storage ) && storage->isEnabled() )
-    {
-      return qobject_cast<QgsAuthConfigurationStorageSqlite *>( storage )->authDatabaseConnection();
-    }
+    return storage->authDatabaseConnection();
   }
 
   return authdb;
+}
+
+const QString QgsAuthManager::methodConfigTableName() const
+{
+  if ( ! isDisabled() )
+  {
+    ensureInitialized();
+
+    // Returns the first enabled and ready "DB" storage
+    QgsAuthConfigurationStorageRegistry *storageRegistry = authConfigurationStorageRegistry();
+    const QList<QgsAuthConfigurationStorage *> storages { storageRegistry->readyStorages() };
+    for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
+    {
+      if ( auto dbStorage = qobject_cast<QgsAuthConfigurationStorageDb *>( storage ) )
+      {
+        if ( dbStorage->capabilities() & Qgis::AuthConfigurationStorageCapability::ReadConfiguration )
+        {
+          return dbStorage->quotedQualifiedIdentifier( dbStorage->methodConfigTableName() );
+        }
+      }
+    }
+  }
+
+  return QString();
 }
 
 bool QgsAuthManager::isFilesystemBasedDatabase( const QString &uri )
 {
   // Loop through all registered SQL drivers and return false if
   // the URI starts with one of them except the SQLite based drivers
-  for ( const QString &driver : QSqlDatabase::drivers() )
+  const auto drivers { QSqlDatabase::drivers() };
+  for ( const QString &driver : std::as_const( drivers ) )
   {
     if ( driver != ( QStringLiteral( "QSQLITE" ) ) && driver != ( QStringLiteral( "QSPATIALITE" ) ) && uri.startsWith( driver ) )
     {
@@ -141,10 +161,16 @@ bool QgsAuthManager::isFilesystemBasedDatabase( const QString &uri )
   return true;
 }
 
+const QString QgsAuthManager::authenticationDatabaseUri() const
+{
+  return mAuthDatabaseConnectionUri;
+}
+
 
 bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
-  return initPrivate( pluginPath, authDatabasePath );
+  mAuthDatabaseConnectionUri = authDatabasePath.startsWith( QStringLiteral( "QSQLITE://" ) ) ? authDatabasePath : QStringLiteral( "QSQLITE://" ) + authDatabasePath;
+  return initPrivate( pluginPath );
 }
 
 bool QgsAuthManager::ensureInitialized() const
@@ -159,14 +185,14 @@ bool QgsAuthManager::ensureInitialized() const
     return mLazyInitResult;
   }
 
-  mLazyInitResult = const_cast< QgsAuthManager * >( this )->initPrivate( mPluginPath, mAuthDatabaseConnectionUri );
+  mLazyInitResult = const_cast< QgsAuthManager * >( this )->initPrivate( mPluginPath );
   sInitialized = true;
   sInitializationMutex.unlock();
 
   return mLazyInitResult;
 }
 
-bool QgsAuthManager::initPrivate( const QString &pluginPath, const QString &authDatabasePath )
+bool QgsAuthManager::initPrivate( const QString &pluginPath )
 {
   if ( mAuthInit )
     return true;
@@ -231,7 +257,6 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath, const QString &auth
     return isDisabled();
   }
 
-  mAuthDatabaseConnectionUri = isFilesystemBasedDatabase( authDatabasePath ) ? QDir::cleanPath( authDatabasePath ) : authDatabasePath;
   QgsDebugMsgLevel( QStringLiteral( "Auth database URI: %1" ).arg( mAuthDatabaseConnectionUri ), 2 );
 
   // Add the default configuration storage
@@ -349,7 +374,6 @@ const QString QgsAuthManager::sqliteDatabasePath() const
 {
   if ( !QgsAuthManager::isFilesystemBasedDatabase( mAuthDatabaseConnectionUri ) )
   {
-    emit messageLog( tr( "Authentication DB URI is not filesystem-based: %1" ).arg( mAuthDatabaseConnectionUri ), authManTag(), Qgis::MessageLevel::Critical );
     return QString();
   }
 
@@ -738,10 +762,14 @@ const QString QgsAuthManager::uniqueConfigId() const
   QStringList configids = configIds();
   QString id;
   int len = 7;
+
+  // Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
   // sleep just a bit to make sure the current time has changed
   QEventLoop loop;
   QTimer::singleShot( 3, &loop, &QEventLoop::quit );
   loop.exec();
+#endif
 
   while ( true )
   {
@@ -811,7 +839,7 @@ QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QStrin
   {
     const QgsAuthMethodConfigsMap configs { defaultStorage->authMethodConfigs() };
 
-    for ( const QgsAuthMethodConfig &config : configs )
+    for ( const QgsAuthMethodConfig &config : std::as_const( configs ) )
     {
       if ( !dataprovider.isEmpty() && !providerAuthMethodsKeys.contains( config.method() ) )
       {
@@ -1160,9 +1188,9 @@ bool QgsAuthManager::removeAuthenticationConfig( const QString &authcfg )
   if ( authcfg.isEmpty() )
     return false;
 
-  if ( auto storage = defaultDbStorage() )
+  if ( QgsAuthConfigurationStorage *defaultStorage = defaultDbStorage() )
   {
-    if ( storage->removeMethodConfig( authcfg ) )
+    if ( defaultStorage->removeMethodConfig( authcfg ) )
     {
       clearCachedConfig( authcfg );
       updateConfigAuthMethods();
@@ -1305,9 +1333,9 @@ bool QgsAuthManager::removeAllAuthenticationConfigs()
   if ( isDisabled() )
     return false;
 
-  if ( auto storage = defaultDbStorage() )
+  if ( QgsAuthConfigurationStorage *defaultStorage = defaultDbStorage() )
   {
-    if ( storage->clearMethodConfigs() )
+    if ( defaultStorage->clearMethodConfigs() )
     {
       clearAllCachedConfigs();
       updateConfigAuthMethods();
@@ -1395,9 +1423,9 @@ bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppa
   if ( backuppath && !dbbackup.isEmpty() )
     *backuppath = dbbackup;
 
-  if ( auto storage = defaultDbStorage() )
+  if ( QgsAuthConfigurationStorage *defaultStorage = defaultDbStorage() )
   {
-    if ( storage->erase() )
+    if ( defaultStorage->erase() )
     {
       mMasterPass = QString();
       clearAllCachedConfigs();
@@ -3194,6 +3222,12 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
 
   if ( QgsAuthConfigurationStorage *defaultStorage = defaultDbStorage() )
   {
+
+    if ( ! defaultStorage->isEncrypted() )
+    {
+      return true;
+    }
+
     const QgsAuthMethodConfigsMap configs = defaultStorage->authMethodConfigsWithPayload();
     for ( auto it = configs.cbegin(); it != configs.cend(); ++it )
     {

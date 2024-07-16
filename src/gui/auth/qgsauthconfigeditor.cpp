@@ -50,7 +50,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     Q_NOWARN_DEPRECATED_PUSH
     mConfigModel = new QSqlTableModel( this, QgsApplication::authManager()->authDatabaseConnection() );
-    mConfigModel->setTable( QgsApplication::authManager()->authDatabaseConfigTable() );
+    mConfigModel->setTable( QgsApplication::authManager()->methodConfigTableName() );
     Q_NOWARN_DEPRECATED_POP
     mConfigModel->select();
 

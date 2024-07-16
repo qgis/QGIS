@@ -33,7 +33,7 @@ class QgsAuthConfigurationStorage;
  *
  * This class manages a list of authentication configuration storages.
  * It is a singleton class.
- * \since QGIS 3.30
+ * \since QGIS 3.40
  */
 class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
 {

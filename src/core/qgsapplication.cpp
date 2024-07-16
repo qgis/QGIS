@@ -193,6 +193,7 @@ Q_GLOBAL_STATIC( QString, sBuildOutputPath )
 Q_GLOBAL_STATIC( QStringList, sGdalSkipList )
 Q_GLOBAL_STATIC( QStringList, sDeferredSkippedGdalDrivers )
 Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
+Q_GLOBAL_STATIC( QString, sAuthDbUri )
 
 Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
@@ -379,10 +380,27 @@ void QgsApplication::init( QString profileFolder )
   *sConfigPath() = profileFolder + '/'; // make sure trailing slash is included
   *sDefaultSvgPaths() << qgisSettingsDirPath() + QStringLiteral( "svg/" );
 
+  // Determine the auth DB URI, the first match wins:
+  // 1 - get it from QGIS_AUTH_DB_URI environment variable
+  // 2 - get it from QGIS_AUTH_DB_DIR_PATH environment variable, assume QSQLITE driver and add "qgis-auth.db"
+  // 3 - use the default path from settings dir path, assume QSQLITE and add "qgis-auth.db"
   *sAuthDbDirPath() = qgisSettingsDirPath();
+
   if ( getenv( "QGIS_AUTH_DB_DIR_PATH" ) )
   {
     setAuthDatabaseDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
+    sAuthDbUri()->clear();
+  }
+
+  if ( getenv( "QGIS_AUTH_DB_URI" ) )
+  {
+    *sAuthDbUri() = getenv( "QGIS_AUTH_DB_URI" );
+  }
+
+  // Default to sAuthDbDirPath
+  if ( sAuthDbUri->isEmpty() )
+  {
+    *sAuthDbUri() = QStringLiteral( "QSQLITE://" ) + *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
   }
 
   // force use of OpenGL renderer for Qt3d.
@@ -1200,6 +1218,11 @@ QString QgsApplication::qgisAuthDatabaseFilePath()
   return *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
 }
 
+QString QgsApplication::qgisAuthDatabaseUri()
+{
+  return *sAuthDbUri();
+}
+
 QString QgsApplication::splashPath()
 {
   return QStringLiteral( ":/images/splash/" );
@@ -1540,7 +1563,7 @@ void QgsApplication::initQgis()
   QgsProject::instance();
 
   // Setup authentication manager for lazy initialization
-  authManager()->setup( pluginPath(), qgisAuthDatabaseFilePath() );
+  authManager()->setup( pluginPath(), qgisAuthDatabaseUri() );
 
   // Make sure we have a NAM created on the main thread.
   // Note that this might call QgsApplication::authManager to

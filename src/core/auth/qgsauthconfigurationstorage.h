@@ -129,6 +129,13 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     virtual bool removeMethodConfig( const QString &id ) = 0;
 
     /**
+     *  Check if an authentication configuration exists in the storage.
+     *  \param id Configuration id.
+     *  \returns TRUE if the configuration exists, FALSE otherwise.
+     */
+    virtual bool methodConfigExists( const QString &id ) const = 0;
+
+    /**
      * Store an authentication setting in the storage.
      * \param key Setting key.
      * \param value Setting value.

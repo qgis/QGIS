@@ -68,6 +68,9 @@ class QgsAuthConfigurationCustomStorage(QgsAuthConfigurationStorage):
             return self.configs.values()
         return [c for c in self.configs.values() if c.method() in allowedMethods]
 
+    def methodConfigExists(self, id: str):
+        return id in self.configs
+
     def storeMethodConfig(self, config: QgsAuthMethodConfig, payload: str):
         if not config.id():
             return False

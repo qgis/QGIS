@@ -60,7 +60,7 @@ This method does not initialize the authentication framework, instead that is de
 to lazy-initialize when required.
 
 :param pluginPath: the plugin path
-:param authDatabasePath: the authentication DB path
+:param authDatabasePath: the authentication DB URI (or just the file path for SQLite)
 
 .. seealso:: :py:func:`ensureInitialized`
 %End
@@ -97,7 +97,15 @@ Sets up the application instance of the authentication database connection
 Name of the authentication database table that stores configs
 
 .. deprecated:: QGIS 3.40
-  direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
+  direct access to the DB is not allowed, use :py:func:`~QgsAuthManager.methodConfigTableName` instead.
+%End
+
+    const QString methodConfigTableName() const;
+%Docstring
+Returns the database table from the first ready storage that stores authentication configs,
+or an empty string if none available. The table is prefixed with schema and escaped if necessary.
+
+.. versionadded:: 3.40
 %End
 
  const QString authDatabaseServersTable() const /Deprecated/;

@@ -124,6 +124,15 @@ Removes the authentication configuration with the specified ``id``.
 :return: ``True`` if the configuration was removed, ``False`` otherwise.
 %End
 
+    virtual bool methodConfigExists( const QString &id ) const = 0;
+%Docstring
+Check if an authentication configuration exists in the storage.
+
+:param id: Configuration id.
+
+:return: ``True`` if the configuration exists, ``False`` otherwise.
+%End
+
     virtual bool storeAuthSetting( const QString &key, const QString &value ) = 0;
 %Docstring
 Store an authentication setting in the storage.

@@ -18,7 +18,7 @@ Registry for authentication configuration storages.
 This class manages a list of authentication configuration storages.
 It is a singleton class.
 
-.. versionadded:: 3.30
+.. versionadded:: 3.40
 %End
 
 %TypeHeaderCode

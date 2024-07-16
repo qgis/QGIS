@@ -29,7 +29,6 @@ class TestAuthStorageSqlite(AuthManagerStorageBaseTestCase, TestAuthManagerStora
     def setUpClass(cls):
         """Run before each tests"""
 
-        super().setUpClass()
         cls.temp_dir = QTemporaryDir()
         cls.temp_dir_path = cls.temp_dir.path()
 
@@ -41,15 +40,19 @@ class TestAuthStorageSqlite(AuthManagerStorageBaseTestCase, TestAuthManagerStora
         # Verify that the file was created
         assert os.path.exists(cls.db_path)
 
-        cls.storage = QgsAuthConfigurationStorageDb('QSQLITE:' + cls.db_path)
+        uri = f"QSQLITE://{cls.db_path}"
+        cls.storage_uri = uri
+        cls.storage = QgsAuthConfigurationStorageDb(uri)
 
         assert cls.storage.type() == 'DB-QSQLITE'
+
+        super().setUpClass()
 
     def testCannotCreateDb(self):
         """Generic DB storage cannot create databases"""
 
         path = os.path.join(self.temp_dir_path, 'test_not_exist.sqlite')
-        storage = QgsAuthConfigurationStorageDb('QSQLITE:' + path)
+        storage = QgsAuthConfigurationStorageDb(self.storage_uri)
         assert not os.path.exists(path)
 
 
