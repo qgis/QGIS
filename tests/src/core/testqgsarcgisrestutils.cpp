@@ -286,7 +286,7 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
                               "\"verticalAlignment\": \"bottom\","
                               "\"horizontalAlignment\": \"left\","
                               "\"rightToLeft\": false,"
-                              "\"angle\": 0,"
+                              "\"angle\": 45,"
                               "\"xoffset\": 0,"
                               "\"yoffset\": 0,"
                               "\"kerning\": true,"
