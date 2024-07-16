@@ -759,7 +759,9 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
 
   const QColor color = convertColor( symbolData.value( QStringLiteral( "color" ) ) );
 
-  const double angle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
+  const double esriAngle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
+
+  const double angle = 90.0 - esriAngle;
 
   std::unique_ptr< QgsFontMarkerSymbolLayer > markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
 
