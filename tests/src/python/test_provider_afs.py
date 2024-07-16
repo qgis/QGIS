@@ -41,6 +41,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsGraduatedSymbolRenderer,
     QgsSymbol,
+    QgsRendererRange,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1396,6 +1397,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertIsNotNone(vl.dataProvider().createRenderer())
         self.assertIsInstance(vl.renderer(), QgsGraduatedSymbolRenderer)
         self.assertIsInstance(vl.renderer().sourceSymbol(), QgsSymbol)
+        self.assertIsInstance(vl.renderer().ranges()[0], QgsRendererRange)
+        self.assertEqual(len(vl.renderer().ranges()), 6)
+        self.assertEqual(vl.renderer().ranges()[0][0], -9007199254740991)
+        self.assertEqual(vl.renderer().ranges()[-1][1], 9007199254740991)
 
 
     def testBboxRestriction(self):
