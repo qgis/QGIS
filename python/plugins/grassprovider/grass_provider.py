@@ -153,15 +153,6 @@ class GrassProvider(QgsProcessingProvider):
     def versionInfo(self):
         return GrassUtils.installedVersion() or None
 
-    def defaultVectorFileExtension(self, hasGeometry=True):
-        # By default,'gpkg', but if OGR has not been compiled with sqlite3, then
-        # we take "SHP"
-        if 'GPKG' in [o.driverName for o in
-                      QgsVectorFileWriter.ogrDriverList()]:
-            return 'gpkg'
-        else:
-            return 'shp' if hasGeometry else 'dbf'
-
     def supportsNonFileBasedOutput(self):
         """
         GRASS Provider doesn't support non file based outputs
@@ -169,11 +160,11 @@ class GrassProvider(QgsProcessingProvider):
         return False
 
     def supportedOutputVectorLayerExtensions(self):
-        # We use the same extensions than QGIS because:
+        # We use the same extensions as QGIS because:
         # - QGIS is using OGR like GRASS
-        # - There are very chances than OGR version used in GRASS is
+        # - There are very few chances that OGR version used in GRASS is
         # different from QGIS OGR version.
-        return QgsVectorFileWriter.supportedFormatExtensions()
+        return super().supportedOutputVectorLayerExtensions()
 
     def supportedOutputRasterLayerExtensions(self):
         return GrassUtils.getSupportedOutputRasterExtensions()
