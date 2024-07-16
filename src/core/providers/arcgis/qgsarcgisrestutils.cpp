@@ -1052,7 +1052,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
       {
           const QVariantMap symbolData = classBreakInfo.toMap().value( QStringLiteral( "symbol" ) ).toMap();
           std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
-          double classMaxValue = classBreakInfo.toMap().value( QStringLiteral( "classMaxValue" ) ).toFloat();
+          double classMaxValue = classBreakInfo.toMap().value( QStringLiteral( "classMaxValue" ) ).toDouble();
           const QString label = classBreakInfo.toMap().value( QStringLiteral( "label" ) ).toString();
 
           QgsRendererRange range;
