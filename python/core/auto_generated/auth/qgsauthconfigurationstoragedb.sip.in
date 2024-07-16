@@ -55,7 +55,7 @@ The URI should be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<P
 
 .. note::
 
-   It is not possible to set the schema in the URI, use the settings map instead.
+   It is not possible to set the schema in the URI, pass SCHEMA=\verbatim<SCHEMA>\endverbatim in the options instead.
 %End
 
 

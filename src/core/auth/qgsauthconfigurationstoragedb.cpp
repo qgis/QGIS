@@ -24,6 +24,7 @@
 #include <QSqlQuery>
 #include <QThread>
 #include <QCoreApplication>
+#include <QUrlQuery>
 
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString, QString> &settings )
@@ -38,8 +39,8 @@ QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString
   mPassword = mConfiguration.value( QStringLiteral( "password" ) );
   mConnectOptions = mConfiguration.value( QStringLiteral( "options" ) );
   // Debug print all connection settings
-  QgsDebugMsgLevel( QStringLiteral( "Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', options=%6" )
-                    .arg( mDriver, mDatabase, mHost, mPort, mUser, mConnectOptions ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', schema=%6, options=%7" )
+                    .arg( mDriver, mDatabase, mHost, mPort, mUser, mConnectOptions, mConfiguration.value( QStringLiteral( "schema" ) ) ), 2 );
 }
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QString &uri )
@@ -2249,10 +2250,32 @@ const QMap<QString, QString> QgsAuthConfigurationStorageDb::uriToSettings( const
     settings.insert( QStringLiteral( "driver" ), url.scheme().toUpper() );
     settings.insert( QStringLiteral( "host" ), url.host() );
     settings.insert( QStringLiteral( "port" ), QString::number( url.port() ) );
-    settings.insert( QStringLiteral( "database" ), url.path() );
+    QString path { url.path() };
+    // Remove leading slash
+    if ( path.startsWith( QStringLiteral( "/" ) ) )
+    {
+      path = path.mid( 1 );
+    }
+    settings.insert( QStringLiteral( "database" ), path );
     settings.insert( QStringLiteral( "user" ), url.userName() );
     settings.insert( QStringLiteral( "password" ), url.password() );
-    settings.insert( QStringLiteral( "options" ), url.query() );
+    QUrlQuery query{ url };
+
+    // Extract the schema from the query string
+    QString schemaName { query.queryItemValue( QStringLiteral( "schema" ) ) };
+    if ( schemaName.isEmpty() )
+    {
+      schemaName = query.queryItemValue( QStringLiteral( "SCHEMA" ) );
+    }
+
+    if ( ! schemaName.isEmpty() )
+    {
+      settings.insert( QStringLiteral( "schema" ), schemaName );
+      query.removeAllQueryItems( QStringLiteral( "schema" ) );
+      query.removeAllQueryItems( QStringLiteral( "SCHEMA" ) );
+    }
+
+    settings.insert( QStringLiteral( "options" ), query.toString() );
   }
   return settings;
 }
