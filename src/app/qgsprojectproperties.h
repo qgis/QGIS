@@ -209,27 +209,23 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     /**
      * Called whenever user select the add ICC profile button
-     * \since QGIS 3.40
      */
     void addIccProfile();
 
     /**
      * load \a iccProfileFilePath and set resulting color space to project
-     * \since QGIS 3.40
      */
     void addIccProfile( const QString &iccProfileFilePath );
 
     /**
      * Called whenever user select the remove ICC profile button
-     * \since QGIS 3.40
      */
     void removeIccProfile();
 
     /**
      * Update color space widget according to current project color space
-     * \since QGIS 3.40
      */
-    void updateColorSpaceWidget();
+    void updateColorSpaceWidgets();
 
 #endif
 

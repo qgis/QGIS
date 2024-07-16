@@ -1036,7 +1036,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
   mColorSpace = QgsProject::instance()->styleSettings()->colorSpace();
-  updateColorSpaceWidget();
+  updateColorSpaceWidgets();
 #else
   mIccProfileLabel->setVisible( false );
   mColorSpaceName->setVisible( false );
@@ -2708,7 +2708,7 @@ void QgsProjectProperties::addIccProfile()
                                        this,
                                        tr( "Load ICC Profile" ),
                                        QDir::homePath(),
-                                       tr( "Style databases" ) + tr( "ICC Profile" ) + QStringLiteral( " (*.icc)" ) );
+                                       tr( "ICC Profile" ) + QStringLiteral( " (*.icc)" ) );
 
   addIccProfile( iccProfileFilePath );
 }
@@ -2727,16 +2727,16 @@ void QgsProjectProperties::addIccProfile( const QString &iccProfileFilePath )
   }
 
   mColorSpace = colorSpace;
-  updateColorSpaceWidget();
+  updateColorSpaceWidgets();
 }
 
 void QgsProjectProperties::removeIccProfile()
 {
   mColorSpace = QColorSpace();
-  updateColorSpaceWidget();
+  updateColorSpaceWidgets();
 }
 
-void QgsProjectProperties::updateColorSpaceWidget()
+void QgsProjectProperties::updateColorSpaceWidgets()
 {
   mColorSpaceName->setText( mColorSpace.isValid() ? mColorSpace.description() : tr( "<i>None</i>" ) );
   mRemoveIccProfile->setEnabled( mColorSpace.isValid() );
