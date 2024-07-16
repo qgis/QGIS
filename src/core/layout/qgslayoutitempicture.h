@@ -48,16 +48,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
       FrameToImageSize //!< Sets size of frame to match original size of image without scaling
     };
 
-    /**
-     * Format of source image
-     */
-    enum Format
-    {
-      FormatSVG, //!< SVG image
-      FormatRaster, //!< Raster image
-      FormatUnknown, //!< Invalid or unknown image type
-    };
-
     //! Method for syncing rotation to a map's North direction
     enum NorthMode
     {
@@ -90,7 +80,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      *
      * \see picturePath()
      */
-    void setPicturePath( const QString &path, Format format = FormatUnknown );
+    void setPicturePath( const QString &path, Qgis::PictureFormat format = Qgis::PictureFormat::Unknown );
 
     /**
      * Returns the path of the source image. Data defined picture source may override
@@ -232,7 +222,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * picture format is unknown
      * \see setMode() originalMode()
      */
-    Format mode() const { return mMode; }
+    Qgis::PictureFormat mode() const { return mMode; }
 
     /**
      * Returns the original set picture mode (image format).
@@ -240,14 +230,14 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \see setMode() mode()
      * \since QGIS 3.22
      */
-    Format originalMode() const { return mOriginalMode; }
+    Qgis::PictureFormat originalMode() const { return mOriginalMode; }
 
     /**
      * Sets the current picture \a mode (image format).
      * \see mode()
      * \since QGIS 3.14
      */
-    void setMode( Format mode );
+    void setMode( Qgis::PictureFormat mode );
 
     void finalizeRestoreFromXml() override;
 
@@ -337,8 +327,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     QSvgRenderer mSVG;
     //! Absolute path to the image (may be also HTTP URL)
     QString mSourcePath;
-    Format mMode = FormatUnknown;
-    Format mOriginalMode = FormatUnknown;
+    Qgis::PictureFormat mMode = Qgis::PictureFormat::Unknown;
+    Qgis::PictureFormat mOriginalMode = Qgis::PictureFormat::Unknown;
 
     QSize mDefaultSvgSize;
 

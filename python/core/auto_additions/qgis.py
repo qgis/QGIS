@@ -4522,6 +4522,23 @@ QgsUnitTypes.LayoutScreenUnits.__doc__ = "Unit is a screen based measurement uni
 Qgis.LayoutUnitType.__doc__ = "Types of layout units\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.LayoutUnitType.\n\n.. versionadded:: 3.30\n\n" + '* ``LayoutPaperUnits``: ' + Qgis.LayoutUnitType.PaperUnits.__doc__ + '\n' + '* ``LayoutScreenUnits``: ' + Qgis.LayoutUnitType.ScreenUnits.__doc__
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+QgsLayoutItemPicture.Format = Qgis.PictureFormat
+# monkey patching scoped based enum
+QgsLayoutItemPicture.FormatSVG = Qgis.PictureFormat.SVG
+QgsLayoutItemPicture.Format.FormatSVG = Qgis.PictureFormat.SVG
+QgsLayoutItemPicture.FormatSVG.is_monkey_patched = True
+QgsLayoutItemPicture.FormatSVG.__doc__ = "SVG image"
+QgsLayoutItemPicture.FormatRaster = Qgis.PictureFormat.Raster
+QgsLayoutItemPicture.Format.FormatRaster = Qgis.PictureFormat.Raster
+QgsLayoutItemPicture.FormatRaster.is_monkey_patched = True
+QgsLayoutItemPicture.FormatRaster.__doc__ = "Raster image"
+QgsLayoutItemPicture.FormatUnknown = Qgis.PictureFormat.Unknown
+QgsLayoutItemPicture.Format.FormatUnknown = Qgis.PictureFormat.Unknown
+QgsLayoutItemPicture.FormatUnknown.is_monkey_patched = True
+QgsLayoutItemPicture.FormatUnknown.__doc__ = "Invalid or unknown image type"
+Qgis.PictureFormat.__doc__ = "Picture formats.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsLayoutItemPicture`.Format.\n\n.. versionadded:: 3.40\n\n" + '* ``FormatSVG``: ' + Qgis.PictureFormat.SVG.__doc__ + '\n' + '* ``FormatRaster``: ' + Qgis.PictureFormat.Raster.__doc__ + '\n' + '* ``FormatUnknown``: ' + Qgis.PictureFormat.Unknown.__doc__
+# --
+Qgis.PictureFormat.baseClass = Qgis
 QgsScaleBarSettings.Alignment = Qgis.ScaleBarAlignment
 # monkey patching scoped based enum
 QgsScaleBarSettings.AlignLeft = Qgis.ScaleBarAlignment.Left
