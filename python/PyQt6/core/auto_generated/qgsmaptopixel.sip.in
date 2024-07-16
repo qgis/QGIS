@@ -100,6 +100,16 @@ This method modifies the given coordinates in place. It is intended as a fast wa
 transform.
 %End
 
+    QRectF transformBounds( const QRectF &bounds ) const;
+%Docstring
+Transforms a bounding box from map coordinates to device coordinates.
+
+The returns bounding box will always completely enclose the transformed input bounding box (i.e. this
+method will grow the bounds wherever required).
+
+.. versionadded:: 3.40
+%End
+
 
 
     QgsPointXY toMapCoordinates( int x, int y ) const;

@@ -20,12 +20,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QTransform>
-#include <vector>
 #include "qgis.h"
 #include "qgspointxy.h"
 
 #include <cassert>
-#include <memory>
 
 class QPoint;
 
@@ -129,6 +127,36 @@ class CORE_EXPORT QgsMapToPixel
       mMatrix.map( static_cast< qreal >( x ), static_cast< qreal >( y ), &mx, &my );
       x = mx;
       y = my;
+    }
+
+    /**
+     * Transforms a bounding box from map coordinates to device coordinates.
+     *
+     * The returns bounding box will always completely enclose the transformed input bounding box (i.e. this
+     * method will grow the bounds wherever required).
+     *
+     * \since QGIS 3.40
+     */
+    QRectF transformBounds( const QRectF &bounds ) const
+    {
+      QPointF topLeft = bounds.topLeft();
+      QPointF topRight = bounds.topRight();
+      QPointF bottomLeft = bounds.bottomLeft();
+      QPointF bottomRight = bounds.bottomRight();
+
+      transformInPlace( topLeft.rx(), topLeft.ry() );
+      transformInPlace( topRight.rx(), topRight.ry() );
+      transformInPlace( bottomLeft.rx(), bottomLeft.ry() );
+      transformInPlace( bottomRight.rx(), bottomRight.ry() );
+
+      auto minMaxX = std::minmax( { topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x() } );
+      auto minMaxY = std::minmax( { topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y() } );
+
+      const double left = minMaxX.first;
+      const double right = minMaxX.second;
+      const double top = minMaxY.first;
+      const double bottom = minMaxY.second;
+      return QRectF( left, top, right - left, bottom - top );
     }
 
     /**
