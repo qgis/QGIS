@@ -35,16 +35,6 @@
 #include <QTextBoundaryFinder>
 
 
-static void _fixQPictureDPI( QPainter *p )
-{
-  // QPicture makes an assumption that we drawing to it with system DPI.
-  // Then when being drawn, it scales the painter. The following call
-  // negates the effect. There is no way of setting QPicture's DPI.
-  // See QTBUG-20361
-  p->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( QgsPainting::qtDefaultDpiY() ) / p->device()->logicalDpiY() );
-}
-
 Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
 {
   if ( alignment & Qt::AlignLeft )
@@ -729,7 +719,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
-  _fixQPictureDPI( p );
+  QgsPainting::applyScaleFixForQPictureDpi( p );
   p->drawPicture( 0, 0, buffPict );
 
   return advance / scaleFactor;
@@ -1406,7 +1396,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
       // scale for any print output or image saving @ specific dpi
       p->scale( component.dpiRatio, component.dpiRatio );
-      _fixQPictureDPI( p );
+      QgsPainting::applyScaleFixForQPictureDpi( p );
       p->drawPicture( 0, 0, shapePict );
       p->setCompositionMode( QPainter::CompositionMode_SourceOver ); // just to be sure
       break;
@@ -1929,7 +1919,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         case Qgis::TextRenderFormat::AlwaysOutlines:
         {
           // draw outlined text
-          _fixQPictureDPI( context.painter() );
+          QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
           context.painter()->drawPicture( 0, 0, textPict );
           break;
         }
@@ -2209,7 +2199,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
           {
             // draw outlined text
             context.painter()->translate( 0, currentBlockYOffset );
-            _fixQPictureDPI( context.painter() );
+            QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
             context.painter()->drawPicture( 0, 0, textPict );
             currentBlockYOffset += partYOffset;
             break;

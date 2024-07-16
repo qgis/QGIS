@@ -112,6 +112,14 @@ Returns the default Qt vertical DPI.
 
 .. versionadded:: 3.40
 %End
+
+    static void applyScaleFixForQPictureDpi( QPainter *painter );
+%Docstring
+Applies a workaround to a ``painter`` to avoid an issue with incorrect scaling
+when drawing QPictures.
+
+.. versionadded:: 3.40
+%End
 };
 
 /************************************************************************

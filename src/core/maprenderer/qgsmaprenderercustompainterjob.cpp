@@ -25,16 +25,6 @@
 
 #include <QtConcurrentRun>
 
-static void _fixQPictureDPI( QPainter *p )
-{
-  // QPicture makes an assumption that we drawing to it with system DPI.
-  // Then when being drawn, it scales the painter. The following call
-  // negates the effect. There is no way of setting QPicture's DPI.
-  // See QTBUG-20361
-  p->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( QgsPainting::qtDefaultDpiY() ) / p->device()->logicalDpiY() );
-}
-
 //
 // QgsMapRendererAbstractCustomPainterJob
 //
@@ -479,7 +469,7 @@ void QgsMapRendererCustomPainterJob::doRender()
         if ( job.picture )
         {
           mPainter->save();
-          _fixQPictureDPI( mPainter );
+          QgsPainting::applyScaleFixForQPictureDpi( mPainter );
           mPainter->drawPicture( 0, 0, *job.picture );
           mPainter->restore();
         }
@@ -490,7 +480,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       if ( mLabelJob.picture )
       {
         mPainter->save();
-        _fixQPictureDPI( mPainter );
+        QgsPainting::applyScaleFixForQPictureDpi( mPainter );
         mPainter->drawPicture( 0, 0, *mLabelJob.picture );
         mPainter->restore();
       }

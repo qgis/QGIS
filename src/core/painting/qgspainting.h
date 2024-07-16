@@ -117,6 +117,14 @@ class CORE_EXPORT QgsPainting
      * \since QGIS 3.40
      */
     static int qtDefaultDpiY();
+
+    /**
+     * Applies a workaround to a \a painter to avoid an issue with incorrect scaling
+     * when drawing QPictures.
+
+     * \since QGIS 3.40
+     */
+    static void applyScaleFixForQPictureDpi( QPainter *painter );
 };
 
 #endif // QGSPAINTING_H

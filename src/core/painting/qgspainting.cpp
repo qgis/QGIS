@@ -232,3 +232,13 @@ int QgsPainting::qtDefaultDpiY()
 {
   return qt_defaultDpiY();
 }
+
+void QgsPainting::applyScaleFixForQPictureDpi( QPainter *painter )
+{
+  // QPicture makes an assumption that we drawing to it with system DPI.
+  // Then when being drawn, it scales the painter. The following call
+  // negates the effect. There is no way of setting QPicture's DPI.
+  // See QTBUG-20361
+  painter->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX(),
+                  static_cast< double >( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY() );
+}
