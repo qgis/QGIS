@@ -3829,7 +3829,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
  </fes:And>
 </fes:Filter>
 """),
-                'wb') as f:
+                  'wb') as f:
             f.write(b"""
       <wfs:FeatureCollection
                             xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -3897,7 +3897,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
  </fes:And>
 </fes:Filter>
 """),
-                'wb') as f:
+                  'wb') as f:
             f.write(b"""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"

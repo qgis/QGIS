@@ -93,7 +93,7 @@
 #% description: Use stdin as input and ignore coordinates and point option
 #%end
 
-# Temporary disabled the r.what flags due to test issues
+## Temporary disabled the r.what flags due to test issues
 ##%flag
 ##% key: f
 ##% description: Show the category labels of the grid cell(s)
