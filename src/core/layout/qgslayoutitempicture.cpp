@@ -608,40 +608,6 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   emit changed();
 }
 
-QRectF QgsLayoutItemPicture::boundedImageRect( double deviceWidth, double deviceHeight )
-{
-  double imageToDeviceRatio;
-  if ( mImage.width() / deviceWidth > mImage.height() / deviceHeight )
-  {
-    imageToDeviceRatio = deviceWidth / mImage.width();
-    const double height = imageToDeviceRatio * mImage.height();
-    return QRectF( 0, 0, deviceWidth, height );
-  }
-  else
-  {
-    imageToDeviceRatio = deviceHeight / mImage.height();
-    const double width = imageToDeviceRatio * mImage.width();
-    return QRectF( 0, 0, width, deviceHeight );
-  }
-}
-
-QRectF QgsLayoutItemPicture::boundedSVGRect( double deviceWidth, double deviceHeight )
-{
-  double imageToSvgRatio;
-  if ( deviceWidth / mDefaultSvgSize.width() > deviceHeight / mDefaultSvgSize.height() )
-  {
-    imageToSvgRatio = deviceHeight / mDefaultSvgSize.height();
-    const double width = mDefaultSvgSize.width() * imageToSvgRatio;
-    return QRectF( 0, 0, width, deviceHeight );
-  }
-  else
-  {
-    imageToSvgRatio = deviceWidth / mDefaultSvgSize.width();
-    const double height = mDefaultSvgSize.height() * imageToSvgRatio;
-    return QRectF( 0, 0, deviceWidth, height );
-  }
-}
-
 QSizeF QgsLayoutItemPicture::pictureSize()
 {
   if ( mMode == FormatSVG )
