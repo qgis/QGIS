@@ -47,6 +47,7 @@ else
   modules=(core gui analysis server 3d)
 fi
 
+# shellcheck disable=SC2043
 for root_dir in python; do
 
   if [[ $root_dir == "python/PyQt6" ]]; then
@@ -90,6 +91,7 @@ done
 wait # wait for sipify processes to finish
 
 if [[ ${CLASS_MAP} -eq 1 ]]; then
+  # shellcheck disable=SC2043
   for root_dir in python; do
     for module in "${modules[@]}"; do
       module_dir=${root_dir}/${module}
