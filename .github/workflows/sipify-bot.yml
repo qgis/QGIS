@@ -52,5 +52,5 @@ jobs:
           git config user.name qgis-bot
           git config user.email bot@qgis.org
           git add .
-          git commit -m "auto sipify 🍺"
+          git commit -m "auto sipify 🍺" || echo "nothing to commit"
           git push
