@@ -1654,7 +1654,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
   {
     case Qt::Key_Escape:
     {
-      if ( mConstructionMode && mConstructionGuideLine.numPoints() >= 2 )
+      if ( type == QEvent::KeyPress && mConstructionMode && mConstructionGuideLine.numPoints() >= 2 )
       {
         mConstructionGuidesLayer->dataProvider()->deleteFeatures( QgsFeatureIds() << mConstructionGuideId );
         mConstructionGuideLine.clear();
@@ -1665,6 +1665,11 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         }
 
         updateCadPaintItem();
+        e->accept();
+      }
+      else
+      {
+        e->ignore();
       }
       break;
     }
