@@ -1005,6 +1005,7 @@
         <file>themes/default/mIconSearchRegex.svg</file>
         <file>themes/default/mActionReplace.svg</file>
         <file>themes/default/mIconCloud.svg</file>
+        <file>themes/default/mActionTextInsideRect.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

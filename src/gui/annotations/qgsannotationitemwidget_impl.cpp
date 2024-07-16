@@ -24,6 +24,7 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationlinetextitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsannotationpictureitem.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgstextformatwidget.h"
@@ -597,6 +598,184 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
     expressionContext = QgsProject::instance()->createExpressionContext();
 
   QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
+
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    expression = exprDlg.expressionText().trimmed();
+    if ( !expression.isEmpty() )
+    {
+      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+    }
+  }
+}
+
+
+
+//
+// QgsAnnotationRectangleTextItemWidget
+//
+
+QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWidget *parent )
+  : QgsAnnotationItemBaseWidget( parent )
+{
+  setupUi( this );
+
+  mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
+  mBackgroundSymbolButton->registerExpressionContextGenerator( this );
+  mFrameSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  mFrameSymbolButton->setDialogTitle( tr( "Frame" ) );
+  mFrameSymbolButton->registerExpressionContextGenerator( this );
+
+  mSpinBottomMargin->setClearValue( 0 );
+  mSpinTopMargin->setClearValue( 0 );
+  mSpinRightMargin->setClearValue( 0 );
+  mSpinLeftMargin->setClearValue( 0 );
+  mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+
+  mTextFormatWidget = new QgsTextFormatWidget();
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
+  vLayout->addWidget( mTextFormatWidget );
+  mTextFormatWidgetContainer->setLayout( vLayout );
+
+  mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
+
+  mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
+  mVerticalAlignmentComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
+
+  mTextFormatWidget->setDockMode( dockMode() );
+  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked );
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mVerticalAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mFrameCheckbox, &QGroupBox::toggled, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mBackgroundCheckbox, &QGroupBox::toggled, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mBackgroundSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mFrameSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mSpinTopMargin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mSpinRightMargin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mSpinLeftMargin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mSpinBottomMargin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+}
+
+QgsAnnotationItem *QgsAnnotationRectangleTextItemWidget::createItem()
+{
+  QgsAnnotationRectangleTextItem *newItem = mItem->clone();
+  updateItem( newItem );
+  return newItem;
+}
+
+void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationRectangleTextItem *rectTextItem = dynamic_cast< QgsAnnotationRectangleTextItem * >( item ) )
+  {
+    rectTextItem->setFormat( mTextFormatWidget->format() );
+    rectTextItem->setText( mTextEdit->toPlainText() );
+    rectTextItem->setAlignment( mAlignmentComboBox->currentAlignment() | mVerticalAlignmentComboBox->currentAlignment() );
+
+    rectTextItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
+    rectTextItem->setFrameEnabled( mFrameCheckbox->isChecked() );
+    rectTextItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol< QgsFillSymbol >() );
+    rectTextItem->setFrameSymbol( mFrameSymbolButton->clonedSymbol< QgsFillSymbol >() );
+
+    rectTextItem->setMargins( QgsMargins( mSpinLeftMargin->value(),
+                                          mSpinTopMargin->value(),
+                                          mSpinRightMargin->value(),
+                                          mSpinBottomMargin->value() ) );
+    rectTextItem->setMarginsUnit( mMarginUnitWidget->unit() );
+
+    mPropertiesWidget->updateItem( rectTextItem );
+  }
+}
+
+void QgsAnnotationRectangleTextItemWidget::setDockMode( bool dockMode )
+{
+  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
+  if ( mTextFormatWidget )
+    mTextFormatWidget->setDockMode( dockMode );
+}
+
+void QgsAnnotationRectangleTextItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  if ( mTextFormatWidget )
+    mTextFormatWidget->setContext( context );
+  mBackgroundSymbolButton->setMapCanvas( context.mapCanvas() );
+  mBackgroundSymbolButton->setMessageBar( context.messageBar() );
+  mFrameSymbolButton->setMapCanvas( context.mapCanvas() );
+  mFrameSymbolButton->setMessageBar( context.messageBar() );
+  mPropertiesWidget->setContext( context );
+}
+
+QgsExpressionContext QgsAnnotationRectangleTextItemWidget::createExpressionContext() const
+{
+  QgsExpressionContext expressionContext;
+  if ( context().expressionContext() )
+    expressionContext = *( context().expressionContext() );
+  else
+    expressionContext = QgsProject::instance()->createExpressionContext();
+  return expressionContext;
+}
+
+void QgsAnnotationRectangleTextItemWidget::focusDefaultWidget()
+{
+  mTextEdit->selectAll();
+  mTextEdit->setFocus();
+}
+
+QgsAnnotationRectangleTextItemWidget::~QgsAnnotationRectangleTextItemWidget() = default;
+
+bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
+{
+  QgsAnnotationRectangleTextItem *textItem = dynamic_cast< QgsAnnotationRectangleTextItem * >( item );
+  if ( !textItem )
+    return false;
+
+  mItem.reset( textItem->clone() );
+
+  mBlockChangedSignal = true;
+  mTextFormatWidget->setFormat( mItem->format() );
+  mTextEdit->setPlainText( mItem->text() );
+  mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
+  mVerticalAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignVertical_Mask );
+  mPropertiesWidget->setItem( mItem.get() );
+
+  mBackgroundCheckbox->setChecked( textItem->backgroundEnabled() );
+  if ( const QgsSymbol *symbol = textItem->backgroundSymbol() )
+    mBackgroundSymbolButton->setSymbol( symbol->clone() );
+
+  mFrameCheckbox->setChecked( textItem->frameEnabled() );
+  if ( const QgsSymbol *symbol = textItem->frameSymbol() )
+    mFrameSymbolButton->setSymbol( symbol->clone() );
+
+  mMarginUnitWidget->setUnit( textItem->marginsUnit() );
+  mSpinLeftMargin->setValue( textItem->margins().left() );
+  mSpinTopMargin->setValue( textItem->margins().top() );
+  mSpinRightMargin->setValue( textItem->margins().right() );
+  mSpinBottomMargin->setValue( textItem->margins().bottom() );
+
+  mBlockChangedSignal = false;
+
+  return true;
+}
+
+void QgsAnnotationRectangleTextItemWidget::onWidgetChanged()
+{
+  if ( !mBlockChangedSignal )
+    emit itemChanged();
+}
+
+void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
+{
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), createExpressionContext() );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
