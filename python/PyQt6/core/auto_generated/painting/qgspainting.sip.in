@@ -118,6 +118,24 @@ Returns the default Qt vertical DPI.
 Applies a workaround to a ``painter`` to avoid an issue with incorrect scaling
 when drawing QPictures.
 
+.. note::
+
+   This is a low-level method, which alters the ``painter`` state and relies on the
+   caller saving/restoring painter state accordingly. Consider using
+   the high-level :py:func:`~QgsPainting.drawPicture` method instead.
+
+.. seealso:: :py:func:`drawPicture`
+
+.. versionadded:: 3.40
+%End
+
+    static void drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture );
+%Docstring
+Draws a picture onto a ``painter``, correctly applying workarounds to avoid issues
+with incorrect scaling.
+
+.. seealso:: :py:func:`applyScaleFixForQPictureDpi`
+
 .. versionadded:: 3.40
 %End
 };

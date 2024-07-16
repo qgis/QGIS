@@ -2456,9 +2456,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
-      const QgsScopedQPainterState painterPictureState( p );
-      QgsPainting::applyScaleFixForQPictureDpi( p );
-      p->drawPicture( 0, 0, pct );
+      QgsPainting::drawPicture( p, QPointF( 0, 0 ), pct );
     }
   }
 

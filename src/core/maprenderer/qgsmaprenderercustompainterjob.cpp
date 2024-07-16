@@ -468,10 +468,7 @@ void QgsMapRendererCustomPainterJob::doRender()
         // if there is vector rendering we use it, else we use the raster rendering
         if ( job.picture )
         {
-          mPainter->save();
-          QgsPainting::applyScaleFixForQPictureDpi( mPainter );
-          mPainter->drawPicture( 0, 0, *job.picture );
-          mPainter->restore();
+          QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *job.picture );
         }
         else
           mPainter->drawImage( 0, 0, *job.img );
@@ -479,10 +476,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
       if ( mLabelJob.picture )
       {
-        mPainter->save();
-        QgsPainting::applyScaleFixForQPictureDpi( mPainter );
-        mPainter->drawPicture( 0, 0, *mLabelJob.picture );
-        mPainter->restore();
+        QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *mLabelJob.picture );
       }
     }
   }

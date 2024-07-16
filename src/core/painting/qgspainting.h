@@ -121,10 +121,24 @@ class CORE_EXPORT QgsPainting
     /**
      * Applies a workaround to a \a painter to avoid an issue with incorrect scaling
      * when drawing QPictures.
-
+     *
+     * \note This is a low-level method, which alters the \a painter state and relies on the
+     * caller saving/restoring painter state accordingly. Consider using
+     * the high-level drawPicture() method instead.
+     *
+     * \see drawPicture()
      * \since QGIS 3.40
      */
     static void applyScaleFixForQPictureDpi( QPainter *painter );
+
+    /**
+     * Draws a picture onto a \a painter, correctly applying workarounds to avoid issues
+     * with incorrect scaling.
+     *
+     * \see applyScaleFixForQPictureDpi()
+     * \since QGIS 3.40
+     */
+    static void drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture );
 };
 
 #endif // QGSPAINTING_H
