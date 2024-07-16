@@ -1402,7 +1402,6 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.renderer().ranges()[0][0], -9007199254740991)
         self.assertEqual(vl.renderer().ranges()[-1][1], 9007199254740991)
 
-
     def testBboxRestriction(self):
         """
         Test limiting provider to features within a preset bounding box
