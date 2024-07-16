@@ -28,6 +28,7 @@
 #include "qgsoverlaytexturerenderview.h"
 #include "qgspostprocessingentity.h"
 #include "qgspostprocessingrenderview.h"
+#include "qgsrubberbandrenderview.h"
 #include "qgsshadowrenderview.h"
 #include "qgssunlightsettings.h"
 
@@ -61,6 +62,7 @@ const QString QgsFrameGraph::sAmbientOcclusionRenderView = "ambient_occlusion";
 const QString QgsFrameGraph::sBloomRenderView = "bloom";
 const QString QgsFrameGraph::sPostprocRenderView = "post_processing";
 const QString QgsFrameGraph::sHighlightsRenderView = "highlights";
+const QString QgsFrameGraph::sRubberRenderView = "rubber_band";
 
 void QgsFrameGraph::constructForwardRenderPass()
 {
@@ -180,36 +182,11 @@ void QgsFrameGraph::constructBloomRenderPass()
   registerRenderView( std::unique_ptr<QgsBloomRenderView>( rv ), sBloomRenderView );
 }
 
-Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
+void QgsFrameGraph::constructRubberBandsPass( Qt3DRender::QFrameGraphNode *topNode )
 {
-  mRubberBandsCameraSelector = new Qt3DRender::QCameraSelector;
-  mRubberBandsCameraSelector->setObjectName( "RubberBands Pass CameraSelector" );
-  mRubberBandsCameraSelector->setCamera( mMainCamera );
-
-  mRubberBandsLayerFilter = new Qt3DRender::QLayerFilter( mRubberBandsCameraSelector );
-  mRubberBandsLayerFilter->addLayer( mRubberBandsLayer );
-
-  Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
-  blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
-  blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
-
-  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
-  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
-
-  mRubberBandsStateSet = new Qt3DRender::QRenderStateSet( mRubberBandsLayerFilter );
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  mRubberBandsStateSet->addRenderState( depthTest );
-  mRubberBandsStateSet->addRenderState( blendState );
-  mRubberBandsStateSet->addRenderState( blendEquation );
-
-  // Here we attach our drawings to the render target also used by forward pass.
-  // This is kind of okay, but as a result, post-processing effects get applied
-  // to rubber bands too. Ideally we would want them on top of everything.
-  mRubberBandsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRubberBandsStateSet );
-  mRubberBandsRenderTargetSelector->setTarget( forwardRenderView().renderTargetSelector()->target() );
-
-  return mRubberBandsCameraSelector;
+  // rubber band render view writes to the same output textures than the forward render view:
+  QgsRubberBandRenderView *rv = new QgsRubberBandRenderView( sRubberRenderView, mMainCamera, mRootEntity, forwardRenderView().renderTargetSelector()->target() );
+  registerRenderView( std::unique_ptr<QgsRubberBandRenderView>( rv ), sRubberRenderView, topNode );
 }
 
 void QgsFrameGraph::constructDepthRenderPass()
@@ -275,10 +252,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mRootEntity = root;
   mMainCamera = mainCamera;
 
-  mRubberBandsLayer = new Qt3DRender::QLayer;
-  mRubberBandsLayer->setObjectName( "mRubberBandsLayer" );
-  mRubberBandsLayer->setRecursive( true );
-
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
 
   QObject *surfaceObj = dynamic_cast<QObject *>( surface );
@@ -304,9 +277,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   constructHighlightsPass();
 
   // rubber bands (they should be always on top)
-  Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
-  rubberBandsPass->setObjectName( "rubberBandsPass" );
-  rubberBandsPass->setParent( mGlobalParamsStorage );
+  constructRubberBandsPass( mGlobalParamsStorage );
 
   mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
   mMsaaBlitNode->setObjectName( "MsaaBlitFramebuffer" );
@@ -330,10 +301,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 #ifdef HAVE_TRACY
   constructThumbnailCapturePass();
 #endif
-
-  mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
-  mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
-  mRubberBandsRootEntity->addComponent( mRubberBandsLayer );
 }
 
 void QgsFrameGraph::unregisterRenderView( const QString &name )
@@ -613,7 +580,7 @@ void QgsFrameGraph::setMsaaEnabled( bool enabled )
 
   Qt3DRender::QRenderTarget *target = enabled ? forwardRenderView().msaaRenderTarget() : forwardRenderView().regularRenderTarget();
   highlightsRenderView().setRenderTarget( target );
-  mRubberBandsRenderTargetSelector->setTarget( target );
+  rubberBandRenderView().renderTargetSelector()->setTarget( target );
   mMsaaBlitNode->setEnabled( enabled );
   mMsaaDepthBlitNode->setEnabled( enabled );
 }
@@ -673,4 +640,10 @@ QgsHighlightsRenderView &QgsFrameGraph::highlightsRenderView()
 QgsOverlayTextureRenderView &QgsFrameGraph::overlayTextureRenderView()
 {
   return *( postprocessingRenderView().overlayTextureRenderView() );
+}
+
+QgsRubberBandRenderView &QgsFrameGraph::rubberBandRenderView()
+{
+  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::sRubberRenderView].get();
+  return *( dynamic_cast<QgsRubberBandRenderView *>( rv ) );
 }

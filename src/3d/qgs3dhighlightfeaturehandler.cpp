@@ -192,7 +192,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
 
       if ( !mRubberBands.contains( layer ) )
       {
-        QgsRubberBand3D *band = new QgsRubberBand3D( *mScene->mapSettings(), mScene->engine(), mScene->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
+        QgsRubberBand3D *band = new QgsRubberBand3D( *mScene->mapSettings(), mScene->engine(), Qgis::GeometryType::Point );
 
         const QgsSettings settings;
         const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );

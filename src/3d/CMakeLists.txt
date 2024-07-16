@@ -119,6 +119,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsoverlaytexturerenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgsrenderpassquad.cpp
+  framegraph/qgsrubberbandrenderview.cpp
   framegraph/qgspostprocessingrenderview.cpp
   framegraph/qgsshadowrenderview.cpp
   framegraph/qgsframegraph.cpp
@@ -269,6 +270,7 @@ set(QGIS_3D_HDRS
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
   framegraph/qgspostprocessingrenderview.h
+  framegraph/qgsrubberbandrenderview.h
   framegraph/qgsshadowrenderview.h
 
   symbols/qgs3dsymbolutils.h

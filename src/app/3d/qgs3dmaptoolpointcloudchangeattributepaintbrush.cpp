@@ -55,14 +55,14 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::run()
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::activate()
 {
   mCanvas->cameraController()->setInputHandlersEnabled( false );
-  mSelectionRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
+  mSelectionRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), Qgis::GeometryType::Point );
   mSelectionRubberBand->setMarkerOutlineStyle( Qt::PenStyle::DotLine );
   mSelectionRubberBand->setWidth( 32 );
   mSelectionRubberBand->setOutlineColor( mSelectionRubberBand->color() );
   mSelectionRubberBand->setColor( QColorConstants::Transparent );
   mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() ) );
   mIsActive = true;
-  mHighlighterRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
+  mHighlighterRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), Qgis::GeometryType::Polygon );
   mHighlighterRubberBand->setMarkersEnabled( false );
   mHighlighterRubberBand->setEdgesEnabled( false );
 }
