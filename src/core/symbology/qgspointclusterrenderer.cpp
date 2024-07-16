@@ -200,8 +200,6 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const Qgs
     pointRenderer->setTolerance( displacementRenderer->tolerance() );
     pointRenderer->setToleranceUnit( displacementRenderer->toleranceUnit() );
     pointRenderer->setToleranceMapUnitScale( displacementRenderer->toleranceMapUnitScale() );
-    if ( const_cast< QgsPointDisplacementRenderer * >( displacementRenderer )->centerSymbol() )
-      pointRenderer->setClusterSymbol( const_cast< QgsPointDisplacementRenderer * >( displacementRenderer )->centerSymbol()->clone() );
     renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
