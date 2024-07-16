@@ -95,6 +95,16 @@ message
 .. versionadded:: 3.40
 %End
 
+    static QString saveIccProfile( const QColorSpace &colorSpace, const QString &iccProfileFilePath );
+%Docstring
+Save color space ``colorSpace`` to an ICC profile file ``iccProfileFilePath``.
+
+:return: error message if an error occurred else empty string.
+
+.. versionadded:: 3.40
+%End
+
+
 
 
 

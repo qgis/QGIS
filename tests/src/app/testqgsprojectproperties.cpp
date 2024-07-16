@@ -272,6 +272,7 @@ void TestQgsProjectProperties::testColorSettings()
 #else
   QVERIFY( !pp->mRemoveIccProfile->isVisible() );
   QVERIFY( !pp->mAddIccProfile->isVisible() );
+  QVERIFY( !pp->mSaveIccProfile->isVisible() );
   QVERIFY( !pp->mColorSpaceName->isVisible() );
   QVERIFY( !pp->mIccProfileLabel->isVisible() );
 #endif
