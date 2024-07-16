@@ -20,6 +20,7 @@
 #include "qgs3dutils.h"
 #include "qgsabstract3dengine.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgslinematerial_p.h"
 #include "qgslinestring.h"
@@ -29,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
+#include "qgsrubberbandrenderview.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -48,23 +50,25 @@ using namespace Qt::StringLiterals;
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, const Qgis::GeometryType geometryType )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, const Qgis::GeometryType geometryType )
   : mMapSettings( &map )
   , mEngine( engine )
   , mGeometryType( geometryType )
 {
+  Qt3DCore::QEntity *parentEntity = mEngine->frameGraph()->rubberBandRenderView().rubberBandEntity();
+
   switch ( mGeometryType )
   {
     case Qgis::GeometryType::Point:
       setupMarker( parentEntity );
       break;
     case Qgis::GeometryType::Line:
-      setupLine( parentEntity );
+      setupLine( parentEntity, engine );
       setupMarker( parentEntity );
       break;
     case Qgis::GeometryType::Polygon:
       setupMarker( parentEntity );
-      setupLine( parentEntity );
+      setupLine( parentEntity, engine );
       setupPolygon( parentEntity );
       break;
     case Qgis::GeometryType::Null:
@@ -91,7 +95,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
   mMarkerEntity->addComponent( mMarkerTransform );
 }
 
-void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
+void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine )
 {
   mLineEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
 
@@ -114,8 +118,8 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   mLineMaterial->setLineWidth( mWidth );
   mLineMaterial->setLineColor( mColor );
 
-  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] { mLineMaterial->setViewportSize( mEngine->size() ); } );
-  mLineMaterial->setViewportSize( mEngine->size() );
+  QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] { mLineMaterial->setViewportSize( mEngine->size() ); } );
+  mLineMaterial->setViewportSize( engine->size() );
 
   mLineEntity->addComponent( mLineMaterial );
 
