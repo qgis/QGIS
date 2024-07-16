@@ -312,9 +312,9 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( fontMarkerLayer->horizontalAnchorPoint(),  QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left );
   QCOMPARE( fontMarkerLayer->verticalAnchorPoint(),  QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom );
   QColor mainColor = fontMarkerLayer->color();
-  QCOMPARE( mainColor.name(), QStringLiteral("#4e4e4e" ) );
+  QCOMPARE( mainColor.name(), QStringLiteral( "#4e4e4e" ) );
   QColor strokeColor = fontMarkerLayer->strokeColor();
-  QCOMPARE( strokeColor.name(), QStringLiteral("#ff00ff" ) );
+  QCOMPARE( strokeColor.name(), QStringLiteral( "#ff00ff" ) );
   QCOMPARE( fontMarkerLayer->strokeWidth(), 2 );
   QCOMPARE( fontMarkerLayer->character(), QString( "text" ) );
 
