@@ -91,7 +91,7 @@ class _3D_EXPORT QgsRubberBand3D
       Circle
     };
 
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+    QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
@@ -206,7 +206,7 @@ class _3D_EXPORT QgsRubberBand3D
     void updateGeometry();
     void updateMarkerMaterial();
     void setupMarker( Qt3DCore::QEntity *parentEntity );
-    void setupLine( Qt3DCore::QEntity *parentEntity );
+    void setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine );
     void setupPolygon( Qt3DCore::QEntity *parentEntity );
     //! negative index counts from end
     void removePoint( int index );
