@@ -430,3 +430,6 @@ foreach(module ${PY_MODULES})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
 endforeach(module)
+
+# install sipify config
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sipify.yaml DESTINATION "${QGIS_PYTHON_DIR}")

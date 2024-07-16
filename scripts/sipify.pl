@@ -30,10 +30,11 @@ use constant PREPEND_CODE_MAKE_PRIVATE => 42;
 my $debug = 0;
 my $sip_output = '';
 my $python_output = '';
+my $class_map_file = '';
 #my $SUPPORT_TEMPLATE_DOCSTRING = 0;
 #die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
-die("usage: $0 [-debug] [-sip_output FILE] [-python_output FILE] headerfile\n")
-  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output) && @ARGV == 1;
+die("usage: $0 [-debug] [-sip_output FILE] [-python_output FILE] [-class_map FILE] headerfile\n")
+    unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "class_map=s" => \$class_map_file) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -923,6 +924,12 @@ while ($LINE_IDX < $LINE_COUNT){
             }
         };
         $LINE = "$1 $+{classname}";
+        # append to class map file
+        if ( $class_map_file ne '' ){
+            open(FH3, '>>', $class_map_file) or die $!;
+            print FH3 join(".", @CLASSNAME) . ": $headerfile#L".$LINE_IDX."\n";
+            close(FH3);
+        }
         # Inheritance
         if (defined $+{domain}){
             my $m = $+{domain};
@@ -1416,6 +1423,15 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
     }
 
     write_output("NOR", "$LINE\n");
+
+    # append to class map file
+    if ( $class_map_file ne '' && defined $ACTUAL_CLASS && $ACTUAL_CLASS ne '' ){
+        if ($LINE =~ m/^ *(const |virtual |static )* *[\w:]+ +\*?(?<method>\w+)\(.*$/){
+          open(FH3, '>>', $class_map_file) or die $!;
+          print FH3 join(".", @CLASSNAME) . "." . $+{method} .": $headerfile#L".$LINE_IDX."\n";
+          close(FH3);
+        }
+    }
 
     if ($PYTHON_SIGNATURE ne '') {
       write_output("PSI", "$PYTHON_SIGNATURE\n");
