@@ -21,9 +21,13 @@ while getopts "m" opt; do
   m)
     CLASS_MAP=1
     ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
   esac
 done
-shift $(expr $OPTIND - 1)
+shift $((OPTIND-1))
 
 DIR=$(git rev-parse --show-toplevel)
 
