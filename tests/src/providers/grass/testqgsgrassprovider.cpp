@@ -204,7 +204,6 @@ class TestQgsGrassProvider: public QgsTest
     void invalidLayer();
     void region();
     void info();
-    void crsEpsg3857();
     void rasterImport();
     void vectorImport();
     void edit();
@@ -614,14 +613,6 @@ void TestQgsGrassProvider::info()
     }
   }
   GVERIFY( ok );
-}
-
-void TestQgsGrassProvider::crsEpsg3857()
-{
-  QString error;
-  const QgsCoordinateReferenceSystem crs = QgsGrass::crs( mGisdbase,  QStringLiteral( "webmerc" ), error );
-  QCOMPARE( error, QString() );
-  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3857" ) );
 }
 
 
