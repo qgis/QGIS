@@ -2551,6 +2551,13 @@ The development version
       ScreenUnits
     };
 
+    enum class PictureFormat /BaseType=IntEnum/
+      {
+      SVG,
+      Raster,
+      Unknown,
+    };
+
     enum class ScaleBarAlignment /BaseType=IntEnum/
       {
       Left,

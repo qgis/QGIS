@@ -4558,6 +4558,21 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Picture formats.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsLayoutItemPicture::Format.
+     *
+     * \since QGIS 3.40
+     */
+    enum class PictureFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemPicture, Format ) : int
+      {
+      SVG SIP_MONKEYPATCH_COMPAT_NAME( FormatSVG ) = 0, //!< SVG image
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( FormatRaster ), //!< Raster image
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( FormatUnknown ), //!< Invalid or unknown image type
+    };
+    Q_ENUM( PictureFormat )
+
+    /**
      * Scalebar alignment.
      *
      * \note Prior to QGIS 3.40 this was available as QgsScaleBarSettings::Alignment.
