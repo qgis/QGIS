@@ -17,10 +17,10 @@
 #define QGSPHONGTEXTUREDMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgsmaterial.h"
 
 #include <QColor>
 #include <QObject>
-#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
@@ -38,7 +38,7 @@ namespace Qt3DRender
  * \brief A diffuseSpecular material adapted from Qt's qdiffusespecularmaterial.h
  * \since QGIS 3.40
  */
-class _3D_EXPORT QgsPhongTexturedMaterial : public Qt3DRender::QMaterial
+class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 {
     Q_OBJECT
     Q_PROPERTY( QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged )

@@ -18,7 +18,8 @@
 #include <QObject>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
-#include <Qt3DRender/QMaterial>
+
+#include "qgsmaterial.h"
 
 #define SIP_NO_FILE
 
@@ -33,7 +34,7 @@ class Qgs3DRenderContext;
  *
  * \since QGIS 3.10
  */
-class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
+class QgsPoint3DBillboardMaterial : public QgsMaterial
 {
     Q_OBJECT
 
