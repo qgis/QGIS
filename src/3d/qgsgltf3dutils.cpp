@@ -287,7 +287,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
 }
 
 // Returns NULLPTR if primitive should not be rendered
-static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
+static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
 {
   if ( materialIndex < 0 )
   {
@@ -417,7 +417,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
         continue;
       }
 
-      Qt3DRender::QMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
+      QgsMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
       if ( !material )
       {
         // primitive should be skipped, eg fully transparent material

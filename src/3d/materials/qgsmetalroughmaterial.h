@@ -17,8 +17,8 @@
 #define QGSMETALROUGHMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgsmaterial.h"
 
-#include <Qt3DRender/QMaterial>
 #include <QObject>
 
 #define SIP_NO_FILE
@@ -45,7 +45,7 @@ namespace Qt3DRender
  * \brief A PBR metal rough material.
  * \since QGIS 3.36
  */
-class _3D_EXPORT QgsMetalRoughMaterial : public Qt3DRender::QMaterial
+class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
 {
     Q_OBJECT
   public:

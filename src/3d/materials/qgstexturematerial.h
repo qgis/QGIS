@@ -17,8 +17,8 @@
 #define QGSTEXTUREMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgsmaterial.h"
 
-#include <Qt3DRender/QMaterial>
 #include <QObject>
 
 #define SIP_NO_FILE
@@ -43,7 +43,7 @@ namespace Qt3DRender
  * \brief A unlit texture material
  * \since QGIS 3.40
  */
-class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
+class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
 {
     Q_OBJECT
     Q_PROPERTY( Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged )

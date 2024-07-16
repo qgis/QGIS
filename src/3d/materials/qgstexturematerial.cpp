@@ -27,7 +27,7 @@
 
 ///@cond PRIVATE
 QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
-  : QMaterial( parent )
+  : QgsMaterial( parent )
   , mTextureParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseTexture" ), new Qt3DRender::QTexture2D ) )
   , mGL3Technique( new Qt3DRender::QTechnique( this ) )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
