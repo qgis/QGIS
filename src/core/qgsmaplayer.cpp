@@ -1093,16 +1093,16 @@ bool QgsMapLayer::mapTipsEnabled() const
   return mMapTipsEnabled;
 }
 
-QgsDataProvider::ReadFlags QgsMapLayer::providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags )
+Qgis::DataProviderReadFlags QgsMapLayer::providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags )
 {
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags flags;
   if ( layerReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
-    flags |= QgsDataProvider::FlagTrustDataSource;
+    flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
   if ( layerReadFlags & QgsMapLayer::FlagForceReadOnly )
   {
-    flags |= QgsDataProvider::ForceReadOnly;
+    flags |= Qgis::DataProviderReadFlag::ForceReadOnly;
   }
 
   if ( layerReadFlags & QgsMapLayer::FlagReadExtentFromXml )
@@ -1113,12 +1113,12 @@ QgsDataProvider::ReadFlags QgsMapLayer::providerReadFlags( const QDomNode &layer
       const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
       if ( !extentNode.isNull() )
       {
-        flags |= QgsDataProvider::SkipGetExtent;
+        flags |= Qgis::DataProviderReadFlag::SkipGetExtent;
       }
     }
     else
     {
-      flags |= QgsDataProvider::SkipGetExtent;
+      flags |= Qgis::DataProviderReadFlag::SkipGetExtent;
     }
   }
 
@@ -2426,15 +2426,15 @@ void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseN
 
   const QgsDataProvider::ProviderOptions options;
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags flags;
   if ( loadDefaultStyleFlag )
   {
-    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+    flags |= Qgis::DataProviderReadFlag::LoadDefaultStyle;
   }
 
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
-    flags |= QgsDataProvider::FlagTrustDataSource;
+    flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
   setDataSource( dataSource, baseName, provider, options, flags );
 }
@@ -2444,28 +2444,28 @@ void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseN
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags flags;
   if ( loadDefaultStyleFlag )
   {
-    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+    flags |= Qgis::DataProviderReadFlag::LoadDefaultStyle;
   }
 
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
-    flags |= QgsDataProvider::FlagTrustDataSource;
+    flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
   setDataSource( dataSource, baseName, provider, options, flags );
 }
 
 void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
-                                 const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+                                 const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata ) &&
-       !( flags & QgsDataProvider::FlagTrustDataSource ) )
+       !( flags & Qgis::DataProviderReadFlag::TrustDataSource ) )
   {
-    flags |= QgsDataProvider::FlagTrustDataSource;
+    flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
   setDataSourcePrivate( dataSource, baseName, provider, options, flags );
   emit dataSourceChanged();
@@ -2475,7 +2475,7 @@ void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseN
 
 
 void QgsMapLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-                                        const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+                                        const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

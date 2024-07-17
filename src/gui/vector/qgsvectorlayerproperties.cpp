@@ -970,7 +970,7 @@ void QgsVectorLayerProperties::apply()
     if ( newSource != mLayer->source() )
     {
       mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
-                             QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+                             QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags() );
 
       // resync dialog to layer's new state -- this allows any changed layer properties
       // (such as a forced creation of a new renderer compatible with the new layer, new field configuration, etc)

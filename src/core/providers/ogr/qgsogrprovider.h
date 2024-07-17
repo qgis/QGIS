@@ -60,7 +60,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
      */
     explicit QgsOgrProvider( QString const &uri,
                              const QgsDataProvider::ProviderOptions &providerOptions,
-                             QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                             Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsOgrProvider() override;
 

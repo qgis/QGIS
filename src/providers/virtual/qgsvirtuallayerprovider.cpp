@@ -46,7 +46,7 @@ const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
     const QgsDataProvider::ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   mError.clear();
@@ -677,7 +677,7 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
 QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsVirtualLayerProvider( uri, options, flags );
 }

@@ -31,7 +31,7 @@ class QgsWfsProviderMetadata final: public QgsProviderMetadata
     QgsWfsProviderMetadata();
     QIcon icon() const override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;

@@ -62,7 +62,7 @@ const QString ORACLE_KEY = "oracle";
 const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
 QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options,
-                                      QgsDataProvider::ReadFlags flags )
+                                      Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mValid( false )
   , mIsQuery( false )
@@ -91,7 +91,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   mSrid = mUri.srid().toInt();
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
@@ -818,7 +818,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
-    if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+    if ( mReadFlags & Qgis::DataProviderReadFlag::ForceReadOnly )
     {
       // Does not check editable capabilities
       qry.finish();
@@ -2810,7 +2810,7 @@ bool QgsOracleProvider::getGeometryDetails()
   }
 
   // Trust the datasource config means that we used requested geometry type and srid
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mDetectedGeomType = mRequestedGeomType;
     return true;
@@ -3629,7 +3629,7 @@ QString  QgsOracleProvider::description() const
 QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsOracleProvider( uri, options, flags );
 }

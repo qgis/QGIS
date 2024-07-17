@@ -424,7 +424,7 @@ void TestQgsProject::testLayerFlags()
   QVERIFY( vlayer->readExtentFromXml() );
   // vlayer doesn't have trust because it will be done for new layer or when reloading the project
   // no need to set trust on a layer which has already loaded everything
-  QVERIFY( !vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
+  QVERIFY( !vlayer->dataProvider()->mReadFlags.testFlag( Qgis::DataProviderReadFlag::TrustDataSource ) );
   QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
 
   prj2.write();
@@ -444,7 +444,7 @@ void TestQgsProject::testLayerFlags()
   QVERIFY( !vlayer->mReadFlags.testFlag( QgsMapLayer::FlagForceReadOnly ) );
   QVERIFY( !prj3.isDirty() );
   QVERIFY( vlayer->readExtentFromXml() );
-  QVERIFY( vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
+  QVERIFY( vlayer->dataProvider()->mReadFlags.testFlag( Qgis::DataProviderReadFlag::TrustDataSource ) );
   QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
 
   // check reload of project with read fags that sets the correct layer properties

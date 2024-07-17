@@ -67,7 +67,7 @@ const QString QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION = QStringLiteral( "MS
 int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options,
-                                    QgsDataProvider::ReadFlags flags )
+                                    Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mShared( new QgsMssqlSharedData )
 {
@@ -89,7 +89,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   mHost = anUri.host();
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
@@ -2421,7 +2421,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  const QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  const Qgis::DataProviderReadFlags flags;
   QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri(), providerOptions, flags );
   if ( !provider->isValid() )
   {
@@ -2493,7 +2493,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsMssqlProvider( uri, options, flags );
 }

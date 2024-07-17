@@ -66,7 +66,7 @@ const QString GPX_KEY = QStringLiteral( "gpx" );
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 
-QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   // we always use UTF-8
@@ -569,7 +569,7 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsGpxProviderMetadata();
 }
 
-QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsGPXProvider( uri, options, flags );
 }

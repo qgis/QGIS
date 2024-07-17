@@ -23,9 +23,6 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
-#include "qgspoint.h"
-#include "qgsray3d.h"
-#include <memory>
 
 class IndexedPointCloudNode;
 class QgsPointCloudIndex;
@@ -75,7 +72,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     //! Ctor
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
 

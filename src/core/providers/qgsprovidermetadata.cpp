@@ -134,7 +134,7 @@ QList<QgsProviderSublayerDetails> QgsProviderMetadata::querySublayers( const QSt
 
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
     const QgsDataProvider::ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
 {
   if ( mCreateFunction )
   {

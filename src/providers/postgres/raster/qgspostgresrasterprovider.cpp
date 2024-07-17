@@ -31,7 +31,7 @@ const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = QStringLiteral
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Postgres raster provider" );
 
 
-QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags )
+QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsRasterDataProvider( uri, providerOptions, flags )
   , mShared( new QgsPostgresRasterSharedData )
 {
@@ -157,7 +157,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   mValid = true;
 }
 
-QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags )
+QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsRasterDataProvider( other.dataSourceUri(), providerOptions, flags )
   , mValid( other.mValid )
   , mCrs( other.mCrs )
@@ -787,7 +787,7 @@ QgsProviderMetadata::ProviderCapabilities QgsPostgresRasterProviderMetadata::pro
   return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata;
 }
 
-QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsPostgresRasterProvider( uri, options, flags );
 }

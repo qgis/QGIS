@@ -47,7 +47,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     static const QString HANA_DESCRIPTION;
 
     QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
-                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /* Functions inherited from QgsVectorDataProvider */
 
@@ -180,7 +180,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 
     void cleanupProvider() override;
 
-    QgsHanaProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsHanaProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
 
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,

@@ -132,7 +132,7 @@ Set the data provider.
    Use the version with ProviderOptions instead.
 %End
 
-    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Set the data provider.
 

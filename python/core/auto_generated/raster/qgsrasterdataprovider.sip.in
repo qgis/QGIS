@@ -72,7 +72,7 @@ Base class for raster data providers.
 
     QgsRasterDataProvider( const QString &uri,
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                           Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Constructor for QgsRasterDataProvider.
 

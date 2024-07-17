@@ -353,7 +353,7 @@ const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "SAP HANA spat
 
 QgsHanaProvider::QgsHanaProvider(
   const QString &uri,
-  const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mUri( uri )
   , mFeaturesCount( -1 )
@@ -1825,7 +1825,7 @@ void QgsHanaProviderMetadata::cleanupProvider()
 }
 
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
-  const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QgsDataSourceUri dsUri { uri };
   QgsHanaDriver *drv = QgsHanaDriver::instance();

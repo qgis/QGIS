@@ -12,7 +12,6 @@
 
 
 
-
 class QgsProviderRegistry
 {
 %Docstring(signature="appended")
@@ -82,7 +81,7 @@ Sets library directory where to search for plugins
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /TransferBack/;
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /TransferBack/;
 %Docstring
 Creates a new instance of a provider.
 

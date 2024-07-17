@@ -32,7 +32,7 @@ QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY = QStringLiteral( "vtpk
 QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( "VTPK Vector Tiles data provider" );
 
 
-QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
   QgsDataSourceUri dsUri;
@@ -305,7 +305,7 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsVtpkVectorTileDataProviderM
          | ProviderMetadataCapability::QuerySublayers;
 }
 
-QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsVtpkVectorTileDataProvider( uri, options, flags );
 }

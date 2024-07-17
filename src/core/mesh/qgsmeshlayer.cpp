@@ -61,10 +61,10 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   mShouldValidateCrs = !options.skipCrsValidation;
 
   const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags flags;
   if ( options.loadDefaultStyle )
   {
-    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+    flags |= Qgis::DataProviderReadFlag::LoadDefaultStyle;
   }
   QgsMeshLayer::setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
   resetDatasetGroupTreeItem();
@@ -1451,7 +1451,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
   return consistentSettings;
 }
 
-void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1871,7 +1871,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   }
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+  Qgis::DataProviderReadFlags flags = providerReadFlags( layer_node, mReadFlags );
 
   const QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
   if ( !elemExtraDatasets.isNull() )
@@ -2095,7 +2095,7 @@ bool QgsMeshLayer::isEditable() const
   return mMeshEditor != nullptr;
 }
 
-bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2156,7 +2156,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   {
     int globalIndex = mDatasetGroupStore->globalDatasetGroupIndexInSource( mDataProvider, i );
     if ( globalIndex != -1 &&
-         ( !mRendererSettings.hasSettings( globalIndex ) || ( flags & QgsDataProvider::FlagLoadDefaultStyle ) ) )
+         ( !mRendererSettings.hasSettings( globalIndex ) || ( flags & Qgis::DataProviderReadFlag::LoadDefaultStyle ) ) )
       assignDefaultStyleToDatasetGroup( globalIndex );
   }
 

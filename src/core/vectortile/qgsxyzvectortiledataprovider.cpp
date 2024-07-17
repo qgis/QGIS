@@ -37,7 +37,7 @@ QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_DESCRIPTION = QObject::t
 // QgsXyzVectorTileDataProviderBase
 //
 
-QgsXyzVectorTileDataProviderBase::QgsXyzVectorTileDataProviderBase( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsXyzVectorTileDataProviderBase::QgsXyzVectorTileDataProviderBase( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
   QgsDataSourceUri dsUri;
@@ -175,7 +175,7 @@ QgsXyzVectorTileDataProviderMetadata::QgsXyzVectorTileDataProviderMetadata()
 {
 }
 
-QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsXyzVectorTileDataProvider( uri, options, flags );
 }
@@ -297,7 +297,7 @@ QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes
 // QgsXyzVectorTileDataProvider
 //
 
-QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsXyzVectorTileDataProviderBase( uri, providerOptions, flags )
 {
   QgsDataSourceUri dsUri;

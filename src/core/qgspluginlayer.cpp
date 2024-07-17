@@ -18,7 +18,7 @@ QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerNa
   : QgsMapLayer( Qgis::LayerType::Plugin, layerName )
   , mPluginLayerType( layerType )
 {
-  mDataProvider = new QgsPluginLayerDataProvider( layerType, QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+  mDataProvider = new QgsPluginLayerDataProvider( layerType, QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags() );
 }
 
 QgsPluginLayer::~QgsPluginLayer()
@@ -61,7 +61,7 @@ const QgsDataProvider *QgsPluginLayer::dataProvider() const
 ///@cond PRIVATE
 QgsPluginLayerDataProvider::QgsPluginLayerDataProvider( const QString &layerType,
     const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( QString(), options, flags )
   , mName( layerType )
 {}

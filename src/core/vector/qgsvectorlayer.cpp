@@ -196,14 +196,14 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+    Qgis::DataProviderReadFlags providerFlags;
     if ( options.loadDefaultStyle )
     {
-      providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+      providerFlags |= Qgis::DataProviderReadFlag::LoadDefaultStyle;
     }
     if ( options.forceReadOnly )
     {
-      providerFlags |= QgsDataProvider::ForceReadOnly;
+      providerFlags |= Qgis::DataProviderReadFlag::ForceReadOnly;
       mDataSourceReadOnly = true;
     }
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
@@ -1926,7 +1926,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   QgsDataProvider::ProviderOptions options { context.transformContext() };
 
   mDataSourceReadOnly = mReadFlags & QgsMapLayer::FlagForceReadOnly;
-  QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+  Qgis::DataProviderReadFlags flags = providerReadFlags( layer_node, mReadFlags );
 
   if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) || !setDataProvider( mProviderKey, options, flags ) )
   {
@@ -2015,7 +2015,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
 
 void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2034,7 +2034,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
   setCoordinateSystem();
 
   bool loadDefaultStyleFlag = false;
-  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  if ( flags & Qgis::DataProviderReadFlag::LoadDefaultStyle )
   {
     loadDefaultStyleFlag = true;
   }
@@ -2154,7 +2154,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
   return QString();
 }
 
-bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

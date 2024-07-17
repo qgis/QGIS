@@ -394,6 +394,39 @@ Qgis.NotForThisSession.__doc__ = "Macros will not be run for this session"
 Qgis.PythonMacroMode.__doc__ = "Authorisation to run Python Macros\n\n.. versionadded:: 3.10\n\n" + '* ``Never``: ' + Qgis.PythonMacroMode.Never.__doc__ + '\n' + '* ``Ask``: ' + Qgis.PythonMacroMode.Ask.__doc__ + '\n' + '* ``SessionOnly``: ' + Qgis.PythonMacroMode.SessionOnly.__doc__ + '\n' + '* ``Always``: ' + Qgis.PythonMacroMode.Always.__doc__ + '\n' + '* ``NotForThisSession``: ' + Qgis.PythonMacroMode.NotForThisSession.__doc__
 # --
 Qgis.PythonMacroMode.baseClass = Qgis
+QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
+# monkey patching scoped based enum
+QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
+QgsDataProvider.ReadFlag.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
+QgsDataProvider.FlagTrustDataSource.is_monkey_patched = True
+QgsDataProvider.FlagTrustDataSource.__doc__ = "Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16"
+QgsDataProvider.SkipFeatureCount = Qgis.DataProviderReadFlag.SkipFeatureCount
+QgsDataProvider.SkipFeatureCount.is_monkey_patched = True
+QgsDataProvider.SkipFeatureCount.__doc__ = "Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing."
+QgsDataProvider.FlagLoadDefaultStyle = Qgis.DataProviderReadFlag.LoadDefaultStyle
+QgsDataProvider.ReadFlag.FlagLoadDefaultStyle = Qgis.DataProviderReadFlag.LoadDefaultStyle
+QgsDataProvider.FlagLoadDefaultStyle.is_monkey_patched = True
+QgsDataProvider.FlagLoadDefaultStyle.__doc__ = "Reset the layer's style to the default for the datasource"
+QgsDataProvider.SkipGetExtent = Qgis.DataProviderReadFlag.SkipGetExtent
+QgsDataProvider.SkipGetExtent.is_monkey_patched = True
+QgsDataProvider.SkipGetExtent.__doc__ = "Skip the extent from provider"
+QgsDataProvider.SkipFullScan = Qgis.DataProviderReadFlag.SkipFullScan
+QgsDataProvider.SkipFullScan.is_monkey_patched = True
+QgsDataProvider.SkipFullScan.__doc__ = "Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)"
+QgsDataProvider.ForceReadOnly = Qgis.DataProviderReadFlag.ForceReadOnly
+QgsDataProvider.ForceReadOnly.is_monkey_patched = True
+QgsDataProvider.ForceReadOnly.__doc__ = "Open layer in a read-only mode (since QGIS 3.28)"
+QgsDataProvider.SkipCredentialsRequest = Qgis.DataProviderReadFlag.SkipCredentialsRequest
+QgsDataProvider.SkipCredentialsRequest.is_monkey_patched = True
+QgsDataProvider.SkipCredentialsRequest.__doc__ = "Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32)."
+QgsDataProvider.ParallelThreadLoading = Qgis.DataProviderReadFlag.ParallelThreadLoading
+QgsDataProvider.ParallelThreadLoading.is_monkey_patched = True
+QgsDataProvider.ParallelThreadLoading.__doc__ = "Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1)."
+Qgis.DataProviderReadFlag.__doc__ = "Flags which control data provider construction.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsDataProvider`.ReadFlag\n\n.. versionadded:: 3.40\n\n" + '* ``FlagTrustDataSource``: ' + Qgis.DataProviderReadFlag.TrustDataSource.__doc__ + '\n' + '* ``SkipFeatureCount``: ' + Qgis.DataProviderReadFlag.SkipFeatureCount.__doc__ + '\n' + '* ``FlagLoadDefaultStyle``: ' + Qgis.DataProviderReadFlag.LoadDefaultStyle.__doc__ + '\n' + '* ``SkipGetExtent``: ' + Qgis.DataProviderReadFlag.SkipGetExtent.__doc__ + '\n' + '* ``SkipFullScan``: ' + Qgis.DataProviderReadFlag.SkipFullScan.__doc__ + '\n' + '* ``ForceReadOnly``: ' + Qgis.DataProviderReadFlag.ForceReadOnly.__doc__ + '\n' + '* ``SkipCredentialsRequest``: ' + Qgis.DataProviderReadFlag.SkipCredentialsRequest.__doc__ + '\n' + '* ``ParallelThreadLoading``: ' + Qgis.DataProviderReadFlag.ParallelThreadLoading.__doc__
+# --
+Qgis.DataProviderReadFlag.baseClass = Qgis
+Qgis.DataProviderReadFlags.baseClass = Qgis
+DataProviderReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
 # monkey patching scoped based enum
 QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted

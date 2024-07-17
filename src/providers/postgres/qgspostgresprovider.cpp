@@ -100,7 +100,7 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 
 QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mShared( new QgsPostgresSharedData )
 {
@@ -134,7 +134,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     {
       mCheckPrimaryKeyUnicity = true;
     }
-    if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+    if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
     {
       mCheckPrimaryKeyUnicity = false;
     }
@@ -155,7 +155,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
@@ -174,7 +174,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( Qgis::DataProviderReadFlag::SkipCredentialsRequest ) );
   if ( !mConnectionRO )
   {
     return;
@@ -311,7 +311,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   // Constructor is called in another thread than the thread where the provider will live,
   // so we disconnect the DB, connection will be done later in the provider thread when needed
-  if ( flags.testFlag( QgsDataProvider::ParallelThreadLoading ) )
+  if ( flags.testFlag( Qgis::DataProviderReadFlag::ParallelThreadLoading ) )
     disconnectDb();
 }
 
@@ -334,7 +334,7 @@ QgsPostgresConn *QgsPostgresProvider::connectionRO() const
     return mTransaction->connection();
 
   if ( !mConnectionRO )
-    mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+    mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( Qgis::DataProviderReadFlag::SkipCredentialsRequest ) );
 
   return mConnectionRO;
 }
@@ -1494,7 +1494,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   QgsPostgresResult testAccess;
 
-  bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
+  bool forceReadOnly = ( mReadFlags & Qgis::DataProviderReadFlag::ForceReadOnly );
   bool inRecovery = false;
 
   if ( !mIsQuery )
@@ -4098,7 +4098,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   // Trust the datasource config means that we used requested geometry type and srid
   // We only need to get the spatial column type
-  if ( ( mReadFlags & QgsDataProvider::FlagTrustDataSource ) &&
+  if ( ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource ) &&
        mRequestedGeomType != Qgis::WkbType::Unknown &&
        !mRequestedSrid.isEmpty() )
   {
@@ -4869,7 +4869,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags flags;
   std::unique_ptr< QgsPostgresProvider > provider = std::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
@@ -5396,7 +5396,7 @@ bool QgsPostgresProvider::hasMetadata() const
   return hasMetadata;
 }
 
-QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsPostgresProvider( uri, options, flags );
 }

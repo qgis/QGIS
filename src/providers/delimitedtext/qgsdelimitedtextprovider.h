@@ -82,7 +82,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
       GeomAsWkt
     };
 
-    explicit QgsDelimitedTextProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    explicit QgsDelimitedTextProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     ~QgsDelimitedTextProvider() override;
 
     /* Implementation of functions from QgsVectorDataProvider */
@@ -259,7 +259,7 @@ class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
   public:
     QgsDelimitedTextProviderMetadata();
     QIcon icon() const override;
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;

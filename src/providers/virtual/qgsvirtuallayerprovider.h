@@ -42,7 +42,7 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &coordinateTransformContext, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &coordinateTransformContext, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
@@ -139,7 +139,7 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
   public:
     QgsVirtualLayerProviderMetadata();
     QIcon icon() const override;
-    QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;

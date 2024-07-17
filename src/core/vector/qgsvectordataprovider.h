@@ -114,7 +114,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     QgsVectorDataProvider( const QString &uri = QString(),
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                           Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /**
      * Returns feature source object that can be used for querying provider's data. The returned feature source

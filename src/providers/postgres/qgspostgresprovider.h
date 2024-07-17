@@ -84,7 +84,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * \param flags generic data provider flags
      */
     explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions,
-                                  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                                  Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
 
     ~QgsPostgresProvider() override;
@@ -594,7 +594,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
   public:
     QgsPostgresProviderMetadata();
     QIcon icon() const override;
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType,
         const QgsCoordinateReferenceSystem &srs,

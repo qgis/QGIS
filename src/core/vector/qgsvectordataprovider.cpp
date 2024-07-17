@@ -15,8 +15,6 @@
 
 #include <QTextCodec>
 
-#include <cfloat>
-#include <climits>
 #include <limits>
 
 #include "qgsvectordataprovider.h"
@@ -38,7 +36,7 @@
 #include "qgsdataproviderelevationproperties.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mTemporalCapabilities( std::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
   , mElevationProperties( std::make_unique< QgsDataProviderElevationProperties >() )

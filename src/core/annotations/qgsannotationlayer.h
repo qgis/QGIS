@@ -227,7 +227,7 @@ class QgsAnnotationLayerDataProvider : public QgsDataProvider
 
   public:
     QgsAnnotationLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
-                                    QgsDataProvider::ReadFlags flags );
+                                    Qgis::DataProviderReadFlags flags );
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;
     QString description() const override;

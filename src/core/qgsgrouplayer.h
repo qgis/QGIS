@@ -161,7 +161,7 @@ class QgsGroupLayerDataProvider : public QgsDataProvider
 
   public:
     QgsGroupLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags );
+                               Qgis::DataProviderReadFlags flags );
     void setCrs( const QgsCoordinateReferenceSystem &crs );
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;

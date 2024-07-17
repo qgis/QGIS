@@ -28,13 +28,6 @@ extern "C"
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
 #include "qgsfields.h"
-#include "qgswkbtypes.h"
-
-#include <list>
-#include <queue>
-#include <fstream>
-#include <set>
-
 #include "qgsprovidermetadata.h"
 
 class QgsFeature;
@@ -81,7 +74,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~ QgsSpatiaLiteProvider() override;
 
@@ -443,7 +436,7 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     ProviderCapabilities providerCapabilities() const override;
-    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 
     Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields,

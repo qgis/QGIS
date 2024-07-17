@@ -21,7 +21,7 @@
 #define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 
 QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
-                                  QgsDataProvider::ReadFlags flags )
+                                  Qgis::DataProviderReadFlags flags )
   : mDataSourceURI( uri ),
     mOptions( providerOptions )
 {

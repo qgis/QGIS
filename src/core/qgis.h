@@ -347,6 +347,36 @@ class CORE_EXPORT Qgis
     Q_ENUM( PythonMacroMode )
 
     /**
+     * Flags which control data provider construction.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsDataProvider::ReadFlag
+     *
+     * \since QGIS 3.40
+     */
+    enum class DataProviderReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, ReadFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      TrustDataSource SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustDataSource ) = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
+      SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
+      LoadDefaultStyle SIP_MONKEYPATCH_COMPAT_NAME( FlagLoadDefaultStyle ) = 1 << 2, //!< Reset the layer's style to the default for the datasource
+      SkipGetExtent = 1 << 3, //!< Skip the extent from provider
+      SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
+      ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode (since QGIS 3.28)
+      SkipCredentialsRequest =  1 << 6, //!< Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32).
+      ParallelThreadLoading = 1 << 7, //!< Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1).
+    };
+    Q_ENUM( DataProviderReadFlag )
+
+    /**
+     * Flags which control data provider construction.
+     *
+     * \note Prior to QGIS 3.40 this was available as QgsDataProvider::ReadFlags
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag )
+    Q_FLAG( DataProviderReadFlags )
+
+    /**
      * \ingroup core
      * \brief Enumeration of feature count states
      * \since QGIS 3.20
@@ -5414,6 +5444,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorRenderingSimplificationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderReadFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

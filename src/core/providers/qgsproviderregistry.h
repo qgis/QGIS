@@ -29,9 +29,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <vector>
-#include <memory>
-
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -147,7 +144,7 @@ class CORE_EXPORT QgsProviderRegistry
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_TRANSFERBACK;
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) SIP_TRANSFERBACK;
 
     /**
      * Returns the provider capabilities

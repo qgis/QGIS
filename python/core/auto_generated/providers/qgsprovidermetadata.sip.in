@@ -400,7 +400,7 @@ The default implementation returns an empty string.
 
     virtual QgsDataProvider *createProvider( const QString &uri,
         const QgsDataProvider::ProviderOptions &options,
-        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
+        Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created :py:class:`QgsDataProvider` object
 

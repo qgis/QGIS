@@ -96,7 +96,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * \param flags generic data provider flags
      */
     explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options,
-                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                                Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     //! Destructor
     ~QgsOracleProvider() override;
@@ -464,7 +464,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;
 
-    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     QgsTransaction *createTransaction( const QString &connString ) override;

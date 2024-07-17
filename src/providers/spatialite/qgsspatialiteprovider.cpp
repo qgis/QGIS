@@ -456,7 +456,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
 }
 
 
-QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   nDims = GAIA_XY;
@@ -5922,7 +5922,7 @@ QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri ) const
 QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsSpatiaLiteProvider( uri, options, flags );
 }
