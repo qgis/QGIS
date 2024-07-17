@@ -73,7 +73,9 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
 
   // build the feature request
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs(), map.transformContext() );
+  req.setCoordinateTransform(
+    QgsCoordinateTransform( layer->crs3D(), map.crs(), map.transformContext() )
+  );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
 
   // only a subset of data to be queried
