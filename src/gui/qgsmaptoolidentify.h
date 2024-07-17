@@ -38,6 +38,7 @@ class QgsPointCloudLayer;
 class QgsPointCloudLayerElevationProperties;
 class QgsFeatureRenderer;
 class QgsExpressionContext;
+class QgsCoordinateReferenceSystem;
 
 /**
  * \ingroup gui
@@ -295,12 +296,19 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /**
      * Adds details of the closest vertex to derived attributes
      */
-    void closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes );
+    void closestVertexAttributes( const QgsCoordinateTransform layerToMapTransform,
+                                  const QgsCoordinateReferenceSystem &layerVertCrs,
+                                  const QgsCoordinateReferenceSystem &mapVertCrs,
+                                  const QgsAbstractGeometry &geometry, QgsVertexId vId,
+                                  bool showTransformedZ, QMap< QString, QString > &derivedAttributes );
 
     /**
      * Adds details of the closest point to derived attributes
     */
-    void closestPointAttributes( const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes );
+    void closestPointAttributes( const QgsCoordinateTransform layerToMapTransform,
+                                 const QgsCoordinateReferenceSystem &layerVertCrs,
+                                 const QgsCoordinateReferenceSystem &mapVertCrs,
+                                 const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, bool showTransformedZ, QMap< QString, QString > &derivedAttributes );
 
     void formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y ) const;
 

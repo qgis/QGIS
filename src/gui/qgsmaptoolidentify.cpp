@@ -54,6 +54,7 @@
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgssymbol.h"
 #include "qgsguiutils.h"
+#include "qgsmessagelog.h"
 
 #include <QMouseEvent>
 #include <QCursor>
@@ -723,7 +724,11 @@ int QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qgs
   return featureCount;
 }
 
-void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )
+void QgsMapToolIdentify::closestVertexAttributes( const QgsCoordinateTransform layerToMapTransform,
+    const QgsCoordinateReferenceSystem &layerVertCrs,
+    const QgsCoordinateReferenceSystem &mapVertCrs,
+    const QgsAbstractGeometry &geometry, QgsVertexId vId,
+    bool showTransformedZ, QMap< QString, QString > &derivedAttributes )
 {
   if ( ! vId.isValid( ) )
   {
@@ -736,8 +741,18 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   derivedAttributes.insert( tr( "Closest vertex number" ), str );
 
   QgsPoint closestPoint = geometry.vertexAt( vId );
-
-  QgsPoint closestPointMapCoords = mCanvas->mapSettings().layerToMapCoordinates( layer, closestPoint );
+  QgsPoint closestPointMapCoords = closestPoint;
+  if ( layerToMapTransform.isValid() )
+  {
+    try
+    {
+      closestPointMapCoords.transform( layerToMapTransform, Qgis::TransformDirection::Forward, layerToMapTransform.hasVerticalComponent() );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+    }
+  }
 
   QString x;
   QString y;
@@ -747,9 +762,16 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
 
   if ( closestPoint.is3D() )
   {
-    str = QLocale().toString( closestPointMapCoords.z(), 'g', 10 );
-    derivedAttributes.insert( tr( "Closest vertex Z" ), str );
+    str = QLocale().toString( closestPoint.z(), 'g', 10 );
+    derivedAttributes.insert( showTransformedZ ? tr( "Closest vertex Z (%1)" ).arg( layerVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) )
+                              : tr( "Closest vertex Z" ), str );
   }
+  if ( showTransformedZ && !std::isnan( closestPointMapCoords.z() ) && !qgsDoubleNear( closestPoint.z(), closestPointMapCoords.z() ) )
+  {
+    const QString str = QLocale().toString( closestPointMapCoords.z(), 'g', 10 );
+    derivedAttributes.insert( tr( "Closest vertex Z (%1)" ).arg( mapVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), str );
+  }
+
   if ( closestPoint.isMeasure() )
   {
     str = QLocale().toString( closestPointMapCoords.m(), 'g', 10 );
@@ -769,9 +791,27 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   }
 }
 
-void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, QMap<QString, QString> &derivedAttributes )
+void QgsMapToolIdentify::closestPointAttributes( const QgsCoordinateTransform layerToMapTransform,
+    const QgsCoordinateReferenceSystem &layerVertCrs,
+    const QgsCoordinateReferenceSystem &mapVertCrs,
+    const QgsAbstractGeometry &geometry,
+    const QgsPointXY &layerPoint,
+    bool showTransformedZ,
+    QMap<QString, QString> &derivedAttributes )
 {
   QgsPoint closestPoint = QgsGeometryUtils::closestPoint( geometry, QgsPoint( layerPoint ) );
+  QgsPoint closestPointMapCrs = closestPoint;
+  if ( layerToMapTransform.isValid() )
+  {
+    try
+    {
+      closestPointMapCrs.transform( layerToMapTransform, Qgis::TransformDirection::Forward, layerToMapTransform.hasVerticalComponent() );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+    }
+  }
 
   QString x;
   QString y;
@@ -782,8 +822,15 @@ void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geom
   if ( closestPoint.is3D() )
   {
     const QString str = QLocale().toString( closestPoint.z(), 'g', 10 );
-    derivedAttributes.insert( tr( "Interpolated Z" ), str );
+    derivedAttributes.insert( showTransformedZ ? tr( "Interpolated Z (%1)" ).arg( layerVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) )
+                              : tr( "Interpolated Z" ), str );
   }
+  if ( showTransformedZ && !std::isnan( closestPointMapCrs.z() ) && !qgsDoubleNear( closestPoint.z(), closestPointMapCrs.z() ) )
+  {
+    const QString str = QLocale().toString( closestPointMapCrs.z(), 'g', 10 );
+    derivedAttributes.insert( tr( "Interpolated Z (%1)" ).arg( mapVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), str );
+  }
+
   if ( closestPoint.isMeasure() )
   {
     const QString str = QLocale().toString( closestPoint.m(), 'g', 10 );
@@ -841,9 +888,30 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   Qgis::AreaUnit cartesianAreaUnits = QgsUnitTypes::unitType( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) ) == QgsUnitTypes::unitType( displayAreaUnits() )
                                       ? displayAreaUnits() : QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() );
 
+  const QgsCoordinateReferenceSystem mapVertCrs = QgsProject::instance()->crs3D().verticalCrs().isValid() ? QgsProject::instance()->crs3D().verticalCrs()
+      : QgsProject::instance()->crs3D();
+  const QgsCoordinateReferenceSystem layerVertCrs = layer->crs3D().verticalCrs().isValid() ? layer->crs3D().verticalCrs()
+      : layer->crs3D();
+  const bool showTransformedZ = QgsProject::instance()->crs3D() != layer->crs3D() && QgsProject::instance()->crs3D().hasVerticalAxis() && layer->crs3D().hasVerticalAxis();
+  const QgsCoordinateTransform layerToMapTransform( layer->crs3D(), QgsProject::instance()->crs3D(), QgsProject::instance()->transformContext() );
+
+  const QgsGeometry layerCrsGeometry = feature.geometry();
+  QgsGeometry mapCrsGeometry = layerCrsGeometry;
+  try
+  {
+    if ( layerToMapTransform.isValid() )
+    {
+      mapCrsGeometry.transform( layerToMapTransform, Qgis::TransformDirection::Forward, layerToMapTransform.hasVerticalComponent() );
+    }
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
+
   if ( geometryType == Qgis::GeometryType::Line )
   {
-    const QgsAbstractGeometry *geom = feature.geometry().constGet();
+    const QgsAbstractGeometry *layerCrsGeom = layerCrsGeometry.constGet();
 
     double dist = calc.measureLength( feature.geometry() );
     dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
@@ -854,15 +922,15 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       derivedAttributes.insert( tr( "Length (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
 
-    str = formatDistance( geom->length()
+    str = formatDistance( layerCrsGeom->length()
                           * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
-    if ( QgsWkbTypes::hasZ( geom->wkbType() )
-         && QgsWkbTypes::flatType( QgsWkbTypes::singleType( geom->wkbType() ) ) == Qgis::WkbType::LineString )
+    if ( QgsWkbTypes::hasZ( layerCrsGeom->wkbType() )
+         && QgsWkbTypes::flatType( QgsWkbTypes::singleType( layerCrsGeom->wkbType() ) ) == Qgis::WkbType::LineString )
     {
       // 3d linestring (or multiline)
       derivedAttributes.insert( tr( "Length (Cartesian — 2D)" ), str );
 
-      double totalLength3d = std::accumulate( geom->const_parts_begin(), geom->const_parts_end(), 0.0, []( double total, const QgsAbstractGeometry * part )
+      double totalLength3d = std::accumulate( layerCrsGeom->const_parts_begin(), layerCrsGeom->const_parts_end(), 0.0, []( double total, const QgsAbstractGeometry * part )
       {
         return total + qgsgeometry_cast< const QgsLineString * >( part )->length3D();
       } );
@@ -875,16 +943,16 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
     }
 
-    str = QLocale().toString( geom->nCoordinates() );
+    str = QLocale().toString( layerCrsGeom->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
     if ( !layerPoint.isEmpty() )
     {
       //add details of closest vertex to identify point
-      closestVertexAttributes( *geom, vId, layer, derivedAttributes );
-      closestPointAttributes( *geom, layerPoint, derivedAttributes );
+      closestVertexAttributes( layerToMapTransform, layerVertCrs, mapVertCrs, *layerCrsGeom, vId, showTransformedZ, derivedAttributes );
+      closestPointAttributes( layerToMapTransform, layerVertCrs, mapVertCrs, *layerCrsGeom, layerPoint, showTransformedZ, derivedAttributes );
     }
 
-    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( layerCrsGeom ) )
     {
       // Add the start and end points in as derived attributes
       QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
@@ -901,7 +969,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   }
   else if ( geometryType == Qgis::GeometryType::Polygon )
   {
-    double area = calc.measureArea( feature.geometry() );
+    double area = calc.measureArea( layerCrsGeometry );
     area = calc.convertAreaMeasurement( area, displayAreaUnits() );
     QString str;
     if ( ellipsoid != geoNone() )
@@ -909,63 +977,72 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       str = formatArea( area );
       derivedAttributes.insert( tr( "Area (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
-    str = formatArea( feature.geometry().area()
+    str = formatArea( layerCrsGeometry.area()
                       * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ), cartesianAreaUnits ), cartesianAreaUnits );
     derivedAttributes.insert( tr( "Area (Cartesian)" ), str );
 
     if ( ellipsoid != geoNone() )
     {
-      double perimeter = calc.measurePerimeter( feature.geometry() );
+      double perimeter = calc.measurePerimeter( layerCrsGeometry );
       perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
       str = formatDistance( perimeter );
       derivedAttributes.insert( tr( "Perimeter (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
-    str = formatDistance( feature.geometry().constGet()->perimeter()
+    str = formatDistance( layerCrsGeometry.constGet()->perimeter()
                           * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
     derivedAttributes.insert( tr( "Perimeter (Cartesian)" ), str );
 
-    str = QLocale().toString( feature.geometry().constGet()->nCoordinates() );
+    str = QLocale().toString( layerCrsGeometry.constGet()->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
 
     if ( !layerPoint.isEmpty() )
     {
       //add details of closest vertex to identify point
-      closestVertexAttributes( *feature.geometry().constGet(), vId, layer, derivedAttributes );
-      closestPointAttributes( *feature.geometry().constGet(), layerPoint, derivedAttributes );
+      closestVertexAttributes( layerToMapTransform, layerVertCrs, mapVertCrs, *layerCrsGeometry.constGet(), vId, showTransformedZ, derivedAttributes );
+      closestPointAttributes( layerToMapTransform, layerVertCrs, mapVertCrs, *layerCrsGeometry.constGet(), layerPoint, showTransformedZ, derivedAttributes );
     }
   }
   else if ( geometryType == Qgis::GeometryType::Point )
   {
-    if ( QgsWkbTypes::flatType( wkbType ) == Qgis::WkbType::Point )
+    // Include the x, y, z coordinates of the point as a derived attribute
+    if ( const QgsPoint *mapCrsPoint = qgsgeometry_cast< const QgsPoint * >( mapCrsGeometry.constGet() ) )
     {
-      // Include the x and y coordinates of the point as a derived attribute
-      QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature.geometry().asPoint() );
       QString x;
       QString y;
-      formatCoordinate( pnt, x, y );
+      formatCoordinate( QgsPointXY( mapCrsPoint->x(), mapCrsPoint->y() ), x, y );
       derivedAttributes.insert( tr( "X" ), x );
       derivedAttributes.insert( tr( "Y" ), y );
 
-      if ( QgsWkbTypes::hasZ( wkbType ) )
+      const double originalZ = QgsWkbTypes::hasZ( wkbType ) ? qgsgeometry_cast<const QgsPoint *>( layerCrsGeometry.constGet() )->z()
+                               : std::numeric_limits< double >::quiet_NaN();
+      const double mapCrsZ = mapCrsPoint->is3D() ? mapCrsPoint->z() : std::numeric_limits< double >::quiet_NaN();
+
+      if ( !std::isnan( originalZ ) )
       {
-        const QString str = QLocale().toString( static_cast<const QgsPoint *>( feature.geometry().constGet() )->z(), 'g', 10 );
-        derivedAttributes.insert( tr( "Z" ), str );
+        const QString str = QLocale().toString( originalZ, 'g', 10 );
+        derivedAttributes.insert( showTransformedZ ? tr( "Z (%1)" ).arg( layerVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) )
+                                  : tr( "Z" ), str );
       }
+      if ( showTransformedZ && !std::isnan( mapCrsZ ) && !qgsDoubleNear( originalZ, mapCrsZ ) )
+      {
+        const QString str = QLocale().toString( mapCrsZ, 'g', 10 );
+        derivedAttributes.insert( tr( "Z (%1)" ).arg( mapVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), str );
+      }
+
       if ( QgsWkbTypes::hasM( wkbType ) )
       {
-        const QString str = QLocale().toString( static_cast<const QgsPoint *>( feature.geometry().constGet() )->m(), 'g', 10 );
+        const QString str = QLocale().toString( qgsgeometry_cast<const QgsPoint *>( layerCrsGeometry.constGet() )->m(), 'g', 10 );
         derivedAttributes.insert( tr( "M" ), str );
       }
     }
     else
     {
-      //multipart
-
+      //multipoint
       if ( !layerPoint.isEmpty() )
       {
         //add details of closest vertex to identify point
-        const QgsAbstractGeometry *geom = feature.geometry().constGet();
-        closestVertexAttributes( *geom, vId, layer, derivedAttributes );
+        const QgsAbstractGeometry *geom = layerCrsGeometry.constGet();
+        closestVertexAttributes( layerToMapTransform, layerVertCrs, mapVertCrs, *geom, vId, showTransformedZ, derivedAttributes );
       }
     }
   }
