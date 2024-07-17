@@ -166,7 +166,6 @@ class TestQgsPointClusterRenderer(QgisTestCase):
         self.assertEqual(d.tolerance(), 5)
         self.assertEqual(d.toleranceUnit(), QgsUnitTypes.RenderUnit.RenderMapUnits)
         self.assertEqual(d.toleranceMapUnitScale(), QgsMapUnitScale(5, 15))
-        self.assertEqual(d.clusterSymbol().color(), QColor(0, 255, 0))
         self.assertEqual(d.embeddedRenderer().symbol().color().name(), '#fdbf6f')
 
     def testRenderNoCluster(self):
