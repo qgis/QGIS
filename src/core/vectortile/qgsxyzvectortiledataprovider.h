@@ -44,7 +44,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
     bool supportsAsync() const override;
     QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr, Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown ) const override;
-    QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
+    QList<QNetworkRequest> tileRequests( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
   protected:
 
@@ -84,6 +84,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
+    QgsStringMap sourcePaths() const override;
     bool isValid() const override;
     QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -91,7 +92,6 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
 
     static QString XYZ_DATA_PROVIDER_KEY;
     static QString XYZ_DATA_PROVIDER_DESCRIPTION;
-
   protected:
 
     bool mIsValid = false;

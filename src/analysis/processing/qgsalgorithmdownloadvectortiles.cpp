@@ -193,10 +193,14 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
       if ( feedback->isCanceled() )
         break;
 
-      if ( !rawTile.data.isEmpty() )
+      // TODO: at the moment, it handles single source only of tiles
+      // takes the first one
+      QByteArray data = rawTile.data.first();
+
+      if ( !data.isEmpty() )
       {
         QByteArray gzipTileData;
-        QgsZipUtils::encodeGzip( rawTile.data, gzipTileData );
+        QgsZipUtils::encodeGzip( data, gzipTileData );
         int rowTMS = pow( 2, rawTile.id.zoomLevel() ) - rawTile.id.row() - 1;
         writer->setTileData( rawTile.id.zoomLevel(), rawTile.id.column(), rowTMS, gzipTileData );
       }
