@@ -313,8 +313,11 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // renderer
   mRendererDataMap = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "renderer" ) ).toMap();
   mLabelingDataList = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "labelingInfo" ) ).toList();
-  const double transparency = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "transparency" ) ).toDouble();
-  mRendererDataMap.insert( QStringLiteral( "transparency" ), QVariant( transparency ) );
+  const QVariant transparency = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "transparency" ) );
+  if ( transparency.isValid() )
+  {
+    mRendererDataMap.insert( QStringLiteral( "transparency" ), transparency );
+  }
 
   mValid = true;
 }
