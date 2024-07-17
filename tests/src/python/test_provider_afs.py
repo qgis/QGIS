@@ -1229,7 +1229,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testGraduatedRenderer(self):
         """ Test that the graduated renderer is correctly acquired from provider """
 
-        endpoint = self.basetestpath + '/renderer_fake_qgis_http_endpoint'
+        endpoint = self.basetestpath + '/class_breaks_renderer_fake_qgis_http_endpoint'
         with open(sanitize(endpoint, '?f=json'), 'wb') as f:
             f.write(b"""{
       "currentVersion": 11.2,
