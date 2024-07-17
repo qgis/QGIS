@@ -253,6 +253,71 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( markerLayer->strokeWidth(), 5.0 );
   QCOMPARE( markerLayer->strokeWidthUnit(), Qgis::RenderUnit::Points );
 
+  // esriTS
+  const QVariantMap fontMap = jsonStringToMap( "{"
+                              "\"type\": \"esriTS\","
+                              "\"text\": \"text\","
+                              "\"color\": ["
+                              "78,"
+                              "78,"
+                              "78,"
+                              "255"
+                              "],"
+                              "\"backgroundColor\": ["
+                              "0,"
+                              "0,"
+                              "0,"
+                              "0"
+                              "],"
+                              "\"borderLineSize\": 2,"
+                              "\"borderLineColor\": ["
+                              "255,"
+                              "0,"
+                              "255,"
+                              "255"
+                              "],"
+                              "\"haloSize\": 2,"
+                              "\"haloColor\": ["
+                              "0,"
+                              "255,"
+                              "0,"
+                              "255"
+                              "],"
+                              "\"verticalAlignment\": \"bottom\","
+                              "\"horizontalAlignment\": \"left\","
+                              "\"rightToLeft\": false,"
+                              "\"angle\": 45,"
+                              "\"xoffset\": 0,"
+                              "\"yoffset\": 0,"
+                              "\"kerning\": true,"
+                              "\"font\": {"
+                              "\"family\": \"Arial\","
+                              "\"size\": 12,"
+                              "\"style\": \"normal\","
+                              "\"weight\": \"bold\","
+                              "\"decoration\": \"none\""
+                              "}"
+                              "}" );
+
+  std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap ) );
+  QgsMarkerSymbol *fontMarker = dynamic_cast< QgsMarkerSymbol * >( fontSymbol.get() );
+  QVERIFY( fontMarker );
+  QCOMPARE( fontMarker->symbolLayerCount(), 1 );
+  QgsFontMarkerSymbolLayer *fontMarkerLayer = dynamic_cast< QgsFontMarkerSymbolLayer * >( fontMarker->symbolLayer( 0 ) );
+  QVERIFY( fontMarkerLayer );
+  QCOMPARE( fontMarkerLayer->fontStyle(), QString( "normal" ) );
+  QCOMPARE( fontMarkerLayer->fontFamily(), QString( "Arial" ) );
+  QCOMPARE( fontMarkerLayer->offset(), QPointF( 0, 0 ) );
+  QCOMPARE( fontMarkerLayer->angle(), 45 );
+  QCOMPARE( fontMarkerLayer->horizontalAnchorPoint(),  QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left );
+  QCOMPARE( fontMarkerLayer->verticalAnchorPoint(),  QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom );
+  QColor mainColor = fontMarkerLayer->color();
+  QCOMPARE( mainColor.name(), QStringLiteral( "#4e4e4e" ) );
+  QColor strokeColor = fontMarkerLayer->strokeColor();
+  QCOMPARE( strokeColor.name(), QStringLiteral( "#ff00ff" ) );
+  QCOMPARE( fontMarkerLayer->strokeWidth(), 2 );
+  QCOMPARE( fontMarkerLayer->character(), QString( "text" ) );
+
   // invalid json
   symbol = QgsArcGisRestUtils::parseEsriMarkerSymbolJson( QVariantMap() );
   QVERIFY( !symbol );
