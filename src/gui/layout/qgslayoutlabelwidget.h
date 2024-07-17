@@ -69,15 +69,10 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public Qg
     void mInsertExpressionButton_clicked();
     void mMarginXDoubleSpinBox_valueChanged( double d );
     void mMarginYDoubleSpinBox_valueChanged( double d );
-    void mCenterRadioButton_clicked();
-    void mLeftRadioButton_clicked();
-    void mRightRadioButton_clicked();
-    void mTopRadioButton_clicked();
-    void mBottomRadioButton_clicked();
-    void mMiddleRadioButton_clicked();
+    void horizontalAlignmentChanged();
+    void verticalAlignmentChanged();
     void setGuiElementValues();
     void fontChanged();
-    void justifyClicked();
 
   private:
     QPointer< QgsLayoutItemLabel > mLabel = nullptr;
