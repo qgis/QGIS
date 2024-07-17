@@ -2740,12 +2740,13 @@ void QgsProjectProperties::removeIccProfile()
 
 void QgsProjectProperties::saveIccProfile()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save ICC profile" ), QDir::homePath(),
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save ICC Profile" ), QDir::homePath(),
                      tr( "ICC profile files (*.icc *.ICC)" ) );
 
   if ( fileName.isEmpty() )
     return;
 
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "icc" ) } );
   const QString error = QgsColorUtils::saveIccProfile( mColorSpace, fileName );
   if ( !error.isEmpty() )
   {
