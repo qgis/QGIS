@@ -97,7 +97,7 @@ class CORE_EXPORT QgsTextFragment
      * format for this fragment.
      *
      * The optional \a scaleFactor parameter can specify a font size scaling factor. It is recommended to set this to
-     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually calculations
+     * QgsTextRenderer::calculateScaleFactorForFormat() and then manually calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      */

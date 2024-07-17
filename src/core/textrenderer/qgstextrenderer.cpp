@@ -2240,16 +2240,21 @@ double QgsTextRenderer::calculateScaleFactorForFormat( const QgsRenderContext &c
 
   const double pixelSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
 
-  // THESE THRESHOLD MAY NEED TWEAKING!
+  // THESE THRESHOLDS MAY NEED TWEAKING!
+
+  // NOLINTBEGIN(bugprone-branch-clone)
 
   // for small font sizes we need to apply a growth scaling workaround designed to stablise the rendering of small font sizes
+  // we scale the painter up so that we render small text at 200 pixel size and let the painter scaling handle making it the correct size
   if ( pixelSize < 50 )
-    return FONT_WORKAROUND_SCALE;
-  //... but for font sizes we might run into https://bugreports.qt.io/browse/QTBUG-98778, which messes up the spacing between words for large fonts!
+    return 200 / pixelSize;
+  //... but for large font sizes we might run into https://bugreports.qt.io/browse/QTBUG-98778, which messes up the spacing between words for large fonts!
   // so instead we scale down the painter so that we render the text at 200 pixel size and let painter scaling handle making it the correct size
   else if ( pixelSize > 200 )
     return 200 / pixelSize;
   else
     return 1.0;
+
+  // NOLINTEND(bugprone-branch-clone)
 }
 
