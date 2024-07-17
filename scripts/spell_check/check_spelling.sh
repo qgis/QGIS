@@ -61,16 +61,24 @@ while getopts ":rdl:" opt; do
 done
 shift $((OPTIND - 1))
 
-# check pipe or command line
-if [ -p /dev/stdin ]; then
-  # with pipe input
+# check if file list is provided
+# * from a pipe or from a file
+# * from ALL_CHANGED_FILES env var
+# * from command line parameters
+if [ -p /dev/stdin ] || [ ! -t 0 ]; then
+  # read from pipe input or file
   read SCRIPT_INPUT
   if [ -z "$SCRIPT_INPUT" ]; then
     exit 0
   fi
 else
-  # no pipe input
-  SCRIPT_INPUT="$@"
+  if [ -z "$ALL_CHANGED_FILES" ]; then
+    # read from command line parameters
+    SCRIPT_INPUT="$@"
+  else
+    # read from env var
+    SCRIPT_INPUT="$ALL_CHANGED_FILES"
+  fi
 fi
 
 if [ -n "$SCRIPT_INPUT" ]; then
@@ -82,6 +90,7 @@ if [ -n "$SCRIPT_INPUT" ]; then
   echo "Running spell check on files: $INPUTFILES"
 else
   INPUTFILES="."
+  echo "Running spell check on all files!"
 fi
 
 # regex to find escape string

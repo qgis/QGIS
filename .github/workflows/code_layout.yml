@@ -170,8 +170,8 @@ jobs:
       - name: Spell Test
         if: steps.changed_files.outputs.any_changed == 'true'
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
-        run: echo "$ALL_CHANGED_FILES" | ./scripts/spell_check/check_spelling.sh
+          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.changed_files }}
+        run: ./scripts/spell_check/check_spelling.sh
 
   sip_check:
     runs-on: ubuntu-latest
