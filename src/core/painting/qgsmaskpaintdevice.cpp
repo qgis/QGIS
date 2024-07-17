@@ -14,10 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaskpaintdevice.h"
-
-
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
+#include "qgspainting.h"
 
 ///@cond PRIVATE
 
@@ -85,18 +82,18 @@ int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
       val = static_cast< int >( mPaintEngine->maskPainterPath().boundingRect().height() );
       break;
     case PdmWidthMM:
-      val = static_cast< int >( 25.4 / qt_defaultDpiX() * mPaintEngine->maskPainterPath().boundingRect().width() );
+      val = static_cast< int >( 25.4 / QgsPainting::qtDefaultDpiX() * mPaintEngine->maskPainterPath().boundingRect().width() );
       break;
     case PdmHeightMM:
-      val = static_cast< int >( 25.4 / qt_defaultDpiY() * mPaintEngine->maskPainterPath().boundingRect().height() );
+      val = static_cast< int >( 25.4 / QgsPainting::qtDefaultDpiY() * mPaintEngine->maskPainterPath().boundingRect().height() );
       break;
     case PdmDpiX:
     case PdmPhysicalDpiX:
-      val = qt_defaultDpiX();
+      val = QgsPainting::qtDefaultDpiX();
       break;
     case PdmDpiY:
     case PdmPhysicalDpiY:
-      val = qt_defaultDpiY();
+      val = QgsPainting::qtDefaultDpiY();
       break;
     case PdmNumColors:
       val = 16777216;

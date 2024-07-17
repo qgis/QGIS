@@ -98,6 +98,47 @@ class CORE_EXPORT QgsPainting
       float textureX3, float textureY3
     );
 
+    /**
+     * Returns the default Qt horizontal DPI.
+     *
+     * \note This method proxies the internal Qt qt_defaultDpiX() function.
+     *
+     * \see qtDefaultDpiY()
+     * \since QGIS 3.40
+     */
+    static int qtDefaultDpiX();
+
+    /**
+     * Returns the default Qt vertical DPI.
+     *
+     * \note This method proxies the internal Qt qt_defaultDpiY() function.
+     *
+     * \see qtDefaultDpiX()
+     * \since QGIS 3.40
+     */
+    static int qtDefaultDpiY();
+
+    /**
+     * Applies a workaround to a \a painter to avoid an issue with incorrect scaling
+     * when drawing QPictures.
+     *
+     * \note This is a low-level method, which alters the \a painter state and relies on the
+     * caller saving/restoring painter state accordingly. Consider using
+     * the high-level drawPicture() method instead.
+     *
+     * \see drawPicture()
+     * \since QGIS 3.40
+     */
+    static void applyScaleFixForQPictureDpi( QPainter *painter );
+
+    /**
+     * Draws a picture onto a \a painter, correctly applying workarounds to avoid issues
+     * with incorrect scaling.
+     *
+     * \see applyScaleFixForQPictureDpi()
+     * \since QGIS 3.40
+     */
+    static void drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture );
 };
 
 #endif // QGSPAINTING_H

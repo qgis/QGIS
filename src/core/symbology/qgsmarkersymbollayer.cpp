@@ -29,6 +29,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfontmanager.h"
 #include "qgscolorutils.h"
+#include "qgspainting.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -40,21 +41,7 @@
 
 #include <cmath>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
-
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
-
-static void _fixQPictureDPI( QPainter *p )
-{
-  // QPicture makes an assumption that we drawing to it with system DPI.
-  // Then when being drawn, it scales the painter. The following call
-  // negates the effect. There is no way of setting QPicture's DPI.
-  // See QTBUG-20361
-  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
-}
-
 
 //////
 
@@ -2469,9 +2456,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
-      const QgsScopedQPainterState painterPictureState( p );
-      _fixQPictureDPI( p );
-      p->drawPicture( 0, 0, pct );
+      QgsPainting::drawPicture( p, QPointF( 0, 0 ), pct );
     }
   }
 

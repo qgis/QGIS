@@ -24,11 +24,10 @@
 #include "qgssymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgspainting.h"
 
 #include <QPen>
 #include <QPainter>
-
-Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 QgsAnnotation::QgsAnnotation( QObject *parent )
   : QObject( parent )
@@ -329,7 +328,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   }
 
   mContentsMargins = QgsMargins::fromString( annotationElem.attribute( QStringLiteral( "contentsMargin" ) ) );
-  const double dpiScale = 25.4 / qt_defaultDpiX();
+  const double dpiScale = 25.4 / QgsPainting::qtDefaultDpiX();
   if ( annotationElem.hasAttribute( QStringLiteral( "frameWidthMM" ) ) )
     mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidthMM" ), QStringLiteral( "5" ) ).toDouble() );
   else

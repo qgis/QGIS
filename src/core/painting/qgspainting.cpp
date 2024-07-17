@@ -18,6 +18,9 @@
 
 #include <QTransform>
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+Q_GUI_EXPORT extern int qt_defaultDpiY();
+
 QPainter::CompositionMode QgsPainting::getCompositionMode( Qgis::BlendMode blendMode )
 {
   // Map Qgis::BlendMode::Normal to QPainter::CompositionMode
@@ -218,4 +221,37 @@ bool QgsPainting::drawTriangleUsingTexture( QPainter *painter, const QPolygonF &
   painter->setBrush( previousBrush );
 
   return true;
+}
+
+int QgsPainting::qtDefaultDpiX()
+{
+  return qt_defaultDpiX();
+}
+
+int QgsPainting::qtDefaultDpiY()
+{
+  return qt_defaultDpiY();
+}
+
+void QgsPainting::applyScaleFixForQPictureDpi( QPainter *painter )
+{
+  // QPicture makes an assumption that we drawing to it with system DPI.
+  // Then when being drawn, it scales the painter. The following call
+  // negates the effect. There is no way of setting QPicture's DPI.
+  // See QTBUG-20361
+  painter->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX(),
+                  static_cast< double >( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY() );
+}
+
+void QgsPainting::drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture )
+{
+  // QPicture makes an assumption that we drawing to it with system DPI.
+  // Then when being drawn, it scales the painter. The following call
+  // negates the effect. There is no way of setting QPicture's DPI.
+  // See QTBUG-20361
+  const double xScale = static_cast< double >( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX();
+  const double yScale = static_cast< double >( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY();
+  painter->scale( xScale, yScale );
+  painter->drawPicture( QPointF( point.x() / xScale, point.y() / yScale ), picture );
+  painter->scale( 1 / xScale, 1 / yScale );
 }
