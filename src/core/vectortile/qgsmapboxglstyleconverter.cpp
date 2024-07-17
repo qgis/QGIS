@@ -2682,7 +2682,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
 
   for ( int i = 2; i < json.length() - 1; i += 2 )
   {
-    const QVariantList keys = json.value( i ).toList();
+    QVariantList keys;
+    QVariant variantKeys = json.value( i );
+    if ( variantKeys.canConvert< QVariantList >() )
+      keys = variantKeys.toList();
+    else
+      keys = {variantKeys};
 
     QStringList matchString;
     for ( const QVariant &key : keys )
