@@ -97,7 +97,7 @@ QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const Qgs
 
   QgsStringMap::const_iterator it = sourcesPaths.constBegin();
 
-  for ( ; it != sourcesPaths.constEnd(); it++ )
+  for ( ; it != sourcesPaths.constEnd(); ++it )
   {
     QString urlTemplate = it.value();
     QString layerName = it.key();

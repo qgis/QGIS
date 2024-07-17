@@ -42,7 +42,7 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
   mLayerNameToIndex.clear();
 
   QMap<QString, QByteArray>::const_iterator it = rawTileData.data.constBegin();
-  for ( ; it != rawTileData.data.constEnd(); it++ )
+  for ( ; it != rawTileData.data.constEnd(); ++it )
   {
     QString sourceId = it.key();
 
@@ -73,7 +73,7 @@ QStringList QgsVectorTileMVTDecoder::layers() const
   layerNames.reserve( layerSize );
 
   QMap<QString, vector_tile::Tile>::const_iterator it = tiles.constBegin();
-  for ( ; it != tiles.constEnd(); it++ )
+  for ( ; it != tiles.constEnd(); ++it )
   {
     for ( int layerNum = 0; layerNum < layerSize; layerNum++ )
     {
@@ -88,7 +88,7 @@ QStringList QgsVectorTileMVTDecoder::layers() const
 QStringList QgsVectorTileMVTDecoder::layerFieldNames( const QString &layerName ) const
 {
   QMap<QString, vector_tile::Tile>::const_iterator it = tiles.constBegin();
-  for ( ; it != tiles.constEnd(); it++ )
+  for ( ; it != tiles.constEnd(); ++it )
   {
     if ( !mLayerNameToIndex[it.key()].contains( layerName ) )
       continue;
@@ -124,7 +124,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
   const double tileYMax = z0yMaximum - mTileID.row() * tileDY;
 
   QMap<QString, vector_tile::Tile>::const_iterator it = tiles.constBegin();
-  for ( ; it != tiles.constEnd(); it++ )
+  for ( ; it != tiles.constEnd(); ++it )
   {
     vector_tile::Tile tile = it.value();
 

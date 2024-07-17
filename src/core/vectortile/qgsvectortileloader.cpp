@@ -149,7 +149,7 @@ void QgsVectorTileLoader::canceled()
   int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
   QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( repliesCount ), 2 );
   QHash<QgsTileXYZ, QList<QgsTileDownloadManagerReply *>>::iterator it = mReplies.begin();
-  for ( ; it != mReplies.end(); it++ )
+  for ( ; it != mReplies.end(); ++it )
     qDeleteAll( it.value() );
   mReplies.clear();
 
