@@ -229,6 +229,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   QgsPropertyCollection ddProperties;
   QgsPropertyCollection ddRasterProperties;
 
+  bool colorIsDataDefined = false;
+
   std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
 
   // fill color
@@ -244,6 +246,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
+        colorIsDataDefined = true;
         ddProperties.setProperty( QgsSymbolLayer::Property::FillColor, parseValueList( jsonFillColor.toList(), PropertyType::Color, context, 1, 255, &fillColor ) );
         break;
 
@@ -453,7 +456,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     fillSymbol->setStrokeStyle( Qt::NoPen );
   }
 
-  if ( fillColor.isValid() )
+  if ( fillColor.isValid() || colorIsDataDefined )
   {
     fillSymbol->setFillColor( fillColor );
   }
