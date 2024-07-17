@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTextFormat
      * units and map unit scale) for a specified render context.
      * \param context destination render context
      * \param scaleFactor optional font size scaling factor. It is recommended to set this to
-     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+     * QgsTextRenderer::calculateScaleFactorForFormat() and then manually scale painter devices or calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      * \param isZeroSize will be set to true if the font is scaled down to a near 0 size, and nothing should be rendered. Not available in Python bindings.

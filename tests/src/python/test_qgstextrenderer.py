@@ -1700,7 +1700,8 @@ class PyQgsTextRenderer(QgisTestCase):
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
-        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context,
+                                                          QgsTextRenderer.calculateScaleFactorForFormat(context, format))
 
         QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
                                      format,
@@ -1761,7 +1762,8 @@ class PyQgsTextRenderer(QgisTestCase):
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
-        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context,
+                                                          QgsTextRenderer.calculateScaleFactorForFormat(context, format))
 
         QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
                                      format,
@@ -1822,7 +1824,8 @@ class PyQgsTextRenderer(QgisTestCase):
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
-        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context,
+                                                          QgsTextRenderer.calculateScaleFactorForFormat(context, format))
 
         QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
                                      format,
@@ -1872,7 +1875,8 @@ class PyQgsTextRenderer(QgisTestCase):
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
-        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context,
+                                                          QgsTextRenderer.calculateScaleFactorForFormat(context, format))
 
         QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
                                      format,
@@ -3406,6 +3410,55 @@ class PyQgsTextRenderer(QgisTestCase):
         assert self.checkRender(format, 'text_rect_word_wrap_single_line', text=['a test of word wrap'],
                                 alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(100, 100, 200, 100),
                                 flags=Qgis.TextRendererFlag.WrapLines)
+
+    def testWordWrapSingleLineStabilityAtSmallScaling(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        painter = QPainter()
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        for i in range(1, 3000, 5):
+            adjustment = i / 100
+            context.setScaleFactor(96 / 25.4 * adjustment)
+
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 50 * adjustment, format), ['a', 'test', 'of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 200 * adjustment, format), ['a test of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 400 * adjustment, format), ['a test of word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 500 * adjustment, format),
+                             ['a test of word wrap'])
+
+        format.setSize(60)
+        for i in range(1, 3000, 5):
+            adjustment = i / 100
+            context.setScaleFactor(96 / 25.4 * adjustment)
+
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 50 * adjustment, format), ['a', 'test', 'of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 200 * adjustment, format), ['a', 'test', 'of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 400 * adjustment, format), ['a test of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 500 * adjustment, format),
+                             ['a test of', 'word wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 650 * adjustment, format),
+                             ['a test of word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 900 * adjustment, format),
+                             ['a test of word wrap'])
+
+        format.setSize(10)
+        for i in range(1, 3000, 5):
+            adjustment = i / 100
+            context.setScaleFactor(96 / 25.4 * adjustment)
+
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 10 * adjustment, format), ['a', 'test', 'of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 70 * adjustment, format), ['a test of', 'word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 120 * adjustment, format), ['a test of word', 'wrap'])
+            self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 150 * adjustment, format),
+                             ['a test of word wrap'])
 
     def testDrawTextRectWordWrapMultiLine(self):
         format = QgsTextFormat()

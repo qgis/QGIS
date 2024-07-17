@@ -228,7 +228,7 @@ class CORE_EXPORT QgsTextRenderer
      * all scaling required by the render context.
      *
      * The optional \a scaleFactor argument can specify a font size scaling factor. It is recommended to set this to
-     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+     * QgsTextRenderer::calculateScaleFactorForFormat() and then manually scale painter devices or calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      *
@@ -294,9 +294,21 @@ class CORE_EXPORT QgsTextRenderer
      * Using this scale factor and manually adjusting any font metric based calculations results in more stable
      * font metrics and sizes for small font sizes.
      *
+     * \warning Deprecated, use calculateScaleFactorForFormat() instead.
+     *
      * \since QGIS 3.16
      */
     static constexpr double FONT_WORKAROUND_SCALE = 10;
+
+    /**
+     * Returns the scale factor used for upscaling font sizes and downscaling destination painter devices.
+     *
+     * Using this scale factor and manually adjusting any font metric based calculations results in more stable
+     * font metrics and sizes for small font sizes.
+     *
+     * \since QGIS 3.40
+     */
+    static double calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format );
 
     // to match QTextEngine handling of superscript/subscript font sizes
 
@@ -463,8 +475,6 @@ class CORE_EXPORT QgsTextRenderer
                                           Qgis::TextHorizontalAlignment hAlignment,
                                           Qgis::TextVerticalAlignment vAlignment,
                                           double rotation );
-
-    static double calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format );
 
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;
