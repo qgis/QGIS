@@ -2227,6 +2227,7 @@ QgsColorUtils.colorFromString: src/core/qgscolorutils.h#L96
 QgsColorUtils.colorToString: src/core/qgscolorutils.h#L82
 QgsColorUtils.iccProfile: src/core/qgscolorutils.h#L109
 QgsColorUtils.readXml: src/core/qgscolorutils.h#L70
+QgsColorUtils.saveIccProfile: src/core/qgscolorutils.h#L117
 QgsColorUtils.writeXml: src/core/qgscolorutils.h#L55
 QgsColorUtils: src/core/qgscolorutils.h#L37
 QgsCombinedStyleModel.QgsCombinedStyleModel: src/core/symbology/qgscombinedstylemodel.h#L49
