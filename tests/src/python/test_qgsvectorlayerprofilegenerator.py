@@ -39,6 +39,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsPoint,
+    QgsCoordinateTransform,
+    QgsDatumTransform
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -2308,6 +2311,235 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() >= 12:
             self.doCheckLine(req, 10, vl, [168, 172, 206, 210, 231, 267, 275, 282, 283, 284, 306, 307, 319, 321], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
             self.doCheckLine(req, 11, vl, [168, 172, 206, 210, 231, 237, 255, 267, 275, 282, 283, 284, 306, 307, 319, 321], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
+
+    def test_vertical_transformation_4978_to_4985(self):
+        """
+        Test vertical transformations are correctly handled during profile generation
+
+        EPSG:4979 to EPSG:4985
+        """
+
+        vl = QgsVectorLayer('PointZ?crs=EPSG:4979', '4979_points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:4979')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:4979')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        profile_crs = QgsCoordinateReferenceSystem('EPSG:4985')
+        self.assertTrue(profile_crs.isValid())
+        self.assertEqual(profile_crs.horizontalCrs().authid(), 'EPSG:4985')
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (134.405567853 -23.435567853, 134.485567853 -23.455567853)')
+        request = QgsProfileRequest(curve)
+        request.setCrs(profile_crs)
+        request.setTolerance(1)
+
+        generator = vl.createProfileGenerator(request)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+        res = r.asGeometries()[0]
+        self.assertAlmostEqual(res.constGet().x(), 134.4454139641, 6)
+        self.assertAlmostEqual(res.constGet().y(), -23.4456037763, 6)
+        self.assertAlmostEqual(res.constGet().z(), 5545.6857, 3)
+
+    def testProfileTransformGDA2020toAVWS(self):
+        """
+        Test a profile requiring a vertical datum transform from GDA2020 to AVWS
+        """
+        # GDA2020 vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7843', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:7843')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:7843')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        profile_crs, msg = QgsCoordinateReferenceSystem.createCompoundCrs(
+            QgsCoordinateReferenceSystem('EPSG:7844'),
+            QgsCoordinateReferenceSystem('EPSG:9458'))
+        self.assertFalse(msg)
+        self.assertTrue(profile_crs.isValid())
+        self.assertEqual(profile_crs.horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(profile_crs.verticalCrs().authid(), 'EPSG:9458')
+
+        available_operations = QgsDatumTransform.operations(vl.crs3D(),
+                                                            profile_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName,
+                         'au_ga_AGQG_20201120.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(
+                f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (134.445567853 -23.445567853, 135.445567853 -23.445567853)')
+        request = QgsProfileRequest(curve)
+        request.setCrs(profile_crs)
+        request.setTolerance(1)
+
+        generator = vl.createProfileGenerator(request)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+        res = r.asGeometries()[0]
+        self.assertAlmostEqual(res.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(res.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/avws
+        self.assertAlmostEqual(res.constGet().z(), 5524.13969, 3)
+
+    def testProfileTransformAVWStoGDA2020(self):
+        """
+        Test a profile requiring a AVWS vertical datum transform to GDA2020
+        """
+        # AVWS vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7844', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:7844')
+        vl.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:9458'))
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(vl.crs3D().verticalCrs().authid(), 'EPSG:9458')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5524.13969))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        profile_crs = QgsCoordinateReferenceSystem('EPSG:7843')
+
+        available_operations = QgsDatumTransform.operations(vl.crs3D(),
+                                                            profile_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AGQG_20201120.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (134.445567853 -23.445567853, 135.445567853 -23.445567853)')
+        request = QgsProfileRequest(curve)
+        request.setCrs(profile_crs)
+        request.setTolerance(1)
+
+        generator = vl.createProfileGenerator(request)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+        res = r.asGeometries()[0]
+        self.assertAlmostEqual(res.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(res.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/avws
+        self.assertAlmostEqual(res.constGet().z(), 5543.325, 3)
+
+    def testProfileTransformGDA2020toAHD(self):
+        """
+        Test a profile requiring a vertical datum transform from GDA2020 to AHD
+        """
+        # GDA2020 vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7843', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:7843')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:7843')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        profile_crs, msg = QgsCoordinateReferenceSystem.createCompoundCrs(
+            QgsCoordinateReferenceSystem('EPSG:7844'),
+            QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(msg)
+        self.assertTrue(profile_crs.isValid())
+        self.assertEqual(profile_crs.horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(profile_crs.verticalCrs().authid(), 'EPSG:5711')
+
+        available_operations = QgsDatumTransform.operations(vl.crs3D(),
+                                                            profile_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AUSGeoid2020_20180201.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (134.445567853 -23.445567853, 135.445567853 -23.445567853)')
+        request = QgsProfileRequest(curve)
+        request.setCrs(profile_crs)
+        request.setTolerance(1)
+
+        generator = vl.createProfileGenerator(request)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+        res = r.asGeometries()[0]
+        self.assertAlmostEqual(res.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(res.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/ausgeoid2020
+        self.assertAlmostEqual(res.constGet().z(), 5523.598, 3)
+
+    def testProfileTransformAHDtoGDA2020(self):
+        """
+        Test a profile requiring a AHD vertical datum transform to GDA2020
+        """
+        # AHD vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7844', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:7844')
+        vl.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5711'))
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(vl.crs3D().verticalCrs().authid(), 'EPSG:5711')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5523.598))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        profile_crs = QgsCoordinateReferenceSystem('EPSG:7843')
+
+        available_operations = QgsDatumTransform.operations(vl.crs3D(),
+                                                            profile_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AUSGeoid2020_20180201.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (134.445567853 -23.445567853, 135.445567853 -23.445567853)')
+        request = QgsProfileRequest(curve)
+        request.setCrs(profile_crs)
+        request.setTolerance(1)
+
+        generator = vl.createProfileGenerator(request)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+        res = r.asGeometries()[0]
+        self.assertAlmostEqual(res.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(res.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/ausgeoid2020
+        self.assertAlmostEqual(res.constGet().z(), 5543.325, 3)
 
 
 if __name__ == '__main__':

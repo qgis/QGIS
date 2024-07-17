@@ -479,6 +479,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mLayerTreeView->populateInitialLayers( QgsProject::instance() );
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
+  connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
 
   updateCanvasLayers();
 }
@@ -691,7 +692,7 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const 
 void QgsElevationProfileWidget::updatePlot()
 {
   mCanvas->setTolerance( mSettingsAction->toleranceSpinBox()->value() );
-  mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+  mCanvas->setCrs( QgsProject::instance()->crs3D() );
 
   if ( !mProfileCurve.isEmpty() )
   {
@@ -880,7 +881,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   file = QgsFileUtils::ensureFileNameHasExtension( file, QgsFileUtils::extensionsFromFilter( selectedFilter ) );
 
   QgsProfileRequest request( profileCurve.release() );
-  request.setCrs( mMainCanvas->mapSettings().destinationCrs() );
+  request.setCrs( QgsProject::instance()->crs3D() );
   request.setTolerance( mSettingsAction->toleranceSpinBox()->value() );
   request.setTransformContext( QgsProject::instance()->transformContext() );
   request.setTerrainProvider( QgsProject::instance()->elevationProperties()->terrainProvider() ? QgsProject::instance()->elevationProperties()->terrainProvider()->clone() : nullptr );
