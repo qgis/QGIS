@@ -1029,8 +1029,6 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     for ( const QVariant &visualVariable : visualVariablesData )
     {
       const QVariantList stops = visualVariable.toMap().value( QStringLiteral( "stops" ) ).toList();
-      QString lastLabel;
-
       for ( const QVariant &stop : stops )
       {
         const QVariantMap stopData = stop.toMap();
