@@ -953,7 +953,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
   else if ( type == QLatin1String( "classBreaks" ) )
   {
     const QString attrName = rendererData.value( QStringLiteral( "field" ) ).toString();
-    QgsGraduatedSymbolRenderer *graduatedRenderer = new QgsGraduatedSymbolRenderer( attrName );
+    std::unique_ptr< QgsGraduatedSymbolRenderer > graduatedRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( attrName );
 
     const QVariantList classBreakInfos = rendererData.value( QStringLiteral( "classBreakInfos" ) ).toList();
     const QVariantMap authoringInfo = rendererData.value( QStringLiteral( "authoringInfo" ) ).toMap();
@@ -964,7 +964,6 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     {
       esriMode = rendererData.value( QStringLiteral( "classificationMethod" ) ).toString();
     }
-
 
     if ( esriMode == QLatin1String( "esriClassifyDefinedInterval" ) )
     {
@@ -1073,8 +1072,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
       graduatedRenderer->addClass( range );
     }
 
-
-    return graduatedRenderer;
+    return graduatedRenderer.release();
   }
   else if ( type == QLatin1String( "heatmap" ) )
   {
