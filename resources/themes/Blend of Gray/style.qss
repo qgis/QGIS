@@ -1181,17 +1181,6 @@ QgsMessageBar QScrollBar::down-arrow:vertical {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
-QgsPropertyOverrideButton, QgsPropertyOverrideButton:hover, QgsPropertyOverrideButton:pressed {
-    background: none;
-    border: 1px solid rgba(0, 0, 0, 0%);
-    padding: 0px;
-}
-
-QgsPropertyOverrideButton:focus {
-    border:1px solid @focusdark;
-    border-radius: 0.2em;
-}
-
 QListWidget#mOptionsListWidget {
     background-color: @itemdarkbackground;
     color: @itembackground;
