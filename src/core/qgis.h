@@ -2186,6 +2186,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( AnnotationItemFlags )
 
     /**
+     * Picture annotation item size modes.
+     *
+     * \since QGIS 3.40
+     */
+    enum class AnnotationPictureSizeMode : int
+    {
+      SpatialBounds = 0, //!< Picture is rendered inside spatial bounds, and size will depend on map scale
+      FixedSize, //!< Picture is rendered at a fixed size, regardless of map scale
+    };
+    Q_ENUM( AnnotationPictureSizeMode )
+
+    /**
      * Flags for controlling how an annotation item behaves in the GUI.
      *
      * \since QGIS 3.22
@@ -4652,6 +4664,7 @@ class CORE_EXPORT Qgis
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( FormatUnknown ), //!< Invalid or unknown image type
     };
     Q_ENUM( PictureFormat )
+
 
     /**
      * Scalebar alignment.

@@ -190,8 +190,15 @@ class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, priva
 
   private slots:
 
+    void onWidgetChanged();
+
     void modeChanged( bool checked );
+    void sizeModeChanged();
+    void setWidth();
+    void setHeight();
+    void setLockAspectRatio( bool locked );
   private:
+    double pictureAspectRatio() const;
 
     bool mBlockChangedSignal = false;
     std::unique_ptr< QgsAnnotationPictureItem> mItem;

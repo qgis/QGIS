@@ -30,6 +30,8 @@
 #include "qgsapplication.h"
 #include "qgsrecentstylehandler.h"
 #include "qgsexpressionfinder.h"
+#include "qgsimagecache.h"
+#include "qgssvgcache.h"
 
 ///@cond PRIVATE
 
@@ -617,6 +619,14 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
 {
   setupUi( this );
 
+  mSizeStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
+  mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPictureSizeMode::SpatialBounds ) );
+  mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPictureSizeMode::FixedSize ) );
+
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters
+                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+
   mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
   mBackgroundSymbolButton->registerExpressionContextGenerator( this );
@@ -630,50 +640,30 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
       emit itemChanged();
   } );
 
+  connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::sizeModeChanged );
+
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mSourceLineEdit, &QgsPictureSourceLineEditBase::sourceChanged, this, [ = ]( const QString & source )
   {
-
     if ( !mRadioSVG->isChecked() && QFileInfo( source ).suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       mRadioSVG->setChecked( true );
     }
 
-    if ( !mBlockChangedSignal )
-      emit itemChanged();
+    onWidgetChanged();
   } );
 
-  connect( mLockAspectRatioCheck, &QCheckBox::toggled, this, [ = ]
-  {
-    if ( !mBlockChangedSignal )
-      emit itemChanged();
-  } );
+  connect( mLockAspectRatioCheck, &QCheckBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mBorderCheckbox, &QGroupBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mBackgroundCheckbox, &QGroupBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mBackgroundSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mBorderSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
 
-  connect( mBorderCheckbox, &QGroupBox::toggled, this, [ = ]
-  {
-    if ( !mBlockChangedSignal )
-      emit itemChanged();
-  } );
-
-  connect( mBackgroundCheckbox, &QGroupBox::toggled, this, [ = ]
-  {
-    if ( !mBlockChangedSignal )
-      emit itemChanged();
-  } );
-
-  connect( mBackgroundSymbolButton, &QgsSymbolButton::changed, this, [ = ]
-  {
-    if ( !mBlockChangedSignal )
-      emit itemChanged();
-  } );
-
-  connect( mBorderSymbolButton, &QgsSymbolButton::changed, this, [ = ]
-  {
-    if ( !mBlockChangedSignal )
-      emit itemChanged();
-  } );
-
+  connect( mWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::setWidth );
+  connect( mHeightSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::setHeight );
+  connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsAnnotationPictureItemWidget::setLockAspectRatio );
 }
 
 QgsAnnotationPictureItemWidget::~QgsAnnotationPictureItemWidget() = default;
@@ -689,11 +679,24 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationPictureItem *pictureItem = dynamic_cast< QgsAnnotationPictureItem * >( item ) )
   {
-    pictureItem->setLockAspectRatio( mLockAspectRatioCheck->isChecked() );
     const bool svg = mRadioSVG->isChecked();
     const Qgis::PictureFormat newFormat = svg ? Qgis::PictureFormat::SVG : Qgis::PictureFormat::Raster;
     const QString path = mSourceLineEdit->source();
     pictureItem->setPath( newFormat, path );
+
+    pictureItem->setSizeMode( mSizeModeCombo->currentData().value< Qgis::AnnotationPictureSizeMode >() );
+    switch ( pictureItem->sizeMode() )
+    {
+      case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+        pictureItem->setLockAspectRatio( mLockAspectRatioCheck->isChecked() );
+        break;
+      case Qgis::AnnotationPictureSizeMode::FixedSize:
+        pictureItem->setLockAspectRatio( mLockAspectRatio->isChecked() );
+        break;
+    }
+
+    pictureItem->setFixedSize( QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() ) );
+    pictureItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
 
     pictureItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
     pictureItem->setFrameEnabled( mBorderCheckbox->isChecked() );
@@ -746,6 +749,7 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
   mPropertiesWidget->setItem( mItem.get() );
 
   mLockAspectRatioCheck->setChecked( mItem->lockAspectRatio() );
+  mLockAspectRatio->setLocked( mItem->lockAspectRatio() );
   switch ( pictureItem->format() )
   {
     case Qgis::PictureFormat::SVG:
@@ -768,9 +772,20 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
   if ( const QgsSymbol *symbol = pictureItem->frameSymbol() )
     mBorderSymbolButton->setSymbol( symbol->clone() );
 
+  mWidthSpinBox->setValue( pictureItem->fixedSize().width() );
+  mHeightSpinBox->setValue( pictureItem->fixedSize().height() );
+  mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->sizeMode() ) ) );
+  sizeModeChanged();
+
   mBlockChangedSignal = false;
 
   return true;
+}
+
+void QgsAnnotationPictureItemWidget::onWidgetChanged()
+{
+  if ( !mBlockChangedSignal )
+    emit itemChanged();
 }
 
 void QgsAnnotationPictureItemWidget::modeChanged( bool checked )
@@ -785,8 +800,78 @@ void QgsAnnotationPictureItemWidget::modeChanged( bool checked )
   else
     mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Image );
 
-  if ( !mBlockChangedSignal )
-    emit itemChanged();
+  onWidgetChanged();
+}
+
+void QgsAnnotationPictureItemWidget::sizeModeChanged()
+{
+  const Qgis::AnnotationPictureSizeMode mode = mSizeModeCombo->currentData().value< Qgis::AnnotationPictureSizeMode >();
+  switch ( mode )
+  {
+    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+      mSizeStackedWidget->setCurrentWidget( mPageSpatialBounds );
+      break;
+    case Qgis::AnnotationPictureSizeMode::FixedSize:
+      mSizeStackedWidget->setCurrentWidget( mPageFixedSize );
+      break;
+  }
+
+  onWidgetChanged();
+}
+
+void QgsAnnotationPictureItemWidget::setWidth()
+{
+  if ( mLockAspectRatio->locked() )
+  {
+    const double ratio = pictureAspectRatio();
+    if ( ratio > 0 )
+      whileBlocking( mHeightSpinBox )->setValue( mWidthSpinBox->value() * ratio );
+  }
+
+  onWidgetChanged();
+}
+
+void QgsAnnotationPictureItemWidget::setHeight()
+{
+  if ( mLockAspectRatio->locked() )
+  {
+    const double ratio = pictureAspectRatio();
+    if ( ratio > 0 )
+      whileBlocking( mWidthSpinBox )->setValue( mHeightSpinBox->value() / ratio );
+  }
+
+  onWidgetChanged();
+}
+
+void QgsAnnotationPictureItemWidget::setLockAspectRatio( bool locked )
+{
+  if ( locked && !mBlockChangedSignal )
+  {
+    const double ratio = pictureAspectRatio();
+    if ( ratio > 0 )
+      whileBlocking( mHeightSpinBox )->setValue( mWidthSpinBox->value() * ratio );
+  }
+
+  onWidgetChanged();
+}
+
+double QgsAnnotationPictureItemWidget::pictureAspectRatio() const
+{
+  const bool svg = mRadioSVG->isChecked();
+  const QString path = mSourceLineEdit->source();
+  QSizeF size;
+  if ( svg )
+  {
+    size = QgsApplication::svgCache()->svgViewboxSize( path, 100, QColor(), QColor(), 1, 1 );
+  }
+  else
+  {
+    size = QgsApplication::imageCache()->originalSize( path );
+  }
+  if ( size.isValid() && size.width() > 0 )
+    return size.height() / size.width();
+
+  return 0;
 }
 
 ///@endcond PRIVATE

@@ -40,6 +40,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     ~QgsAnnotationPictureItem() override;
 
     QString type() const override;
+    Qgis::AnnotationItemFlags flags() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     QList< QgsAnnotationItemNode > nodes() const override;
@@ -54,11 +55,15 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationPictureItem *clone() const override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
 
     /**
      * Returns the bounds of the picture.
      *
      * The coordinate reference system for the bounds will be the parent layer's QgsAnnotationLayer::crs().
+     *
+     * When the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize then the picture will be placed
+     * at the center of the bounds.
      *
      * \see setBounds()
      */
@@ -68,6 +73,9 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
      * Sets the \a bounds of the picture.
      *
      * The coordinate reference system for the bounds will be the parent layer's QgsAnnotationLayer::crs().
+     *
+     * When the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize then the picture will be placed
+     * at the center of the bounds.
      *
      * \see bounds()
      */
@@ -92,6 +100,56 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
      * \see format()
      */
     void setPath( Qgis::PictureFormat format, const QString &path );
+
+    /**
+     * Returns the size mode for the picture.
+     *
+     * \see setSizeMode()
+     */
+    Qgis::AnnotationPictureSizeMode sizeMode() const;
+
+    /**
+     * Sets the size \a mode for the picture.
+     *
+     * \see sizeMode()
+     */
+    void setSizeMode( Qgis::AnnotationPictureSizeMode mode );
+
+    /**
+     * Returns the fixed size to use for the picture, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     *
+     * Units are retrieved via fixedSizeUnit()
+     *
+     * \see setFixedSize()
+     * \see fixedSizeUnit()
+     */
+    QSizeF fixedSize() const;
+
+    /**
+     * Sets the fixed \a size to use for the picture, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     *
+     * Units are set via setFixedSizeUnit()
+     *
+     * \see fixedSize()
+     * \see setFixedSizeUnit()
+     */
+    void setFixedSize( const QSizeF &size );
+
+    /**
+     * Returns the units to use for fixed picture sizes, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     *
+     * \see setFixedSizeUnit()
+     * \see fixedSize()
+     */
+    Qgis::RenderUnit fixedSizeUnit() const;
+
+    /**
+     * Sets the \a unit to use for fixed picture sizes, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     *
+     * \see fixedSizeUnit()
+     * \see setFixedSize()
+     */
+    void setFixedSizeUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns TRUE if the aspect ratio of the picture will be retained.
@@ -179,7 +237,12 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
 
     QString mPath;
     Qgis::PictureFormat mFormat = Qgis::PictureFormat::Unknown;
+    Qgis::AnnotationPictureSizeMode mSizeMode = Qgis::AnnotationPictureSizeMode::SpatialBounds;
     QgsRectangle mBounds;
+
+    QSizeF mFixedSize;
+    Qgis::RenderUnit mFixedSizeUnit = Qgis::RenderUnit::Millimeters;
+
     bool mLockAspectRatio = true;
     bool mDrawBackground = false;
     std::unique_ptr< QgsFillSymbol > mBackgroundSymbol;

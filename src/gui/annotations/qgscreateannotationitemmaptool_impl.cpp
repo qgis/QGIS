@@ -33,6 +33,8 @@
 #include "qgscurvepolygon.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssvgcache.h"
+#include "qgsimagecache.h"
 
 #include <QFileDialog>
 #include <QImageReader>
@@ -294,20 +296,43 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
     const QgsPointXY point1 = toLayerCoordinates( mHandler->targetLayer(), mFirstPoint );
     const QgsPointXY point2 = toLayerCoordinates( mHandler->targetLayer(), event->snapPoint() );
 
+    const QgsPointXY devicePoint1 = toCanvasCoordinates( mFirstPoint );
+    const QgsPointXY devicePoint2 = toCanvasCoordinates( event->snapPoint() );
+    const double initialWidthPixels = std::abs( devicePoint1.x() - devicePoint2.x() );
+    const double initialHeightPixels = std::abs( devicePoint1.y() - devicePoint2.y() );
+
     const QFileInfo pathInfo( imagePath );
     Qgis::PictureFormat format = Qgis::PictureFormat::Unknown;
+
+    QSizeF size;
     if ( pathInfo.suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       format = Qgis::PictureFormat::SVG;
+      size = QgsApplication::svgCache()->svgViewboxSize( imagePath, 100, QColor(), QColor(), 1, 1 );
     }
     else
     {
       format = Qgis::PictureFormat::Raster;
+      size = QgsApplication::imageCache()->originalSize( imagePath );
     }
 
     cadDockWidget()->clearPoints();
 
     std::unique_ptr< QgsAnnotationPictureItem > createdItem = std::make_unique< QgsAnnotationPictureItem >( format, imagePath, QgsRectangle( point1, point2 ) );
+    if ( size.isValid() )
+    {
+      const double pixelsToMm = mCanvas->mapSettings().outputDpi() / 25.4;
+      if ( size.width() / size.height() > initialWidthPixels / initialHeightPixels )
+      {
+        createdItem->setFixedSize( QSizeF( initialWidthPixels / pixelsToMm, size.height() / size.width() * initialWidthPixels / pixelsToMm ) );
+      }
+      else
+      {
+        createdItem->setFixedSize( QSizeF( size.width() / size.height() * initialHeightPixels / pixelsToMm, initialHeightPixels / pixelsToMm ) );
+      }
+      createdItem->setFixedSizeUnit( Qgis::RenderUnit::Millimeters );
+    }
+
     mHandler->pushCreatedItem( createdItem.release() );
   }
 }
