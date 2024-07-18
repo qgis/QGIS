@@ -35,6 +35,9 @@ class TestQgsProcessingFixGeometry: public QgsTest
     void fixAngleAlg_data();
     void fixAngleAlg();
 
+    void fixAreaAlg_data();
+    void fixAreaAlg();
+
   private:
     const QDir mDataDir{ QDir( TEST_DATA_DIR ).absoluteFilePath( QStringLiteral( "geometry_fix" ) ) };
 
@@ -172,6 +175,100 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
       nbVertices++;
     }
     QCOMPARE( nbVertices, finalVertexCount.value( fid ) );
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixAreaAlg_data()
+{
+  //create a line layer that will be used in tests
+  QTest::addColumn<QStringList>( "reportList" );
+  QTest::addColumn<int>( "method" );
+
+  QTest::newRow( "Merge with longest shared edge" )
+      << ( QStringList()
+           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
+           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" ) )
+      << 0;
+
+  QTest::newRow( "Merge with largest area" )
+      << ( QStringList()
+           << QStringLiteral( "Merge with neighboring polygon with largest area" )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Merge with neighboring polygon with largest area" )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Failed to merge with neighbor: " )
+           << QStringLiteral( "Merge with neighboring polygon with largest area" )
+           << QStringLiteral( "Merge with neighboring polygon with largest area" ) )
+      << 1;
+
+  QTest::newRow( "Merge with identical attribute value" )
+      << ( QStringList()
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" ) )
+      << 2;
+}
+
+void TestQgsProcessingFixGeometry::fixAreaAlg()
+{
+
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "merge_polygons.gpkg|layername=errors_layer" ), QStringLiteral( "" ), QStringLiteral( "ogr" ) );
+  QFETCH( QStringList, reportList );
+  QFETCH( int, method );
+
+  QVERIFY( sourceLayer.isValid() );
+  QVERIFY( errorsLayer.isValid() );
+
+  const std::unique_ptr< QgsProcessingAlgorithm > alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryarea" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &sourceLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( &errorsLayer ) );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  if ( method == 2 )
+    parameters.insert( QStringLiteral( "MERGE_ATTRIBUTE" ), QStringLiteral( "attr" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), 21 );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( QString expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
   }
 }
 
