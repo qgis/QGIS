@@ -65,6 +65,7 @@ set(QGIS_3D_SRCS
   lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
+  materials/qgsdiffusespecularmaterial.cpp
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
@@ -73,6 +74,7 @@ set(QGIS_3D_SRCS
   materials/qgsphongmaterialsettings.cpp
   materials/qgsphongtexturedmaterialsettings.cpp
   materials/qgssimplelinematerialsettings.cpp
+  materials/qgstexturematerial.cpp
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
@@ -157,6 +159,7 @@ set(QGIS_3D_HDRS
   lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h
+  materials/qgsdiffusespecularmaterial.h
   materials/qgsgoochmaterialsettings.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
@@ -165,6 +168,7 @@ set(QGIS_3D_HDRS
   materials/qgsphongmaterialsettings.h
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
+  materials/qgstexturematerial.h
 
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h

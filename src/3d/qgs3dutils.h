@@ -304,6 +304,26 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.34
      */
     static Qt3DRender::QCullFace::CullingMode qt3DcullingMode( Qgs3DTypes::CullingMode mode );
+
+    /**
+     * Insert some define macros into a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to add
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Insert clip plane equation as uniform into a an effect.
+     *
+     * \param effect effect used in a material which needs to use gl_ClipDistance
+     * \param mapSettings 3D Scene configuration
+     *
+     * \since QGIS 3.40
+     */
+    static void addBoundingBoxParametersToEffect( Qt3DRender::QEffect *effect, const Qgs3DMapSettings &mapSettings );
 };
 
 #endif // QGS3DUTILS_H

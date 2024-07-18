@@ -38,6 +38,8 @@ namespace Qt3DRender
 
 } // namespace Qt3DRender
 
+class Qgs3DMapSettings;
+
 ///@cond PRIVATE
 
 /**
@@ -53,7 +55,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     /**
      * Constructor for QgsMetalRoughMaterial, with the specified \a parent node.
      */
-    explicit QgsMetalRoughMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsMetalRoughMaterial( const Qgs3DMapSettings &mapSettings, Qt3DCore::QNode *parent = nullptr );
     ~QgsMetalRoughMaterial() override;
 
     QVariant baseColor() const;
@@ -90,7 +92,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     void textureScaleChanged( float textureScale );
 
   private:
-    void init();
+    void init( const Qgs3DMapSettings &mapSettings );
 
     void handleTextureScaleChanged( const QVariant &var );
     void updateFragmentShader();
