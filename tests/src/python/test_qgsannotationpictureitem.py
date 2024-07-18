@@ -66,7 +66,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setBackgroundEnabled(True)
         item.setFrameEnabled(True)
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(56,5 7))
+        item.setFixedSize(QSizeF(56,
+                                 57))
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
         self.assertEqual(item.bounds().toString(3), '100.000,200.000 : 300.000,400.000')
         self.assertEqual(item.path(), self.get_test_data_path('sample_svg.svg').as_posix())
@@ -77,7 +78,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertTrue(item.frameEnabled())
         self.assertEqual(item.sizeMode(),
                          Qgis.AnnotationPictureSizeMode.FixedSize)
-        self.assertEqual(item.fixedSize(), QSizeF(56,5 7))
+        self.assertEqual(item.fixedSize(), QSizeF(56,
+                                                  57))
         self.assertEqual(item.fixedSizeUnit(), Qgis.RenderUnit.Inches)
 
         item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
@@ -188,7 +190,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                             'rgb256x256.png').as_posix(),
                                         QgsRectangle(10, 20, 30, 40))
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(56,5 7))
+        item.setFixedSize(QSizeF(56,
+                                 57))
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
@@ -213,7 +216,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                             'rgb256x256.png').as_posix(),
                                         QgsRectangle(10, 20, 30, 40))
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(56,5 7))
+        item.setFixedSize(QSizeF(56,
+                                 57))
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
@@ -235,7 +239,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setZIndex(11)
         item.setLockAspectRatio(False)
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(56,5 7))
+        item.setFixedSize(QSizeF(56,
+                                 57))
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
@@ -255,7 +260,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertFalse(s2.lockAspectRatio())
         self.assertEqual(s2.sizeMode(),
                          Qgis.AnnotationPictureSizeMode.FixedSize)
-        self.assertEqual(s2.fixedSize(), QSizeF(56,5 7))
+        self.assertEqual(s2.fixedSize(), QSizeF(56,
+                                                57))
         self.assertEqual(s2.fixedSizeUnit(), Qgis.RenderUnit.Inches)
 
     def testClone(self):
@@ -268,7 +274,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setZIndex(11)
         item.setLockAspectRatio(False)
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(56,5 7))
+        item.setFixedSize(QSizeF(56,
+                                 57))
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
 
         s2 = item.clone()
@@ -284,7 +291,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertFalse(s2.lockAspectRatio())
         self.assertEqual(s2.sizeMode(),
                          Qgis.AnnotationPictureSizeMode.FixedSize)
-        self.assertEqual(s2.fixedSize(), QSizeF(56,5 7))
+        self.assertEqual(s2.fixedSize(), QSizeF(56,
+                                                57))
         self.assertEqual(s2.fixedSizeUnit(), Qgis.RenderUnit.Inches)
 
     def testRenderRasterLockedAspect(self):
@@ -427,7 +435,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                         QgsRectangle(12, 13, 16, 15))
         item.setLockAspectRatio(True)
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(10,2 0))
+        item.setFixedSize(QSizeF(10,
+                                 20))
         item.setFixedSizeUnit(Qgis.RenderUnit.Millimeters)
 
         settings = QgsMapSettings()
@@ -457,7 +466,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                         QgsRectangle(12, 13, 16, 15))
         item.setLockAspectRatio(True)
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(30,5 0))
+        item.setFixedSize(QSizeF(30,
+                                 50))
         item.setFixedSizeUnit(Qgis.RenderUnit.Millimeters)
 
         settings = QgsMapSettings()
@@ -486,7 +496,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
                                         QgsRectangle(11.5, 13, 12, 13.5))
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        item.setFixedSize(QSizeF(10,2 0))
+        item.setFixedSize(QSizeF(10,
+                                 20))
         item.setFixedSizeUnit(Qgis.RenderUnit.Millimeters)
 
         settings = QgsMapSettings()
