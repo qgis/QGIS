@@ -107,8 +107,19 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback * 
       const double pictureWidth = picture.boundingRect().width();
       const double pictureHeight = picture.boundingRect().height();
 
-      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2,
-                                painterBounds.top() + pictureHeight / 2 ), picture );
+      double xOffset = 0;
+      if ( mLockAspectRatio && static_cast< int >( painterBounds.width() ) > pictureWidth )
+      {
+        xOffset = ( painterBounds.width() - pictureWidth ) * 0.5;
+      }
+      double yOffset = 0;
+      if ( mLockAspectRatio && static_cast< int >( painterBounds.height() ) > pictureHeight )
+      {
+        yOffset = ( painterBounds.height() - pictureHeight ) * 0.5;
+      }
+
+      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset,
+                                painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
 
       break;
     }
@@ -118,7 +129,17 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback * 
       const QImage im = QgsApplication::imageCache()->pathAsImage( mPath,
                         QSize( static_cast< int >( std::round( painterBounds.width() ) ), static_cast< int >( std::round( painterBounds.height() ) ) ),
                         mLockAspectRatio, 1, fitsInCache );
-      context.painter()->drawImage( painterBounds.topLeft(), im );
+      double xOffset = 0;
+      if ( mLockAspectRatio && static_cast< int >( painterBounds.width() ) > im.width() )
+      {
+        xOffset = ( painterBounds.width() - im.width() ) * 0.5;
+      }
+      double yOffset = 0;
+      if ( mLockAspectRatio && static_cast< int >( painterBounds.height() ) > im.height() )
+      {
+        yOffset = ( painterBounds.height() - im.height() ) * 0.5;
+      }
+      context.painter()->drawImage( QPointF( painterBounds.left() + xOffset, painterBounds.top() + yOffset ), im );
       break;
     }
 
