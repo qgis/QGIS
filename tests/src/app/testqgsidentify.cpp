@@ -1192,7 +1192,7 @@ void TestQgsIdentify::testPointZ()
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 134.445567853, -23.445567853 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   double z4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4979 - WGS 84)" )].toDouble();
   double z4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4985 - WGS 72)" )].toDouble();
@@ -1223,7 +1223,7 @@ void TestQgsIdentify::testLineStringZ()
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 136.46, -23.445567853 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   double interpolatedZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4979 - WGS 84)" )].toDouble();
   double interpolatedZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4985 - WGS 72)" )].toDouble();
@@ -1258,7 +1258,7 @@ void TestQgsIdentify::testPolygonZ()
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 136.46, -23.445567853 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   double interpolatedZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4979 - WGS 84)" )].toDouble();
   double interpolatedZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4985 - WGS 72)" )].toDouble();
