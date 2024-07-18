@@ -1284,6 +1284,12 @@ The development version
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
 
+    enum class AnnotationPictureSizeMode
+    {
+      SpatialBounds,
+      FixedSize,
+    };
+
     enum class AnnotationItemGuiFlag
     {
       FlagNoCreationTools,
@@ -2607,6 +2613,7 @@ The development version
       Raster,
       Unknown,
     };
+
 
     enum class ScaleBarAlignment
       {
