@@ -855,26 +855,54 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets custom rendering flags. Layers might honour these to alter their rendering.
      * \returns a map of custom flags
      * \see setCustomRenderingFlag()
-     * \since QGIS 3.12
+     * \deprecated QGIS 3.40 Use customProperties() instead.
      */
-    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+    Q_DECL_DEPRECATED QVariantMap customRenderingFlags() const SIP_DEPRECATED { return mCustomProperties; }
+
+    /**
+     * Returns custom rendering properties.
+     *
+     * Objects might honour these to alter their rendering.
+     *
+     * \see setCustomProperty()
+     * \since QGIS 3.40
+     */
+    QVariantMap customProperties() const { return mCustomProperties; }
 
     /**
      * Sets a custom rendering flag. Layers might honour these to alter their rendering.
      * \param flag the flag name
      * \param value the flag value
      * \see customRenderingFlags()
-     * \since QGIS 3.12
+     * \deprecated QGIS 3.40 Use setCustomProperty() instead.
      */
-    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+    Q_DECL_DEPRECATED void setCustomRenderingFlag( const QString &flag, const QVariant &value ) SIP_DEPRECATED { mCustomProperties[flag] = value; }
+
+    /**
+     * Sets a custom rendering property.
+     *
+     * Objects might honour these to alter their rendering.
+     *
+     * \see customProperties()
+     * \since QGIS 3.40
+     */
+    void setCustomProperty( const QString &property, const QVariant &value ) { mCustomProperties[property] = value; }
 
     /**
      * Clears the specified custom rendering flag.
      * \param flag the flag name
      * \see setCustomRenderingFlag()
-     * \since QGIS 3.12
+     * \deprecated QGIS 3.40 Use clearCustomProperty() instead.
      */
-    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
+    Q_DECL_DEPRECATED void clearCustomRenderingFlag( const QString &flag ) SIP_DEPRECATED { mCustomProperties.remove( flag ); }
+
+    /**
+     * Clears the specified custom rendering property.
+     *
+     * \see setCustomProperty()
+     * \since QGIS 3.40
+     */
+    void clearCustomProperty( const QString &property ) { mCustomProperties.remove( property ); }
 
     /**
      * Returns the list of clipping regions to apply during the render.
@@ -1261,7 +1289,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
-    QVariantMap mCustomRenderingFlags;
+    QVariantMap mCustomProperties;
 
     QSet<QString> mDisabledSymbolLayers;
 
