@@ -51,7 +51,7 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     QString htmlMetadata() const final;
 
     Qgis::DataProviderFlags flags() const final;
-    QgsVectorDataProvider::Capabilities capabilities() const final;
+    Qgis::VectorProviderCapabilities capabilities() const final;
     bool supportsSubsetString() const final;
     QString subsetString() const final;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) final;

@@ -64,7 +64,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     bool supportsSubsetString() const override { return true; }
     bool createSpatialIndex() override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     bool truncate() override;
 
     /* Implementation of functions from QgsDataProvider */

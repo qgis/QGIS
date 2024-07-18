@@ -929,9 +929,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
       QCheckBox *cbu = new QCheckBox();
       cbu->setEnabled( false );
-      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
+      if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) )
       {
-        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) )
         {
           cbu->setEnabled( true );
           cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
@@ -941,7 +941,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
       QCheckBox *cbi = new QCheckBox();
       cbi->setEnabled( false );
-      if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+      if ( ( provider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) )
       {
         cbi->setEnabled( true );
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
@@ -950,7 +950,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
       QCheckBox *cbd = new QCheckBox();
       cbd->setEnabled( false );
-      if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+      if ( ( provider->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
       {
         cbd->setEnabled( true );
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );

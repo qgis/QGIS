@@ -93,7 +93,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     bool createSpatialIndex() override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
     QString name() const override;

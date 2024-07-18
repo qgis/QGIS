@@ -181,7 +181,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
@@ -442,7 +442,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     // A function that determines if the given columns contain unique entries
     bool uniqueData( const QString &quotedColNames );
 
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorProviderCapabilities mEnabledCapabilities;
 
     void appendGeomParam( const QgsGeometry &geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;

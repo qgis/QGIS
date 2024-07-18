@@ -1490,7 +1490,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 {
   QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 2 );
 
-  mEnabledCapabilities = QgsVectorDataProvider::Capability::ReloadData;
+  mEnabledCapabilities = Qgis::VectorProviderCapability::ReloadData;
 
   QgsPostgresResult testAccess;
 
@@ -1504,7 +1504,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // the latter flag is here just for compatibility
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
+      mEnabledCapabilities |= Qgis::VectorProviderCapability::SelectAtId;
     }
 
     QString sql = QStringLiteral(
@@ -1580,25 +1580,25 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       if ( testAccess.PQgetvalue( 0, 3 ) == QLatin1String( "t" ) )
       {
         // INSERT
-        mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
       }
 
       if ( testAccess.PQgetvalue( 0, 4 ) == QLatin1String( "t" ) )
       {
         // DELETE
-        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::FastTruncate;
       }
 
       if ( testAccess.PQgetvalue( 0, 5 ) == QLatin1String( "t" ) )
       {
         // UPDATE
-        mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
       }
 
       if ( testAccess.PQgetvalue( 0, 6 ) == QLatin1String( "t" ) )
       {
         // UPDATE (geom column specific)
-        mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
       }
 
       // TODO: merge this with the previous query
@@ -1612,7 +1612,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
       if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
       {
-        mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes;
       }
     }
   }
@@ -1656,27 +1656,27 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
+      mEnabledCapabilities = Qgis::VectorProviderCapability::SelectAtId;
     }
   }
 
   // supports geometry simplification on provider side
-  mEnabledCapabilities |= ( QgsVectorDataProvider::SimplifyGeometries | QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
+  mEnabledCapabilities |= ( Qgis::VectorProviderCapability::SimplifyGeometries | Qgis::VectorProviderCapability::SimplifyGeometriesWithTopologicalValidation );
 
   //supports transactions
-  mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::TransactionSupport;
 
   // supports circular geometries
-  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::CircularGeometries;
 
   // supports layer metadata
-  mEnabledCapabilities |= QgsVectorDataProvider::ReadLayerMetadata;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::ReadLayerMetadata;
 
-  if ( ( mEnabledCapabilities & QgsVectorDataProvider::ChangeGeometries ) &&
-       ( mEnabledCapabilities & QgsVectorDataProvider::ChangeAttributeValues ) &&
+  if ( ( mEnabledCapabilities & Qgis::VectorProviderCapability::ChangeGeometries ) &&
+       ( mEnabledCapabilities & Qgis::VectorProviderCapability::ChangeAttributeValues ) &&
        mSpatialColType != SctTopoGeometry )
   {
-    mEnabledCapabilities |= QgsVectorDataProvider::ChangeFeatures;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeFeatures;
   }
 
   return true;
@@ -1767,7 +1767,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
             mPrimaryKeyType = PktTid;
 
             QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
-            mEnabledCapabilities &= ~( QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::ChangeFeatures );
+            mEnabledCapabilities &= ~( Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::ChangeGeometries | Qgis::VectorProviderCapability::ChangeFeatures );
           }
         }
 
@@ -3734,7 +3734,7 @@ QgsAttributeList QgsPostgresProvider::attributeIndexes() const
   return lst;
 }
 
-QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsPostgresProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }

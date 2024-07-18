@@ -785,11 +785,11 @@ Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
   return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
 }
 
-QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
-  return AddFeatures | DeleteFeatures | ChangeGeometries |
-         ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
-         SelectAtId | CircularGeometries | FastTruncate;
+  return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries |
+         Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::CreateSpatialIndex |
+         Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::FastTruncate;
 }
 
 bool QgsMemoryProvider::truncate()

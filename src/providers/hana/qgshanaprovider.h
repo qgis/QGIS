@@ -78,7 +78,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
       const QgsGeometryMap &geometryMap ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     QVariant defaultValue( int fieldId ) const override;
 
     /* Functions inherited from QgsDataProvider */
@@ -159,7 +159,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsFields mFields;
     AttributeFields mAttributeFields;
     //Capabilities of the layer
-    QgsVectorDataProvider::Capabilities mCapabilities;
+    Qgis::VectorProviderCapabilities mCapabilities;
     // Default values of the result set
     QMap<int, QVariant> mDefaultValues;
     // Number of features in the layer

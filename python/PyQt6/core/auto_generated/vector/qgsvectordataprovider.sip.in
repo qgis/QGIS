@@ -27,39 +27,6 @@ of feature and attribute information from a spatial datasource.
 %End
   public:
 
-
-    enum Capability /BaseType=IntEnum/
-    {
-      NoCapabilities,
-      AddFeatures,
-      DeleteFeatures,
-      ChangeAttributeValues,
-      AddAttributes,
-      DeleteAttributes,
-      CreateSpatialIndex,
-      SelectAtId,
-      ChangeGeometries,
-      SelectEncoding,
-      CreateAttributeIndex,
-      SimplifyGeometries,
-      SimplifyGeometriesWithTopologicalValidation,
-      TransactionSupport,
-      CircularGeometries,
-      ChangeFeatures,
-      RenameAttributes,
-      FastTruncate,
-      ReadLayerMetadata,
-      WriteLayerMetadata,
-      CancelSupport,
-      CreateRenderer,
-      CreateLabeling,
-      ReloadData,
-      FeatureSymbology,
-    };
-
-    typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
-
-
     static const int EditingCapabilities;
 
     QgsVectorDataProvider( const QString &uri = QString(),
@@ -406,7 +373,7 @@ Creates a spatial index on the datasource (if supported by the provider type).
 Create an attribute index on the datasource
 %End
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const;
+    virtual Qgis::VectorProviderCapabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities
 \note, some capabilities may change depending on whether
@@ -713,9 +680,6 @@ Converts the ``geometry`` to the provider geometry type ``providerGeometryType``
 
 
 };
-
-QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

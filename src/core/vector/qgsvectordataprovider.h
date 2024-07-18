@@ -64,46 +64,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
   public:
 
-    // If you add to this, please also add to capabilitiesString()
-
-    /**
-     * enumeration with capabilities that providers might implement
-     */
-    enum Capability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoCapabilities = 0,       //!< Provider has no capabilities
-      AddFeatures = 1,       //!< Allows adding features
-      DeleteFeatures = 1 <<  1, //!< Allows deletion of features
-      ChangeAttributeValues = 1 <<  2, //!< Allows modification of attribute values
-      AddAttributes = 1 <<  3, //!< Allows addition of new attributes (fields)
-      DeleteAttributes = 1 <<  4, //!< Allows deletion of attributes (fields)
-      CreateSpatialIndex = 1 <<  6, //!< Allows creation of spatial index
-      SelectAtId = 1 <<  7, //!< Fast access to features using their ID
-      ChangeGeometries = 1 <<  8, //!< Allows modifications of geometries
-      SelectEncoding = 1 << 13, //!< Allows user to select encoding
-      CreateAttributeIndex = 1 << 12, //!< Can create indexes on provider's fields
-      SimplifyGeometries = 1 << 14, //!< Supports simplification of geometries on provider side according to a distance tolerance
-      SimplifyGeometriesWithTopologicalValidation = 1 << 15, //!< Supports topological simplification of geometries on provider side according to a distance tolerance
-      TransactionSupport = 1 << 16, //!< Supports transactions
-      CircularGeometries = 1 << 17, //!< Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
-      ChangeFeatures = 1 << 18, //!< Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues.
-      RenameAttributes = 1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
-      FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
-      ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
-      WriteLayerMetadata = 1 << 22, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
-      CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
-      CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
-      CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
-      ReloadData = 1 << 26, //!< Provider is able to force reload data
-      FeatureSymbology = 1 << 27, //!< Provider is able retrieve embedded symbology associated with individual features. Since QGIS 3.20.
-    };
-
-    Q_DECLARE_FLAGS( Capabilities, Capability )
-
     //! Bitmask of all provider's editing capabilities
-    static const int EditingCapabilities = AddFeatures | DeleteFeatures |
-                                           ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes |
-                                           RenameAttributes;
+    static const int EditingCapabilities = static_cast< int >( Qgis::VectorProviderCapability::EditingCapabilities );
 
     /**
      * Constructor for a vector data provider.
@@ -406,7 +368,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \see attributeEditCapabilities()
      */
-    Q_INVOKABLE virtual QgsVectorDataProvider::Capabilities capabilities() const;
+    Q_INVOKABLE virtual Qgis::VectorProviderCapabilities capabilities() const;
 
     /**
      *  Returns the above in friendly format.
@@ -738,7 +700,5 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void setTransaction( QgsTransaction * /*transaction*/ ) {}
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Capabilities )
 
 #endif

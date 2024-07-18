@@ -100,7 +100,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     bool supportsSubsetString() const override { return true; }
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
 
 
     /* Implementation of functions from QgsDataProvider */

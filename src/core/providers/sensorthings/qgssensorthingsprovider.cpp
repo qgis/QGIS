@@ -212,13 +212,13 @@ Qgis::DataProviderFlags QgsSensorThingsProvider::flags() const
   return Qgis::DataProviderFlag::FastExtent2D;
 }
 
-QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsSensorThingsProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
-                                          | QgsVectorDataProvider::ReadLayerMetadata
-                                          | QgsVectorDataProvider::Capability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
+                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
+                                       | Qgis::VectorProviderCapability::ReloadData;
 
   return c;
 }

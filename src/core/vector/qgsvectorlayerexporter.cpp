@@ -149,7 +149,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   const QgsDataProvider::ProviderOptions providerOptions;
   QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
-  if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
+  if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) == 0 )
   {
     mError = Qgis::VectorExportResult::ErrorInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
@@ -285,7 +285,7 @@ bool QgsVectorLayerExporter::flushBuffer()
 bool QgsVectorLayerExporter::createSpatialIndex()
 {
   mCreateSpatialIndex = false;
-  if ( mProvider && ( mProvider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex ) != 0 )
+  if ( mProvider && ( mProvider->capabilities() & Qgis::VectorProviderCapability::CreateSpatialIndex ) != 0 )
   {
     return mProvider->createSpatialIndex();
   }

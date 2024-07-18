@@ -1867,24 +1867,24 @@ void QgsMssqlProvider::updateExtents()
   mExtent.setNull();
 }
 
-QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsMssqlProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities cap = CreateAttributeIndex | AddFeatures | AddAttributes | TransactionSupport;
+  Qgis::VectorProviderCapabilities cap = Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::TransactionSupport;
   bool hasGeom = false;
   if ( !mGeometryColName.isEmpty() )
   {
     hasGeom = true;
-    cap |= CreateSpatialIndex;
+    cap |= Qgis::VectorProviderCapability::CreateSpatialIndex;
   }
 
   if ( mPrimaryKeyAttrs.isEmpty() )
     return cap;
 
   if ( hasGeom )
-    cap |= ChangeGeometries;
+    cap |= Qgis::VectorProviderCapability::ChangeGeometries;
 
-  return cap | DeleteFeatures | ChangeAttributeValues | DeleteAttributes |
-         QgsVectorDataProvider::SelectAtId;
+  return cap | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::DeleteAttributes |
+         Qgis::VectorProviderCapability::SelectAtId;
 }
 
 bool QgsMssqlProvider::createSpatialIndex()

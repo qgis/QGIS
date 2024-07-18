@@ -122,11 +122,11 @@ QString QgsGPXProvider::storageType() const
   return tr( "GPS eXchange file" );
 }
 
-QgsVectorDataProvider::Capabilities QgsGPXProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsGPXProvider::capabilities() const
 {
-  return QgsVectorDataProvider::AddFeatures |
-         QgsVectorDataProvider::DeleteFeatures |
-         QgsVectorDataProvider::ChangeAttributeValues;
+  return Qgis::VectorProviderCapability::AddFeatures |
+         Qgis::VectorProviderCapability::DeleteFeatures |
+         Qgis::VectorProviderCapability::ChangeAttributeValues;
 }
 
 QgsRectangle QgsGPXProvider::extent() const

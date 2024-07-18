@@ -839,7 +839,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
   retval.setNull();
 
   QgsFeature fet;
-  if ( mDataProvider->capabilities() & QgsVectorDataProvider::SelectAtId )
+  if ( mDataProvider->capabilities() & Qgis::VectorProviderCapability::SelectAtId )
   {
     QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                           .setFilterFids( mSelectedFeatureIds )
@@ -1516,7 +1516,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !isValid() || !mDataProvider || !( mDataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+  if ( !isValid() || !mDataProvider || !( mDataProvider->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
   {
     return false;
   }
@@ -2064,7 +2064,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       loadDefaultStyle( defaultLoadedFlag );
     }
 
-    if ( loadDefaultStyleFlag && !defaultLoadedFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+    if ( loadDefaultStyleFlag && !defaultLoadedFlag && isSpatial() && mDataProvider->capabilities() & Qgis::VectorProviderCapability::CreateRenderer )
     {
       // if we didn't load a default style for this layer, try to create a renderer directly from the data provider
       std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
@@ -2085,7 +2085,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     if ( !mSetLegendFromStyle )
       setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
-    if ( mDataProvider->capabilities() & QgsVectorDataProvider::CreateLabeling )
+    if ( mDataProvider->capabilities() & Qgis::VectorProviderCapability::CreateLabeling )
     {
       std::unique_ptr< QgsAbstractVectorLayerLabeling > defaultLabeling( mDataProvider->createLabeling() );
       if ( defaultLabeling )
@@ -2139,7 +2139,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     return styleXml ;
   }
 
-  if ( isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+  if ( isSpatial() && mDataProvider->capabilities() & Qgis::VectorProviderCapability::CreateRenderer )
   {
     // otherwise try to create a renderer directly from the data provider
     std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
@@ -2207,7 +2207,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   if ( profile )
     profile->switchTask( tr( "Read layer metadata" ) );
-  if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
+  if ( mDataProvider->capabilities() & Qgis::VectorProviderCapability::ReadLayerMetadata )
   {
     // we combine the provider metadata with the layer's existing metadata, so as not to reset any user customizations to the metadata
     // back to the default if a layer's data source is changed

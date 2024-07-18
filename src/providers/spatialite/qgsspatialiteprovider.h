@@ -116,7 +116,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool createAttributeIndex( int field ) override;
@@ -318,7 +318,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     //! this Geometry is supported by an MBR cache spatial index
     bool mSpatialIndexMbrCache = false;
 
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorProviderCapabilities mEnabledCapabilities;
 
     QgsField field( int index ) const;
 

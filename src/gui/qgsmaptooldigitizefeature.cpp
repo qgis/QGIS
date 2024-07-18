@@ -166,7 +166,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   QgsVectorDataProvider *provider = vlayer->dataProvider();
 
-  if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+  if ( !( provider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) )
   {
     emit messageEmitted( tr( "The data provider for this layer does not support the addition of features." ), Qgis::MessageLevel::Warning );
     return;

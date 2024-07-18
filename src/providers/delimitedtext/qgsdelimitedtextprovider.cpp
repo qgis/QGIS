@@ -1369,9 +1369,9 @@ bool QgsDelimitedTextProvider::isValid() const
   return mLayerValid;
 }
 
-QgsVectorDataProvider::Capabilities QgsDelimitedTextProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsDelimitedTextProvider::capabilities() const
 {
-  return SelectAtId | CreateSpatialIndex | CircularGeometries;
+  return Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CreateSpatialIndex | Qgis::VectorProviderCapability::CircularGeometries;
 }
 
 QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs() const

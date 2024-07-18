@@ -248,6 +248,40 @@ The development version
     typedef QFlags<Qgis::DataProviderReadFlag> DataProviderReadFlags;
 
 
+
+    enum class VectorProviderCapability
+    {
+      NoCapabilities,
+      AddFeatures,
+      DeleteFeatures,
+      ChangeAttributeValues,
+      AddAttributes,
+      DeleteAttributes,
+      CreateSpatialIndex,
+      SelectAtId,
+      ChangeGeometries,
+      SelectEncoding,
+      CreateAttributeIndex,
+      SimplifyGeometries,
+      SimplifyGeometriesWithTopologicalValidation,
+      TransactionSupport,
+      CircularGeometries,
+      ChangeFeatures,
+      RenameAttributes,
+      FastTruncate,
+      ReadLayerMetadata,
+      WriteLayerMetadata,
+      CancelSupport,
+      CreateRenderer,
+      CreateLabeling,
+      ReloadData,
+      FeatureSymbology,
+      EditingCapabilities,
+    };
+
+    typedef QFlags<Qgis::VectorProviderCapability> VectorProviderCapabilities;
+
+
     enum class FeatureCountState
       {
       Uncounted,
@@ -3161,6 +3195,8 @@ QFlags<Qgis::DataItemProviderCapability> operator|(Qgis::DataItemProviderCapabil
 QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingSimplificationFlag f1, QFlags<Qgis::VectorRenderingSimplificationFlag> f2);
 
 QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFlags<Qgis::DataProviderReadFlag> f2);
+
+QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
 
 
 

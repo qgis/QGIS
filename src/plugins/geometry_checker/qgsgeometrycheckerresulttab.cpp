@@ -87,7 +87,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   bool allLayersEditable = true;
   for ( const QgsFeaturePool *featurePool : mChecker->featurePools() )
   {
-    if ( ( featurePool->layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+    if ( ( featurePool->layer()->dataProvider()->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) == 0 )
     {
       allLayersEditable = false;
       break;

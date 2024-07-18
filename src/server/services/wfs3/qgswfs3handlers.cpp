@@ -1569,7 +1569,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     {
       // First: check permissions
       const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
-      if ( ! wfstInsertLayerIds.contains( mapLayer->id() ) || ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::AddFeatures ) )
+      if ( ! wfstInsertLayerIds.contains( mapLayer->id() ) || ! mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::AddFeatures ) )
       {
         throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features cannot be added to layer '%1'" ).arg( mapLayer->name() ) );
       }
@@ -1832,8 +1832,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       // First: check permissions
       const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
       if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
-           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::ChangeGeometries ) ||
-           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::ChangeAttributeValues ) )
+           ! mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ||
+           ! mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) )
       {
         throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features in layer '%1' cannot be changed" ).arg( mapLayer->name() ) );
       }
@@ -1966,7 +1966,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       // First: check permissions
       const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
       if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
-           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::ChangeAttributeValues ) )
+           ! mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) )
       {
         throw QgsServerApiPermissionDeniedException( QStringLiteral( "Feature attributes in layer '%1' cannot be changed" ).arg( mapLayer->name() ) );
       }
@@ -2089,7 +2089,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       // First: check permissions
       const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
       if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
-           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::DeleteFeatures ) )
+           ! mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::DeleteFeatures ) )
       {
         throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features in layer '%1' cannot be deleted" ).arg( mapLayer->name() ) );
       }

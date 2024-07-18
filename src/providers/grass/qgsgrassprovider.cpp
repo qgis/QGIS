@@ -269,22 +269,22 @@ QgsGrassProvider::~QgsGrassProvider()
   }
 }
 
-QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsGrassProvider::capabilities() const
 {
   // Because of bug in GRASS https://trac.osgeo.org/grass/ticket/2775 it is not possible
   // close db drivers in random order on Unix and probably Mac -> disable editing if another layer is edited
 #ifndef Q_OS_WIN
   if ( sEditedCount > 0 && !mEditBuffer )
   {
-    return QgsVectorDataProvider::Capabilities();
+    return Qgis::VectorProviderCapabilities();
   }
 #endif
   // for now, only one map may be edited at time
   if ( mEditBuffer || ( mLayer && mLayer->map() && !mLayer->map()->isEdited() ) )
   {
-    return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
+    return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::ChangeAttributeValues;
   }
-  return QgsVectorDataProvider::Capabilities();
+  return Qgis::VectorProviderCapabilities();
 }
 
 bool QgsGrassProvider::openLayer()

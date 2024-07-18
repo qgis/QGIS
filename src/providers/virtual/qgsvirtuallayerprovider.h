@@ -56,7 +56,7 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
     bool supportsSubsetString() const override { return true; }
     QgsFields fields() const override;
     bool isValid() const override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     QString name() const override;
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;

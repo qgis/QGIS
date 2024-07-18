@@ -145,7 +145,7 @@ bool QgsVectorDataProvider::truncate()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !( capabilities() & DeleteFeatures ) )
+  if ( !( capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
     return false;
 
   QgsFeatureIds toDelete;
@@ -236,7 +236,7 @@ bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !( capabilities() & ChangeAttributeValues ) || !( capabilities() & ChangeGeometries ) )
+  if ( !( capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) || !( capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) )
     return false;
 
   bool result = true;
@@ -260,11 +260,11 @@ bool QgsVectorDataProvider::createAttributeIndex( int field )
   return true;
 }
 
-QgsVectorDataProvider::Capabilities QgsVectorDataProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsVectorDataProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsVectorDataProvider::NoCapabilities;
+  return Qgis::VectorProviderCapability::NoCapabilities;
 }
 
 void QgsVectorDataProvider::setEncoding( const QString &e )
@@ -324,85 +324,85 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   QStringList abilitiesList;
 
-  const int abilities = capabilities();
+  const Qgis::VectorProviderCapabilities abilities = capabilities();
 
-  if ( abilities & QgsVectorDataProvider::AddFeatures )
+  if ( abilities & Qgis::VectorProviderCapability::AddFeatures )
   {
     abilitiesList += tr( "Add Features" );
   }
 
-  if ( abilities & QgsVectorDataProvider::DeleteFeatures )
+  if ( abilities & Qgis::VectorProviderCapability::DeleteFeatures )
   {
     abilitiesList += tr( "Delete Features" );
   }
 
-  if ( abilities & QgsVectorDataProvider::ChangeAttributeValues )
+  if ( abilities & Qgis::VectorProviderCapability::ChangeAttributeValues )
   {
     abilitiesList += tr( "Change Attribute Values" );
   }
 
-  if ( abilities & QgsVectorDataProvider::AddAttributes )
+  if ( abilities & Qgis::VectorProviderCapability::AddAttributes )
   {
     abilitiesList += tr( "Add Attributes" );
   }
 
-  if ( abilities & QgsVectorDataProvider::DeleteAttributes )
+  if ( abilities & Qgis::VectorProviderCapability::DeleteAttributes )
   {
     abilitiesList += tr( "Delete Attributes" );
   }
 
-  if ( abilities & QgsVectorDataProvider::RenameAttributes )
+  if ( abilities & Qgis::VectorProviderCapability::RenameAttributes )
   {
     abilitiesList += tr( "Rename Attributes" );
   }
 
-  if ( abilities & QgsVectorDataProvider::CreateSpatialIndex )
+  if ( abilities & Qgis::VectorProviderCapability::CreateSpatialIndex )
   {
     // TODO: Tighten up this test.  See QgsOgrProvider for details.
     abilitiesList += tr( "Create Spatial Index" );
   }
 
-  if ( abilities & QgsVectorDataProvider::CreateAttributeIndex )
+  if ( abilities & Qgis::VectorProviderCapability::CreateAttributeIndex )
   {
     abilitiesList += tr( "Create Attribute Indexes" );
   }
 
-  if ( abilities & QgsVectorDataProvider::SelectAtId )
+  if ( abilities & Qgis::VectorProviderCapability::SelectAtId )
   {
     abilitiesList += tr( "Fast Access to Features at ID" );
   }
 
-  if ( abilities & QgsVectorDataProvider::ChangeGeometries )
+  if ( abilities & Qgis::VectorProviderCapability::ChangeGeometries )
   {
     abilitiesList += tr( "Change Geometries" );
   }
 
-  if ( abilities & QgsVectorDataProvider::SimplifyGeometries )
+  if ( abilities & Qgis::VectorProviderCapability::SimplifyGeometries )
   {
     abilitiesList += tr( "Presimplify Geometries" );
   }
 
-  if ( abilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation )
+  if ( abilities & Qgis::VectorProviderCapability::SimplifyGeometriesWithTopologicalValidation )
   {
     abilitiesList += tr( "Presimplify Geometries with Validity Check" );
   }
 
-  if ( abilities & QgsVectorDataProvider::ChangeFeatures )
+  if ( abilities & Qgis::VectorProviderCapability::ChangeFeatures )
   {
     abilitiesList += tr( "Simultaneous Geometry and Attribute Updates" );
   }
 
-  if ( abilities & QgsVectorDataProvider::TransactionSupport )
+  if ( abilities & Qgis::VectorProviderCapability::TransactionSupport )
   {
     abilitiesList += tr( "Transactions" );
   }
 
-  if ( abilities & QgsVectorDataProvider::CircularGeometries )
+  if ( abilities & Qgis::VectorProviderCapability::CircularGeometries )
   {
     abilitiesList += tr( "Curved Geometries" );
   }
 
-  if ( abilities & QgsVectorDataProvider::FeatureSymbology )
+  if ( abilities & Qgis::VectorProviderCapability::FeatureSymbology )
   {
     abilitiesList += tr( "Feature Symbology" );
   }

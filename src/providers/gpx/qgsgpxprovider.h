@@ -57,7 +57,7 @@ class QgsGPXProvider final: public QgsVectorDataProvider
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     QVariant defaultValue( int fieldId ) const override;
 
 

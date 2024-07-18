@@ -62,7 +62,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
     bool createAttributeIndex( int field ) override;
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override;
     QString defaultValueClause( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;

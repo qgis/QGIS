@@ -617,13 +617,13 @@ bool QgsVirtualLayerProvider::isValid() const
   return mValid;
 }
 
-QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsVirtualLayerProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities capabilities = CancelSupport | QgsVectorDataProvider::Capability::ReloadData;
+  Qgis::VectorProviderCapabilities capabilities = Qgis::VectorProviderCapability::CancelSupport | Qgis::VectorProviderCapability::ReloadData;
 
   if ( !mDefinition.uid().isNull() )
   {
-    capabilities |= SelectAtId;
+    capabilities |= Qgis::VectorProviderCapability::SelectAtId;
   }
 
   return capabilities;

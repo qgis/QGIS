@@ -2439,7 +2439,7 @@ QString QgsWFSProvider::description() const
   return WFS_PROVIDER_DESCRIPTION;
 }
 
-QgsVectorDataProvider::Capabilities QgsWFSProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsWFSProvider::capabilities() const
 {
   return mCapabilities;
 }
@@ -2621,7 +2621,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
 bool QgsWFSProvider::getCapabilities()
 {
-  mCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::Capability::ReloadData;
+  mCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReloadData;
 
   if ( mShared->mCaps.version.isEmpty() )
   {
@@ -2729,16 +2729,16 @@ bool QgsWFSProvider::getCapabilities()
       }
       if ( mShared->mCaps.featureTypes[i].insertCap )
       {
-        mCapabilities |= QgsVectorDataProvider::AddFeatures;
+        mCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
       }
       if ( mShared->mCaps.featureTypes[i].updateCap )
       {
-        mCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
-        mCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+        mCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
+        mCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
       }
       if ( mShared->mCaps.featureTypes[i].deleteCap )
       {
-        mCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+        mCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures;
       }
 
       foundLayer = true;

@@ -75,7 +75,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     static QString providerKey();
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
 
     QgsLayerMetadata layerMetadata() const override { return mLayerMetadata; }
 
@@ -114,7 +114,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     bool mValid = true;
 
     //! Server capabilities for this layer (generated from capabilities document)
-    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorProviderCapabilities mCapabilities;
 
     //! Whether server supports PATCH operation
     bool mSupportsPatch = false;

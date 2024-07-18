@@ -190,7 +190,7 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
   mJoinFieldsSubsetView->setModel( subsetModel );
 
   QgsVectorDataProvider *dp = vLayer->dataProvider();
-  const bool canCreateAttrIndex = dp && ( dp->capabilities() & QgsVectorDataProvider::CreateAttributeIndex );
+  const bool canCreateAttrIndex = dp && ( dp->capabilities() & Qgis::VectorProviderCapability::CreateAttributeIndex );
   if ( canCreateAttrIndex )
   {
     mCreateIndexCheckBox->setEnabled( true );
