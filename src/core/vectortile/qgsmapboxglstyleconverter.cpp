@@ -456,11 +456,11 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     fillSymbol->setStrokeStyle( Qt::NoPen );
   }
 
-  if ( fillColor.isValid() || colorIsDataDefined )
+  if ( fillColor.isValid() )
   {
     fillSymbol->setFillColor( fillColor );
   }
-  else
+  else if ( !colorIsDataDefined )
   {
     fillSymbol->setBrushStyle( Qt::NoBrush );
   }
