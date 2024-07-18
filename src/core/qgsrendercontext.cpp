@@ -71,7 +71,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mTextRenderFormat( rh.mTextRenderFormat )
   , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
-  , mCustomRenderingFlags( rh.mCustomRenderingFlags )
+  , mCustomProperties( rh.mCustomProperties )
   , mDisabledSymbolLayers()
   , mClippingRegions( rh.mClippingRegions )
   , mFeatureClipGeometry( rh.mFeatureClipGeometry )
@@ -123,7 +123,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mTextRenderFormat = rh.mTextRenderFormat;
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
-  mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  mCustomProperties = rh.mCustomProperties;
   mClippingRegions = rh.mClippingRegions;
   mFeatureClipGeometry = rh.mFeatureClipGeometry;
   mTextureOrigin = rh.mTextureOrigin;
@@ -277,7 +277,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
-  ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
+  ctx.mCustomProperties = mapSettings.customRenderingFlags();
   ctx.setIsTemporal( mapSettings.isTemporal() );
   if ( ctx.isTemporal() )
     ctx.setTemporalRange( mapSettings.temporalRange() );
@@ -297,7 +297,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
   const QStringList layerIds = mapSettings.layerIds( true );
   if ( !layerIds.empty() )
-    ctx.setCustomRenderingFlag( QStringLiteral( "visible_layer_ids" ), layerIds );
+    ctx.setCustomProperty( QStringLiteral( "visible_layer_ids" ), layerIds );
 
   return ctx;
 }

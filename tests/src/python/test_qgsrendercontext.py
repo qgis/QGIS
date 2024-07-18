@@ -206,7 +206,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(rc.imageFormat(), QImage.Format.Format_Alpha8)
         self.assertEqual(rc.frameRate(), 30)
         self.assertEqual(rc.currentFrame(), 6)
-        self.assertEqual(rc.customRenderingFlags()['visible_layer_ids'], [layer1.id(), layer2.id(), layer3.id()])
+        self.assertEqual(rc.customProperties()['visible_layer_ids'], [layer1.id(), layer2.id(), layer3.id()])
 
         # should have an valid mapToPixel
         self.assertTrue(rc.mapToPixel().isValid())

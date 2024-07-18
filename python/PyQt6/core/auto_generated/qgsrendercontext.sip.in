@@ -855,7 +855,7 @@ in a mask painter, which is not meant to be visible, by definition.
 .. versionadded:: 3.12
 %End
 
-    QVariantMap customRenderingFlags() const;
+ QVariantMap customRenderingFlags() const /Deprecated/;
 %Docstring
 Gets custom rendering flags. Layers might honour these to alter their rendering.
 
@@ -863,10 +863,22 @@ Gets custom rendering flags. Layers might honour these to alter their rendering.
 
 .. seealso:: :py:func:`setCustomRenderingFlag`
 
-.. versionadded:: 3.12
+.. deprecated::
+   QGIS 3.40 Use :py:func:`~QgsRenderContext.customProperties` instead.
 %End
 
-    void setCustomRenderingFlag( const QString &flag, const QVariant &value );
+    QVariantMap customProperties() const;
+%Docstring
+Returns custom rendering properties.
+
+Objects might honour these to alter their rendering.
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. versionadded:: 3.40
+%End
+
+ void setCustomRenderingFlag( const QString &flag, const QVariant &value ) /Deprecated/;
 %Docstring
 Sets a custom rendering flag. Layers might honour these to alter their rendering.
 
@@ -875,10 +887,22 @@ Sets a custom rendering flag. Layers might honour these to alter their rendering
 
 .. seealso:: :py:func:`customRenderingFlags`
 
-.. versionadded:: 3.12
+.. deprecated::
+   QGIS 3.40 Use :py:func:`~QgsRenderContext.setCustomProperty` instead.
 %End
 
-    void clearCustomRenderingFlag( const QString &flag );
+    void setCustomProperty( const QString &property, const QVariant &value );
+%Docstring
+Sets a custom rendering property.
+
+Objects might honour these to alter their rendering.
+
+.. seealso:: :py:func:`customProperties`
+
+.. versionadded:: 3.40
+%End
+
+ void clearCustomRenderingFlag( const QString &flag ) /Deprecated/;
 %Docstring
 Clears the specified custom rendering flag.
 
@@ -886,7 +910,17 @@ Clears the specified custom rendering flag.
 
 .. seealso:: :py:func:`setCustomRenderingFlag`
 
-.. versionadded:: 3.12
+.. deprecated::
+   QGIS 3.40 Use :py:func:`~QgsRenderContext.clearCustomProperty` instead.
+%End
+
+    void clearCustomProperty( const QString &property );
+%Docstring
+Clears the specified custom rendering property.
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. versionadded:: 3.40
 %End
 
     QList< QgsMapClippingRegion > clippingRegions() const;
