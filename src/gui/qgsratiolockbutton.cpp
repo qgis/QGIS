@@ -44,7 +44,7 @@ void QgsRatioLockButton::setLocked( const bool locked )
 void QgsRatioLockButton::buttonClicked()
 {
   mLocked = !mLocked;
-  setDown( mLocked );
+  setChecked( mLocked );
 
   emit lockChanged( mLocked );
 
