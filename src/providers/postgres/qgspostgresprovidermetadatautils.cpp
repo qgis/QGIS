@@ -102,8 +102,10 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       uri.setSchema( res.PQgetvalue( row, 1 ) );
       uri.setTable( res.PQgetvalue( row, 2 ) );
       uri.setGeometryColumn( res.PQgetvalue( row, 3 ) );
+      const Qgis::WkbType wkbType =  QgsWkbTypes::parseType( res.PQgetvalue( row, 7 ) );
+      uri.setWkbType( wkbType );
       result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
-      result.setGeometryType( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( res.PQgetvalue( row, 7 ) ) ) );
+      result.setGeometryType( QgsWkbTypes::geometryType( wkbType ) );
       QgsPolygon geographicExtent;
       geographicExtent.fromWkt( res.PQgetvalue( row, 8 ) );
       result.setGeographicExtent( geographicExtent );
@@ -207,7 +209,7 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
     }
   }
 
-  const QString wkbTypeString = QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) );
+  const QString wkbTypeString = QgsWkbTypes::displayString( dsUri.wkbType() );
 
   const QgsCoordinateReferenceSystem metadataCrs { metadata.crs() };
   QgsCoordinateReferenceSystem destCrs {QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) };
