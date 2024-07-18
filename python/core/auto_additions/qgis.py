@@ -425,6 +425,7 @@ QgsDataProvider.ParallelThreadLoading.__doc__ = "Provider is created in a parall
 Qgis.DataProviderReadFlag.__doc__ = "Flags which control data provider construction.\n\n.. note::\n\n   Prior to QGIS 3.40 this was available as :py:class:`QgsDataProvider`.ReadFlag\n\n.. versionadded:: 3.40\n\n" + '* ``FlagTrustDataSource``: ' + Qgis.DataProviderReadFlag.TrustDataSource.__doc__ + '\n' + '* ``SkipFeatureCount``: ' + Qgis.DataProviderReadFlag.SkipFeatureCount.__doc__ + '\n' + '* ``FlagLoadDefaultStyle``: ' + Qgis.DataProviderReadFlag.LoadDefaultStyle.__doc__ + '\n' + '* ``SkipGetExtent``: ' + Qgis.DataProviderReadFlag.SkipGetExtent.__doc__ + '\n' + '* ``SkipFullScan``: ' + Qgis.DataProviderReadFlag.SkipFullScan.__doc__ + '\n' + '* ``ForceReadOnly``: ' + Qgis.DataProviderReadFlag.ForceReadOnly.__doc__ + '\n' + '* ``SkipCredentialsRequest``: ' + Qgis.DataProviderReadFlag.SkipCredentialsRequest.__doc__ + '\n' + '* ``ParallelThreadLoading``: ' + Qgis.DataProviderReadFlag.ParallelThreadLoading.__doc__
 # --
 Qgis.DataProviderReadFlag.baseClass = Qgis
+QgsDataProvider.ReadFlags = Qgis.DataProviderReadFlags
 Qgis.DataProviderReadFlags.baseClass = Qgis
 DataProviderReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsVectorDataProvider.Capability = Qgis.VectorProviderCapability
@@ -5299,4 +5300,5 @@ Qgis.ProcessingParameterTypeFlag.__or__ = lambda flag1, flag2: Qgis.ProcessingPa
 Qgis.ProcessingParameterFlag.__or__ = lambda flag1, flag2: Qgis.ProcessingParameterFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.DataItemProviderCapability.__or__ = lambda flag1, flag2: Qgis.DataItemProviderCapabilities(_force_int(flag1) | _force_int(flag2))
 Qgis.VectorRenderingSimplificationFlag.__or__ = lambda flag1, flag2: Qgis.VectorRenderingSimplificationFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.DataProviderReadFlag.__or__ = lambda flag1, flag2: Qgis.DataProviderReadFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.VectorProviderCapability.__or__ = lambda flag1, flag2: Qgis.VectorProviderCapabilities(_force_int(flag1) | _force_int(flag2))

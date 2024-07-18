@@ -434,6 +434,7 @@ Qgis.DataProviderReadFlag.__doc__ = "Flags which control data provider construct
 # --
 Qgis.DataProviderReadFlag.baseClass = Qgis
 Qgis.DataProviderReadFlags = lambda flags=0: Qgis.DataProviderReadFlag(flags)
+QgsDataProvider.ReadFlags = Qgis.DataProviderReadFlags
 Qgis.DataProviderReadFlags.baseClass = Qgis
 DataProviderReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsVectorDataProvider.Capability = Qgis.VectorProviderCapability

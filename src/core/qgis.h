@@ -373,7 +373,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.40
      */
-    Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag )
+    Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, ReadFlags )
     Q_FLAG( DataProviderReadFlags )
 
     // TODO QGIS 4 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
