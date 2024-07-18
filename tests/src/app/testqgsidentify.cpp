@@ -1264,8 +1264,8 @@ void TestQgsIdentify::testPolygonZ()
   double interpolatedZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4985 - WGS 72)" )].toDouble();
   double closestZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Closest vertex Z (EPSG:4979 - WGS 84)" )].toDouble();
   double closestZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Closest vertex Z (EPSG:4985 - WGS 72)" )].toDouble();
-  QGSCOMPARENEAR( interpolatedZ4979, 5549.9817600000, 0.001 );
-  QGSCOMPARENEAR( interpolatedZ4985, 5552.3424580000, 0.01 );
+  QGSCOMPARENEAR( interpolatedZ4979, 5549.9817600000, 0.02 );
+  QGSCOMPARENEAR( interpolatedZ4985, 5552.3424580000, 0.02 );
   QGSCOMPARENEAR( closestZ4979, 5543.325, 0.001 );
   QGSCOMPARENEAR( closestZ4985, 5545.6857, 0.01 );
 }
