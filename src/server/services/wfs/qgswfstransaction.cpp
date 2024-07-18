@@ -295,9 +295,9 @@ namespace QgsWfs
       }
 
       // get provider capabilities
-      int cap = provider->capabilities();
-      if ( !( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !( cap & QgsVectorDataProvider::ChangeGeometries )
-           && !( cap & QgsVectorDataProvider::DeleteFeatures ) && !( cap & QgsVectorDataProvider::AddFeatures ) )
+      Qgis::VectorProviderCapabilities cap = provider->capabilities();
+      if ( !( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) && !( cap & Qgis::VectorProviderCapability::ChangeGeometries )
+           && !( cap & Qgis::VectorProviderCapability::DeleteFeatures ) && !( cap & Qgis::VectorProviderCapability::AddFeatures ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "No capabilities to do WFS changes on layer '%1'" ).arg( name ) );
       }
@@ -360,8 +360,8 @@ namespace QgsWfs
       QgsVectorDataProvider *provider = vlayer->dataProvider();
 
       // verifying specific capabilities
-      int cap = provider->capabilities();
-      if ( !( cap & QgsVectorDataProvider::ChangeAttributeValues ) || !( cap & QgsVectorDataProvider::ChangeGeometries ) )
+      Qgis::VectorProviderCapabilities cap = provider->capabilities();
+      if ( !( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) || !( cap & Qgis::VectorProviderCapability::ChangeGeometries ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No capabilities to do WFS updates on layer '%1'" ).arg( typeName );
@@ -578,8 +578,8 @@ namespace QgsWfs
       QgsVectorDataProvider *provider = vlayer->dataProvider();
 
       // verifying specific capabilities
-      int cap = provider->capabilities();
-      if ( !( cap & QgsVectorDataProvider::DeleteFeatures ) )
+      Qgis::VectorProviderCapabilities cap = provider->capabilities();
+      if ( !( cap & Qgis::VectorProviderCapability::DeleteFeatures ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No capabilities to do WFS deletes on layer '%1'" ).arg( typeName );
@@ -696,8 +696,8 @@ namespace QgsWfs
       QgsVectorDataProvider *provider = vlayer->dataProvider();
 
       // verifying specific capabilities
-      int cap = provider->capabilities();
-      if ( !( cap & QgsVectorDataProvider::AddFeatures ) )
+      Qgis::VectorProviderCapabilities cap = provider->capabilities();
+      if ( !( cap & Qgis::VectorProviderCapability::AddFeatures ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No capabilities to do WFS inserts on layer '%1'" ).arg( typeName );

@@ -35,7 +35,7 @@
 #define TEXT_PROVIDER_KEY QStringLiteral( "memory" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Memory provider" )
 
-QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   // Initialize the geometry with the uri to support old style uri's
@@ -785,11 +785,11 @@ Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
   return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
 }
 
-QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
-  return AddFeatures | DeleteFeatures | ChangeGeometries |
-         ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
-         SelectAtId | CircularGeometries | FastTruncate;
+  return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries |
+         Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::CreateSpatialIndex |
+         Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::FastTruncate;
 }
 
 bool QgsMemoryProvider::truncate()
@@ -826,7 +826,7 @@ QIcon QgsMemoryProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconMemory.svg" ) );
 }
 
-QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMemoryProvider( uri, options, flags );
 }

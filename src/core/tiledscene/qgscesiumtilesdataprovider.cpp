@@ -893,7 +893,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
 // QgsCesiumTilesDataProvider
 //
 
-QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsTiledSceneDataProvider( uri, providerOptions, flags )
   , mShared( std::make_shared< QgsCesiumTilesDataProviderSharedData >() )
 {
@@ -1279,7 +1279,7 @@ QIcon QgsCesiumTilesProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconCesium3dTiles.svg" ) );
 }
 
-QgsCesiumTilesDataProvider *QgsCesiumTilesProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsCesiumTilesDataProvider *QgsCesiumTilesProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsCesiumTilesDataProvider( uri, options, flags );
 }

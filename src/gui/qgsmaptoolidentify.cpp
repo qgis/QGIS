@@ -597,7 +597,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, identifyContext.temporalRange() );
   }
 
-  const bool fetchFeatureSymbols = layer->dataProvider()->capabilities() & QgsVectorDataProvider::FeatureSymbology;
+  const bool fetchFeatureSymbols = layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::FeatureSymbology;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 

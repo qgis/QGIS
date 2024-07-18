@@ -32,7 +32,7 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
   public:
     QgsArcGisVectorTileServiceDataProvider( const QString &uri,
                                             const QgsDataProvider::ProviderOptions &providerOptions,
-                                            QgsDataProvider::ReadFlags flags );
+                                            Qgis::DataProviderReadFlags flags );
 
     QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other );
 
@@ -87,7 +87,7 @@ class QgsArcGisVectorTileServiceDataProviderMetadata : public QgsProviderMetadat
     QgsArcGisVectorTileServiceDataProviderMetadata();
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
-    QgsArcGisVectorTileServiceDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsArcGisVectorTileServiceDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;

@@ -621,7 +621,7 @@ QDir QgsProviderRegistry::libraryDirectory() const
  */
 QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource,
     const QgsDataProvider::ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?

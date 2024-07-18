@@ -91,7 +91,7 @@ QVariantMap QgsAttributeIndexAlgorithm::processAlgorithm( const QVariantMap &par
   else
   {
     const int providerIndex = layer->fields().fieldOriginIndex( fieldIndex );
-    if ( provider->capabilities() & QgsVectorDataProvider::CreateAttributeIndex )
+    if ( provider->capabilities() & Qgis::VectorProviderCapability::CreateAttributeIndex )
     {
       if ( !provider->createAttributeIndex( providerIndex ) )
       {

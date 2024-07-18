@@ -96,7 +96,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * \param flags generic data provider flags
      */
     explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options,
-                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                                Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     //! Destructor
     ~QgsOracleProvider() override;
@@ -178,7 +178,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     QString name() const override;
     QString description() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
@@ -316,7 +316,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
     mutable long long mFeaturesCounted;     //!< Number of features in the layer
     int mSrid;                         //!< Srid of column
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //!< Capabilities of layer
+    Qgis::VectorProviderCapabilities mEnabledCapabilities;          //!< Capabilities of layer
 
     Qgis::WkbType mDetectedGeomType;   //!< Geometry type detected in the database
     Qgis::WkbType mRequestedGeomType;  //!< Geometry type requested in the uri
@@ -464,7 +464,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;
 
-    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     QgsTransaction *createTransaction( const QString &connString ) override;

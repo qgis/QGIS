@@ -326,7 +326,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-                               const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+                               const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
     bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
 

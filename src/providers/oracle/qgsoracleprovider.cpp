@@ -62,7 +62,7 @@ const QString ORACLE_KEY = "oracle";
 const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
 QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options,
-                                      QgsDataProvider::ReadFlags flags )
+                                      Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mValid( false )
   , mIsQuery( false )
@@ -91,7 +91,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   mSrid = mUri.srid().toInt();
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
@@ -737,7 +737,7 @@ bool QgsOracleProvider::loadFields()
     if ( !mGeometryColumn.isEmpty() )
       mSpatialIndexName = conn->getSpatialIndexName( mOwnerName, mTableName, mGeometryColumn, mHasSpatialIndex );
 
-    mEnabledCapabilities |= QgsVectorDataProvider::CreateSpatialIndex;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::CreateSpatialIndex;
   }
 
   if ( !mGeometryColumn.isEmpty() )
@@ -808,17 +808,17 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 {
   QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 2 );
 
-  mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::TransactionSupport;
+  mEnabledCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::TransactionSupport;
 
   // supports circular geometries
-  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::CircularGeometries;
 
   QgsOracleConn *conn = connectionRO();
 
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
-    if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+    if ( mReadFlags & Qgis::DataProviderReadFlag::ForceReadOnly )
     {
       // Does not check editable capabilities
       qry.finish();
@@ -828,13 +828,13 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
     if ( conn->currentUser() == mOwnerName )
     {
       // full set of privileges for the owner
-      mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures
-                              |  QgsVectorDataProvider::ChangeAttributeValues
-                              |  QgsVectorDataProvider::AddFeatures
-                              |  QgsVectorDataProvider::AddAttributes
-                              |  QgsVectorDataProvider::DeleteAttributes
-                              |  QgsVectorDataProvider::ChangeGeometries
-                              |  QgsVectorDataProvider::RenameAttributes
+      mEnabledCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures
+                              |  Qgis::VectorProviderCapability::ChangeAttributeValues
+                              |  Qgis::VectorProviderCapability::AddFeatures
+                              |  Qgis::VectorProviderCapability::AddAttributes
+                              |  Qgis::VectorProviderCapability::DeleteAttributes
+                              |  Qgis::VectorProviderCapability::ChangeGeometries
+                              |  Qgis::VectorProviderCapability::RenameAttributes
                               ;
     }
     else
@@ -849,19 +849,19 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
           if ( priv == "DELETE" )
           {
-            mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+            mEnabledCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures;
           }
           else if ( priv == "UPDATE" )
           {
-            mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+            mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
           }
           else if ( priv == "INSERT" )
           {
-            mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
+            mEnabledCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
           }
           else if ( priv == "ALTER TABLE" )
           {
-            mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+            mEnabledCapabilities |= Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes;
           }
         }
 
@@ -872,7 +872,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
                                  QVariantList() << mOwnerName << mTableName << mGeometryColumn, mUri.uri() ) )
           {
             if ( qry.next() )
-              mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+              mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
           }
           else
           {
@@ -2453,7 +2453,7 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
   return returnvalue;
 }
 
-QgsVectorDataProvider::Capabilities QgsOracleProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsOracleProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }
@@ -2810,7 +2810,7 @@ bool QgsOracleProvider::getGeometryDetails()
   }
 
   // Trust the datasource config means that we used requested geometry type and srid
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mDetectedGeomType = mRequestedGeomType;
     return true;
@@ -3629,7 +3629,7 @@ QString  QgsOracleProvider::description() const
 QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsOracleProvider( uri, options, flags );
 }

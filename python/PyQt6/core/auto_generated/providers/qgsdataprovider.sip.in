@@ -57,23 +57,9 @@ Abstract base class for spatial data provider implementations.
 
     };
 
-    enum ReadFlag /BaseType=IntEnum/
-    {
-      FlagTrustDataSource,
-      SkipFeatureCount,
-      FlagLoadDefaultStyle,
-      SkipGetExtent,
-      SkipFullScan,
-      ForceReadOnly,
-      SkipCredentialsRequest,
-      ParallelThreadLoading,
-    };
-    typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
-
-
     QgsDataProvider( const QString &uri = QString(),
                      const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
@@ -524,9 +510,6 @@ Sets error message
 
 
 };
-
-QFlags<QgsDataProvider::ReadFlag> operator|(QgsDataProvider::ReadFlag f1, QFlags<QgsDataProvider::ReadFlag> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

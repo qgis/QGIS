@@ -456,7 +456,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
 }
 
 
-QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   nDims = GAIA_XY;
@@ -540,18 +540,18 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
   }
 
   // TODO: move after pk discovery is definitely done?
-  mEnabledCapabilities = mPrimaryKey.isEmpty() ? QgsVectorDataProvider::Capabilities() : ( QgsVectorDataProvider::SelectAtId );
+  mEnabledCapabilities = mPrimaryKey.isEmpty() ? Qgis::VectorProviderCapabilities() : ( Qgis::VectorProviderCapability::SelectAtId );
   if ( ( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
-    mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::FastTruncate;
     if ( !mGeometryColumn.isEmpty() )
-      mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
-    mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
-    mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
-    mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes;
-    mEnabledCapabilities |= QgsVectorDataProvider::CreateAttributeIndex;
-    mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
+      mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::AddAttributes;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::CreateAttributeIndex;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::TransactionSupport;
   }
 
   if ( lyr )
@@ -671,11 +671,11 @@ void QgsSpatiaLiteProvider::updatePrimaryKeyCapabilities()
 {
   if ( mPrimaryKey.isEmpty() )
   {
-    mEnabledCapabilities &= ~QgsVectorDataProvider::SelectAtId;
+    mEnabledCapabilities.setFlag( Qgis::VectorProviderCapability::SelectAtId, false );
   }
   else
   {
-    mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::SelectAtId;
   }
 }
 
@@ -4902,7 +4902,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
   return true;
 }
 
-QgsVectorDataProvider::Capabilities QgsSpatiaLiteProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsSpatiaLiteProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }
@@ -5922,7 +5922,7 @@ QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri ) const
 QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsSpatiaLiteProvider( uri, options, flags );
 }

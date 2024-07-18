@@ -442,7 +442,7 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
   mLayerCache = new QgsVectorLayerCache( mLayer, cacheSize, this );
   mLayerCache->setCacheSubsetOfAttributes( requiredAttributes( mLayer ) );
   mLayerCache->setCacheGeometry( cacheGeometry );
-  if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayer->dataProvider()->capabilities() ) )
+  if ( 0 == cacheSize || !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::SelectAtId ) )
   {
     connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsDualView::rebuildFullLayerCache );
     rebuildFullLayerCache();

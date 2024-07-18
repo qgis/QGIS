@@ -60,7 +60,7 @@ static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 QRegularExpression QgsDelimitedTextProvider::sWktPrefixRegexp( QStringLiteral( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)" ), QRegularExpression::CaseInsensitiveOption );
 QRegularExpression QgsDelimitedTextProvider::sCrdDmsRegexp( QStringLiteral( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$" ), QRegularExpression::CaseInsensitiveOption );
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
 
@@ -190,7 +190,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   // geometry type (for Wkt), extents, etc.  Parameter value subset.isEmpty()
   // avoid redundant building indexes if we will be building a subset string,
   // in which case indexes will be rebuilt.
-  scanFile( subset.isEmpty() && ! flags.testFlag( QgsDataProvider::ReadFlag::SkipGetExtent ), /* force full scan */ false );
+  scanFile( subset.isEmpty() && ! flags.testFlag( Qgis::DataProviderReadFlag::SkipGetExtent ), /* force full scan */ false );
 
   if ( ! subset.isEmpty() )
   {
@@ -743,7 +743,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     }
 
     // In case of fast scan we exit after the third record (to avoid detecting booleans)
-    if ( ! forceFullScan && mReadFlags.testFlag( ReadFlag::SkipFullScan ) && mNumberFeatures > 2 )
+    if ( ! forceFullScan && mReadFlags.testFlag( Qgis::DataProviderReadFlag::SkipFullScan ) && mNumberFeatures > 2 )
     {
       break;
     }
@@ -1369,9 +1369,9 @@ bool QgsDelimitedTextProvider::isValid() const
   return mLayerValid;
 }
 
-QgsVectorDataProvider::Capabilities QgsDelimitedTextProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsDelimitedTextProvider::capabilities() const
 {
-  return SelectAtId | CreateSpatialIndex | CircularGeometries;
+  return Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CreateSpatialIndex | Qgis::VectorProviderCapability::CircularGeometries;
 }
 
 QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs() const
@@ -1480,7 +1480,7 @@ QList<Qgis::LayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() c
   return { Qgis::LayerType::Vector };
 }
 
-QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsDelimitedTextProvider( uri, options, flags );
 }

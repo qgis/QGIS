@@ -353,7 +353,7 @@ const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "SAP HANA spat
 
 QgsHanaProvider::QgsHanaProvider(
   const QString &uri,
-  const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mUri( uri )
   , mFeaturesCount( -1 )
@@ -442,14 +442,14 @@ QString QgsHanaProvider::storageType() const
   return QObject::tr( "SAP HANA database" );
 }
 
-QgsVectorDataProvider::Capabilities QgsHanaProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsHanaProvider::capabilities() const
 {
   auto capabilities = mCapabilities;
 
   if ( mPrimaryKeyAttrs.isEmpty() )
-    capabilities &= ~( QgsVectorDataProvider::DeleteFeatures
-                       | QgsVectorDataProvider::ChangeAttributeValues
-                       | QgsVectorDataProvider::ChangeFeatures );
+    capabilities &= ~( Qgis::VectorProviderCapability::DeleteFeatures
+                       | Qgis::VectorProviderCapability::ChangeAttributeValues
+                       | Qgis::VectorProviderCapability::ChangeFeatures );
 
   return capabilities;
 }
@@ -1264,7 +1264,7 @@ QString QgsHanaProvider::buildQuery( const QString &columns ) const
 bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &conn )
 {
   if ( !mSelectAtIdDisabled )
-    mCapabilities = QgsVectorDataProvider::SelectAtId;
+    mCapabilities = Qgis::VectorProviderCapability::SelectAtId;
 
   // Read access permissions
   if ( !mIsQuery )
@@ -1283,31 +1283,31 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
 
       if ( privType == QLatin1String( "ALL PRIVILEGES" ) || privType == QLatin1String( "CREATE ANY" ) )
       {
-        mCapabilities |= QgsVectorDataProvider::AddAttributes
-                         | QgsVectorDataProvider::RenameAttributes
-                         | QgsVectorDataProvider::AddFeatures
-                         | QgsVectorDataProvider::DeleteAttributes
-                         | QgsVectorDataProvider::DeleteFeatures
-                         | QgsVectorDataProvider::FastTruncate
-                         | QgsVectorDataProvider::ChangeAttributeValues
-                         | QgsVectorDataProvider::ChangeFeatures
-                         | QgsVectorDataProvider::ChangeGeometries;
+        mCapabilities |= Qgis::VectorProviderCapability::AddAttributes
+                         | Qgis::VectorProviderCapability::RenameAttributes
+                         | Qgis::VectorProviderCapability::AddFeatures
+                         | Qgis::VectorProviderCapability::DeleteAttributes
+                         | Qgis::VectorProviderCapability::DeleteFeatures
+                         | Qgis::VectorProviderCapability::FastTruncate
+                         | Qgis::VectorProviderCapability::ChangeAttributeValues
+                         | Qgis::VectorProviderCapability::ChangeFeatures
+                         | Qgis::VectorProviderCapability::ChangeGeometries;
       }
       else
       {
         if ( privType == QLatin1String( "ALTER" ) )
-          mCapabilities |= QgsVectorDataProvider::DeleteAttributes
-                           | QgsVectorDataProvider::RenameAttributes;
+          mCapabilities |= Qgis::VectorProviderCapability::DeleteAttributes
+                           | Qgis::VectorProviderCapability::RenameAttributes;
         else if ( privType == QLatin1String( "DELETE" ) )
-          mCapabilities |= QgsVectorDataProvider::DeleteFeatures
-                           | QgsVectorDataProvider::FastTruncate;
+          mCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures
+                           | Qgis::VectorProviderCapability::FastTruncate;
         else if ( privType == QLatin1String( "INSERT" ) )
-          mCapabilities |= QgsVectorDataProvider::AddAttributes
-                           | QgsVectorDataProvider::AddFeatures;
+          mCapabilities |= Qgis::VectorProviderCapability::AddAttributes
+                           | Qgis::VectorProviderCapability::AddFeatures;
         else if ( privType == QLatin1String( "UPDATE" ) )
-          mCapabilities |= QgsVectorDataProvider::ChangeAttributeValues
-                           | QgsVectorDataProvider::ChangeFeatures
-                           | QgsVectorDataProvider::ChangeGeometries;
+          mCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues
+                           | Qgis::VectorProviderCapability::ChangeFeatures
+                           | Qgis::VectorProviderCapability::ChangeGeometries;
       }
     }
     rsPrivileges->close();
@@ -1315,15 +1315,15 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
 
   // TODO needs to be implemented in QgsHanaFeatureIterator class
   // supports geometry simplification on provider side
-  //mCapabilities |= (QgsVectorDataProvider::SimplifyGeometries);
-  // QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation feature
-  // is not supported in HANA QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation
+  //mCapabilities |= (Qgis::VectorProviderCapability::SimplifyGeometries);
+  // Qgis::VectorProviderCapability::SimplifyGeometriesWithTopologicalValidation feature
+  // is not supported in HANA Qgis::VectorProviderCapability::SimplifyGeometriesWithTopologicalValidation
 
-  mCapabilities |= QgsVectorDataProvider::TransactionSupport;
+  mCapabilities |= Qgis::VectorProviderCapability::TransactionSupport;
 
-  mCapabilities |= QgsVectorDataProvider::CircularGeometries;
+  mCapabilities |= Qgis::VectorProviderCapability::CircularGeometries;
 
-  mCapabilities |= QgsVectorDataProvider::ReadLayerMetadata;
+  mCapabilities |= Qgis::VectorProviderCapability::ReadLayerMetadata;
 
   return true;
 }
@@ -1825,7 +1825,7 @@ void QgsHanaProviderMetadata::cleanupProvider()
 }
 
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
-  const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QgsDataSourceUri dsUri { uri };
   QgsHanaDriver *drv = QgsHanaDriver::instance();

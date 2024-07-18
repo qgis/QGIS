@@ -82,7 +82,7 @@ class QgsPluginLayerDataProvider : public QgsDataProvider
   public:
     QgsPluginLayerDataProvider( const QString &layerType,
                                 const QgsDataProvider::ProviderOptions &providerOptions,
-                                QgsDataProvider::ReadFlags flags );
+                                Qgis::DataProviderReadFlags flags );
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;

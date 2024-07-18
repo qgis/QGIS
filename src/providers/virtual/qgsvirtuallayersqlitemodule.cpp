@@ -127,7 +127,7 @@ struct VTable
       {
         throw std::runtime_error( ( "Provider error:" + mProvider->error().message() ).toUtf8().constData() );
       }
-      if ( mProvider->capabilities() & QgsVectorDataProvider::SelectEncoding )
+      if ( mProvider->capabilities() & Qgis::VectorProviderCapability::SelectEncoding )
       {
         mProvider->setEncoding( mEncoding );
       }

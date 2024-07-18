@@ -22,7 +22,6 @@
 #include "qgsvectortilelabeling.h"
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsdatasourceuri.h"
 #include "qgslayermetadataformatter.h"
@@ -58,7 +57,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   connect( this, &QgsVectorTileLayer::selectionChanged, this, [this] { triggerRepaint(); } );
 }
 
-void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )
+void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, Qgis::DataProviderReadFlags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -79,7 +78,7 @@ bool QgsVectorTileLayer::loadDataSource()
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
   const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
-  const QgsDataProvider::ReadFlags flags;
+  const Qgis::DataProviderReadFlags flags;
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   QString providerKey;

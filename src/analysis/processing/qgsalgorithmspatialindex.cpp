@@ -81,7 +81,7 @@ QVariantMap QgsSpatialIndexAlgorithm::processAlgorithm( const QVariantMap &param
 
   QgsVectorDataProvider *provider = layer->dataProvider();
 
-  if ( provider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex )
+  if ( provider->capabilities() & Qgis::VectorProviderCapability::CreateSpatialIndex )
   {
     if ( !provider->createSpatialIndex() )
     {

@@ -136,10 +136,10 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   setProviderType( providerKey );
 
   const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-  QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags providerFlags;
   if ( options.loadDefaultStyle )
   {
-    providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+    providerFlags |= Qgis::DataProviderReadFlag::LoadDefaultStyle;
   }
 
   setDataSource( uri, baseName, providerKey, providerOptions, providerFlags );
@@ -707,7 +707,7 @@ void QgsRasterLayer::init()
   mLastViewPort.mHeight = 0;
 }
 
-void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -773,7 +773,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     mDataSource = mDataProvider->dataSourceUri();
   }
 
-  if ( !( flags & QgsDataProvider::SkipGetExtent ) )
+  if ( !( flags & Qgis::DataProviderReadFlag::SkipGetExtent ) )
   {
     // get the extent
     const QgsRectangle mbr = mDataProvider->extent();
@@ -1040,7 +1040,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 }
 
 void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1051,7 +1051,7 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
   QString errorMsg;
 
   bool loadDefaultStyleFlag = false;
-  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  if ( flags & Qgis::DataProviderReadFlag::LoadDefaultStyle )
   {
     loadDefaultStyleFlag = true;
   }
@@ -2377,7 +2377,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+    Qgis::DataProviderReadFlags flags = providerReadFlags( layer_node, mReadFlags );
 
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
@@ -2668,10 +2668,10 @@ bool QgsRasterLayer::update()
     closeDataProvider();
     init();
     const QgsDataProvider::ProviderOptions providerOptions;
-    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    Qgis::DataProviderReadFlags flags;
     if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
     {
-      flags |= QgsDataProvider::FlagTrustDataSource;
+      flags |= Qgis::DataProviderReadFlag::TrustDataSource;
     }
     setDataProvider( mProviderKey, providerOptions, flags );
     emit dataChanged();

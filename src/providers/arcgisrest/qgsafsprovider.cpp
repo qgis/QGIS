@@ -30,7 +30,7 @@
 #include "qgsvariantutils.h"
 
 
-QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   mSharedData.reset( new QgsAfsSharedData( QgsDataSourceUri( uri ) ) );
@@ -586,46 +586,46 @@ bool QgsAfsProvider::createAttributeIndex( int field )
   return true;
 }
 
-QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsAfsProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
-                                          | QgsVectorDataProvider::ReadLayerMetadata
-                                          | QgsVectorDataProvider::Capability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
+                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
+                                       | Qgis::VectorProviderCapability::ReloadData;
   if ( !mRendererDataMap.empty() )
   {
-    c = c | QgsVectorDataProvider::CreateRenderer;
+    c = c | Qgis::VectorProviderCapability::CreateRenderer;
   }
   if ( !mLabelingDataList.empty() )
   {
-    c = c | QgsVectorDataProvider::CreateLabeling;
+    c = c | Qgis::VectorProviderCapability::CreateLabeling;
   }
 
   if ( mServerSupportsCurves )
-    c |= QgsVectorDataProvider::CircularGeometries;
+    c |= Qgis::VectorProviderCapability::CircularGeometries;
 
   if ( mCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
   {
-    c |= QgsVectorDataProvider::DeleteFeatures;
+    c |= Qgis::VectorProviderCapability::DeleteFeatures;
   }
   if ( mCapabilityStrings.contains( QLatin1String( "create" ), Qt::CaseInsensitive ) )
   {
-    c |= QgsVectorDataProvider::AddFeatures;
+    c |= Qgis::VectorProviderCapability::AddFeatures;
   }
   if ( mCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
   {
-    c |= QgsVectorDataProvider::ChangeAttributeValues;
-    c |= QgsVectorDataProvider::ChangeFeatures;
-    c |= QgsVectorDataProvider::ChangeGeometries;
+    c |= Qgis::VectorProviderCapability::ChangeAttributeValues;
+    c |= Qgis::VectorProviderCapability::ChangeFeatures;
+    c |= Qgis::VectorProviderCapability::ChangeGeometries;
   }
 
   if ( mAdminCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
   {
-    c |= QgsVectorDataProvider::AddAttributes;
-    c |= QgsVectorDataProvider::CreateAttributeIndex;
+    c |= Qgis::VectorProviderCapability::AddAttributes;
+    c |= Qgis::VectorProviderCapability::CreateAttributeIndex;
   }
   if ( mAdminCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
   {
-    c |= QgsVectorDataProvider::DeleteAttributes;
+    c |= Qgis::VectorProviderCapability::DeleteAttributes;
   }
 
   return c;
@@ -822,7 +822,7 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return dsUri.uri( false );
 }
 
-QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsAfsProvider( uri, options, flags );
 }

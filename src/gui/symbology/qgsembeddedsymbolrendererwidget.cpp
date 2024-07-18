@@ -34,7 +34,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   const Qgis::GeometryType type = QgsWkbTypes::geometryType( layer->wkbType() );
 
   // the renderer only applies to layers with providers supporting embedded symbols
-  if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::FeatureSymbology ) )
+  if ( !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::FeatureSymbology ) )
   {
     //setup blank dialog
     mRenderer.reset( nullptr );

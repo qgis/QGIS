@@ -35,7 +35,7 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
   public:
     QgsMbTilesVectorTileDataProvider( const QString &uri,
                                       const QgsDataProvider::ProviderOptions &providerOptions,
-                                      QgsDataProvider::ReadFlags flags );
+                                      Qgis::DataProviderReadFlags flags );
 
     QgsMbTilesVectorTileDataProvider( const QgsMbTilesVectorTileDataProvider &other );
 
@@ -75,7 +75,7 @@ class QgsMbTilesVectorTileDataProviderMetadata : public QgsProviderMetadata
   public:
     QgsMbTilesVectorTileDataProviderMetadata();
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QgsMbTilesVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsMbTilesVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
     QString filters( Qgis::FileFilterType type ) override;

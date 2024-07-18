@@ -82,7 +82,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      */
     QgsVectorTileDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags );
+                               Qgis::DataProviderReadFlags flags );
 
     /**
      * Copy constructor.

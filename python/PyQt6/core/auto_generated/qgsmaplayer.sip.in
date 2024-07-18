@@ -1373,7 +1373,7 @@ be retrieved by calling :py:func:`~QgsMapLayer.error`.
 .. versionadded:: 3.6
 %End
 
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags );
 %Docstring
 Updates the data source of the layer.
 
@@ -1771,7 +1771,7 @@ Returns true if map tips are enabled for this layer
 .. versionadded:: 3.32
 %End
 
-    static QgsDataProvider::ReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
+    static Qgis::DataProviderReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
 %Docstring
 Returns provider read flag deduced from layer read flags ``layerReadFlags`` and a dom node ``layerNode``
 that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by :py:class:`QgsProject`).

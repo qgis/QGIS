@@ -15,7 +15,6 @@
 
 #include "qgsvectortiledataprovider.h"
 #include "qgsthreadingutils.h"
-#include "qgsreadwritelocker.h"
 #include "qgsvectortileloader.h"
 
 #include <QNetworkRequest>
@@ -24,7 +23,7 @@
 QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   const QString &uri,
   const ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mShared( new QgsVectorTileDataProviderSharedData )
 {}

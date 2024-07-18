@@ -142,7 +142,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     void setRenderer( QgsTiledSceneRenderer *renderer SIP_TRANSFER );
 
   private slots:
-    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
   private:
 

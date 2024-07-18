@@ -978,7 +978,7 @@ bool QgsDelimitedTextFileScanTask::run()
   QgsDelimitedTextProvider provider(
     mDataSource,
     QgsDataProvider::ProviderOptions(),
-    QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent | QgsDataProvider::ReadFlag::SkipFullScan );
+    Qgis::DataProviderReadFlag::SkipFeatureCount | Qgis::DataProviderReadFlag::SkipGetExtent | Qgis::DataProviderReadFlag::SkipFullScan );
 
   connect( &mFeedback, &QgsFeedback::processedCountChanged, this, &QgsDelimitedTextFileScanTask::processedCountChanged );
 

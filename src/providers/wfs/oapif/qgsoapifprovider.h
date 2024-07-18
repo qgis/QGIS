@@ -43,7 +43,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     static const QString OAPIF_PROVIDER_DEFAULT_CRS;
 
-    explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     ~QgsOapifProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
@@ -75,7 +75,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     static QString providerKey();
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
 
     QgsLayerMetadata layerMetadata() const override { return mLayerMetadata; }
 
@@ -114,7 +114,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     bool mValid = true;
 
     //! Server capabilities for this layer (generated from capabilities document)
-    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorProviderCapabilities mCapabilities;
 
     //! Whether server supports PATCH operation
     bool mSupportsPatch = false;
@@ -146,7 +146,7 @@ class QgsOapifProviderMetadata final: public QgsProviderMetadata
   public:
     QgsOapifProviderMetadata();
     QIcon icon() const override;
-    QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
