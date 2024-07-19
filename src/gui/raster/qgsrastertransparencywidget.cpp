@@ -528,7 +528,10 @@ void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rast
           const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Opacity ) ) / 100.0;
           const double tolerance = transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Tolerance ) );
           myTransparentThreeValuePixelList.append(
-            QgsRasterTransparency::TransparentThreeValuePixel( red, green, blue, opacity, !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon() )
+            QgsRasterTransparency::TransparentThreeValuePixel( red, green, blue, opacity,
+                !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(),
+                !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(),
+                !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon() )
           );
         }
         rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
@@ -712,7 +715,9 @@ void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *
         setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Green ), pixelList[i].green );
         setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Blue ), pixelList[i].blue );
         setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Opacity ), 100 * ( 1 - pixelList[i].opacity ) );
-        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Tolerance ), !qgsDoubleNear( pixelList[i].fuzzyTolerance, 0 ) ? pixelList[i].fuzzyTolerance : 0 );
+        // while the API supports different tolerances for red/green/blue channels, we only expose a single value here
+        // If needed, we could expose the three separate tolerances in future... but be wary of UI bloat!
+        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Tolerance ), !qgsDoubleNear( pixelList[i].fuzzyToleranceRed, 0 ) ? pixelList[i].fuzzyToleranceRed : 0 );
       }
       break;
     }

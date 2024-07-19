@@ -25,7 +25,7 @@ transparent when rendering rasters.
     struct TransparentThreeValuePixel
     {
 
-      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyTolerance = 4 * DBL_EPSILON );
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * DBL_EPSILON, double fuzzyToleranceGreen = 4 * DBL_EPSILON, double fuzzyToleranceBlue = 4 * DBL_EPSILON );
 %Docstring
 Constructor for TransparentThreeValuePixel.
 
@@ -33,7 +33,9 @@ Constructor for TransparentThreeValuePixel.
 :param green: green pixel value
 :param blue: blue pixel value
 :param opacity: opacity for pixel, between 0 and 1.0
-:param fuzzyTolerance: (since QGIS 3.40) allows specifying a tolerance for the color components, where the pixel's red, green or blue component can deviate from values specified here by a maximum of this tolerance amount
+:param fuzzyToleranceRed: (since QGIS 3.40) allows specifying a tolerance for the red color component, where the pixel's red component can deviate from values specified here by a maximum of this tolerance amount
+:param fuzzyToleranceGreen: (since QGIS 3.40) allows specifying a tolerance for the green color component, where the pixel's green component can deviate from values specified here by a maximum of this tolerance amount
+:param fuzzyToleranceBlue: (since QGIS 3.40) allows specifying a tolerance for the blue color component, where the pixel's blue component can deviate from values specified here by a maximum of this tolerance amount
 
 .. versionadded:: 3.38
 %End
@@ -46,7 +48,11 @@ Constructor for TransparentThreeValuePixel.
 
       double opacity;
 
-      double fuzzyTolerance;
+      double fuzzyToleranceRed;
+
+      double fuzzyToleranceGreen;
+
+      double fuzzyToleranceBlue;
 
       bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
       bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
@@ -54,8 +60,8 @@ Constructor for TransparentThreeValuePixel.
       SIP_PYOBJECT __repr__();
 %MethodCode
       QString str;
-      if ( !qgsDoubleNear( sipCpp->fuzzyTolerance, 0 ) )
-        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyTolerance );
+      if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyToleranceRed ).arg( sipCpp->fuzzyToleranceGreen ).arg( sipCpp->fuzzyToleranceBlue );
       else
         str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
