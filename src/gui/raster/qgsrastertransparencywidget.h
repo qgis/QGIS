@@ -161,6 +161,12 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
 
+    enum class Mode : int
+    {
+      SingleBand = 0,
+      RgbBands
+    };
+
     enum class RgbBandTableColumns : int
     {
       Red = 0,
@@ -178,8 +184,6 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
       ColumnCount = Opacity + 1
     };
 
-    bool rasterIsMultiBandColor();
-
     //! \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type
     void populateTransparencyTable( QgsRasterRenderer *renderer );
 
@@ -192,6 +196,8 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void setTransparencyToEdited( int row );
 
     double transparencyCellValue( int row, int column );
+
+    Mode mCurrentMode = Mode::RgbBands;
 
     QgsRasterLayer *mRasterLayer = nullptr;
 
