@@ -442,6 +442,13 @@ bool QgsRasterTransparencyWidget::rasterIsMultiBandColor()
 
 void QgsRasterTransparencyWidget::apply()
 {
+  applyToRasterProvider( mRasterLayer->dataProvider() );
+  applyToRasterRenderer( mRasterLayer->renderer() );
+  mRasterLayer->pipe()->setDataDefinedProperties( mPropertyCollection );
+}
+
+void QgsRasterTransparencyWidget::applyToRasterProvider( QgsRasterDataProvider *provider )
+{
   //set NoDataValue
   QgsRasterRangeList myNoDataRangeList;
   if ( "" != leNoDataValue->text() )
@@ -454,7 +461,7 @@ void QgsRasterTransparencyWidget::apply()
       myNoDataRangeList << myNoDataRange;
     }
   }
-  if ( QgsRasterDataProvider *provider = mRasterLayer->dataProvider() )
+  if ( provider )
   {
     for ( int bandNo = 1; bandNo <= provider->bandCount(); bandNo++ )
     {
@@ -462,9 +469,10 @@ void QgsRasterTransparencyWidget::apply()
       provider->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
     }
   }
+}
 
-  //transparency settings
-  QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
+void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rasterRenderer )
+{
   if ( rasterRenderer )
   {
     rasterRenderer->setAlphaBand( cboxTransparencyBand->currentBand() );
@@ -510,8 +518,6 @@ void QgsRasterTransparencyWidget::apply()
     //set global transparency
     rasterRenderer->setOpacity( mOpacityWidget->opacity() );
   }
-
-  mRasterLayer->pipe()->setDataDefinedProperties( mPropertyCollection );
 }
 
 void QgsRasterTransparencyWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
@@ -798,3 +804,4 @@ QgsMapToolEmitPoint *QgsRasterTransparencyWidget::pixelSelectorTool() const
 {
   return mPixelSelectorTool;
 }
+
