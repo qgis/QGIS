@@ -80,6 +80,7 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryChe
  */
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
 {
+    Q_GADGET
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryMissingVertexCheck )
 
   public:
