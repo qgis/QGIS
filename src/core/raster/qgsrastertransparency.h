@@ -50,13 +50,15 @@ class CORE_EXPORT QgsRasterTransparency
       * \param green green pixel value
       * \param blue blue pixel value
       * \param opacity opacity for pixel, between 0 and 1.0
+      * \param fuzzyTolerance (since QGIS 3.40) allows specifying a tolerance for the color components, where the pixel's red, green or blue component can deviate from values specified here by a maximum of this tolerance amount
       * \since QGIS 3.38
       */
-      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0 )
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyTolerance = 4 * std::numeric_limits<double>::epsilon() )
         : red( red )
         , green( green )
         , blue( blue )
         , opacity( opacity )
+        , fuzzyTolerance( fuzzyTolerance )
       {}
 
       /**
@@ -81,12 +83,26 @@ class CORE_EXPORT QgsRasterTransparency
       */
       double opacity = 0;
 
+      /**
+      * Fuzzy tolerance for red, green and blue values.
+      *
+      * If non zero, the pixel's red, green or blue component can deviate from values specified in this object by a maximum of this tolerance amount.
+      *
+      * \since QGIS 3.40
+      */
+#ifndef SIP_RUN
+      double fuzzyTolerance = 4 * std::numeric_limits<double>::epsilon();
+#else
+      double fuzzyTolerance;
+#endif
+
       bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
       {
         return qgsDoubleNear( red, other.red )
                && qgsDoubleNear( green, other.green )
                && qgsDoubleNear( blue, other.blue )
-               && qgsDoubleNear( opacity, other.opacity );
+               && qgsDoubleNear( opacity, other.opacity )
+               && qgsDoubleNear( fuzzyTolerance, other.fuzzyTolerance );
       }
       bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
       {
@@ -96,7 +112,11 @@ class CORE_EXPORT QgsRasterTransparency
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();
       % MethodCode
-      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      QString str;
+      if ( !qgsDoubleNear( sipCpp->fuzzyTolerance, 0 ) )
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyTolerance );
+      else
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
       % End
 #endif

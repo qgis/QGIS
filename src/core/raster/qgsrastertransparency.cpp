@@ -106,9 +106,9 @@ double QgsRasterTransparency::opacityForRgbValues( double redValue, double green
   //Search through the transparency list looking for a match
   auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel & p )
   {
-    return qgsDoubleNear( p.red, redValue )
-           &&  qgsDoubleNear( p.green, greenValue )
-           && qgsDoubleNear( p.blue, blueValue );
+    return qgsDoubleNear( p.red, redValue, p.fuzzyTolerance )
+           && qgsDoubleNear( p.green, greenValue, p.fuzzyTolerance )
+           && qgsDoubleNear( p.blue, blueValue, p.fuzzyTolerance );
   } );
 
   if ( it != mTransparentThreeValuePixelList.constEnd() )
@@ -153,6 +153,8 @@ void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem
       pixelListElement.setAttribute( QStringLiteral( "green" ), QgsRasterBlock::printValue( it->green ) );
       pixelListElement.setAttribute( QStringLiteral( "blue" ), QgsRasterBlock::printValue( it->blue ) );
       pixelListElement.setAttribute( QStringLiteral( "percentTransparent" ), QString::number( 100.0 * ( 1 - it->opacity ) ) );
+      if ( !qgsDoubleNear( it->fuzzyTolerance, 0 ) )
+        pixelListElement.setAttribute( QStringLiteral( "tolerance" ), QString::number( it->fuzzyTolerance ) );
       threeValuePixelListElement.appendChild( pixelListElement );
     }
     rasterTransparencyElem.appendChild( threeValuePixelListElement );
@@ -205,7 +207,9 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
       const double green = currentEntryElem.attribute( QStringLiteral( "green" ) ).toDouble();
       const double blue = currentEntryElem.attribute( QStringLiteral( "blue" ) ).toDouble();
       const double opacity = 1.0 - currentEntryElem.attribute( QStringLiteral( "percentTransparent" ) ).toDouble() / 100.0;
-      mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( red, green, blue, opacity ) );
+      bool ok = false;
+      const double tolerance = currentEntryElem.attribute( QStringLiteral( "tolerance" ) ).toDouble( &ok );
+      mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( red, green, blue, opacity, ok ? tolerance : 4 * std::numeric_limits<double>::epsilon() ) );
     }
   }
 }
