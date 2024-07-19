@@ -66,6 +66,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmfixgeometryhole.cpp
   processing/qgsalgorithmcheckgeometrymissingvertex.cpp
+  processing/qgsalgorithmfixgeometrymissingvertex.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
   processing/qgsalgorithmclip.cpp

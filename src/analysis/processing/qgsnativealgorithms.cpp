@@ -47,6 +47,7 @@
 #include "qgsalgorithmcheckgeometryarea.h"
 #include "qgsalgorithmfixgeometryarea.h"
 #include "qgsalgorithmfixgeometryhole.h"
+#include "qgsalgorithmfixgeometrymissingvertex.h"
 #include "qgsalgorithmcheckgeometryhole.h"
 #include "qgsalgorithmcheckgeometrymissingvertex.h"
 #include "qgsalgorithmclip.h"
@@ -589,6 +590,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
   addAlgorithm( new QgsFixGeometryAreaAlgorithm() );
   addAlgorithm( new QgsFixGeometryHoleAlgorithm() );
+  addAlgorithm( new QgsFixGeometryMissingVertexAlgorithm() );
 }
 
 ///@endcond
