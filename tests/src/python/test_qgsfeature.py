@@ -12,6 +12,8 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 import os
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QVariant
+
 from qgis.core import (
     NULL,
     QgsFeature,
