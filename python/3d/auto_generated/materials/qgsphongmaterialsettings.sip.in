@@ -126,7 +126,7 @@ Sets diffuse color component
 %Docstring
 Sets specular color component
 %End
-    void setShininess( float shininess );
+    void setShininess( double shininess );
 %Docstring
 Sets shininess of the surface
 %End
