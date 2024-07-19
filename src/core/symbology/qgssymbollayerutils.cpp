@@ -3921,14 +3921,29 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (rrr,ggg,bbb) format, brackets and rgb prefix optional
-  const thread_local QRegularExpression rgbFormatRx( "^\\s*(?:rgb)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*\\)?\\s*;?\\s*$" );
+  const thread_local QRegularExpression rgbFormatRx( "^\\s*(?:rgb)?\\(?\\s*((?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(?:\\.\\d*)?)\\s*,\\s*((?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(?:\\.\\d*)?)\\s*,\\s*((?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(?:\\.\\d*)?)\\s*\\)?\\s*;?\\s*$" );
   match = rgbFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
-    const int r = match.captured( 1 ).toInt();
-    const int g = match.captured( 2 ).toInt();
-    const int b = match.captured( 3 ).toInt();
-    parsedColor.setRgb( r, g, b );
+    bool rOk = false;
+    bool gOk = false;
+    bool bOk = false;
+    const int r = match.captured( 1 ).toInt( &rOk );
+    const int g = match.captured( 2 ).toInt( &gOk );
+    const int b = match.captured( 3 ).toInt( &bOk );
+
+    if ( !rOk || !gOk || !bOk )
+    {
+      const float rFloat = match.captured( 1 ).toFloat();
+      const float gFloat = match.captured( 2 ).toFloat();
+      const float bFloat = match.captured( 3 ).toFloat();
+      parsedColor.setRgbF( rFloat / 255.0, gFloat / 255.0, bFloat / 255.0 );
+    }
+    else
+    {
+      parsedColor.setRgb( r, g, b );
+    }
+
     if ( parsedColor.isValid() )
     {
       containsAlpha = false;
@@ -3937,14 +3952,28 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in hsl(h,s,l) format, brackets optional
-  const thread_local QRegularExpression hslFormatRx( "^\\s*hsl\\(?\\s*(\\d+)\\s*,\\s*(\\d+)\\s*%\\s*,\\s*(\\d+)\\s*%\\s*\\)?\\s*;?\\s*$" );
+  const thread_local QRegularExpression hslFormatRx( "^\\s*hsl\\(?\\s*(\\d+(?:\\.\\d*)?)\\s*,\\s*(\\d+(?:\\.\\d*)?)\\s*%\\s*,\\s*(\\d+(?:\\.\\d*)?)\\s*%\\s*\\)?\\s*;?\\s*$" );
   match = hslFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
-    const int h = match.captured( 1 ).toInt();
-    const int s = match.captured( 2 ).toInt();
-    const int l = match.captured( 3 ).toInt();
-    parsedColor.setHsl( h, s / 100.0 * 255.0, l / 100.0 * 255.0 );
+    bool hOk = false;
+    bool sOk = false;
+    bool lOk = false;
+    const int h = match.captured( 1 ).toInt( &hOk );
+    const int s = match.captured( 2 ).toInt( &sOk );
+    const int l = match.captured( 3 ).toInt( &lOk );
+
+    if ( !hOk || !sOk || !lOk )
+    {
+      const float hFloat = match.captured( 1 ).toFloat();
+      const float sFloat = match.captured( 2 ).toFloat();
+      const float lFloat = match.captured( 3 ).toFloat();
+      parsedColor.setHslF( hFloat / 360.0, sFloat / 100.0, lFloat / 100.0 );
+    }
+    else
+    {
+      parsedColor.setHsl( h, s / 100.0 * 255.0, l / 100.0 * 255.0 );
+    }
     if ( parsedColor.isValid() )
     {
       containsAlpha = false;
@@ -3953,14 +3982,14 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (r%,g%,b%) format, brackets and rgb prefix optional
-  const thread_local QRegularExpression rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" );
+  const thread_local QRegularExpression rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2}(?:\\.\\d*)?)\\s*%\\s*,\\s*(100|0*\\d{1,2}(?:\\.\\d*)?)\\s*%\\s*,\\s*(100|0*\\d{1,2}(?:\\.\\d*)?)\\s*%\\s*\\)?\\s*;?\\s*$" );
   match = rgbPercentFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
-    const int r = std::round( match.captured( 1 ).toDouble() * 2.55 );
-    const int g = std::round( match.captured( 2 ).toDouble() * 2.55 );
-    const int b = std::round( match.captured( 3 ).toDouble() * 2.55 );
-    parsedColor.setRgb( r, g, b );
+    const double r = match.captured( 1 ).toDouble() / 100;
+    const double g = match.captured( 2 ).toDouble() / 100;
+    const double b = match.captured( 3 ).toDouble() / 100;
+    parsedColor.setRgbF( r, g, b );
     if ( parsedColor.isValid() )
     {
       containsAlpha = false;
@@ -3969,15 +3998,30 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (r,g,b,a) format, brackets and rgba prefix optional
-  const thread_local QRegularExpression rgbaFormatRx( "^\\s*(?:rgba)?\\(?\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
+  const thread_local QRegularExpression rgbaFormatRx( "^\\s*(?:rgba)?\\(?\\s*((?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(?:\\.\\d*)?)\\s*,\\s*((?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(?:\\.\\d*)?)\\s*,\\s*((?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(?:\\.\\d*)?)\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
   match = rgbaFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
-    const int r = match.captured( 1 ).toInt();
-    const int g = match.captured( 2 ).toInt();
-    const int b = match.captured( 3 ).toInt();
-    const int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
-    parsedColor.setRgb( r, g, b, a );
+    bool rOk = false;
+    bool gOk = false;
+    bool bOk = false;
+    const int r = match.captured( 1 ).toInt( &rOk );
+    const int g = match.captured( 2 ).toInt( &gOk );
+    const int b = match.captured( 3 ).toInt( &bOk );
+    const double aDouble = match.captured( 4 ).toDouble();
+
+    if ( !rOk || !gOk || !bOk )
+    {
+      const float rFloat = match.captured( 1 ).toFloat();
+      const float gFloat = match.captured( 2 ).toFloat();
+      const float bFloat = match.captured( 3 ).toFloat();
+      parsedColor.setRgbF( rFloat / 255.0, gFloat / 255.0, bFloat / 255.0, aDouble );
+    }
+    else
+    {
+      const int a = static_cast< int >( std::round( match.captured( 4 ).toDouble() * 255.0 ) );
+      parsedColor.setRgb( r, g, b, a );
+    }
     if ( parsedColor.isValid() )
     {
       containsAlpha = true;
@@ -3986,15 +4030,15 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in (r%,g%,b%,a) format, brackets and rgba prefix optional
-  const thread_local QRegularExpression rgbaPercentFormatRx( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
+  const thread_local QRegularExpression rgbaPercentFormatRx( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2}(?:\\.\\d*)?)\\s*%\\s*,\\s*(100|0*\\d{1,2}(?:\\.\\d*)?)\\s*%\\s*,\\s*(100|0*\\d{1,2}(?:\\.\\d*)?)\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
   match = rgbaPercentFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
-    const int r = std::round( match.captured( 1 ).toDouble() * 2.55 );
-    const int g = std::round( match.captured( 2 ).toDouble() * 2.55 );
-    const int b = std::round( match.captured( 3 ).toDouble() * 2.55 );
-    const int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
-    parsedColor.setRgb( r, g, b, a );
+    const double r = match.captured( 1 ).toDouble() / 100;
+    const double g = match.captured( 2 ).toDouble() / 100;
+    const double b = match.captured( 3 ).toDouble() / 100;
+    const double a = match.captured( 4 ).toDouble();
+    parsedColor.setRgbF( r, g, b, a );
     if ( parsedColor.isValid() )
     {
       containsAlpha = true;
@@ -4003,15 +4047,31 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   }
 
   //color in hsla(h,s%,l%,a) format, brackets optional
-  const thread_local QRegularExpression hslaPercentFormatRx( "^\\s*hsla\\(?\\s*(\\d+)\\s*,\\s*(\\d+)\\s*%\\s*,\\s*(\\d+)\\s*%\\s*,\\s*([\\d\\.]+)\\s*\\)?\\s*;?\\s*$" );
+  const thread_local QRegularExpression hslaPercentFormatRx( "^\\s*hsla\\(?\\s*(\\d+(?:\\.\\d*)?)\\s*,\\s*(\\d+(?:\\.\\d*)?)\\s*%\\s*,\\s*(\\d+(?:\\.\\d*)?)\\s*%\\s*,\\s*([\\d\\.]+)\\s*\\)?\\s*;?\\s*$" );
   match = hslaPercentFormatRx.match( colorStr );
   if ( match.hasMatch() )
   {
-    const int h = match.captured( 1 ).toInt();
-    const int s = match.captured( 2 ).toInt();
-    const int l = match.captured( 3 ).toInt();
-    const int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
-    parsedColor.setHsl( h, s / 100.0 * 255.0, l / 100.0 * 255.0, a );
+    bool hOk = false;
+    bool sOk = false;
+    bool lOk = false;
+    const int h = match.captured( 1 ).toInt( &hOk );
+    const int s = match.captured( 2 ).toInt( &sOk );
+    const int l = match.captured( 3 ).toInt( &lOk );
+    const double aDouble = match.captured( 4 ).toDouble();
+
+    if ( !hOk || !sOk || !lOk )
+    {
+      const float hFloat = match.captured( 1 ).toFloat();
+      const float sFloat = match.captured( 2 ).toFloat();
+      const float lFloat = match.captured( 3 ).toFloat();
+      parsedColor.setHslF( hFloat / 360.0, sFloat / 100.0, lFloat / 100.0, aDouble );
+    }
+    else
+    {
+      const int a = std::round( aDouble * 255.0 );
+      parsedColor.setHsl( h, s / 100.0 * 255.0, l / 100.0 * 255.0, a );
+    }
+
     if ( parsedColor.isValid() )
     {
       containsAlpha = true;
