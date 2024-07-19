@@ -206,12 +206,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.svg" ) );
 
-  mRasterTransparencyWidget->pbnAddValuesManually->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
-  mRasterTransparencyWidget->pbnAddValuesFromDisplay->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionContextHelp.png" ) ) );
-  mRasterTransparencyWidget->pbnRemoveSelectedRow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
-  mRasterTransparencyWidget->pbnDefaultValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
-  mRasterTransparencyWidget->pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
-  mRasterTransparencyWidget->pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
   initMapTipPreview();
 
   if ( !mRasterLayer )
@@ -958,23 +952,7 @@ void QgsRasterLayerProperties::apply()
    * Transparent Pixel Tab
    */
 
-  //set NoDataValue
-  QgsRasterRangeList myNoDataRangeList;
-  if ( "" != mRasterTransparencyWidget->leNoDataValue->text() )
-  {
-    bool myDoubleOk = false;
-    double myNoDataValue = QgsDoubleValidator::toDouble( mRasterTransparencyWidget->leNoDataValue->text(), &myDoubleOk );
-    if ( myDoubleOk )
-    {
-      QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
-      myNoDataRangeList << myNoDataRange;
-    }
-  }
-  for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
-  {
-    mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
-    mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mRasterTransparencyWidget->mSrcNoDataValueCheckBox->isChecked() );
-  }
+  mRasterTransparencyWidget->applyToRasterProvider( mRasterLayer->dataProvider() );
 
   //set renderer from widget
   QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( mRendererStackedWidget->currentWidget() );
@@ -991,51 +969,12 @@ void QgsRasterLayerProperties::apply()
 
   //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
+  mRasterTransparencyWidget->applyToRasterRenderer( rasterRenderer );
+
   if ( rasterRenderer )
   {
-    rasterRenderer->setAlphaBand( mRasterTransparencyWidget->cboxTransparencyBand->currentBand() );
-    rasterRenderer->setNodataColor( mRasterTransparencyWidget->mNodataColorButton->color() );
-
-    //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
-    QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();
-    if ( mRasterTransparencyWidget->tableTransparency->columnCount() == 4 )
-    {
-      QVector<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
-      for ( int myListRunner = 0; myListRunner < mRasterTransparencyWidget->tableTransparency->rowCount(); myListRunner++ )
-      {
-        const double red = transparencyCellValue( myListRunner, 0 );
-        const double green = transparencyCellValue( myListRunner, 1 );
-        const double blue = transparencyCellValue( myListRunner, 2 );
-        const double opacity = 1.0 - transparencyCellValue( myListRunner, 3 ) / 100.0;
-        myTransparentThreeValuePixelList.append(
-          QgsRasterTransparency::TransparentThreeValuePixel( red, green, blue, opacity )
-        );
-      }
-      rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
-    }
-    else if ( mRasterTransparencyWidget->tableTransparency->columnCount() == 3 )
-    {
-      QVector<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
-      for ( int myListRunner = 0; myListRunner < mRasterTransparencyWidget->tableTransparency->rowCount(); myListRunner++ )
-      {
-        const double min = transparencyCellValue( myListRunner, 0 );
-        const double max = transparencyCellValue( myListRunner, 1 );
-        const double opacity = 1.0 - transparencyCellValue( myListRunner, 2 ) / 100.0;
-
-        myTransparentSingleValuePixelList.append(
-          QgsRasterTransparency::TransparentSingleValuePixel( min, max, opacity )
-        );
-      }
-      rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
-    }
-
-    rasterRenderer->setRasterTransparency( rasterTransparency );
-
     // Sync the layer styling widget
     mRasterLayer->emitStyleChanged();
-
-    //set global transparency
-    rasterRenderer->setOpacity( mRasterTransparencyWidget->mOpacityWidget->opacity() );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "processing general tab" ), 3 );

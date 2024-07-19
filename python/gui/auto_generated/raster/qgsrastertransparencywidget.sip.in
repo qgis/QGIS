@@ -44,6 +44,8 @@ Returns the (possibly None) map pixel selector tool.
 .. versionadded:: 3.22
 %End
 
+
+
   public slots:
 
 

@@ -59,6 +59,24 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
      */
     QgsMapToolEmitPoint *pixelSelectorTool() const;
 
+    /**
+     * Applies widget settings to a raster \a provider.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.40
+     */
+    void applyToRasterProvider( QgsRasterDataProvider *provider ) SIP_SKIP;
+
+    /**
+     * Applies widget settings to a raster \a renderer.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.40
+     */
+    void applyToRasterRenderer( QgsRasterRenderer *renderer ) SIP_SKIP;
+
   public slots:
 
 #ifdef __clang__
