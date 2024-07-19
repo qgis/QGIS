@@ -78,14 +78,14 @@ class TestQgsRasterTransparency(TestCase):
     def test_transparency_three_repr(self):
         self.assertEqual(repr(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3)),
                          '<QgsRasterTransparency.TransparentThreeValuePixel: 1, 10, 20, 0.3>')
-        self.assertEqual(repr(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 3)),
-                         '<QgsRasterTransparency.TransparentThreeValuePixel: 1, 10, 20, 0.3, 3>')
+        self.assertEqual(repr(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 3, 4, 5)),
+                         '<QgsRasterTransparency.TransparentThreeValuePixel: 1, 10, 20, 0.3, 3, 4, 5>')
 
     def test_transparency_three_equality(self):
         self.assertEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3),
                          QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3))
-        self.assertEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5),
-                         QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5))
+        self.assertEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6, 7),
+                         QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6, 7))
         self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3),
                             QgsRasterTransparency.TransparentThreeValuePixel(2, 10, 20, 0.3))
         self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3),
@@ -98,6 +98,14 @@ class TestQgsRasterTransparency(TestCase):
                             QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3))
         self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3),
                             QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5))
+        self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6),
+                            QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5))
+        self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6),
+                            QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 6, 5))
+        self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6, 7),
+                            QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6))
+        self.assertNotEqual(QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6),
+                            QgsRasterTransparency.TransparentThreeValuePixel(1, 10, 20, 0.3, 5, 6, 7))
 
     def test_transparency_three_value(self):
         transparency = QgsRasterTransparency()
@@ -105,14 +113,14 @@ class TestQgsRasterTransparency(TestCase):
         transparency.setTransparentThreeValuePixelList([
             QgsRasterTransparency.TransparentThreeValuePixel(10, 20, 30, 0.3),
             QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6),
-            QgsRasterTransparency.TransparentThreeValuePixel(90, 140, 150, 0.6, 10)
+            QgsRasterTransparency.TransparentThreeValuePixel(90, 140, 150, 0.6, 8, 9, 10)
         ])
         self.assertEqual(
             transparency.transparentThreeValuePixelList(),
             [
                 QgsRasterTransparency.TransparentThreeValuePixel(10, 20, 30, 0.3),
                 QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6),
-                QgsRasterTransparency.TransparentThreeValuePixel(90, 140, 150, 0.6, 10)
+                QgsRasterTransparency.TransparentThreeValuePixel(90, 140, 150, 0.6, 8, 9, 10)
             ]
         )
         self.assertEqual(transparency.alphaValue(0, 0, 0), 255)
@@ -126,17 +134,17 @@ class TestQgsRasterTransparency(TestCase):
         self.assertEqual(transparency.opacityForRgbValues(10, 20, 30), 0.3)
         self.assertEqual(transparency.opacityForRgbValues(30, 40, 50), 0.6)
         # fuzzy tolerance -- values just outside of tolerance
-        self.assertEqual(transparency.opacityForRgbValues(79, 140, 150), 1)
-        self.assertEqual(transparency.opacityForRgbValues(101, 140, 150), 1)
-        self.assertEqual(transparency.opacityForRgbValues(90, 129, 150), 1)
-        self.assertEqual(transparency.opacityForRgbValues(90, 151, 150), 1)
+        self.assertEqual(transparency.opacityForRgbValues(81, 140, 150), 1)
+        self.assertEqual(transparency.opacityForRgbValues(99, 140, 150), 1)
+        self.assertEqual(transparency.opacityForRgbValues(90, 130, 150), 1)
+        self.assertEqual(transparency.opacityForRgbValues(90, 150, 150), 1)
         self.assertEqual(transparency.opacityForRgbValues(90, 140, 139), 1)
         self.assertEqual(transparency.opacityForRgbValues(90, 140, 161), 1)
         # fuzzy tolerance -- values just inside of tolerance
-        self.assertEqual(transparency.opacityForRgbValues(80, 140, 150), 0.6)
-        self.assertEqual(transparency.opacityForRgbValues(100, 140, 150), 0.6)
-        self.assertEqual(transparency.opacityForRgbValues(90, 130, 150), 0.6)
-        self.assertEqual(transparency.opacityForRgbValues(90, 150, 150), 0.6)
+        self.assertEqual(transparency.opacityForRgbValues(82, 140, 150), 0.6)
+        self.assertEqual(transparency.opacityForRgbValues(98, 140, 150), 0.6)
+        self.assertEqual(transparency.opacityForRgbValues(90, 131, 150), 0.6)
+        self.assertEqual(transparency.opacityForRgbValues(90, 149, 150), 0.6)
         self.assertEqual(transparency.opacityForRgbValues(90, 140, 140), 0.6)
         self.assertEqual(transparency.opacityForRgbValues(90, 140, 160), 0.6)
         # fuzzy tolerance -- values right inside of tolerance
@@ -152,7 +160,7 @@ class TestQgsRasterTransparency(TestCase):
         transparency.setTransparentThreeValuePixelList([
             QgsRasterTransparency.TransparentThreeValuePixel(10, 20, 30, 0.3),
             QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6),
-            QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6, 5),
+            QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6, 5, 6, 7),
         ])
         transparency.setTransparentSingleValuePixelList([
             QgsRasterTransparency.TransparentSingleValuePixel(10, 20, 0.3),
@@ -180,7 +188,7 @@ class TestQgsRasterTransparency(TestCase):
             [
                 QgsRasterTransparency.TransparentThreeValuePixel(10, 20, 30, 0.3),
                 QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6),
-                QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6, 5),
+                QgsRasterTransparency.TransparentThreeValuePixel(30, 40, 50, 0.6, 5, 6, 7),
             ]
         )
 
