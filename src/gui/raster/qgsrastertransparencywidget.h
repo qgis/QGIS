@@ -172,7 +172,8 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
       Red = 0,
       Green = 1,
       Blue = 2,
-      Opacity = 3,
+      Tolerance = 3,
+      Opacity = 4,
       ColumnCount = Opacity + 1
     };
 
