@@ -90,7 +90,7 @@ during triangulation.quiresTextureCoordinates
 Returns the texture rotation, in degrees.
 %End
 
-    float opacity() const;
+    double opacity() const;
 %Docstring
 Returns the opacity of the surface
 
