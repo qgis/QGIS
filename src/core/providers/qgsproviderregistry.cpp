@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
+#include "qgsquantizedmeshdataprovider.h"
 #include "qgsvectortileprovidermetadata.h"
 #include "qgsproject.h"
 #include "qgsprovidersublayerdetails.h"
@@ -240,6 +241,9 @@ void QgsProviderRegistry::init()
     mProviders[ metadata->key() ] = metadata;
 
     metadata = new QgsCesiumTilesProviderMetadata();
+    mProviders[ metadata->key() ] = metadata;
+
+    metadata = new QgsQuantizedMeshProviderMetadata();
     mProviders[ metadata->key() ] = metadata;
   }
 

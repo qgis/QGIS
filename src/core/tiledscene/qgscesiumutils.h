@@ -120,7 +120,7 @@ class CORE_EXPORT QgsCesiumUtils
       //! GLTF binary content
       QByteArray gltf;
 
-      //! Optional RTC center
+      //! Center position of relative-to-center coordinates (when used)
       QgsVector3D rtcCenter;
     };
 

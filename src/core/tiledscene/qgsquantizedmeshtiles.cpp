@@ -21,7 +21,11 @@
 #include <cstddef>
 #include <qstringliteral.h>
 
-// Utility class for safely reading data by chunks from a vector
+///@cond PRIVATE
+
+/**
+ * \brief Utility class for safely reading data by chunks from a vector
+ */
 class VectorStream
 {
   public:
@@ -44,6 +48,8 @@ class VectorStream
   private:
     const QByteArray &mVec;
 };
+
+///@endcond
 
 // Copied from specification
 static uint16_t zigZagDecode( uint16_t value )
