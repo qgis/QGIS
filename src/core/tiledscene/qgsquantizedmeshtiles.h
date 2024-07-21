@@ -61,6 +61,11 @@ struct QgsQuantizedMeshHeader
 };
 #pragma pack (pop)
 
+/**
+ * \ingroup core
+ * \brief Exception thrown on failure to parse Quantized Mesh tile (malformed data)
+ * \since QGIS 3.35
+ */
 class CORE_EXPORT QgsQuantizedMeshParsingException : public QgsException
 {
   public:
