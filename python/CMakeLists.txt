@@ -443,7 +443,7 @@ foreach(module ${PY_MODULES})
   PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
 
   # install class map file
-  install(FILES ${BINDING_FILES_ROOT_DIR}/class_map.yaml DESTINATION "${QGIS_PYTHON_DIR}/${module}")
+  install(FILES ${BINDING_FILES_ROOT_DIR}/${module}/class_map.yaml DESTINATION "${QGIS_PYTHON_DIR}/${module}")
 
   # install source sip files
   if(SIP_GLOBAL_INSTALL)
