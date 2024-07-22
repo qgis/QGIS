@@ -423,6 +423,9 @@ foreach(module ${PY_MODULES})
   endforeach(pyfile)
   PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
 
+  # install class map file
+  install(FILES ${BINDING_FILES_ROOT_DIR}/${module}/class_map.yaml DESTINATION "${QGIS_PYTHON_DIR}/${module}")
+
   # install source sip files
   if(SIP_GLOBAL_INSTALL)
     file(GLOB sip_files ${CMAKE_CURRENT_BINARY_DIR}/${module}/*.sip)
@@ -431,5 +434,3 @@ foreach(module ${PY_MODULES})
   endif()
 endforeach(module)
 
-# install sipify config
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sipify.yaml DESTINATION "${QGIS_PYTHON_DIR}")
