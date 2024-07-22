@@ -23,6 +23,7 @@
 #include "qobjectuniqueptr.h"
 #include "qgspointxy.h"
 #include "qgsannotationitemnode.h"
+#include "qgsrectangle.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
@@ -115,9 +116,11 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
 
     QString mHoveredItemId;
     QString mHoveredItemLayerId;
+    QgsRectangle mHoveredItemBounds;
 
     QString mSelectedItemId;
     QString mSelectedItemLayerId;
+    QgsRectangle mSelectedItemBounds;
 
     std::unique_ptr< QgsAnnotationItemNodesSpatialIndex > mHoveredItemNodesSpatialIndex;
 

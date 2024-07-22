@@ -24,7 +24,19 @@ Encapsulates the context for an annotation item edit operation.
 
     QgsAnnotationItemEditContext();
 
+    QgsRectangle currentItemBounds() const;
+%Docstring
+Returns the current rendered bounds of the item, in the annotation layer's CRS.
 
+.. seealso:: :py:func:`setCurrentItemBounds`
+%End
+
+    void setCurrentItemBounds( const QgsRectangle &bounds );
+%Docstring
+Sets the current rendered ``bounds`` of the item, in the annotation layer's CRS.
+
+.. seealso:: :py:func:`currentItemBounds`
+%End
 
 };
 

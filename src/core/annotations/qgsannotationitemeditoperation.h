@@ -35,7 +35,23 @@ class CORE_EXPORT QgsAnnotationItemEditContext
 
     QgsAnnotationItemEditContext() = default;
 
+    /**
+     * Returns the current rendered bounds of the item, in the annotation layer's CRS.
+     *
+     * \see setCurrentItemBounds()
+     */
+    QgsRectangle currentItemBounds() const;
 
+    /**
+     * Sets the current rendered \a bounds of the item, in the annotation layer's CRS.
+     *
+     * \see currentItemBounds()
+     */
+    void setCurrentItemBounds( const QgsRectangle &bounds );
+
+  private:
+
+    QgsRectangle mCurrentItemBounds;
 
 };
 
