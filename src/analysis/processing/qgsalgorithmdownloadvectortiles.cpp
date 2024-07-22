@@ -195,7 +195,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
 
       // TODO: at the moment, it handles single source only of tiles
       // takes the first one
-      QByteArray data = rawTile.data.first();
+      const QByteArray data = rawTile.data.first();
 
       if ( !data.isEmpty() )
       {

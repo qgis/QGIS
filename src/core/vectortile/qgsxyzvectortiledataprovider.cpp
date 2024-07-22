@@ -457,7 +457,7 @@ QgsStringMap QgsXyzVectorTileDataProvider::sourcePaths() const
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
 
-  QgsStringMap paths = {{ dsUri.param( QStringLiteral( "urlName" ) ), dsUri.param( QStringLiteral( "url" ) ) }};
+  QgsStringMap paths = { { dsUri.param( QStringLiteral( "urlName" ) ), dsUri.param( QStringLiteral( "url" ) ) } };
 
   int i = 2;
   while ( true )

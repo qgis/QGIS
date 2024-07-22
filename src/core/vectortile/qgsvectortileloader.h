@@ -31,7 +31,7 @@ class QEventLoop;
 
 /**
  * \ingroup core
- * \brief Keeps track of raw tile data from multiple sources that need to be decoded
+ * \brief Keeps track of raw tile data from one or more sources that need to be decoded
  *
  * \since QGIS 3.14
  */
@@ -40,9 +40,9 @@ class CORE_EXPORT QgsVectorTileRawData
   public:
     //! Constructs a raw tile object for single source
     QgsVectorTileRawData( QgsTileXYZ tileID = QgsTileXYZ(), const QByteArray &data = QByteArray() )
-      : id( tileID ), tileGeometryId( tileID ), data( {{QString(), data}} ) {}
+      : id( tileID ), tileGeometryId( tileID ), data( { { QString(), data } } ) {}
 
-    //! Constructs a raw tile object for multiple sources
+    //! Constructs a raw tile object for one or more sources
     QgsVectorTileRawData( QgsTileXYZ tileID, const QMap<QString, QByteArray> &data )
       : id( tileID ), tileGeometryId( tileID ), data( data ) {}
 

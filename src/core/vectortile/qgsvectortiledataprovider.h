@@ -127,7 +127,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      */
     virtual QgsStringMap sourcePaths() const
     {
-      return {{QString(), sourcePath()}};
+      return { { QString(), sourcePath() } };
     }
 
 
