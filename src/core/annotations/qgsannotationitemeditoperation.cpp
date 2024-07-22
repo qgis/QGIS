@@ -17,6 +17,21 @@
 #include "qgsannotationitemeditoperation.h"
 
 //
+// QgsAnnotationItemEditContext
+//
+
+QgsRectangle QgsAnnotationItemEditContext::currentItemBounds() const
+{
+  return mCurrentItemBounds;
+}
+
+void QgsAnnotationItemEditContext::setCurrentItemBounds( const QgsRectangle &bounds )
+{
+  mCurrentItemBounds = bounds;
+}
+
+
+//
 // QgsAbstractAnnotationItemEditOperation
 //
 QgsAbstractAnnotationItemEditOperation::QgsAbstractAnnotationItemEditOperation( const QString &itemId )
