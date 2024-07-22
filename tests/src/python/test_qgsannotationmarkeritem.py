@@ -16,6 +16,7 @@ from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
+    QgsAnnotationItemEditContext,
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
@@ -69,44 +70,44 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
         Test nodes for item
         """
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+        self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'POINT(112 213)')
 
     def test_apply_move_node_edit(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'POINT(17 18)')
 
     def test_apply_delete_node_edit(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.ItemCleared)
 
     def test_apply_add_node_edit(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(13, 14))), Qgis.AnnotationItemEditOperationResult.Invalid)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationAddNode('', QgsPoint(13, 14)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Invalid)
 
     def test_transient_move_operation(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)))
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)), QgsAnnotationItemEditContext())
         self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
 
     def test_transient_translate_operation(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext())
         self.assertEqual(res.representativeGeometry().asWkt(), 'Point (112 213)')
 
     def testReadWriteXml(self):

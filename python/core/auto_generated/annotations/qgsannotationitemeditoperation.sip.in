@@ -9,6 +9,25 @@
 
 
 
+class QgsAnnotationItemEditContext
+{
+%Docstring(signature="appended")
+Encapsulates the context for an annotation item edit operation.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditContext();
+
+
+
+};
+
 class QgsAbstractAnnotationItemEditOperation
 {
 %Docstring(signature="appended")

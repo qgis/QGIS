@@ -211,7 +211,8 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
         const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
 
         QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
-        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResults( &operation ) );
+        QgsAnnotationItemEditContext context;
+        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResultsV2( &operation, context ) );
         if ( operationResults )
         {
           mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, operationResults->representativeGeometry().type() ) );
@@ -234,7 +235,8 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
         QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
         const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
         QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
-        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResults( &operation ) );
+        QgsAnnotationItemEditContext context;
+        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResultsV2( &operation, context ) );
         if ( operationResults )
         {
           mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, operationResults->representativeGeometry().type() ) );
@@ -348,7 +350,8 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
           const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
 
           QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
-          switch ( layer->applyEdit( &operation ) )
+          QgsAnnotationItemEditContext context;
+          switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
               QgsProject::instance()->setDirty( true );
@@ -383,7 +386,8 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         {
           const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
           QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
-          switch ( layer->applyEdit( &operation ) )
+          QgsAnnotationItemEditContext context;
+          switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
               QgsProject::instance()->setDirty( true );
@@ -426,7 +430,8 @@ void QgsMapToolModifyAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *event
         {
           const QgsPointXY layerPoint = toLayerCoordinates( layer, event->mapPoint() );
           QgsAnnotationItemEditOperationAddNode operation( mSelectedItemId, QgsPoint( layerPoint ) );
-          switch ( layer->applyEdit( &operation ) )
+          QgsAnnotationItemEditContext context;
+          switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
               QgsProject::instance()->setDirty( true );
@@ -492,7 +497,8 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
         const QSizeF deltaLayerCoordinates = deltaForKeyEvent( layer, mSelectedRubberBand->asGeometry().centroid().asPoint(), event );
 
         QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, deltaLayerCoordinates.width(), deltaLayerCoordinates.height() );
-        switch ( layer->applyEdit( &operation ) )
+        QgsAnnotationItemEditContext context;
+        switch ( layer->applyEditV2( &operation, context ) )
         {
           case Qgis::AnnotationItemEditOperationResult::Success:
             QgsProject::instance()->setDirty( true );
@@ -514,7 +520,8 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
         if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
         {
           QgsAnnotationItemEditOperationDeleteNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ) );
-          switch ( layer->applyEdit( &operation ) )
+          QgsAnnotationItemEditContext context;
+          switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
               QgsProject::instance()->setDirty( true );
@@ -624,7 +631,9 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
 
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
-  const QList< QgsAnnotationItemNode > itemNodes = annotationItem->nodes();
+  QgsAnnotationItemEditContext context;
+
+  const QList< QgsAnnotationItemNode > itemNodes = annotationItem->nodesV2( context );
   QgsRubberBand *vertexNodeBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
 
   vertexNodeBand->setIcon( QgsRubberBand::ICON_BOX );

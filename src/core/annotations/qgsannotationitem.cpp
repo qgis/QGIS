@@ -28,14 +28,35 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationItem::applyEdit( QgsAbstrac
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
+Qgis::AnnotationItemEditOperationResult QgsAnnotationItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return applyEdit( operation );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationItem::transientEditResults( QgsAbstractAnnotationItemEditOperation * )
 {
   return nullptr;
 }
 
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return transientEditResults( operation );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 QList<QgsAnnotationItemNode> QgsAnnotationItem::nodes() const
 {
   return {};
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationItem::nodesV2( const QgsAnnotationItemEditContext & ) const
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return nodes();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsAnnotationItem::copyCommonProperties( const QgsAnnotationItem *other )

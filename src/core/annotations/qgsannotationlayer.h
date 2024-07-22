@@ -25,6 +25,7 @@
 
 class QgsAnnotationItem;
 class QgsAbstractAnnotationItemEditOperation;
+class QgsAnnotationItemEditContext;
 class QgsPaintEffect;
 
 
@@ -155,9 +156,18 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * Returns TRUE if the operation was successfully applied.
      *
-     * \since QGIS 3.22
+     * \deprecated QGIS 3.40 Use applyEditV2() instead.
      */
-    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    Q_DECL_DEPRECATED Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) SIP_DEPRECATED;
+
+    /**
+     * Applies an edit \a operation to the layer.
+     *
+     * Returns TRUE if the operation was successfully applied.
+     *
+     * \since QGIS 3.40
+     */
+    Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
