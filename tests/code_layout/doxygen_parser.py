@@ -381,7 +381,7 @@ class DoxygenParser():
         # ignore constructors with no arguments
         if self.isConstructor(elem):
             try:
-                if elem.find('argsstring').text == '()':
+                if re.match(r'^\s*\(\s*\)\s*(?:=\s*default\s*)?$', elem.find('argsstring').text):
                     return False
             except:
                 pass
