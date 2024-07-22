@@ -319,16 +319,23 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
   mCustomLayerTree.reset( rootGroup );
 }
 
-void QgsLayoutItemLegend::ensureModelIsInitialized()
+void QgsLayoutItemLegend::ensureModelIsInitialized() const
 {
   if ( mDeferLegendModelInitialization )
   {
-    mDeferLegendModelInitialization = false;
-    setCustomLayerTree( mCustomLayerTree.release() );
+    QgsLayoutItemLegend *mutableThis = const_cast< QgsLayoutItemLegend * >( this );
+    mutableThis->mDeferLegendModelInitialization = false;
+    mutableThis->setCustomLayerTree( mutableThis->mCustomLayerTree.release() );
   }
 }
 
 QgsLegendModel *QgsLayoutItemLegend::model()
+{
+  ensureModelIsInitialized();
+  return mLegendModel.get();
+}
+
+const QgsLegendModel *QgsLayoutItemLegend::model() const
 {
   ensureModelIsInitialized();
   return mLegendModel.get();
@@ -1343,7 +1350,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
     }
     return true;
   };
-  return visit( mLegendModel->rootGroup( ) );
+  return visit( model()->rootGroup( ) );
 }
 
 bool QgsLayoutItemLegend::isRefreshing() const
