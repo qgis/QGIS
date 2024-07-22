@@ -22,9 +22,6 @@ Utility class that encapsulates an action based on vector attributes.
   public:
 
     QgsAction();
-%Docstring
-Default constructor
-%End
 
     QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false);
 %Docstring

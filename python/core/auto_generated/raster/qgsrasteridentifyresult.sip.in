@@ -21,9 +21,6 @@ Raster identify results container.
   public:
 
     QgsRasterIdentifyResult();
-%Docstring
-Constructor for QgsRasterIdentifyResult.
-%End
 
     QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat format, const QMap<int, QVariant> &results );
 %Docstring

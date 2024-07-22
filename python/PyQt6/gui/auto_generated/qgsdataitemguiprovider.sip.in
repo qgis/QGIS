@@ -24,9 +24,6 @@ Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the 
   public:
 
     QgsDataItemGuiContext();
-%Docstring
-Constructor for QgsDataItemGuiContext.
-%End
 
     QgsMessageBar *messageBar() const;
 %Docstring

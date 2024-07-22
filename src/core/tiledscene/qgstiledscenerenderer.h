@@ -138,9 +138,6 @@ class CORE_EXPORT QgsTiledSceneRenderer
 
   public:
 
-    /**
-     * Constructor for QgsTiledSceneRenderer.
-     */
     QgsTiledSceneRenderer() = default;
 
     virtual ~QgsTiledSceneRenderer() = default;

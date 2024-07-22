@@ -71,7 +71,6 @@ class CORE_EXPORT QgsLabelPosition
       , isUnplaced( isUnplaced )
     {}
 
-    //! Constructor for QgsLabelPosition
     QgsLabelPosition() = default;
 
 #ifdef SIP_RUN

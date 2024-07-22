@@ -22,9 +22,6 @@ Interface for map decorations.
   public:
 
     QgsMapDecoration();
-%Docstring
-Constructor for QgsMapDecoration.
-%End
 
     virtual ~QgsMapDecoration();
 

@@ -251,7 +251,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
   protected:
 
-    //! Constructor for QgsVectorLayerEditBuffer
     QgsVectorLayerEditBuffer() = default;
 
     //! Update feature with uncommitted geometry updates

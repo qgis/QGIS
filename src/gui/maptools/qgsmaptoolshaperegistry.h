@@ -81,7 +81,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 class GUI_EXPORT QgsMapToolShapeMetadata
 {
   public:
-    //! Constructor
+
     QgsMapToolShapeMetadata() = default;
 
     virtual ~QgsMapToolShapeMetadata() = default;

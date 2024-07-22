@@ -38,9 +38,6 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static QString DATE_DISPLAY_FORMAT; //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
     static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
-    /**
-      * Default constructor of field formatter for a date time field.
-      */
     QgsDateTimeFieldFormatter() = default;
 
     QString id() const override;

@@ -133,10 +133,8 @@ instance to provide custom context menus (opened upon right-click).
 #include "qgsexpressiontreeview.h"
 %End
       public:
+
         explicit MenuProvider();
-%Docstring
-Constructor
-%End
         virtual ~MenuProvider();
 
         virtual QMenu *createContextMenu( QgsExpressionItem *item ) /Factory/;

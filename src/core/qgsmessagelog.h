@@ -42,9 +42,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
   public:
 
-    /**
-     * Constructor for QgsMessageLog.
-     */
     QgsMessageLog() = default;
 
     /**

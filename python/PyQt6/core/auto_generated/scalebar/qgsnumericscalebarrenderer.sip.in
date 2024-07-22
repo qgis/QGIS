@@ -20,9 +20,6 @@ A scale bar style that draws text in the form of '1:XXXXX'.
   public:
 
     QgsNumericScaleBarRenderer();
-%Docstring
-Constructor for QgsNumericScaleBarRenderer.
-%End
 
     virtual QString id() const;
 

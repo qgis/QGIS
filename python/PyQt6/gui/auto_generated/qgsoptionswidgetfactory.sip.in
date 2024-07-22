@@ -82,9 +82,6 @@ class QgsOptionsWidgetFactory : QObject
   public:
 
     QgsOptionsWidgetFactory();
-%Docstring
-Constructor
-%End
 
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon, const QString &key = QString() );
 %Docstring

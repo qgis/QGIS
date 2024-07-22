@@ -35,7 +35,7 @@ class QDomElement;
 class _3D_EXPORT QgsAmbientOcclusionSettings
 {
   public:
-    //! Default constructor
+
     QgsAmbientOcclusionSettings() = default;
     //! Copy constructor
     QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other );

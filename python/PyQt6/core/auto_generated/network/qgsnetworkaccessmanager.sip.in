@@ -31,9 +31,6 @@ Encapsulates parameters and properties of a network request.
     };
 
     QgsNetworkRequestParameters();
-%Docstring
-Default constructor.
-%End
 
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
                                  const QNetworkRequest &request,

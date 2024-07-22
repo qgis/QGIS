@@ -27,9 +27,6 @@ onto a scene with custom composition modes.
   public:
 
     QgsLayoutEffect();
-%Docstring
-Constructor for QgsLayoutEffect.
-%End
 
  void setCompositionMode( QPainter::CompositionMode mode ) /Deprecated/;
 %Docstring

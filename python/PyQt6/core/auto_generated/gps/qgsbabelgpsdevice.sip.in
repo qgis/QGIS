@@ -24,9 +24,6 @@ A babel format capable of interacting directly with a GPS device.
   public:
 
     QgsBabelGpsDeviceFormat();
-%Docstring
-Default constructor
-%End
 
     QgsBabelGpsDeviceFormat( const QString &waypointDownloadCommand,
                              const QString &waypointUploadCommand,

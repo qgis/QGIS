@@ -58,9 +58,6 @@ custom labeling.
     };
 
     QgsScaleBarRenderer();
-%Docstring
-Constructor for QgsScaleBarRenderer.
-%End
     virtual ~QgsScaleBarRenderer();
 
  QString name() const /Deprecated/;

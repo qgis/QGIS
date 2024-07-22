@@ -52,10 +52,8 @@ Resolves references to other objects - second phase of loading - after :py:func:
 %End
 
   protected:
+
     QgsAbstract3DRenderer();
-%Docstring
-Default constructor
-%End
 
   private:
     QgsAbstract3DRenderer( const QgsAbstract3DRenderer & );

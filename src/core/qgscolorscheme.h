@@ -74,9 +74,6 @@ class CORE_EXPORT QgsColorScheme
     };
     Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
 
-    /**
-     * Constructor for QgsColorScheme.
-     */
     QgsColorScheme() = default;
 
     virtual ~QgsColorScheme() = default;
@@ -142,9 +139,6 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 {
   public:
 
-    /**
-     * Constructor for QgsGplColorScheme.
-     */
     QgsGplColorScheme() = default;
 
     QgsNamedColorList fetchColors( const QString &context = QString(),
@@ -225,9 +219,6 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 {
   public:
 
-    /**
-     * Constructor for QgsRecentColorScheme.
-     */
     QgsRecentColorScheme() = default;
 
     QString schemeName() const override { return QObject::tr( "Recent colors" ); }
@@ -262,9 +253,6 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 {
   public:
 
-    /**
-     * Constructor for QgsCustomColorScheme.
-     */
     QgsCustomColorScheme() = default;
 
     QString schemeName() const override { return QObject::tr( "Standard colors" ); }
@@ -290,9 +278,6 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 {
   public:
 
-    /**
-     * Constructor for QgsProjectColorScheme.
-     */
     QgsProjectColorScheme() = default;
 
     QString schemeName() const override { return QObject::tr( "Project colors" ); }

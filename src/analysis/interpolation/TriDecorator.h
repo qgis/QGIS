@@ -31,7 +31,7 @@
 class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
 {
   public:
-    //! Constructor for TriDecorator
+
     TriDecorator() = default;
     //! Constructor for TriDecorator with an existing triangulation
     explicit TriDecorator( QgsTriangulation *t );

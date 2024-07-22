@@ -36,9 +36,6 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
 
-    /**
-     * Constructor for QgsPhongMaterialSettings.
-     */
     QgsPhongMaterialSettings() = default;
 
     QString type() const override;

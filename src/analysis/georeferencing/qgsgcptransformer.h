@@ -53,7 +53,6 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     };
     Q_ENUM( TransformMethod )
 
-    //! Constructor for QgsGcpTransformerInterface
     QgsGcpTransformerInterface() = default;
 
     virtual ~QgsGcpTransformerInterface() = default;
@@ -153,7 +152,6 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
 {
   public:
 
-    //! Constructor for QgsLinearGeorefTransform
     QgsLinearGeorefTransform() = default;
 
     /**
@@ -192,7 +190,6 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
 {
   public:
 
-    //! Constructor for QgsHelmertGeorefTransform
     QgsHelmertGeorefTransform() = default;
 
     /**

@@ -23,9 +23,6 @@ in \verbatim <customproperties> \endverbatim element.
   public:
 
     QgsObjectCustomProperties();
-%Docstring
-Constructor for QgsObjectCustomProperties.
-%End
 
     QStringList keys() const;
 %Docstring

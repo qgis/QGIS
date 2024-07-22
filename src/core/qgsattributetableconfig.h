@@ -50,7 +50,6 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     struct ColumnConfig
     {
-      //! Constructor for ColumnConfig
       ColumnConfig() = default;
 
       // TODO c++20 - replace with = default
@@ -78,9 +77,6 @@ class CORE_EXPORT QgsAttributeTableConfig
       DropDown      //!< A tool button with a drop-down to select the current action
     };
 
-    /**
-     * Constructor for QgsAttributeTableConfig.
-     */
     QgsAttributeTableConfig() = default;
 
     /**

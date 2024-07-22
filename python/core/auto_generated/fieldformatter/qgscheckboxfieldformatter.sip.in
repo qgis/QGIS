@@ -28,9 +28,6 @@ Field formatter for a checkbox field.
     };
 
     QgsCheckBoxFieldFormatter();
-%Docstring
-Constructor for QgsCheckBoxFieldFormatter.
-%End
 
     virtual QString id() const;
 

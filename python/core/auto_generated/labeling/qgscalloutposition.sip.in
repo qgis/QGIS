@@ -33,9 +33,6 @@ Constructor for QgsCalloutPosition.
 %End
 
     QgsCalloutPosition();
-%Docstring
-Constructor for QgsCalloutPosition
-%End
 
     QgsFeatureId featureId;
 

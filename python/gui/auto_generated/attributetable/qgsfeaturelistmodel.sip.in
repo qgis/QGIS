@@ -22,9 +22,6 @@ class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
       public:
 
         FeatureInfo();
-%Docstring
-Constructor for FeatureInfo.
-%End
 
         bool isNew;
 

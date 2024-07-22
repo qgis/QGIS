@@ -46,7 +46,6 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
       Temporal, //!< Factory creates sub-components of the temporal properties page (only supported for raster layer temporal properties)
     };
 
-    //! Constructor
     QgsMapLayerConfigWidgetFactory() = default;
 
     //! Constructor

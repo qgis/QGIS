@@ -109,9 +109,6 @@ Constructor for Constraint.
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
 
     QgsLayerMetadata();
-%Docstring
-Constructor for QgsLayerMetadata.
-%End
 
 
     virtual QgsLayerMetadata *clone() const /Factory/;

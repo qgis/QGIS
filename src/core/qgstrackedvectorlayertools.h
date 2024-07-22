@@ -29,9 +29,6 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     Q_OBJECT
   public:
 
-    /**
-     * Constructor for QgsTrackedVectorLayerTools.
-     */
     QgsTrackedVectorLayerTools() = default;
 
     /**

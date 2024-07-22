@@ -31,9 +31,6 @@ Abstract base class - its implementations define different approaches to the lab
   public:
 
     QgsAbstractVectorLayerLabeling();
-%Docstring
-Default constructor
-%End
     virtual ~QgsAbstractVectorLayerLabeling();
 
     virtual QString type() const = 0;

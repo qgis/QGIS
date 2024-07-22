@@ -143,7 +143,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     struct MetaData
     {
-      //! Constructor for MetaData
+
       MetaData() = default;
 
       MetaData( const QString &longName, const QString &trLongName, const QString &glob, const QString &ext, const QMap<QString, QgsVectorFileWriter::Option *> &driverOptions, const QMap<QString, QgsVectorFileWriter::Option *> &layerOptions, const QString &compulsoryEncoding = QString() )
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     class CORE_EXPORT FieldValueConverter
     {
       public:
-        //! Constructor
+
         FieldValueConverter() = default;
 
         virtual ~FieldValueConverter() = default;

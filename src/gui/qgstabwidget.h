@@ -98,7 +98,6 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
         , label( lbl )
       {}
 
-      //! Constructor for TabInformation
       TabInformation() = default;
 
       bool operator ==( const TabInformation &other ) const;

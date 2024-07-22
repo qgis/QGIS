@@ -20,9 +20,6 @@ Double box with alternating colors.
   public:
 
     QgsDoubleBoxScaleBarRenderer();
-%Docstring
-Constructor for QgsDoubleBoxScaleBarRenderer.
-%End
 
     virtual QString id() const;
 

@@ -23,9 +23,6 @@ Bilinear Raster Resampler
   public:
 
     QgsBilinearRasterResampler();
-%Docstring
-Constructor for QgsBilinearRasterResampler.
-%End
  virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
 
 

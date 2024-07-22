@@ -55,9 +55,6 @@ Represents a matrix in a raster calculator operation.
     };
 
     QgsRasterMatrix();
-%Docstring
-Takes ownership of data array
-%End
 
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();

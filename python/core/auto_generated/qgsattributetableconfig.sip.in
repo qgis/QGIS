@@ -31,9 +31,6 @@ The configuration is specific for one vector layer.
     struct ColumnConfig
     {
       ColumnConfig();
-%Docstring
-Constructor for ColumnConfig
-%End
 
 
       QgsAttributeTableConfig::Type type;
@@ -52,9 +49,6 @@ Constructor for ColumnConfig
     };
 
     QgsAttributeTableConfig();
-%Docstring
-Constructor for QgsAttributeTableConfig.
-%End
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring

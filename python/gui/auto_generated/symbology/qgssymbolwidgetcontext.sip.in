@@ -22,9 +22,6 @@ map canvas and relevant expression contexts.
   public:
 
     QgsSymbolWidgetContext();
-%Docstring
-Constructor for QgsSymbolWidgetContext.
-%End
 
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
 %Docstring

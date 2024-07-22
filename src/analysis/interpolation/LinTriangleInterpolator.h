@@ -31,7 +31,7 @@
 class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 {
   public:
-    //! Default constructor
+
     LinTriangleInterpolator() = default;
     //! Constructor with reference to a DualEdgeTriangulation object
     LinTriangleInterpolator( QgsDualEdgeTriangulation *tin );

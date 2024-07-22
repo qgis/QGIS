@@ -21,9 +21,6 @@ color for the segments.
   public:
 
     QgsSingleBoxScaleBarRenderer();
-%Docstring
-Constructor for QgsSingleBoxScaleBarRenderer.
-%End
 
     virtual QString id() const;
 

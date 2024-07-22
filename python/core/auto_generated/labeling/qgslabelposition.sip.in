@@ -44,9 +44,6 @@ Constructor for QgsLabelPosition.
 %End
 
     QgsLabelPosition();
-%Docstring
-Constructor for QgsLabelPosition
-%End
 
     SIP_PYOBJECT __repr__();
 %MethodCode

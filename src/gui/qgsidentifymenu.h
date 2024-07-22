@@ -60,7 +60,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     struct ActionData
     {
-      //! Constructor for ActionData
+
       ActionData() = default;
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = nullptr )

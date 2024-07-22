@@ -21,9 +21,6 @@ transparent when rendering rasters.
   public:
 
     QgsRasterTransparency();
-%Docstring
-Constructor for QgsRasterTransparency.
-%End
 
     struct TransparentThreeValuePixel
     {

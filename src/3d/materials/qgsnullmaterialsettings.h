@@ -37,9 +37,6 @@ class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
 
-    /**
-     * Constructor for QgsNullMaterialSettings.
-     */
     QgsNullMaterialSettings() = default;
 
     QString type() const override;

@@ -22,9 +22,6 @@ Cubic Raster Resampler.
   public:
 
     QgsCubicRasterResampler();
-%Docstring
-Constructor for QgsCubicRasterResampler.
-%End
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 
 

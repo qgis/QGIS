@@ -41,9 +41,6 @@ class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
 
-    /**
-     * Constructor for QgsGmlFeatureClass.
-     */
     QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 

@@ -88,9 +88,6 @@ to fine-tune its behavior.
   public:
 
     QgsProcessingParameterWidgetContext();
-%Docstring
-Constructor for QgsProcessingParameterWidgetContext.
-%End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring

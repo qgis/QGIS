@@ -100,7 +100,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
   public:
 
-    //! Constructor
     QgisInterface() = default;
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;

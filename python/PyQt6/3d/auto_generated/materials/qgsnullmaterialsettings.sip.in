@@ -30,9 +30,6 @@ Null shading material used for rendering models and scenes with native textures.
   public:
 
     QgsNullMaterialSettings();
-%Docstring
-Constructor for QgsNullMaterialSettings.
-%End
 
     virtual QString type() const;
 

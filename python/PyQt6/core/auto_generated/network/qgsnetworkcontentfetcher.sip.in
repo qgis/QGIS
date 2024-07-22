@@ -28,9 +28,6 @@ handled.
   public:
 
     QgsNetworkContentFetcher();
-%Docstring
-Constructor for QgsNetworkContentFetcher.
-%End
 
     ~QgsNetworkContentFetcher();
 

@@ -40,9 +40,6 @@ class GUI_EXPORT QgsHistoryEntryNode
 {
   public:
 
-    /**
-     * Constructor for QgsHistoryEntryNode.
-     */
     QgsHistoryEntryNode() = default;
     virtual ~QgsHistoryEntryNode();
 
@@ -134,7 +131,6 @@ class GUI_EXPORT QgsHistoryEntryGroup : public QgsHistoryEntryNode
 {
   public:
 
-    //! Constructor for QgsHistoryEntryGroup
     QgsHistoryEntryGroup() = default;
     ~QgsHistoryEntryGroup() override;
 

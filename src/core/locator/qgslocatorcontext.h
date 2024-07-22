@@ -32,9 +32,6 @@ class CORE_EXPORT QgsLocatorContext
 {
   public:
 
-    /**
-     * Constructor for QgsLocatorContext.
-     */
     QgsLocatorContext() = default;
 
     /**

@@ -36,9 +36,6 @@ class CORE_EXPORT QgsRendererCategory
 {
   public:
 
-    /**
-     * Constructor for QgsRendererCategory.
-     */
     QgsRendererCategory() = default;
 
     /**

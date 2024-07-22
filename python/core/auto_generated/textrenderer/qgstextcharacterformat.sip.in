@@ -31,9 +31,6 @@ settings from a :py:class:`QgsTextFormat` for individual characters (or sets of 
   public:
 
     QgsTextCharacterFormat();
-%Docstring
-Constructor for QgsTextCharacterFormat.
-%End
 
     QgsTextCharacterFormat( const QTextCharFormat &format );
 %Docstring

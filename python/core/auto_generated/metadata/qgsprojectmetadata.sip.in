@@ -43,9 +43,6 @@ using :py:class:`QgsNativeProjectMetadataValidator`.
   public:
 
     QgsProjectMetadata();
-%Docstring
-Constructor for QgsProjectMetadata.
-%End
 
     virtual QgsProjectMetadata *clone() const /Factory/;
 

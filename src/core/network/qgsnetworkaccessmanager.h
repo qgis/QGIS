@@ -55,9 +55,6 @@ class CORE_EXPORT QgsNetworkRequestParameters
       AttributeInitiatorRequestId, //!< Internal ID used by originator object to identify requests
     };
 
-    /**
-     * Default constructor.
-     */
     QgsNetworkRequestParameters() = default;
 
     /**

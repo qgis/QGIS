@@ -137,7 +137,7 @@ class CORE_EXPORT QgsSymbolLayerId
 class CORE_EXPORT QgsSymbolLayerReference
 {
   public:
-    //! Default constructor
+
     QgsSymbolLayerReference() = default;
 
     /**

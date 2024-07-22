@@ -27,9 +27,6 @@ Factory class for creating custom map layer property pages
     };
 
     QgsMapLayerConfigWidgetFactory();
-%Docstring
-Constructor
-%End
 
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 %Docstring

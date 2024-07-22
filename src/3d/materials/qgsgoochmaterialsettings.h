@@ -37,9 +37,6 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
 
-    /**
-     * Constructor for QgsGoochMaterialSettings.
-     */
     QgsGoochMaterialSettings() = default;
 
     QString type() const override;

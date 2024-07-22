@@ -357,9 +357,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
   protected:
 
-    /**
-     * Constructor.
-     */
     QgsExpressionNode() = default;
 
     //! Copy constructor

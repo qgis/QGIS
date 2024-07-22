@@ -56,7 +56,7 @@ namespace pal
   class Feats
   {
     public:
-      //! Constructor for Feats
+
       Feats() = default;
 
       FeaturePart *feature = nullptr;

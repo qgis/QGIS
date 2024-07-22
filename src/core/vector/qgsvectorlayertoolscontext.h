@@ -32,9 +32,6 @@ class CORE_EXPORT QgsVectorLayerToolsContext
 {
   public:
 
-    /**
-     * Constructor for QgsVectorLayerToolsContext.
-     */
     QgsVectorLayerToolsContext() = default;
 
     /**

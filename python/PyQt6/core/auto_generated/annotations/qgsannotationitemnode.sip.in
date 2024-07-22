@@ -23,9 +23,6 @@ Contains information about a node used for editing an annotation item.
   public:
 
     QgsAnnotationItemNode();
-%Docstring
-Default constructor
-%End
 
     QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type );
 %Docstring

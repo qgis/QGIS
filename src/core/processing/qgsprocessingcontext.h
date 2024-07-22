@@ -263,7 +263,6 @@ class CORE_EXPORT QgsProcessingContext
           , project( project )
         {}
 
-        //! Default constructor
         LayerDetails() = default;
 
         /**

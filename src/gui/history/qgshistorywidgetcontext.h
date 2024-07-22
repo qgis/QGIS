@@ -32,9 +32,6 @@ class GUI_EXPORT QgsHistoryWidgetContext
 {
   public:
 
-    /**
-     * Constructor for QgsHistoryWidgetContext.
-     */
     QgsHistoryWidgetContext() = default;
 
     /**

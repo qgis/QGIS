@@ -22,9 +22,6 @@ Scalebar style that draws a stepped line representation of a scalebar.
   public:
 
     QgsSteppedLineScaleBarRenderer();
-%Docstring
-Constructor for QgsSteppedLineScaleBarRenderer.
-%End
 
     virtual QString id() const;
 

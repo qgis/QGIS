@@ -101,7 +101,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     double calcBernsteinPoly( int n, int i, int j, int k, double u, double v, double w );
 
   public:
-    //! Standard constructor
+
     CloughTocherInterpolator() = default;
 
     //! Constructor with a pointer to the triangulation as argument

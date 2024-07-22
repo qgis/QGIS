@@ -23,9 +23,6 @@ A context for field formatter containing information like the project
   public:
 
     QgsFieldFormatterContext();
-%Docstring
-Constructor
-%End
 
     QgsProject *project() const;
 %Docstring
@@ -63,9 +60,6 @@ This is an abstract base class and will always need to be subclassed.
   public:
 
     QgsFieldFormatter();
-%Docstring
-Default constructor
-%End
 
     virtual ~QgsFieldFormatter();
 

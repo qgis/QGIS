@@ -127,9 +127,6 @@ expressionZ: "if( $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
   public:
 
     QgsMeshTransformVerticesByExpression();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 

@@ -29,9 +29,6 @@ Other option has also to be set before calling :py:func:`QgsMeshEditor.advancedE
   public:
 
     QgsMeshEditForceByLine();
-%Docstring
-Constructor
-%End
 
     void setInputLine( const QgsPoint &pt1, const QgsPoint &pt2, double tolerance, bool newVertexOnIntersection );
 %Docstring
@@ -84,9 +81,6 @@ before applying the edition with :py:func:`QgsMeshEditor.advancedEdit()`
   public:
 
     QgsMeshEditForceByPolylines();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 

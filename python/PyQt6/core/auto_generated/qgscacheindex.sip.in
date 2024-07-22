@@ -22,9 +22,6 @@ Abstract base class for cache indices
   public:
 
     QgsAbstractCacheIndex();
-%Docstring
-Constructor for QgsAbstractCacheIndex.
-%End
     virtual ~QgsAbstractCacheIndex();
 
     virtual void flushFeature( QgsFeatureId fid ) = 0;

@@ -37,9 +37,6 @@ could provide their own implementation to be able to use plugins.
   public:
 
     QgisInterface();
-%Docstring
-Constructor
-%End
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 

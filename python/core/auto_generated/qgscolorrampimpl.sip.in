@@ -493,9 +493,6 @@ to some hardcoded saturation and value ranges to prevent ugly color generation.
   public:
 
     QgsRandomColorRamp();
-%Docstring
-Constructor for QgsRandomColorRamp.
-%End
 
     virtual int count() const;
 

@@ -23,9 +23,6 @@ an identify action.
   public:
 
     QgsIdentifyContext();
-%Docstring
-Constructor for QgsIdentifyContext
-%End
 
     void setTemporalRange( const QgsDateTimeRange &range );
 %Docstring

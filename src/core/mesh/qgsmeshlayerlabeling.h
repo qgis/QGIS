@@ -45,7 +45,6 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
 {
   public:
 
-    //! Default constructor
     QgsAbstractMeshLayerLabeling() = default;
     virtual ~QgsAbstractMeshLayerLabeling() = default;
 

@@ -40,9 +40,6 @@ based on a transformation method and a list of GCPs.
     };
 
     QgsGcpTransformerInterface();
-%Docstring
-Constructor for QgsGcpTransformerInterface
-%End
 
     virtual ~QgsGcpTransformerInterface();
 

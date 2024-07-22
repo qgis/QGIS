@@ -39,7 +39,7 @@ class QgsMeshLayerRendererFeedback;
 class QgsMeshVectorRenderer
 {
   public:
-    //! Constructor
+
     QgsMeshVectorRenderer() = default;
 
     /**

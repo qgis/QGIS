@@ -93,9 +93,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
   protected:
 
-    /**
-     * Constructor for QgsDiagram.
-     */
     QgsDiagram() = default;
     QgsDiagram( const QgsDiagram &other );
 

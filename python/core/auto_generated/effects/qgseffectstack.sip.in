@@ -43,9 +43,6 @@ the map parameter, and always returns an empty effect stack.
 %End
 
     QgsEffectStack();
-%Docstring
-Constructor for empty QgsEffectStack.
-%End
 
     QgsEffectStack( const QgsEffectStack &other );
 

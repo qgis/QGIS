@@ -16,9 +16,6 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
   public:
 
     QgsTrackedVectorLayerTools();
-%Docstring
-Constructor for QgsTrackedVectorLayerTools.
-%End
 
     virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature /Out/, const QgsVectorLayerToolsContext &context ) const;
 

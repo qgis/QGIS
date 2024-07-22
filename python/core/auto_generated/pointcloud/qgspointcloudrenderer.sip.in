@@ -194,9 +194,6 @@ Abstract base class for 2d point cloud renderers.
   public:
 
     QgsPointCloudRenderer();
-%Docstring
-Constructor for QgsPointCloudRenderer.
-%End
 
     virtual ~QgsPointCloudRenderer();
 

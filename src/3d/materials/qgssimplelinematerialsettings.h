@@ -37,9 +37,6 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
 {
   public:
 
-    /**
-     * Constructor for QgsSimpleLineMaterialSettings.
-     */
     QgsSimpleLineMaterialSettings() = default;
 
     QString type() const override;

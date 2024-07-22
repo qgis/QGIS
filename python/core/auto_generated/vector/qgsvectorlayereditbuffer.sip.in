@@ -269,9 +269,6 @@ Emitted after committing an attribute rename
   protected:
 
     QgsVectorLayerEditBuffer();
-%Docstring
-Constructor for QgsVectorLayerEditBuffer
-%End
 
     void updateFeatureGeometry( QgsFeature &f );
 %Docstring

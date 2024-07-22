@@ -56,9 +56,6 @@ Manages stored expressions regarding creation, modification and storing in the p
   public:
 
     QgsStoredExpressionManager();
-%Docstring
-Constructor for QgsStoredExpressionManager
-%End
 
     QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 %Docstring

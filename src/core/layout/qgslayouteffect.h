@@ -39,9 +39,6 @@ class CORE_EXPORT QgsLayoutEffect : public QGraphicsEffect
 
   public:
 
-    /**
-     * Constructor for QgsLayoutEffect.
-     */
     QgsLayoutEffect() = default;
 
     /**

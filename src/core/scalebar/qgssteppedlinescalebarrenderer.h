@@ -31,9 +31,6 @@ class CORE_EXPORT QgsSteppedLineScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
 
-    /**
-     * Constructor for QgsSteppedLineScaleBarRenderer.
-     */
     QgsSteppedLineScaleBarRenderer() = default;
 
     QString id() const override;

@@ -487,9 +487,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 {
   public:
 
-    /**
-     * Constructor for QgsRandomColorRamp.
-     */
     QgsRandomColorRamp() = default;
 
     int count() const override;

@@ -27,9 +27,6 @@ dots per inch (DPI) property for the converter. Converters default to using
   public:
 
     QgsLayoutMeasurementConverter();
-%Docstring
-Constructor for QgsLayoutMeasurementConverter.
-%End
 
     void setDpi( const double dpi );
 %Docstring

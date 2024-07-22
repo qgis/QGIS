@@ -22,9 +22,6 @@ Abstract base class for curved geometry type
   public:
 
     QgsCurve();
-%Docstring
-Constructor for QgsCurve.
-%End
 
     virtual bool equals( const QgsCurve &other ) const = 0;
 %Docstring

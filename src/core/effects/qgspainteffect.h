@@ -106,9 +106,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
       ModifyAndRender //!< The result of the effect is both rendered and passed on to subsequent effects in the stack
     };
 
-    /**
-     * Constructor for QgsPaintEffect.
-     */
     QgsPaintEffect() = default;
 
     QgsPaintEffect( const QgsPaintEffect &other );
@@ -328,7 +325,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
   public:
 
-    //! Constructor for QgsDrawSourceEffect
     QgsDrawSourceEffect() = default;
 
     /**

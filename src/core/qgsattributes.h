@@ -60,7 +60,6 @@ class QgsAttributes : public QVector<QVariant>
 {
   public:
 
-    //! Constructor for QgsAttributes
     QgsAttributes() = default;
 
     /**
