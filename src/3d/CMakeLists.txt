@@ -22,8 +22,6 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
-  qgsfgutils.cpp
-  qgsframegraph.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
   qgsgltf3dutils.cpp
@@ -43,11 +41,6 @@ set(QGIS_3D_SRCS
   qgswindow3dengine.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
-  qgspostprocessingentity.cpp
-  qgsrenderpassquad.cpp
-  qgsambientocclusionrenderentity.cpp
-  qgsambientocclusionblurentity.cpp
-  qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
@@ -83,6 +76,14 @@ set(QGIS_3D_SRCS
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
+
+  framegraph/qgsambientocclusionrenderentity.cpp
+  framegraph/qgsambientocclusionblurentity.cpp
+  framegraph/qgspostprocessingentity.cpp
+  framegraph/qgspreviewquad.cpp
+  framegraph/qgsrenderpassquad.cpp
+  framegraph/qgsframegraph.cpp
+  framegraph/qgsfgutils.cpp
 
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
@@ -145,8 +146,6 @@ set(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
-  qgsfgutils.h
-  qgsframegraph.h
   qgsgeotransform.h
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
@@ -163,13 +162,8 @@ set(QGIS_3D_HDRS
   qgswindow3dengine.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
-  qgspostprocessingentity.h
-  qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
-  qgsrenderpassquad.h
-  qgsambientocclusionrenderentity.h
-  qgsambientocclusionblurentity.h
   qgsambientocclusionsettings.h
 
   lights/qgsdirectionallightsettings.h
@@ -188,6 +182,14 @@ set(QGIS_3D_HDRS
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
   materials/qgstexturematerial.h
+
+  framegraph/qgsambientocclusionrenderentity.h
+  framegraph/qgsambientocclusionblurentity.h
+  framegraph/qgsframegraph.h
+  framegraph/qgsfgutils.h
+  framegraph/qgspostprocessingentity.h
+  framegraph/qgspreviewquad.h
+  framegraph/qgsrenderpassquad.h
 
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
