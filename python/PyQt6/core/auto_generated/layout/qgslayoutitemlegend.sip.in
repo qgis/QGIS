@@ -126,6 +126,7 @@ Returns whether the legend should automatically resize to fit its contents.
 Returns the legend model.
 %End
 
+
     void setAutoUpdateModel( bool autoUpdate );
 %Docstring
 Sets whether the legend content should auto update to reflect changes in the project's
