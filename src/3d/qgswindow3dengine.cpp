@@ -19,7 +19,7 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include "qgs3dmapcanvas.h"
-#include "qgsframegraph.h"
+#include "framegraph/qgsframegraph.h"
 
 
 QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )

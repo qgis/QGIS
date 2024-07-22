@@ -72,7 +72,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
-#include "qgsframegraph.h"
+#include "framegraph/qgsframegraph.h"
 
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
