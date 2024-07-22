@@ -16,7 +16,7 @@
 #include "qgsabstract3dengine.h"
 #include "moc_qgsabstract3dengine.cpp"
 
-#include "qgsframegraph.h"
+#include "framegraph/qgsframegraph.h"
 #include "qgslogger.h"
 
 #include <Qt3DRender/QRenderCapture>
