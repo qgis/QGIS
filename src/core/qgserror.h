@@ -39,7 +39,6 @@ class CORE_EXPORT QgsErrorMessage
       Html
     };
 
-    //! Constructor for QgsErrorMessage
     QgsErrorMessage() = default;
 
     /**
@@ -81,7 +80,6 @@ class CORE_EXPORT QgsError
 {
   public:
 
-    //! Constructor for QgsError
     QgsError() = default;
 
     /**

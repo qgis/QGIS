@@ -36,7 +36,7 @@ class QDomElement;
 class _3D_EXPORT QgsSkyboxSettings
 {
   public:
-    //! default constructor
+
     QgsSkyboxSettings() = default;
     //! copy constructor
     QgsSkyboxSettings( const QgsSkyboxSettings &other );

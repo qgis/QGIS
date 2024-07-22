@@ -29,9 +29,6 @@ Base class for plot/chart/graphs.
   public:
 
     QgsPlot();
-%Docstring
-Constructor for QgsPlot.
-%End
 
     virtual ~QgsPlot();
 

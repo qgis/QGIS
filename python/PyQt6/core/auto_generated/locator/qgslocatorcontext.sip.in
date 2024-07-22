@@ -21,9 +21,6 @@ Encapsulates the properties relating to the context of a locator search.
   public:
 
     QgsLocatorContext();
-%Docstring
-Constructor for QgsLocatorContext.
-%End
 
     QgsRectangle targetExtent;
 

@@ -116,9 +116,6 @@ Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s valu
   public:
 
     QgsProjectPropertyValue();
-%Docstring
-Constructor for QgsProjectPropertyValue.
-%End
 
     QgsProjectPropertyValue( const QVariant &value );
 %Docstring

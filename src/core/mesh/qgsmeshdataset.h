@@ -561,7 +561,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 class CORE_EXPORT QgsMeshDataset
 {
   public:
-    //! Constructor
+
     QgsMeshDataset() = default;
 
     //! Destructor
@@ -610,7 +610,6 @@ class CORE_EXPORT QgsMeshDatasetGroup
       Virtual, //! Virtual Dataset group defined by a formula
     };
 
-    //! Default constructor
     QgsMeshDatasetGroup() = default;
     virtual ~QgsMeshDatasetGroup();
 
@@ -722,7 +721,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
 class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 {
   public:
-    //! Constructor
+
     QgsMeshMemoryDataset() = default;
 
     QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
@@ -755,7 +754,7 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 {
   public:
-    //! Constructor
+
     QgsMeshMemoryDatasetGroup() = default;
     //! Constructor with the \a name of the group
     QgsMeshMemoryDatasetGroup( const QString &name );

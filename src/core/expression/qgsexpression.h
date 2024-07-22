@@ -110,7 +110,6 @@ struct HelpVariant
 
 struct Help
 {
-  //! Constructor for expression help
   Help() = default;
 
   Help( const QString &name, const QString &type, const QString &description, const QList<HelpVariant> &variants )

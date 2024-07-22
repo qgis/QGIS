@@ -23,9 +23,6 @@ alternating segments. AKA "South African" style.
   public:
 
     QgsHollowScaleBarRenderer();
-%Docstring
-Constructor for QgsHollowScaleBarRenderer.
-%End
 
     virtual QString id() const;
 

@@ -23,9 +23,6 @@ Encapsulates properties of an individual matching result found by a :py:class:`Q
   public:
 
     QgsLocatorResult();
-%Docstring
-Constructor for QgsLocatorResult.
-%End
 
     QgsLocatorResult( QgsLocatorFilter *filter, const QString &displayString, const QVariant &userData = QVariant() );
 %Docstring
@@ -61,10 +58,8 @@ Set ``userData`` for the locator result
     struct ResultAction
     {
       public:
+
         ResultAction();
-%Docstring
-Constructor for ResultAction
-%End
 
         ResultAction( int id, QString text, QString iconPath = QString() );
 %Docstring

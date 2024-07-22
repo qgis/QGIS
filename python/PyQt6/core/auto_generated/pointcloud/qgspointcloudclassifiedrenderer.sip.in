@@ -24,9 +24,6 @@ Represents an individual category (class) from a :py:class:`QgsPointCloudClassif
   public:
 
     QgsPointCloudCategory();
-%Docstring
-Constructor for QgsPointCloudCategory.
-%End
 
     QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
 %Docstring

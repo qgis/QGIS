@@ -18,9 +18,6 @@ class QgsPluginManagerInterface : QObject
   public:
 
     QgsPluginManagerInterface();
-%Docstring
-Constructor
-%End
 
     virtual void clearPythonPluginMetadata() = 0;
 %Docstring

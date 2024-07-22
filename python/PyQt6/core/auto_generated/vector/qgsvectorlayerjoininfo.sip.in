@@ -22,9 +22,6 @@ The join is done based on [our layer].targetField = [join layer].joinField
   public:
 
     QgsVectorLayerJoinInfo();
-%Docstring
-Constructor for QgsVectorLayerJoinInfo.
-%End
 
     void setJoinLayer( QgsVectorLayer *layer );
 %Docstring

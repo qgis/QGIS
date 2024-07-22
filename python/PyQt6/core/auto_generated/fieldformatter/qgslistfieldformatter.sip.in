@@ -22,9 +22,6 @@ Values will be represented as a comma-separated list.
   public:
 
     QgsListFieldFormatter();
-%Docstring
-Default constructor of field formatter for a list field.
-%End
     virtual QString id() const;
 
 

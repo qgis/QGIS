@@ -118,9 +118,6 @@ Processing toolbox model node corresponding to the recent algorithms group
   public:
 
     QgsProcessingToolboxModelRecentNode();
-%Docstring
-Constructor for QgsProcessingToolboxModelRecentNode.
-%End
 
     virtual NodeType nodeType() const;
 
@@ -144,9 +141,6 @@ Processing toolbox model node corresponding to the favorite algorithms group
   public:
 
     QgsProcessingToolboxModelFavoriteNode();
-%Docstring
-Constructor for :py:class:`QgsProcessingToolboxModelRecentNode`.
-%End
 
     virtual NodeType nodeType() const;
 

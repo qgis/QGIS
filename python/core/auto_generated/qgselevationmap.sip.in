@@ -33,9 +33,6 @@ in meters.
   public:
 
     QgsElevationMap();
-%Docstring
-Default constructor
-%End
 
     explicit QgsElevationMap( const QSize &size, float devicePixelRatio = 1.0 );
 %Docstring

@@ -34,10 +34,8 @@ Updates the 3D renderer's symbol to match that of a given :py:class:`QgsPointClo
 %End
 
   protected:
+
     QgsAbstractPointCloud3DRenderer();
-%Docstring
-Default constructor
-%End
 
   private:
     QgsAbstractPointCloud3DRenderer( const QgsAbstractPointCloud3DRenderer & );

@@ -1152,9 +1152,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 {
   public:
 
-    /**
-      * Constructor for QgsProcessingFeatureBasedAlgorithm.
-      */
     QgsProcessingFeatureBasedAlgorithm() = default;
 
     Qgis::ProcessingAlgorithmFlags flags() const override SIP_HOLDGIL;

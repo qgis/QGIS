@@ -30,9 +30,6 @@ Basic shading material used for rendering simple lines as solid line components.
   public:
 
     QgsSimpleLineMaterialSettings();
-%Docstring
-Constructor for QgsSimpleLineMaterialSettings.
-%End
 
     virtual QString type() const;
 

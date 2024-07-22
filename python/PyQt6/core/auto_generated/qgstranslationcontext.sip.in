@@ -24,9 +24,6 @@ Used for the collecting of strings from projects for translation and creation of
   public:
 
     QgsTranslationContext();
-%Docstring
-Constructor
-%End
 
     QgsProject *project() const;
 %Docstring

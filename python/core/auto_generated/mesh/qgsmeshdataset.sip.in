@@ -586,10 +586,8 @@ Abstract class that represents a dataset
 #include "qgsmeshdataset.h"
 %End
   public:
+
     QgsMeshDataset();
-%Docstring
-Constructor
-%End
 
     virtual ~QgsMeshDataset();
 
@@ -647,9 +645,6 @@ Abstract class that represents a dataset group
     };
 
     QgsMeshDatasetGroup();
-%Docstring
-Default constructor
-%End
     virtual ~QgsMeshDatasetGroup();
 
     QgsMeshDatasetGroup( const QString &name );

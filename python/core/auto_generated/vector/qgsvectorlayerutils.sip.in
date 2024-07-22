@@ -35,9 +35,6 @@ Contains mainly the QMap with :py:class:`QgsVectorLayer` and :py:class:`QgsFeatu
       public:
 
         QgsDuplicateFeatureContext();
-%Docstring
-Constructor for QgsDuplicateFeatureContext
-%End
 
         QList<QgsVectorLayer *> layers() const;
 %Docstring

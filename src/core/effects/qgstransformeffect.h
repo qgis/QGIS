@@ -44,9 +44,6 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      */
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
-    /**
-     * Constructor for QgsTransformEffect.
-     */
     QgsTransformEffect() = default;
 
     QString type() const override { return QStringLiteral( "transform" ); }

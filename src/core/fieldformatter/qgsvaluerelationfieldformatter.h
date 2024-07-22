@@ -46,7 +46,6 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
         , group( group )
       {}
 
-      //! Constructor for ValueRelationItem
       ValueRelationItem() = default;
 
       QVariant key;

@@ -36,9 +36,6 @@ class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
 
-    /**
-     * Constructor for QgsLegendSymbolItem.
-     */
     QgsLegendSymbolItem() = default;
 
     /**

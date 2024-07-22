@@ -62,9 +62,6 @@ Represents a node in a raster calculator.
     };
 
     QgsRasterCalcNode();
-%Docstring
-Constructor for QgsRasterCalcNode.
-%End
 
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );

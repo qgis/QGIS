@@ -38,9 +38,6 @@ implemented in the analysis library: :py:class:`QgsNetworkDistanceStrategy` and 
   public:
 
     QgsNetworkStrategy();
-%Docstring
-Default constructor
-%End
 
     virtual ~QgsNetworkStrategy();
 

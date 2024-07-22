@@ -29,9 +29,6 @@ A phong shading model with diffuse texture map.
   public:
 
     QgsPhongTexturedMaterialSettings();
-%Docstring
-Constructor for QgsPhongTexturedMaterialSettings.
-%End
 
     virtual QString type() const;
 

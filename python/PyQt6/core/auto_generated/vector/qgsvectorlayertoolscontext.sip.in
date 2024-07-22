@@ -24,9 +24,6 @@ consider.
   public:
 
     QgsVectorLayerToolsContext();
-%Docstring
-Constructor for QgsVectorLayerToolsContext.
-%End
 
     QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );
 %Docstring

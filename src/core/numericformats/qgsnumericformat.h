@@ -284,9 +284,6 @@ class CORE_EXPORT QgsNumericFormat
 
   public:
 
-    /**
-      * Default constructor
-      */
     QgsNumericFormat() = default;
 
     virtual ~QgsNumericFormat() = default;

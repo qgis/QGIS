@@ -1151,9 +1151,6 @@ algorithm in "chains", avoiding the need for temporary outputs in multi-step mod
   public:
 
     QgsProcessingFeatureBasedAlgorithm();
-%Docstring
-Constructor for QgsProcessingFeatureBasedAlgorithm.
-%End
 
     virtual Qgis::ProcessingAlgorithmFlags flags() const /HoldGIL/;
 

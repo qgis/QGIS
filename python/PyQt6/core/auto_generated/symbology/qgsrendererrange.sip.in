@@ -21,9 +21,6 @@ class QgsRendererRange
   public:
 
     QgsRendererRange();
-%Docstring
-Constructor for QgsRendererRange.
-%End
     ~QgsRendererRange();
 
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true, const QString &uuid = QString() );

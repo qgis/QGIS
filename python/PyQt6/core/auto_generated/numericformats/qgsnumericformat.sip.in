@@ -207,9 +207,6 @@ This is an abstract base class and will always need to be subclassed.
   public:
 
     QgsNumericFormat();
-%Docstring
-Default constructor
-%End
 
     virtual ~QgsNumericFormat();
 

@@ -32,9 +32,6 @@ class CORE_EXPORT QgsAnnotationItemNode
 {
   public:
 
-    /**
-     * Default constructor
-     */
     QgsAnnotationItemNode() = default;
 
     /**

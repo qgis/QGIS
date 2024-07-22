@@ -46,7 +46,6 @@ class _3D_EXPORT Qgs3DAxisSettings
       Cube = 3, //!< Abstract cube mode
     };
 
-    //! default constructor
     Qgs3DAxisSettings() = default;
 
     //! Returns true if both objects are equal

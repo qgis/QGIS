@@ -31,10 +31,8 @@ If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsM
 
     struct ActionData
     {
+
       ActionData();
-%Docstring
-Constructor for ActionData
-%End
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
 

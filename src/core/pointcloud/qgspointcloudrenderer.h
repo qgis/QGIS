@@ -343,9 +343,6 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
-    /**
-     * Constructor for QgsPointCloudRenderer.
-     */
     QgsPointCloudRenderer() = default;
 
     virtual ~QgsPointCloudRenderer() = default;

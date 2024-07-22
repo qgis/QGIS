@@ -61,9 +61,6 @@ A registry of plugin layers types.
   public:
 
     QgsPluginLayerRegistry();
-%Docstring
-Constructor for QgsPluginLayerRegistry.
-%End
     ~QgsPluginLayerRegistry();
 
 

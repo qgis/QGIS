@@ -52,7 +52,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
-    //! Creates flat terrain generator object
+
     QgsFlatTerrainGenerator() = default;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;

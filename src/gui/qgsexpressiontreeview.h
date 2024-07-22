@@ -162,7 +162,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     class MenuProvider
     {
       public:
-        //! Constructor
+
         explicit MenuProvider() = default;
         virtual ~MenuProvider() = default;
 

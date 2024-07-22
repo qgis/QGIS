@@ -24,9 +24,6 @@ Validates the server specific parts of the configuration of a QGIS project.
   public:
 
     QgsProjectServerValidator();
-%Docstring
-Constructor for QgsProjectServerValidator.
-%End
 
     enum ValidationError
     {

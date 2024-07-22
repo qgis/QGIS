@@ -45,6 +45,7 @@ Use cases for which :py:class:`QgsPointXY` is NOT a valid choice include:
     static const QMetaObject staticMetaObject;
 
   public:
+
     QgsPointXY();
 
     QgsPointXY( const QgsPointXY &p ) /HoldGIL/;

@@ -36,9 +36,6 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
 {
   public:
 
-    /**
-     * Constructor for QgsMetalRoughMaterialSettings.
-     */
     QgsMetalRoughMaterialSettings() = default;
 
     QString type() const override;

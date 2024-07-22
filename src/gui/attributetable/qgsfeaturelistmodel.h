@@ -45,9 +45,6 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     {
       public:
 
-        /**
-         * Constructor for FeatureInfo.
-         */
         FeatureInfo() = default;
 
         //! True if feature is a newly added feature.

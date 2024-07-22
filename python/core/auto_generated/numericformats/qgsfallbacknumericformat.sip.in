@@ -21,9 +21,6 @@ A basic numeric formatter which returns a simple text representation of a value.
   public:
 
     QgsFallbackNumericFormat();
-%Docstring
-Default constructor
-%End
     virtual QString id() const;
 
     virtual QString visibleName() const;

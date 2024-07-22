@@ -34,9 +34,6 @@ Styling option for a layout table cell
   public:
 
     QgsLayoutTableStyle();
-%Docstring
-Constructor for QgsLayoutTableStyle
-%End
 
     bool enabled;
 

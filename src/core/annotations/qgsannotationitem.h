@@ -71,9 +71,6 @@ class CORE_EXPORT QgsAnnotationItem
 
   public:
 
-    /**
-     * Constructor for an annotation item.
-     */
     QgsAnnotationItem() = default;
 
 #ifndef SIP_RUN

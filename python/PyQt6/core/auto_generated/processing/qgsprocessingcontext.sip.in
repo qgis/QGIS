@@ -216,9 +216,6 @@ Constructor for LayerDetails.
 %End
 
         LayerDetails();
-%Docstring
-Default constructor
-%End
 
         QString name;
 

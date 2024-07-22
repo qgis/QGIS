@@ -163,7 +163,6 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
 {
   public:
 
-    //! Constructor
     QgsMeshTransformVerticesByExpression() = default;
 
     QString text() const override;

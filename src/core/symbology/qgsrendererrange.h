@@ -37,9 +37,6 @@ class CORE_EXPORT QgsRendererRange
 {
   public:
 
-    /**
-     * Constructor for QgsRendererRange.
-     */
     QgsRendererRange() = default;
     ~QgsRendererRange();
 

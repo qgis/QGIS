@@ -115,9 +115,6 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 {
   public:
 
-    /**
-     * Constructor for QgsProcessingParameterWidgetContext.
-     */
     QgsProcessingParameterWidgetContext() = default;
 
     /**

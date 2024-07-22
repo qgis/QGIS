@@ -78,9 +78,6 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
      */
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 
-    /**
-     * Constructor for QgsReferencedRectangle.
-     */
     QgsReferencedRectangle() = default;
 
     //! Allows direct construction of QVariants from rectangle.
@@ -118,9 +115,6 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
      */
     QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 
-    /**
-     * Constructor for QgsReferencedPointXY.
-     */
     QgsReferencedPointXY() = default;
 
     //! Allows direct construction of QVariants from point.
@@ -159,9 +153,6 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
      */
     QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
 
-    /**
-     * Constructor for QgsReferencedGeometry.
-     */
     QgsReferencedGeometry() = default;
 
     //! Allows direct construction of QVariants from geometry.

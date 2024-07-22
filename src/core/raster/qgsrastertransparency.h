@@ -35,9 +35,6 @@ class CORE_EXPORT QgsRasterTransparency
 
   public:
 
-    /**
-     * Constructor for QgsRasterTransparency.
-     */
     QgsRasterTransparency() = default;
 
     /**

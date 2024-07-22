@@ -26,9 +26,6 @@ This class is a menu that is populated automatically with the actions defined fo
     {
 
       ActionData();
-%Docstring
-Constructor for ActionData.
-%End
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 

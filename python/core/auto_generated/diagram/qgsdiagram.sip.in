@@ -80,9 +80,6 @@ Returns the size of the legend item for the diagram corresponding to a specified
   protected:
 
     QgsDiagram();
-%Docstring
-Constructor for QgsDiagram.
-%End
     QgsDiagram( const QgsDiagram &other );
 
     void setPenWidth( QPen &pen, const QgsDiagramSettings &s, const QgsRenderContext &c );

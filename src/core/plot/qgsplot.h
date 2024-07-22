@@ -44,9 +44,6 @@ class CORE_EXPORT QgsPlot
 {
   public:
 
-    /**
-     * Constructor for QgsPlot.
-     */
     QgsPlot() = default;
 
     virtual ~QgsPlot();

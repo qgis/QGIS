@@ -22,9 +22,6 @@ This class is the data only representation of a
   public:
 
     QgsDetailedItemData();
-%Docstring
-Constructor for QgsDetailedItemData.
-%End
 
     void setTitle( const QString &title );
 %Docstring

@@ -39,9 +39,6 @@ Constructor for QgsScrollBarHighlight.
 %End
 
     QgsScrollBarHighlight();
-%Docstring
-Default constructor for QgsScrollBarHighlight.
-%End
 
     int category;
 

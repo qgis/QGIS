@@ -666,9 +666,6 @@ class CORE_EXPORT QgsDiagramRenderer
 
   public:
 
-    /**
-     * Constructor for QgsDiagramRenderer.
-     */
     QgsDiagramRenderer() = default;
     virtual ~QgsDiagramRenderer() = default;
 
@@ -785,7 +782,6 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
 
-    //! Constructor for QgsSingleCategoryDiagramRenderer
     QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;

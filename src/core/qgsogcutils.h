@@ -255,7 +255,6 @@ class CORE_EXPORT QgsOgcUtils
     class LayerProperties
     {
       public:
-        //! Constructor
         LayerProperties() = default;
 
         //! Layer name

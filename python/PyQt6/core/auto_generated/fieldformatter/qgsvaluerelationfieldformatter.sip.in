@@ -30,9 +30,6 @@ Constructor for ValueRelationItem
 %End
 
       ValueRelationItem();
-%Docstring
-Constructor for ValueRelationItem
-%End
 
       QVariant key;
       QString value;

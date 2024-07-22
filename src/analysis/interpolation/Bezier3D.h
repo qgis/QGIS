@@ -35,7 +35,7 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
   protected:
 
   public:
-    //! Default constructor
+
     Bezier3D() = default;
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine *par, QVector<QgsPoint *> *controlpoly );

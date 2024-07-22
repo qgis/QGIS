@@ -38,9 +38,6 @@ class CORE_EXPORT QgsLocatorResult
 {
   public:
 
-    /**
-     * Constructor for QgsLocatorResult.
-     */
     QgsLocatorResult() = default;
 
     /**
@@ -109,7 +106,7 @@ class CORE_EXPORT QgsLocatorResult
     struct CORE_EXPORT ResultAction
     {
       public:
-        //! Constructor for ResultAction
+
         ResultAction() = default;
 
         /**

@@ -50,9 +50,6 @@ Abstract base class for annotation items which are drawn with :py:class:`QgsAnno
   public:
 
     QgsAnnotationItem();
-%Docstring
-Constructor for an annotation item.
-%End
 
 
     virtual ~QgsAnnotationItem();

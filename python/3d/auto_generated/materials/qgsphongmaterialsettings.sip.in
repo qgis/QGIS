@@ -28,9 +28,6 @@ with three color components: ambient, diffuse and specular.
   public:
 
     QgsPhongMaterialSettings();
-%Docstring
-Constructor for QgsPhongMaterialSettings.
-%End
 
     virtual QString type() const;
 

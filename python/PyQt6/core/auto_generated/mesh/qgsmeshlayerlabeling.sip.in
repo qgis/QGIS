@@ -27,9 +27,6 @@ Abstract base class - its implementations define different approaches to the lab
   public:
 
     QgsAbstractMeshLayerLabeling();
-%Docstring
-Default constructor
-%End
     virtual ~QgsAbstractMeshLayerLabeling();
 
     virtual QString type() const = 0;

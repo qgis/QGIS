@@ -64,7 +64,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
-        //! Constructor
+
         LayerProperties() = default;
 
         //! Layer name

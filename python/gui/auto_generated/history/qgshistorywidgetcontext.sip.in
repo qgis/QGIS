@@ -23,9 +23,6 @@ Contains settings which reflect the context in which a history widget is shown, 
   public:
 
     QgsHistoryWidgetContext();
-%Docstring
-Constructor for QgsHistoryWidgetContext.
-%End
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring

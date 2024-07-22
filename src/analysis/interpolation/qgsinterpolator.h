@@ -51,7 +51,6 @@ struct ANALYSIS_EXPORT QgsInterpolatorVertexData
     , z( z )
   {}
 
-  //! Constructor for QgsInterpolatorVertexData
   QgsInterpolatorVertexData() = default;
 
   //! X-coordinate

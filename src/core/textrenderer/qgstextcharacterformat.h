@@ -42,9 +42,6 @@ class CORE_EXPORT QgsTextCharacterFormat
 {
   public:
 
-    /**
-     * Constructor for QgsTextCharacterFormat.
-     */
     QgsTextCharacterFormat() = default;
 
     /**

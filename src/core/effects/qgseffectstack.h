@@ -53,9 +53,6 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
      */
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
-    /**
-     * Constructor for empty QgsEffectStack.
-     */
     QgsEffectStack() = default;
 
     QgsEffectStack( const QgsEffectStack &other );

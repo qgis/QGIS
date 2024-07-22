@@ -53,9 +53,6 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
 
   public:
 
-    /**
-     * Default constructor
-     */
     QgsNetworkStrategy() = default;
 
     virtual ~QgsNetworkStrategy() = default;

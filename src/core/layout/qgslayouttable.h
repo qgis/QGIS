@@ -73,7 +73,6 @@ class CORE_EXPORT QgsLayoutTableStyle
 {
   public:
 
-    //! Constructor for QgsLayoutTableStyle
     QgsLayoutTableStyle() = default;
 
     //! Whether the styling option is enabled

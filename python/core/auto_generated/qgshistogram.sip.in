@@ -25,9 +25,6 @@ Calculator for a numeric histogram from a list of values.
   public:
 
     QgsHistogram();
-%Docstring
-Constructor for QgsHistogram.
-%End
 
     virtual ~QgsHistogram();
 

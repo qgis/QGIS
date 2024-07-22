@@ -64,7 +64,7 @@ class CORE_EXPORT QgsPointXY
     Q_PROPERTY( double y READ y WRITE setY )
 
   public:
-    /// Default constructor
+
     QgsPointXY() = default;
 
     //! Create a point from another point

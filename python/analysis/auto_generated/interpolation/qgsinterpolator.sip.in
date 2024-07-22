@@ -25,9 +25,6 @@ Constructor for :py:class:`QgsInterpolatorVertexData` with the specified
 %End
 
   QgsInterpolatorVertexData();
-%Docstring
-Constructor for :py:class:`QgsInterpolatorVertexData`
-%End
 
   double x;
   double y;

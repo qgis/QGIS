@@ -40,9 +40,6 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
 {
   public:
 
-    /**
-     * Constructor for QgsLayoutMeasurementConverter.
-     */
     QgsLayoutMeasurementConverter() = default;
 
     /**

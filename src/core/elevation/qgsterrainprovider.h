@@ -158,9 +158,6 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
   protected:
 
-    /**
-     * Constructor for QgsAbstractTerrainProvider.
-     */
     QgsAbstractTerrainProvider() = default;
 
 #ifndef SIP_RUN
@@ -206,9 +203,6 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
 
-    /**
-     * Constructor for QgsFlatTerrainProvider.
-     */
     QgsFlatTerrainProvider() = default;
 
     QString type() const override;
@@ -231,9 +225,6 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
 {
   public:
 
-    /**
-     * Constructor for QgsRasterDemTerrainProvider.
-     */
     QgsRasterDemTerrainProvider() = default;
 
 #ifndef SIP_RUN
@@ -285,9 +276,6 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
 
-    /**
-     * Constructor for QgsMeshTerrainProvider.
-     */
     QgsMeshTerrainProvider() = default;
 
 #ifndef SIP_RUN

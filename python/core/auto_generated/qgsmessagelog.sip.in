@@ -31,9 +31,6 @@ window for the user.
   public:
 
     QgsMessageLog();
-%Docstring
-Constructor for QgsMessageLog.
-%End
 
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true );
 %Docstring

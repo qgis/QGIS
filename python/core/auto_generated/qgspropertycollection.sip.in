@@ -468,9 +468,6 @@ priority over earlier collections.
   public:
 
     QgsPropertyCollectionStack();
-%Docstring
-Constructor for QgsPropertyCollectionStack.
-%End
 
     ~QgsPropertyCollectionStack();
 

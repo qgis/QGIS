@@ -52,9 +52,6 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      */
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
-    /**
-     * Constructor for QgsBlurEffect.
-     */
     QgsBlurEffect() = default;
 
     QString type() const override { return QStringLiteral( "blur" ); }

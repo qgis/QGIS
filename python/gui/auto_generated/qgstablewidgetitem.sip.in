@@ -20,9 +20,6 @@ specific role can be set to sort.
   public:
 
     QgsTableWidgetItem();
-%Docstring
-Constructor for QgsTableWidgetItem.
-%End
 
     QgsTableWidgetItem( const QString &text );
 %Docstring

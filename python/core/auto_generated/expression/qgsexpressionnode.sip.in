@@ -295,9 +295,6 @@ Returns a reference to the current object if no optimizations were applied.
   protected:
 
     QgsExpressionNode();
-%Docstring
-Constructor.
-%End
 
     QgsExpressionNode( const QgsExpressionNode &other );
 %Docstring

@@ -27,9 +27,6 @@ is available to all classes and plugins.
   public:
 
     QgsGpsConnectionRegistry();
-%Docstring
-Constructor for QgsGpsConnectionRegistry.
-%End
     ~QgsGpsConnectionRegistry();
 
 

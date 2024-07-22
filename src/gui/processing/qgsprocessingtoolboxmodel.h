@@ -147,9 +147,6 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
 
   public:
 
-    /**
-     * Constructor for QgsProcessingToolboxModelRecentNode.
-     */
     QgsProcessingToolboxModelRecentNode() = default;
 
     NodeType nodeType() const override { return NodeType::Recent; }
@@ -168,9 +165,6 @@ class GUI_EXPORT QgsProcessingToolboxModelFavoriteNode : public QgsProcessingToo
 
   public:
 
-    /**
-     * Constructor for QgsProcessingToolboxModelRecentNode.
-     */
     QgsProcessingToolboxModelFavoriteNode() = default;
 
     NodeType nodeType() const override { return NodeType::Favorite; }
