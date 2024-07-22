@@ -159,6 +159,13 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QgsLegendModel *model();
 
     /**
+     * Returns the legend model.
+     *
+     * \note Not available in Python bindings
+     */
+    const QgsLegendModel *model() const SIP_SKIP;
+
+    /**
      * Sets whether the legend content should auto update to reflect changes in the project's
      * layer tree.
      * \see autoUpdateModel()
@@ -634,7 +641,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void setModelStyleOverrides( const QMap<QString, QString> &overrides );
 
-    void ensureModelIsInitialized();
+    void ensureModelIsInitialized() const;
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTree > mCustomLayerTree;
     bool mDeferLegendModelInitialization = true;
