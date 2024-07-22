@@ -16,6 +16,7 @@ from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
+    QgsAnnotationItemEditContext,
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
@@ -89,7 +90,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         Test nodes for item
         """
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
-        self.assertEqual(item.nodes(), [
+        self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()), [
             QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13),
                                   Qgis.AnnotationItemNodeType.VertexHandle),
             QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(13, 13.1),
@@ -102,43 +103,43 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1, 14 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(1), 'LineString (112 213, 113 213.1, 114 213)')
 
     def test_apply_move_node_edit(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1, 14 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(13, 13.1), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(13, 13.1), QgsPoint(17, 18)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 17 18, 14 13)')
 
     def test_transient_move_operation(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1, 14 13)')
 
-        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(13, 13.1), QgsPoint(17, 18)))
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(13, 13.1), QgsPoint(17, 18)), QgsAnnotationItemEditContext())
         self.assertEqual(res.representativeGeometry().asWkt(1), 'LineString (12 13, 17 18, 14 13)')
 
     def test_transient_translate_operation(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1, 14 13)')
 
-        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext())
         self.assertEqual(res.representativeGeometry().asWkt(1), 'LineString (112 213, 113 213.1, 114 213)')
 
     def test_apply_delete_node_edit(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1, 14 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(13, 13.1))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(13, 13.1)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(1),
                          'LineString (12 13, 14 13)')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.ItemCleared)
 
     def test_apply_add_node_edit(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(12.5, 12.8))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationAddNode('', QgsPoint(12.5, 12.8)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(1),
                          'LineString (12 13, 12.5 13, 13 13.1, 14 13)')
 

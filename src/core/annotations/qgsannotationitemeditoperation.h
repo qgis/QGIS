@@ -26,6 +26,21 @@
 
 /**
  * \ingroup core
+ * \brief Encapsulates the context for an annotation item edit operation.
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsAnnotationItemEditContext
+{
+  public:
+
+    QgsAnnotationItemEditContext() = default;
+
+
+
+};
+
+/**
+ * \ingroup core
  * \brief Abstract base class for annotation item edit operations
  * \since QGIS 3.22
  */

@@ -195,12 +195,12 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
   }
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
+QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
   return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -231,7 +231,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEdit( Q
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
