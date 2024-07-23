@@ -1852,6 +1852,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     }
 
     mTileMatrixSets.insert( set.identifier, set );
+    if ( mFirstTileMatrixSetId.isEmpty() )
+      mFirstTileMatrixSetId = set.identifier;
   }
 
   //
