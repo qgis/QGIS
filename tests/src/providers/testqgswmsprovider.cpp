@@ -157,6 +157,7 @@ class TestQgsWmsProvider: public QgsTest
       // explicitly state crs and format
       {
         QgsWmsProvider provider( "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpg&layers=CountryGroup&styles=default&tileMatrixSet=standard&tilePixelRatio=0&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
+        QVERIFY( provider.mSettings.mTiled );
         QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
         QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:4326" ) );
         QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/jpg" ) );
@@ -164,6 +165,7 @@ class TestQgsWmsProvider: public QgsTest
       // no crs or format specified, should use tile matrix crs
       {
         QgsWmsProvider provider( "contextualWMSLegend=0&dpiMode=7&featureCount=10&layers=CountryGroup&styles=default&tileMatrixSet=standard&tilePixelRatio=0&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
+        QVERIFY( provider.mSettings.mTiled );
         QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
         QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:3857" ) );
         QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/png" ) );
@@ -171,6 +173,15 @@ class TestQgsWmsProvider: public QgsTest
       // no tileMatrixSet specified, should use first listed
       {
         QgsWmsProvider provider( "layers=CountryGroup&styles=default&tileDimensions=&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
+        QVERIFY( provider.mSettings.mTiled );
+        QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
+        QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:3857" ) );
+        QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/png" ) );
+      }
+      // no tileMatrixSet specified, using type=wmts to request wmts
+      {
+        QgsWmsProvider provider( "layers=CountryGroup&styles=default&type=wmts&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
+        QVERIFY( provider.mSettings.mTiled );
         QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
         QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:3857" ) );
         QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/png" ) );
