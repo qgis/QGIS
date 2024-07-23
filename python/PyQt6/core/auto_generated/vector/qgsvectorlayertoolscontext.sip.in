@@ -101,6 +101,15 @@ Returns whether the parent widget should be hidden when showing tools' dialogues
 Sets whether the parent widget should be hidden when showing tools' dialogues.
 %End
 
+    bool forceSuppressFormPopup() const;
+%Docstring
+Returns whether the add feature form popup should be shown
+%End
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets whether the add feature form popup should be shown
+%End
+
 };
 
 /************************************************************************

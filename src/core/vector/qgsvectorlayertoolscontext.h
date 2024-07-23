@@ -101,6 +101,16 @@ class CORE_EXPORT QgsVectorLayerToolsContext
      */
     void setHideParent( bool hide ) { mHideParent = hide; }
 
+    /**
+     * Returns whether the add feature form popup should be shown
+     */
+    bool forceSuppressFormPopup() const { return mForceSuppressFormPopup; };
+
+    /**
+     * Sets whether the add feature form popup should be shown
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup ) { mForceSuppressFormPopup = forceSuppressFormPopup; }
+
   private:
 
     std::unique_ptr< QgsExpressionContext > mExpressionContext;
@@ -109,6 +119,7 @@ class CORE_EXPORT QgsVectorLayerToolsContext
     QWidget *mParentWidget = nullptr;
     bool mShowModal = true;
     bool mHideParent = false;
+    bool mForceSuppressFormPopup = false;
 };
 
 #endif // QGSVECTORLAYERTOOLSCONTEXT_H
