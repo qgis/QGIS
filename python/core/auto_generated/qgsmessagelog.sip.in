@@ -93,7 +93,6 @@ This will block the log from emitting the messageReceived( bool ) signal for the
 %End
 
 
-
     ~QgsMessageLogNotifyBlocker();
 
   private:

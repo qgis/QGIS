@@ -131,10 +131,6 @@ datum transforms (see :py:class:`QgsDatumTransform`).
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
-%Docstring
-Copy constructor
-%End
-
 
     ~QgsCoordinateTransform();
 

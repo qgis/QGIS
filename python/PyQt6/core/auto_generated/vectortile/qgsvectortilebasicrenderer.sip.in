@@ -38,10 +38,8 @@ zoom levels, or by disabling it.
 %Docstring
 Constructs a style object
 %End
+
     QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other );
-%Docstring
-Constructs a style object as a copy of another style
-%End
     ~QgsVectorTileBasicRendererStyle();
 
     void setStyleName( const QString &name );

@@ -73,9 +73,6 @@ that of the spatial index construction.
 %End
 
     QgsSpatialIndex( const QgsSpatialIndex &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsSpatialIndex();
 

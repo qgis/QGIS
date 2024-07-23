@@ -36,13 +36,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
   public:
 
     QgsSymbolWidgetContext() = default;
-
-    /**
-     * Copy constructor.
-     * \param other source QgsSymbolWidgetContext
-     */
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
-
     QgsSymbolWidgetContext &operator=( const QgsSymbolWidgetContext &other );
 
     /**

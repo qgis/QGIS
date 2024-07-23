@@ -225,9 +225,7 @@ class GUI_EXPORT QWidgetUpdateBlocker
      */
     QWidgetUpdateBlocker( QWidget *widget );
 
-    //! QWidgetUpdateBlocker cannot be copied
     QWidgetUpdateBlocker( const QWidgetUpdateBlocker &other ) = delete;
-    //! QWidgetUpdateBlocker cannot be copied
     QWidgetUpdateBlocker &operator=( const QWidgetUpdateBlocker &other ) = delete;
 
     ~QWidgetUpdateBlocker();

@@ -223,10 +223,6 @@ Returns a new StaticProperty created from the specified value.
 %End
 
     QgsProperty( const QgsProperty &other );
-%Docstring
-Copy constructor
-%End
-
 
     operator bool() const;
 

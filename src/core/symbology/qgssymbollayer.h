@@ -222,10 +222,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual ~QgsSymbolLayer();
 
-    //! QgsSymbolLayer cannot be copied
     QgsSymbolLayer( const QgsSymbolLayer &other ) = delete;
-
-    //! QgsSymbolLayer cannot be copied
     QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
 
     /**
@@ -780,10 +777,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
       Bottom, //!< Align to bottom of symbol
     };
 
-    //! QgsMarkerSymbolLayer cannot be copied
     QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) = delete;
-
-    //! QgsMarkerSymbolLayer cannot be copied
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -1091,10 +1085,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
       InteriorRingsOnly, //!< Render the interior rings only
     };
 
-    //! QgsLineSymbolLayer cannot be copied
     QgsLineSymbolLayer( const QgsLineSymbolLayer &other ) = delete;
-
-    //! QgsLineSymbolLayer cannot be copied
     QgsLineSymbolLayer &operator=( const QgsLineSymbolLayer &other ) = delete;
 
     void setOutputUnit( Qgis::RenderUnit unit ) override;
@@ -1281,10 +1272,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 {
   public:
 
-    //! QgsFillSymbolLayer cannot be copied
     QgsFillSymbolLayer( const QgsFillSymbolLayer &other ) = delete;
-
-    //! QgsFillSymbolLayer cannot be copied
     QgsFillSymbolLayer &operator=( const QgsFillSymbolLayer &other ) = delete;
 
     /**

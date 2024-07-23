@@ -50,9 +50,6 @@ The image must have ARGB32 format and obtained by the :py:func:`~QgsElevationMap
 %End
 
     QgsElevationMap( const QgsElevationMap &other );
-%Docstring
-Copy constructor
-%End
 
     void applyEyeDomeLighting( QImage &image, int distance, float strength, float rendererScale ) const;
 %Docstring

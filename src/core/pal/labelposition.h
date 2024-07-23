@@ -94,7 +94,6 @@ namespace pal
                      double alpha, double cost,
                      FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
-      //! Copy constructor
       LabelPosition( const LabelPosition &other );
 
       ~LabelPosition() override;

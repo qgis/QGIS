@@ -47,10 +47,6 @@ class CORE_EXPORT QgsTextFormat
      */
     QgsTextFormat();
 
-    /**
-     * Copy constructor.
-     * \param other source QgsTextFormat
-     */
     QgsTextFormat( const QgsTextFormat &other );
 
     QgsTextFormat &operator=( const QgsTextFormat &other );

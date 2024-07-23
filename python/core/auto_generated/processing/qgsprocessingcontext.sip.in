@@ -35,9 +35,6 @@ expression context.
 
 
     QgsProcessingContext();
-%Docstring
-Constructor for QgsProcessingContext.
-%End
 
 
     ~QgsProcessingContext();

@@ -47,9 +47,7 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
     QgsAbstractTiledSceneIndex();
     virtual ~QgsAbstractTiledSceneIndex();
 
-    //! QgsAbstractTiledSceneIndex cannot be copied
     QgsAbstractTiledSceneIndex( const QgsAbstractTiledSceneIndex &other ) = delete;
-    //! QgsAbstractTiledSceneIndex cannot be copied
     QgsAbstractTiledSceneIndex &operator=( const QgsAbstractTiledSceneIndex &other ) = delete;
 
     /**
@@ -160,7 +158,6 @@ class CORE_EXPORT QgsTiledSceneIndex
 
     ~QgsTiledSceneIndex();
 
-    //! Copy constructor
     QgsTiledSceneIndex( const QgsTiledSceneIndex &other );
     QgsTiledSceneIndex &operator=( const QgsTiledSceneIndex &other );
 

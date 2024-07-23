@@ -577,9 +577,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     ~QgsVectorLayer() override;
 
-    //! QgsVectorLayer cannot be copied.
     QgsVectorLayer( const QgsVectorLayer &rhs ) = delete;
-    //! QgsVectorLayer cannot be copied.
     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
 
 #ifdef SIP_RUN

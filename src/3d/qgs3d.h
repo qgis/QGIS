@@ -34,10 +34,7 @@ class _3D_EXPORT Qgs3D
 
   public:
 
-    //! Qgs3D cannot be copied
     Qgs3D( const Qgs3D &other ) = delete;
-
-    //! Qgs3D cannot be copied
     Qgs3D &operator=( const Qgs3D &other ) = delete;
 
     /**

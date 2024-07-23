@@ -116,9 +116,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     ~QgsPointCloudLayer() override;
 
-    //! QgsPointCloudLayer cannot be copied.
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs ) = delete;
-    //! QgsPointCloudLayer cannot be copied.
     QgsPointCloudLayer &operator=( QgsPointCloudLayer const &rhs ) = delete;
 
 #ifdef SIP_RUN

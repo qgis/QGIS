@@ -65,8 +65,6 @@ Note that ownership is not transferred to ``parent``.
 
     ~QgsAbstractReportSection();
 
-
-
     virtual QString type() const = 0;
 %Docstring
 Returns the section subclass type.

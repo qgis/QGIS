@@ -93,9 +93,7 @@ class QgsScopedAssignObjectToCurrentThread
       mObject->moveToThread( nullptr );
     }
 
-    //! QgsScopedAssignObjectToCurrentThread cannot be copied
     QgsScopedAssignObjectToCurrentThread( const QgsScopedAssignObjectToCurrentThread &other ) = delete;
-    //! QgsScopedAssignObjectToCurrentThread cannot be copied
     QgsScopedAssignObjectToCurrentThread &operator =( const QgsScopedAssignObjectToCurrentThread & ) = delete;
 
   private:

@@ -22,16 +22,10 @@ for scalebar drawing with :py:class:`QgsScaleBarRenderer`.
   public:
 
     QgsScaleBarSettings();
-%Docstring
-Constructor for QgsScaleBarSettings.
-%End
 
     ~QgsScaleBarSettings();
 
     QgsScaleBarSettings( const QgsScaleBarSettings &other );
-%Docstring
-Copy constructor
-%End
 
 
     int numberOfSegments() const;

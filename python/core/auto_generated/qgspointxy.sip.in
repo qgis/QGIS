@@ -49,9 +49,6 @@ Use cases for which :py:class:`QgsPointXY` is NOT a valid choice include:
     QgsPointXY();
 
     QgsPointXY( const QgsPointXY &p ) /HoldGIL/;
-%Docstring
-Create a point from another point
-%End
 
     QgsPointXY( double x, double y ) /HoldGIL/;
 %Docstring

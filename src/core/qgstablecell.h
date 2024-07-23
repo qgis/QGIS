@@ -42,7 +42,6 @@ class CORE_EXPORT QgsTableCell
      */
     QgsTableCell( const QVariant &content = QVariant() );
 
-    //! Copy constructor
     QgsTableCell( const QgsTableCell &other );
 
     ~QgsTableCell();

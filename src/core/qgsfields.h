@@ -82,14 +82,7 @@ class CORE_EXPORT QgsFields
      */
     QgsFields() SIP_HOLDGIL;
 
-    /**
-     * Copy constructor
-     */
     QgsFields( const QgsFields &other ) SIP_HOLDGIL;
-
-    /**
-     * Assignment operator
-     */
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
     /**

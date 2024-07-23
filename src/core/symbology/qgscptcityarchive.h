@@ -43,9 +43,7 @@ class CORE_EXPORT QgsCptCityArchive
                        const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 
-    //! QgsCptCityArchive cannot be copied
     QgsCptCityArchive( const QgsCptCityArchive &rh ) = delete;
-    //! QgsCptCityArchive cannot be copied
     QgsCptCityArchive &operator=( const QgsCptCityArchive &rh ) = delete;
 
     // basic dir info

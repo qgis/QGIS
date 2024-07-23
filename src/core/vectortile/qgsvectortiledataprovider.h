@@ -84,14 +84,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                Qgis::DataProviderReadFlags flags );
 
-    /**
-     * Copy constructor.
-     */
     QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other );
-
-    /**
-     * QgsVectorTileDataProvider cannot be assigned.
-     */
     QgsVectorTileDataProvider &operator=( const QgsVectorTileDataProvider &other ) = delete;
 
     /**

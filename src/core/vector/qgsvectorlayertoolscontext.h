@@ -34,12 +34,7 @@ class CORE_EXPORT QgsVectorLayerToolsContext
 
     QgsVectorLayerToolsContext() = default;
 
-    /**
-     * Copy constructor.
-     * \param other source QgsVectorLayerToolsContext
-     */
     QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );
-
     QgsVectorLayerToolsContext &operator=( const QgsVectorLayerToolsContext &other );
 
     /**

@@ -34,10 +34,6 @@ Constructor for QgsTiledSceneDataProvider
     ~QgsTiledSceneDataProvider();
 
     QgsTiledSceneDataProvider( const QgsTiledSceneDataProvider &other );
-%Docstring
-Copy constructor.
-%End
-
 
     virtual Qgis::TiledSceneProviderCapabilities capabilities() const;
 %Docstring

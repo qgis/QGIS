@@ -24,9 +24,6 @@ A class to query the labeling structure at a given point (small wrapper around p
   public:
 
     QgsLabelSearchTree();
-%Docstring
-Constructor for QgsLabelSearchTree.
-%End
     ~QgsLabelSearchTree();
 
 
@@ -71,9 +68,7 @@ Sets the map ``settings`` associated with the labeling run.
 %End
 
   private:
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree( const QgsLabelSearchTree &rh );
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
 };
 

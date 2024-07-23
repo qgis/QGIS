@@ -33,7 +33,6 @@ After construction, call :py:func:`~QgsProfileExporter.run` to initiate the prof
 %End
 
 
-
     ~QgsProfileExporter();
 
     void run( QgsFeedback *feedback = 0 );

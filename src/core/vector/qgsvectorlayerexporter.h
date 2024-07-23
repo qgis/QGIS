@@ -93,9 +93,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                             QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
-    //! QgsVectorLayerExporter cannot be copied
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh ) = delete;
-    //! QgsVectorLayerExporter cannot be copied
     QgsVectorLayerExporter &operator=( const QgsVectorLayerExporter &rh ) = delete;
 
     /**

@@ -52,11 +52,6 @@ Container for settings relating to a text background object.
     QgsTextBackgroundSettings();
 
     QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsTextBackgroundSettings
-%End
 
 
     ~QgsTextBackgroundSettings();

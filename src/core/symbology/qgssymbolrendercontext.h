@@ -51,7 +51,6 @@ class CORE_EXPORT QgsSymbolRenderContext
 
     ~QgsSymbolRenderContext();
 
-    //! QgsSymbolRenderContext cannot be copied.
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) = delete;
 
     /**

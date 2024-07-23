@@ -44,16 +44,8 @@ class CORE_EXPORT QgsTextBufferSettings
 
     QgsTextBufferSettings();
 
-    /**
-     * Copy constructor.
-     * \param other source settings
-     */
     QgsTextBufferSettings( const QgsTextBufferSettings &other );
 
-    /**
-     * Copy constructor.
-     * \param other source QgsTextBufferSettings
-     */
     QgsTextBufferSettings &operator=( const QgsTextBufferSettings &other );
 
     ~QgsTextBufferSettings();

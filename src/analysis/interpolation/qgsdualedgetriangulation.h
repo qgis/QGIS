@@ -51,9 +51,7 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
   public:
     QgsDualEdgeTriangulation();
 
-    //! QgsDualEdgeTriangulation cannot be copied
     QgsDualEdgeTriangulation( const QgsDualEdgeTriangulation & ) = delete;
-    //! QgsDualEdgeTriangulation cannot be copied
     QgsDualEdgeTriangulation &operator=( const QgsDualEdgeTriangulation &other ) = delete;
 
     //! Constructor with a number of points to reserve

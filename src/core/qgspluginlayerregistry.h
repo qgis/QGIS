@@ -71,9 +71,7 @@ class CORE_EXPORT QgsPluginLayerRegistry
     QgsPluginLayerRegistry() = default;
     ~QgsPluginLayerRegistry();
 
-    //! QgsPluginLayerRegistry cannot be copied.
     QgsPluginLayerRegistry( const QgsPluginLayerRegistry &rh ) = delete;
-    //! QgsPluginLayerRegistry cannot be copied.
     QgsPluginLayerRegistry &operator=( const QgsPluginLayerRegistry &rh ) = delete;
 
     /**

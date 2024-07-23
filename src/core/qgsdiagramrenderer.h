@@ -108,12 +108,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
-    /**
-     * Constructor for QgsDiagramLayerSettings.
-     */
     QgsDiagramLayerSettings();
 
-    //! Copy constructor
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
 
     QgsDiagramLayerSettings &operator=( const QgsDiagramLayerSettings &rh );
@@ -382,11 +378,8 @@ class CORE_EXPORT QgsDiagramSettings
       Counterclockwise, //!< Counter-clockwise orientation
     };
 
-    //! Constructor for QgsDiagramSettings
     QgsDiagramSettings();
     ~QgsDiagramSettings();
-
-    //! Copy constructor
     QgsDiagramSettings( const QgsDiagramSettings &other );
 
     QgsDiagramSettings &operator=( const QgsDiagramSettings &other );
@@ -817,7 +810,6 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer() override;
-    //! Copy constructor
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
 
     QgsLinearlyInterpolatedDiagramRenderer &operator=( const QgsLinearlyInterpolatedDiagramRenderer &other );

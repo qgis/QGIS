@@ -92,9 +92,6 @@ class SERVER_EXPORT QgsServerRequest
     };
     Q_ENUM( RequestHeader )
 
-    /**
-     * Constructor
-     */
     QgsServerRequest() = default;
 
     /**
@@ -115,14 +112,9 @@ class SERVER_EXPORT QgsServerRequest
      */
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
-    /**
-     * Copy constructor.
-     */
     QgsServerRequest( const QgsServerRequest &other );
 
     QgsServerRequest &operator=( const QgsServerRequest & ) = default;
-
-    //! destructor
     virtual ~QgsServerRequest() = default;
 
     /**

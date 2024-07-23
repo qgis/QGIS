@@ -74,9 +74,7 @@ class CORE_EXPORT QgsAnnotationItem
     QgsAnnotationItem() = default;
 
 #ifndef SIP_RUN
-    //! QgsAnnotationItem cannot be copied
     QgsAnnotationItem( const QgsAnnotationItem &other ) = delete;
-    //! QgsAnnotationItem cannot be copied
     QgsAnnotationItem &operator=( const QgsAnnotationItem &other ) = delete;
 #endif
 

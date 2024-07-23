@@ -177,7 +177,6 @@ Returns the symbol layer property definitions.
     virtual ~QgsSymbolLayer();
 
 
-
     virtual Qgis::SymbolLayerFlags flags() const;
 %Docstring
 Returns flags which control the symbol layer's behavior.
@@ -772,12 +771,8 @@ Abstract base class for marker symbol layers.
     };
 
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
 
-%Docstring
-QgsMarkerSymbolLayer cannot be copied
-%End
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
@@ -1139,12 +1134,8 @@ class QgsLineSymbolLayer : QgsSymbolLayer
     };
 
 
-
     virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-%Docstring
-QgsLineSymbolLayer cannot be copied
-%End
     virtual Qgis::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -1348,7 +1339,6 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 #include "qgssymbollayer.h"
 %End
   public:
-
 
 
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;

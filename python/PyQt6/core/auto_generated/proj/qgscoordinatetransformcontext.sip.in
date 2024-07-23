@@ -48,10 +48,6 @@ Constructor for QgsCoordinateTransformContext.
     ~QgsCoordinateTransformContext();
 
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
-%Docstring
-Copy constructor
-%End
-
 
     bool operator==( const QgsCoordinateTransformContext &rhs ) const;
 

@@ -83,9 +83,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
 
     ~QgsTiledSceneLayer() override;
 
-    //! QgsTiledSceneLayer cannot be copied.
     QgsTiledSceneLayer( const QgsTiledSceneLayer &other ) = delete;
-    //! QgsTiledSceneLayer cannot be copied.
     QgsTiledSceneLayer &operator=( QgsTiledSceneLayer const &other ) = delete;
 
 #ifdef SIP_RUN

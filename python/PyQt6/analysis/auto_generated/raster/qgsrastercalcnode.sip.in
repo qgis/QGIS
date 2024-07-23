@@ -75,9 +75,6 @@ Constructor for the tFunction type
 
 
     Type type() const;
-%Docstring
-QgsRasterCalcNode cannot be copied
-%End
 
     void setLeft( QgsRasterCalcNode *left );
     void setRight( QgsRasterCalcNode *right );

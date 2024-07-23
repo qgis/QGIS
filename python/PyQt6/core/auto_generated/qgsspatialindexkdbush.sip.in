@@ -60,10 +60,6 @@ Any non-single point features encountered during iteration will be ignored and n
 
 
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
-%Docstring
-Copy constructor
-%End
-
 
     ~QgsSpatialIndexKDBush();
 

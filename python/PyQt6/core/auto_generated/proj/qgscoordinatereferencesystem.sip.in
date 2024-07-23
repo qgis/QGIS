@@ -237,10 +237,6 @@ A CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 %End
 
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
-%Docstring
-Copy constructor
-%End
-
 
     operator QVariant() const;
 

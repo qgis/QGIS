@@ -266,10 +266,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
-    //! Copy constructor
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
-
-    //! Assignment operator
     QgsCoordinateReferenceSystem &operator=( const QgsCoordinateReferenceSystem &srs );
 
     //! Allows direct construction of QVariants from QgsCoordinateReferenceSystem.

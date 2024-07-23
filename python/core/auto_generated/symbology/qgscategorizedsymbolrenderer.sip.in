@@ -38,9 +38,6 @@ The optional ``uuid`` argument manually set the UUID key identifier for the cate
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
-%Docstring
-Copy constructor.
-%End
     ~QgsRendererCategory();
 
     QString uuid() const;

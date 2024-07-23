@@ -54,9 +54,6 @@ that of the spatial index construction.
 %End
 
     QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsMeshSpatialIndex();
 

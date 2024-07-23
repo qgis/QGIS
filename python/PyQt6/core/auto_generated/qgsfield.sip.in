@@ -87,10 +87,6 @@ Constructor. Constructs a new QgsField object.
 %End
 
     QgsField( const QgsField &other ) /HoldGIL/;
-%Docstring
-Copy constructor
-%End
-
 
     virtual ~QgsField();
 

@@ -45,14 +45,7 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
 
     ~QgsTiledSceneDataProvider() override;
 
-    /**
-     * Copy constructor.
-     */
     QgsTiledSceneDataProvider( const QgsTiledSceneDataProvider &other );
-
-    /**
-     * QgsTiledSceneDataProvider cannot be assigned.
-     */
     QgsTiledSceneDataProvider &operator=( const QgsTiledSceneDataProvider &other ) = delete;
 
     /**

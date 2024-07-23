@@ -32,11 +32,6 @@ set to an invalid state (see :py:func:`~QgsTextFormat.isValid`).
 %End
 
     QgsTextFormat( const QgsTextFormat &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsTextFormat
-%End
 
 
     ~QgsTextFormat();

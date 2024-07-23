@@ -148,9 +148,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
              */
             iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent );
 
-            /**
-             * Copies the iterator \a rh.
-             */
             iterator( const iterator &rh );
             ~iterator();
 

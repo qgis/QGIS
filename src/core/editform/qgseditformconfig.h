@@ -86,10 +86,6 @@ class CORE_EXPORT QgsEditFormConfig
     };
     // *INDENT-ON*
 
-    /**
-     * Copy constructor
-     *
-     */
     QgsEditFormConfig( const QgsEditFormConfig &o );
     ~QgsEditFormConfig();
 

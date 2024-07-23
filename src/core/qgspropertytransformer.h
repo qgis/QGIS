@@ -71,9 +71,6 @@ class CORE_EXPORT QgsCurveTransform
 
     ~QgsCurveTransform();
 
-    /**
-     * Copy constructor
-     */
     QgsCurveTransform( const QgsCurveTransform &other );
 
     QgsCurveTransform &operator=( const QgsCurveTransform &other );
@@ -204,9 +201,6 @@ class CORE_EXPORT QgsPropertyTransformer
      */
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
 
-    /**
-     * Copy constructor.
-     */
     QgsPropertyTransformer( const QgsPropertyTransformer &other );
     QgsPropertyTransformer &operator=( const QgsPropertyTransformer &other );
 
@@ -618,9 +612,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
                              const QColor &nullColor = QColor( 0, 0, 0, 0 ),
                              const QString &rampName = QString() );
 
-    //! Copy constructor
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
-
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     Type transformerType() const override { return ColorRampTransformer; }

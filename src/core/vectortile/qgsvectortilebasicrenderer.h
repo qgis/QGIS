@@ -49,7 +49,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
   public:
     //! Constructs a style object
     QgsVectorTileBasicRendererStyle( const QString &stName = QString(), const QString &laName = QString(), Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
-    //! Constructs a style object as a copy of another style
+
     QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other );
     QgsVectorTileBasicRendererStyle &operator=( const QgsVectorTileBasicRendererStyle &other );
     ~QgsVectorTileBasicRendererStyle();

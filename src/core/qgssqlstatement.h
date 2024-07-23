@@ -41,14 +41,8 @@ class CORE_EXPORT QgsSQLStatement
      */
     QgsSQLStatement( const QString &statement );
 
-    /**
-     * Create a copy of this statement.
-     */
     QgsSQLStatement( const QgsSQLStatement &other );
 
-    /**
-     * Create a copy of this statement.
-     */
     QgsSQLStatement &operator=( const QgsSQLStatement &other );
     virtual ~QgsSQLStatement();
 

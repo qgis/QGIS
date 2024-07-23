@@ -36,9 +36,6 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
 
     QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other );
 
-    /**
-     * QgsArcGisVectorTileServiceDataProvider cannot be assigned.
-     */
     QgsArcGisVectorTileServiceDataProvider &operator=( const QgsArcGisVectorTileServiceDataProvider &other ) = delete;
 
     Qgis::DataProviderFlags flags() const override;

@@ -32,9 +32,6 @@ to the request.
 %End
 
     QgsProfileRequest( const QgsProfileRequest &other );
-%Docstring
-Copy constructor.
-%End
 
     ~QgsProfileRequest();
 

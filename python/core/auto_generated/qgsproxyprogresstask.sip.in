@@ -96,7 +96,6 @@ Sets the ``progress`` (from 0 to 100) for the proxied operation.
 %End
 
   private:
-    //! QgsScopedProxyProgressTask cannot be copied
     QgsScopedProxyProgressTask( const QgsScopedProxyProgressTask &other );
 };
 

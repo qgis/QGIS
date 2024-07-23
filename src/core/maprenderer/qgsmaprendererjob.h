@@ -56,10 +56,7 @@ class LayerRenderJob
 
     LayerRenderJob() = default;
 
-    //! LayerRenderJob cannot be copied
     LayerRenderJob( const LayerRenderJob & ) = delete;
-
-    //! LayerRenderJob cannot be copied
     LayerRenderJob &operator=( const LayerRenderJob & ) = delete;
 
     LayerRenderJob( LayerRenderJob && );

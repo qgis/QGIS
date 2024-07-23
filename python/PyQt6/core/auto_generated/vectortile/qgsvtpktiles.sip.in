@@ -102,7 +102,6 @@ exists but has a zero size.
 %End
 
   private:
-    //! QgsVtpkTiles cannot be copied
     QgsVtpkTiles( const QgsVtpkTiles &other );
 };
 

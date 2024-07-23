@@ -55,10 +55,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
                                   double zValueScale, double zValueFixedOffset );
 
-    //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
-
-    //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext &operator=( const QgsPointCloud3DRenderContext & ) = delete;
 
     /**

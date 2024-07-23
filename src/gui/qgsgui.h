@@ -73,10 +73,7 @@ class GUI_EXPORT QgsGui : public QObject
     };
     Q_ENUM( ProjectCrsBehavior )
 
-    //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;
-
-    //! QgsGui cannot be copied
     QgsGui &operator=( const QgsGui &other ) = delete;
 
     /**

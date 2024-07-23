@@ -276,9 +276,6 @@ should use the same CRS as the source layer/provider.
 construct a request with a filter expression
 %End
     QgsFeatureRequest( const QgsFeatureRequest &rh );
-%Docstring
-copy constructor
-%End
 
     bool compare( const QgsFeatureRequest &other ) const;
 %Docstring

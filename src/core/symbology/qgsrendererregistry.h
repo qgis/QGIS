@@ -229,9 +229,7 @@ class CORE_EXPORT QgsRendererRegistry
     QgsRendererRegistry();
     ~QgsRendererRegistry();
 
-    //! QgsRendererRegistry cannot be copied.
     QgsRendererRegistry( const QgsRendererRegistry &rh ) = delete;
-    //! QgsRendererRegistry cannot be copied.
     QgsRendererRegistry &operator=( const QgsRendererRegistry &rh ) = delete;
 
     /**

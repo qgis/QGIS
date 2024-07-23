@@ -2324,7 +2324,6 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
 %End
 
 
-
     ~QgsProjectDirtyBlocker();
 
   private:

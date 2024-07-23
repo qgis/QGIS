@@ -159,9 +159,7 @@ class CORE_EXPORT QgsCalloutRegistry
     QgsCalloutRegistry();
     ~QgsCalloutRegistry();
 
-    //! QgsCalloutRegistry cannot be copied.
     QgsCalloutRegistry( const QgsCalloutRegistry &rh ) = delete;
-    //! QgsCalloutRegistry cannot be copied.
     QgsCalloutRegistry &operator=( const QgsCalloutRegistry &rh ) = delete;
 
     /**

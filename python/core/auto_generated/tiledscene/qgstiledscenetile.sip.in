@@ -40,9 +40,6 @@ Constructor for an valid tile.
     ~QgsTiledSceneTile();
 
     QgsTiledSceneTile( const QgsTiledSceneTile &other );
-%Docstring
-Copy constructor
-%End
 
     bool isValid() const;
 %Docstring
