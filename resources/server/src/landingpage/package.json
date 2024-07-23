@@ -28,7 +28,7 @@
     "sass": "~1.56.1",
     "sass-loader": "^13.2.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
-    "vue-template-compiler": "^2.7.14",
+    "vue-template-compiler": "^2.7.16",
     "vuetify-loader": "^1.9.2",
     "webpack-license-plugin": "^4.2.2"
   },
