@@ -121,16 +121,16 @@ Sets the ``resources`` ``attached`` to the tile.
 
     double geometricError() const;
 %Docstring
-Returns the tile's geometric error, which is the error, in scene CRS units, of the tile's
-simplified representation of its source geometry.
+Returns the tile's geometric error, which is the error, in meters, of
+the tile's simplified representation of its source geometry.
 
 .. seealso:: :py:func:`setGeometricError`
 %End
 
     void setGeometricError( double error );
 %Docstring
-Sets the tile's geometric ``error``, which is the error, in scene CRS units, of the tile's
-simplified representation of its source geometry.
+Sets the tile's geometric ``error``, which is the error, in meters, of
+the tile's simplified representation of its source geometry.
 
 .. seealso:: :py:func:`geometricError`
 %End

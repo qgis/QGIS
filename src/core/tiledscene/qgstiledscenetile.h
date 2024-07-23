@@ -133,16 +133,16 @@ class CORE_EXPORT QgsTiledSceneTile
     void setResources( const QVariantMap &resources );
 
     /**
-     * Returns the tile's geometric error, which is the error, in scene CRS units, of the tile's
-     * simplified representation of its source geometry.
+     * Returns the tile's geometric error, which is the error, in meters, of
+     * the tile's simplified representation of its source geometry.
      *
      * \see setGeometricError()
      */
     double geometricError() const { return mGeometricError; }
 
     /**
-     * Sets the tile's geometric \a error, which is the error, in scene CRS units, of the tile's
-     * simplified representation of its source geometry.
+     * Sets the tile's geometric \a error, which is the error, in meters, of
+     * the tile's simplified representation of its source geometry.
      *
      * \see geometricError()
      */
