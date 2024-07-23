@@ -1236,7 +1236,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   while ( !layerNode.isNull() )
   {
     QDomElement e = layerNode.toElement();
-    if ( !e.isNull() && e.tagName() != QLatin1String( "data_defined_properties" ) )
+    if ( !e.isNull() && e.tagName() != QLatin1String( "data_defined_properties" ) && e.tagName() != QLatin1String( "buffer" ) )
     {
       if ( e.tagName() != QLatin1String( "layer" ) )
       {
@@ -1328,6 +1328,17 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   symbol->animationSettings().setIsAnimated( element.attribute( QStringLiteral( "is_animated" ), QStringLiteral( "0" ) ).toInt() );
   symbol->animationSettings().setFrameRate( element.attribute( QStringLiteral( "frame_rate" ), QStringLiteral( "10" ) ).toDouble() );
+
+  if ( !element.firstChildElement( QStringLiteral( "buffer" ) ).isNull() )
+  {
+    std::unique_ptr< QgsSymbolBufferSettings > bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
+    bufferSettings->readXml( element, context );
+    symbol->setBufferSettings( bufferSettings.release() );
+  }
+  else
+  {
+    symbol->setBufferSettings( nullptr );
+  }
 
   const QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
   if ( !ddProps.isNull() )
@@ -1432,6 +1443,9 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
 
   symEl.setAttribute( QStringLiteral( "is_animated" ), symbol->animationSettings().isAnimated() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   symEl.setAttribute( QStringLiteral( "frame_rate" ), qgsDoubleToString( symbol->animationSettings().frameRate() ) );
+
+  if ( const QgsSymbolBufferSettings *bufferSettings = symbol->bufferSettings() )
+    bufferSettings->writeXml( symEl, context );
 
   //QgsDebugMsgLevel( "num layers " + QString::number( symbol->symbolLayerCount() ), 2 );
 

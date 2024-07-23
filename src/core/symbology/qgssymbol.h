@@ -84,6 +84,119 @@ class CORE_EXPORT QgsSymbolAnimationSettings
 
 };
 
+
+/**
+ * \ingroup core
+ * \class QgsSymbolBufferSettings
+ *
+ * \brief Contains settings relating to symbol buffers, which draw a "halo" effect around the symbol.
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsSymbolBufferSettings
+{
+  public:
+
+    /**
+     * Returns whether the buffer is enabled.
+     * \see setEnabled()
+     */
+    bool enabled() const { return mEnabled; }
+
+    /**
+     * Sets whether the symbol buffer will be drawn.
+     * \see enabled()
+     */
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
+
+    /**
+     * Returns the size of the buffer.
+     * \see sizeUnit()
+     * \see setSize()
+     */
+    double size() const { return mSize; }
+
+    /**
+     * Sets the \a size of the buffer.
+     *
+     * The size units are specified using setSizeUnit().
+     *
+     * \see size()
+     * \see setSizeUnit()
+     */
+    void setSize( double size ) { mSize = size; }
+
+    /**
+     * Returns the units for the buffer size.
+     *
+     * \see size()
+     * \see setSizeUnit()
+     */
+    Qgis::RenderUnit sizeUnit() const { return mSizeUnit; }
+
+    /**
+     * Sets the \a unit used for the buffer size.
+     *
+     * \see setSize()
+     * \see sizeUnit()
+     */
+    void setSizeUnit( Qgis::RenderUnit unit ) { mSizeUnit = unit; }
+
+    /**
+     * Returns the map unit scale object for the buffer size. This is only used if the
+     * buffer size is set to QgsUnitTypes::RenderMapUnit.
+     *
+     * \see setSizeMapUnitScale()
+     * \see sizeUnit()
+     */
+    QgsMapUnitScale sizeMapUnitScale() const { return mSizeMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale object for the buffer size.
+     *
+     * This is only used if the buffer size is set to QgsUnitTypes::RenderMapUnit.
+     *
+     * \see sizeMapUnitScale()
+     * \see setSizeUnit()
+     */
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale ) { mSizeMapUnitScale = scale; }
+
+    /**
+     * Returns the buffer join style.
+     * \see setJoinStyle
+     */
+    Qt::PenJoinStyle joinStyle() const { return mJoinStyle; }
+
+    /**
+     * Sets the join \a style used for drawing the buffer.
+     * \see joinStyle()
+     */
+    void setJoinStyle( Qt::PenJoinStyle style ) { mJoinStyle = style; }
+
+    /**
+     * Writes the buffer settings to an XML \a element.
+     *
+     * \see readXml()
+     */
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads the buffer settings from an XML \a element.
+     *
+     * \see readXml()
+     */
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+  private:
+    bool mEnabled = false;
+    double mSize = 1;
+    Qgis::RenderUnit mSizeUnit = Qgis::RenderUnit::Millimeters;
+    QgsMapUnitScale mSizeMapUnitScale;
+    Qt::PenJoinStyle mJoinStyle = Qt::RoundJoin;
+
+};
+
+
 /**
  * \ingroup core
  * \class QgsSymbol
@@ -572,6 +685,36 @@ class CORE_EXPORT QgsSymbol
     bool forceRHR() const { return mForceRHR; }
 
     /**
+     * Returns the symbol buffer settings, which control an optional "halo" effect around the symbol.
+     *
+     * Will be NULLPTR if no buffer settings have previously been set for the symbol.
+     *
+     * \see setBufferSettings()
+     * \since QGIS 3.40
+     */
+    QgsSymbolBufferSettings *bufferSettings();
+
+    /**
+     * Returns the symbol buffer settings, which control an optional "halo" effect around the symbol.
+     *
+     * Will be NULLPTR if no buffer settings have previously been set for the symbol.
+     *
+     * \see setBufferSettings()
+     * \since QGIS 3.40
+     */
+    const QgsSymbolBufferSettings *bufferSettings() const SIP_SKIP;
+
+    /**
+     * Sets a the symbol buffer \a settings, which control an optional "halo" effect around the symbol.
+     *
+     * Ownership is transferred to the symbol.
+     *
+     * \see bufferSettings()
+     * \since QGIS 3.40
+     */
+    void setBufferSettings( QgsSymbolBufferSettings *settings SIP_TRANSFER );
+
+    /**
      * Returns a reference to the symbol animation settings.
      *
      * \see setAnimationSettings()
@@ -803,6 +946,7 @@ class CORE_EXPORT QgsSymbol
     bool mClipFeaturesToExtent = true;
     bool mForceRHR = false;
 
+    std::unique_ptr< QgsSymbolBufferSettings > mBufferSettings;
     QgsSymbolAnimationSettings mAnimationSettings;
 
     Q_DECL_DEPRECATED const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
