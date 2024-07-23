@@ -790,11 +790,11 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         exp = QgsMapBoxGlStyleConverter.parseArrayStops([[0, [0, 1]], [2, [3, 4]]], conversion_context, 1)
         self.assertEqual(exp,
-                         'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 2 THEN array(0,1) WHEN @vector_tile_zoom > 2 THEN array(3,4) END')
+                         'CASE @vector_tile_zoom <= 2 THEN array(0,1) WHEN @vector_tile_zoom > 2 THEN array(3,4) END')
 
         exp = QgsMapBoxGlStyleConverter.parseArrayStops([[0, [0, 1]], [2, [3, 4]]], conversion_context, 2)
         self.assertEqual(exp,
-                         'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 2 THEN array(0,2) WHEN @vector_tile_zoom > 2 THEN array(6,8) END')
+                         'CASE @vector_tile_zoom <= 2 THEN array(0,2) WHEN @vector_tile_zoom > 2 THEN array(6,8) END')
 
     def testParseLineDashArray(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
