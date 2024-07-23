@@ -549,18 +549,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     Q_DECL_DEPRECATED long findMatchingProj() SIP_DEPRECATED;
 
-    /**
-     * Overloaded == operator used to compare to CRS's.
-     *
-     *  Internally it will use authid() for comparison.
-     */
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
-
-    /**
-     * Overloaded != operator used to compare to CRS's.
-     *
-     *  Returns opposite bool value to operator ==
-     */
     bool operator!=( const QgsCoordinateReferenceSystem &srs ) const;
 
     /**

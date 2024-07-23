@@ -47,6 +47,7 @@ Returns a dataset index within :py:func:`~QgsMeshDatasetIndex.group`
 %Docstring
 Returns whether index is valid, ie at least groups is set
 %End
+
     bool operator == ( QgsMeshDatasetIndex other ) const;
     bool operator != ( QgsMeshDatasetIndex other ) const;
 };

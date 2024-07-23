@@ -56,9 +56,6 @@ itself the min/max values.
     };
 
     QgsRasterMinMaxOrigin();
-%Docstring
-Default constructor.
-%End
 
     bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
 

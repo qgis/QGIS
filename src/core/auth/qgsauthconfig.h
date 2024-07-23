@@ -51,10 +51,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     // TODO c++20 - replace with = default
 
-    //! Operator used to compare configs' equality
     bool operator==( const QgsAuthMethodConfig &other ) const;
-
-    //! Operator used to compare configs' inequality
     bool operator!=( const QgsAuthMethodConfig &other ) const;
 
     /**

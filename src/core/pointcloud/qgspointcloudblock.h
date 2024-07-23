@@ -42,7 +42,7 @@ class CORE_EXPORT QgsPointCloudBlock
     QgsPointCloudBlock( int count,
                         const QgsPointCloudAttributeCollection &attributes,
                         const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset );
-    //! Dtor
+
     virtual ~QgsPointCloudBlock() = default;
 
     /**

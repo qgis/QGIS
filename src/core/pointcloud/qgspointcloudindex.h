@@ -68,7 +68,6 @@ class CORE_EXPORT IndexedPointCloudNode
 
     // TODO c++20 - replace with = default
 
-    //! Compares nodes
     bool operator==( IndexedPointCloudNode other ) const
     {
       return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z();
@@ -122,7 +121,6 @@ class CORE_EXPORT QgsPointCloudCacheKey
     //! Ctor
     QgsPointCloudCacheKey( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
 
-    //! Compares keys
     bool operator==( const QgsPointCloudCacheKey &other ) const;
 
     //! Returns the key's IndexedPointCloudNode

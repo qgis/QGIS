@@ -32,6 +32,7 @@ Base class for storing raw data from point cloud nodes
 %Docstring
 Ctor
 %End
+
     virtual ~QgsPointCloudBlock();
 
     QgsPointCloudBlock *clone() const /Factory/;

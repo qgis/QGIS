@@ -40,9 +40,6 @@ pair of name and size in bytes
     };
 
     QgsPointCloudAttribute();
-%Docstring
-Ctor
-%End
     QgsPointCloudAttribute( const QString &name, DataType type );
 %Docstring
 Ctor
@@ -110,10 +107,8 @@ Collection of point cloud attributes
 #include "qgspointcloudattribute.h"
 %End
   public:
+
     QgsPointCloudAttributeCollection();
-%Docstring
-Ctor
-%End
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
 %Docstring
 Ctor with given attributes

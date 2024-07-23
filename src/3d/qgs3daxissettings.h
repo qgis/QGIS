@@ -48,10 +48,7 @@ class _3D_EXPORT Qgs3DAxisSettings
 
     Qgs3DAxisSettings() = default;
 
-    //! Returns true if both objects are equal
     bool operator==( Qgs3DAxisSettings const &rhs ) const;
-
-    //! Returns true if objects are not equal
     bool operator!=( Qgs3DAxisSettings const &rhs ) const;
 
     //! Reads settings from a DOM \a element

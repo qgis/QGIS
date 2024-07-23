@@ -51,9 +51,6 @@ class CORE_EXPORT QgsProfileRequest
 
     ~QgsProfileRequest();
 
-    /**
-     * Assignment operator
-     */
     QgsProfileRequest &operator=( const QgsProfileRequest &other );
 
     bool operator==( const QgsProfileRequest &other ) const;

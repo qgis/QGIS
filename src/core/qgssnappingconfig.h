@@ -204,9 +204,6 @@ class CORE_EXPORT QgsSnappingConfig
          */
         void setMaximumScale( double maxScale );
 
-        /**
-         * Compare this configuration to other.
-         */
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
         // TODO c++20 - replace with = default
@@ -395,9 +392,6 @@ class CORE_EXPORT QgsSnappingConfig
      */
     void clearIndividualLayerSettings();
 
-    /**
-     * Compare this configuration to other.
-     */
     bool operator!= ( const QgsSnappingConfig &other ) const;
 
     /**

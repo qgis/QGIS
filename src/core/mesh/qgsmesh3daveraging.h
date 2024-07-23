@@ -368,7 +368,6 @@ class CORE_EXPORT QgsMeshElevationAveragingMethod: public QgsMesh3DAveragingMeth
 {
   public:
 
-    //! Ctor
     QgsMeshElevationAveragingMethod();
 
     /**

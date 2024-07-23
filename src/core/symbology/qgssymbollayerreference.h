@@ -88,7 +88,6 @@ class CORE_EXPORT QgsSymbolLayerId
 
     // TODO c++20 - replace with = default
 
-    //! Equality operator
     bool operator==( const QgsSymbolLayerId &other ) const
     {
       return ( mSymbolKey == other.mSymbolKey && mIndexPath == other.mIndexPath );
@@ -174,7 +173,6 @@ class CORE_EXPORT QgsSymbolLayerReference
      */
     QString symbolLayerIdV2() const { return mSymbolLayerId; }
 
-    //! Comparison operator
     bool operator==( const QgsSymbolLayerReference &other ) const
     {
       return mLayerId == other.mLayerId
