@@ -1051,6 +1051,12 @@ class QgsWmsCapabilities
      */
     QHash<QString, QgsWmtsTileMatrixSet> mTileMatrixSets;
 
+    /**
+     * ID of the first tile matrix returned in the capabilities, to be used as the default
+     * if no specific tile matrix is specified.
+     */
+    QString mFirstTileMatrixSetId;
+
     //temporarily caches invert axis setting for each crs
     QHash<QString, bool> mCrsInvertAxis;
 
