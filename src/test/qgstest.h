@@ -330,7 +330,7 @@ class TEST_EXPORT QgsTest : public QObject
           char *expectedCopy = new char[exp.size() + 1];
           memcpy( expectedCopy, exp.data(), exp.size() );
 
-          return QTest::compare_helper( act == exp, msg.toStdString().c_str(),
+          return QTest::compare_helper( act == exp, msg.toStdString().c_str(), // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
                                         actualCopy, expectedCopy,
                                         actualPath.toStdString().c_str(), subPath.toStdString().c_str(),
                                         file, line );
