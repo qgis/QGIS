@@ -760,6 +760,13 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayerList cloneLayers() const SIP_FACTORY;
 
     /**
+     * Copies common properties from an \a other symbol to this symbol.
+     *
+     * \since QGIS 3.40
+     */
+    void copyCommonProperties( const QgsSymbol *other );
+
+    /**
      * Renders a context using a particular symbol layer without passing in a
      * geometry. This is used as fallback, if the symbol being rendered is not
      * compatible with the specified layer. In such a case, this method can be
