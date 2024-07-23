@@ -733,6 +733,13 @@ Retrieve a cloned list of all layers that make up this symbol.
 Ownership is transferred to the caller.
 %End
 
+    void copyCommonProperties( const QgsSymbol *other );
+%Docstring
+Copies common properties from an ``other`` symbol to this symbol.
+
+.. versionadded:: 3.40
+%End
+
     void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Renders a context using a particular symbol layer without passing in a

@@ -1972,3 +1972,17 @@ void QgsSymbol::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &
     }
   }
 }
+
+void QgsSymbol::copyCommonProperties( const QgsSymbol *other )
+{
+  mOpacity = other->mOpacity;
+  mClipFeaturesToExtent = other->mClipFeaturesToExtent;
+  mForceRHR = other->mForceRHR;
+  mDataDefinedProperties = other->mDataDefinedProperties;
+  mSymbolFlags = other->mSymbolFlags;
+  mAnimationSettings = other->mAnimationSettings;
+
+  Q_NOWARN_DEPRECATED_PUSH
+  mLayer = other->mLayer;
+  Q_NOWARN_DEPRECATED_POP
+}
