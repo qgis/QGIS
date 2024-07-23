@@ -27,9 +27,6 @@ Constructor for QgsTableCell, with the specified ``content``.
 %End
 
     QgsTableCell( const QgsTableCell &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsTableCell();
 

@@ -55,10 +55,7 @@ class CORE_EXPORT QgsLayoutItemRenderContext
      */
     QgsLayoutItemRenderContext( QgsRenderContext &context, double viewScaleFactor = 1.0 );
 
-    //! QgsLayoutItemRenderContext cannot be copied.
     QgsLayoutItemRenderContext( const QgsLayoutItemRenderContext &other ) = delete;
-
-    //! QgsLayoutItemRenderContext cannot be copied.
     QgsLayoutItemRenderContext &operator=( const QgsLayoutItemRenderContext &other ) = delete;
 
     /**

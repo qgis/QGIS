@@ -53,14 +53,9 @@ class CORE_EXPORT QgsProcessingContext
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /**
-     * Constructor for QgsProcessingContext.
-     */
     QgsProcessingContext();
 
-    //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
-    //! QgsProcessingContext cannot be copied
     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
 
     ~QgsProcessingContext();

@@ -47,15 +47,10 @@ class CORE_EXPORT QgsLabelSearchTree
 {
   public:
 
-    /**
-     * Constructor for QgsLabelSearchTree.
-     */
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree( const QgsLabelSearchTree &rh ) = delete;
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree &rh ) = delete;
 
     /**
@@ -141,9 +136,7 @@ class CORE_EXPORT QgsLabelSearchTree
     QTransform mTransform;
 
 #ifdef SIP_RUN
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree( const QgsLabelSearchTree &rh );
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
 #endif
 };

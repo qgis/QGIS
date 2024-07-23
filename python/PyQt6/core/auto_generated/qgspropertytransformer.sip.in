@@ -50,9 +50,6 @@ list.
     ~QgsCurveTransform();
 
     QgsCurveTransform( const QgsCurveTransform &other );
-%Docstring
-Copy constructor
-%End
 
 
     QList< QgsPointXY > controlPoints() const;
@@ -182,9 +179,6 @@ Constructor for QgsPropertyTransformer
 %End
 
     QgsPropertyTransformer( const QgsPropertyTransformer &other );
-%Docstring
-Copy constructor.
-%End
 
     virtual ~QgsPropertyTransformer();
 
@@ -634,10 +628,6 @@ Constructor for QgsColorRampTransformer.
 %End
 
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
-%Docstring
-Copy constructor
-%End
-
 
     virtual Type transformerType() const;
     virtual QgsColorRampTransformer *clone() const /Factory/;

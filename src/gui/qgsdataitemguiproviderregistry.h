@@ -40,9 +40,7 @@ class GUI_EXPORT QgsDataItemGuiProviderRegistry
     QgsDataItemGuiProviderRegistry();
     ~QgsDataItemGuiProviderRegistry();
 
-    //! QgsDataItemGuiProviderRegistry cannot be copied.
     QgsDataItemGuiProviderRegistry( const QgsDataItemGuiProviderRegistry &rh ) = delete;
-    //! QgsDataItemGuiProviderRegistry cannot be copied.
     QgsDataItemGuiProviderRegistry &operator=( const QgsDataItemGuiProviderRegistry &rh ) = delete;
 
     /**

@@ -39,16 +39,10 @@ class CORE_EXPORT QgsScaleBarSettings
 {
   public:
 
-    /**
-     * Constructor for QgsScaleBarSettings.
-     */
     QgsScaleBarSettings();
 
     ~QgsScaleBarSettings();
 
-    /**
-     * Copy constructor
-     */
     QgsScaleBarSettings( const QgsScaleBarSettings &other );
 
     QgsScaleBarSettings &operator=( const QgsScaleBarSettings &other );

@@ -22,14 +22,8 @@ Class allowing to manage the zip/unzip actions
   public:
 
     QgsArchive();
-%Docstring
-Constructor
-%End
 
     QgsArchive( const QgsArchive &other );
-%Docstring
-Copy constructor
-%End
 
 
     virtual ~QgsArchive();

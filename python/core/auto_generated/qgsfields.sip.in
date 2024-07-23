@@ -40,10 +40,6 @@ Constructor for an empty field container
 %End
 
     QgsFields( const QgsFields &other ) /HoldGIL/;
-%Docstring
-Copy constructor
-%End
-
 
     QgsFields( const QList< QgsField > &fields ) /HoldGIL/;
 %Docstring

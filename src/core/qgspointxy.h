@@ -67,7 +67,6 @@ class CORE_EXPORT QgsPointXY
 
     QgsPointXY() = default;
 
-    //! Create a point from another point
     QgsPointXY( const QgsPointXY &p ) SIP_HOLDGIL;
 
     /**
@@ -271,7 +270,6 @@ class CORE_EXPORT QgsPointXY
       return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, mX, mY, other.x(), other.y() );
     }
 
-    //! equality operator
     bool operator==( const QgsPointXY &other ) SIP_HOLDGIL
     {
       if ( isEmpty() && other.isEmpty() )
@@ -284,7 +282,6 @@ class CORE_EXPORT QgsPointXY
       return QgsGeometryUtilsBase::fuzzyEqual( 1E-8, mX, mY, other.x(), other.y() );
     }
 
-    //! Inequality operator
     bool operator!=( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       if ( isEmpty() && other.isEmpty() )
@@ -304,7 +301,6 @@ class CORE_EXPORT QgsPointXY
       mY *= scalar;
     }
 
-    //! Assignment
     QgsPointXY &operator=( const QgsPointXY &other ) SIP_HOLDGIL
     {
       if ( &other != this )

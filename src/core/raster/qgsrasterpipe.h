@@ -67,9 +67,6 @@ class CORE_EXPORT QgsRasterPipe
      */
     QgsRasterPipe() = default;
 
-    /**
-     * Copy constructor.
-     */
     QgsRasterPipe( const QgsRasterPipe &pipe ) SIP_SKIP;
 
     ~QgsRasterPipe();

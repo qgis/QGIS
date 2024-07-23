@@ -119,9 +119,6 @@ Constructor for QgsExpressionContextScope
 %End
 
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
-%Docstring
-Copy constructor
-%End
 
 
     ~QgsExpressionContextScope();
@@ -488,9 +485,6 @@ See :py:class:`QgsExpressionContextUtils` for helper methods for working with :p
   public:
 
     QgsExpressionContext();
-%Docstring
-Constructor for QgsExpressionContext
-%End
 
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
 %Docstring
@@ -499,9 +493,6 @@ Ownership of the scopes is transferred to the stack.
 %End
 
     QgsExpressionContext( const QgsExpressionContext &other );
-%Docstring
-Copy constructor
-%End
 
 
 

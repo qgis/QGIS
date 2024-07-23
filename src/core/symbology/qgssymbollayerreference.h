@@ -73,10 +73,7 @@ class CORE_EXPORT QgsSymbolLayerId
       : mSymbolKey( key ), mIndexPath( { indexPath } )
     {}
 
-    //! Default copy constructor
     QgsSymbolLayerId( const QgsSymbolLayerId &other ) = default;
-
-    //! Default assignment operator
     QgsSymbolLayerId &operator=( const QgsSymbolLayerId &other ) = default;
 
     /**

@@ -52,9 +52,7 @@ class CORE_EXPORT QgsTiledSceneTile
 
     ~QgsTiledSceneTile();
 
-    //! Copy constructor
     QgsTiledSceneTile( const QgsTiledSceneTile &other );
-    //! Assignment operator
     QgsTiledSceneTile &operator=( const QgsTiledSceneTile &other );
 
     /**

@@ -57,9 +57,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         Rule( QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
-        //! Rules cannot be copied.
         Rule( const Rule &rh ) = delete;
-        //! Rules cannot be copied.
         Rule &operator=( const Rule &rh ) = delete;
 
         //! The result of registering a rule

@@ -22,14 +22,7 @@ map canvas and relevant expression contexts.
   public:
 
     QgsSymbolWidgetContext();
-
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsSymbolWidgetContext
-%End
-
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring

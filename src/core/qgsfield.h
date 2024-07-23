@@ -116,14 +116,7 @@ class CORE_EXPORT QgsField
                                 const QString &comment = QString(),
                                 QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL SIP_DEPRECATED;
 
-    /**
-     * Copy constructor
-     */
     QgsField( const QgsField &other ) SIP_HOLDGIL;
-
-    /**
-     * Assignment operator
-     */
     QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
     virtual ~QgsField();

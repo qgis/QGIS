@@ -28,10 +28,6 @@ Constructs a default SLD export context
     ~QgsSldExportContext();
 
     QgsSldExportContext( const QgsSldExportContext &other );
-%Docstring
-Constructs a copy of SLD export context ``other``
-%End
-
 
     QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
 %Docstring

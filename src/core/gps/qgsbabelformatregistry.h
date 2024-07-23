@@ -59,9 +59,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
     QgsBabelFormatRegistry();
     ~QgsBabelFormatRegistry();
 
-    //! QgsBabelFormatRegistry cannot be copied.
     QgsBabelFormatRegistry( const QgsBabelFormatRegistry &rh ) = delete;
-    //! QgsBabelFormatRegistry cannot be copied.
     QgsBabelFormatRegistry &operator=( const QgsBabelFormatRegistry &rh ) = delete;
 
     /**

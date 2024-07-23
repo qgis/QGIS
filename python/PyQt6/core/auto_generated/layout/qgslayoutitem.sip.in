@@ -33,7 +33,6 @@ regardless of the current view zoom.
 %End
 
 
-
     QgsRenderContext &renderContext();
 %Docstring
 Returns a reference to the context's render context.

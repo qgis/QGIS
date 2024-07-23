@@ -36,9 +36,7 @@ class _3D_EXPORT QgsShadowSettings
   public:
 
     QgsShadowSettings() = default;
-    //! Copy constructor
     QgsShadowSettings( const QgsShadowSettings &other );
-    //! delete assignment operator
     QgsShadowSettings &operator=( QgsShadowSettings const &rhs );
 
     //! Reads settings from a DOM \a element

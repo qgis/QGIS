@@ -37,12 +37,6 @@ A selective masking only makes sense in contexts where the text is rendered over
     QgsTextMaskSettings();
 
     QgsTextMaskSettings( const QgsTextMaskSettings &other );
-%Docstring
-Copy constructor.
-
-:param other: source settings
-%End
-
 
     ~QgsTextMaskSettings();
 

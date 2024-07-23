@@ -166,14 +166,13 @@ class CORE_EXPORT QgsGeometry
 
   public:
 
-    //! Constructor
     QgsGeometry() SIP_HOLDGIL;
 
-    //! Copy constructor will prompt a deep copy of the object
+    //! Copy constructor will prompt a shallow copy of the geometry
     QgsGeometry( const QgsGeometry & );
 
     /**
-     * Creates a deep copy of the object
+     * Creates a shallow copy of the geometry
      * \note not available in Python bindings
      */
     QgsGeometry &operator=( QgsGeometry const &rhs ) SIP_SKIP;

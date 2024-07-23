@@ -122,13 +122,11 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
-    //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex &other );
 
     //! Destructor finalizes work with spatial index
     ~QgsSpatialIndex() override;
 
-    //! Implement assignment operator
     QgsSpatialIndex &operator=( const QgsSpatialIndex &other );
 
     /* operations */

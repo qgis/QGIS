@@ -30,11 +30,6 @@ Constructor
 %End
 
     QgsServerCacheManager( const QgsServerCacheManager &copy );
-%Docstring
-Copy constructor
-%End
-
-
     ~QgsServerCacheManager();
 
     bool getCachedDocument( QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;

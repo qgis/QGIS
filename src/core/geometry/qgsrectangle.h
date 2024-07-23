@@ -85,7 +85,6 @@ class CORE_EXPORT QgsRectangle
       mYmax = qRectF.bottomRight().y();
     }
 
-    //! Copy constructor
     QgsRectangle( const QgsRectangle &other ) SIP_HOLDGIL
     {
       mXmin = other.xMinimum();

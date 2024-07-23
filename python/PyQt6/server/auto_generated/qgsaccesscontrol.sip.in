@@ -29,9 +29,6 @@ Constructor
 %End
 
     QgsAccessControl( const QgsAccessControl &copy );
-%Docstring
-Constructor
-%End
 
 
     ~QgsAccessControl();

@@ -43,10 +43,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      */
     QgsTiledSceneRenderContext( QgsRenderContext &context, QgsFeedback *feedback = nullptr );
 
-    //! QgsTiledSceneRenderContext cannot be copied.
     QgsTiledSceneRenderContext( const QgsTiledSceneRenderContext &rh ) = delete;
-
-    //! QgsTiledSceneRenderContext cannot be copied.
     QgsTiledSceneRenderContext &operator=( const QgsTiledSceneRenderContext & ) = delete;
 
     /**

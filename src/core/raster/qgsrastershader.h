@@ -38,9 +38,7 @@ class CORE_EXPORT QgsRasterShader
   public:
     QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
 
-    //! QgsRasterShader cannot be copied
     QgsRasterShader( const QgsRasterShader &rh ) = delete;
-    //! QgsRasterShader cannot be copied
     QgsRasterShader &operator=( const QgsRasterShader &rh ) = delete;
 
     /*

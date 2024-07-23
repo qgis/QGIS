@@ -44,9 +44,7 @@ class GUI_EXPORT QgsSubsetStringEditorProviderRegistry
     QgsSubsetStringEditorProviderRegistry();
     ~QgsSubsetStringEditorProviderRegistry();
 
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsSubsetStringEditorProviderRegistry( const QgsSubsetStringEditorProviderRegistry &rh ) = delete;
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsSubsetStringEditorProviderRegistry &operator=( const QgsSubsetStringEditorProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers

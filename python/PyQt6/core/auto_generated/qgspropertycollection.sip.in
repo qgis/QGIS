@@ -381,9 +381,6 @@ Constructor for QgsPropertyCollection
 %End
 
     QgsPropertyCollection( const QgsPropertyCollection &other );
-%Docstring
-Copy constructor.
-%End
 
 
     bool operator==( const QgsPropertyCollection &other ) const;
@@ -472,9 +469,6 @@ priority over earlier collections.
     ~QgsPropertyCollectionStack();
 
     QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
-%Docstring
-Copy constructor
-%End
 
 
     int count() const;

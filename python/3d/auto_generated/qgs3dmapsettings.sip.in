@@ -22,14 +22,9 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
+
     Qgs3DMapSettings();
-%Docstring
-Constructor for Qgs3DMapSettings
-%End
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
-%Docstring
-Copy constructor
-%End
     ~Qgs3DMapSettings();
 
 

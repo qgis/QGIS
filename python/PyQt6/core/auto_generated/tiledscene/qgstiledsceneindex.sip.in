@@ -35,9 +35,6 @@ threads.
     ~QgsTiledSceneIndex();
 
     QgsTiledSceneIndex( const QgsTiledSceneIndex &other );
-%Docstring
-Copy constructor
-%End
 
     bool isValid() const;
 %Docstring

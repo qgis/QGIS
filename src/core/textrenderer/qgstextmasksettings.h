@@ -52,16 +52,7 @@ class CORE_EXPORT QgsTextMaskSettings
 
     QgsTextMaskSettings();
 
-    /**
-     * Copy constructor.
-     * \param other source settings
-     */
     QgsTextMaskSettings( const QgsTextMaskSettings &other );
-
-    /**
-     * Copy constructor.
-     * \param other source QgsTextMaskSettings
-     */
     QgsTextMaskSettings &operator=( const QgsTextMaskSettings &other );
 
     ~QgsTextMaskSettings();

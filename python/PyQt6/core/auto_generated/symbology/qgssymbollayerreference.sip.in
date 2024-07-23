@@ -58,10 +58,6 @@ QgsSymbolLayerId constructor with a symbol key and an index path
 %End
 
     QgsSymbolLayerId( const QgsSymbolLayerId &other );
-%Docstring
-Default copy constructor
-%End
-
 
     QString symbolKey() const;
 %Docstring

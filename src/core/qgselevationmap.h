@@ -57,7 +57,6 @@ class CORE_EXPORT QgsElevationMap
      */
     explicit QgsElevationMap( const QImage &image );
 
-    //! Copy constructor
     QgsElevationMap( const QgsElevationMap &other );
 
     /**

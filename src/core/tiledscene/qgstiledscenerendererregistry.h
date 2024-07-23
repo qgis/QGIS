@@ -185,9 +185,7 @@ class CORE_EXPORT QgsTiledSceneRendererRegistry
     QgsTiledSceneRendererRegistry();
     ~QgsTiledSceneRendererRegistry();
 
-    //! QgsTiledSceneRendererRegistry cannot be copied.
     QgsTiledSceneRendererRegistry( const QgsTiledSceneRendererRegistry &rh ) = delete;
-    //! QgsTiledSceneRendererRegistry cannot be copied.
     QgsTiledSceneRendererRegistry &operator=( const QgsTiledSceneRendererRegistry &rh ) = delete;
 
     /**

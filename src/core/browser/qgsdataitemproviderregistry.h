@@ -44,9 +44,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 
     ~QgsDataItemProviderRegistry();
 
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;
 
     /**

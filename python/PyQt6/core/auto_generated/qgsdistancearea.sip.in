@@ -38,15 +38,9 @@ Internally, the GeographicLib library is used to calculate all ellipsoid based m
   public:
 
     QgsDistanceArea();
-%Docstring
-Constructor
-%End
     ~QgsDistanceArea();
 
     QgsDistanceArea( const QgsDistanceArea &other );
-%Docstring
-Copy constructor
-%End
 
     bool willUseEllipsoid() const;
 %Docstring

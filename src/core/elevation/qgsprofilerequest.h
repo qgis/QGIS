@@ -47,9 +47,6 @@ class CORE_EXPORT QgsProfileRequest
      */
     QgsProfileRequest( QgsCurve *curve SIP_TRANSFER );
 
-    /**
-     * Copy constructor.
-     */
     QgsProfileRequest( const QgsProfileRequest &other );
 
     ~QgsProfileRequest();

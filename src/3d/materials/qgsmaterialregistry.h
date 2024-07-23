@@ -189,9 +189,7 @@ class _3D_EXPORT QgsMaterialRegistry
     QgsMaterialRegistry();
     ~QgsMaterialRegistry();
 
-    //! QgsMaterialRegistry cannot be copied.
     QgsMaterialRegistry( const QgsMaterialRegistry &rh ) = delete;
-    //! QgsMaterialRegistry cannot be copied.
     QgsMaterialRegistry &operator=( const QgsMaterialRegistry &rh ) = delete;
 
     //! Returns metadata for specified material settings \a type. Returns NULLPTR if not found

@@ -40,12 +40,8 @@ list of source and destination coordinates to transform geometries.
     ~QgsGcpGeometryTransformer();
 
 
-
     virtual bool transformPoint( double &x /In,Out/, double &y /In,Out/, double &z /In,Out/, double &m /In,Out/ );
 
-%Docstring
-QgsGcpGeometryTransformer cannot be copied
-%End
 
     QgsGeometry transform( const QgsGeometry &geometry, bool &ok /Out/, QgsFeedback *feedback = 0 );
 %Docstring

@@ -201,10 +201,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     ~QgsMapLayer() override;
 
-    //! QgsMapLayer cannot be copied
-    QgsMapLayer( QgsMapLayer const & ) = delete;
-    //! QgsMapLayer cannot be copied
-    QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
+    QgsMapLayer( const QgsMapLayer & ) = delete;
+    QgsMapLayer &operator=( const QgsMapLayer & ) = delete;
 
     /**
      * Returns a new instance equivalent to this one except for the id which

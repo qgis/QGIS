@@ -29,7 +29,6 @@ related to GUI classes.
     };
 
 
-
     static QgsGui *instance();
 %Docstring
 Returns a pointer to the singleton instance.

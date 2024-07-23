@@ -674,9 +674,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QgsAbstractDatabaseProviderConnection *sourceDatabaseProviderConnection = nullptr
                                          ) SIP_SKIP;
 
-    //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter( const QgsVectorFileWriter &rh ) = delete;
-    //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter &operator=( const QgsVectorFileWriter &rh ) = delete;
 
     /**

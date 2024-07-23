@@ -163,9 +163,7 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
      */
     bool populate();
 
-    //! QgsAnnotationItemRegistry cannot be copied.
     QgsAnnotationItemRegistry( const QgsAnnotationItemRegistry &rh ) = delete;
-    //! QgsAnnotationItemRegistry cannot be copied.
     QgsAnnotationItemRegistry &operator=( const QgsAnnotationItemRegistry &rh ) = delete;
 
     /**

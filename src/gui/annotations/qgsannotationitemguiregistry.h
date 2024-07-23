@@ -317,9 +317,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
 
     ~QgsAnnotationItemGuiRegistry() override;
 
-    //! QgsAnnotationItemGuiRegistry cannot be copied.
     QgsAnnotationItemGuiRegistry( const QgsAnnotationItemGuiRegistry &rh ) = delete;
-    //! QgsAnnotationItemGuiRegistry cannot be copied.
     QgsAnnotationItemGuiRegistry &operator=( const QgsAnnotationItemGuiRegistry &rh ) = delete;
 
     /**

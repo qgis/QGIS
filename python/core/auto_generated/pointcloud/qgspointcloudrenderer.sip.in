@@ -41,7 +41,6 @@ taken from the point cloud index.
 %End
 
 
-
     QgsRenderContext &renderContext();
 %Docstring
 Returns a reference to the context's render context.

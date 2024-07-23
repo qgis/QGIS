@@ -345,9 +345,7 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     virtual ~QgsLabelingEngine();
 
-    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine( const QgsLabelingEngine &rh ) = delete;
-    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
 
     //! Associate map settings instance
@@ -467,9 +465,7 @@ class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsDefaultLabelingEngine();
 
-    //! QgsDefaultLabelingEngine cannot be copied.
     QgsDefaultLabelingEngine( const QgsDefaultLabelingEngine &rh ) = delete;
-    //! QgsDefaultLabelingEngine cannot be copied.
     QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;
@@ -493,9 +489,7 @@ class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsStagedRenderLabelingEngine();
 
-    //! QgsStagedRenderLabelingEngine cannot be copied.
     QgsStagedRenderLabelingEngine( const QgsStagedRenderLabelingEngine &rh ) = delete;
-    //! QgsStagedRenderLabelingEngine cannot be copied.
     QgsStagedRenderLabelingEngine &operator=( const QgsStagedRenderLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;

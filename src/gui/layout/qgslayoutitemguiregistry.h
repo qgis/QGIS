@@ -369,9 +369,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 
     ~QgsLayoutItemGuiRegistry() override;
 
-    //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh ) = delete;
-    //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry &operator=( const QgsLayoutItemGuiRegistry &rh ) = delete;
 
     /**

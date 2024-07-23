@@ -52,9 +52,6 @@ Contains configuration settings for an editor form.
     };
 
     QgsEditFormConfig( const QgsEditFormConfig &o );
-%Docstring
-Copy constructor
-%End
     ~QgsEditFormConfig();
 
     bool operator==( const QgsEditFormConfig &o ) const;

@@ -327,13 +327,7 @@ Constructor for QgsFeature
 %End
 
     QgsFeature( const QgsFeature &rhs ) /HoldGIL/;
-%Docstring
-Copy constructor
-%End
-
-
     bool operator==( const QgsFeature &other ) const /HoldGIL/;
-
     bool operator!=( const QgsFeature &other ) const /HoldGIL/;
 
     virtual ~QgsFeature();

@@ -86,10 +86,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
       initTimer( this );
     }
 
-    //! QgsOgrConnPoolGroup cannot be copied
     QgsOgrConnPoolGroup( const QgsOgrConnPoolGroup &other ) = delete;
-
-    //! QgsOgrConnPoolGroup cannot be copied
     QgsOgrConnPoolGroup &operator=( const QgsOgrConnPoolGroup &other ) = delete;
 
     void ref() { ++mRefCount; }
@@ -132,10 +129,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     //
     static void cleanupInstance();
 
-    //! QgsOgrConnPool cannot be copied
     QgsOgrConnPool( const QgsOgrConnPool &other ) = delete;
-
-    //! QgsOgrConnPool cannot be copied
     QgsOgrConnPool &operator=( const QgsOgrConnPool &other ) = delete;
 
     /**

@@ -28,11 +28,6 @@ Container for settings relating to a text buffer.
     QgsTextBufferSettings();
 
     QgsTextBufferSettings( const QgsTextBufferSettings &other );
-%Docstring
-Copy constructor.
-
-:param other: source settings
-%End
 
 
     ~QgsTextBufferSettings();

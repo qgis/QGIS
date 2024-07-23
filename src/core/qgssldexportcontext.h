@@ -36,14 +36,7 @@ class CORE_EXPORT QgsSldExportContext
 
     ~QgsSldExportContext() = default;
 
-    /**
-     * Constructs a copy of SLD export context \a other
-     */
     QgsSldExportContext( const QgsSldExportContext &other ) = default;
-
-    /**
-     * Copy the values of \a other into the SLD export context
-     */
     QgsSldExportContext &operator=( const QgsSldExportContext &other ) = default;
 
     /**

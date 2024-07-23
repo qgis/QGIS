@@ -78,9 +78,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
         Rule( QgsAbstract3DSymbol *symbol SIP_TRANSFER, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
-        //! Rules cannot be copied.
         Rule( const Rule &rh ) = delete;
-        //! Rules cannot be copied.
         Rule &operator=( const Rule &rh ) = delete;
 
         //! The result of registering a rule

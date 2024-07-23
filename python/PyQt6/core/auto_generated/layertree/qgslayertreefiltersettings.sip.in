@@ -31,9 +31,6 @@ Constructor for QgsLayerTreeFilterSettings, using the specified map ``settings``
     ~QgsLayerTreeFilterSettings();
 
     QgsLayerTreeFilterSettings( const QgsLayerTreeFilterSettings &other );
-%Docstring
-Copy constructor.
-%End
 
 
     QgsMapSettings &mapSettings();

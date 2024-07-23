@@ -43,9 +43,7 @@ class QgsTiledSceneNode
      */
     QgsTiledSceneNode( QgsTiledSceneTile *tile SIP_TRANSFER );
 
-    //! QgsTiledSceneNode cannot be copied
     QgsTiledSceneNode( const QgsTiledSceneNode &other ) = delete;
-    //! QgsTiledSceneNode cannot be copied
     QgsTiledSceneNode &operator=( const QgsTiledSceneNode &other ) = delete;
 
     ~QgsTiledSceneNode();

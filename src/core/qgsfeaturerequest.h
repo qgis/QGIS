@@ -301,9 +301,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
-    //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest &rh );
-    //! Assignment operator
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
 
     /**

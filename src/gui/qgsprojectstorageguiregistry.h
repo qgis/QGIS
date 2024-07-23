@@ -47,9 +47,7 @@ class GUI_EXPORT QgsProjectStorageGuiRegistry
     QgsProjectStorageGuiRegistry();
     ~QgsProjectStorageGuiRegistry();
 
-    //! QgsProjectStorageGuiRegistry cannot be copied.
     QgsProjectStorageGuiRegistry( const QgsProjectStorageGuiRegistry &rh ) = delete;
-    //! QgsProjectStorageGuiRegistry cannot be copied.
     QgsProjectStorageGuiRegistry &operator=( const QgsProjectStorageGuiRegistry &rh ) = delete;
 
     //! Returns storage implementation if the storage type matches one. Returns NULLPTR otherwise (it is a normal file)

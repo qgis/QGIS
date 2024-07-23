@@ -99,10 +99,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     explicit QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsFeedback *feedback = nullptr );
 #endif
 
-    //! Copy constructor
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
-
-    //! Assignment operator
     QgsSpatialIndexKDBush &operator=( const QgsSpatialIndexKDBush &other );
 
     ~QgsSpatialIndexKDBush();

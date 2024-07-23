@@ -158,9 +158,6 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     QgsExpressionContextScope( const QString &name = QString() );
 
-    /**
-     * Copy constructor
-     */
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
 
     QgsExpressionContextScope &operator=( const QgsExpressionContextScope &other );
@@ -471,7 +468,6 @@ class CORE_EXPORT QgsExpressionContext
 {
   public:
 
-    //! Constructor for QgsExpressionContext
     QgsExpressionContext();
 
     /**
@@ -480,9 +476,6 @@ class CORE_EXPORT QgsExpressionContext
      */
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
-    /**
-     * Copy constructor
-     */
     QgsExpressionContext( const QgsExpressionContext &other );
 
     QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;

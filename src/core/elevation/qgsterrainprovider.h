@@ -65,9 +65,6 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
     virtual ~QgsAbstractTerrainProvider();
 
-    /**
-     * QgsAbstractTerrainProvider cannot be assigned.
-     */
     QgsAbstractTerrainProvider &operator=( const QgsAbstractTerrainProvider &other ) = delete;
 
     /**
@@ -161,10 +158,6 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     QgsAbstractTerrainProvider() = default;
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor
-     */
     QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
 #endif
 
@@ -228,7 +221,6 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
     QgsRasterDemTerrainProvider() = default;
 
 #ifndef SIP_RUN
-    //! QgsRasterDemTerrainProvider cannot be assigned
     const QgsRasterDemTerrainProvider *operator=( const QgsRasterDemTerrainProvider &other ) = delete;
 #endif
 
@@ -279,7 +271,6 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     QgsMeshTerrainProvider() = default;
 
 #ifndef SIP_RUN
-    //! QgsMeshTerrainProvider cannot be assigned
     const QgsMeshTerrainProvider *operator=( const QgsMeshTerrainProvider &other ) = delete;
 #endif
 

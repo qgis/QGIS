@@ -39,10 +39,6 @@ project instance
     ~QgsRelationContext();
 
     QgsRelationContext( const QgsRelationContext &other );
-%Docstring
-Copy constructor
-%End
-
 
 };
 

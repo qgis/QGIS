@@ -36,9 +36,6 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
                                       Qgis::DataProviderReadFlags flags );
     QgsXyzVectorTileDataProviderBase( const QgsXyzVectorTileDataProviderBase &other );
 
-    /**
-     * QgsXyzVectorTileDataProviderBase cannot be assigned.
-     */
     QgsXyzVectorTileDataProviderBase &operator=( const QgsXyzVectorTileDataProviderBase &other ) = delete;
 
     bool supportsAsync() const override;
@@ -74,9 +71,6 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
                                   Qgis::DataProviderReadFlags flags );
     QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other );
 
-    /**
-     * QgsXyzVectorTileDataProvider cannot be assigned.
-     */
     QgsXyzVectorTileDataProvider &operator=( const QgsXyzVectorTileDataProvider &other ) = delete;
 
     Qgis::DataProviderFlags flags() const override;

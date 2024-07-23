@@ -34,13 +34,7 @@ Container for settings relating to a text shadow.
     };
 
     QgsTextShadowSettings();
-
     QgsTextShadowSettings( const QgsTextShadowSettings &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsTextShadowSettings
-%End
 
 
     ~QgsTextShadowSettings();

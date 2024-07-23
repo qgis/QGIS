@@ -34,9 +34,6 @@ Settings for a color ramp legend node.
     ~QgsColorRampLegendNodeSettings();
 
     QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other );
-%Docstring
-Copy constructor
-%End
 
 
     QgsColorRampLegendNodeSettings::Direction direction() const;

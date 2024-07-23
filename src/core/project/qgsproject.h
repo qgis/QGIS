@@ -2529,10 +2529,7 @@ class CORE_EXPORT QgsProjectDirtyBlocker
       mProject->mDirtyBlockCount++;
     }
 
-    //! QgsProjectDirtyBlocker cannot be copied
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other ) = delete;
-
-    //! QgsProjectDirtyBlocker cannot be copied
     QgsProjectDirtyBlocker &operator=( const QgsProjectDirtyBlocker &other ) = delete;
 
     ~QgsProjectDirtyBlocker()

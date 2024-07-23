@@ -59,9 +59,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
-    //! QgsVectorLayerFeatureSource cannot be copied
     QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other ) = delete;
-    //! QgsVectorLayerFeatureSource cannot be copied
     QgsVectorLayerFeatureSource &operator==( const QgsVectorLayerFeatureSource &other ) = delete;
 
     ~QgsVectorLayerFeatureSource() override;
@@ -378,9 +376,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
      */
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 
-    //! QgsVectorLayerSelectedFeatureSource cannot be copied
     QgsVectorLayerSelectedFeatureSource( const QgsVectorLayerSelectedFeatureSource &other ) = delete;
-    //! QgsVectorLayerSelectedFeatureSource cannot be copied
     QgsVectorLayerSelectedFeatureSource &operator==( const QgsVectorLayerSelectedFeatureSource &other ) = delete;
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;

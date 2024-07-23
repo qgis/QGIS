@@ -77,11 +77,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     QgsAbstractReportSection( QgsAbstractReportSection *parentSection = nullptr );
 
     ~QgsAbstractReportSection() override;
-
-    //! QgsAbstractReportSection cannot be copied
     QgsAbstractReportSection( const QgsAbstractReportSection &other ) = delete;
-
-    //! QgsAbstractReportSection cannot be copied
     QgsAbstractReportSection &operator=( const QgsAbstractReportSection &other ) = delete;
 
     /**

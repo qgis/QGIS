@@ -57,14 +57,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     ~QgsColorRampShader() override;
 
-    /**
-     * Copy constructor
-     */
     QgsColorRampShader( const QgsColorRampShader &other );
-
-    /**
-     * Assignment operator
-     */
     QgsColorRampShader &operator=( const QgsColorRampShader &other );
 
     bool operator==( const QgsColorRampShader &other ) const

@@ -35,9 +35,6 @@ Constructor to use with Python binding
 %End
 
     QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsMeshVectorTraceAnimationGenerator();
 

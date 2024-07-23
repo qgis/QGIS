@@ -36,10 +36,6 @@ Creates a new color ramp shader.
     ~QgsColorRampShader();
 
     QgsColorRampShader( const QgsColorRampShader &other );
-%Docstring
-Copy constructor
-%End
-
 
     bool operator==( const QgsColorRampShader &other ) const;
 

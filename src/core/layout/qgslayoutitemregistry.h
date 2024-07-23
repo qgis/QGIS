@@ -390,9 +390,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      */
     bool populate();
 
-    //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh ) = delete;
-    //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry &operator=( const QgsLayoutItemRegistry &rh ) = delete;
 
     /**

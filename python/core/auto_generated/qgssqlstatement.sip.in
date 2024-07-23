@@ -26,9 +26,6 @@ Creates a new statement based on the provided string.
 %End
 
     QgsSQLStatement( const QgsSQLStatement &other );
-%Docstring
-Create a copy of this statement.
-%End
 
     virtual ~QgsSQLStatement();
 

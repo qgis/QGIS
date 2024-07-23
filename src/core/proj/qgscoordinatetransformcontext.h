@@ -64,14 +64,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
     ~QgsCoordinateTransformContext() ;
 
-    /**
-     * Copy constructor
-     */
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
-
-    /**
-     * Assignment operator
-     */
     QgsCoordinateTransformContext &operator=( const QgsCoordinateTransformContext &rhs ) SIP_SKIP;
 
     bool operator==( const QgsCoordinateTransformContext &rhs ) const ;

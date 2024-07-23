@@ -135,14 +135,7 @@ class CORE_EXPORT QgsCoordinateTransform
         int sourceDatumTransformId,
         int destinationDatumTransformId ) SIP_DEPRECATED;
 
-    /**
-     * Copy constructor
-     */
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
-
-    /**
-     * Assignment operator
-     */
     QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
 
     ~QgsCoordinateTransform();

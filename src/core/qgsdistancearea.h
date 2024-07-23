@@ -53,11 +53,9 @@ class CORE_EXPORT QgsDistanceArea
 {
   public:
 
-    //! Constructor
     QgsDistanceArea();
     ~QgsDistanceArea();
 
-    //! Copy constructor
     QgsDistanceArea( const QgsDistanceArea &other );
     QgsDistanceArea &operator=( const QgsDistanceArea &other );
 

@@ -45,9 +45,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
     QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh ) = delete;
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsSourceSelectProviderRegistry &operator=( const QgsSourceSelectProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers

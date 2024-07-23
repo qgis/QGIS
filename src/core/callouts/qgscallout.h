@@ -517,10 +517,6 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     ~QgsSimpleLineCallout() override;
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
     QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & ) = delete;
 #endif
@@ -753,12 +749,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout();
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
-
     QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & ) = delete;
 #endif
 
@@ -806,12 +797,7 @@ class CORE_EXPORT QgsCurvedLineCallout : public QgsSimpleLineCallout
     QgsCurvedLineCallout();
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
-
     QgsCurvedLineCallout &operator=( const QgsCurvedLineCallout & ) = delete;
 #endif
 
@@ -897,10 +883,6 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     ~QgsBalloonCallout() override;
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsBalloonCallout( const QgsBalloonCallout &other );
     QgsBalloonCallout &operator=( const QgsBalloonCallout & ) = delete;
 #endif
