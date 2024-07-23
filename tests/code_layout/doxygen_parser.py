@@ -395,11 +395,8 @@ class DoxygenParser():
         name = elem.find('name')
 
         # ignore certain obvious operators
-        try:
-            if name.text in ('operator=', 'operator==', 'operator!=', 'Q_ENUM'):
-                return False
-        except:
-            pass
+        if name.text in ('operator=', 'operator==', 'operator!=', 'operator>=', 'operator>', 'operator<=', 'operator<', 'Q_ENUM'):
+            return False
 
         # ignore on_* slots
         try:
