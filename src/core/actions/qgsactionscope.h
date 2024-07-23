@@ -65,9 +65,6 @@ class CORE_EXPORT QgsActionScope
      */
     explicit QgsActionScope( const QString &id, const QString &title, const QString &description, const QgsExpressionContextScope &expressionContextScope = QgsExpressionContextScope() );
 
-    /**
-     * Compares two action scopes
-     */
     bool operator==( const QgsActionScope &other ) const;
 
     /**

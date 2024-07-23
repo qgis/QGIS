@@ -203,13 +203,11 @@ class CORE_EXPORT QgsVector
      */
     QgsVector normalized() const SIP_THROW( QgsException );
 
-    //! Equality operator
     bool operator==( QgsVector other ) const SIP_HOLDGIL
     {
       return qgsDoubleNear( mX, other.mX ) && qgsDoubleNear( mY, other.mY );
     }
 
-    //! Inequality operator
     bool operator!=( QgsVector other ) const
     {
       return !qgsDoubleNear( mX, other.mX ) || !qgsDoubleNear( mY, other.mY );

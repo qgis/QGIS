@@ -598,7 +598,6 @@ pieces of information about CRS.
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
-
     bool operator!=( const QgsCoordinateReferenceSystem &srs ) const;
 
     bool readXml( const QDomNode &node );

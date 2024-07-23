@@ -60,9 +60,8 @@ class CORE_EXPORT QgsMeshDatasetIndex
     int dataset() const;
     //! Returns whether index is valid, ie at least groups is set
     bool isValid() const;
-    //! Equality operator
+
     bool operator == ( QgsMeshDatasetIndex other ) const;
-    //! Inequality operator
     bool operator != ( QgsMeshDatasetIndex other ) const;
   private:
     int mGroupIndex = -1;

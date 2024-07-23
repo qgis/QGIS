@@ -83,10 +83,8 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
       Estimated
     };
 
-    //! \brief Default constructor.
     QgsRasterMinMaxOrigin();
 
-    //! \brief Equality operator.
     bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
 
     //////// Getter methods /////////////////////

@@ -343,9 +343,6 @@ The elevation will be truncated at the surface and bed levels.
   public:
 
     QgsMeshElevationAveragingMethod();
-%Docstring
-Ctor
-%End
 
     QgsMeshElevationAveragingMethod( double startElevation, double endElevation );
 %Docstring

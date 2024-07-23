@@ -650,7 +650,6 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
     //! Sets the visual persistence of the tail
     void setTailPersitence( double p );
 
-    //! Assignment operator
     QgsMeshVectorTraceAnimationGenerator &operator=( const QgsMeshVectorTraceAnimationGenerator &other );
 
   private:

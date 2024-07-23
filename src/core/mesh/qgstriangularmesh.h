@@ -51,9 +51,8 @@ class QgsRectangle;
 class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 {
   public:
-    //! Ctor
+
     QgsTriangularMesh();
-    //! Dtor
     ~QgsTriangularMesh();
 
     /**

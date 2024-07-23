@@ -38,7 +38,7 @@ class QgsReadWriteContext;
 class _3D_EXPORT Qgs3DAnimationSettings
 {
   public:
-    //! ctor
+
     Qgs3DAnimationSettings();
 
     //! keyframe definition

@@ -311,9 +311,6 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     bool hasSameColumns( const QgsAttributeTableConfig &other ) const;
 
-    /**
-     * Compare this configuration to other.
-     */
     bool operator!= ( const QgsAttributeTableConfig &other ) const;
 
   private:

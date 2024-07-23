@@ -41,10 +41,9 @@
 class CORE_EXPORT QgsPointCloudRequest
 {
   public:
-    //! Ctor
+
     QgsPointCloudRequest();
 
-    //! Equality operator
     bool operator==( const QgsPointCloudRequest &other ) const;
 
     //! Returns attributes
