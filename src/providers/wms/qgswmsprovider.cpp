@@ -593,6 +593,22 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
     }
 
     mNativeResolutions.clear();
+
+    if ( mSettings.mTileMatrixSetId.isEmpty() && !mCaps.mFirstTileMatrixSetId.isEmpty() )
+    {
+      // if no explicit tile matrix set specified, use first listed
+      mSettings.mTileMatrixSetId = mCaps.mFirstTileMatrixSetId;
+      for ( int i = 0; i < mCaps.mTileLayersSupported.size(); i++ )
+      {
+        QgsWmtsTileLayer *tl = &mCaps.mTileLayersSupported[i];
+        if ( tl->identifier != mSettings.mActiveSubLayers[0] )
+          continue;
+
+        mTileLayer = tl;
+        break;
+      }
+    }
+
     if ( mCaps.mTileMatrixSets.contains( mSettings.mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
