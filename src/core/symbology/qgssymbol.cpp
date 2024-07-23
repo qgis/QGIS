@@ -54,8 +54,40 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgscolorutils.h"
+#include "qgsunittypes.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
+
+
+//
+// QgsSymbolBufferSettings
+//
+
+void QgsSymbolBufferSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
+{
+  QDomElement symbolBufferElem = element.ownerDocument().createElement( QStringLiteral( "buffer" ) );
+  symbolBufferElem.setAttribute( QStringLiteral( "enabled" ), mEnabled );
+  symbolBufferElem.setAttribute( QStringLiteral( "size" ), mSize );
+  symbolBufferElem.setAttribute( QStringLiteral( "sizeUnits" ), QgsUnitTypes::encodeUnit( mSizeUnit ) );
+  symbolBufferElem.setAttribute( QStringLiteral( "sizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale ) );
+  symbolBufferElem.setAttribute( QStringLiteral( "joinStyle" ), static_cast< unsigned int >( mJoinStyle ) );
+  element.appendChild( symbolBufferElem );
+}
+
+void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
+{
+  const QDomElement symbolBufferElem = element.firstChildElement( QStringLiteral( "buffer" ) );
+  mEnabled = symbolBufferElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
+  mSize = symbolBufferElem.attribute( QStringLiteral( "size" ), QStringLiteral( "1" ) ).toDouble();
+  mSizeUnit = QgsUnitTypes::decodeRenderUnit( symbolBufferElem.attribute( QStringLiteral( "sizeUnits" ) ) );
+  mSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( symbolBufferElem.attribute( QStringLiteral( "sizeMapUnitScale" ) ) );
+  mJoinStyle = static_cast< Qt::PenJoinStyle >( symbolBufferElem.attribute( QStringLiteral( "joinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
+}
+
+
+//
+// QgsSymbol
+//
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated mLayer
 QgsSymbol::QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers )
@@ -686,6 +718,23 @@ void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale ) const
   {
     layer->setMapUnitScale( scale );
   }
+}
+
+QgsSymbolBufferSettings *QgsSymbol::bufferSettings()
+{
+  return mBufferSettings.get();
+}
+
+const QgsSymbolBufferSettings *QgsSymbol::bufferSettings() const
+{
+  return mBufferSettings.get();
+}
+
+void QgsSymbol::setBufferSettings( QgsSymbolBufferSettings *settings )
+{
+  if ( mBufferSettings.get() == settings )
+    return;
+  mBufferSettings.reset( settings );
 }
 
 QgsSymbolAnimationSettings &QgsSymbol::animationSettings()
@@ -1981,6 +2030,10 @@ void QgsSymbol::copyCommonProperties( const QgsSymbol *other )
   mDataDefinedProperties = other->mDataDefinedProperties;
   mSymbolFlags = other->mSymbolFlags;
   mAnimationSettings = other->mAnimationSettings;
+  if ( other->mBufferSettings )
+    mBufferSettings = std::make_unique< QgsSymbolBufferSettings >( *other->mBufferSettings );
+  else
+    mBufferSettings.reset();
 
   Q_NOWARN_DEPRECATED_PUSH
   mLayer = other->mLayer;

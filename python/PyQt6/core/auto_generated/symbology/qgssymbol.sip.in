@@ -63,6 +63,125 @@ Returns the symbol animation frame rate (in frames per second).
 
 };
 
+
+class QgsSymbolBufferSettings
+{
+%Docstring(signature="appended")
+
+Contains settings relating to symbol buffers, which draw a "halo" effect around the symbol.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgssymbol.h"
+%End
+  public:
+
+    bool enabled() const;
+%Docstring
+Returns whether the buffer is enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the symbol buffer will be drawn.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    double size() const;
+%Docstring
+Returns the size of the buffer.
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`setSize`
+%End
+
+    void setSize( double size );
+%Docstring
+Sets the ``size`` of the buffer.
+
+The size units are specified using :py:func:`~QgsSymbolBufferSettings.setSizeUnit`.
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    Qgis::RenderUnit sizeUnit() const;
+%Docstring
+Returns the units for the buffer size.
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    void setSizeUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the buffer size.
+
+.. seealso:: :py:func:`setSize`
+
+.. seealso:: :py:func:`sizeUnit`
+%End
+
+    QgsMapUnitScale sizeMapUnitScale() const;
+%Docstring
+Returns the map unit scale object for the buffer size. This is only used if the
+buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+
+.. seealso:: :py:func:`setSizeMapUnitScale`
+
+.. seealso:: :py:func:`sizeUnit`
+%End
+
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` object for the buffer size.
+
+This is only used if the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    Qt::PenJoinStyle joinStyle() const;
+%Docstring
+Returns the buffer join style.
+
+.. seealso:: :py:func:`setJoinStyle`
+%End
+
+    void setJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Sets the join ``style`` used for drawing the buffer.
+
+.. seealso:: :py:func:`joinStyle`
+%End
+
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes the buffer settings to an XML ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the buffer settings from an XML ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+};
+
+
 class QgsSymbol
 {
 %Docstring(signature="appended")
@@ -561,6 +680,29 @@ direction.
 .. seealso:: :py:func:`setForceRHR`
 
 .. versionadded:: 3.6
+%End
+
+    QgsSymbolBufferSettings *bufferSettings();
+%Docstring
+Returns the symbol buffer settings, which control an optional "halo" effect around the symbol.
+
+Will be ``None`` if no buffer settings have previously been set for the symbol.
+
+.. seealso:: :py:func:`setBufferSettings`
+
+.. versionadded:: 3.40
+%End
+
+
+    void setBufferSettings( QgsSymbolBufferSettings *settings /Transfer/ );
+%Docstring
+Sets a the symbol buffer ``settings``, which control an optional "halo" effect around the symbol.
+
+Ownership is transferred to the symbol.
+
+.. seealso:: :py:func:`bufferSettings`
+
+.. versionadded:: 3.40
 %End
 
     QgsSymbolAnimationSettings &animationSettings();
