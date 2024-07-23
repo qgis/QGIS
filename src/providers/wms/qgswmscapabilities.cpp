@@ -61,6 +61,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mInterpretation = uri.param( QStringLiteral( "interpretation" ) );
   }
 
+  mTiled = false;
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
        uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
@@ -89,8 +90,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
     return true;
   }
-
-  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
+  else if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mIsTemporal = true;
     mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
@@ -161,8 +161,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       mIsBiTemporal = true;
     }
   }
+  else if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmts" ) )
+  {
+    mTiled = true;
+  }
 
-  mTiled = false;
   mTileDimensionValues.clear();
 
   mHttpUri = uri.param( QStringLiteral( "url" ) );
