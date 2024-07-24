@@ -93,7 +93,7 @@ QgsSymbolBufferSettings &QgsSymbolBufferSettings::operator=( const QgsSymbolBuff
   return *this;
 }
 
-QgsFillSymbol *QgsSymbolBufferSettings::fillSymbol()
+QgsFillSymbol *QgsSymbolBufferSettings::fillSymbol() const
 {
   return mFillSymbol.get();
 }

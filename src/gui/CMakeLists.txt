@@ -75,6 +75,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsstylesavedialog.cpp
   symbology/qgssvgselectorwidget.cpp
   symbology/qgssymbolanimationsettingswidget.cpp
+  symbology/qgssymbolbuffersettingswidget.cpp
   symbology/qgssymbollayerwidget.cpp
   symbology/qgssymbollevelsdialog.cpp
   symbology/qgssymbolslistwidget.cpp
@@ -1529,6 +1530,7 @@ set(QGIS_GUI_HDRS
   symbology/qgsstylesavedialog.h
   symbology/qgssvgselectorwidget.h
   symbology/qgssymbolanimationsettingswidget.h
+  symbology/qgssymbolbuffersettingswidget.h
   symbology/qgssymbollayerwidget.h
   symbology/qgssymbollevelsdialog.h
   symbology/qgssymbolselectordialog.h
