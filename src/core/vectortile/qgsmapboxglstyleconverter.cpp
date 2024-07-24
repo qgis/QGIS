@@ -2850,8 +2850,10 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
 
         case PropertyType::Point:
         {
-          valueString = QStringLiteral( "array(%1,%2)" ).arg( stepValue.toList().value( 0 ).toDouble() * multiplier,
-                        stepValue.toList().value( 0 ).toDouble() * multiplier );
+          valueString = QStringLiteral( "array(%1,%2)" ).arg(
+                          stepValue.toList().value( 0 ).toDouble() * multiplier ).arg(
+                          stepValue.toList().value( 0 ).toDouble() * multiplier
+                        );
           break;
         }
       }
