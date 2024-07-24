@@ -305,14 +305,19 @@ class TEST_EXPORT QgsTest : public QObject
       QString expectedPath = testDataPath( subPath );
       QFile expectedFile( expectedPath );
       if ( ! expectedFile.open( QFile::ReadOnly  | QIODevice::Text ) )
+      {
+        qWarning() << "Unable to open expected data file" << expectedPath;
         return false;
+      }
       QByteArray expectedStr = expectedFile.readAll();
 
       if ( actualStr.size() != expectedStr.size() )
+      {
         qWarning() << "Array have not the same length (actual vs expected):" << actualStr.size() << "vs" << expectedStr.size();
+      }
 
       int strSize = actualStr.size();
-      constexp int step = 100;
+      constexpr int step = 100;
       for ( int i = 0; i < strSize || i < strSize + step; i += step )
       {
         QByteArray act = actualStr.mid( i, step );
