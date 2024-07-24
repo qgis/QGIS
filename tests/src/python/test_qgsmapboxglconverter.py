@@ -135,6 +135,29 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(props.expressionString(),
                          "CASE WHEN @vector_tile_zoom >= 9 AND @vector_tile_zoom < 15 THEN color_hsla(scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue')), scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation')), scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'lightness'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'lightness')), scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'alpha'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'alpha'))) WHEN @vector_tile_zoom >= 15 THEN color_hsla(color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'alpha')) ELSE color_hsla(color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'alpha')) END")
 
+        props, default_col = QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom([
+            "interpolate",
+            ["exponential", 1],
+            ["zoom"],
+            12, ["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 0.75, 0],
+            13, ["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 0.75, 0],
+            14, ["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 1, 0],
+            14.5, [
+                "case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 1.5, [
+                    "case", ["==", ["%", ["to-number", ["get", "ele"]], 20], 0], 0.75, 0]
+            ],
+            15, [
+                "case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 1.75, [
+                    "case", ["==", ["%", ["to-number", ["get", "ele"]], 20], 0], 1, 0
+                ]
+            ],
+            16.5, ["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 2, [
+                "case", ["==", ["%", ["to-number", ["get", "ele"]], 10], 0], 1, 0
+            ]
+            ]
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 0.264583)
+        self.assertEqual(props.expressionString(), 'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END')
+
     def testParseStops(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
