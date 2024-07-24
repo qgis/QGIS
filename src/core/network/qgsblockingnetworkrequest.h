@@ -57,6 +57,20 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
       ServerExceptionError, //!< An exception was raised by the server
     };
 
+    /**
+     * Request flags
+     *
+     * \since QGIS 3.40
+     */
+    enum class RequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      EmptyResponseIsValid = 1 << 0, //!< Do not generate an error if getting an empty response (e.g. HTTP 204)
+    };
+    Q_ENUM( RequestFlag )
+    Q_DECLARE_FLAGS( RequestFlags, RequestFlag )
+    Q_FLAG( RequestFlags )
+
+    //! Constructor for QgsBlockingNetworkRequest
     explicit QgsBlockingNetworkRequest();
 
     ~QgsBlockingNetworkRequest() override;
@@ -73,6 +87,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * The optional \a feedback argument can be used to abort ongoing requests.
      *
+     * The optional \a requestFlags argument can be used to modify the behavior (added in QGIS 3.40).
+     *
      * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
      * by calling reply().
      *
@@ -81,7 +97,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * \see post()
      */
-    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = QgsBlockingNetworkRequest::RequestFlags() );
 
     /**
      * Performs a "post" operation on the specified \a request, using the given \a data.
@@ -281,11 +297,14 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     //! Whether we already received bytes
     bool mGotNonEmptyResponse = false;
 
+    //! Request flags
+    RequestFlags mRequestFlags;
+
     int mExpirationSec = 30;
 
     QPointer< QgsFeedback > mFeedback;
 
-    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr );
+    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = RequestFlags() );
 
     QString errorMessageFailedAuth();
 
