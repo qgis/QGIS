@@ -2910,31 +2910,33 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
     maxValueExpr = parseExpression( valueMax.toList(), context );
   }
 
+  QString expression;
   if ( minValueExpr == maxValueExpr )
   {
-    return minValueExpr;
-  }
-
-  QString expression;
-  if ( base == 1 )
-  {
-    expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
-                 .arg( zoomMax )
-                 .arg( minValueExpr )
-                 .arg( maxValueExpr );
+    expression = minValueExpr;
   }
   else
   {
-    // use formula to scale value exponentially as scale_exp expression function
-    // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
-    QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
-    expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
-    // can be uncommented when scale_exponential expression function gets to the old LTR
-    //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
-    //             .arg( zoomMax )
-    //             .arg( minValueExpr )
-    //             .arg( maxValueExpr )
-    //             .arg( base );
+    if ( base == 1 )
+    {
+      expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
+                   .arg( zoomMax )
+                   .arg( minValueExpr )
+                   .arg( maxValueExpr );
+    }
+    else
+    {
+      // use formula to scale value exponentially as scale_exp expression function
+      // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
+      QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
+      expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
+      // can be uncommented when scale_exponential expression function gets to the old LTR
+      //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
+      //             .arg( zoomMax )
+      //             .arg( minValueExpr )
+      //             .arg( maxValueExpr )
+      //             .arg( base );
+    }
   }
 
   if ( multiplier != 1 )
