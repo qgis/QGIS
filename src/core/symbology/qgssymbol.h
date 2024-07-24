@@ -624,7 +624,7 @@ class CORE_EXPORT QgsSymbol
      * Returns the rendering hint flags for the symbol.
      * \see setRenderHints()
      */
-    Qgis::SymbolRenderHints renderHints() const { return mRenderHints; }
+    Qgis::SymbolRenderHints renderHints() const;
 
     /**
      * Sets \a flags for the symbol.

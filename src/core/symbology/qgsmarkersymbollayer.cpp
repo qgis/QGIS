@@ -1116,7 +1116,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   // use caching only when:
   // - size, rotation, shape, color, stroke color is not data-defined
   // - drawing to screen (not printer)
-  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
+  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.forceVectorRendering()
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle );
@@ -2403,7 +2403,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   bool fitsInCache = true;
   bool usePict = true;
   const bool rasterizeSelected = !mHasFillParam || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name );
-  if ( ( !context.renderContext().forceVectorOutput() && !rotated ) || ( useSelectedColor && rasterizeSelected ) )
+  if ( ( !context.forceVectorRendering() && !rotated ) || ( useSelectedColor && rasterizeSelected ) )
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, width * devicePixelRatio, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
@@ -2452,7 +2452,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     p->setOpacity( context.opacity() );
     const QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, width, fillColor, strokeColor, strokeWidth,
-                         context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
+                         context.renderContext().scaleFactor(), context.forceVectorRendering(), aspectRatio,
                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {

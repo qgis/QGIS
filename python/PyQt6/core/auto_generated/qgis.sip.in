@@ -412,6 +412,7 @@ The development version
     {
       DynamicRotation,
       IsSymbolLayerSubSymbol,
+      ForceVectorRendering,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 

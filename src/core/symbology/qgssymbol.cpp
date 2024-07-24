@@ -881,11 +881,13 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
   Q_ASSERT_X( !mStarted, "startRender", "Rendering has already been started for this symbol instance!" );
   mStarted = true;
 
-  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, mRenderHints, nullptr, fields ) );
+  const Qgis::SymbolRenderHints renderHints = QgsSymbol::renderHints();
+
+  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints, nullptr, fields ) );
 
   // Why do we need a copy here ? Is it to make sure the symbol layer rendering does not mess with the symbol render context ?
   // Or is there another profound reason ?
-  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, mRenderHints, nullptr, fields );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints, nullptr, fields );
 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
 
@@ -1011,7 +1013,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
   const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity * 100 ) * 0.01 : mOpacity;
 
-  QgsSymbolRenderContext symbolContext( *context, Qgis::RenderUnit::Unknown, opacity, false, mRenderHints, nullptr );
+  QgsSymbolRenderContext symbolContext( *context, Qgis::RenderUnit::Unknown, opacity, false, renderHints(), nullptr );
   symbolContext.setSelected( selected );
   switch ( mType )
   {
@@ -2038,4 +2040,15 @@ void QgsSymbol::copyCommonProperties( const QgsSymbol *other )
   Q_NOWARN_DEPRECATED_PUSH
   mLayer = other->mLayer;
   Q_NOWARN_DEPRECATED_POP
+}
+
+Qgis::SymbolRenderHints QgsSymbol::renderHints() const
+{
+  Qgis::SymbolRenderHints hints = mRenderHints;
+  if ( mBufferSettings && mBufferSettings->enabled() )
+  {
+    hints.setFlag( Qgis::SymbolRenderHint::ForceVectorRendering, true );
+  }
+  return hints;
+
 }
