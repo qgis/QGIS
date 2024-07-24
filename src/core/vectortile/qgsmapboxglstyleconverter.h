@@ -754,7 +754,23 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
      * prior to conversion.
      */
-    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty );
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
+    {
+      QSize spriteSize;
+      QString spriteProperty;
+      QString spriteSizeProperty;
+      return retrieveSpriteAsBase64WithProperties( value, context, spriteSize, spriteProperty, spriteSizeProperty );
+    }
+
+    /**
+     * Retrieves the sprite image with the specified \a name, taken from the specified \a context as a base64 encoded value
+     *
+     * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
+     * prior to conversion.
+     *
+     * \since QGIS 3.40
+     */
+    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize SIP_OUT, QString &spriteProperty SIP_OUT, QString &spriteSizeProperty SIP_OUT );
 
   private:
 

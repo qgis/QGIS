@@ -9,6 +9,8 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
+import json
+
 from qgis.PyQt.QtCore import (
     Qt,
     QCoreApplication,
@@ -1427,6 +1429,59 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         dd_props = renderer.symbol()[0].dataDefinedProperties()
         prop = dd_props.property(QgsSymbolLayer.Property.PropertyFillColor)
         self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom >= 14 AND @vector_tile_zoom < 16 THEN color_hsla(color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_hue\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_saturation\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'lightness\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'alpha\')) WHEN @vector_tile_zoom >= 16 THEN color_hsla(color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_hue\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_saturation\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'lightness\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'alpha\')) ELSE color_hsla(color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_hue\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_saturation\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'lightness\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'alpha\')) END')
+
+    def testRetrieveSrpite(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        sprite_image_file = f'{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.png'
+        with open(sprite_image_file, 'rb') as f:
+            sprite_image = QImage.loadFromData(f.read())
+        sprite_definition_file = f'{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.json'
+        with open(sprite_definition_file) as f:
+            sprite_definition = json.load(f)
+        context.setSprites(sprite_image, sprite_definition)
+
+        # swisstopo - lightbasemap - sinkhole
+        icon_image = [
+            "match",
+            [
+                "get",
+                "class"
+            ],
+            "sinkhole",
+            "arrow_brown",
+            [
+                "sinkhole_rock",
+                "sinkhole_scree"
+            ],
+            "arrow_grey",
+            [
+                "sinkhole_ice",
+                "sinkhole_water"
+            ],
+            "arrow_blue",
+            ""
+        ]
+        sprite, size, sprite_property, sprite_size_property = QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64(icon_image, context)
+        self.assertEqual(sprite_property, "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAwAAAAgCAYAAAAmG5mqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAArklEQVQ4jWNmQAPxrgr1EzIMDiS4KjQwMDAwXLz34SCyPBO6BkJgVMOohlEN9NTA2JWit8NUTcidGMWnb73bybT60NM+Yk1ffehpH9PpW293nb71bicxpp++9XYXE0wnMaYzMEA9TcgWmOlwDYRsQZaDa8BlC7LpKBpw2YIuhqIB3RZ00zE0oJuIzUYWTDcjbEE3nYGBgYEZXYCBgYHhw5c/r649/Hz82dvvd9HlANtvdC5jaNf5AAAAAElFTkSuQmCC' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAwAAAAgCAYAAAAmG5mqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAoUlEQVQ4je2PMRLCIBBFv8QzcAbOwNB7LD1BzmNSaeUl8AJ/GDoKOhvDJGsyUFmxJct7DwaIMcZcnXMPY8wNAEIIz/VeSaA2HehAB/4JnKy1d631peUyyUl578dWu/d+VCRnklOLneSsFrLFDnw/Xass9gLUKutdAY4qa/sGOKrIsw0gK9L+A0jjXvG88+ZSkXYAGOQBAOScGWN8pZTecvcBJ6N45xp02+cAAAAASUVORK5CYII=' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAwAAAAgCAYAAAAmG5mqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAq0lEQVQ4jWNgQAOSXmn1xlPO/jeecva/pFdaPbo8E7oAITCqYVTDqAZ6amBUzZ6yg0/T0p0YxZ+uH9/J9HLf0j5iTX+5b2kf06frx3d9un58JzGmf7p+fBcTTCcxpjMwQD1NyBaY6XANhGxBloNrwGULsukoGnDZgi6GogHdFnTTMTSgm4jNRhYsbobbgm46AwMDAzO6AAMDA8OfL+9ffb1/+fjPN0/uossBAN+ec6mo5jjFAAAAAElFTkSuQmCC' ELSE '' END")
+
+        # swisstopo - lightbasemap - place_village
+        icon_image = [
+            "step",
+            [
+                "zoom"
+            ],
+            "circle_dark_grey_4",
+            6,
+            "circle_dark_grey_4",
+            8,
+            "circle_dark_grey_6",
+            10,
+            "circle_dark_grey_8",
+            12,
+            "circle_dark_grey_10"
+        ]
+        sprite, size, sprite_property, sprite_size_property = QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64(icon_image, context)
+        self.assertEqual(sprite_property, "CASE WHEN @vector_tile_zoom >= 12 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAACDUlEQVQ4jZ2VsaraYBTH/8mFTAfJ4NBBJBAHcdCMHTLkES7oA6Rv0D5BvU9gQRyKQ/MCgt3qpGBcdImLyRAhg4hgwIDHxSUd2s/eek24+ptCkvP7zjk5nEjIoFgsPhNRQ1VVi4gMAGBmL0mSyel08vb7/c9bcdL1DSIyqtXqDyHJgpm9IAg+MbOXKdQ0ra1p2lcA0HUdpmnCMAxUKhUAQBiG8DwPrutivV4DAKIoakdR9PLmRE3T2pZlpZZlpd1uNz0ej2kWx+Mx7Xa7qXi/VCp9flOmeDidTjNF10yn04tUtOgJAOr1+i9FUT40m020Wq281v1HuVwGM8P3fRQKhY/b7fa7LL6mruuwbfvdMoFt29B1HURkFIvFZ1mkapomiOhuIRHBNE1xbciqqloAYBi5U5KLiFVV1bpkKEbjEUQsETXkhy23kWQx6WEYPmwRsczsyUmSTADA87y8mFxEbJIkk0uGs9kMzHy3jJkxGo3+ZRjH8ZCZl2EYwnGcu4WO42C324GZl3EcD2UACILABoDBYADXdd8tc10Xg8EArx1PAHA+n3cAJFVVrfF4jNPphFqtBkVRMsvs9/vo9XoAgDAMv8RxPLwIgT8NFdLVaoXFYoHD4QBJkkBEOJ/P8H0fo9EInU4H8/n8IttsNt+EJ2vBOkTUyCuXmZdBENi5C/Y1f5eGcesXwMyeKPGa3yGWS8B8xv1iAAAAAElFTkSuQmCC'  WHEN @vector_tile_zoom >= 10 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAABs0lEQVQ4jY2TMW/iMBiG37iM5hQhDwyZUIYTQmruF+AtkTKU+yeMt9Dh/sDdDezlH9At3liQbksGJJYE3ZAhSBbKQaQiS8Rd6opSaHk3W8/7+vtsfxZORCn1GGN3tm1zSqkHAFVVJWVZzqSUj1VVJce8dbxwHGfouu6v01AjrfU2y7L7PM//vAvo9XpTxtgdAPi+jyAI4LouACBNU0RRBCEEAEBKOV0sFt/fnMw512EY6jiO9SXFcazDMNScc+04zvC1Z8655px/aD4O4Zzrfr//n1LqEcbYwJTted6l9l/leR5834dlWV8YYwNi2zYHgCAIPjUbGda2bU7MU5kLu0aGpZTekqtd52UR8zHSNL3aZdiqqhJSluUMAKIoujrAsGVZzoiUclrX9U4IgSRJPrECSZJACIG6rndFUTzcKKWKw+Hw1Gq1gvl8jm63i3a7fdE8Go2glEKWZT82m010AwDb7fYvpfRbo9H4KoTAer1Gs9kEpRRKKSyXS0wmE4zHYyilIKV8TNN0CJwZpk6n85MQ0jxXQV3Xu9VqdZ/n+W+zZ51CL+M8ODfORVE87Pf7f8f8M97/C1rlJ2QfAAAAAElFTkSuQmCC'  WHEN @vector_tile_zoom >= 8 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAABEElEQVQokXWSMW7CQBBFnx1EtcVKNFOmcIkU9xQsN0gk99kbkJ4TcIvNARA5AtxgkFyafkW1xZZITpEYUdiv/l8z8/8UPCEiXkQ+jTE1QM5ZY4whxvg9aAqA2Wxml8vl0VrrGCGldGrb9uN+v6cCoK7rk7V2vVqtaJqGqqowxqCqhBC4XC6klE6qukFEvHOu3+12/RTb7bZ3zvUi4ksR8QBN04xtA4D3/nFjORxY1/WkoaoqAIwxb+WkapyizDkrgKpOqrquA/5iLmOMAeBwOEwaQggAxBjDS85ZrbWb2+32er1eWSwWGGOYz+eoKvv9foj13HXd13NxP9ba9diElNK5bdv3R3ED/6/hR14jDJpfqBeVnGzOJRAAAAAASUVORK5CYII='  WHEN @vector_tile_zoom >= 6 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAv0lEQVQYlYXOIQqDYBiH8b/6IW8wOPiCAxFXTIZ1i97AbFsw7wbCbjHwAMZdwcU11wwG0aLtRcQgwlYXhP0O8PAoACCljG3bvhqGcRZCmMxctm17Y+ZSkVLGvu8/sKOqqkjzPO9ORG4QBMiyDEmSYBgG9H0PIjopYRh+AKAoCliWBQBomgZpmmLbNlb30j8UzTTNiIjccRzhOA7WdUWe5+i6DtM0vf5PLstSz/P81nX9KIQ4qKpKzPys6/rCzOUX/GBLMm760HoAAAAASUVORK5CYII=' ELSE 'base64:iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAv0lEQVQYlYXOIQqDYBiH8b/6IW8wOPiCAxFXTIZ1i97AbFsw7wbCbjHwAMZdwcU11wwG0aLtRcQgwlYXhP0O8PAoACCljG3bvhqGcRZCmMxctm17Y+ZSkVLGvu8/sKOqqkjzPO9ORG4QBMiyDEmSYBgG9H0PIjopYRh+AKAoCliWBQBomgZpmmLbNlb30j8UzTTNiIjccRzhOA7WdUWe5+i6DtM0vf5PLstSz/P81nX9KIQ4qKpKzPys6/rCzOUX/GBLMm760HoAAAAASUVORK5CYII=' END")
 
 
 if __name__ == '__main__':
