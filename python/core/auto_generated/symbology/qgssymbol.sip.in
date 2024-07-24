@@ -78,6 +78,11 @@ Contains settings relating to symbol buffers, which draw a "halo" effect around 
 %End
   public:
 
+    QgsSymbolBufferSettings();
+    ~QgsSymbolBufferSettings();
+
+    QgsSymbolBufferSettings( const QgsSymbolBufferSettings &other );
+
     bool enabled() const;
 %Docstring
 Returns whether the buffer is enabled.
@@ -164,6 +169,24 @@ Sets the join ``style`` used for drawing the buffer.
 
 .. seealso:: :py:func:`joinStyle`
 %End
+
+    QgsFillSymbol *fillSymbol();
+%Docstring
+Returns the fill symbol used to render the buffer.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the buffer. Ownership of ``symbol`` is
+transferred to the buffer.
+
+.. seealso:: :py:func:`fillSymbol`
+%End
+
 
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
