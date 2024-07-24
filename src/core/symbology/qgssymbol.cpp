@@ -56,6 +56,8 @@
 #include "qgsfillsymbollayer.h"
 #include "qgscolorutils.h"
 #include "qgsunittypes.h"
+#include "qgsgeometrypaintdevice.h"
+#include "qgspainting.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -131,7 +133,7 @@ void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsRead
   mSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( symbolBufferElem.attribute( QStringLiteral( "sizeMapUnitScale" ) ) );
   mJoinStyle = static_cast< Qt::PenJoinStyle >( symbolBufferElem.attribute( QStringLiteral( "joinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
 
-  const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement fillSymbolElem = symbolBufferElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !fillSymbolElem.isNull() )
   {
     mFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context ) );
@@ -1756,17 +1758,28 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   // to segmentize the geometry before rendering)
   getPartGeometry( geom.constGet()->simplifiedTypeRef(), 0 );
 
+  // If we're drawing using symbol levels, we only draw buffers for the bottom most level
+  const bool usingBuffer = ( layer == -1 || layer == 0 ) && mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol();
+
   // step 2 - determine which layers to render
-  std::vector< int > layers;
+  std::vector< int > allLayers;
+  allLayers.reserve( mLayers.count() );
+  for ( int i = 0; i < mLayers.count(); ++i )
+    allLayers.emplace_back( i );
+
+  std::vector< int > layerToRender;
   if ( layer == -1 )
   {
-    layers.reserve( mLayers.count() );
-    for ( int i = 0; i < mLayers.count(); ++i )
-      layers.emplace_back( i );
+    layerToRender = allLayers;
   }
   else
   {
-    layers.emplace_back( layer );
+    // if we're rendering using a buffer, then we'll need to draw ALL symbol layers in order to calculate the
+    // buffer shape, but then ultimately we'll ONLY draw the target layer on top.
+    if ( usingBuffer )
+      layerToRender = allLayers;
+    else
+      layerToRender.emplace_back( layer );
   }
 
   // step 3 - render these geometries using the desired symbol layers.
@@ -1777,8 +1790,31 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   const bool maskGeometriesDisabledForSymbol = context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
       && !mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
 
-  for ( const int symbolLayerIndex : layers )
+  // handle symbol buffers -- we do this by deferring the rendering of the symbol and redirecting
+  // to QPictures, and then using the actual rendered shape from the QPictures to determine the buffer shape.
+  QPainter *originalTargetPainter = nullptr;
+  // this is an array, we need to separate out the symbol layers if we're drawing only one symbol level
+  std::vector< QPicture > picturesForDeferredRendering;
+  std::unique_ptr< QPainter > deferredRenderingPainter;
+  if ( usingBuffer )
   {
+    originalTargetPainter = context.painter();
+    picturesForDeferredRendering.emplace_back( QPicture() );
+    deferredRenderingPainter = std::make_unique< QPainter >( &picturesForDeferredRendering.front() );
+    context.setPainter( deferredRenderingPainter.get() );
+  }
+
+  for ( const int symbolLayerIndex : layerToRender )
+  {
+    if ( deferredRenderingPainter && layer != -1 && symbolLayerIndex != layerToRender.front() )
+    {
+      // if we're using deferred rendering along with symbol level drawing, we
+      // start a new picture for each symbol layer drawn
+      deferredRenderingPainter->end();
+      picturesForDeferredRendering.emplace_back( QPicture() );
+      deferredRenderingPainter->begin( &picturesForDeferredRendering.back() );
+    }
+
     QgsSymbolLayer *symbolLayer = mLayers.value( symbolLayerIndex );
     if ( !symbolLayer || !symbolLayer->enabled() )
       continue;
@@ -1899,7 +1935,63 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
   }
 
-  // step 4 - handle post processing steps
+  // step 4 - if required, render the calculated buffer below the symbol
+  if ( usingBuffer )
+  {
+    deferredRenderingPainter->end();
+    deferredRenderingPainter.reset();
+
+    QgsGeometryPaintDevice geometryPaintDevice;
+    QPainter geometryPainter( &geometryPaintDevice );
+    // render all the symbol layers onto the geometry painter, so we can calculate a single
+    // buffer for ALL of them
+    for ( const auto &deferredPicture : picturesForDeferredRendering )
+    {
+      QgsPainting::drawPicture( &geometryPainter, QPointF( 0, 0 ), deferredPicture );
+    }
+    geometryPainter.end();
+
+    // retrieve the shape of the rendered symbol
+    const QgsGeometry renderedShape( geometryPaintDevice.geometry().clone() );
+
+    context.setPainter( originalTargetPainter );
+
+    // next, buffer out the rendered shape, and draw!
+    const double bufferSize = context.convertToPainterUnits( mBufferSettings->size(), mBufferSettings->sizeUnit(), mBufferSettings->sizeMapUnitScale() );
+    Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round;
+    switch ( mBufferSettings->joinStyle() )
+    {
+      case Qt::MiterJoin:
+      case Qt::SvgMiterJoin:
+        joinStyle = Qgis::JoinStyle::Miter;
+        break;
+      case Qt::BevelJoin:
+        joinStyle = Qgis::JoinStyle::Bevel;
+        break;
+      case Qt::RoundJoin:
+        joinStyle = Qgis::JoinStyle::Round;
+        break;
+
+      case Qt::MPenJoinStyle:
+        break;
+    }
+
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
+    for ( const QList< QPolygonF > &polygon : polygons )
+    {
+      QVector< QPolygonF > rings;
+      for ( int i = 1; i < polygon.size(); ++i )
+        rings << polygon.at( i );
+      mBufferSettings->fillSymbol()->renderPolygon( polygon.value( 0 ), &rings, nullptr, context );
+    }
+
+    // finally, draw the actual rendered symbol on top. If symbol levels are at play then this will ONLY
+    // be the target symbol level, not all of them.
+    QgsPainting::drawPicture( context.painter(), QPointF( 0, 0 ), picturesForDeferredRendering.front() );
+  }
+
+  // step 5 - handle post processing steps
   switch ( mType )
   {
     case Qgis::SymbolType::Marker:
