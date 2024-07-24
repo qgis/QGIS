@@ -24,6 +24,9 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
+import numpy
+from typing import Optional, Union
+
 @MONKEYPATCH_INJECTIONS@
 
 from .additions.edit import edit, QgsEditError
@@ -447,3 +450,46 @@ QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = property(g
 QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent.setter(set_pixel_transparency)
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(get_pixel_transparency)
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(set_pixel_transparency)
+
+try:
+   import numpy
+   def qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> Optional[numpy.dtype]:
+      qgis_to_numpy_dtype_dict = {
+       Qgis.DataType.UnknownDataType: None,
+       Qgis.DataType.Byte: numpy.byte,
+       Qgis.DataType.Int8: numpy.int8,
+       Qgis.DataType.UInt16: numpy.uint16,
+       Qgis.DataType.Int16: numpy.int16,
+       Qgis.DataType.UInt32: numpy.uint32,
+       Qgis.DataType.Int32: numpy.int32,
+       Qgis.DataType.Float32: numpy.float32,
+       Qgis.DataType.Float64: numpy.float64,
+       Qgis.DataType.CInt16: None,
+       Qgis.DataType.CInt32: None,
+       Qgis.DataType.CFloat32: numpy.complex64,
+       Qgis.DataType.CFloat64: numpy.complex128,
+       Qgis.DataType.ARGB32: None,
+       Qgis.DataType.ARGB32_Premultiplied: None,
+       }
+      return qgis_to_numpy_dtype_dict[dataType]
+
+   def raster_layer_as_numpy(self, use_masking=True):
+      arrays = []
+      for band in range(self.bandCount()):
+         block = self.dataProvider().block(band+1, self.extent(), self.width(), self.height())
+         block_dtype = qgis_data_type_to_numeric_data_type(block.dataType())
+         if not block_dtype:
+            raise ValueError(f"The raster block data type '{str(block.dataType())}' is not compatible with NumPy arrays.")
+         src_array = numpy.frombuffer(block.data(), dtype=block_dtype)
+         src_array = src_array.reshape(block.height(), block.width())
+         noDataValue = block.noDataValue() if isinstance(block.noDataValue(), block_dtype) else 0
+         if not block.hasNoDataValue() or not use_masking:
+            arrays.append(src_array)
+         else:
+            arrays.append(numpy.ma.masked_equal(src_array, noDataValue))
+      return numpy.array(arrays) # This converts any maskedArrays to numpy.array
+
+   QgsRasterLayer.to_numpy = raster_layer_as_numpy
+
+except ModuleNotFoundError:
+   pass
