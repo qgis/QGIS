@@ -30,6 +30,7 @@ from qgis.core import (
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
+from qgis.core import qgsDoubleNear
 
 from utilities import getTestFont, unitTestDataPath
 
@@ -178,6 +179,47 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IN (\'Normal\') THEN 0.625 WHEN "type" IN (\'Index\') THEN 1.25 ELSE 0.5 END')
         self.assertEqual(default_number, 0.5)
+
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseMatchList([
+            "match",
+            [
+                "get",
+                "luminosity"
+            ],
+            -15,
+            "rgb(200,210,213)",
+            -14,
+            "rgb(203,213,216)",
+            -13,
+            "rgb(207,215,218)",
+            -12,
+            "rgb(210,218,221)",
+            -11,
+            "rgb(213,221,224)",
+            -10,
+            "rgb(217,224,226)",
+            -9,
+            "rgb(220,227,229)",
+            -8,
+            "rgb(224,230,231)",
+            -7,
+            "rgb(227,232,234)",
+            -6,
+            "rgb(231,235,237)",
+            -5,
+            "rgb(234,238,239)",
+            -4,
+            "rgb(238,241,242)",
+            -3,
+            "rgb(241,244,245)",
+            -2,
+            "rgb(245,247,247)",
+            -1,
+            "rgb(248,249,250)",
+            "rgb(252, 252, 252)"
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(), 'CASE WHEN "luminosity" IN (-15) THEN \'#c8d2d5\' WHEN "luminosity" IN (-14) THEN \'#cbd5d8\' WHEN "luminosity" IN (-13) THEN \'#cfd7da\' WHEN "luminosity" IN (-12) THEN \'#d2dadd\' WHEN "luminosity" IN (-11) THEN \'#d5dde0\' WHEN "luminosity" IN (-10) THEN \'#d9e0e2\' WHEN "luminosity" IN (-9) THEN \'#dce3e5\' WHEN "luminosity" IN (-8) THEN \'#e0e6e7\' WHEN "luminosity" IN (-7) THEN \'#e3e8ea\' WHEN "luminosity" IN (-6) THEN \'#e7ebed\' WHEN "luminosity" IN (-5) THEN \'#eaeeef\' WHEN "luminosity" IN (-4) THEN \'#eef1f2\' WHEN "luminosity" IN (-3) THEN \'#f1f4f5\' WHEN "luminosity" IN (-2) THEN \'#f5f7f7\' WHEN "luminosity" IN (-1) THEN \'#f8f9fa\' ELSE \'#fcfcfc\' END')
+        self.assertTrue(qgsDoubleNear(default_number, 0.0))
 
     def testParseValueList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -749,11 +791,11 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         exp = QgsMapBoxGlStyleConverter.parseArrayStops([[0, [0, 1]], [2, [3, 4]]], conversion_context, 1)
         self.assertEqual(exp,
-                         'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 2 THEN array(0,1) WHEN @vector_tile_zoom > 2 THEN array(3,4) END')
+                         'CASE WHEN @vector_tile_zoom <= 2 THEN array(0,1) WHEN @vector_tile_zoom > 2 THEN array(3,4) END')
 
         exp = QgsMapBoxGlStyleConverter.parseArrayStops([[0, [0, 1]], [2, [3, 4]]], conversion_context, 2)
         self.assertEqual(exp,
-                         'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 2 THEN array(0,2) WHEN @vector_tile_zoom > 2 THEN array(6,8) END')
+                         'CASE WHEN @vector_tile_zoom <= 2 THEN array(0,2) WHEN @vector_tile_zoom > 2 THEN array(6,8) END')
 
     def testParseLineDashArray(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -786,7 +828,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
                          "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END")
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).asExpression(),
-                         "array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')")
+                         "array_to_string(array_foreach(CASE WHEN @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')")
 
     def testParseLineDashArrayOddNumber(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -1292,6 +1334,74 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         dd_props = renderer.symbol()[0].dataDefinedProperties()
         prop = dd_props.property(QgsSymbolLayer.Property.PropertyFillColor)
         self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 8 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 8 AND @vector_tile_zoom < 14 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 14 AND @vector_tile_zoom < 15 THEN color_hsla(66, scale_linear(@vector_tile_zoom,14,15,25,21), scale_linear(@vector_tile_zoom,14,15,85,90), 255) WHEN @vector_tile_zoom >= 15 AND @vector_tile_zoom < 17 THEN color_hsla(scale_linear(@vector_tile_zoom,15,17,66,67), scale_linear(@vector_tile_zoom,15,17,21,23), scale_linear(@vector_tile_zoom,15,17,90,93), 255) WHEN @vector_tile_zoom >= 17 THEN color_hsla(67, 23, 93, 255) ELSE color_hsla(67, 23, 93, 255) END')
+
+    def testFillColorDDHasBrush(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        # from https://vectortiles.geo.admin.ch/styles/ch.swisstopo.basemap.vt/style.json
+        style = {
+            "id": "building_fill",
+            "type": "fill",
+            "source": "base_v1.0.0",
+            "source-layer": "building",
+            "minzoom": 14.0,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": [
+                    "interpolate",
+                    [
+                        "linear"
+                    ],
+                    [
+                        "zoom"
+                    ],
+                    14,
+                    [
+                        "match",
+                        [
+                            "get",
+                            "class"
+                        ],
+                        [
+                            "roof",
+                            "cooling_tower"
+                        ],
+                        "rgb(210, 210, 214)",
+                        "rgba(184, 184, 188, 1)"
+                    ],
+                    16,
+                    [
+                        "match",
+                        [
+                            "get",
+                            "class"
+                        ],
+                        [
+                            "roof",
+                            "cooling_tower"
+                        ],
+                        "rgb(210, 210, 214)",
+                        "rgba(184, 184, 188, 1)"
+                    ]
+                ],
+                "fill-opacity": 1
+            },
+            "filter": [
+                "all",
+                [
+                    "!=",
+                    "class",
+                    "covered_bridge"
+                ]
+            ]
+        }
+        has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(renderer.symbol()[0].brushStyle(), Qt.BrushStyle.SolidPattern)
+        dd_props = renderer.symbol()[0].dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.Property.PropertyFillColor)
+        self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom >= 14 AND @vector_tile_zoom < 16 THEN color_hsla(color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_hue\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_saturation\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'lightness\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'alpha\')) WHEN @vector_tile_zoom >= 16 THEN color_hsla(color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_hue\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_saturation\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'lightness\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'alpha\')) ELSE color_hsla(color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_hue\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'hsl_saturation\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'lightness\'), color_part(CASE WHEN "class" IN (\'roof\', \'cooling_tower\') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,\'alpha\')) END')
 
 
 if __name__ == '__main__':
