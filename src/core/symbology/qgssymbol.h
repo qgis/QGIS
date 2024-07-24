@@ -186,7 +186,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      *
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol();
+    QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the fill \a symbol used to render the buffer. Ownership of \a symbol is

@@ -506,6 +506,7 @@
 %Include auto_generated/symbology/qgsstylesavedialog.sip
 %Include auto_generated/symbology/qgssvgselectorwidget.sip
 %Include auto_generated/symbology/qgssymbolanimationsettingswidget.sip
+%Include auto_generated/symbology/qgssymbolbuffersettingswidget.sip
 %Include auto_generated/symbology/qgssymbollayerwidget.sip
 %Include auto_generated/symbology/qgssymbollevelsdialog.sip
 %Include auto_generated/symbology/qgssymbolselectordialog.sip

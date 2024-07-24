@@ -22,6 +22,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgssymbolanimationsettingswidget.h"
+#include "qgssymbolbuffersettingswidget.h"
 #include "qgsprojectstylesettings.h"
 
 #include <QMessageBox>
@@ -50,6 +51,10 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mStandardizeRingsAction = new QAction( tr( "Force Right-Hand-Rule Orientation" ), this );
   mStandardizeRingsAction->setCheckable( true );
   connect( mStandardizeRingsAction, &QAction::toggled, this, &QgsSymbolsListWidget::forceRHRToggled );
+
+  mBufferSettingsAction = new QAction( tr( "Buffer Settings…" ), this );
+  connect( mBufferSettingsAction, &QAction::triggered, this, &QgsSymbolsListWidget::showBufferSettings );
+
   mAnimationSettingsAction = new QAction( tr( "Animation Settings…" ), this );
   connect( mAnimationSettingsAction, &QAction::triggered, this, &QgsSymbolsListWidget::showAnimationSettings );
 
@@ -142,6 +147,7 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   mStyleItemsListWidget->advancedMenu()->removeAction( mClipFeaturesAction );
   mStyleItemsListWidget->advancedMenu()->removeAction( mStandardizeRingsAction );
   mStyleItemsListWidget->advancedMenu()->removeAction( mAnimationSettingsAction );
+  mStyleItemsListWidget->advancedMenu()->removeAction( mBufferSettingsAction );
 }
 
 void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
@@ -288,6 +294,35 @@ void QgsSymbolsListWidget::showAnimationSettings()
   if ( d.exec() == QDialog::Accepted )
   {
     mSymbol->setAnimationSettings( d.animationSettings() );
+    emit changed();
+  }
+}
+
+void QgsSymbolsListWidget::showBufferSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolBufferSettingsWidget *widget = new QgsSymbolBufferSettingsWidget( panel );
+    widget->setPanelTitle( tr( "Buffer Settings" ) );
+    if ( const QgsSymbolBufferSettings *settings = mSymbol->bufferSettings() )
+      widget->setBufferSettings( *settings );
+
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ this, widget ]()
+    {
+      mSymbol->setBufferSettings( new QgsSymbolBufferSettings( widget->bufferSettings() ) );
+      emit changed();
+    } );
+    panel->openPanel( widget );
+    return;
+  }
+
+  QgsSymbolBufferSettingsDialog d( this );
+  if ( const QgsSymbolBufferSettings *settings = mSymbol->bufferSettings() )
+    d.setBufferSettings( *settings );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mSymbol->setBufferSettings( new QgsSymbolBufferSettings( d.bufferSettings() ) );
     emit changed();
   }
 }
@@ -584,6 +619,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     {
       mStyleItemsListWidget->advancedMenu()->removeAction( action );
     }
+    else if ( mBufferSettingsAction->text() == action->text() )
+    {
+      mStyleItemsListWidget->advancedMenu()->removeAction( action );
+    }
   }
 
   if ( mSymbol->type() == Qgis::SymbolType::Line || mSymbol->type() == Qgis::SymbolType::Fill )
@@ -594,6 +633,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
     mStyleItemsListWidget->advancedMenu()->addAction( mStandardizeRingsAction );
+  }
+  if ( mSymbol->type() == Qgis::SymbolType::Marker )
+  {
+    mStyleItemsListWidget->advancedMenu()->addAction( mBufferSettingsAction );
   }
   mStyleItemsListWidget->advancedMenu()->addAction( mAnimationSettingsAction );
 

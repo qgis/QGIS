@@ -94,6 +94,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void createSymbolAuxiliaryField();
     void forceRHRToggled( bool checked );
     void showAnimationSettings();
+    void showBufferSettings();
     void saveSymbol();
     void updateSymbolDataDefinedProperty();
 
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QMenu *mAdvancedMenu = nullptr;
     QAction *mClipFeaturesAction = nullptr;
     QAction *mStandardizeRingsAction = nullptr;
+    QAction *mBufferSettingsAction = nullptr;
     QAction *mAnimationSettingsAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;

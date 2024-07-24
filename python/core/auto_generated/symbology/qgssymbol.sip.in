@@ -170,7 +170,7 @@ Sets the join ``style`` used for drawing the buffer.
 .. seealso:: :py:func:`joinStyle`
 %End
 
-    QgsFillSymbol *fillSymbol();
+    QgsFillSymbol *fillSymbol() const;
 %Docstring
 Returns the fill symbol used to render the buffer.
 
