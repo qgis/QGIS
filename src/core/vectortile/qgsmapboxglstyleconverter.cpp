@@ -2676,6 +2676,10 @@ QgsProperty QgsMapBoxGlStyleConverter::parseValueList( const QVariantList &json,
   {
     return parseMatchList( json, type, context, multiplier, maxOpacity, defaultColor, defaultNumber );
   }
+  else if ( method == QLatin1String( "step" ) )
+  {
+    return parseStepList( json, type, context, multiplier, maxOpacity, defaultColor, defaultNumber );
+  }
   else
   {
     return QgsProperty::fromExpression( parseExpression( json, context ) );
@@ -2743,8 +2747,14 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
 
     }
 
-    caseString += QStringLiteral( "WHEN %1 IN (%2) THEN %3 " ).arg( attribute,
-                  matchString.join( ',' ), valueString );
+    if ( matchString.count() == 1 )
+    {
+      caseString += QStringLiteral( "WHEN %1 IS %2 THEN %3 " ).arg( attribute, matchString.at( 0 ), valueString );
+    }
+    else
+    {
+      caseString += QStringLiteral( "WHEN %1 IN (%2) THEN %3 " ).arg( attribute, matchString.join( ',' ), valueString );
+    }
   }
 
 
@@ -2789,6 +2799,74 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
   }
 
   caseString += QStringLiteral( "ELSE %1 END" ).arg( elseValue );
+  return QgsProperty::fromExpression( caseString );
+}
+
+QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier, int maxOpacity, QColor *defaultColor, double *defaultNumber )
+{
+  const QString expression = parseExpression( json.value( 1 ).toList(), context );
+  if ( expression.isEmpty() )
+  {
+    context.pushWarning( QObject::tr( "%1: Could not interpret match list" ).arg( context.layerId() ) );
+    return QgsProperty();
+  }
+
+  QString caseString = QStringLiteral( "CASE " );
+
+
+  for ( int i = json.length() - 2; i > 0; i -= 2 )
+  {
+    const QVariant stepValue = json.value( i + 1 );
+
+    QString valueString;
+    if ( stepValue.canConvert<QVariantList>() && ( stepValue.toList().count() != 2 || type != PropertyType::Point ) )
+    {
+      valueString = parseValueList( stepValue.toList(), type, context, multiplier, maxOpacity, defaultColor, defaultNumber ).expressionString();
+    }
+    else
+    {
+      switch ( type )
+      {
+        case PropertyType::Color:
+        {
+          const QColor color = parseColor( stepValue, context );
+          valueString = QgsExpression::quotedString( color.name() );
+          break;
+        }
+
+        case PropertyType::Numeric:
+        {
+          const double v = stepValue.toDouble() * multiplier;
+          valueString = QString::number( v );
+          break;
+        }
+
+        case PropertyType::Opacity:
+        {
+          const double v = stepValue.toDouble() * maxOpacity;
+          valueString = QString::number( v );
+          break;
+        }
+
+        case PropertyType::Point:
+        {
+          valueString = QStringLiteral( "array(%1,%2)" ).arg( stepValue.toList().value( 0 ).toDouble() * multiplier,
+                        stepValue.toList().value( 0 ).toDouble() * multiplier );
+          break;
+        }
+      }
+    }
+
+    if ( i > 1 )
+    {
+      const QString stepKey = QgsExpression::quotedValue( json.value( i ) );
+      caseString += QStringLiteral( " WHEN %1 >= %2 THEN (%3) " ).arg( expression, stepKey, valueString );
+    }
+    else
+    {
+      caseString += QStringLiteral( "ELSE (%1) END" ).arg( valueString );
+    }
+  }
   return QgsProperty::fromExpression( caseString );
 }
 
@@ -3378,14 +3456,10 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
       }
       else if ( method == QLatin1String( "step" ) )
       {
-        QString attribute = json.value( 1 ).toList().value( 0 ).toString();
-        if ( attribute == QStringLiteral( "zoom" ) )
+        const QString expression = parseExpression( json.value( 1 ).toList(), context );
+        if ( expression.isEmpty() )
         {
-          attribute = QStringLiteral( "@vector_tile_zoom" );
-        }
-        else
-        {
-          context.pushWarning( QObject::tr( "%1: Could not interpret step list with attribute %2" ).arg( context.layerId(), attribute ) );
+          context.pushWarning( QObject::tr( "%1: Could not interpret step list" ).arg( context.layerId() ) );
           break;
         }
 
@@ -3399,8 +3473,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
           const QImage sprite = retrieveSprite( stepValue, context, spriteSize );
           spritePath = prepareBase64( sprite );
 
-          spriteProperty += QStringLiteral( " WHEN %1 >= %2 THEN '%3' " ).arg( attribute, stepKey, spritePath );
-          spriteSizeProperty += QStringLiteral( " WHEN %1 >= %2 THEN %3 " ).arg( attribute ).arg( stepKey ).arg( spriteSize.width() );
+          spriteProperty += QStringLiteral( " WHEN %1 >= %2 THEN '%3' " ).arg( expression, stepKey, spritePath );
+          spriteSizeProperty += QStringLiteral( " WHEN %1 >= %2 THEN %3 " ).arg( expression ).arg( stepKey ).arg( spriteSize.width() );
         }
 
         const QImage sprite = retrieveSprite( json.at( 2 ).toString(), context, spriteSize );

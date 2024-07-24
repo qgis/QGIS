@@ -670,6 +670,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                        int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
 
     /**
+     * Parses and converts a match function value list.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+                                      int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
+
+    /**
      * Interpolates a list which starts with the interpolate function.
      *
      * \warning This is private API only, and may change in future QGIS versions

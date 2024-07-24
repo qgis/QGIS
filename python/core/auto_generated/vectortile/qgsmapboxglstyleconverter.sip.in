@@ -681,6 +681,16 @@ Parses and converts a match function value list.
    This is private API only, and may change in future QGIS versions
 %End
 
+    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+                                      int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+%Docstring
+Parses and converts a match function value list.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
         int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
 %Docstring
