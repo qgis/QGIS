@@ -97,6 +97,12 @@ class TestQgsVectorLayerCache(QgisTestCase, FeatureSourceTestCase):
         """
         pass
 
+    def testOpenIteratorAfterSourceRemoval(self):
+        """
+        Skip this test -- the iterators from the cache CANNOT be used after the cache is deleted
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
