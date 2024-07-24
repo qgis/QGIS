@@ -563,10 +563,16 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         break;
 
       case QMetaType::Type::QVariantMap:
+      {
         lineWidth = -1;
         lineWidthProperty = parseInterpolateByZoom( jsonLineWidth.toMap(), context, context.pixelSizeConversionFactor(), &lineWidth );
         ddProperties.setProperty( QgsSymbolLayer::Property::StrokeWidth, lineWidthProperty );
+        // set symbol layer visibility depending on line width since QGIS displays line with 0 width as hairlines
+        QgsProperty layerEnabledProperty = QgsProperty( lineWidthProperty );
+        layerEnabledProperty.setExpressionString( QStringLiteral( "(%1) > 0" ).arg( lineWidthProperty.expressionString() ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::LayerEnabled, layerEnabledProperty );
         break;
+      }
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
