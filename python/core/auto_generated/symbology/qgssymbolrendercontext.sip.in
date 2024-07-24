@@ -118,6 +118,14 @@ Returns the rendering hint flags for the symbol.
 .. seealso:: :py:func:`setRenderHints`
 %End
 
+    bool forceVectorRendering() const;
+%Docstring
+Returns ``True`` if symbol must be rendered using vector methods, and optimisations
+like pre-rendered images must be disabled.
+
+.. versionadded:: 3.40
+%End
+
     void setRenderHints( Qgis::SymbolRenderHints hints );
 %Docstring
 Sets rendering hint flags for the symbol.

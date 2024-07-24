@@ -126,6 +126,14 @@ class CORE_EXPORT QgsSymbolRenderContext
     Qgis::SymbolRenderHints renderHints() const { return mRenderHints; }
 
     /**
+     * Returns TRUE if symbol must be rendered using vector methods, and optimisations
+     * like pre-rendered images must be disabled.
+     *
+     * \since QGIS 3.40
+     */
+    bool forceVectorRendering() const;
+
+    /**
      * Sets rendering hint flags for the symbol.
      * \see renderHints()
      */

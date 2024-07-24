@@ -3179,7 +3179,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
 {
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the line has data defined symbology, in which case we need to evaluate this line-by-line)
-  mRenderUsingLines = context.renderContext().forceVectorOutput()
+  mRenderUsingLines = context.forceVectorRendering()
                       || ( mFillLineSymbol && mFillLineSymbol->hasDataDefinedProperties() )
                       || mClipMode != Qgis::LineClipMode::ClipPainterOnly
                       || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineClipping );
@@ -3957,7 +3957,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
 {
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the marker has data defined symbology, in which case we need to evaluate this point-by-point)
-  mRenderUsingMarkers = context.renderContext().forceVectorOutput()
+  mRenderUsingMarkers = context.forceVectorRendering()
                         || ( mMarkerSymbol && mMarkerSymbol->hasDataDefinedProperties() )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::MarkerClipping )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::RandomOffsetX )
