@@ -24,6 +24,7 @@ This class allows for functionality in 3D to be called from core.
 #include "qgsabstractpointcloud3drenderer.h"
 %End
   public:
+
     virtual ~QgsAbstractPointCloud3DRenderer();
 
     virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) = 0;

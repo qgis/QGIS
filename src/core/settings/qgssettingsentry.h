@@ -116,9 +116,6 @@ class CORE_EXPORT QgsSettingsEntryBase
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException );
 
-    /**
-     * Destructor for QgsSettingsEntryBase.
-     */
     virtual ~QgsSettingsEntryBase();
 
     /**

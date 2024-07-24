@@ -41,9 +41,6 @@ between threads without issue.
     };
 
     explicit QgsBlockingNetworkRequest();
-%Docstring
-Constructor for QgsBlockingNetworkRequest
-%End
 
     ~QgsBlockingNetworkRequest();
 

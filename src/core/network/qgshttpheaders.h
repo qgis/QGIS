@@ -61,9 +61,6 @@ class CORE_EXPORT QgsHttpHeaders
      */
     QgsHttpHeaders( const QVariantMap &headers );
 
-    /**
-     * \brief default constructor
-     */
     QgsHttpHeaders();
 
     /**

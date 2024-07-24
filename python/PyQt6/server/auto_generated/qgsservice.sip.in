@@ -29,10 +29,6 @@ They are registered at runtime for a given service name.
   public:
 
     QgsService();
-%Docstring
-Constructor
-%End
-
     virtual ~QgsService();
 
     virtual QString name() const = 0;

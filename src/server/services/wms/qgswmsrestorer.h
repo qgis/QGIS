@@ -83,9 +83,6 @@ namespace QgsWms
        */
       QgsWmsRestorer( const QgsWmsRenderContext &context );
 
-      /**
-       * Default destructor.
-       */
       ~QgsWmsRestorer() = default;
 
     private:

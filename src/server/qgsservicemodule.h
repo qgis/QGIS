@@ -42,14 +42,7 @@ class SERVER_EXPORT QgsServiceModule
 
   public:
 
-    /**
-     * Default constructor for QgsServiceModule.
-     */
     QgsServiceModule() = default;
-
-    /**
-     * Default destructor for QgsServiceModule.
-     */
     virtual ~QgsServiceModule() = default;
 
     /**

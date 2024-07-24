@@ -85,7 +85,6 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
                                 const QgsMeshRendererVectorSettings &settings,
                                 QgsRenderContext &context,
                                 QSize size );
-    //! Dtor
     ~QgsMeshVectorArrowRenderer() override;
 
     /**
@@ -163,7 +162,6 @@ class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
                                    const QgsMeshRendererVectorSettings &settings,
                                    QgsRenderContext &context,
                                    QSize size );
-    //! Dtor
     ~QgsMeshVectorWindBarbRenderer() override;
 
   private:

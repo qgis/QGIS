@@ -683,7 +683,6 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Constructs renderer with default single layer averaging method
      */
     QgsMeshRendererSettings();
-    //! Destructor
     ~QgsMeshRendererSettings();
 
     //! Returns native mesh renderer settings

@@ -319,9 +319,6 @@ class CORE_EXPORT QgsAuxiliaryStorage
      */
     QgsAuxiliaryStorage( const QString &filename = QString(), bool copy = true );
 
-    /**
-     * Destructor.
-     */
     virtual ~QgsAuxiliaryStorage();
 
     /**

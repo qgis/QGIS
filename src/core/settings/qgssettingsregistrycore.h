@@ -45,14 +45,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
 
-    /**
-      * Constructor for QgsSettingsRegistryCore.
-      */
     QgsSettingsRegistryCore();
-
-    /**
-     * Destructor for QgsSettingsRegistryCore.
-     */
     virtual ~QgsSettingsRegistryCore();
 
 #ifndef SIP_RUN

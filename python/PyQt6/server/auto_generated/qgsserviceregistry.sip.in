@@ -30,10 +30,6 @@ will call 'delete'  on cleanup
   public:
 
     QgsServiceRegistry();
-%Docstring
-Constructor
-%End
-
     ~QgsServiceRegistry();
 
     QgsService *getService( const QString &name, const QString &version = QString() );

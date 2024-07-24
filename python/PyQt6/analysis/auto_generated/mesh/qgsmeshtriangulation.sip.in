@@ -26,10 +26,6 @@ Class that handles mesh creation with Delaunay constrained triangulation
   public:
 
     QgsMeshTriangulation();
-%Docstring
-Constructor
-%End
-
     ~QgsMeshTriangulation();
 
     bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = 0, long featureCount = 1 );
@@ -135,9 +131,6 @@ a Delaunay triangulation on provided existing vertex.
   public:
 
     QgsMeshEditingDelaunayTriangulation();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 

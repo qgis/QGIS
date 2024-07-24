@@ -56,9 +56,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
       Classification
     };
 
-    //! Constructor for QgsPointCloud3DSymbol
     QgsPointCloud3DSymbol();
-    //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
@@ -200,7 +198,6 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-    //! Constructor for QgsSingleColorPointCloud3DSymbol
     QgsSingleColorPointCloud3DSymbol();
 
     QString symbolType() const override;
@@ -241,7 +238,6 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-    //! Constructor for QgsColorRampPointCloud3DSymbol
     QgsColorRampPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -314,7 +310,6 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-    //! Constructor for QgsRGBPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol();
 
     //! QgsRgbPointCloud3DSymbol cannot be copied - use clone() instead
@@ -474,7 +469,6 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-    //! Constructor for QgsClassificationPointCloud3DSymbol
     QgsClassificationPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;

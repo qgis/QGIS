@@ -46,9 +46,6 @@ class CORE_EXPORT QgsCredentials
 {
   public:
 
-    /**
-     * Destructor.
-     */
     virtual ~QgsCredentials() = default;
 
     /**

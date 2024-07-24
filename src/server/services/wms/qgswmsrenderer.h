@@ -75,9 +75,6 @@ namespace QgsWms
        */
       QgsRenderer( const QgsWmsRenderContext &context );
 
-      /**
-       * Destructor for QgsRenderer.
-       */
       ~QgsRenderer();
 
       /**

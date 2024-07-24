@@ -26,10 +26,6 @@ class QgsSettingsRegistryGui : QgsSettingsRegistry
   public:
 
     QgsSettingsRegistryGui();
-%Docstring
-Constructor for QgsSettingsRegistryGui.
-%End
-
     virtual ~QgsSettingsRegistryGui();
 
 

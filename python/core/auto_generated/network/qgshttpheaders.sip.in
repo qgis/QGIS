@@ -34,9 +34,6 @@ Constructor from map
 %End
 
     QgsHttpHeaders();
-%Docstring
-default constructor
-%End
 
  QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) /Deprecated/;
 %Docstring

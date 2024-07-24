@@ -44,10 +44,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
     Q_OBJECT
   public:
 
-    //! Constructor
     QgsMeshTriangulation();
-
-    //! Destructor
     ~QgsMeshTriangulation();
 
     /**
@@ -178,7 +175,6 @@ class ANALYSIS_EXPORT QgsMeshEditingDelaunayTriangulation : public QgsMeshAdvanc
 {
   public:
 
-    //! Constructor
     QgsMeshEditingDelaunayTriangulation();
 
     QString text() const override;

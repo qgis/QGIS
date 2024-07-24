@@ -57,7 +57,6 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
       ServerExceptionError, //!< An exception was raised by the server
     };
 
-    //! Constructor for QgsBlockingNetworkRequest
     explicit QgsBlockingNetworkRequest();
 
     ~QgsBlockingNetworkRequest() override;

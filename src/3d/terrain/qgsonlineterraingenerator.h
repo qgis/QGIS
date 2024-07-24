@@ -38,7 +38,6 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
-    //! Constructor for QgsOnlineTerrainGenerator
     QgsOnlineTerrainGenerator();
     ~QgsOnlineTerrainGenerator() override;
 
