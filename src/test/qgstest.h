@@ -298,7 +298,7 @@ class TEST_EXPORT QgsTest : public QObject
 
     bool checkLongStr( const char *file, const char *function, int line, const QString &name, const QString &referenceName, const QByteArray &actualStr )
     {
-      QString subPath = "control_images/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
+      QString subPath = "control_files/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
       QString expectedPath = testDataPath( subPath );
       QFile expectedFile( expectedPath );
       if ( ! expectedFile.open( QFile::ReadOnly  | QIODevice::Text ) )
