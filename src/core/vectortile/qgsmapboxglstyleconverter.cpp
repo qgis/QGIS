@@ -570,9 +570,15 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
+      {
         lineWidthProperty = parseValueList( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &lineWidth );
         ddProperties.setProperty( QgsSymbolLayer::Property::StrokeWidth, lineWidthProperty );
+        // set symbol layer visibility depending on line width since QGIS displays line with 0 width as hairlines
+        QgsProperty layerEnabledProperty = QgsProperty( lineWidthProperty );
+        layerEnabledProperty.setExpressionString( QStringLiteral( "(%1) > 0" ).arg( lineWidthProperty.expressionString() ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::LayerEnabled, layerEnabledProperty );
         break;
+      }
 
       default:
         context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineWidth.userType() ) ) ) );
@@ -2874,7 +2880,7 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
     context = *contextPtr;
   }
 
-  // special case!
+  // special case where min = max !
   if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
   {
     bool minDoubleOk = true;
@@ -2889,11 +2895,11 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
 
   QString minValueExpr = valueMin.toString();
   QString maxValueExpr = valueMax.toString();
-  if ( ( QMetaType::Type )valueMin.userType() == QMetaType::QVariantList )
+  if ( valueMin.userType() == QMetaType::Type::QVariantList )
   {
     minValueExpr = parseExpression( valueMin.toList(), context );
   }
-  if ( ( QMetaType::Type )valueMax.userType() == QMetaType::QVariantList )
+  if ( valueMax.userType() == QMetaType::Type::QVariantList )
   {
     maxValueExpr = parseExpression( valueMax.toList(), context );
   }
@@ -3113,6 +3119,19 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "to-string" ) )
   {
     return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
+  else if ( op == QLatin1String( "case" ) )
+  {
+    QString caseString = QStringLiteral( "CASE" );
+    for ( int i = 1; i < expression.size() - 2; i += 2 )
+    {
+      const QString condition = parseExpression( expression.value( i ).toList(), context );
+      const QString value = parseValue( expression.value( i + 1 ), context );
+      caseString += QStringLiteral( " WHEN (%1) THEN %2" ).arg( condition, value );
+    }
+    const QString value = parseValue( expression.constLast(), context );
+    caseString += QStringLiteral( " ELSE %1 END" ).arg( value );
+    return caseString;
   }
   else
   {

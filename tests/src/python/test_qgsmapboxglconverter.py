@@ -443,6 +443,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                          '''100 % 20''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["match", ["get", "subclass"], "funicular", "rgba(243,243,246,0)", "rgb(243,243,246)"], conversion_context, True), '''CASE WHEN ("subclass" = 'funicular') THEN color_rgba(243,243,246,0) ELSE color_rgba(243,243,246,255) END''')
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 0.75, 0], conversion_context, False), '''CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END''')
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
