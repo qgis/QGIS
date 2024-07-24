@@ -53,6 +53,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgscolorutils.h"
 #include "qgsunittypes.h"
 
@@ -63,7 +64,46 @@ QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 // QgsSymbolBufferSettings
 //
 
-void QgsSymbolBufferSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
+QgsSymbolBufferSettings::QgsSymbolBufferSettings()
+{
+  mFillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << new QgsSimpleFillSymbolLayer( QColor( 255, 255, 255 ), Qt::SolidPattern, QColor( 200, 200, 200 ), Qt::NoPen ) );
+}
+
+QgsSymbolBufferSettings::QgsSymbolBufferSettings( const QgsSymbolBufferSettings &other )
+  : mEnabled( other.mEnabled )
+  , mSize( other.mSize )
+  , mSizeUnit( other.mSizeUnit )
+  , mSizeMapUnitScale( other.mSizeMapUnitScale )
+  , mJoinStyle( other.mJoinStyle )
+  , mFillSymbol( other.mFillSymbol ? other.mFillSymbol->clone() : nullptr )
+{
+
+}
+
+QgsSymbolBufferSettings &QgsSymbolBufferSettings::operator=( const QgsSymbolBufferSettings &other )
+{
+  mEnabled = other.mEnabled;
+  mSize = other.mSize;
+  mSizeUnit = other.mSizeUnit;
+  mSizeMapUnitScale = other.mSizeMapUnitScale;
+  mJoinStyle = other.mJoinStyle;
+  mFillSymbol.reset( other.mFillSymbol ? other.mFillSymbol->clone() : nullptr );
+  return *this;
+}
+
+QgsFillSymbol *QgsSymbolBufferSettings::fillSymbol()
+{
+  return mFillSymbol.get();
+}
+
+void QgsSymbolBufferSettings::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
+}
+
+QgsSymbolBufferSettings::~QgsSymbolBufferSettings() = default;
+
+void QgsSymbolBufferSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   QDomElement symbolBufferElem = element.ownerDocument().createElement( QStringLiteral( "buffer" ) );
   symbolBufferElem.setAttribute( QStringLiteral( "enabled" ), mEnabled );
@@ -71,10 +111,18 @@ void QgsSymbolBufferSettings::writeXml( QDomElement &element, const QgsReadWrite
   symbolBufferElem.setAttribute( QStringLiteral( "sizeUnits" ), QgsUnitTypes::encodeUnit( mSizeUnit ) );
   symbolBufferElem.setAttribute( QStringLiteral( "sizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale ) );
   symbolBufferElem.setAttribute( QStringLiteral( "joinStyle" ), static_cast< unsigned int >( mJoinStyle ) );
+
+  if ( mFillSymbol )
+  {
+    QDomDocument document = element.ownerDocument();
+    const QDomElement fillElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFillSymbol.get(), document, context );
+    symbolBufferElem.appendChild( fillElem );
+  }
+
   element.appendChild( symbolBufferElem );
 }
 
-void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
+void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement symbolBufferElem = element.firstChildElement( QStringLiteral( "buffer" ) );
   mEnabled = symbolBufferElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
@@ -82,6 +130,16 @@ void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsRead
   mSizeUnit = QgsUnitTypes::decodeRenderUnit( symbolBufferElem.attribute( QStringLiteral( "sizeUnits" ) ) );
   mSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( symbolBufferElem.attribute( QStringLiteral( "sizeMapUnitScale" ) ) );
   mJoinStyle = static_cast< Qt::PenJoinStyle >( symbolBufferElem.attribute( QStringLiteral( "joinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
+
+  const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !fillSymbolElem.isNull() )
+  {
+    mFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context ) );
+  }
+  else
+  {
+    mFillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << new QgsSimpleFillSymbolLayer( QColor( 255, 255, 255 ), Qt::SolidPattern, QColor( 200, 200, 200 ), Qt::NoPen ) );
+  }
 }
 
 
@@ -914,6 +972,11 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
   mDataDefinedProperties.prepare( context.expressionContext() );
 
+  if ( mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol() )
+  {
+    mBufferSettings->fillSymbol()->startRender( context, fields );
+  }
+
   for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
   {
     if ( !layer->enabled() || !context.isSymbolLayerEnabled( layer ) )
@@ -958,6 +1021,11 @@ void QgsSymbol::stopRender( QgsRenderContext &context )
 
       layer->stopRender( *mSymbolRenderContext );
     }
+  }
+
+  if ( mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol() )
+  {
+    mBufferSettings->fillSymbol()->stopRender( context );
   }
 
   mSymbolRenderContext.reset( nullptr );
@@ -1279,6 +1347,10 @@ QSet<QString> QgsSymbol::usedAttributes( const QgsRenderContext &context ) const
     {
       attributes.unite( ( *sIt )->usedAttributes( context ) );
     }
+  }
+  if ( mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol() )
+  {
+    attributes.unite( mBufferSettings->fillSymbol()->usedAttributes( context ) );
   }
   return attributes;
 }

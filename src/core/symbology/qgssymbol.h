@@ -97,6 +97,12 @@ class CORE_EXPORT QgsSymbolBufferSettings
 {
   public:
 
+    QgsSymbolBufferSettings();
+    ~QgsSymbolBufferSettings();
+
+    QgsSymbolBufferSettings( const QgsSymbolBufferSettings &other );
+    QgsSymbolBufferSettings &operator=( const QgsSymbolBufferSettings & );
+
     /**
      * Returns whether the buffer is enabled.
      * \see setEnabled()
@@ -174,6 +180,24 @@ class CORE_EXPORT QgsSymbolBufferSettings
     void setJoinStyle( Qt::PenJoinStyle style ) { mJoinStyle = style; }
 
     /**
+     * Returns the fill symbol used to render the buffer.
+     *
+     * Ownership is not transferred.
+     *
+     * \see setFillSymbol()
+     */
+    QgsFillSymbol *fillSymbol();
+
+    /**
+     * Sets the fill \a symbol used to render the buffer. Ownership of \a symbol is
+     * transferred to the buffer.
+     *
+     * \see fillSymbol()
+     */
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+
+    /**
      * Writes the buffer settings to an XML \a element.
      *
      * \see readXml()
@@ -193,7 +217,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
     Qgis::RenderUnit mSizeUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSizeMapUnitScale;
     Qt::PenJoinStyle mJoinStyle = Qt::RoundJoin;
-
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 };
 
 
