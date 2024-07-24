@@ -56,9 +56,9 @@ void QgsBlockingNetworkRequest::setAuthCfg( const QString &authCfg )
   mAuthCfg = authCfg;
 }
 
-QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback, RequestFlags requestFlags )
 {
-  return doRequest( Get, request, forceRefresh, feedback );
+  return doRequest( Get, request, forceRefresh, feedback, requestFlags );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh, QgsFeedback *feedback )
@@ -125,7 +125,7 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
   };
 }
 
-QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBlockingNetworkRequest::Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBlockingNetworkRequest::Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback, RequestFlags requestFlags )
 {
   mMethod = method;
   mFeedback = feedback;
@@ -134,6 +134,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   mIsAborted = false;
   mTimedout = false;
   mGotNonEmptyResponse = false;
+  mRequestFlags = requestFlags;
 
   mErrorMessage.clear();
   mErrorCode = NoError;
@@ -431,7 +432,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 
         mReplyContent = QgsNetworkReplyContent( mReply );
         const QByteArray content = mReply->readAll();
-        if ( content.isEmpty() && !mGotNonEmptyResponse && mMethod == Get )
+        if ( !( mRequestFlags & RequestFlag::EmptyResponseIsValid ) && content.isEmpty() && !mGotNonEmptyResponse && mMethod == Get )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = ServerExceptionError;

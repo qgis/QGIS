@@ -40,11 +40,21 @@ between threads without issue.
       ServerExceptionError,
     };
 
+    enum class RequestFlag /BaseType=IntFlag/
+    {
+      EmptyResponseIsValid,
+    };
+    typedef QFlags<QgsBlockingNetworkRequest::RequestFlag> RequestFlags;
+
+
     explicit QgsBlockingNetworkRequest();
+%Docstring
+Constructor for QgsBlockingNetworkRequest
+%End
 
     ~QgsBlockingNetworkRequest();
 
-    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0, RequestFlags requestFlags = QgsBlockingNetworkRequest::RequestFlags() );
 %Docstring
 Performs a "get" operation on the specified ``request``.
 
@@ -56,6 +66,8 @@ If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authe
 this method.
 
 The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The optional ``requestFlags`` argument can be used to modify the behavior (added in QGIS 3.40).
 
 The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
 by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
