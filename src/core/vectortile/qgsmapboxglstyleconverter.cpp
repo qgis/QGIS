@@ -460,7 +460,11 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   {
     fillSymbol->setFillColor( fillColor );
   }
-  else if ( !colorIsDataDefined )
+  else if ( colorIsDataDefined )
+  {
+    fillSymbol->setFillColor( QColor( Qt::transparent ) );
+  }
+  else
   {
     fillSymbol->setBrushStyle( Qt::NoBrush );
   }
