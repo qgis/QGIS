@@ -43,8 +43,9 @@
 #include "qgsfillsymbol.h"
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
-#include "qmath.h"
+#include "qgscurvepolygon.h"
 
+#include "qmath.h"
 #include <QColor>
 #include <QFont>
 #include <QDomDocument>
@@ -4444,6 +4445,97 @@ QString QgsSymbolLayerUtils::svgSymbolPathToName( const QString &p, const QgsPat
     return path;
 
   return pathResolver.writePath( path );
+}
+
+QPolygonF lineStringToQPolygonF( const QgsLineString *line )
+{
+  const double *srcX = line->xData();
+  const double *srcY = line->yData();
+  const int count = line->numPoints();
+  QPolygonF thisRes( count );
+  QPointF *dest = thisRes.data();
+  for ( int i = 0; i < count; ++i )
+  {
+    *dest++ = QPointF( *srcX++, *srcY++ );
+  }
+  return thisRes;
+}
+
+QPolygonF curveToPolygonF( const QgsCurve *curve )
+{
+  if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( curve ) )
+  {
+    return lineStringToQPolygonF( line );
+  }
+  else
+  {
+    const std::unique_ptr< QgsLineString > straightened( curve->curveToLine() );
+    return lineStringToQPolygonF( straightened.get() );
+  }
+}
+
+QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type )
+{
+  switch ( type )
+  {
+    case Qgis::SymbolType::Marker:
+    {
+      QPolygonF points;
+
+      if ( QgsWkbTypes::flatType( geometry.wkbType() ) == Qgis::WkbType::MultiPoint )
+      {
+        for ( auto it = geometry.vertices_begin(); it != geometry.vertices_end(); ++it )
+          points << QPointF( ( *it ).x(), ( *it ).y() );
+      }
+      else
+      {
+        points << QPointF( 0, 0 );
+      }
+      return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << points );
+    }
+
+    case Qgis::SymbolType::Line:
+    {
+      QList< QList<QPolygonF> > res;
+      if ( QgsWkbTypes::geometryType( geometry.wkbType() ) == Qgis::GeometryType::Line )
+      {
+        for ( auto it = geometry.const_parts_begin(); it != geometry.const_parts_end(); ++it )
+        {
+          res << ( QList< QPolygonF >() << curveToPolygonF( qgsgeometry_cast< const QgsCurve * >( *it ) ) );
+        }
+      }
+      return res;
+    }
+
+    case Qgis::SymbolType::Fill:
+    {
+      QList< QList<QPolygonF> > res;
+
+      for ( auto it = geometry.const_parts_begin(); it != geometry.const_parts_end(); ++it )
+      {
+        QList<QPolygonF> thisPart;
+        const QgsCurvePolygon *surface = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+        if ( !surface )
+          continue;
+
+        if ( !surface->exteriorRing() )
+          continue;
+
+        thisPart << curveToPolygonF( surface->exteriorRing() );
+
+        for ( int i = 0; i < surface->numInteriorRings(); ++i )
+          thisPart << curveToPolygonF( surface->interiorRing( i ) );
+        res << thisPart;
+      }
+
+      return res;
+    }
+
+    case Qgis::SymbolType::Hybrid:
+      return QList< QList<QPolygonF> >();
+  }
+
+  return QList< QList<QPolygonF> >();
 }
 
 
