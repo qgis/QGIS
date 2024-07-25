@@ -38,6 +38,8 @@ class TestQgsProcessingFixGeometry: public QgsTest
     void fixAreaAlg_data();
     void fixAreaAlg();
 
+    void fixHoleAlg();
+
   private:
     const QDir mDataDir{ QDir( TEST_DATA_DIR ).absoluteFilePath( QStringLiteral( "geometry_fix" ) ) };
 
@@ -262,6 +264,51 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
   QVERIFY( outputLayer->isValid() );
 
   QCOMPARE( outputLayer->featureCount(), 21 );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( QString expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixHoleAlg()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "remove_hole.gpkg|layername=errors_layer" ), QStringLiteral( "" ), QStringLiteral( "ogr" ) );
+  QVERIFY( sourceLayer.isValid() );
+  QVERIFY( errorsLayer.isValid() );
+  const auto reportList = QStringList() << QStringLiteral( "Remove hole" );
+
+  const std::unique_ptr< QgsProcessingAlgorithm > alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryhole" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &sourceLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( &errorsLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), 25 );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
   for ( QString expectedReport : reportList )
