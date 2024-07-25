@@ -43,7 +43,6 @@ from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
 from .additions.ranges import datetime_range_repr, date_range_repr
 
-import numpy
 from typing import Optional, Union
 
 # Injections into classes
@@ -451,34 +450,42 @@ QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = QgsRasterT
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(get_pixel_transparency)
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(set_pixel_transparency)
 
+try:
+   import numpy
 
-def qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> Optional[numpy.dtype]:
-   qgis_to_numpy_dtype_dict = {
-    Qgis.DataType.UnknownDataType: None,
-    Qgis.DataType.Byte: numpy.byte,
-    Qgis.DataType.Int8: numpy.int8,
-    Qgis.DataType.UInt16: numpy.uint16,
-    Qgis.DataType.Int16: numpy.int16,
-    Qgis.DataType.UInt32: numpy.uint32,
-    Qgis.DataType.Int32: numpy.int32,
-    Qgis.DataType.Float32: numpy.float32,
-    Qgis.DataType.Float64: numpy.float64,
-    Qgis.DataType.CInt16: numpy.complex64,  # NumPy does not have complex int16, using complex64 as closest alternative
-    Qgis.DataType.CInt32: numpy.complex64,  # NumPy does not have complex int32, using complex64 as closest alternative
-    Qgis.DataType.CFloat32: numpy.complex64,
-    Qgis.DataType.CFloat64: numpy.complex128,
-    Qgis.DataType.ARGB32: numpy.uint32,  # NumPy does not have specific ARGB, using uint32 as closest alternative
-    Qgis.DataType.ARGB32_Premultiplied: numpy.uint32  # Same as ARGB32
-    }
-   return qgis_to_numpy_dtype_dict[dataType]
+   def qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> Optional[numpy.dtype]:
+      qgis_to_numpy_dtype_dict = {
+       Qgis.DataType.UnknownDataType: None,
+       Qgis.DataType.Byte: numpy.byte,
+       Qgis.DataType.Int8: numpy.int8,
+       Qgis.DataType.UInt16: numpy.uint16,
+       Qgis.DataType.Int16: numpy.int16,
+       Qgis.DataType.UInt32: numpy.uint32,
+       Qgis.DataType.Int32: numpy.int32,
+       Qgis.DataType.Float32: numpy.float32,
+       Qgis.DataType.Float64: numpy.float64,
+       Qgis.DataType.CInt16: None,
+       Qgis.DataType.CInt32: None,
+       Qgis.DataType.CFloat32: numpy.complex64,
+       Qgis.DataType.CFloat64: numpy.complex128,
+       Qgis.DataType.ARGB32: None,
+       Qgis.DataType.ARGB32_Premultiplied: numpy.uint32  # Same as ARGB32
+       }
+      return qgis_to_numpy_dtype_dict[dataType]
 
-def raster_block_as_numpy(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
-   raster_dtype = qgis_data_type_to_numeric_data_type(self.dataType())
-   src_array = numpy.frombuffer(self.data(), dtype=raster_dtype)
-   noDataValue = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
-   if not self.hasNoDataValue():
-      return src_array
-   else:
-      return numpy.ma.masked_equal(src_array, noDataValue)
+   def raster_block_as_numpy(self, use_masking=True) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
+      raster_dtype = qgis_data_type_to_numeric_data_type(self.dataType())
+      if not raster_dtype:
+         raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
+      src_array = numpy.frombuffer(self.data(), dtype=raster_dtype)
+      src_array = src_array.reshape((self.height(), self.width()))
+      noDataValue = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
+      if not self.hasNoDataValue() or not use_masking:
+         return src_array
+      else:
+         return numpy.ma.masked_equal(src_array, noDataValue)
 
-QgsRasterBlock.as_numpy = raster_block_as_numpy
+   QgsRasterBlock.as_numpy = raster_block_as_numpy
+
+except ModuleNotFoundError:
+   pass
