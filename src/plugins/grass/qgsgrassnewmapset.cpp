@@ -397,7 +397,7 @@ void QgsGrassNewMapset::setGrassProjection()
   if ( crs.isValid() )
   {
     const QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WktVariant::WKT_PREFERRED );
-    QgsDebugMsgLevel( QStringLiteral( "wkt = %1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WktVariant::WKT_PREFERRED ) ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "wkt = %1" ).arg( wkt ), 3 );
 
     // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
     //       cannot be set
