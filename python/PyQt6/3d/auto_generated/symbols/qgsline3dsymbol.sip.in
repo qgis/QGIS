@@ -25,10 +25,8 @@ class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 #include "qgsline3dsymbol.h"
 %End
   public:
+
     QgsLine3DSymbol();
-%Docstring
-Constructor for QgsLine3DSymbol
-%End
     ~QgsLine3DSymbol();
 
     static QgsAbstract3DSymbol *create() /Factory/;

@@ -27,9 +27,6 @@ in the method :py:func:`QgsMeshEditor.advancedEdit()`.
   public:
 
     QgsMeshAdvancedEditing();
-%Docstring
-Constructor
-%End
     virtual ~QgsMeshAdvancedEditing();
 
     void setInputVertices( const QList<int> verticesIndexes );
@@ -87,9 +84,6 @@ Neighboring faces are triangulated to take account of the new vertex in the shar
   public:
 
     QgsMeshEditRefineFaces();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 

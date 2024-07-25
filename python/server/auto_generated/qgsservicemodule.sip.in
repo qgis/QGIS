@@ -28,10 +28,6 @@ QGS_ServiceModule_Init() entry point.
   public:
 
     QgsServiceModule();
-%Docstring
-Default constructor for QgsServiceModule.
-%End
-
     virtual ~QgsServiceModule();
 
     virtual void registerSelf( QgsServiceRegistry &registry,

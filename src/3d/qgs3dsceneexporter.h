@@ -58,9 +58,8 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     Q_OBJECT
 
   public:
-    //! Constructor
     Qgs3DSceneExporter() { }
-    //! Destructor
+
     ~Qgs3DSceneExporter()
     {
       for ( Qgs3DExportObject *obj : mObjects )

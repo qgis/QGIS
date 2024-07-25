@@ -21,10 +21,6 @@ class QgsServerResponse
   public:
 
     QgsServerResponse();
-%Docstring
-constructor
-%End
-
     virtual ~QgsServerResponse();
 
     virtual void setHeader( const QString &key, const QString &value ) = 0;

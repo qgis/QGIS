@@ -34,9 +34,6 @@ Class used to store statistics of a point cloud dataset.
 %End
   public:
     QgsPointCloudStatistics();
-%Docstring
-Constructor
-%End
 
 
     int sampledPointsCount() const;

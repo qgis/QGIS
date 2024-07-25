@@ -444,7 +444,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     class CORE_EXPORT SaveVectorOptions
     {
       public:
-        //! Constructor
+
         SaveVectorOptions();
 
         virtual ~SaveVectorOptions() = default;

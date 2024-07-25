@@ -50,10 +50,7 @@ class SERVER_EXPORT QgsServiceRegistry
 
   public:
 
-    //! Constructor
     QgsServiceRegistry() = default;
-
-    //! Destructor
     ~QgsServiceRegistry();
 
     /**

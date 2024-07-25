@@ -538,7 +538,6 @@ dataset which does not support concurrent updates.
 %Docstring
 Constructor
 %End
-
     ~QgsTaskWithSerialSubTasks();
 
     void addSubTask( QgsTask *subTask /Transfer/ );

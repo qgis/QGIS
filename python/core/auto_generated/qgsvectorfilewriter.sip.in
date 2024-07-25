@@ -334,10 +334,8 @@ Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
 #include "qgsvectorfilewriter.h"
 %End
       public:
+
         SaveVectorOptions();
-%Docstring
-Constructor
-%End
 
         virtual ~SaveVectorOptions();
 

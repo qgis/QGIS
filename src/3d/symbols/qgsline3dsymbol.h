@@ -34,7 +34,7 @@ class QgsAbstractMaterialSettings;
 class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
 {
   public:
-    //! Constructor for QgsLine3DSymbol
+
     QgsLine3DSymbol();
     ~QgsLine3DSymbol() override;
 

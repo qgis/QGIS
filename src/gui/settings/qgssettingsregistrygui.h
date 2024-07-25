@@ -38,14 +38,7 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
 
-    /**
-     * Constructor for QgsSettingsRegistryGui.
-     */
     QgsSettingsRegistryGui();
-
-    /**
-     * Destructor for QgsSettingsRegistryGui.
-     */
     virtual ~QgsSettingsRegistryGui();
 
 #ifndef SIP_RUN

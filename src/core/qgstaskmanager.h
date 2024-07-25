@@ -672,8 +672,6 @@ class CORE_EXPORT QgsTaskWithSerialSubTasks : public QgsTask
   public:
     //! Constructor
     QgsTaskWithSerialSubTasks( const QString &desc = QString() ) : QgsTask( desc ) {}
-
-    //! Destructor
     ~QgsTaskWithSerialSubTasks() override;
 
     /**

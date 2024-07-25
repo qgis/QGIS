@@ -27,9 +27,6 @@ class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 %End
   public:
     QgsPolygon3DSymbol();
-%Docstring
-Constructor for QgsPolygon3DSymbol
-%End
     ~QgsPolygon3DSymbol();
 
     virtual QString type() const;

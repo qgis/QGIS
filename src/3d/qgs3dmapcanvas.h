@@ -81,14 +81,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     Q_OBJECT
   public:
 
-    /**
-     * Constructor for Qgs3DMapCanvas.
-     */
     Qgs3DMapCanvas();
-
-    /**
-     * Destructor for Qgs3DMapCanvas.
-     */
     ~Qgs3DMapCanvas();
 
     //! Returns access to the 3D scene configuration

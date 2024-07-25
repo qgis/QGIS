@@ -26,10 +26,6 @@ class QgsSettingsRegistryCore : QgsSettingsRegistry
   public:
 
     QgsSettingsRegistryCore();
-%Docstring
-Constructor for QgsSettingsRegistryCore.
-%End
-
     virtual ~QgsSettingsRegistryCore();
 
 };

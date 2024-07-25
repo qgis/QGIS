@@ -226,7 +226,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     SIP_SKIP Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
-    //! dtor
     virtual ~QgsProviderMetadata();
 
     /**

@@ -53,9 +53,6 @@ namespace QgsWms
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
-      /**
-       * Destructor for QgsWmsRenderContext.
-       */
       ~QgsWmsRenderContext();
 
       /**

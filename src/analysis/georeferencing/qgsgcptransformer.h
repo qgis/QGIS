@@ -268,7 +268,6 @@ class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInt
 {
   public:
 
-    //! Constructor for QgsProjectiveGeorefTransform
     QgsProjectiveGeorefTransform();
 
     QgsGcpTransformerInterface *clone() const override;

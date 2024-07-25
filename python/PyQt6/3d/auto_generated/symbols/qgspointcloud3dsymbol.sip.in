@@ -43,9 +43,6 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
     };
 
     QgsPointCloud3DSymbol();
-%Docstring
-Constructor for QgsPointCloud3DSymbol
-%End
     ~QgsPointCloud3DSymbol();
 
     virtual QString type() const;
@@ -190,9 +187,6 @@ class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsSingleColorPointCloud3DSymbol();
-%Docstring
-Constructor for QgsSingleColorPointCloud3DSymbol
-%End
 
     virtual QString symbolType() const;
 
@@ -241,9 +235,6 @@ class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsColorRampPointCloud3DSymbol();
-%Docstring
-Constructor for QgsColorRampPointCloud3DSymbol
-%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -326,9 +317,6 @@ class QgsRgbPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsRgbPointCloud3DSymbol();
-%Docstring
-Constructor for :py:class:`QgsRGBPointCloud3DSymbol`
-%End
 
 
 
@@ -507,9 +495,6 @@ class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsClassificationPointCloud3DSymbol();
-%Docstring
-Constructor for QgsClassificationPointCloud3DSymbol
-%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 

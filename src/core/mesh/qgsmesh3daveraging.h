@@ -88,7 +88,6 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
     //! Ctor
     QgsMesh3DAveragingMethod( Method method );
 
-    //! Dtor
     virtual ~QgsMesh3DAveragingMethod() = default;
 
     //! Calculated 2d block values from 3d stacked mesh values

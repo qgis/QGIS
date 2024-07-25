@@ -162,7 +162,6 @@ class CORE_EXPORT QgsLayoutExporter
     //! Contains settings relating to exporting layouts to raster images
     struct ImageExportSettings
     {
-      //! Constructor for ImageExportSettings
       ImageExportSettings()
         : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
@@ -265,7 +264,6 @@ class CORE_EXPORT QgsLayoutExporter
     //! Contains settings relating to exporting layouts to PDF
     struct PdfExportSettings
     {
-      //! Constructor for PdfExportSettings
       PdfExportSettings()
         : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
@@ -442,7 +440,6 @@ class CORE_EXPORT QgsLayoutExporter
     //! Contains settings relating to printing layouts
     struct PrintExportSettings
     {
-      //! Constructor for PrintExportSettings
       PrintExportSettings()
         : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
@@ -499,7 +496,6 @@ class CORE_EXPORT QgsLayoutExporter
     //! Contains settings relating to exporting layouts to SVG
     struct SvgExportSettings
     {
-      //! Constructor for SvgExportSettings
       SvgExportSettings()
         : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
