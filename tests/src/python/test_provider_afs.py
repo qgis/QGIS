@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import (
     QTime,
 )
 from qgis.core import (
+    Qgis,
     NULL,
     QgsApplication,
     QgsBox3d,
@@ -42,6 +43,11 @@ from qgis.core import (
     QgsGraduatedSymbolRenderer,
     QgsSymbol,
     QgsRendererRange,
+    QgsSingleSymbolRenderer,
+    QgsFillSymbol,
+    QgsSymbolLayer,
+    QgsColorRampTransformer,
+    QgsGradientColorRamp
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1226,8 +1232,11 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.renderer().categories()[0].value(), 'US')
         self.assertEqual(vl.renderer().categories()[1].value(), 'Canada')
 
-    def testGraduatedRenderer(self):
-        """ Test that the graduated renderer is correctly acquired from provider """
+    def testGraduatedRendererContinuous(self):
+        """
+        Test that the graduated renderer with continuous coloring
+        is correctly acquired from provider
+        """
 
         endpoint = self.basetestpath + '/class_breaks_renderer_fake_qgis_http_endpoint'
         with open(sanitize(endpoint, '?f=json'), 'wb') as f:
@@ -1395,12 +1404,334 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:3857'", 'test', 'arcgisfeatureserver')
         self.assertTrue(vl.isValid())
         self.assertIsNotNone(vl.dataProvider().createRenderer())
+        self.assertIsInstance(vl.renderer(), QgsSingleSymbolRenderer)
+        self.assertIsInstance(vl.renderer().symbol(), QgsFillSymbol)
+
+        prop = vl.renderer().symbol()[0].dataDefinedProperties().property(QgsSymbolLayer.Property.FillColor)
+        self.assertEqual(prop.propertyType(), Qgis.PropertyType.Field)
+        self.assertEqual(prop.field(), 'SUM')
+        self.assertIsInstance(prop.transformer(), QgsColorRampTransformer)
+        self.assertEqual(prop.transformer().minValue(), 10151)
+        self.assertEqual(prop.transformer().maxValue(), 2500000)
+        ramp = prop.transformer().colorRamp()
+        self.assertIsInstance(ramp, QgsGradientColorRamp)
+        self.assertEqual(ramp.color1().name(), '#ffc4ae')
+        self.assertEqual(ramp.color2().name(), '#7b4238')
+        self.assertEqual([stop.offset for stop in ramp.stops()], [0.25, 0.5, 0.75])
+        self.assertEqual([stop.color.name() for stop in ramp.stops()], ['#f9816c', '#ec5244', '#c23d33'])
+
+    def testGraduatedRendererClassedColor(self):
+        """
+        Test that the graduated renderer with classified colors
+        is correctly acquired from provider
+        """
+
+        endpoint = self.basetestpath + '/class_breaks_renderer_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write(b"""{
+  "currentVersion": 11.2,
+  "id": 0,
+  "name": "Test graduated renderer",
+  "type": "Feature Layer",
+  "useStandardizedQueries": true,
+  "geometryType": "esriGeometryPolygon",
+  "minScale": 0,
+  "maxScale": 1155581,
+  "extent": {
+    "xmin": -17771274.9623,
+    "ymin": 2175061.919500001,
+    "xmax": -7521909.497300002,
+    "ymax": 9988155.384400003,
+    "spatialReference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    }
+  },
+  "drawingInfo": {
+    "renderer": {
+      "type": "classBreaks",
+      "authoringInfo": {
+        "type": "classedColor",
+        "colorRamp": {
+          "type": "multipart",
+          "colorRamps": [
+            {
+              "type": "algorithmic",
+              "algorithm": "esriCIELabAlgorithm",
+              "fromColor": [
+                229,
+                237,
+                206,
+                255
+              ],
+              "toColor": [
+                229,
+                237,
+                206,
+                255
+              ]
+            },
+            {
+              "type": "algorithmic",
+              "algorithm": "esriCIELabAlgorithm",
+              "fromColor": [
+                155,
+                196,
+                194,
+                255
+              ],
+              "toColor": [
+                155,
+                196,
+                194,
+                255
+              ]
+            },
+            {
+              "type": "algorithmic",
+              "algorithm": "esriCIELabAlgorithm",
+              "fromColor": [
+                105,
+                168,
+                184,
+                255
+              ],
+              "toColor": [
+                105,
+                168,
+                184,
+                255
+              ]
+            },
+            {
+              "type": "algorithmic",
+              "algorithm": "esriCIELabAlgorithm",
+              "fromColor": [
+                75,
+                127,
+                153,
+                255
+              ],
+              "toColor": [
+                75,
+                127,
+                153,
+                255
+              ]
+            },
+            {
+              "type": "algorithmic",
+              "algorithm": "esriCIELabAlgorithm",
+              "fromColor": [
+                48,
+                86,
+                122,
+                255
+              ],
+              "toColor": [
+                48,
+                86,
+                122,
+                255
+              ]
+            }
+          ]
+        },
+        "classificationMethod": "esriClassifyNaturalBreaks"
+      },
+      "field": "Value",
+      "classificationMethod": "esriClassifyNaturalBreaks",
+      "minValue": 7,
+      "classBreakInfos": [
+        {
+          "symbol": {
+            "type": "esriSFS",
+            "style": "esriSFSSolid",
+            "color": [
+              230,
+              238,
+              207,
+              255
+            ],
+            "outline": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                110,
+                110,
+                110,
+                255
+              ],
+              "width": 0.7
+            }
+          },
+          "classMaxValue": 7,
+          "label": "7.000000"
+        },
+        {
+          "symbol": {
+            "type": "esriSFS",
+            "style": "esriSFSSolid",
+            "color": [
+              155,
+              196,
+              193,
+              255
+            ],
+            "outline": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                110,
+                110,
+                110,
+                255
+              ],
+              "width": 0.7
+            }
+          },
+          "classMaxValue": 8,
+          "label": "7.000001 - 8.000000"
+        },
+        {
+          "symbol": {
+            "type": "esriSFS",
+            "style": "esriSFSSolid",
+            "color": [
+              105,
+              168,
+              183,
+              255
+            ],
+            "outline": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                110,
+                110,
+                110,
+                255
+              ],
+              "width": 0.7
+            }
+          },
+          "classMaxValue": 11,
+          "label": "8.000001 - 11.000000"
+        },
+        {
+          "symbol": {
+            "type": "esriSFS",
+            "style": "esriSFSSolid",
+            "color": [
+              75,
+              126,
+              152,
+              255
+            ],
+            "outline": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                110,
+                110,
+                110,
+                255
+              ],
+              "width": 0.7
+            }
+          },
+          "classMaxValue": 13,
+          "label": "11.000001 - 13.000000"
+        },
+        {
+          "symbol": {
+            "type": "esriSFS",
+            "style": "esriSFSSolid",
+            "color": [
+              46,
+              85,
+              122,
+              255
+            ],
+            "outline": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                110,
+                110,
+                110,
+                255
+              ],
+              "width": 0.7
+            }
+          },
+          "classMaxValue": 20,
+          "label": "13.000001 - 20.000000"
+        }
+      ],
+      "legendOptions": {
+        "order": "ascendingValues"
+      }
+    },
+    "scaleSymbols": true,
+    "transparency": 0,
+    "labelingInfo": null
+  },
+  "allowGeometryUpdates": true
+}""")
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write(b"""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1
+         ]
+        }
+        """)
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:3857'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertIsNotNone(vl.dataProvider().createRenderer())
         self.assertIsInstance(vl.renderer(), QgsGraduatedSymbolRenderer)
         self.assertIsInstance(vl.renderer().sourceSymbol(), QgsSymbol)
         self.assertIsInstance(vl.renderer().ranges()[0], QgsRendererRange)
-        self.assertEqual(len(vl.renderer().ranges()), 6)
-        self.assertEqual(vl.renderer().ranges()[0][0], -9007199254740991)
-        self.assertEqual(vl.renderer().ranges()[-1][1], 9007199254740991)
+        self.assertEqual(len(vl.renderer().ranges()), 5)
+        _range = vl.renderer().ranges()[0]
+        self.assertEqual(_range.lowerValue(), 7)
+        self.assertEqual(_range.upperValue(), 7)
+        self.assertEqual(_range.label(), '7.000000')
+        self.assertEqual(_range.symbol().color().name(),
+                         '#e6eecf')
+
+        _range = vl.renderer().ranges()[1]
+        self.assertEqual(_range.lowerValue(), 7)
+        self.assertEqual(_range.upperValue(), 8)
+        self.assertEqual(_range.label(), '7.000001 - 8.000000')
+        self.assertEqual(_range.symbol().color().name(),
+                         '#9bc4c1')
+
+        _range = vl.renderer().ranges()[2]
+        self.assertEqual(_range.lowerValue(), 8)
+        self.assertEqual(_range.upperValue(), 11)
+        self.assertEqual(_range.label(), '8.000001 - 11.000000')
+        self.assertEqual(_range.symbol().color().name(),
+                         '#69a8b7')
+
+        _range = vl.renderer().ranges()[3]
+        self.assertEqual(_range.lowerValue(), 11)
+        self.assertEqual(_range.upperValue(), 13)
+        self.assertEqual(_range.label(), '11.000001 - 13.000000')
+        self.assertEqual(_range.symbol().color().name(),
+                         '#4b7e98')
+
+        _range = vl.renderer().ranges()[4]
+        self.assertEqual(_range.lowerValue(), 13)
+        self.assertEqual(_range.upperValue(), 20)
+        self.assertEqual(_range.label(), '13.000001 - 20.000000')
+        self.assertEqual(_range.symbol().color().name(),
+                         '#2e557a')
 
     def testBboxRestriction(self):
         """
