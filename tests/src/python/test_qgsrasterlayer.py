@@ -1283,7 +1283,7 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
                             'rnd_percentile_raster5_float64.tif')
         layer = QgsRasterLayer(path, QFileInfo(path).baseName())
         arrays = layer.to_numpy()
-        self.assertEqual(type(arrays[0]), np.ndarray) # All maskedArrays are converted to numpy.array
+        self.assertEqual(type(arrays[0]), np.ndarray)  # All maskedArrays are converted to numpy.array
         self.assertEqual(arrays.shape, (1, 4, 4))
         self.assertEqual(arrays[0].dtype, np.float64)
 
