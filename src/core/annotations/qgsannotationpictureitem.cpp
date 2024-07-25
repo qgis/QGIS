@@ -228,7 +228,7 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodes() const
+QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
   switch ( mSizeMode )
   {
@@ -250,7 +250,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodes() const
   BUILTIN_UNREACHABLE
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -321,7 +321,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEdit( Qgs
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context )
 {
   switch ( operation->type() )
   {
@@ -358,7 +358,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
         }
         case Qgis::AnnotationPictureSizeMode::FixedSize:
         {
-          const QgsRectangle currentBounds = operation->currentItemBounds();
+          const QgsRectangle currentBounds = context.currentItemBounds();
           const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
           return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
         }
@@ -382,7 +382,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
 
         case Qgis::AnnotationPictureSizeMode::FixedSize:
         {
-          const QgsRectangle currentBounds = operation->currentItemBounds();
+          const QgsRectangle currentBounds = context.currentItemBounds();
           const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( mBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ),
                                          currentBounds.width(), currentBounds.height() );
           return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
