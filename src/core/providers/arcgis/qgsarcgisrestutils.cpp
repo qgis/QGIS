@@ -16,6 +16,7 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsfields.h"
 #include "qgslogger.h"
+#include "qgspropertytransformer.h"
 #include "qgsrectangle.h"
 #include "qgspallabeling.h"
 #include "qgssymbol.h"
@@ -42,6 +43,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsvariantutils.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
 #include <QUrl>
@@ -1029,7 +1031,6 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
   else if ( type == QLatin1String( "classBreaks" ) )
   {
     const QString attrName = rendererData.value( QStringLiteral( "field" ) ).toString();
-    std::unique_ptr< QgsGraduatedSymbolRenderer > graduatedRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( attrName );
 
     const QVariantList classBreakInfos = rendererData.value( QStringLiteral( "classBreakInfos" ) ).toList();
     const QVariantMap authoringInfo = rendererData.value( QStringLiteral( "authoringInfo" ) ).toMap();
@@ -1040,6 +1041,86 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     {
       esriMode = rendererData.value( QStringLiteral( "classificationMethod" ) ).toString();
     }
+
+    if ( !classBreakInfos.isEmpty() )
+    {
+      symbolData = classBreakInfos.at( 0 ).toMap().value( QStringLiteral( "symbol" ) ).toMap();
+    }
+    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+    if ( !symbol )
+      return nullptr;
+
+    const double transparency = rendererData.value( QStringLiteral( "transparency" ) ).toDouble();
+    const double opacity = ( 100.0 - transparency ) / 100.0;
+    symbol->setOpacity( opacity );
+
+    const QVariantList visualVariablesData = rendererData.value( QStringLiteral( "visualVariables" ) ).toList();
+
+    for ( const QVariant &visualVariable : visualVariablesData )
+    {
+      const QVariantMap visualVariableData = visualVariable.toMap();
+      const QString variableType = visualVariableData.value( QStringLiteral( "type" ) ).toString();
+      if ( variableType == QLatin1String( "sizeInfo" ) )
+      {
+        continue;
+      }
+      else if ( variableType == QLatin1String( "colorInfo" ) )
+      {
+        const QVariantList stops = visualVariableData.value( QStringLiteral( "stops" ) ).toList();
+        if ( stops.size() < 2 )
+          continue;
+
+        // layer has continuous coloring, so convert to a symbol using color ramp assistant
+        bool ok = false;
+        const double minValue = stops.front().toMap().value( QStringLiteral( "value" ) ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        const QColor minColor = convertColor( stops.front().toMap().value( QStringLiteral( "color" ) ) );
+
+        const double maxValue = stops.back().toMap().value( QStringLiteral( "value" ) ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        const QColor maxColor = convertColor( stops.back().toMap().value( QStringLiteral( "color" ) ) );
+
+        QgsGradientStopsList gradientStops;
+        for ( int i = 1; i < stops.size() - 1; ++i )
+        {
+          const QVariantMap stopData = stops.at( i ).toMap();
+          const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toDouble();
+          const double scaledBreakpoint = ( breakpoint - minValue ) / ( maxValue - minValue );
+          const QColor fillColor = convertColor( stopData.value( QStringLiteral( "color" ) ) );
+
+          gradientStops.append( QgsGradientStop( scaledBreakpoint, fillColor ) );
+        }
+
+        std::unique_ptr< QgsGradientColorRamp > colorRamp = std::make_unique< QgsGradientColorRamp >(
+              minColor, maxColor, false, gradientStops
+            );
+
+        QgsProperty colorProperty = QgsProperty::fromField( attrName );
+        colorProperty.setTransformer(
+          new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() )
+        );
+        for ( int layer = 0; layer < symbol->symbolLayerCount(); ++layer )
+        {
+          symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, colorProperty );
+        }
+
+        std::unique_ptr< QgsSingleSymbolRenderer > singleSymbolRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+
+        return singleSymbolRenderer.release();
+      }
+      else
+      {
+        QgsDebugError( QStringLiteral( "ESRI visualVariable type %1 is not currently supported" ).arg( variableType ) );
+      }
+    }
+
+    double lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
+
+    std::unique_ptr< QgsGraduatedSymbolRenderer > graduatedRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( attrName );
+
+    graduatedRenderer->setSourceSymbol( symbol.release() );
 
     if ( esriMode == QLatin1String( "esriClassifyDefinedInterval" ) )
     {
@@ -1076,60 +1157,11 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
       QgsClassificationStandardDeviation *method = new QgsClassificationStandardDeviation();
       graduatedRenderer->setClassificationMethod( method );
     }
-    else
+    else if ( !esriMode.isEmpty() )
     {
       QgsDebugError( QStringLiteral( "ESRI classification mode %1 is not currently supported" ).arg( esriMode ) );
     }
 
-
-    if ( !classBreakInfos.isEmpty() )
-    {
-      symbolData = classBreakInfos.at( 0 ).toMap().value( QStringLiteral( "symbol" ) ).toMap();
-    }
-    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
-    double transparency = rendererData.value( QStringLiteral( "transparency" ) ).toDouble();
-
-    double opacity = ( 100.0 - transparency ) / 100.0;
-
-    if ( !symbol )
-      return nullptr;
-    else
-    {
-      symbol->setOpacity( opacity );
-      graduatedRenderer->setSourceSymbol( symbol.release() );
-    }
-
-    const QVariantList visualVariablesData = rendererData.value( QStringLiteral( "visualVariables" ) ).toList();
-    double lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
-    for ( const QVariant &visualVariable : visualVariablesData )
-    {
-      const QVariantList stops = visualVariable.toMap().value( QStringLiteral( "stops" ) ).toList();
-      for ( const QVariant &stop : stops )
-      {
-        const QVariantMap stopData = stop.toMap();
-        const QString label = stopData.value( QStringLiteral( "label" ) ).toString();
-        const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toDouble();
-        std::unique_ptr< QgsSymbol > symbolForStop( graduatedRenderer->sourceSymbol()->clone() );
-
-        if ( visualVariable.toMap().value( QStringLiteral( "type" ) ).toString() == QStringLiteral( "colorInfo" ) )
-        {
-          // handle color change stops:
-          QColor fillColor = convertColor( stopData.value( QStringLiteral( "color" ) ) );
-          symbolForStop->setColor( fillColor );
-
-          QgsRendererRange range;
-
-          range.setLowerValue( lastValue );
-          range.setUpperValue( breakpoint );
-          range.setLabel( label );
-          range.setSymbol( symbolForStop.release() );
-
-          lastValue = breakpoint;
-          graduatedRenderer->addClass( range );
-        }
-      }
-    }
-    lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
     for ( const QVariant &classBreakInfo : classBreakInfos )
     {
       const QVariantMap symbolData = classBreakInfo.toMap().value( QStringLiteral( "symbol" ) ).toMap();
