@@ -39,10 +39,6 @@ Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window 
   public:
 
     Qgs3DMapCanvas();
-%Docstring
-Constructor for Qgs3DMapCanvas.
-%End
-
     ~Qgs3DMapCanvas();
 
     Qgs3DMapSettings *mapSettings();

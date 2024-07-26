@@ -38,7 +38,7 @@ class GUI_EXPORT QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui
 {
     Q_OBJECT
   public:
-    //! constructor
+
     QgsLayoutHtmlWidget() = delete;
     //! constructor
     QgsLayoutHtmlWidget( QgsLayoutFrame *frame );

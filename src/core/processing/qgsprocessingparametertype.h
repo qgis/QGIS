@@ -39,9 +39,6 @@ class CORE_EXPORT QgsProcessingParameterType
      */
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 SIP_FACTORY;
 
-    /**
-     * Destructor
-     */
     virtual ~QgsProcessingParameterType() = default;
 
     /**

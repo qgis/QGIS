@@ -2187,12 +2187,19 @@ Qgis.Axis.__doc__ = "Cartesian axes.\n\n.. versionadded:: 3.34\n\n" + '* ``X``: 
 Qgis.Axis.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
-Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
+Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__ = "Item supports reference scale based rendering (since QGIS 3.40)"
+Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ + '\n' + '* ``SupportsReferenceScale``: ' + Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__
 # --
 Qgis.AnnotationItemFlags = lambda flags=0: Qgis.AnnotationItemFlag(flags)
 Qgis.AnnotationItemFlag.baseClass = Qgis
 Qgis.AnnotationItemFlags.baseClass = Qgis
 AnnotationItemFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.AnnotationPictureSizeMode.SpatialBounds.__doc__ = "Picture is rendered inside spatial bounds, and size will depend on map scale"
+Qgis.AnnotationPictureSizeMode.FixedSize.__doc__ = "Picture is rendered at a fixed size, regardless of map scale"
+Qgis.AnnotationPictureSizeMode.__doc__ = "Picture annotation item size modes.\n\n.. versionadded:: 3.40\n\n" + '* ``SpatialBounds``: ' + Qgis.AnnotationPictureSizeMode.SpatialBounds.__doc__ + '\n' + '* ``FixedSize``: ' + Qgis.AnnotationPictureSizeMode.FixedSize.__doc__
+# --
+Qgis.AnnotationPictureSizeMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__ = "Do not show item creation tools for the item type"
 Qgis.AnnotationItemGuiFlag.__doc__ = "Flags for controlling how an annotation item behaves in the GUI.\n\n.. versionadded:: 3.22\n\n" + '* ``FlagNoCreationTools``: ' + Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__

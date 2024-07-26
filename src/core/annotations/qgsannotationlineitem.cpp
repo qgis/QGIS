@@ -83,7 +83,7 @@ bool QgsAnnotationLineItem::writeXml( QDomElement &element, QDomDocument &docume
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
+QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
   QList< QgsAnnotationItemNode > res;
   int i = 0;
@@ -94,7 +94,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
   return res;
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -138,7 +138,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbs
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -167,6 +167,11 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
       break;
   }
   return nullptr;
+}
+
+Qgis::AnnotationItemFlags QgsAnnotationLineItem::flags() const
+{
+  return Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationLineItem *QgsAnnotationLineItem::create()

@@ -26,6 +26,7 @@ class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsAnnotationItemNode;
+class QgsAnnotationItemEditContext;
 class QgsAbstractAnnotationItemEditOperation;
 class QgsAnnotationItemEditOperationTransientResults;
 class QgsRenderContext;
@@ -61,6 +62,10 @@ class CORE_EXPORT QgsAnnotationItem
     else if ( sipCpp->type() == QLatin1String( "linetext" ) )
     {
       sipType = sipType_QgsAnnotationLineTextItem;
+    }
+    else if ( sipCpp->type() == QLatin1String( "picture" ) )
+    {
+      sipType = sipType_QgsAnnotationPictureItem;
     }
     else
     {
@@ -142,16 +147,30 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Applies an edit \a operation to the item.
      *
-     * \since QGIS 3.22
+     * \deprecated QGIS 3.40, use applyEditV2() instead.
      */
-    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    Q_DECL_DEPRECATED virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) SIP_DEPRECATED;
+
+    /**
+     * Applies an edit \a operation to the item.
+     *
+     * \since QGIS 3.40
+     */
+    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
     /**
      * Retrieves the results of a transient (in progress) edit \a operation on the item.
      *
-     * \since QGIS 3.22
+     * \deprecated QGIS 3.40, use transientEditResultsV2() instead.
      */
-    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) SIP_FACTORY;
+    Q_DECL_DEPRECATED virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) SIP_FACTORY;
+
+    /**
+     * Retrieves the results of a transient (in progress) edit \a operation on the item.
+     *
+     * \since QGIS 3.40
+     */
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) SIP_FACTORY;
 
     /**
      * Returns the item's z index, which controls the order in which annotation items
@@ -188,9 +207,16 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Returns the nodes for the item, used for editing the item.
      *
-     * \since QGIS 3.22
+     * \deprecated QGIS 3.40, use nodesV2() instead.
      */
-    virtual QList< QgsAnnotationItemNode > nodes() const;
+    Q_DECL_DEPRECATED virtual QList< QgsAnnotationItemNode > nodes() const SIP_DEPRECATED;
+
+    /**
+     * Returns the nodes for the item, used for editing the item.
+     *
+     * \since QGIS 3.40
+     */
+    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
 
     /**
      * Returns TRUE if the annotation item uses a symbology reference scale.

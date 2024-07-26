@@ -92,7 +92,6 @@ class CORE_EXPORT QgsMeshDatasetValue
     //! Default Ctor, initialize to NaN
     QgsMeshDatasetValue() = default;
 
-    //! Dtor
     ~QgsMeshDatasetValue() = default;
 
     //! Sets scalar value
@@ -254,8 +253,6 @@ class CORE_EXPORT QgsMesh3DDataBlock
   public:
     //! Constructs an invalid block
     QgsMesh3DDataBlock();
-
-    //! Dtor
     ~QgsMesh3DDataBlock();
 
     //! Constructs a new block for count faces
@@ -563,7 +560,6 @@ class CORE_EXPORT QgsMeshDataset
 
     QgsMeshDataset() = default;
 
-    //! Destructor
     virtual ~QgsMeshDataset() = default;
 
     //! Returns the value with index \a valueIndex

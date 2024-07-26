@@ -69,9 +69,6 @@ namespace QgsWfs
                        const QMetaType::Type type = QMetaType::Type::QString,
                        const QVariant defaultValue = QVariant( "" ) );
 
-      /**
-       * Default destructor for QgsWfsParameter.
-       */
       virtual ~QgsWfsParameter() = default;
 
       /**
@@ -154,9 +151,6 @@ namespace QgsWfs
        */
       QgsWfsParameters();
 
-      /**
-       * Default destructor for QgsWfsParameters.
-       */
       virtual ~QgsWfsParameters() = default;
 
       /**

@@ -42,9 +42,6 @@ class CORE_EXPORT QgsExternalStorageRegistry
      */
     QgsExternalStorageRegistry();
 
-    /**
-     * Destructor
-     */
     ~QgsExternalStorageRegistry();
 
     /**

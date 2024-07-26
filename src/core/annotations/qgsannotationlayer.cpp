@@ -265,6 +265,13 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstra
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  return applyEditV2( operation, QgsAnnotationItemEditContext() );
+}
+
+Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::AnnotationItemEditOperationResult res = Qgis::AnnotationItemEditOperationResult::Invalid;
   if ( QgsAnnotationItem *targetItem = item( operation->itemId() ) )
   {
@@ -274,7 +281,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstra
     {
       mSpatialIndex->remove( operation->itemId(), targetItem->boundingBox() );
     }
-    res = targetItem->applyEdit( operation );
+    res = targetItem->applyEditV2( operation, context );
 
     switch ( res )
     {

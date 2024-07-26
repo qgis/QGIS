@@ -2178,11 +2178,24 @@ class CORE_EXPORT Qgis
     enum class AnnotationItemFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
+      SupportsReferenceScale = 1 << 1, //!< Item supports reference scale based rendering (since QGIS 3.40)
     };
     //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
     Q_ENUM( AnnotationItemFlag )
     Q_FLAG( AnnotationItemFlags )
+
+    /**
+     * Picture annotation item size modes.
+     *
+     * \since QGIS 3.40
+     */
+    enum class AnnotationPictureSizeMode : int
+    {
+      SpatialBounds = 0, //!< Picture is rendered inside spatial bounds, and size will depend on map scale
+      FixedSize, //!< Picture is rendered at a fixed size, regardless of map scale
+    };
+    Q_ENUM( AnnotationPictureSizeMode )
 
     /**
      * Flags for controlling how an annotation item behaves in the GUI.
@@ -4651,6 +4664,7 @@ class CORE_EXPORT Qgis
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( FormatUnknown ), //!< Invalid or unknown image type
     };
     Q_ENUM( PictureFormat )
+
 
     /**
      * Scalebar alignment.

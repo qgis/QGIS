@@ -26,6 +26,37 @@
 
 /**
  * \ingroup core
+ * \brief Encapsulates the context for an annotation item edit operation.
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsAnnotationItemEditContext
+{
+  public:
+
+    QgsAnnotationItemEditContext() = default;
+
+    /**
+     * Returns the current rendered bounds of the item, in the annotation layer's CRS.
+     *
+     * \see setCurrentItemBounds()
+     */
+    QgsRectangle currentItemBounds() const;
+
+    /**
+     * Sets the current rendered \a bounds of the item, in the annotation layer's CRS.
+     *
+     * \see currentItemBounds()
+     */
+    void setCurrentItemBounds( const QgsRectangle &bounds );
+
+  private:
+
+    QgsRectangle mCurrentItemBounds;
+
+};
+
+/**
+ * \ingroup core
  * \brief Abstract base class for annotation item edit operations
  * \since QGIS 3.22
  */

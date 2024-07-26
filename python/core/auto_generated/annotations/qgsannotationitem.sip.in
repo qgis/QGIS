@@ -42,6 +42,10 @@ Abstract base class for annotation items which are drawn with :py:class:`QgsAnno
     {
       sipType = sipType_QgsAnnotationLineTextItem;
     }
+    else if ( sipCpp->type() == QLatin1String( "picture" ) )
+    {
+      sipType = sipType_QgsAnnotationPictureItem;
+    }
     else
     {
       sipType = 0;
@@ -115,18 +119,34 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommon
 .. seealso:: :py:func:`readCommonProperties`
 %End
 
-    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+ virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) /Deprecated/;
 %Docstring
 Applies an edit ``operation`` to the item.
 
-.. versionadded:: 3.22
+.. deprecated::
+   QGIS 3.40, use :py:func:`~QgsAnnotationItem.applyEditV2` instead.
 %End
 
-    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
+%Docstring
+Applies an edit ``operation`` to the item.
+
+.. versionadded:: 3.40
+%End
+
+ virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 %Docstring
 Retrieves the results of a transient (in progress) edit ``operation`` on the item.
 
-.. versionadded:: 3.22
+.. deprecated::
+   QGIS 3.40, use :py:func:`~QgsAnnotationItem.transientEditResultsV2` instead.
+%End
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
+%Docstring
+Retrieves the results of a transient (in progress) edit ``operation`` on the item.
+
+.. versionadded:: 3.40
 %End
 
     int zIndex() const;
@@ -163,11 +183,19 @@ Sets if the item will be rendered or not in the layer.
 .. versionadded:: 3.36
 %End
 
-    virtual QList< QgsAnnotationItemNode > nodes() const;
+ virtual QList< QgsAnnotationItemNode > nodes() const /Deprecated/;
 %Docstring
 Returns the nodes for the item, used for editing the item.
 
-.. versionadded:: 3.22
+.. deprecated::
+   QGIS 3.40, use :py:func:`~QgsAnnotationItem.nodesV2` instead.
+%End
+
+    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
+%Docstring
+Returns the nodes for the item, used for editing the item.
+
+.. versionadded:: 3.40
 %End
 
     bool useSymbologyReferenceScale() const;

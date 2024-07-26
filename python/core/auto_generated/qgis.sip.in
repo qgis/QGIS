@@ -1279,9 +1279,16 @@ The development version
     enum class AnnotationItemFlag
     {
       ScaleDependentBoundingBox,
+      SupportsReferenceScale,
     };
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
+
+    enum class AnnotationPictureSizeMode
+    {
+      SpatialBounds,
+      FixedSize,
+    };
 
     enum class AnnotationItemGuiFlag
     {
@@ -2606,6 +2613,7 @@ The development version
       Raster,
       Unknown,
     };
+
 
     enum class ScaleBarAlignment
       {

@@ -44,7 +44,6 @@ Constructor for QgsServerParameterDefinition.
   use the method with a QMetaType.Type argument instead
 %End
 
-
     virtual ~QgsServerParameterDefinition();
 
     QString typeName() const;

@@ -85,6 +85,7 @@ whenever this signal is emitted.
 %End
   public:
 
+
     virtual ~QgsCreateAnnotationItemMapToolInterface();
 
     virtual QgsCreateAnnotationItemMapToolHandler *handler() = 0;

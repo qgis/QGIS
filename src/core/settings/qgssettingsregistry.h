@@ -39,14 +39,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
 {
   public:
 
-    /**
-     * Constructor for QgsSettingsRegistry.
-     */
     QgsSettingsRegistry();
-
-    /**
-     * Destructor for QgsSettingsRegistry.
-     */
     virtual ~QgsSettingsRegistry();
 
     /**

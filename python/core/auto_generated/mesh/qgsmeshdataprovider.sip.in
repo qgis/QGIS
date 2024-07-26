@@ -112,6 +112,7 @@ read on demand
 #include "qgsmeshdataprovider.h"
 %End
   public:
+
     virtual ~QgsMeshDataSourceInterface();
 
     bool contains( const QgsMesh::ElementType &type ) const;

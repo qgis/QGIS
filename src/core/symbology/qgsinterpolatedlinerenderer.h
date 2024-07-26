@@ -284,7 +284,6 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
 
-    //! Constructor
     QgsInterpolatedLineSymbolLayer();
 
     //! Creates the symbol layer

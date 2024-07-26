@@ -36,7 +36,6 @@ class QgsAbstractMaterialSettings;
 class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
 {
   public:
-    //! Constructor for QgsPolygon3DSymbol
     QgsPolygon3DSymbol();
     ~QgsPolygon3DSymbol() override;
 

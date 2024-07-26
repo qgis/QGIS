@@ -53,10 +53,6 @@ class SERVER_EXPORT QgsServerParameterDefinition
     Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type,
         const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
 
-
-    /**
-     * Default destructor for QgsServerParameterDefinition.
-     */
     virtual ~QgsServerParameterDefinition() = default;
 
     /**

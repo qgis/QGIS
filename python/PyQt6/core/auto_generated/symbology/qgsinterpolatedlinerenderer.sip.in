@@ -308,9 +308,6 @@ The interpolation is done between two values defined at the extremities
   public:
 
     QgsInterpolatedLineSymbolLayer();
-%Docstring
-Constructor
-%End
 
     static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
 %Docstring

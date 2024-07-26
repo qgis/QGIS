@@ -29,10 +29,6 @@ list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`Qgs
   public:
 
     QgsSettingsRegistry();
-%Docstring
-Constructor for QgsSettingsRegistry.
-%End
-
     virtual ~QgsSettingsRegistry();
 
     QList<const QgsSettingsEntryBase *> settingEntries() const;
