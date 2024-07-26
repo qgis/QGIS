@@ -299,29 +299,31 @@ class TEST_EXPORT QgsTest : public QObject
     /**
      * For internal use only -- use QGSCOMPARELONGSTR macro instead.
      */
-    bool checkLongStr( const char *file, const char *function, int line, const QString &name, const QString &referenceName, const QByteArray &actualStr )
+    bool checkLongStr( const char *file, const char *, int line, const QString &name, const QString &referenceName, const QByteArray &actualStr )
     {
+      QString header = QString( "checkLongStr (%1, %2):" ).arg( name, referenceName );
       QString subPath = "control_files/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
       QString expectedPath = testDataPath( subPath );
       QFile expectedFile( expectedPath );
       if ( ! expectedFile.open( QFile::ReadOnly  | QIODevice::Text ) )
       {
-        qWarning() << "Unable to open expected data file" << expectedPath;
+        qWarning() << header.toStdString().c_str() << "Unable to open expected data file" << expectedPath;
         return false;
       }
       QByteArray expectedStr = expectedFile.readAll();
 
       if ( actualStr.size() != expectedStr.size() )
       {
-        qWarning() << "Array have not the same length (actual vs expected):" << actualStr.size() << "vs" << expectedStr.size();
+        qWarning() << header.toStdString().c_str() << "Array have not the same length (actual vs expected):" << actualStr.size() << "vs" << expectedStr.size() << ".";
       }
 
-      int strSize = actualStr.size();
+      const int strSize = std::max( actualStr.size(), expectedStr.size() );
       constexpr int step = 100;
       for ( int i = 0; i < strSize || i < strSize + step; i += step )
       {
         QByteArray act = actualStr.mid( i, step );
         QByteArray exp = expectedStr.mid( i, step );
+
         if ( act != exp )
         {
           QString actualPath = QDir::tempPath() + "/actual_" + name + "_" + referenceName;
@@ -332,18 +334,20 @@ class TEST_EXPORT QgsTest : public QObject
           }
           else
           {
-            qWarning() << "Unable to write actual data to file" << actualPath;
+            qWarning() << header.toStdString().c_str() << "Unable to write actual data to file" << actualPath << ".";
           }
 
-          qWarning() << "Hex version of the parts of array that differ starting from char" << i
-                     << "(actual vs expected):" << "\n" << act.toHex() << "\n" << exp.toHex();
-          QString msg = QString( "Comparison failed in function '%1' starting from char %2." ).arg( function ).arg( i );
+          qWarning() << header.toStdString().c_str() << "Hex version of the parts of array that differ starting from char" << i << "."
+                     <<  "\n   Actual hex:  " << act.toHex() << "\n   Expected hex:" << exp.toHex();
+          QString msg = QString( "%1 Comparison failed in starting from char %2." ).arg( header ).arg( QString::number( i ) );
 
           // create copies of data as QTest::compare_helper will delete them
           char *actualCopy = new char[act.size() + 1];
           memcpy( actualCopy, act.data(), act.size() );
+          actualCopy[act.size()] = 0;
           char *expectedCopy = new char[exp.size() + 1];
           memcpy( expectedCopy, exp.data(), exp.size() );
+          expectedCopy[exp.size()] = 0;
 
           return QTest::compare_helper( act == exp, msg.toStdString().c_str(), // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
                                         actualCopy, expectedCopy,
