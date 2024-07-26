@@ -17,6 +17,7 @@ from qgis.core import (
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
     QgsAnnotationItemEditOperationTranslateItem,
+    QgsAnnotationItemEditContext,
     QgsAnnotationItemNode,
     QgsAnnotationPictureItem,
     QgsCircularString,
@@ -96,7 +97,7 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
                                         QgsRectangle(10, 20, 30, 40))
         # nodes shouldn't form a closed ring
-        self.assertEqual(item.nodes(), [
+        self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()), [
             QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(10, 20), Qgis.AnnotationItemNodeType.VertexHandle),
             QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(30, 20), Qgis.AnnotationItemNodeType.VertexHandle),
             QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(30, 40), Qgis.AnnotationItemNodeType.VertexHandle),
@@ -109,7 +110,7 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
                                         QgsRectangle(10, 20, 30, 40))
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
-        self.assertEqual(item.nodes(), [
+        self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()), [
             QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(20, 30), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_translate_spatial_bounds(self):
@@ -119,7 +120,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                         QgsRectangle(10, 20, 30, 40))
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)),
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200),
+                                          QgsAnnotationItemEditContext()),
                          Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '110.000,220.000 : 130.000,240.000')
 
@@ -131,7 +133,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)),
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200),
+                                          QgsAnnotationItemEditContext()),
                          Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '110.000,220.000 : 130.000,240.000')
 
@@ -142,20 +145,24 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                         QgsRectangle(10, 20, 30, 40))
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        self.assertEqual(item.applyEdit(
-            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18))),
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)),
+            QgsAnnotationItemEditContext()),
             Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '10.000,18.000 : 17.000,40.000')
-        self.assertEqual(item.applyEdit(
-            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(10, 18), QgsPoint(5, 13))),
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(10, 18), QgsPoint(5, 13)),
+            QgsAnnotationItemEditContext()),
             Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '5.000,13.000 : 17.000,40.000')
-        self.assertEqual(item.applyEdit(
-            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPoint(17, 14), QgsPoint(18, 38))),
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPoint(17, 14), QgsPoint(18, 38)),
+            QgsAnnotationItemEditContext()),
             Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '5.000,13.000 : 18.000,38.000')
-        self.assertEqual(item.applyEdit(
-            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(5, 38), QgsPoint(2, 39))),
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(5, 38), QgsPoint(2, 39)),
+            QgsAnnotationItemEditContext()),
             Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '2.000,13.000 : 18.000,39.000')
 
@@ -167,8 +174,9 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        self.assertEqual(item.applyEdit(
-            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(30, 20), QgsPoint(17, 18))),
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(30, 20), QgsPoint(17, 18)),
+            QgsAnnotationItemEditContext()),
             Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '7.000,8.000 : 27.000,28.000')
 
@@ -198,8 +206,9 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                         QgsRectangle(10, 20, 30, 40))
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        res = item.transientEditResults(
-            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)))
+        res = item.transientEditResultsV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)),
+            QgsAnnotationItemEditContext())
         self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((10 18, 17 18, 17 40, 10 40, 10 18))')
 
     def test_transient_move_operation_fixed_size(self):
@@ -214,8 +223,9 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
         op = QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18))
-        op.setCurrentItemBounds(QgsRectangle(1, 2, 3, 4))
-        res = item.transientEditResults(op)
+        context = QgsAnnotationItemEditContext()
+        context.setCurrentItemBounds(QgsRectangle(1, 2, 3, 4))
+        res = item.transientEditResultsV2(op, context)
         self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((16 17, 18 17, 18 19, 16 19, 16 17))')
 
     def test_transient_translate_operation_spatial_bounds(self):
@@ -225,7 +235,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
                                         QgsRectangle(10, 20, 30, 40))
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200),
+                                          QgsAnnotationItemEditContext())
         self.assertEqual(res.representativeGeometry().asWkt(),
                          'Polygon ((110 220, 130 220, 130 240, 110 240, 110 220))')
 
@@ -241,8 +252,9 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
         op = QgsAnnotationItemEditOperationTranslateItem('', 100, 200)
-        op.setCurrentItemBounds(QgsRectangle(1, 2, 3, 4))
-        res = item.transientEditResults(op)
+        context = QgsAnnotationItemEditContext()
+        context.setCurrentItemBounds(QgsRectangle(1, 2, 3, 4))
+        res = item.transientEditResultsV2(op, context)
         self.assertEqual(res.representativeGeometry().asWkt(),
                          'Polygon ((119 229, 121 229, 121 231, 119 231, 119 229))')
 
