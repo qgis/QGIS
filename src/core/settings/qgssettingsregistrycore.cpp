@@ -144,12 +144,12 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
     settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
 
-  #if defined( HAVE_QTSERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
     QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( QStringLiteral( "core/gps/stop_bits" ) );
     QgsGpsDetector::settingsGpsFlowControl->copyValueFromKey( QStringLiteral( "core/gps/flow_control" ) );
     QgsGpsDetector::settingsGpsDataBits->copyValueFromKey( QStringLiteral( "core/gps/data_bits" ) );
     QgsGpsDetector::settingsGpsParity->copyValueFromKey( QStringLiteral( "core/gps/parity" ) );
-  #endif
+#endif
 
     QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( QStringLiteral( "Raster/defaultOversampling" ) );
     QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( QStringLiteral( "Raster/defaultEarlyResampling" ) );
