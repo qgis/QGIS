@@ -56,6 +56,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     virtual ~QgsSettingsRegistryCore();
 
 #ifndef SIP_RUN
+    //! Settings to save if settings from pre 3.30 were migrated
+    static const QgsSettingsEntryBool *settingsSettingsPre330Migrated;
+
     //! Settings entry digitizing stream tolerance
     static const QgsSettingsEntryInteger *settingsDigitizingStreamTolerance;
 
