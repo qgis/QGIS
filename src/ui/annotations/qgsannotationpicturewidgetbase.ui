@@ -66,7 +66,7 @@
    <item row="5" column="0">
     <widget class="QGroupBox" name="mBackgroundCheckbox">
      <property name="title">
-      <string>Draw background</string>
+      <string>Background</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -110,38 +110,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="6" column="0">
-    <widget class="QGroupBox" name="mBorderCheckbox">
-     <property name="title">
-      <string>Draw border</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Symbol</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsSymbolButton" name="mBorderSymbolButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Change…</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QgsStackedWidget" name="mSizeStackedWidget">
@@ -198,28 +166,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>100000.000000000000000</double>
-         </property>
-         <property name="singleStep">
-          <double>0.200000000000000</double>
-         </property>
-         <property name="value">
-          <double>1.000000000000000</double>
-         </property>
-         <property name="showClearButton" stdset="0">
-          <bool>false</bool>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>Unit</string>
          </property>
         </widget>
        </item>
@@ -248,6 +198,38 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="1">
+        <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>100000.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.200000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="showClearButton" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Height</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="2" rowspan="2">
         <widget class="QgsRatioLockButton" name="mLockAspectRatio">
          <property name="sizePolicy">
@@ -261,20 +243,6 @@
          </property>
          <property name="leftMargin" stdset="0">
           <number>13</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Height</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_13">
-         <property name="text">
-          <string>Unit</string>
          </property>
         </widget>
        </item>
@@ -300,6 +268,38 @@
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="mFrameCheckbox">
+     <property name="title">
+      <string>Frame</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Symbol</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsSymbolButton" name="mFrameSymbolButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Change…</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -356,10 +356,10 @@
   <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
+  <tabstop>mFrameCheckbox</tabstop>
+  <tabstop>mFrameSymbolButton</tabstop>
   <tabstop>mBackgroundCheckbox</tabstop>
   <tabstop>mBackgroundSymbolButton</tabstop>
-  <tabstop>mBorderCheckbox</tabstop>
-  <tabstop>mBorderSymbolButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

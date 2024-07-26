@@ -630,9 +630,9 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
   mBackgroundSymbolButton->registerExpressionContextGenerator( this );
-  mBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  mBorderSymbolButton->setDialogTitle( tr( "Frame" ) );
-  mBorderSymbolButton->registerExpressionContextGenerator( this );
+  mFrameSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  mFrameSymbolButton->setDialogTitle( tr( "Frame" ) );
+  mFrameSymbolButton->registerExpressionContextGenerator( this );
 
   connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
   {
@@ -655,10 +655,10 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   } );
 
   connect( mLockAspectRatioCheck, &QCheckBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
-  connect( mBorderCheckbox, &QGroupBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mFrameCheckbox, &QGroupBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
   connect( mBackgroundCheckbox, &QGroupBox::toggled, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
   connect( mBackgroundSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
-  connect( mBorderSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mFrameSymbolButton, &QgsSymbolButton::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
 
   connect( mWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::setWidth );
@@ -699,9 +699,9 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     pictureItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
 
     pictureItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
-    pictureItem->setFrameEnabled( mBorderCheckbox->isChecked() );
+    pictureItem->setFrameEnabled( mFrameCheckbox->isChecked() );
     pictureItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol< QgsFillSymbol >() );
-    pictureItem->setFrameSymbol( mBorderSymbolButton->clonedSymbol< QgsFillSymbol >() );
+    pictureItem->setFrameSymbol( mFrameSymbolButton->clonedSymbol< QgsFillSymbol >() );
 
     mPropertiesWidget->updateItem( pictureItem );
   }
@@ -718,8 +718,8 @@ void QgsAnnotationPictureItemWidget::setContext( const QgsSymbolWidgetContext &c
   mPropertiesWidget->setContext( context );
   mBackgroundSymbolButton->setMapCanvas( context.mapCanvas() );
   mBackgroundSymbolButton->setMessageBar( context.messageBar() );
-  mBorderSymbolButton->setMapCanvas( context.mapCanvas() );
-  mBorderSymbolButton->setMessageBar( context.messageBar() );
+  mFrameSymbolButton->setMapCanvas( context.mapCanvas() );
+  mFrameSymbolButton->setMessageBar( context.messageBar() );
 }
 
 QgsExpressionContext QgsAnnotationPictureItemWidget::createExpressionContext() const
@@ -768,9 +768,9 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
   if ( const QgsSymbol *symbol = pictureItem->backgroundSymbol() )
     mBackgroundSymbolButton->setSymbol( symbol->clone() );
 
-  mBorderCheckbox->setChecked( pictureItem->frameEnabled() );
+  mFrameCheckbox->setChecked( pictureItem->frameEnabled() );
   if ( const QgsSymbol *symbol = pictureItem->frameSymbol() )
-    mBorderSymbolButton->setSymbol( symbol->clone() );
+    mFrameSymbolButton->setSymbol( symbol->clone() );
 
   mWidthSpinBox->setValue( pictureItem->fixedSize().width() );
   mHeightSpinBox->setValue( pictureItem->fixedSize().height() );
