@@ -47,12 +47,7 @@ QgsAnnotationPictureItem::QgsAnnotationPictureItem( Qgis::PictureFormat format, 
                       );
   QgsSimpleLineSymbolLayer *borderSymbol = new QgsSimpleLineSymbolLayer( QColor( 0, 0, 0 ) );
   borderSymbol->setPenJoinStyle( Qt::MiterJoin );
-  mBorderSymbol = std::make_unique< QgsFillSymbol >(
-                    QgsSymbolLayerList
-  {
-    borderSymbol
-  }
-                  );
+  mFrameSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList{ borderSymbol } );
 }
 
 QgsAnnotationPictureItem::~QgsAnnotationPictureItem() = default;
@@ -185,11 +180,11 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback * 
       break;
   }
 
-  if ( mDrawBorder && mBorderSymbol )
+  if ( mDrawFrame && mFrameSymbol )
   {
-    mBorderSymbol->startRender( context );
-    mBorderSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
-    mBorderSymbol->stopRender( context );
+    mFrameSymbol->startRender( context );
+    mFrameSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
+    mFrameSymbol->stopRender( context );
   }
 
 }
@@ -216,11 +211,11 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
     element.appendChild( backgroundElement );
   }
 
-  element.setAttribute( QStringLiteral( "frameEnabled" ), mDrawBorder ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  if ( mBorderSymbol )
+  element.setAttribute( QStringLiteral( "frameEnabled" ), mDrawFrame ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( mFrameSymbol )
   {
     QDomElement frameElement = document.createElement( QStringLiteral( "frameSymbol" ) );
-    frameElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "frameSymbol" ), mBorderSymbol.get(), document, context ) );
+    frameElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "frameSymbol" ), mFrameSymbol.get(), document, context ) );
     element.appendChild( frameElement );
   }
 
@@ -429,7 +424,7 @@ bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsRea
     setBackgroundSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundSymbolElem, context ) );
   }
 
-  mDrawBorder = element.attribute( QStringLiteral( "frameEnabled" ), QStringLiteral( "0" ) ).toInt();
+  mDrawFrame = element.attribute( QStringLiteral( "frameEnabled" ), QStringLiteral( "0" ) ).toInt();
   const QDomElement frameSymbolElem = element.firstChildElement( QStringLiteral( "frameSymbol" ) ).firstChildElement();
   if ( !frameSymbolElem.isNull() )
   {
@@ -452,9 +447,9 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
   if ( mBackgroundSymbol )
     item->setBackgroundSymbol( mBackgroundSymbol->clone() );
 
-  item->setFrameEnabled( mDrawBorder );
-  if ( mBorderSymbol )
-    item->setFrameSymbol( mBorderSymbol->clone() );
+  item->setFrameEnabled( mDrawFrame );
+  if ( mFrameSymbol )
+    item->setFrameSymbol( mFrameSymbol->clone() );
 
   item->copyCommonProperties( this );
   return item.release();
@@ -551,12 +546,12 @@ void QgsAnnotationPictureItem::setBackgroundSymbol( QgsFillSymbol *symbol )
 
 const QgsFillSymbol *QgsAnnotationPictureItem::frameSymbol() const
 {
-  return mBorderSymbol.get();
+  return mFrameSymbol.get();
 }
 
 void QgsAnnotationPictureItem::setFrameSymbol( QgsFillSymbol *symbol )
 {
-  mBorderSymbol.reset( symbol );
+  mFrameSymbol.reset( symbol );
 }
 
 QSizeF QgsAnnotationPictureItem::fixedSize() const

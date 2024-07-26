@@ -205,7 +205,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
      * \see setFrameEnabled()
      * \see frameSymbol()
      */
-    bool frameEnabled() const { return mDrawBorder; }
+    bool frameEnabled() const { return mDrawFrame; }
 
     /**
      * Sets whether the item's frame should be rendered.
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
      * \see frameEnabled()
      * \see setFrameSymbol()
      */
-    void setFrameEnabled( bool enabled ) { mDrawBorder = enabled; }
+    void setFrameEnabled( bool enabled ) { mDrawFrame = enabled; }
 
     /**
      * Returns the symbol used to render the item's frame.
@@ -246,8 +246,8 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     bool mLockAspectRatio = true;
     bool mDrawBackground = false;
     std::unique_ptr< QgsFillSymbol > mBackgroundSymbol;
-    bool mDrawBorder = false;
-    std::unique_ptr< QgsFillSymbol > mBorderSymbol;
+    bool mDrawFrame = false;
+    std::unique_ptr< QgsFillSymbol > mFrameSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationPictureItem( const QgsAnnotationPictureItem &other );

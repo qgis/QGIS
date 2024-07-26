@@ -22,7 +22,6 @@
 #include "qgscreateannotationitemmaptool_impl.h"
 
 #include <QImageReader>
-#include <QFileDialog>
 
 //
 // QgsAnnotationItemAbstractGuiMetadata
