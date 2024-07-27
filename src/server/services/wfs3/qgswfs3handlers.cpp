@@ -1093,7 +1093,6 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     // If the layer has no insert capabilities, remove the post operation
     if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
     {
-      qDebug( "Removing post operation from %s", path.toStdString().c_str() );
       data[ path.toStdString() ].erase( "post" );
     }
 
