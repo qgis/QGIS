@@ -68,7 +68,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
-        item.setMargins(QgsMargins(1,2 ,3 ,4 ))
+        item.setMargins(QgsMargins(1, 2, 3, 4))
         item.setMarginsUnit(Qgis.RenderUnit.Points)
 
         self.assertEqual(item.boundingBox().toString(3), '100.000,200.000 : 300.000,400.000')
@@ -78,7 +78,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         self.assertTrue(item.frameEnabled())
         self.assertEqual(item.alignment(), Qt.AlignmentFlag.AlignRight)
         self.assertEqual(item.format().size(), 37)
-        self.assertEqual(item.margins(), QgsMargins(1,2 ,3 ,4 ))
+        self.assertEqual(item.margins(), QgsMargins(1, 2, 3, 4))
         self.assertEqual(item.marginsUnit(), Qgis.RenderUnit.Points)
 
         item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
@@ -95,18 +95,23 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         item = QgsAnnotationRectangleTextItem('my text', QgsRectangle(10, 20, 30, 40))
         # nodes shouldn't form a closed ring
         self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()),
-                         [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(10, 20), Qgis.AnnotationItemNodeType.VertexHandle),
-                          QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(30, 20), Qgis.AnnotationItemNodeType.VertexHandle),
-                          QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(30, 40), Qgis.AnnotationItemNodeType.VertexHandle),
-                          QgsAnnotationItemNode(QgsVertexId(0, 0, 3), QgsPointXY(10, 40), Qgis.AnnotationItemNodeType.VertexHandle)])
+                         [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(10, 20),
+                                                Qgis.AnnotationItemNodeType.VertexHandle),
+                          QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(30, 20),
+                                                Qgis.AnnotationItemNodeType.VertexHandle),
+                          QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(30, 40),
+                                                Qgis.AnnotationItemNodeType.VertexHandle),
+                          QgsAnnotationItemNode(QgsVertexId(0, 0, 3), QgsPointXY(10, 40),
+                                                Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationRectangleTextItem('my text', QgsRectangle(10, 20, 30, 40))
 
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext()),
-                         Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(
+            item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext()),
+            Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '110.000,220.000 : 130.000,240.000')
 
     def test_apply_move_node_edit(self):
@@ -114,39 +119,46 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
 
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)),
-                                          QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)),
+            QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '10.000,18.000 : 17.000,40.000')
-        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(10, 18), QgsPoint(5, 13)),
-                                          QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(10, 18), QgsPoint(5, 13)),
+            QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '5.000,13.000 : 17.000,40.000')
-        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPoint(17, 14), QgsPoint(18, 38)),
-                                          QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPoint(17, 14), QgsPoint(18, 38)),
+            QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '5.000,13.000 : 18.000,38.000')
-        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(5, 38), QgsPoint(2, 39)),
-                                          QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEditV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(5, 38), QgsPoint(2, 39)),
+            QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '2.000,13.000 : 18.000,39.000')
 
     def test_apply_delete_node_edit(self):
         item = QgsAnnotationRectangleTextItem('my text', QgsRectangle(10, 20, 30, 40))
 
-        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13)),
-                                          QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Invalid)
+        self.assertEqual(
+            item.applyEditV2(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13)),
+                             QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Invalid)
 
     def test_apply_add_node_edit(self):
         item = QgsAnnotationRectangleTextItem('my text', QgsRectangle(10, 20, 30, 40))
 
         self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationAddNode('', QgsPoint(15, 16)),
-                                          QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Invalid)
+                                          QgsAnnotationItemEditContext()),
+                         Qgis.AnnotationItemEditOperationResult.Invalid)
 
     def test_transient_move_operation(self):
         item = QgsAnnotationRectangleTextItem('my text', QgsRectangle(10, 20, 30, 40))
 
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
-        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)),
-                                          QgsAnnotationItemEditContext()
-                                          )
+        res = item.transientEditResultsV2(
+            QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(30, 20), QgsPoint(17, 18)),
+            QgsAnnotationItemEditContext()
+        )
         self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((10 18, 17 18, 17 40, 10 40, 10 18))')
 
     def test_transient_translate_operation(self):
@@ -157,7 +169,8 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         res = item.transientEditResultsV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200),
                                           QgsAnnotationItemEditContext()
                                           )
-        self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((110 220, 130 220, 130 240, 110 240, 110 220))')
+        self.assertEqual(res.representativeGeometry().asWkt(),
+                         'Polygon ((110 220, 130 220, 130 240, 110 240, 110 220))')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -174,7 +187,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
-        item.setMargins(QgsMargins(1,2 ,3 ,4 ))
+        item.setMargins(QgsMargins(1, 2, 3, 4))
         item.setMarginsUnit(Qgis.RenderUnit.Points)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
@@ -192,7 +205,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         self.assertTrue(s2.backgroundEnabled())
         self.assertEqual(s2.alignment(), Qt.AlignmentFlag.AlignRight)
         self.assertEqual(s2.format().size(), 37)
-        self.assertEqual(s2.margins(), QgsMargins(1,2 ,3 ,4 ))
+        self.assertEqual(s2.margins(), QgsMargins(1, 2, 3, 4))
         self.assertEqual(s2.marginsUnit(), Qgis.RenderUnit.Points)
 
     def testClone(self):
@@ -207,7 +220,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
-        item.setMargins(QgsMargins(1,2 ,3 ,4 ))
+        item.setMargins(QgsMargins(1, 2, 3, 4))
         item.setMarginsUnit(Qgis.RenderUnit.Points)
 
         s2 = item.clone()
@@ -221,7 +234,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         self.assertTrue(s2.backgroundEnabled())
         self.assertEqual(s2.alignment(), Qt.AlignmentFlag.AlignRight)
         self.assertEqual(s2.format().size(), 37)
-        self.assertEqual(s2.margins(), QgsMargins(1,2 ,3 ,4 ))
+        self.assertEqual(s2.margins(), QgsMargins(1, 2, 3, 4))
         self.assertEqual(s2.marginsUnit(), Qgis.RenderUnit.Points)
 
     def testRender(self):
@@ -313,7 +326,9 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
-        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
+        rc.setCoordinateTransform(
+            QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(),
+                                   QgsProject.instance()))
         image = QImage(200, 200, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
