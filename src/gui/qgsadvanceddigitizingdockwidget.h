@@ -981,9 +981,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Sets the between line constraint by clicking on the perpendicular/parallel buttons
     void betweenLineConstraintClicked( bool activated );
 
-    //! Activate the circles intersection tool
-    void circlesIntersectionClicked();
-
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
 

@@ -22,9 +22,11 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsadvanceddigitizingtoolsregistry.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscadutils.h"
 #include "qgsexpression.h"
+#include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooledit.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -98,7 +100,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mConstructionModeAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::setConstructionMode );
   connect( mParallelAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked );
   connect( mPerpendicularAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked );
-  connect( mCirclesIntersectionAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::circlesIntersectionClicked );
   connect( mLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
@@ -238,6 +239,22 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   constructionModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   constructionModeToolButton->setMenu( constructionSettingsMenu );
   constructionModeToolButton->setObjectName( QStringLiteral( "ConstructionModeButton" ) );
+
+  // Tools
+  QMenu *toolsMenu = new QMenu( this );
+  const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
+  for ( const QString &name : toolMetadataNames )
+  {
+    QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
+    QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), this );
+    connect( toolAction, &QAction::triggered, this, [ = ]()
+    {
+      setTool( toolMetadata->createTool( mMapCanvas, this ) );
+    } );
+    toolsMenu->addAction( toolAction );
+  }
+  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mToolsAction ) )->setPopupMode( QToolButton::InstantPopup );
+  mToolsAction->setMenu( toolsMenu );
 
   qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
   mSettingsAction->setMenu( mCommonAngleActionsMenu );
@@ -546,7 +563,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mInputWidgets->setEnabled( enabled );
   mFloaterAction->setEnabled( enabled );
   mConstructionAction->setEnabled( enabled );
-  mCirclesIntersectionAction->setEnabled( enabled );
+  mToolsAction->setEnabled( enabled );
 
   if ( !enabled )
   {
@@ -667,6 +684,7 @@ void QgsAdvancedDigitizingDockWidget::setTool( QgsAdvancedDigitizingTool *tool )
     mCurrentTool = nullptr;
   }
 
+  qDebug() << mCurrentTool;
   mCurrentTool = tool;
 
   if ( mCurrentTool )
@@ -679,22 +697,6 @@ void QgsAdvancedDigitizingDockWidget::setTool( QgsAdvancedDigitizingTool *tool )
 QgsAdvancedDigitizingTool *QgsAdvancedDigitizingDockWidget::tool() const
 {
   return mCurrentTool.data();
-}
-
-void QgsAdvancedDigitizingDockWidget::circlesIntersectionClicked()
-{
-  if ( mCurrentTool && dynamic_cast<QgsAdvancedDigitizingCirclesIntersectionTool *>( mCurrentTool.data() ) )
-  {
-    setTool( nullptr );
-    mCirclesIntersectionAction->setChecked( false );
-  }
-  else
-  {
-    QgsAdvancedDigitizingCirclesIntersectionTool *circlesIntersectionTool = new QgsAdvancedDigitizingCirclesIntersectionTool( mMapCanvas, this );
-    connect( circlesIntersectionTool, &QObject::destroyed, this, [ = ] { mCirclesIntersectionAction->setChecked( false ); } );
-    setTool( circlesIntersectionTool );
-    mCirclesIntersectionAction->setChecked( true );
-  }
 }
 
 void QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked( bool activated )

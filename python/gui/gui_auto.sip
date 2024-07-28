@@ -7,6 +7,7 @@
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
 %Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsadvanceddigitizingtools.sip
+%Include auto_generated/qgsadvanceddigitizingtoolsregistry.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
 %Include auto_generated/qgsalignmentcombobox.sip
 %Include auto_generated/qgsapplicationexitblockerinterface.sip

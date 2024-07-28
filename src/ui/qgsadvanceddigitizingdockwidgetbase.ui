@@ -48,7 +48,7 @@
       <addaction name="mPerpendicularAction"/>
       <addaction name="mConstructionAction"/>
       <addaction name="separator"/>
-      <addaction name="mCirclesIntersectionAction"/>
+      <addaction name="mToolsAction"/>
       <addaction name="separator"/>
       <addaction name="mSettingsAction"/>
       <addaction name="separator"/>
@@ -606,7 +606,7 @@
      <string/>
     </property>
    </action>
-   <action name="mCirclesIntersectionAction">
+   <action name="mToolsAction">
     <property name="checkable">
      <bool>true</bool>
     </property>

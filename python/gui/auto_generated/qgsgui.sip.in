@@ -79,6 +79,13 @@ Returns the global annotation item GUI registry, used for registering the GUI be
 .. versionadded:: 3.22
 %End
 
+    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() /KeepReference/;
+%Docstring
+Returns the global advanced digitizing tools registry, used for registering advanced digitizing tools.
+
+.. versionadded:: 3.40
+%End
+
     static QgsProcessingGuiRegistry *processingGuiRegistry() /KeepReference/;
 %Docstring
 Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
