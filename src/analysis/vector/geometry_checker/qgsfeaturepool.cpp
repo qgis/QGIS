@@ -71,7 +71,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
 
 QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
-  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
   Q_UNUSED( feedback )
   Q_ASSERT( QThread::currentThread() == qApp->thread() );
 
