@@ -117,6 +117,39 @@ QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::readyS
   return readyStorages;
 }
 
+QList<QgsAuthConfigurationStorage *> QgsAuthConfigurationStorageRegistry::readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const
+{
+
+  QMutexLocker locker( &mMutex );
+
+  QList<QgsAuthConfigurationStorage *> readyStorages;
+  for ( const auto &s : std::as_const( mStorages ) )
+  {
+    if ( s->isReady() && s->isEnabled() && s->capabilities().testFlag( capability ) )
+    {
+      readyStorages.append( s.get() );
+    }
+  }
+
+  return readyStorages;
+}
+
+QgsAuthConfigurationStorage *QgsAuthConfigurationStorageRegistry::firstReadyStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const
+{
+
+  QMutexLocker locker( &mMutex );
+
+  for ( const auto &s : std::as_const( mStorages ) )
+  {
+    if ( s->isReady() && s->isEnabled() && s->capabilities().testFlag( capability ) )
+    {
+      return s.get();
+    }
+  }
+  return nullptr;
+
+}
+
 QgsAuthConfigurationStorage *QgsAuthConfigurationStorageRegistry::storage( const QString &id ) const
 {
 

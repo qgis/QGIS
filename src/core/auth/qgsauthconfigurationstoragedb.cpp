@@ -2344,6 +2344,14 @@ bool QgsAuthConfigurationStorageDb::clearMethodConfigs()
 
 bool QgsAuthConfigurationStorageDb::erase()
 {
+
+  // Check clear capabilities
+  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::ClearStorage ) )
+  {
+    setError( tr( "Storage does not support clearing storage" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+
   if ( clearTables( {{
     QStringLiteral( "auth_configs" ),
       QStringLiteral( "auth_pass" ),
