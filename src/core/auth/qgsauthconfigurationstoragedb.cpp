@@ -67,10 +67,10 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
   QMutexLocker locker( &mMutex );
 
   const QString connectionName = QStringLiteral( "authentication.configs:0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
-  QgsDebugMsgLevel( QStringLiteral( "Using auth db connection name: %1 " ).arg( connectionName ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Using auth db connection name: %1 " ).arg( connectionName ), 3 );
   if ( !QSqlDatabase::contains( connectionName ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "No existing connection, creating a new one" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "No existing connection, creating a new one" ), 3 );
     authdb = QSqlDatabase::addDatabase( mDriver, connectionName );
 
 
@@ -98,7 +98,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
     // for background threads, remove database when current thread finishes
     if ( QCoreApplication::instance() && QThread::currentThread() != QCoreApplication::instance()->thread() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 4 );
 
       // IMPORTANT - we use a direct connection here, because the database removal must happen immediately
       // when the thread finishes, and we cannot let this get queued on the main thread's event loop (where
@@ -121,7 +121,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Reusing existing connection" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Reusing existing connection" ), 4 );
     authdb = QSqlDatabase::database( connectionName, false );
   }
 
@@ -1573,6 +1573,17 @@ QString QgsAuthConfigurationStorageDb::quotedQualifiedIdentifier( const QString 
   }
 }
 
+void QgsAuthConfigurationStorageDb::setReadOnly( bool readOnly )
+{
+  mIsReadOnly = readOnly;
+  checkCapabilities();
+}
+
+bool QgsAuthConfigurationStorageDb::isReadOnly() const
+{
+  return mIsReadOnly;
+}
+
 QString QgsAuthConfigurationStorageDb::name() const
 {
   return QStringLiteral( "%1:%2" ).arg( mDriver, mDatabase );
@@ -1885,57 +1896,78 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
   if ( existingTables.contains( schema.isEmpty() ? masterPasswordTableName( ) : schema + masterPasswordTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadMasterPassword;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateMasterPassword;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateMasterPassword;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateMasterPassword;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateMasterPassword;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword;
+    }
   }
 
   if ( existingTables.contains( schema.isEmpty() ? methodConfigTableName( ) : schema + methodConfigTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadConfiguration;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateConfiguration;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateConfiguration;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteConfiguration;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateConfiguration;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateConfiguration;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteConfiguration;
+    }
   }
 
   if ( existingTables.contains( schema.isEmpty() ? authSettingsTableName( ) : schema + authSettingsTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadSetting;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateSetting;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateSetting;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteSetting;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateSetting;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateSetting;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteSetting;
+    }
   }
 
   if ( existingTables.contains( schema.isEmpty() ? certIdentityTableName( ) : schema + certIdentityTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateCertificateIdentity;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateCertificateIdentity;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateCertificateIdentity;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateCertificateIdentity;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity;
+    }
   }
 
   if ( existingTables.contains( schema.isEmpty() ? sslCertCustomConfigTableName( ) : schema +  sslCertCustomConfigTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateSslCertificateCustomConfig;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateSslCertificateCustomConfig;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig;
+    }
   }
 
   if ( existingTables.contains( schema.isEmpty() ? certAuthorityTableName( ) : schema + certAuthorityTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateCertificateAuthority;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateCertificateAuthority;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateCertificateAuthority;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateCertificateAuthority;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority;
+    }
   }
 
   if ( existingTables.contains( schema.isEmpty() ? certTrustPolicyTableName( ) : schema + certTrustPolicyTableName( ) ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateCertificateTrustPolicy;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateCertificateTrustPolicy;
-    mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy;
+    if ( !isReadOnly() )
+    {
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::CreateCertificateTrustPolicy;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::UpdateCertificateTrustPolicy;
+      mCapabilities |= Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy;
+    }
   }
 
   // Any delete capability will set ClearStorage

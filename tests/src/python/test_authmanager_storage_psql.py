@@ -88,9 +88,14 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
 
         cls.storage = QgsAuthConfigurationStorageDb(config)
 
-        assert cls.storage.methodConfigTableName() == '"qgis_auth_test"."auth_method_configs"'
-
         assert cls.storage.type() == 'DB-QPSQL'
+
+        if config['schema']:
+            schema = f"\"{config['schema']}\"."
+        else:
+            schema = ''
+
+        assert cls.storage.quotedQualifiedIdentifier(cls.storage.methodConfigTableName()) == f'{schema}"auth_configs"'
 
 
 if __name__ == '__main__':

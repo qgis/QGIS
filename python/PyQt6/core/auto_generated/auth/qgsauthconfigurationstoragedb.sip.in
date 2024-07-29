@@ -224,6 +224,16 @@ Returns the quoted identifier, prefixed with the schema
 :param isIndex: if ``True``, the identifier is treated as an index name.
 %End
 
+    virtual void setReadOnly( bool readOnly );
+%Docstring
+Utility method to unset all editing capabilities.
+%End
+
+    virtual bool isReadOnly() const;
+%Docstring
+Returns ``True`` if the storage is read-only, ``False`` otherwise.
+%End
+
   protected:
 
     bool authDbOpen() const;
@@ -265,6 +275,7 @@ Creates the certificate tables in the database.
 %Docstring
 Checks the capabilities of the storage.
 %End
+
 
 
 
