@@ -18,6 +18,7 @@
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthconfigurationstorage.h"
 #include "qgslogger.h"
+#include "qgsthreadingutils.h"
 
 #include <QMutexLocker>
 
@@ -31,6 +32,8 @@ QgsAuthConfigurationStorageRegistry::~QgsAuthConfigurationStorageRegistry()
 
 bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorage *storage )
 {
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( ! storage )
   {
@@ -65,6 +68,8 @@ bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorag
 
 bool QgsAuthConfigurationStorageRegistry::removeStorage( const QString &id )
 {
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QMutexLocker locker( &mMutex );
 
@@ -127,8 +132,10 @@ QgsAuthConfigurationStorage *QgsAuthConfigurationStorageRegistry::storage( const
   return nullptr;
 }
 
-void QgsAuthConfigurationStorageRegistry::orderStorages( const QStringList &orderIds )
+void QgsAuthConfigurationStorageRegistry::setStorageOrder( const QStringList &orderIds )
 {
+
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QMutexLocker locker( &mMutex );
 

@@ -64,7 +64,7 @@ Qgis::AuthConfigurationStorageCapabilities QgsAuthConfigurationStorage::capabili
   return mCapabilities;
 }
 
-void QgsAuthConfigurationStorage::setCapabilities( const Qgis::AuthConfigurationStorageCapabilities capabilities )
+void QgsAuthConfigurationStorage::setCapabilities( Qgis::AuthConfigurationStorageCapabilities capabilities )
 {
   mCapabilities = capabilities;
 }

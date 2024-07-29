@@ -15,8 +15,9 @@ class QgsAuthConfigurationStorageRegistry: QObject
 %Docstring(signature="appended")
 Registry for authentication configuration storages.
 
-This class manages a list of authentication configuration storages.
-It is a singleton class.
+This singleton class manages a list of authentication configuration storages.
+
+:py:class:`QgsAuthConfigurationStorageRegistry` is not usually directly created, but rather accessed through :py:func:`QgsApplication.authConfigurationStorageRegistry()`.
 
 .. versionadded:: 3.40
 %End
@@ -60,6 +61,10 @@ Remove the authentication configuration storage identified by ``id`` from the re
 .. note::
 
    This method must be called from the same thread the registry was created in.
+
+.. note::
+
+   The storage will be deleted.
 %End
 
     QList<QgsAuthConfigurationStorage *> storages() const;
@@ -91,7 +96,7 @@ Returns the storage with the specified ``id`` or NULL if not found in the regist
    This method must be called from the same thread the registry was created in.
 %End
 
-    void orderStorages( const QStringList &orderIds );
+    void setStorageOrder( const QStringList &orderIds );
 %Docstring
 Order the storages by the specified ``orderIds``.
 

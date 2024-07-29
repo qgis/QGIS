@@ -497,7 +497,7 @@ Emitted when the storage ssl cert trust policy table was changed.
 
   protected:
 
-    void setCapabilities( const Qgis::AuthConfigurationStorageCapabilities capabilities );
+    void setCapabilities( Qgis::AuthConfigurationStorageCapabilities capabilities );
 %Docstring
 Set the capabilities of the storage to ``capabilities``.
 %End

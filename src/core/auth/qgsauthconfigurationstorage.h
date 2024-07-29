@@ -430,7 +430,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     /**
      * Set the capabilities of the storage to \a capabilities.
      */
-    void setCapabilities( const Qgis::AuthConfigurationStorageCapabilities capabilities );
+    void setCapabilities( Qgis::AuthConfigurationStorageCapabilities capabilities );
 
     /**
      * Set the last error message to \a error with message level \a level.
