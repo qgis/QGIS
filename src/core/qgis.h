@@ -137,7 +137,11 @@ class CORE_EXPORT Qgis
 
     };
     Q_ENUM( AuthConfigurationStorageCapability )
-    //! Authentication configuration storage capabilities
+
+    /**
+     *  Authentication configuration storage capabilities
+     *  \since QGIS 3.40
+     */
     Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability )
     Q_FLAG( AuthConfigurationStorageCapabilities )
 
@@ -5549,6 +5553,7 @@ QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )

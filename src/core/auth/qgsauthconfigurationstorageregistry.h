@@ -31,8 +31,10 @@ class QgsAuthConfigurationStorage;
  * \ingroup core
  * \brief Registry for authentication configuration storages.
  *
- * This class manages a list of authentication configuration storages.
- * It is a singleton class.
+ * This singleton class manages a list of authentication configuration storages.
+ *
+ * QgsAuthConfigurationStorageRegistry is not usually directly created, but rather accessed through QgsApplication::authConfigurationStorageRegistry().
+ *
  * \since QGIS 3.40
  */
 class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
@@ -61,6 +63,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
      * Remove the authentication configuration storage identified by \a id from the registry.
      * \returns TRUE if the storage was removed, FALSE if it was not present in the registry.
      * \note This method must be called from the same thread the registry was created in.
+     * \note The storage will be deleted.
      */
     bool removeStorage( const QString &id );
 
@@ -88,7 +91,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
      * \param orderIds The ordered list of storage Ids to apply, storages not in the list will be appended at the end.
      * \note This method must be called from the same thread the registry was created in.
      */
-    void orderStorages( const QStringList &orderIds );
+    void setStorageOrder( const QStringList &orderIds );
 
 
   signals:

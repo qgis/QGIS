@@ -3142,6 +3142,8 @@ QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Q
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
 
+QFlags<Qgis::AuthConfigurationStorageCapability> operator|(Qgis::AuthConfigurationStorageCapability f1, QFlags<Qgis::AuthConfigurationStorageCapability> f2);
+
 QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
 QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
