@@ -105,6 +105,7 @@ The development version
       CreateSetting,
 
     };
+
     typedef QFlags<Qgis::AuthConfigurationStorageCapability> AuthConfigurationStorageCapabilities;
 
 

@@ -181,6 +181,16 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
      */
     virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
 
+    /**
+     * Utility method to unset all editing capabilities.
+     */
+    virtual void setReadOnly( bool readOnly );
+
+    /**
+     * Returns TRUE if the storage is read-only, FALSE otherwise.
+     */
+    virtual bool isReadOnly() const;
+
   private:
 
     bool clearTables( const QStringList &tables );
@@ -225,6 +235,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
      */
     virtual void checkCapabilities();
 
+
     // From https://doc.qt.io/qt-6/sql-driver.html
     QString mDriver;
     QString mDatabase;
@@ -236,6 +247,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QString mConnectOptions;
 
     bool mIsReady = false;
+    bool mIsReadOnly = false;
 
     mutable QRecursiveMutex mMutex;
 

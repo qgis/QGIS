@@ -73,8 +73,6 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
     setError( tr( "Auth db file '%1' is not writable" ).arg( mDatabase ), Qgis::MessageLevel::Warning );
   }
 
-  checkCapabilities();
-
   const bool ok { createConfigTables() &&createCertTables() };
   if ( !ok )
   {
@@ -84,6 +82,9 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   }
 
   mIsReady = true;
+
+  checkCapabilities();
+
   return true;
 }
 
@@ -133,8 +134,6 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
 void QgsAuthConfigurationStorageSqlite::checkCapabilities()
 {
 
-  QgsAuthConfigurationStorageDb::checkCapabilities();
-
   QMutexLocker locker( &mMutex );
   QFileInfo fileInfo( mDatabase );
   if ( ! fileInfo.exists() )
@@ -143,45 +142,19 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
     return;
   }
 
-  if ( fileInfo.isReadable() )
+  mIsReadOnly = mIsReadOnly && fileInfo.isWritable();
+  QgsAuthConfigurationStorageDb::checkCapabilities();
+
+  if ( ! fileInfo.isReadable() )
   {
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadConfiguration, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadSetting, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword, true );
+    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadConfiguration, false );
+    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword, false );
+    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority, false );
+    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy, false );
+    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity, false );
+    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig, false );
   }
 
-  if ( fileInfo.isWritable() )
-  {
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ClearStorage, true );
-
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateConfiguration, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateMasterPassword, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateCertificateAuthority, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateCertificateTrustPolicy, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateCertificateIdentity, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::CreateSetting, true );
-
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateConfiguration, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateMasterPassword, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateCertificateAuthority, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateCertificateTrustPolicy, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateCertificateIdentity, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateSslCertificateCustomConfig, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::UpdateSetting, true );
-
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteConfiguration, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig, true );
-    mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::DeleteSetting, true );
-  }
 }
 
 /// @endcond
