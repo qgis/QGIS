@@ -391,7 +391,6 @@ void QgsArcGisRestSourceSelect::updateCrsLabel()
 
 void QgsArcGisRestSourceSelect::updateImageEncodings()
 {
-  //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   const QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {

@@ -122,7 +122,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
   QMultiMap< QString, QgsDataItem * > layerItems;
   QMap< QString, QString > parents;
 
-  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers, urlPrefix, serviceTypeFilter, supportedFormats]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & format )
+  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers, urlPrefix, serviceTypeFilter, supportedFormats]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QgsCoordinateReferenceSystem & crs, const QString & format )
   {
     Q_UNUSED( description )
 
@@ -143,14 +143,14 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
       switch ( serviceTypeFilter == QgsArcGisRestQueryUtils::ServiceTypeFilter::AllTypes ? serviceType : serviceTypeFilter )
       {
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Vector:
-          layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, authid, authcfg, headers, urlPrefix, geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon :
+          layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, crs, authcfg, headers, urlPrefix, geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon :
                       geometryType == Qgis::GeometryType::Line ? Qgis::BrowserLayerType::Line
                       : geometryType == Qgis::GeometryType::Point ? Qgis::BrowserLayerType::Point :
                       geometryType == Qgis::GeometryType::Null ? Qgis::BrowserLayerType::TableLayer : Qgis::BrowserLayerType::Vector );
           break;
 
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster:
-          layerItem = std::make_unique< QgsArcGisMapServiceLayerItem >( parent, name, url, id, name, authid, format, authcfg, headers, urlPrefix );
+          layerItem = std::make_unique< QgsArcGisMapServiceLayerItem >( parent, name, url, id, name, crs, format, authcfg, headers, urlPrefix );
           static_cast< QgsArcGisMapServiceLayerItem * >( layerItem.get() )->setSupportedFormats( supportedFormats );
           break;
 
@@ -572,10 +572,10 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
 // QgsArcGisFeatureServiceLayerItem
 //
 
-QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType )
+QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType )
   : QgsLayerItem( parent, title, url, QString(), geometryType, QStringLiteral( "arcgisfeatureserver" ) )
 {
-  mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
+  mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( crs.authid(), url );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
 
@@ -592,11 +592,11 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem 
 // QgsArcGisMapServiceLayerItem
 //
 
-QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
+QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
   : QgsLayerItem( parent, title, url, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   const QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
-  mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, trimmedUrl );
+  mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( crs.authid(), format, id, trimmedUrl );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
 

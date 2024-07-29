@@ -240,7 +240,7 @@ class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
 
   public:
 
-    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers,
+    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers,
                                       const QString urlPrefix, Qgis::BrowserLayerType geometryType );
 
 };
@@ -254,7 +254,7 @@ class QgsArcGisMapServiceLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 
