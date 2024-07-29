@@ -32,7 +32,9 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   , mLayer( layer )
   , mGeometryType( layer->geometryType() )
   , mFeatureSource( std::make_unique<QgsVectorLayerFeatureSource>( layer ) )
+  , mLayerId( layer->id() )
   , mLayerName( layer->name() )
+  , mCrs( layer->crs() )
 {
 
 }
@@ -169,8 +171,7 @@ QString QgsFeaturePool::layerName() const
 
 QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
 {
-  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
-  return mFeatureSource->crs();
+  return mCrs;
 }
 
 Qgis::GeometryType QgsFeaturePool::geometryType() const
@@ -180,6 +181,5 @@ Qgis::GeometryType QgsFeaturePool::geometryType() const
 
 QString QgsFeaturePool::layerId() const
 {
-  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
-  return mFeatureSource->id();
+  return mLayerId;
 }
