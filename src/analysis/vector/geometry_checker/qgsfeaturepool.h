@@ -216,7 +216,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QgsSpatialIndex mIndex;
     Qgis::GeometryType mGeometryType;
     std::unique_ptr<QgsVectorLayerFeatureSource> mFeatureSource;
+    QString mLayerId;
     QString mLayerName;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif // QGS_FEATUREPOOL_H
