@@ -6135,11 +6135,11 @@ QgsRasterRendererWidget.setStdDev: src/gui/raster/qgsrasterrendererwidget.h#L91
 QgsRasterRendererWidget.stdDev: src/gui/raster/qgsrasterrendererwidget.h#L90
 QgsRasterRendererWidget.widgetChanged: src/gui/raster/qgsrasterrendererwidget.h#L118
 QgsRasterRendererWidget: src/gui/raster/qgsrasterrendererwidget.h#L39
-QgsRasterTransparencyWidget.apply: src/gui/raster/qgsrastertransparencywidget.h#L80
+QgsRasterTransparencyWidget.apply: src/gui/raster/qgsrastertransparencywidget.h#L98
 QgsRasterTransparencyWidget.createExpressionContext: src/gui/raster/qgsrastertransparencywidget.h#L54
 QgsRasterTransparencyWidget.pixelSelectorTool: src/gui/raster/qgsrastertransparencywidget.h#L60
 QgsRasterTransparencyWidget.setContext: src/gui/raster/qgsrastertransparencywidget.h#L52
-QgsRasterTransparencyWidget.syncToLayer: src/gui/raster/qgsrastertransparencywidget.h#L72
+QgsRasterTransparencyWidget.syncToLayer: src/gui/raster/qgsrastertransparencywidget.h#L90
 QgsRasterTransparencyWidget: src/gui/raster/qgsrastertransparencywidget.h#L38
 QgsRatioLockButton.changeEvent: src/gui/qgsratiolockbutton.h#L99
 QgsRatioLockButton.lockChanged: src/gui/qgsratiolockbutton.h#L95
