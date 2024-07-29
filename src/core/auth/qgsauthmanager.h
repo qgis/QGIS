@@ -922,6 +922,11 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QgsAuthConfigurationStorageDb *defaultDbStorage() const;
 
     /**
+     * Returns the first ready storage with the given \a capability or NULL if none available.
+     */
+    QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
+
+    /**
      * Returns the path to the authentication database file or an empty string if the database is not SQLite.
      */
     const QString sqliteDatabasePath() const;

@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 #include <QObject>
 #include <QMap>
@@ -69,20 +70,30 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
 
     /**
      * Returns the list of all registered authentication configuration storages.
-     * \note This method must be called from the same thread the registry was created in.
      */
     QList<QgsAuthConfigurationStorage *> storages() const;
 
     /**
      * Returns the list of all ready (and enabled) authentication configuration storage.
-     * \note This method must be called from the same thread the registry was created in.
      */
     QList<QgsAuthConfigurationStorage *> readyStorages() const;
 
     /**
+     * Returns the list of all ready (and enabled) authentication configuration storage
+     * with the required capability.
+     * \param capability The capability to look for
+     */
+    QList<QgsAuthConfigurationStorage *> readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
+
+    /**
+     * Returns the first ready (and enabled) authentication configuration storage which has the required capability.
+     * \param capability The capability to look for
+     */
+    QgsAuthConfigurationStorage *firstReadyStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
+
+    /**
      * Returns the storage with the specified \a id or NULL if not found in the registry.
      * \param id The id of the storage to retrieve
-     * \note This method must be called from the same thread the registry was created in.
      */
     QgsAuthConfigurationStorage *storage( const QString &id ) const;
 
