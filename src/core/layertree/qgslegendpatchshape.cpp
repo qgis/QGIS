@@ -119,7 +119,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type
   if ( type == Qgis::SymbolType::Marker && ( QgsWkbTypes::flatType( geom.wkbType() ) != Qgis::WkbType::MultiPoint ) )
   {
     QPolygonF points;
-    points << QPointF( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 );
+    points << QPointF( size.width() / 2, size.height() / 2 );
     return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << points );
   }
 
