@@ -897,6 +897,71 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
                                    rc, 'y', QRectF()
         )], ['Polygon ((0 0, 2 0, 2 1, 0 1, 0 0))'])
 
+    @staticmethod
+    def polys_to_list(polys):
+        return [[[[round(p.x(), 3), round(p.y(), 3)] for p in ring] for ring in poly] for poly in polys]
+
+    def test_to_qpolygonf(self):
+        """
+        Test conversion of QgsGeometry to QPolygonF
+        """
+
+        # points
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Point( 5 5 )'), Qgis.SymbolType.Marker)),
+                         [[[[0, 0]]]])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Point( 5 5 )'), Qgis.SymbolType.Line)),
+                         [])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Point( 5 5 )'), Qgis.SymbolType.Fill)),
+                         [])
+
+        # multipoint
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('MultiPoint((5 5), (1 2))'), Qgis.SymbolType.Marker)),
+                         [[[[5.0, 5.0], [1.0, 2.0]]]])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('MultiPoint((5 5), (1 2))'), Qgis.SymbolType.Line)),
+                         [])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('MultiPoint((5 5), (1 2))'), Qgis.SymbolType.Fill)),
+                         [])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('MultiPoint((5 5), (1 2), (4 3))'), Qgis.SymbolType.Marker)),
+                         [[[[5.0, 5.0], [1.0, 2.0], [4.0, 3.0]]]])
+
+        # line
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('LineString(1 5, 6 5)'), Qgis.SymbolType.Marker)),
+                         [[[[0, 0]]]])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('LineString(1 5, 6 5)'), Qgis.SymbolType.Line)),
+                         [[[[1.0, 5.0], [6.0, 5.0]]]])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('LineString(1 5, 6 5, 10 10)'), Qgis.SymbolType.Line)),
+                         [[[[1.0, 5.0], [6.0, 5.0], [10, 10]]]])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('LineString(1 5, 6 5)'), Qgis.SymbolType.Fill)),
+                         [])
+
+        # circularstring
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('CircularString(5 5, 1 2, 3 4)'), Qgis.SymbolType.Line))[0][0][:5],
+                         [[5.0, 5.0], [5.131, 5.042], [5.263, 5.083], [5.396, 5.12], [5.529, 5.156]])
+
+        # multilinestring
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('MultiLineString((5 5, 1 2),(3 6, 4 2))'), Qgis.SymbolType.Line)),
+                         [[[[5.0, 5.0], [1.0, 2.0]]], [[[3.0, 6.0], [4.0, 2.0]]]])
+
+        # polygon
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), Qgis.SymbolType.Marker)),
+                         [[[[0.0, 0.0]]]])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), Qgis.SymbolType.Line)),
+                         [])
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), Qgis.SymbolType.Fill)),
+                         [[[[5.0, 5.0], [1.0, 2.0], [3.0, 4.0], [5.0, 5.0]]]])
+
+        # rings
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5), (4.5 4.5, 4.4 4.4, 4.5 4.4, 4.5 4.5))'), Qgis.SymbolType.Fill)),
+                         [[[[5.0, 5.0], [1.0, 2.0], [3.0, 4.0], [5.0, 5.0]], [[4.5, 4.5], [4.4, 4.4], [4.5, 4.4], [4.5, 4.5]]]])
+
+        # circular
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('CurvePolygon(CircularString(5 5, 3 4, 1 2, 3 0, 5 5))'), Qgis.SymbolType.Fill))[0][0][:5],
+                         [[5.0, 5.0], [4.87, 4.955], [4.741, 4.909], [4.612, 4.859], [4.485, 4.808]])
+
+        # multipolygon
+        self.assertEqual(self.polys_to_list(QgsSymbolLayerUtils.toQPolygonF(QgsGeometry.fromWkt('MultiPolygon(((5 5, 1 2, 3 4, 5 5), (4.5 4.5, 4.4 4.4, 4.5 4.4, 4.5 4.5)),((10 11, 11 11, 11 10, 10 11)))'), Qgis.SymbolType.Fill)),
+                         [[[[5.0, 5.0], [1.0, 2.0], [3.0, 4.0], [5.0, 5.0]], [[4.5, 4.5], [4.4, 4.4], [4.5, 4.4], [4.5, 4.5]]], [[[10.0, 11.0], [11.0, 11.0], [11.0, 10.0], [10.0, 11.0]]]])
+
 
 if __name__ == '__main__':
     unittest.main()
