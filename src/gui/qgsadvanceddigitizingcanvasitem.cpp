@@ -59,10 +59,11 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
   }
 
-  // Draw current intersection tool
-  if ( mAdvancedDigitizingDockWidget->tool() )
+  // Draw current tool
+  if ( QgsAdvancedDigitizingTool *tool =  mAdvancedDigitizingDockWidget->tool() )
   {
-    mAdvancedDigitizingDockWidget->tool()->paint( painter );
+    // if a tool is active in the dock, then delegate to that tool to handle decorating the canvas instead of using the default decorations
+    tool->paint( painter );
     return;
   }
 

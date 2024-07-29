@@ -36,9 +36,10 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
     mCadDockWidget->applyConstraints( e ); // updates event's map point
-    if ( mCadDockWidget->processCanvasPressEvent( e ) )
+    mCadDockWidget->processCanvasPressEvent( e );
+    if ( !e->isAccepted() )
     {
-      return; // The dock widget has eaten the event
+      return; // The dock widget has taken the event
     }
   }
   else if ( isAutoSnapEnabled() )
@@ -66,9 +67,10 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
     else
     {
       mCadDockWidget->applyConstraints( e ); // updates event's map point
-      if ( mCadDockWidget->processCanvasReleaseEvent( e ) )
+      mCadDockWidget->processCanvasReleaseEvent( e );
+      if ( !e->isAccepted() )
       {
-        return; // The dock widget has eaten the event
+        return; // The dock widget has taken the event
       }
     }
   }
@@ -91,9 +93,10 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
     mCadDockWidget->applyConstraints( e ); // updates event's map point
-    if ( mCadDockWidget->processCanvasMoveEvent( e ) )
+    mCadDockWidget->processCanvasMoveEvent( e );
+    if ( !e->isAccepted() )
     {
-      return; // The dock widget has eaten the event
+      return; // The dock widget has taken the event
     }
   }
   else if ( isAutoSnapEnabled() )

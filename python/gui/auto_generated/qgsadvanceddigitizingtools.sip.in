@@ -11,7 +11,7 @@
 
 
 
-class QgsAdvancedDigitizingTool : QWidget
+class QgsAdvancedDigitizingTool : QObject
 {
 %Docstring(signature="appended")
 An abstract class for advanced digitizing tools.
@@ -42,27 +42,45 @@ Returns the map canvas associated with the tool.
 Returns the advanced digitizing widget associated with the tool.
 %End
 
+    virtual QWidget *createWidget();
+%Docstring
+Returns a widget to control the tool.
+
+.. note::
+
+   The caller gets the ownership.
+%End
+
     virtual void paint( QPainter *painter );
 %Docstring
 Paints tool content onto the advanced digitizing canvas item.
 %End
 
-    virtual bool canvasPressEvent( QgsMapMouseEvent *event );
+    virtual void canvasPressEvent( QgsMapMouseEvent *event );
 %Docstring
-Handles canvas press event. If ``True`` is returned, the tool will have
-blocked the event for propagating.
+Handles canvas press event.
+
+.. note::
+
+   To stop propagation, set the event's accepted property to ``False``.
 %End
 
-    virtual bool canvasMoveEvent( QgsMapMouseEvent *event );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *event );
 %Docstring
-Handles canvas press move. If ``True`` is returned, the tool will have
-blocked the event for propagating.
+Handles canvas press move.
+
+.. note::
+
+   To stop propagation, set the event's accepted property to ``False``.
 %End
 
-    virtual bool canvasReleaseEvent( QgsMapMouseEvent *event );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *event );
 %Docstring
-Handles canvas release event. If ``True`` is returned, the tool will have
-blocked the event for propagating.
+Handles canvas release event.
+
+.. note::
+
+   To stop propagation, set the event's accepted property to ``False``.
 %End
 
   signals:

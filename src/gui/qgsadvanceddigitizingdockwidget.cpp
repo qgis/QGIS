@@ -242,17 +242,20 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   // Tools
   QMenu *toolsMenu = new QMenu( this );
-  const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
-  for ( const QString &name : toolMetadataNames )
+  connect( toolsMenu, &QMenu::aboutToShow, this, [ = ]()
   {
-    QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
-    QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), this );
-    connect( toolAction, &QAction::triggered, this, [ = ]()
+    const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
+    for ( const QString &name : toolMetadataNames )
     {
-      setTool( toolMetadata->createTool( mMapCanvas, this ) );
-    } );
-    toolsMenu->addAction( toolAction );
-  }
+      QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
+      QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), this );
+      connect( toolAction, &QAction::triggered, this, [ = ]()
+      {
+        setTool( toolMetadata->createTool( mMapCanvas, this ) );
+      } );
+      toolsMenu->addAction( toolAction );
+    }
+  } );
   qobject_cast< QToolButton *>( mToolbar->widgetForAction( mToolsAction ) )->setPopupMode( QToolButton::InstantPopup );
   mToolsAction->setMenu( toolsMenu );
 
@@ -684,12 +687,15 @@ void QgsAdvancedDigitizingDockWidget::setTool( QgsAdvancedDigitizingTool *tool )
     mCurrentTool = nullptr;
   }
 
-  qDebug() << mCurrentTool;
   mCurrentTool = tool;
 
   if ( mCurrentTool )
   {
-    mUserInputWidget->addUserInputWidget( mCurrentTool.data() );
+    if ( QWidget *toolWidget = mCurrentTool->createWidget() )
+    {
+      toolWidget->setParent( mUserInputWidget );
+      mUserInputWidget->addUserInputWidget( toolWidget );
+    }
     connect( mCurrentTool.data(), &QgsAdvancedDigitizingTool::paintRequested, this, &QgsAdvancedDigitizingDockWidget::updateCadPaintItem );
   }
 }
@@ -1547,17 +1553,20 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   return segment;
 }
 
-bool QgsAdvancedDigitizingDockWidget::processCanvasPressEvent( QgsMapMouseEvent *event )
+void QgsAdvancedDigitizingDockWidget::processCanvasPressEvent( QgsMapMouseEvent *event )
 {
   if ( mCurrentTool )
   {
     mCurrentTool->canvasPressEvent( event );
   }
 
-  return constructionMode();
+  if ( constructionMode() )
+  {
+    event->setAccepted( false );
+  }
 }
 
-bool QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *event )
+void QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *event )
 {
   // perpendicular/parallel constraint
   // do a soft lock when snapping to a segment
@@ -1569,22 +1578,22 @@ bool QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *
   }
 
   updateCadPaintItem();
-
-  return false;
 }
 
-bool QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEvent *event )
+void QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEvent *event )
 {
   if ( alignToSegment( event ) )
   {
-    return true;
+    event->setAccepted( false );
+    return;
   }
 
   if ( mCurrentTool )
   {
-    if ( mCurrentTool->canvasReleaseEvent( event ) )
+    mCurrentTool->canvasReleaseEvent( event );
+    if ( !event->isAccepted() )
     {
-      return true;
+      return;
     }
     else
     {
@@ -1608,7 +1617,10 @@ bool QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEven
   addPoint( event->mapPoint() );
   releaseLocks( false );
 
-  return constructionMode();
+  if ( constructionMode() )
+  {
+    event->setAccepted( false );
+  }
 }
 
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )

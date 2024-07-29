@@ -49,6 +49,7 @@ bool QgsAdvancedDigitizingToolsRegistry::addTool( QgsAdvancedDigitizingToolAbstr
     return false;
 
   mTools[toolMetaData->name()] = toolMetaData;
+
   return true;
 }
 
@@ -59,6 +60,7 @@ bool QgsAdvancedDigitizingToolsRegistry::removeTool( const QString &name )
     return false;
 
   delete mTools.take( name );
+
   return true;
 }
 

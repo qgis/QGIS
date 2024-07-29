@@ -278,21 +278,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Processes the canvas press \a event.
-     * \returns Returns TRUE if the event has been 'eaten' and should not propagate further.
      */
-    bool processCanvasPressEvent( QgsMapMouseEvent *event );
+    void processCanvasPressEvent( QgsMapMouseEvent *event );
 
     /**
      * Processes the canvas move \a event.
-     * \returns Returns TRUE if the event has been 'eaten' and should not propagate further.
      */
-    bool processCanvasMoveEvent( QgsMapMouseEvent *event );
+    void processCanvasMoveEvent( QgsMapMouseEvent *event );
 
     /**
      * Processes the canvas release \a event.
-     * \returns Returns TRUE if the event has been 'eaten' and should not propagate further.
      */
-    bool processCanvasReleaseEvent( QgsMapMouseEvent *event );
+    void processCanvasReleaseEvent( QgsMapMouseEvent *event );
 
     /**
      * Sets an advanced digitizing tool which will take over digitizing until the tool is close.

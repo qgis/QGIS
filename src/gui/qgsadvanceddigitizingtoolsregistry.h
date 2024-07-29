@@ -115,6 +115,9 @@ class GUI_EXPORT QgsAdvancedDigitizingToolMetadata : public QgsAdvancedDigitizin
  * \ingroup gui
  * \brief Registry of available advanced digitizing tools.
  *
+ * QgsAdvancedDigitizingToolsRegistry is not usually directly created, but rather accessed through
+ * QgsGui::advancedDigitizingToolsRegistry().
+ *
  * \since QGIS 3.40
  */
 class GUI_EXPORT QgsAdvancedDigitizingToolsRegistry

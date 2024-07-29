@@ -23,7 +23,7 @@
 #include "qgsmapcanvas.h"
 
 QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QWidget( canvas->viewport() )
+  : QObject( canvas ? canvas->viewport() : nullptr )
   , mMapCanvas( canvas )
   , mCadDockWidget( cadDockWidget )
 {
@@ -32,72 +32,78 @@ QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsA
 QgsAdvancedDigitizingCirclesIntersectionTool::QgsAdvancedDigitizingCirclesIntersectionTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsAdvancedDigitizingTool( canvas, cadDockWidget )
 {
-  QGridLayout *layout = new QGridLayout( this );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  setLayout( layout );
+}
 
-  QLabel *label = new QLabel( QStringLiteral( "Circle #1" ), this );
+QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
+{
+  QWidget *toolWidget = new QWidget();
+
+  QGridLayout *layout = new QGridLayout( toolWidget );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  toolWidget->setLayout( layout );
+
+  QLabel *label = new QLabel( QStringLiteral( "Circle #1" ), toolWidget );
   layout->addWidget( label, 0, 0, 1, 3 );
 
-  mCircle1Digitize = new QToolButton( this );
+  mCircle1Digitize = new QToolButton( toolWidget );
   mCircle1Digitize->setCheckable( true );
   mCircle1Digitize->setChecked( false );
   mCircle1Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
   layout->addWidget( mCircle1Digitize, 1, 2, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "X" ), this );
+  label = new QLabel( QStringLiteral( "X" ), toolWidget );
   layout->addWidget( label, 1, 0 );
 
-  mCircle1X = new QgsDoubleSpinBox( this );
+  mCircle1X = new QgsDoubleSpinBox( toolWidget );
   mCircle1X->setMinimum( std::numeric_limits<double>::min() );
   mCircle1X->setMaximum( std::numeric_limits<double>::max() );
   layout->addWidget( mCircle1X, 1, 1 );
 
-  label = new QLabel( QStringLiteral( "Y" ), this );
+  label = new QLabel( QStringLiteral( "Y" ), toolWidget );
   layout->addWidget( label, 2, 0 );
 
-  mCircle1Y = new QgsDoubleSpinBox( this );
+  mCircle1Y = new QgsDoubleSpinBox( toolWidget );
   mCircle1Y->setMinimum( std::numeric_limits<double>::min() );
   mCircle1Y->setMaximum( std::numeric_limits<double>::max() );
   layout->addWidget( mCircle1Y, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "Distance" ), this );
+  label = new QLabel( QStringLiteral( "Distance" ), toolWidget );
   layout->addWidget( label, 3, 0 );
 
-  mCircle1Distance = new QgsDoubleSpinBox( this );
+  mCircle1Distance = new QgsDoubleSpinBox( toolWidget );
   mCircle1Distance->setMinimum( 0 );
   mCircle1Distance->setMaximum( std::numeric_limits<double>::max() );
   layout->addWidget( mCircle1Distance, 3, 1 );
 
-  label = new QLabel( QStringLiteral( "Circle #2" ), this );
+  label = new QLabel( QStringLiteral( "Circle #2" ), toolWidget );
   layout->addWidget( label, 4, 0, 1, 3 );
 
-  mCircle2Digitize = new QToolButton( this );
+  mCircle2Digitize = new QToolButton( toolWidget );
   mCircle2Digitize->setCheckable( true );
   mCircle2Digitize->setChecked( false );
   mCircle2Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
   layout->addWidget( mCircle2Digitize, 5, 2, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "X" ), this );
+  label = new QLabel( QStringLiteral( "X" ), toolWidget );
   layout->addWidget( label, 5, 0 );
 
-  mCircle2X = new QgsDoubleSpinBox( this );
+  mCircle2X = new QgsDoubleSpinBox( toolWidget );
   mCircle2X->setMinimum( std::numeric_limits<double>::min() );
   mCircle2X->setMaximum( std::numeric_limits<double>::max() );
   layout->addWidget( mCircle2X, 5, 1 );
 
-  label = new QLabel( QStringLiteral( "Y" ), this );
+  label = new QLabel( QStringLiteral( "Y" ), toolWidget );
   layout->addWidget( label, 6, 0 );
 
-  mCircle2Y = new QgsDoubleSpinBox( this );
+  mCircle2Y = new QgsDoubleSpinBox( toolWidget );
   mCircle2Y->setMinimum( std::numeric_limits<double>::min() );
   mCircle2Y->setMaximum( std::numeric_limits<double>::max() );
   layout->addWidget( mCircle2Y, 6, 1 );
 
-  label = new QLabel( QStringLiteral( "Distance" ), this );
+  label = new QLabel( QStringLiteral( "Distance" ), toolWidget );
   layout->addWidget( label, 7, 0 );
 
-  mCircle2Distance = new QgsDoubleSpinBox( this );
+  mCircle2Distance = new QgsDoubleSpinBox( toolWidget );
   mCircle2Distance->setMinimum( 0 );
   mCircle2Distance->setMaximum( std::numeric_limits<double>::max() );
   layout->addWidget( mCircle2Distance, 7, 1 );
@@ -108,6 +114,9 @@ QgsAdvancedDigitizingCirclesIntersectionTool::QgsAdvancedDigitizingCirclesInters
   connect( mCircle2X, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
   connect( mCircle2Y, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
   connect( mCircle2Distance, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
+
+  mToolWidget = toolWidget;
+  return toolWidget;
 }
 
 void QgsAdvancedDigitizingCirclesIntersectionTool::processParameters()
@@ -120,7 +129,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::processParameters()
   emit paintRequested();
 }
 
-bool QgsAdvancedDigitizingCirclesIntersectionTool::canvasMoveEvent( QgsMapMouseEvent *event )
+void QgsAdvancedDigitizingCirclesIntersectionTool::canvasMoveEvent( QgsMapMouseEvent *event )
 {
   if ( mCircle1Digitize->isChecked() )
   {
@@ -138,35 +147,41 @@ bool QgsAdvancedDigitizingCirclesIntersectionTool::canvasMoveEvent( QgsMapMouseE
     mP1Closest = QgsGeometryUtils::distance2D( QgsPoint( mP1 ), QgsPoint( event->mapPoint() ) ) < QgsGeometryUtils::distance2D( QgsPoint( mP2 ), QgsPoint( event->mapPoint() ) );
   }
 
-  return true;
+  event->setAccepted( false );
 }
 
-bool QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMouseEvent *event )
+void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMouseEvent *event )
 {
   if ( mCircle1Digitize->isChecked() )
   {
     mCircle1X->setValue( event->mapPoint().x() );
     mCircle1Y->setValue( event->mapPoint().y() );
     mCircle1Digitize->setChecked( false );
-    return true;
+    event->setAccepted( false );
+    return;
   }
   else if ( mCircle2Digitize->isChecked() )
   {
     mCircle2X->setValue( event->mapPoint().x() );
     mCircle2Y->setValue( event->mapPoint().y() );
     mCircle2Digitize->setChecked( false );
-    return true;
+    event->setAccepted( false );
+    return;
   }
 
   if ( !mP1.isEmpty() )
   {
     mP1Closest = QgsGeometryUtils::distance2D( QgsPoint( mP1 ), QgsPoint( event->mapPoint() ) ) < QgsGeometryUtils::distance2D( QgsPoint( mP2 ), QgsPoint( event->mapPoint() ) );
     event->setMapPoint( mP1Closest ? mP1 : mP2 );
+    if ( mToolWidget )
+    {
+      mToolWidget->deleteLater();
+    }
     deleteLater();
-    return false;
+    return;
   }
 
-  return true;
+  event->setAccepted( false );
 }
 
 void QgsAdvancedDigitizingCirclesIntersectionTool::drawCircle( QPainter *painter, double x, double y, double distance )

@@ -63,6 +63,9 @@ class QgsAdvancedDigitizingToolsRegistry
 %Docstring(signature="appended")
 Registry of available advanced digitizing tools.
 
+:py:class:`QgsAdvancedDigitizingToolsRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsGui.advancedDigitizingToolsRegistry()`.
+
 .. versionadded:: 3.40
 %End
 

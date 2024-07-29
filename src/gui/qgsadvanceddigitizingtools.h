@@ -35,7 +35,7 @@ class QgsMapCanvas;
  * \brief An abstract class for advanced digitizing tools.
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsAdvancedDigitizingTool : public QWidget
+class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
 {
     Q_OBJECT
 
@@ -59,38 +59,41 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QWidget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget.data(); }
 
     /**
+     * Returns a widget to control the tool.
+     * \note The caller gets the ownership.
+     */
+    virtual QWidget *createWidget() { return nullptr; }
+
+    /**
      * Paints tool content onto the advanced digitizing canvas item.
      */
     virtual void paint( QPainter *painter ) { Q_UNUSED( painter ) }
 
     /**
-     * Handles canvas press event. If TRUE is returned, the tool will have
-     * blocked the event for propagating.
+     * Handles canvas press event.
+     * \note To stop propagation, set the event's accepted property to FALSE.
      */
-    virtual bool canvasPressEvent( QgsMapMouseEvent *event )
+    virtual void canvasPressEvent( QgsMapMouseEvent *event )
     {
       Q_UNUSED( event )
-      return true;
     }
 
     /**
-     * Handles canvas press move. If TRUE is returned, the tool will have
-     * blocked the event for propagating.
+     * Handles canvas press move.
+     * \note To stop propagation, set the event's accepted property to FALSE.
      */
-    virtual bool canvasMoveEvent( QgsMapMouseEvent *event )
+    virtual void canvasMoveEvent( QgsMapMouseEvent *event )
     {
       Q_UNUSED( event )
-      return true;
     }
 
     /**
-     * Handles canvas release event. If TRUE is returned, the tool will have
-     * blocked the event for propagating.
+     * Handles canvas release event.
+     * \note To stop propagation, set the event's accepted property to FALSE.
      */
-    virtual bool canvasReleaseEvent( QgsMapMouseEvent *event )
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *event )
     {
       Q_UNUSED( event )
-      return true;
     }
 
   signals:
@@ -127,10 +130,11 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
      */
     explicit QgsAdvancedDigitizingCirclesIntersectionTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
+    QWidget *createWidget() override;
     void paint( QPainter *painter ) override;
 
-    bool canvasMoveEvent( QgsMapMouseEvent *event ) override;
-    bool canvasReleaseEvent( QgsMapMouseEvent *event ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *event ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *event ) override;
 
   private:
     void processParameters();
@@ -138,6 +142,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
     void drawCircle( QPainter *painter, double x, double y, double distance );
     void drawCandidate( QPainter *painter, double x, double y, bool closest );
 
+    QPointer<QWidget> mToolWidget;
     QToolButton *mCircle1Digitize = nullptr;
     QgsDoubleSpinBox *mCircle1X = nullptr;
     QgsDoubleSpinBox *mCircle1Y = nullptr;
