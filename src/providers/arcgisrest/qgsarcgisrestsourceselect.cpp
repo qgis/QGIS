@@ -570,8 +570,6 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
     layerName = layerItem->name();
 
     QgsDataSourceUri uri( layerItem->uri() );
-    const QgsCoordinateReferenceSystem crs = layerItem->crs();
-    uri.setParam( QStringLiteral( "crs" ), crs.authid() );
     if ( qobject_cast< QgsArcGisFeatureServiceLayerItem *>( layerItem ) )
     {
       if ( !extent.isNull() )

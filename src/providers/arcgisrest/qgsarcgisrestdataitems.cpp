@@ -591,7 +591,7 @@ QgsCoordinateReferenceSystem QgsArcGisRestLayerItem::crs() const
 QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType )
   : QgsArcGisRestLayerItem( parent, url, title, crs, geometryType, QStringLiteral( "arcgisfeatureserver" ) )
 {
-  mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( crs.authid(), url );
+  mUri = QStringLiteral( "url='%1'" ).arg( url );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
 
@@ -612,7 +612,7 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent,
   : QgsArcGisRestLayerItem( parent, url, title, crs, Qgis::BrowserLayerType::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   const QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
-  mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( crs.authid(), format, id, trimmedUrl );
+  mUri = QStringLiteral( "format='%1' layer='%2' url='%3'" ).arg( format, id, trimmedUrl );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
 
