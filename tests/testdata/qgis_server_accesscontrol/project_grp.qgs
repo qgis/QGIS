@@ -3742,7 +3742,7 @@ def my_form_open(dialog, layer, feature):
     <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
     <WMSRestrictedComposers type="QStringList"/>
     <WMSRestrictedLayers type="QStringList"/>
-    <WMSRootName type="QString"></WMSRootName>
+    <WMSRootName type="QString">project_grp</WMSRootName>
     <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
     <WMSServiceAbstract type="QString">Simple test app.</WMSServiceAbstract>
     <WMSServiceCapabilities type="bool">true</WMSServiceCapabilities>

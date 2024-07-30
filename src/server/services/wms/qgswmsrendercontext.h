@@ -289,7 +289,9 @@ namespace QgsWms
       void searchLayersToRenderStyle();
       void removeUnwantedLayers();
 
-      void checkLayerReadPermissions();
+      void addLayerToRender( QgsMapLayer *layer, bool queryLayer );
+
+      bool checkLayerReadPermissions( QgsMapLayer *layer, bool queryLayer );
 
       bool layerScaleVisibility( const QString &name ) const;
 
