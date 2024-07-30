@@ -480,4 +480,7 @@ try:
    QgsRasterBlock.as_numpy = raster_block_as_numpy
 
 except ModuleNotFoundError:
-   pass
+   def raster_block_as_numpy(self, use_masking=True):
+       raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
+
+    QgsRasterBlock.as_numpy = raster_block_as_numpy
