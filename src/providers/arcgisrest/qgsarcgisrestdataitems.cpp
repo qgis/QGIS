@@ -567,13 +567,29 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
+//
+// QgsArcGisRestLayerItem
+//
+
+QgsArcGisRestLayerItem::QgsArcGisRestLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, Qgis::BrowserLayerType layerType, const QString &providerId )
+  : QgsLayerItem( parent, title, url, QString(), layerType, providerId )
+  , mCrs( crs )
+{
+
+}
+
+QgsCoordinateReferenceSystem QgsArcGisRestLayerItem::crs() const
+{
+  return mCrs;
+}
+
 
 //
 // QgsArcGisFeatureServiceLayerItem
 //
 
 QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType )
-  : QgsLayerItem( parent, title, url, QString(), geometryType, QStringLiteral( "arcgisfeatureserver" ) )
+  : QgsArcGisRestLayerItem( parent, url, title, crs, geometryType, QStringLiteral( "arcgisfeatureserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( crs.authid(), url );
   if ( !authcfg.isEmpty() )
@@ -593,7 +609,7 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem 
 //
 
 QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
-  : QgsLayerItem( parent, title, url, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "arcgismapserver" ) )
+  : QgsArcGisRestLayerItem( parent, url, title, crs, Qgis::BrowserLayerType::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   const QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( crs.authid(), format, id, trimmedUrl );

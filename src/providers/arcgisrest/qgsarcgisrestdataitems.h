@@ -232,9 +232,32 @@ class QgsArcGisRestParentLayerItem : public QgsDataItem
 };
 
 /**
+ * Represents a ArcGIS REST layer item.
+ */
+class QgsArcGisRestLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsArcGisRestLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs,
+                            Qgis::BrowserLayerType layerType, const QString &providerId );
+
+    /**
+     * Returns the CRS for the layer.
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+  private:
+
+    QgsCoordinateReferenceSystem mCrs;
+};
+
+
+/**
  * Represents a ArcGIS REST "Feature Service" layer item.
  */
-class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
+class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
 {
     Q_OBJECT
 
@@ -249,7 +272,7 @@ class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
  * Represents a ArcGIS REST "Map Service" (or "Image Service") layer item.
  */
 
-class QgsArcGisMapServiceLayerItem : public QgsLayerItem
+class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
 {
     Q_OBJECT
 
