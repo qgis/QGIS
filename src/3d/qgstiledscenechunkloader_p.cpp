@@ -19,11 +19,13 @@
 #include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgsgltf3dutils.h"
+#include "qgsquantizedmeshtiles.h"
 #include "qgsraycastingutils_p.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
 #include <QtConcurrentRun>
+#include <qstringliteral.h>
 
 
 ///@cond PRIVATE
@@ -83,33 +85,47 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       return;
     }
 
-    const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
-    if ( tileContent.gltf.isEmpty() )
-    {
-      // unsupported tile content type
-      return;
-    }
-
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.tileTransform.translate( tileContent.rtcCenter );
     entityTransform.sceneOriginTargetCrs = mFactory.mRenderContext.origin();
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
     entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
 
+    const auto &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
     QStringList errors;
-    mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
-
-    if ( mEntity )
-      mEntity->moveToThread( QgsApplication::instance()->thread() );
+    if ( format == QStringLiteral( "quantizedmesh" ) )
+    {
+      try
+      {
+        QgsQuantizedMeshTile qmTile( content );
+        auto model = qmTile.toGltf();
+        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+      }
+      catch ( QgsQuantizedMeshParsingException &ex )
+      {
+        errors.append( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
+      }
+    }
+    else if ( format == "cesiumtiles" )
+    {
+      const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
+      if ( tileContent.gltf.isEmpty() )
+        return;
+      entityTransform.tileTransform.translate( tileContent.rtcCenter );
+      mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
+    }
+    else return; // unsupported tile content type
 
     // TODO: report errors somewhere?
     if ( !errors.isEmpty() )
     {
       QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
     }
+
+    if ( mEntity )
+      mEntity->moveToThread( QgsApplication::instance()->thread() );
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -136,13 +152,13 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 
 ///
 
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, double zValueScale, double zValueOffset )
+QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double zValueScale, double zValueOffset )
   : mRenderContext( context )
   , mIndex( index )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
 {
-  mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mRenderContext.crs(), mRenderContext.transformContext() );
+  mBoundsTransform = QgsCoordinateTransform( tileCrs, context.crs(), context.transformContext() );
 }
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -318,8 +334,8 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 ///
 
-QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
-  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, zValueScale, zValueOffset ), true )
+QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
+  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, zValueScale, zValueOffset ), true )
   , mIndex( index )
 {
   setShowBoundingBoxes( showBoundingBoxes );
