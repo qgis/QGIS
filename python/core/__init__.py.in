@@ -479,11 +479,11 @@ try:
          raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
       src_array = numpy.frombuffer(self.data(), dtype=raster_dtype)
       src_array = src_array.reshape((self.height(), self.width()))
-      noDataValue = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
       if not self.hasNoDataValue() or not use_masking:
          return src_array
       else:
-         return numpy.ma.masked_equal(src_array, noDataValue)
+         no_data_value = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
+         return numpy.ma.masked_equal(src_array, no_data_value)
 
    QgsRasterBlock.as_numpy = raster_block_as_numpy
 
