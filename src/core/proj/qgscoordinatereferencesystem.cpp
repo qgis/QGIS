@@ -833,6 +833,9 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 
 QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
 {
+  if ( type() == Qgis::CrsType::Compound )
+    return horizontalCrs().axisOrdering() + verticalCrs().axisOrdering();
+
   const PJ *projObject = d->threadLocalProjObject();
   if ( !projObject )
     return {};
