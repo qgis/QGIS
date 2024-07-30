@@ -34,6 +34,14 @@ QgsAdvancedDigitizingCirclesIntersectionTool::QgsAdvancedDigitizingCirclesInters
 {
 }
 
+QgsAdvancedDigitizingCirclesIntersectionTool::~QgsAdvancedDigitizingCirclesIntersectionTool()
+{
+  if ( mToolWidget )
+  {
+    mToolWidget->deleteLater();
+  }
+}
+
 QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
 {
   QWidget *toolWidget = new QWidget();
@@ -57,6 +65,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1X = new QgsDoubleSpinBox( toolWidget );
   mCircle1X->setMinimum( std::numeric_limits<double>::min() );
   mCircle1X->setMaximum( std::numeric_limits<double>::max() );
+  connect( mCircle1X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1X, 1, 1 );
 
   label = new QLabel( QStringLiteral( "Y" ), toolWidget );
@@ -65,6 +74,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Y = new QgsDoubleSpinBox( toolWidget );
   mCircle1Y->setMinimum( std::numeric_limits<double>::min() );
   mCircle1Y->setMaximum( std::numeric_limits<double>::max() );
+  connect( mCircle1Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1Y, 2, 1 );
 
   label = new QLabel( QStringLiteral( "Distance" ), toolWidget );
@@ -73,6 +83,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Distance = new QgsDoubleSpinBox( toolWidget );
   mCircle1Distance->setMinimum( 0 );
   mCircle1Distance->setMaximum( std::numeric_limits<double>::max() );
+  connect( mCircle1Distance, &QgsDoubleSpinBox::returnPressed, this, [ = ]() { mCircle2Digitize->setChecked( true ); } );
   layout->addWidget( mCircle1Distance, 3, 1 );
 
   label = new QLabel( QStringLiteral( "Circle #2" ), toolWidget );
@@ -90,6 +101,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2X = new QgsDoubleSpinBox( toolWidget );
   mCircle2X->setMinimum( std::numeric_limits<double>::min() );
   mCircle2X->setMaximum( std::numeric_limits<double>::max() );
+  connect( mCircle2X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2X, 5, 1 );
 
   label = new QLabel( QStringLiteral( "Y" ), toolWidget );
@@ -98,6 +110,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2Y = new QgsDoubleSpinBox( toolWidget );
   mCircle2Y->setMinimum( std::numeric_limits<double>::min() );
   mCircle2Y->setMaximum( std::numeric_limits<double>::max() );
+  connect( mCircle2Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2Y, 6, 1 );
 
   label = new QLabel( QStringLiteral( "Distance" ), toolWidget );
@@ -114,6 +127,8 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   connect( mCircle2X, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
   connect( mCircle2Y, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
   connect( mCircle2Distance, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
+
+  mCircle1Digitize->setChecked( true );
 
   mToolWidget = toolWidget;
   return toolWidget;
@@ -157,6 +172,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMou
     mCircle1X->setValue( event->mapPoint().x() );
     mCircle1Y->setValue( event->mapPoint().y() );
     mCircle1Digitize->setChecked( false );
+    mCircle1Distance->setFocus();
     event->setAccepted( false );
     return;
   }
@@ -165,6 +181,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMou
     mCircle2X->setValue( event->mapPoint().x() );
     mCircle2Y->setValue( event->mapPoint().y() );
     mCircle2Digitize->setChecked( false );
+    mCircle2Distance->setFocus();
     event->setAccepted( false );
     return;
   }

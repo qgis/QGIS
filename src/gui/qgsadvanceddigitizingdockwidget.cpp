@@ -244,11 +244,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QMenu *toolsMenu = new QMenu( this );
   connect( toolsMenu, &QMenu::aboutToShow, this, [ = ]()
   {
+    toolsMenu->clear();
     const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
     for ( const QString &name : toolMetadataNames )
     {
       QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
-      QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), this );
+      QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), toolsMenu );
       connect( toolAction, &QAction::triggered, this, [ = ]()
       {
         setTool( toolMetadata->createTool( mMapCanvas, this ) );

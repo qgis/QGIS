@@ -40,6 +40,7 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   : QDoubleSpinBox( parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
+  connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsDoubleSpinBox::returnPressed );
 
   // By default, group separator is off
   setLineEdit( mLineEdit );

@@ -129,6 +129,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
      * \param cadDockWidget The cadDockWidget to which the floater belongs
      */
     explicit QgsAdvancedDigitizingCirclesIntersectionTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsAdvancedDigitizingCirclesIntersectionTool();
 
     QWidget *createWidget() override;
     void paint( QPainter *painter ) override;

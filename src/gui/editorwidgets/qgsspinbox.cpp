@@ -39,6 +39,8 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
+  connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsSpinBox::returnPressed );
+  connect( mLineEdit, &QLineEdit::textEdited, this, &QgsSpinBox::textEdited );
   setLineEdit( mLineEdit );
 
   const QSize msz = minimumSizeHint();
