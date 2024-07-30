@@ -110,6 +110,9 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
 
   private:
 
+    QgsDataItem *indexToItem( const QModelIndex &proxyIndex );
+    QgsCoordinateReferenceSystem indexToCrs( const QModelIndex &proxyIndex );
+
     QString indexToUri( const QModelIndex &proxyIndex, QString &layerName, Qgis::ArcGisRestServiceType &serviceType, const QgsRectangle &extent = QgsRectangle() );
 
     QString mConnectedService;
