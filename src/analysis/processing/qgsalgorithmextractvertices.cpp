@@ -118,6 +118,9 @@ QgsFeatureSink::SinkFlags QgsExtractVerticesAlgorithm::sinkFlags() const
 bool QgsExtractVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
   return true;
 }
