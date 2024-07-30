@@ -4831,7 +4831,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>User-Agent prefix</string>
                       </property>
                       <property name="toolTip">
-                       <string>The filled value will be appended the QGIS version and the OS, e.g. "Mozilla/5.0 QGIS/33801/Ubuntu 22.04.4 LTS"</string>
+                       <string>This value will be prepended before the QGIS version and the OS, e.g. "Mozilla/5.0 QGIS/33801/Ubuntu 22.04.4 LTS"</string>
                       </property>
                      </widget>
                     </item>
