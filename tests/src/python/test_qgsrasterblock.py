@@ -32,7 +32,6 @@ start_app()
 
 class TestQgsRasterBlock(QgisTestCase):
     def setUp(self):
-        self.iface = get_iface()
         self.temp_dir = QTemporaryDir()
         self.temp_path = self.temp_dir.path()
 
