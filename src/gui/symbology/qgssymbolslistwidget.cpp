@@ -605,23 +605,21 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   // Clean up previous advanced symbol actions
   const QList<QAction *> actionList( mStyleItemsListWidget->advancedMenu()->actions() );
-  for ( const auto &action : actionList )
+  for ( QAction *action : actionList )
   {
-    if ( mClipFeaturesAction->text() == action->text() )
+    for ( QAction *actionsToRemove :
+          {
+            mClipFeaturesAction,
+            mStandardizeRingsAction,
+            mAnimationSettingsAction,
+            mBufferSettingsAction
+          } )
     {
-      mStyleItemsListWidget->advancedMenu()->removeAction( action );
-    }
-    else if ( mStandardizeRingsAction->text() == action->text() )
-    {
-      mStyleItemsListWidget->advancedMenu()->removeAction( action );
-    }
-    else if ( mAnimationSettingsAction->text() == action->text() )
-    {
-      mStyleItemsListWidget->advancedMenu()->removeAction( action );
-    }
-    else if ( mBufferSettingsAction->text() == action->text() )
-    {
-      mStyleItemsListWidget->advancedMenu()->removeAction( action );
+      if ( actionsToRemove->text() == action->text() )
+      {
+        mStyleItemsListWidget->advancedMenu()->removeAction( action );
+        break;
+      }
     }
   }
 
