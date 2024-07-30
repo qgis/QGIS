@@ -43,6 +43,8 @@ from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
 from .additions.ranges import datetime_range_repr, date_range_repr
 
+from typing import Optional, Union
+
 # Injections into classes
 QgsFeature.__geo_interface__ = property(mapping_feature)
 QgsGeometry.__bool__ = _geometryNonZero
