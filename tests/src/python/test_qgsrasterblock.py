@@ -20,7 +20,6 @@ from qgis.core import (
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
-from qgis.testing.mocked import get_iface
 from qgis.PyQt.QtCore import QTemporaryDir
 
 from test_qgsrasterattributetable import createTestRasters
