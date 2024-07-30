@@ -48,11 +48,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QFileInfo>
 #include <QMatrix4x4>
 
-#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
-#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
-#include "tiny_gltf.h"
-
-
 ///@cond PRIVATE
 
 static Qt3DQAttribute::VertexBaseType parseVertexBaseType( int componentType )
@@ -495,7 +490,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
 }
 
 
-static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
+Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
 {
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
@@ -551,7 +546,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
     return nullptr;
   }
 
-  return parseModel( model, transform, baseUri, errors );
+  return parsedGltfToEntity( model, transform, baseUri, errors );
 }
 
 // For TinyGltfTextureImage

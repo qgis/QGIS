@@ -110,7 +110,6 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
                               QgsTiledSceneRenderContext &context );
 
     QString mLayerName;
-    QString mLayerProviderName;
 
     std::unique_ptr< QgsTiledSceneRenderer > mRenderer;
     bool mRenderTileBorders = false;

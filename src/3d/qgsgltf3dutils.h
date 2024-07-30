@@ -33,6 +33,10 @@
 
 #include "qgsmatrix4x4.h"
 
+#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
+#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
+#include "tiny_gltf.h"
+
 class QgsCoordinateTransform;
 
 namespace Qt3DCore
@@ -82,6 +86,12 @@ class _3D_EXPORT QgsGltf3DUtils
      * map coordinates to 3D scene coordinates: P_SCENE = flip_ZY(P_MAP - sceneOriginTargetCrs)
      */
     static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, QStringList *errors = nullptr );
+
+    /**
+     * Converts a GLTF model into a Qt 3D entity.
+     * \see gltfToEntity()
+     */
+    static Qt3DCore::QEntity *parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors );
 
 };
 

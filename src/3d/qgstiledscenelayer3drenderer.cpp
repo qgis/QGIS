@@ -67,6 +67,7 @@ Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( Qgs3DMapSettings 
   QgsTiledSceneIndex index = tsl->dataProvider()->index();
 
   return new QgsTiledSceneLayerChunkedEntity( map, index,
+         tsl->dataProvider()->sceneCrs(),
          maximumScreenError(),
          showBoundingBoxes(),
          qgis::down_cast< const QgsTiledSceneLayerElevationProperties * >( tsl->elevationProperties() )->zScale(),

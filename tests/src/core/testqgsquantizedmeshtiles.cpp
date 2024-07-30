@@ -72,7 +72,7 @@ void TestQgsQuantizedMeshUtils::tileToGltf()
 
   if ( outFilePath != nullptr )
   {
-    gltfLoader.WriteGltfSceneToFile( &model, outFilePath, true, false );
+    gltfLoader.WriteGltfSceneToFile( &model, outFilePath, true, true );
   }
 
   if ( checkOutput )

@@ -45,7 +45,6 @@
 QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayerName( layer->name() )
-  , mLayerProviderName( layer->dataProvider()->name() )
   , mFeedback( new QgsFeedback )
   , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
@@ -386,7 +385,8 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   QgsVector3D centerOffset;
   mCurrentModelId++;
   // TODO: Somehow de-hardcode this switch?
-  if ( mLayerProviderName == "quantizedmesh" )
+  const auto &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
+  if ( format == QStringLiteral( "quantizedmesh" ) )
   {
     try
     {
@@ -399,7 +399,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       return false;
     }
   }
-  else if ( mLayerProviderName == "cesiumtiles" )
+  else if ( format == QStringLiteral( "cesiumtiles" ) )
   {
     const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
     if ( content.gltf.isEmpty() )

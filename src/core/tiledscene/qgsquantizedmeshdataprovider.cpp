@@ -34,6 +34,7 @@
 #include "qgstiles.h"
 #include "qgsvectortileutils.h"
 #include <climits>
+#include <limits>
 #include <nlohmann/json.hpp>
 #include <qglobal.h>
 #include <qnetworkrequest.h>
@@ -85,7 +86,12 @@ class QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
     QgsQuantizedMeshDataProvider::Metadata mMetadata;
     QgsTileMatrix mTileMatrix;
 
-    static constexpr long long ROOT_TILE_ID = LLONG_MAX - 1;
+    static constexpr long long ROOT_TILE_ID = std::numeric_limits<long long>::max();
+    // We need to have non-empty 3D bounding boxes, but don't have any info
+    // about the real heights inside the tiles. We just give some reasonable
+    // lower/upper bounds instead.
+    static constexpr double DUMMY_HEIGHT_MIN = -1000;
+    static constexpr double DUMMY_HEIGHT_MAX = 10000;
 };
 
 long long QgsQuantizedMeshIndex::encodeTileId( QgsTileXYZ tile )
@@ -98,6 +104,9 @@ long long QgsQuantizedMeshIndex::encodeTileId( QgsTileXYZ tile )
 
 QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
 {
+  if ( id == ROOT_TILE_ID )
+    return QgsTileXYZ( 0, 0, -1 );
+
   Q_ASSERT( id >> 61 == 0 ); // Reserved bits are zero for regular tiles
   return QgsTileXYZ(
            ( int )( ( id >> 28 ) & ( ( 2 << 27 ) - 1 ) ),
@@ -143,7 +152,9 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::rootTile() const
 {
   // Returns virtual tile to paper over tiling schemes which have >1 tile at zoom 0
   auto tile = QgsTiledSceneTile( ROOT_TILE_ID );
-  tile.setBoundingVolume( QgsOrientedBox3D::fromBox3D( mMetadata.mCrs.bounds() ) );
+  tile.setBoundingVolume( QgsOrientedBox3D::fromBox3D(
+                            QgsBox3D( mMetadata.mCrs.bounds(), DUMMY_HEIGHT_MIN, DUMMY_HEIGHT_MAX ) ) );
+  tile.setGeometricError( std::numeric_limits<double>::max() );
   return tile;
 }
 long long QgsQuantizedMeshIndex::parentTileId( long long id ) const
@@ -179,7 +190,9 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
 
   auto zoomedMatrix = QgsTileMatrix::fromTileMatrix( xyzTile.zoomLevel(), mTileMatrix );
   auto tileExtent = zoomedMatrix.tileExtent( xyzTile );
-  sceneTile.setBoundingVolume( QgsOrientedBox3D::fromBox3D( tileExtent ) );
+  sceneTile.setBoundingVolume(
+    QgsOrientedBox3D::fromBox3D(
+      QgsBox3D( tileExtent, DUMMY_HEIGHT_MIN, DUMMY_HEIGHT_MAX ) ) );
   sceneTile.setGeometricError( geometricErrorAtZoom( xyzTile.zoomLevel() ) );
 
   if ( mMetadata.mTileScheme == QLatin1String( "tms" ) )
@@ -195,7 +208,11 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
     auto tileUri = QgsVectorTileUtils::formatXYZUrlTemplate(
                      mMetadata.mTileUrls[0], xyzTile, zoomedMatrix );
     sceneTile.setResources( {{"content", tileUri}} );
-    sceneTile.setMetadata( {{"gltfUpAxis", static_cast<int>( Qgis::Axis::Z )}} );
+    sceneTile.setMetadata(
+    {
+      {QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Z )},
+      {QStringLiteral( "contentFormat" ), QStringLiteral( "quantizedmesh" )},
+    } );
   }
 
   // Tile meshes have 0.0 -- 1.0 coordinates. Rescale them to the tile's real

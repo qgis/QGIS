@@ -163,6 +163,11 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf()
   for ( size_t i = 0; i < mVertexCoords.size(); i++ )
   {
     double coord = mVertexCoords[i] / 32767.0; // Rescale to 0.0 -- 1.0;
+    // Rescale Z to height in meters
+    if ( i % 3 == 2 )
+    {
+      coord = ( coord * ( mHeader.MaximumHeight - mHeader.MinimumHeight ) ) + mHeader.MinimumHeight;
+    }
     ( ( float * ) vertexBuffer.data.data() )[i] = ( float )coord;
     if ( coordMinimums[i % 3] > coord )
       coordMinimums[i % 3] = coord;
