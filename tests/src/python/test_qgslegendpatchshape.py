@@ -81,7 +81,7 @@ class TestQgsLegendPatchShape(QgisTestCase):
         self.assertEqual(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.SymbolType.Hybrid, QSizeF(10, 10)), [])
 
         # markers
-        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(1, 1))), [[[[0.0, 0.0]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(1, 1))), [[[[0.5, 0.5]]]])
         self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(2, 2))),
                          [[[[1.0, 1.0]]]])
         self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(10, 2))), [[[[5.0, 1.0]]]])
@@ -98,7 +98,7 @@ class TestQgsLegendPatchShape(QgisTestCase):
     def testMarkers(self):
         # shouldn't matter what a point geometry is, it will always be rendered in center of symbol patch
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Marker, QgsGeometry.fromWkt('Point( 5 5 )'), False)
-        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(1, 1))), [[[[0, 0]]]])
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(1, 1))), [[[[0.5, 0.5]]]])
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.SymbolType.Marker, QSizeF(10, 2))), [[[[5.0, 1.0]]]])
 
         # requesting different symbol type, should return default
