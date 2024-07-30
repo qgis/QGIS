@@ -106,6 +106,7 @@ void QgsMapToolDigitizeFeature::activate()
 
   if ( vlayer && vlayer->geometryType() == Qgis::GeometryType::Null )
   {
+    setCursor( QCursor( Qt::ArrowCursor ) );
     layerGeometryCaptured( QgsGeometry() );
     return;
   }
@@ -119,6 +120,12 @@ void QgsMapToolDigitizeFeature::activate()
   }
 
   QgsMapToolCaptureLayerGeometry::activate();
+}
+
+void QgsMapToolDigitizeFeature::reactivate()
+{
+  activate();
+  QgsMapToolCaptureLayerGeometry::reactivate();
 }
 
 void QgsMapToolDigitizeFeature::deactivate()
