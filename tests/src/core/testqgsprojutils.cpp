@@ -94,6 +94,8 @@ void TestQgsProjUtils::axisOrderIsSwapped()
   QVERIFY( !QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4326" ) );
   QVERIFY( QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
+  crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::3903" ) );
+  QVERIFY( QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
 }
 
 void TestQgsProjUtils::searchPath()

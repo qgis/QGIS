@@ -117,7 +117,12 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
     return false;
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr pjCs( proj_crs_get_coordinate_system( context, crs ) );
+
+  QgsProjUtils::proj_pj_unique_ptr horizCrs = crsToHorizontalCrs( crs );
+  if ( !horizCrs )
+    return false;
+
+  QgsProjUtils::proj_pj_unique_ptr pjCs( proj_crs_get_coordinate_system( context, horizCrs.get() ) );
   if ( !pjCs )
     return false;
 
