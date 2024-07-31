@@ -16,14 +16,12 @@
 #include "qgspointcloudlayer3drenderer.h"
 
 #include "qgs3dutils.h"
-#include "qgschunkedentity_p.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgsvirtualpointcloudentity_p.h"
 #include "qgsxmlutils.h"
-#include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayerelevationproperties.h"
@@ -158,7 +156,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  const QgsCoordinateTransform coordinateTransform( pcl->crs(), map.crs(), map.transformContext() );
+  const QgsCoordinateTransform coordinateTransform( pcl->crs3D(), map.crs(), map.transformContext() );
 
   Qt3DCore::QEntity *entity = nullptr;
   if ( pcl->dataProvider()->index() )
