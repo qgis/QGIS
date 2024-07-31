@@ -349,13 +349,29 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
       return;
     }
 
-    std::vector<double> bounds = jsonGet<std::vector<double>>( replyJson, "bounds" );
-    if ( bounds.size() != 4 )
+    auto crsString = QString::fromStdString( jsonGet<std::string>( replyJson, "projection" ) );
+    mMetadata.mCrs = QgsCoordinateReferenceSystem( crsString );
+    if ( !mMetadata.mCrs.isValid() )
     {
-      appendError( QObject::tr( "Bounds array doesn't have 4 items" ) );
+      appendError( QObject::tr( "Invalid CRS '%1'!" ).arg( crsString ) );
       return;
     }
-    mMetadata.mExtent = QgsRectangle( bounds[0], bounds[1], bounds[2], bounds[3] );
+
+    try
+    {
+      std::vector<double> bounds = jsonGet<std::vector<double>>( replyJson, "bounds" );
+      if ( bounds.size() != 4 )
+      {
+        appendError( QObject::tr( "Bounds array doesn't have 4 items" ) );
+        return;
+      }
+      mMetadata.mExtent = QgsRectangle( bounds[0], bounds[1], bounds[2], bounds[3] );
+    }
+    catch ( MissingFieldException & )
+    {
+      mMetadata.mExtent = mMetadata.mCrs.bounds();
+    }
+
     // Call our class' version explicitly to tell clang-tidy we don't need virtual dispatch here
     auto zRange = QgsQuantizedMeshDataProvider::zRange();
     mMetadata.mBoundingVolume =
@@ -364,16 +380,12 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
           mMetadata.mExtent.xMinimum(), mMetadata.mExtent.yMinimum(), zRange.lower(),
           mMetadata.mExtent.xMaximum(), mMetadata.mExtent.yMaximum(), zRange.upper() ) );
 
-    auto crsString = QString::fromStdString( jsonGet<std::string>( replyJson, "projection" ) );
-    mMetadata.mCrs = QgsCoordinateReferenceSystem( crsString );
-    if ( !mMetadata.mCrs.isValid() )
-    {
-      appendError( QObject::tr( "Invalid CRS '%1'!" ).arg( crsString ) );
-      return;
-    }
-    mMetadata.mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "scheme" ) );
-    mMetadata.mMinZoom = jsonGet<uint8_t>( replyJson, "minzoom" );
-    mMetadata.mMaxZoom = jsonGet<uint8_t>( replyJson, "maxzoom" );
+    // The TileJSON spec uses "scheme", but some real-world datasets use "schema"
+    if ( replyJson.find( "scheme" ) != replyJson.end() )
+      mMetadata.mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "scheme" ) );
+    else if ( replyJson.find( "schema" ) != replyJson.end() )
+      mMetadata.mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "schema" ) );
+    else throw MissingFieldException( "scheme/schema" );
 
     for ( auto &aabbs : replyJson.at( "available" ) )
     {
@@ -388,12 +400,25 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
       mMetadata.mAvailableTiles.push_back( tileRanges );
     }
 
+    try
+    {
+      mMetadata.mMinZoom = jsonGet<uint8_t>( replyJson, "minzoom" );
+      mMetadata.mMaxZoom = jsonGet<uint8_t>( replyJson, "maxzoom" );
+    }
+    catch ( MissingFieldException & )
+    {
+      mMetadata.mMinZoom = 0;
+      mMetadata.mMaxZoom = mMetadata.mAvailableTiles.size() - 1;
+    }
+
     QString versionStr =
       QString::fromStdString( jsonGet<std::string>( replyJson, "version" ) );
-    for ( auto &url : jsonGet<std::vector<std::string>>( replyJson, "tiles" ) )
+    QUrl metadataUrl = uri;
+    for ( auto &urlStr : jsonGet<std::vector<std::string>>( replyJson, "tiles" ) )
     {
+      QUrl url = metadataUrl.resolved( QString::fromStdString( urlStr ) );
       mMetadata.mTileUrls.push_back(
-        QString::fromStdString( url ).replace( "{version}", versionStr ) );
+        url.toString( QUrl::DecodeReserved ).replace( "{version}", versionStr ) );
     }
 
     int rootTileCount = 1;
