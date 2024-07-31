@@ -235,6 +235,7 @@
 %Include auto_generated/annotations/qgsannotationpictureitem.sip
 %Include auto_generated/annotations/qgsannotationpointtextitem.sip
 %Include auto_generated/annotations/qgsannotationpolygonitem.sip
+%Include auto_generated/annotations/qgsannotationrectangletextitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
 %Include auto_generated/annotations/qgsrenderedannotationitemdetails.sip
 %Include auto_generated/annotations/qgssvgannotation.sip

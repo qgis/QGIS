@@ -170,9 +170,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     //! Enable or disable colorize controls depending on checkbox
     void toggleColorizeControls( bool colorizeEnabled );
 
-    //! Transparency cell changed
-    void transparencyCellTextEdited( const QString &text );
-
     void aboutToShowStyleMenu();
 
     //! Make GUI reflect the layer's state
@@ -230,12 +227,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
      */
     void updateInformationContent();
 
-    void setTransparencyCell( int row, int column, double value );
-    void setTransparencyCellValue( int row, int column, double value );
-    double transparencyCellValue( int row, int column );
-    void setTransparencyToEdited( int row );
-    void adjustTransparencyCellWidth( int row, int column );
-
     void setRendererWidget( const QString &rendererName );
 
     /**
@@ -254,8 +245,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     qreal mGradientWidth;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
-
-    QVector<bool> mTransparencyToEdited;
 
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 

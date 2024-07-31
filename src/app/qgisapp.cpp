@@ -1186,7 +1186,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   // Advanced Digitizing dock
   startProfile( tr( "Advanced digitize panel" ) );
-  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this, mUserInputDockWidget );
   mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
 
@@ -13508,9 +13508,9 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
     QgsSettings settings;
 
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    if ( !prj->crs().isGeographic() )
+    if ( !prj->crs3D().isGeographic() )
     {
-      map->setCrs( prj->crs() );
+      map->setCrs( prj->crs3D() );
     }
     else
     {

@@ -21,6 +21,7 @@
 #include "qgsannotationpolygonitem.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationlinetextitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsannotationpictureitem.h"
 #include <QDomElement>
 
@@ -49,6 +50,8 @@ bool QgsAnnotationItemRegistry::populate()
                     QgsAnnotationPointTextItem::create ) );
   mMetadata.insert( QStringLiteral( "linetext" ), new QgsAnnotationItemMetadata( QStringLiteral( "linetext" ), QObject::tr( "Text along line" ), QObject::tr( "Text along lines" ),
                     QgsAnnotationLineTextItem::create ) );
+  mMetadata.insert( QStringLiteral( "recttext" ), new QgsAnnotationItemMetadata( QStringLiteral( "recttext" ), QObject::tr( "Text in rectangle" ), QObject::tr( "Text in rectangles" ),
+                    QgsAnnotationRectangleTextItem::create ) );
   mMetadata.insert( QStringLiteral( "picture" ), new QgsAnnotationItemMetadata( QStringLiteral( "picture" ), QObject::tr( "Picture" ), QObject::tr( "Pictures" ),
                     QgsAnnotationPictureItem::create ) );
   return true;

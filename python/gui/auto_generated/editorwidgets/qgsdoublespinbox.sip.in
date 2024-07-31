@@ -138,6 +138,22 @@ is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate tha
     virtual void stepBy( int steps );
 
 
+  signals:
+
+    void returnPressed();
+%Docstring
+Emitted when the Return or Enter key is used in the line edit.
+
+.. versionadded:: 3.40
+%End
+
+    void textEdited( const QString &text );
+%Docstring
+Emitted when the the value has been manually edited via line edit.
+
+.. versionadded:: 3.40
+%End
+
   protected:
     virtual void changeEvent( QEvent *event );
 

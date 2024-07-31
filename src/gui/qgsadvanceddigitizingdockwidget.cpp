@@ -22,9 +22,11 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsadvanceddigitizingtoolsregistry.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscadutils.h"
 #include "qgsexpression.h"
+#include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooledit.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -38,6 +40,7 @@
 #include "qgsunittypes.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsuserinputwidget.h"
 
 #include <QActionGroup>
 
@@ -48,9 +51,10 @@ const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowCons
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-snap-to-construction-guides" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) ) ;
 
 
-QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
+QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent, QgsUserInputWidget *userInputWidget )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
+  , mUserInputWidget( userInputWidget )
   , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
   , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 0.0 ).toDouble() )
 {
@@ -183,7 +187,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     mCommonAngleActionsMenu->addMenu( snappingPriorityMenu );
   }
 
-
   for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, mCommonAngleActionsMenu );
@@ -236,6 +239,26 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   constructionModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   constructionModeToolButton->setMenu( constructionSettingsMenu );
   constructionModeToolButton->setObjectName( QStringLiteral( "ConstructionModeButton" ) );
+
+  // Tools
+  QMenu *toolsMenu = new QMenu( this );
+  connect( toolsMenu, &QMenu::aboutToShow, this, [ = ]()
+  {
+    toolsMenu->clear();
+    const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
+    for ( const QString &name : toolMetadataNames )
+    {
+      QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
+      QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), toolsMenu );
+      connect( toolAction, &QAction::triggered, this, [ = ]()
+      {
+        setTool( toolMetadata->createTool( mMapCanvas, this ) );
+      } );
+      toolsMenu->addAction( toolAction );
+    }
+  } );
+  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mToolsAction ) )->setPopupMode( QToolButton::InstantPopup );
+  mToolsAction->setMenu( toolsMenu );
 
   qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
   mSettingsAction->setMenu( mCommonAngleActionsMenu );
@@ -420,6 +443,14 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   disable();
 }
 
+QgsAdvancedDigitizingDockWidget::~QgsAdvancedDigitizingDockWidget()
+{
+  if ( mCurrentTool )
+  {
+    mCurrentTool->deleteLater();
+  }
+}
+
 QString QgsAdvancedDigitizingDockWidget::formatCommonAngleSnapping( double angle )
 {
   if ( angle == 0 )
@@ -536,6 +567,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mInputWidgets->setEnabled( enabled );
   mFloaterAction->setEnabled( enabled );
   mConstructionAction->setEnabled( enabled );
+  mToolsAction->setEnabled( enabled );
 
   if ( !enabled )
   {
@@ -545,6 +577,10 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
     // will be reactivated in updateCapacities
     mParallelAction->setEnabled( false );
     mPerpendicularAction->setEnabled( false );
+    if ( mCurrentTool )
+    {
+      mCurrentTool->deleteLater();
+    }
   }
 
 
@@ -642,6 +678,32 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
   }
 
   setCadEnabled( enabled );
+}
+
+void QgsAdvancedDigitizingDockWidget::setTool( QgsAdvancedDigitizingTool *tool )
+{
+  if ( mCurrentTool )
+  {
+    mCurrentTool->deleteLater();
+    mCurrentTool = nullptr;
+  }
+
+  mCurrentTool = tool;
+
+  if ( mCurrentTool )
+  {
+    if ( QWidget *toolWidget = mCurrentTool->createWidget() )
+    {
+      toolWidget->setParent( mUserInputWidget );
+      mUserInputWidget->addUserInputWidget( toolWidget );
+    }
+    connect( mCurrentTool.data(), &QgsAdvancedDigitizingTool::paintRequested, this, &QgsAdvancedDigitizingDockWidget::updateCadPaintItem );
+  }
+}
+
+QgsAdvancedDigitizingTool *QgsAdvancedDigitizingDockWidget::tool() const
+{
+  return mCurrentTool.data();
 }
 
 void QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked( bool activated )
@@ -1492,6 +1554,76 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   return segment;
 }
 
+void QgsAdvancedDigitizingDockWidget::processCanvasPressEvent( QgsMapMouseEvent *event )
+{
+  if ( mCurrentTool )
+  {
+    mCurrentTool->canvasPressEvent( event );
+  }
+
+  if ( constructionMode() )
+  {
+    event->setAccepted( false );
+  }
+}
+
+void QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *event )
+{
+  // perpendicular/parallel constraint
+  // do a soft lock when snapping to a segment
+  alignToSegment( event, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+
+  if ( mCurrentTool )
+  {
+    mCurrentTool->canvasMoveEvent( event );
+  }
+
+  updateCadPaintItem();
+}
+
+void QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEvent *event )
+{
+  if ( alignToSegment( event ) )
+  {
+    event->setAccepted( false );
+    return;
+  }
+
+  if ( mCurrentTool )
+  {
+    mCurrentTool->canvasReleaseEvent( event );
+    if ( !event->isAccepted() )
+    {
+      return;
+    }
+    else
+    {
+      // update the point list
+      QgsPoint point( event->mapPoint() );
+      point.setZ( QgsMapToolEdit::defaultZValue() );
+      point.setM( QgsMapToolEdit::defaultMValue() );
+
+      if ( mLockZButton->isChecked() )
+      {
+        point.setZ( QLocale().toDouble( mZLineEdit->text() ) );
+      }
+      if ( mLockMButton->isChecked() )
+      {
+        point.setM( QLocale().toDouble( mMLineEdit->text() ) );
+      }
+      updateCurrentPoint( point );
+    }
+  }
+
+  addPoint( event->mapPoint() );
+  releaseLocks( false );
+
+  if ( constructionMode() )
+  {
+    event->setAccepted( false );
+  }
+}
+
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
   if ( mBetweenLineConstraint == Qgis::BetweenLineConstraint::NoConstraint )
@@ -1619,6 +1751,13 @@ void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points
   {
     addPoint( pt );
   }
+}
+
+void QgsAdvancedDigitizingDockWidget::toggleConstraintDistance()
+{
+  mDistanceConstraint->toggleLocked();
+  emit lockDistanceChanged( mDistanceConstraint->isLocked() );
+  emit pointChangedV2( mCadPointList.value( 0 ) );
 }
 
 bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
@@ -1833,9 +1972,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) && mCapacities.testFlag( Distance ) )
         {
-          mDistanceConstraint->toggleLocked();
-          emit lockDistanceChanged( mDistanceConstraint->isLocked() );
-          emit pointChangedV2( mCadPointList.value( 0 ) );
+          toggleConstraintDistance();
           e->accept();
         }
       }
@@ -2000,7 +2137,6 @@ void QgsAdvancedDigitizingDockWidget::clearLockedSnapVertices( bool force )
 
   mLockedSnapVertices.clear();
 }
-
 
 void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
 {

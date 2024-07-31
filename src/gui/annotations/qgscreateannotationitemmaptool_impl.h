@@ -102,6 +102,31 @@ class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
 };
 
 
+class QgsCreateRectangleTextItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreateRectangleTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+
+    void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+    QRectF mRect;
+    QgsPointXY mFirstPoint;
+    QObjectUniquePtr< QgsRubberBand > mRubberBand;
+};
+
+
 class QgsCreatePictureItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
@@ -127,7 +152,6 @@ class QgsCreatePictureItemMapTool: public QgsMapToolAdvancedDigitizing, public Q
     QgsPointXY mFirstPoint;
     QObjectUniquePtr< QgsRubberBand > mRubberBand;
 };
-
 
 
 class QgsCreateLineTextItemMapTool: public QgsMapToolCaptureAnnotationItem

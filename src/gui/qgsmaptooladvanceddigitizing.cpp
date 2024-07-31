@@ -35,10 +35,12 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    mCadDockWidget->applyConstraints( e );  // updates event's map point
-
-    if ( mCadDockWidget->constructionMode() )
-      return;  // decided to eat the event and not pass it to the map tool (construction mode)
+    mCadDockWidget->applyConstraints( e ); // updates event's map point
+    mCadDockWidget->processCanvasPressEvent( e );
+    if ( !e->isAccepted() )
+    {
+      return; // The dock widget has taken the event
+    }
   }
   else if ( isAutoSnapEnabled() )
   {
@@ -64,20 +66,12 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      mCadDockWidget->applyConstraints( e );  // updates event's map point
-
-      if ( mCadDockWidget->alignToSegment( e ) )
+      mCadDockWidget->applyConstraints( e ); // updates event's map point
+      mCadDockWidget->processCanvasReleaseEvent( e );
+      if ( !e->isAccepted() )
       {
-        // Parallel or perpendicular mode and snapped to segment: do not pass the event to map tool
-        return;
+        return; // The dock widget has taken the event
       }
-
-      mCadDockWidget->addPoint( e->mapPoint() );
-
-      mCadDockWidget->releaseLocks( false );
-
-      if ( mCadDockWidget->constructionMode() )
-        return;  // decided to eat the event and not pass it to the map tool (construction mode)
     }
   }
   else if ( isAutoSnapEnabled() )
@@ -98,12 +92,12 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    mCadDockWidget->applyConstraints( e );     // updates event's map point
-
-    // perpendicular/parallel constraint
-    // do a soft lock when snapping to a segment
-    mCadDockWidget->alignToSegment( e, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
-    mCadDockWidget->updateCadPaintItem();
+    mCadDockWidget->applyConstraints( e ); // updates event's map point
+    mCadDockWidget->processCanvasMoveEvent( e );
+    if ( !e->isAccepted() )
+    {
+      return; // The dock widget has taken the event
+    }
   }
   else if ( isAutoSnapEnabled() )
   {

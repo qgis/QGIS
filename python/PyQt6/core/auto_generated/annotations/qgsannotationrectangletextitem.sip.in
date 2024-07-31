@@ -1,0 +1,244 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationrectangletextitem.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationRectangleTextItem : QgsAnnotationItem
+{
+%Docstring(signature="appended")
+An annotation item which renders paragraphs of text within a rectangle.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationrectangletextitem.h"
+%End
+  public:
+
+    QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds );
+%Docstring
+Constructor for QgsAnnotationRectangleTextItem, containing the specified ``text``
+within the specified ``bounds`` rectangle.
+%End
+    ~QgsAnnotationRectangleTextItem();
+
+    virtual QString type() const;
+
+    virtual Qgis::AnnotationItemFlags flags() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
+
+
+    static QgsAnnotationRectangleTextItem *create() /Factory/;
+%Docstring
+Creates a new rectangle text annotation item.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsAnnotationRectangleTextItem *clone() const /Factory/;
+
+    virtual QgsRectangle boundingBox() const;
+
+
+    QgsRectangle bounds() const;
+%Docstring
+Returns the bounds of the text.
+
+The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`setBounds`
+%End
+
+    void setBounds( const QgsRectangle &bounds );
+%Docstring
+Sets the ``bounds`` of the text.
+
+The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`bounds`
+%End
+
+    QString text() const;
+%Docstring
+Returns the text rendered by the item.
+
+.. seealso:: :py:func:`setText`
+%End
+
+    void setText( const QString &text );
+%Docstring
+Sets the ``text`` rendered by the item.
+
+.. seealso:: :py:func:`text`
+%End
+
+    QgsTextFormat format() const;
+%Docstring
+Returns the text format used to render the text.
+
+.. seealso:: :py:func:`setFormat`
+%End
+
+    void setFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used to render the text.
+
+.. seealso:: :py:func:`format`
+%End
+
+    Qt::Alignment alignment() const;
+%Docstring
+Returns the text's alignment relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
+
+.. seealso:: :py:func:`setAlignment`
+%End
+
+    void setAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the text's ``alignment`` relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
+
+.. seealso:: :py:func:`alignment`
+%End
+
+    bool backgroundEnabled() const;
+%Docstring
+Returns ``True`` if the item's background should be rendered.
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+
+.. seealso:: :py:func:`backgroundSymbol`
+%End
+
+    void setBackgroundEnabled( bool enabled );
+%Docstring
+Sets whether the item's background should be rendered.
+
+.. seealso:: :py:func:`backgroundEnabled`
+
+.. seealso:: :py:func:`setBackgroundSymbol`
+%End
+
+    const QgsFillSymbol *backgroundSymbol() const;
+%Docstring
+Returns the symbol used to render the item's background.
+
+.. seealso:: :py:func:`backgroundEnabled`
+
+.. seealso:: :py:func:`setBackgroundSymbol`
+%End
+
+    void setBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the item's background.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`backgroundSymbol`
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+%End
+
+    bool frameEnabled() const;
+%Docstring
+Returns ``True`` if the item's frame should be rendered.
+
+.. seealso:: :py:func:`setFrameEnabled`
+
+.. seealso:: :py:func:`frameSymbol`
+%End
+
+    void setFrameEnabled( bool enabled );
+%Docstring
+Sets whether the item's frame should be rendered.
+
+.. seealso:: :py:func:`frameEnabled`
+
+.. seealso:: :py:func:`setFrameSymbol`
+%End
+
+    const QgsFillSymbol *frameSymbol() const;
+%Docstring
+Returns the symbol used to render the item's frame.
+
+.. seealso:: :py:func:`frameEnabled`
+
+.. seealso:: :py:func:`setFrameSymbol`
+%End
+
+    void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the item's frame.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`frameSymbol`
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+%End
+
+    const QgsMargins &margins() const;
+%Docstring
+Returns the margins between the outside of the item's frame and the interior text.
+
+Units are retrieved via :py:func:`~QgsAnnotationRectangleTextItem.marginsUnit`
+
+.. seealso:: :py:func:`setMargins`
+
+.. seealso:: :py:func:`marginsUnit`
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the ``margins`` between the outside of the item's frame and the interior text.
+
+Units are set via :py:func:`~QgsAnnotationRectangleTextItem.setMarginsUnit`
+
+.. seealso:: :py:func:`margins`
+
+.. seealso:: :py:func:`setMarginsUnit`
+%End
+
+    void setMarginsUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the margins between the item's frame and the interior text.
+
+.. seealso:: :py:func:`margins`
+
+.. seealso:: :py:func:`marginsUnit`
+%End
+
+    Qgis::RenderUnit marginsUnit() const;
+%Docstring
+Returns the units for the margins between the item's frame and the interior text.
+
+.. seealso:: :py:func:`setMarginsUnit`
+
+.. seealso:: :py:func:`margins`
+%End
+
+  private:
+    QgsAnnotationRectangleTextItem( const QgsAnnotationRectangleTextItem &other );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationrectangletextitem.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

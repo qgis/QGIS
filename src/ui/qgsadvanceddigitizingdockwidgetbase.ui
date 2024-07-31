@@ -46,12 +46,13 @@
       <addaction name="mConstructionModeAction"/>
       <addaction name="mParallelAction"/>
       <addaction name="mPerpendicularAction"/>
+      <addaction name="mConstructionAction"/>
+      <addaction name="separator"/>
+      <addaction name="mToolsAction"/>
       <addaction name="separator"/>
       <addaction name="mSettingsAction"/>
       <addaction name="separator"/>
       <addaction name="mFloaterAction"/>
-      <addaction name="separator"/>
-      <addaction name="mConstructionAction"/>
      </widget>
     </item>
     <item>
@@ -603,6 +604,15 @@
     </property>
     <property name="toolTip">
      <string/>
+    </property>
+   </action>
+   <action name="mToolsAction">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="../../images/images.qrc">
+      <normaloff>:/images/themes/default/cadtools/circlesintersection.svg</normaloff>:/images/themes/default/cadtools/circlesintersection.svg</iconset>
     </property>
    </action>
    <action name="mSettingsAction">

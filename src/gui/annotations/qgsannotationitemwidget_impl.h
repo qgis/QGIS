@@ -25,6 +25,7 @@
 #include "ui_qgsannotationpointtextwidgetbase.h"
 #include "ui_qgsannotationsymbolwidgetbase.h"
 #include "ui_qgsannotationlinetextwidgetbase.h"
+#include "ui_qgsannotationrectangulartextwidgetbase.h"
 #include "ui_qgsannotationpicturewidgetbase.h"
 
 class QgsSymbolSelectorWidget;
@@ -37,6 +38,7 @@ class QgsAnnotationMarkerItem;
 class QgsAnnotationPointTextItem;
 class QgsAnnotationLineTextItem;
 class QgsAnnotationPictureItem;
+class QgsAnnotationRectangleTextItem;
 class QgsTextFormatWidget;
 
 #define SIP_NO_FILE
@@ -140,6 +142,38 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
     std::unique_ptr< QgsAnnotationPointTextItem> mItem;
 };
 
+
+class QgsAnnotationRectangleTextItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationRectangleTextWidgetBase, private QgsExpressionContextGenerator
+{
+    Q_OBJECT
+
+  public:
+    QgsAnnotationRectangleTextItemWidget( QWidget *parent );
+    ~QgsAnnotationRectangleTextItemWidget() override;
+    QgsAnnotationItem *createItem() override;
+    void updateItem( QgsAnnotationItem *item ) override;
+    void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+    QgsExpressionContext createExpressionContext() const override;
+
+  public slots:
+
+    void focusDefaultWidget() override;
+
+  protected:
+    bool setNewItem( QgsAnnotationItem *item ) override;
+
+  private slots:
+
+    void onWidgetChanged();
+
+  private:
+    void mInsertExpressionButton_clicked();
+
+    QgsTextFormatWidget *mTextFormatWidget = nullptr;
+    bool mBlockChangedSignal = false;
+    std::unique_ptr< QgsAnnotationRectangleTextItem> mItem;
+};
 
 class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationLineTextWidgetBase
 {

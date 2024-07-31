@@ -251,6 +251,19 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     return new QgsCreateLineTextItemMapTool( canvas, cadDockWidget );
   } ) );
 
+  addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "recttext" ),
+                                QObject::tr( "Text Annotation in Rectangle" ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionTextInsideRect.svg" ) ),
+                                [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
+  {
+    QgsAnnotationRectangleTextItemWidget *widget = new QgsAnnotationRectangleTextItemWidget( nullptr );
+    widget->setItem( item );
+    return widget;
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreateRectangleTextItemMapTool( canvas, cadDockWidget );
+  } ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "picture" ),
                                 QObject::tr( "Picture" ),
