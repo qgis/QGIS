@@ -221,7 +221,10 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       }
       else if ( bufLength != 0 && bufLength != ResultSet::NULL_DATA )
       {
-        QByteArray vec( bufLength, '0' );
+        if ( bufLength > static_cast<size_t>( std::numeric_limits<int>::max() ) )
+          throw QgsHanaException( "RealVector size is larger than maximum integer value" );
+
+        QByteArray vec( static_cast<int>( bufLength ), '0' );
         mResultSet->getBinaryData( columnIndex, vec.data(), bufLength );
         return fvecsToString( vec.data(), vec.size() );
       }
