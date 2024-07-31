@@ -19,12 +19,24 @@
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsprojectionselectionwidget.h"
 
 QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
   setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+
+  mVerticalCrsStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  mVerticalCrsWidget = new QgsProjectionSelectionWidget( nullptr, QgsCoordinateReferenceSystemProxyModel::FilterVertical );
+  mVerticalCrsWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mVerticalCrsWidget->setNotSetText( tr( "Not set" ) );
+  mVerticalCrsWidget->setDialogTitle( tr( "Layer Vertical CRS" ) );
+  vl->addWidget( mVerticalCrsWidget );
+  mCrsPageEnabled->setLayout( vl );
 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
@@ -69,6 +81,8 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   connect( mCheckBoxRespectLayerColors, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mOpacityByDistanceCheckBox, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
 
+  connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions );
+
   setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#elevation-properties" ) );
 }
 
@@ -93,6 +107,8 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mOpacityByDistanceCheckBox->setChecked( properties->applyOpacityByDistanceEffect() );
 
   mBlockUpdates = false;
+
+  updateVerticalCrsOptions();
 }
 
 void QgsPointCloudElevationPropertiesWidget::apply()
@@ -116,6 +132,8 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   properties->setRespectLayerColors( mCheckBoxRespectLayerColors->isChecked() );
   properties->setApplyOpacityByDistanceEffect( mOpacityByDistanceCheckBox->isChecked() );
 
+  mLayer->setVerticalCrs( mVerticalCrsWidget->crs() );
+
   if ( changed3DrelatedProperties )
     mLayer->trigger3DUpdate();
 }
@@ -132,6 +150,58 @@ void QgsPointCloudElevationPropertiesWidget::shiftPointCloudZAxis()
   if ( !range.isEmpty() )
   {
     mOffsetZSpinBox->setValue( -range.lower() + mOffsetZSpinBox->value() );
+  }
+}
+
+void QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions()
+{
+  switch ( mLayer->crs().type() )
+  {
+    case Qgis::CrsType::Compound:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." ).arg(
+                                    mLayer->crs().userFriendlyIdentifier(),
+                                    mLayer->verticalCrs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Geographic3d:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                    mLayer->crs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Geocentric:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                    mLayer->crs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Projected:
+      if ( mLayer->crs().hasVerticalAxis() )
+      {
+        mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+        mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                      mLayer->crs().userFriendlyIdentifier()
+                                    ) );
+        break;
+      }
+      [[fallthrough]];
+
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Vertical:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::Other:
+    case Qgis::CrsType::DerivedProjected:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageEnabled );
+      mVerticalCrsWidget->setCrs( mLayer->verticalCrs() );
+      break;
   }
 }
 
