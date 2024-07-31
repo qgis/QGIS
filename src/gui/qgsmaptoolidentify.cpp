@@ -838,10 +838,16 @@ void QgsMapToolIdentify::closestPointAttributes( const QgsCoordinateTransform la
   }
 }
 
+void QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y, const QgsCoordinateReferenceSystem &mapCrs, int coordinatePrecision )
+{
+  QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject::instance(), canvasPoint, mapCrs,
+      coordinatePrecision, x, y );
+}
+
 void QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y ) const
 {
-  QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject::instance(), canvasPoint, mCanvas->mapSettings().destinationCrs(),
-      mCoordinatePrecision, x, y );
+  formatCoordinate( canvasPoint, x, y, mCanvas->mapSettings().destinationCrs(),
+                    mCoordinatePrecision );
 }
 
 QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint )
@@ -1450,6 +1456,13 @@ void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
 
 void QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( QgsPointCloudLayer *layer, const QVector<QVariantMap> &identified, QList<QgsMapToolIdentify::IdentifyResult> &results )
 {
+  const QgsCoordinateReferenceSystem mapVertCrs = QgsProject::instance()->crs3D().verticalCrs().isValid() ? QgsProject::instance()->crs3D().verticalCrs()
+      : QgsProject::instance()->crs3D();
+  const QgsCoordinateReferenceSystem layerVertCrs = layer->crs3D().verticalCrs().isValid() ? layer->crs3D().verticalCrs()
+      : layer->crs3D();
+  const bool showTransformedZ = QgsProject::instance()->crs3D() != layer->crs3D() && QgsProject::instance()->crs3D().hasVerticalAxis() && layer->crs3D().hasVerticalAxis();
+  const QgsCoordinateTransform layerToMapTransform( layer->crs3D(), QgsProject::instance()->crs3D(), QgsProject::instance()->transformContext() );
+
   int id = 1;
   const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   for ( const QVariantMap &pt : identified )
@@ -1475,7 +1488,47 @@ void QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( QgsPoint
         ptStr[attrIt.key()] = attrIt.value().toString();
       }
     }
-    QgsMapToolIdentify::IdentifyResult res( layer, classification.isEmpty() ? QString::number( id ) : QStringLiteral( "%1 (%2)" ).arg( id ).arg( classification ), ptStr, QMap<QString, QString>() );
+
+    QMap< QString, QString > derivedAttributes;
+    QgsPoint layerPoint( pt.value( "X" ).toDouble(), pt.value( "Y" ).toDouble(), pt.value( "Z" ).toDouble() );
+
+    QgsPoint mapCrsPoint = layerPoint;
+    try
+    {
+      if ( layerToMapTransform.isValid() )
+      {
+        mapCrsPoint.transform( layerToMapTransform, Qgis::TransformDirection::Forward, layerToMapTransform.hasVerticalComponent() );
+      }
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+    }
+
+    QString x;
+    QString y;
+    // BAD, we should not be using the hardcoded precision/crs values here, but this method is static and that's not trivial
+    // to avoid...
+    formatCoordinate( QgsPointXY( mapCrsPoint.x(), mapCrsPoint.y() ), x, y, QgsProject::instance()->crs(), 6 );
+    derivedAttributes.insert( tr( "X" ), x );
+    derivedAttributes.insert( tr( "Y" ), y );
+
+    const double originalZ = layerPoint.z();
+    const double mapCrsZ = mapCrsPoint.is3D() ? mapCrsPoint.z() : std::numeric_limits< double >::quiet_NaN();
+
+    if ( !std::isnan( originalZ ) )
+    {
+      const QString str = QLocale().toString( originalZ, 'g', 10 );
+      derivedAttributes.insert( showTransformedZ ? tr( "Z (%1)" ).arg( layerVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) )
+                                : tr( "Z" ), str );
+    }
+    if ( showTransformedZ && !std::isnan( mapCrsZ ) && !qgsDoubleNear( originalZ, mapCrsZ ) )
+    {
+      const QString str = QLocale().toString( mapCrsZ, 'g', 10 );
+      derivedAttributes.insert( tr( "Z (%1)" ).arg( mapVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), str );
+    }
+
+    QgsMapToolIdentify::IdentifyResult res( layer, classification.isEmpty() ? QString::number( id ) : QStringLiteral( "%1 (%2)" ).arg( id ).arg( classification ), ptStr, derivedAttributes );
     results.append( res );
     ++id;
   }

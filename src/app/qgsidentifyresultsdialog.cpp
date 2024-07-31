@@ -563,7 +563,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       addFeature( qobject_cast<QgsVectorTileLayer *>( result.mLayer ), result.mLabel, result.mFields, result.mFeature, result.mDerivedAttributes );
       break;
     case Qgis::LayerType::PointCloud:
-      addFeature( qobject_cast<QgsPointCloudLayer *>( result.mLayer ), result.mLabel, result.mAttributes );
+      addFeature( qobject_cast<QgsPointCloudLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes );
       break;
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
@@ -1389,7 +1389,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer,
 
 void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
     const QString &label,
-    const QMap< QString, QString > &attributes )
+    const QMap< QString, QString > &attributes,
+    const QMap< QString, QString > &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( layer );
 
@@ -1437,6 +1438,20 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
                               ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
                               : QString();
   layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( layer->name(), countSuffix ) );
+
+  // derived attributes
+  if ( derivedAttributes.size() >= 0 && !QgsSettings().value( QStringLiteral( "/Map/hideDerivedAttributes" ), false ).toBool() )
+  {
+    QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    derivedItem->setData( 0, Qt::UserRole, "derived" );
+    derivedItem->setAlwaysOnTopPriority( 0 );
+    featItem->addChild( derivedItem );
+
+    for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
+    {
+      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    }
+  }
 
   // attributes
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )

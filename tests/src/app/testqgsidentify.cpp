@@ -37,6 +37,8 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsconfig.h"
+#include "qgspointcloudlayer.h"
 
 #include <QTimer>
 
@@ -69,6 +71,7 @@ class TestQgsIdentify : public QObject
     void testPointZ();
     void testLineStringZ();
     void testPolygonZ();
+    void identifyPointCloud();
 
   private:
     void doAction();
@@ -1268,6 +1271,36 @@ void TestQgsIdentify::testPolygonZ()
   QGSCOMPARENEAR( interpolatedZ4985, 5552.3424580000, 0.02 );
   QGSCOMPARENEAR( closestZ4979, 5543.325, 0.001 );
   QGSCOMPARENEAR( closestZ4985, 5545.6857, 0.01 );
+}
+
+void TestQgsIdentify::identifyPointCloud()
+{
+#ifdef HAVE_EPT
+  std::unique_ptr< QgsPointCloudLayer > pointCloud = std::make_unique< QgsPointCloudLayer >( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/rgb16/ept.json", QStringLiteral( "pointcloud" ), QStringLiteral( "ept" ) );
+  QVERIFY( pointCloud->isValid() );
+  pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ) );
+  QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+
+  // set project CRS and ellipsoid
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4985" ) );
+  QgsProject::instance()->setCrs( srs );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( QgsRectangle::fromCenterAndSize( QgsPointXY( 7.42006, 2.74911 ), 0.1, 0.1 ) );
+  QCOMPARE( QgsProject::instance()->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4985" ) );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 4 );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 7.42006, 2.74911 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << pointCloud.get() );
+  QCOMPARE( result.length(), 1 );
+  double z4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double z4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4985 - WGS 72)" )].toDouble();
+  QGSCOMPARENEAR( z4979, -5.79000, 0.001 );
+  QGSCOMPARENEAR( z4985, -5.40314874, 0.001 );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsIdentify )
