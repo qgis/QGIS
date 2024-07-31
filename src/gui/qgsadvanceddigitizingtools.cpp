@@ -57,6 +57,13 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Digitize->setCheckable( true );
   mCircle1Digitize->setChecked( false );
   mCircle1Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  connect( mCircle1Digitize, &QAbstractButton::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked )
+    {
+      mCircle2Digitize->setChecked( false );
+    }
+  } );
   layout->addWidget( mCircle1Digitize, 1, 2, 2, 1 );
 
   label = new QLabel( QStringLiteral( "X" ), toolWidget );
@@ -93,6 +100,13 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2Digitize->setCheckable( true );
   mCircle2Digitize->setChecked( false );
   mCircle2Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  connect( mCircle2Digitize, &QAbstractButton::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked )
+    {
+      mCircle1Digitize->setChecked( false );
+    }
+  } );
   layout->addWidget( mCircle2Digitize, 5, 2, 2, 1 );
 
   label = new QLabel( QStringLiteral( "X" ), toolWidget );
