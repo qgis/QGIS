@@ -1753,6 +1753,13 @@ void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points
   }
 }
 
+void QgsAdvancedDigitizingDockWidget::toggleConstraintDistance()
+{
+  mDistanceConstraint->toggleLocked();
+  emit lockDistanceChanged( mDistanceConstraint->isLocked() );
+  emit pointChangedV2( mCadPointList.value( 0 ) );
+}
+
 bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
 {
   if ( !cadEnabled() )
@@ -1965,9 +1972,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) && mCapacities.testFlag( Distance ) )
         {
-          mDistanceConstraint->toggleLocked();
-          emit lockDistanceChanged( mDistanceConstraint->isLocked() );
-          emit pointChangedV2( mCadPointList.value( 0 ) );
+          toggleConstraintDistance();
           e->accept();
         }
       }

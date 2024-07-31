@@ -411,6 +411,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     double softLockY() const { return mSoftLockY; }
 
     /**
+     * Toggles the distance constraint.
+     * \since QGIS 3.40
+     */
+    void toggleConstraintDistance();
+
+    /**
      * Returns the point locator match
      * \since QGIS 3.4
      */

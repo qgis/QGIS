@@ -142,7 +142,34 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   connect( mCircle2Y, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
   connect( mCircle2Distance, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
 
-  mCircle1Digitize->setChecked( true );
+
+  bool focusOnCircle2 = false;
+  if ( mCadDockWidget )
+  {
+    if ( mCadDockWidget->constraintDistance()->isLocked() )
+    {
+      QgsPoint point = mCadDockWidget->previousPointV2();
+      if ( !point.isEmpty() )
+      {
+        whileBlocking( mCircle1Distance )->setValue( mCadDockWidget->constraintDistance()->value() );
+        whileBlocking( mCircle1X )->setValue( point.x() );
+        whileBlocking( mCircle1Y )->setValue( point.y() );
+        mP1 = point;
+        focusOnCircle2 = true;
+
+        mCadDockWidget->toggleConstraintDistance();
+      }
+    }
+  }
+
+  if ( focusOnCircle2 )
+  {
+    mCircle2Digitize->setChecked( true );
+  }
+  else
+  {
+    mCircle1Digitize->setChecked( true );
+  }
 
   mToolWidget = toolWidget;
   return toolWidget;
@@ -187,6 +214,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMou
     mCircle1Y->setValue( event->mapPoint().y() );
     mCircle1Digitize->setChecked( false );
     mCircle1Distance->setFocus();
+    mCircle1Distance->selectAll();
     event->setAccepted( false );
     return;
   }
@@ -196,6 +224,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMou
     mCircle2Y->setValue( event->mapPoint().y() );
     mCircle2Digitize->setChecked( false );
     mCircle2Distance->setFocus();
+    mCircle2Distance->selectAll();
     event->setAccepted( false );
     return;
   }

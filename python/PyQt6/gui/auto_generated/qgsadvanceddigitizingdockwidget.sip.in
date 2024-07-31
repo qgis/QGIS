@@ -405,6 +405,13 @@ Returns the X value of the X soft lock. The value is NaN is the constraint isn't
 Returns the Y value of the Y soft lock. The value is NaN is the constraint isn't magnetized to a line
 %End
 
+    void toggleConstraintDistance();
+%Docstring
+Toggles the distance constraint.
+
+.. versionadded:: 3.40
+%End
+
     QgsPointLocator::Match mapPointMatch() const;
 %Docstring
 Returns the point locator match

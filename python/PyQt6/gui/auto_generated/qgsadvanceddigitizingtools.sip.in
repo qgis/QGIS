@@ -90,6 +90,8 @@ Handles canvas release event.
 Requests a new painting event to the advanced digitizing canvas item.
 %End
 
+  protected:
+
 };
 
 

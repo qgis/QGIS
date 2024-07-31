@@ -103,7 +103,7 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
      */
     void paintRequested();
 
-  private:
+  protected:
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QPointer< QgsAdvancedDigitizingDockWidget > mCadDockWidget;
