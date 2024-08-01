@@ -35,6 +35,8 @@ class TestQgsQuantizedMeshUtils : public QObject
     void cleanupTestCase();
 
     void tileToGltf();
+    void tileToGltfNoDegenerateTris();
+    void tileToGltfWithSkirt();
 };
 
 void TestQgsQuantizedMeshUtils::initTestCase()
@@ -48,10 +50,12 @@ void TestQgsQuantizedMeshUtils::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsQuantizedMeshUtils::tileToGltf()
+static void runTest( QString testName, bool skirt, double skirtDepth, bool removeDegenerateTriangles )
 {
   QString sampleFilePath = getenv( "QUANTIZED_MESH_SAMPLE_IN" );
   const char *outFilePath = getenv( "QUANTIZED_MESH_SAMPLE_OUT" );
+  // Keeping Z coordinates in 0.0 -- 1.0 helps when viewing the mesh outside QGIS
+  bool unitHeight = QString( getenv( "QUANTIZED_MESH_UNIT_HEIGHT" ) ) == "1";
 
   bool checkOutput = false;
   if ( sampleFilePath.isEmpty() )
@@ -66,8 +70,16 @@ void TestQgsQuantizedMeshUtils::tileToGltf()
   auto sampleData = sampleFile.readAll();
 
   auto tile = QgsQuantizedMeshTile( sampleData );
+  if ( removeDegenerateTriangles )
+    tile.removeDegenerateTriangles();
 
-  auto model = tile.toGltf();
+  if ( unitHeight )
+  {
+    tile.mHeader.MinimumHeight = 0;
+    tile.mHeader.MaximumHeight = 1;
+  }
+
+  auto model = tile.toGltf( skirt, skirtDepth );
   tinygltf::TinyGLTF gltfLoader;
 
   if ( outFilePath != nullptr )
@@ -77,7 +89,7 @@ void TestQgsQuantizedMeshUtils::tileToGltf()
 
   if ( checkOutput )
   {
-    QFile correctOutFile( QStringLiteral( TEST_DATA_DIR ) + "/quantized_mesh.terrain.gltf" );
+    QFile correctOutFile( QStringLiteral( TEST_DATA_DIR ) + "/quantized_mesh.terrain." + testName + ".gltf" );
     correctOutFile.open( QIODevice::ReadOnly );
     auto correctOutput = correctOutFile.readAll();
     std::ostringstream newOutputStream;
@@ -85,6 +97,21 @@ void TestQgsQuantizedMeshUtils::tileToGltf()
     QByteArray newOutput( newOutputStream.str().data(), ( int ) newOutputStream.str().size() );
     QVERIFY( newOutput == correctOutput );
   }
+}
+
+void TestQgsQuantizedMeshUtils::tileToGltf()
+{
+  runTest( "base", false, 0, false );
+}
+
+void TestQgsQuantizedMeshUtils::tileToGltfNoDegenerateTris()
+{
+  runTest( "no-deg-tris", false, 0, true );
+}
+
+void TestQgsQuantizedMeshUtils::tileToGltfWithSkirt()
+{
+  runTest( "skirt", true, 100, false );
 }
 
 

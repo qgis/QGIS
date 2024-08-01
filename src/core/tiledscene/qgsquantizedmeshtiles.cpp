@@ -19,7 +19,9 @@
 #include "qgsexception.h"
 #include <algorithm>
 #include <cstddef>
+#include <qdebug.h>
 #include <qstringliteral.h>
+#include <qvector3d.h>
 
 ///@cond PRIVATE
 
@@ -168,14 +170,15 @@ void QgsQuantizedMeshTile::removeDegenerateTriangles()
   mTriangleIndices = newTriangleIndices;
 }
 
-tinygltf::Model QgsQuantizedMeshTile::toGltf()
+tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth )
 {
   tinygltf::Model model;
 
   tinygltf::Buffer vertexBuffer;
   vertexBuffer.data.resize( mVertexCoords.size() * sizeof( float ) );
-  std::vector<double> coordMinimums = {32767, 32767, 32767};
-  std::vector<double> coordMaximums = {0, 0, 0};
+  std::vector<double> coordMinimums = {32767, 32767, mHeader.MaximumHeight};
+  std::vector<double> coordMaximums = {0, 0, mHeader.MinimumHeight};
+
   for ( size_t i = 0; i < mVertexCoords.size(); i++ )
   {
     double coord = mVertexCoords[i] / 32767.0; // Rescale to 0.0 -- 1.0;
@@ -190,12 +193,126 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf()
     if ( coordMaximums[i % 3] < coord )
       coordMaximums[i % 3] = coord;
   }
-  model.buffers.push_back( vertexBuffer );
-
   tinygltf::Buffer triangleBuffer;
   triangleBuffer.data.resize( mTriangleIndices.size() * sizeof( uint32_t ) );
   const char *triData = reinterpret_cast<const char *>( mTriangleIndices.data() );
   std::copy( triData, triData + triangleBuffer.data.size(), triangleBuffer.data.begin() );
+
+  if ( addSkirt )
+  {
+    // We first need to sort the edge-indices by coordinate to later create a quad for each "gap"
+    std::sort( mWestVertices.begin(), mWestVertices.end(), [&]( uint32_t a, uint32_t b )
+    {
+      return mVertexCoords[a * 3 + 1] < mVertexCoords[b * 3 + 1];
+    } );
+    std::sort( mSouthVertices.begin(), mSouthVertices.end(), [&]( uint32_t a, uint32_t b )
+    {
+      return mVertexCoords[a * 3] > mVertexCoords[b * 3];
+    } );
+    std::sort( mEastVertices.begin(), mEastVertices.end(), [&]( uint32_t a, uint32_t b )
+    {
+      return mVertexCoords[a * 3 + 1] > mVertexCoords[b * 3 + 1];
+    } );
+    std::sort( mNorthVertices.begin(), mNorthVertices.end(), [&]( uint32_t a, uint32_t b )
+    {
+      return mVertexCoords[a * 3] < mVertexCoords[b * 3];
+    } );
+
+    size_t edgeVertexCount = mWestVertices.size() + mSouthVertices.size() + mEastVertices.size() + mNorthVertices.size();
+    size_t skirtBottomCoordCount =
+      ( ( mWestVertices.size() > 1 ) +
+        ( mSouthVertices.size() > 1 ) +
+        ( mEastVertices.size() > 1 ) +
+        ( mNorthVertices.size() > 1 ) ) * 6;
+    // Add new vertex for each existing edge vertex, projected to Z = minHeight
+    coordMinimums[2] = mHeader.MinimumHeight - skirtDepth;
+    size_t skirtVerticesIdxStart = mVertexCoords.size() / 3;
+    vertexBuffer.data.resize( vertexBuffer.data.size() + ( edgeVertexCount * 3 + skirtBottomCoordCount ) * sizeof( float ) );
+    float *skirtVertexCoords = ( float * )( vertexBuffer.data.data() + ( skirtVerticesIdxStart * 3 * sizeof( float ) ) );
+    auto addSkirtVertices = [&]( const std::vector<uint32_t> &idxs )
+    {
+      size_t startIdx = ( ( uint8_t * ) skirtVertexCoords - vertexBuffer.data.data() ) / sizeof( float ) / 3;
+      for ( uint32_t idx : idxs )
+      {
+        *skirtVertexCoords++ = mVertexCoords[idx * 3] / 32767.0f;
+        *skirtVertexCoords++ = mVertexCoords[idx * 3 + 1] / 32767.0f;
+        *skirtVertexCoords++ = mHeader.MinimumHeight;
+      }
+
+      if ( idxs.size() > 1 )
+      {
+        // Add two vertices at two corners, skirtDepth below the tile bottom
+        *skirtVertexCoords++ = mVertexCoords[idxs[0] * 3] / 32767.0f;
+        *skirtVertexCoords++ = mVertexCoords[idxs[0] * 3 + 1] / 32767.0f;
+        *skirtVertexCoords++ = mHeader.MinimumHeight - skirtDepth;
+
+        *skirtVertexCoords++ = mVertexCoords[idxs[idxs.size() - 1] * 3] / 32767.0f;
+        *skirtVertexCoords++ = mVertexCoords[idxs[idxs.size() - 1] * 3 + 1] / 32767.0f;
+        *skirtVertexCoords++ = mHeader.MinimumHeight - skirtDepth;
+      }
+
+      return startIdx;
+    };
+    size_t westBottomVerticesIdx = addSkirtVertices( mWestVertices );
+    size_t southBottomVerticesIdx = addSkirtVertices( mSouthVertices );
+    size_t eastBottomVerticesIdx = addSkirtVertices( mEastVertices );
+    size_t northBottomVerticesIdx = addSkirtVertices( mNorthVertices );
+    // Check that we didn't miscalculate buffer size
+    Q_ASSERT( skirtVertexCoords == ( float * )( vertexBuffer.data.data() + vertexBuffer.data.size() ) );
+
+    // Add skirt triangles (a trapezoid for each pair of edge vertices)
+    size_t skirtTrianglesStartIdx = triangleBuffer.data.size();
+    size_t edgeQuadCount =
+      // For 0/1 point we have 0 quads, for N we have N-1, and an additional one for skirtDepth
+      ( mWestVertices.size() > 1 ? mWestVertices.size() : 0 ) +
+      ( mSouthVertices.size() > 1 ? mSouthVertices.size() : 0 ) +
+      ( mEastVertices.size() > 1 ? mEastVertices.size() : 0 ) +
+      ( mNorthVertices.size() > 1 ? mNorthVertices.size() : 0 );
+    triangleBuffer.data.resize( triangleBuffer.data.size() + edgeQuadCount * 6 * sizeof( uint32_t ) );
+    uint32_t *skirtTriangles = ( uint32_t * )( triangleBuffer.data.data() + skirtTrianglesStartIdx );
+    auto addSkirtTriangles = [&]( const std::vector<uint32_t> &topIdxs, size_t bottomVertexIdxStart )
+    {
+      size_t bottomVertexIdx = bottomVertexIdxStart;
+      for ( size_t i = 1; i < topIdxs.size(); i++ )
+      {
+        uint32_t topVertex1 = topIdxs[i - 1];
+        uint32_t topVertex2 = topIdxs[i];
+        uint32_t bottomVertex1 = bottomVertexIdx;
+        uint32_t bottomVertex2 = ++bottomVertexIdx;
+
+        *skirtTriangles++ = bottomVertex1;
+        *skirtTriangles++ = topVertex1;
+        *skirtTriangles++ = topVertex2;
+
+        *skirtTriangles++ = bottomVertex2;
+        *skirtTriangles++ = bottomVertex1;
+        *skirtTriangles++ = topVertex2;
+      }
+
+      if ( topIdxs.size() > 1 )
+      {
+        uint32_t topVertex1 = bottomVertexIdxStart;
+        uint32_t topVertex2 = bottomVertexIdxStart + topIdxs.size() - 1;
+        uint32_t bottomVertex1 = bottomVertexIdxStart + topIdxs.size();
+        uint32_t bottomVertex2 = bottomVertexIdxStart + topIdxs.size() + 1;
+
+        *skirtTriangles++ = bottomVertex1;
+        *skirtTriangles++ = topVertex1;
+        *skirtTriangles++ = topVertex2;
+
+        *skirtTriangles++ = bottomVertex2;
+        *skirtTriangles++ = bottomVertex1;
+        *skirtTriangles++ = topVertex2;
+      }
+    };
+    addSkirtTriangles( mWestVertices, westBottomVerticesIdx );
+    addSkirtTriangles( mSouthVertices, southBottomVerticesIdx );
+    addSkirtTriangles( mEastVertices, eastBottomVerticesIdx );
+    addSkirtTriangles( mNorthVertices, northBottomVerticesIdx );
+    Q_ASSERT( skirtTriangles == ( uint32_t * )( triangleBuffer.data.data() + triangleBuffer.data.size() ) );
+  }
+
+  model.buffers.push_back( vertexBuffer );
   model.buffers.push_back( triangleBuffer );
 
   tinygltf::BufferView vertexBufferView;
@@ -213,7 +330,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf()
   tinygltf::Accessor vertexAccessor;
   vertexAccessor.bufferView = 0;
   vertexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-  vertexAccessor.count = mVertexCoords.size() / 3;
+  vertexAccessor.count = vertexBuffer.data.size() / sizeof( float ) / 3;
   vertexAccessor.type = TINYGLTF_TYPE_VEC3;
   vertexAccessor.minValues = coordMinimums;
   vertexAccessor.maxValues = coordMaximums;
@@ -222,7 +339,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf()
   tinygltf::Accessor triangleAccessor;
   triangleAccessor.bufferView = 1;
   triangleAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
-  triangleAccessor.count = mTriangleIndices.size();
+  triangleAccessor.count = triangleBuffer.data.size() / sizeof( uint32_t );
   triangleAccessor.type = TINYGLTF_TYPE_SCALAR;
   model.accessors.push_back( triangleAccessor );
 
