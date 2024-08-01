@@ -53,6 +53,25 @@ class VectorStream
 
 ///@endcond
 
+constexpr uint8_t normalsExtensionId = 1;
+
+// Algorithm from http://jcgt.org/published/0003/02/01/
+static QVector3D oct16Decode( uint8_t x, uint8_t y )
+{
+  if ( x == 0 && y == 0 )
+    return QVector3D( 0, 0, 0 );
+  float fx = x / 255.0f * 2.0f - 1.0f;
+  float fy = y / 255.0f * 2.0f - 1.0f;
+  QVector3D decoded( fx, fy, 1.0f - abs( fx ) - abs( fy ) );
+  if ( decoded.z() < 0 )
+  {
+    decoded.setX( ( 1.0f - abs( fy ) ) * ( fx >= 0 ? 1.0f : -1.0f ) );
+    decoded.setY( ( 1.0f - abs( fx ) ) * ( fy >= 0 ? 1.0f : -1.0f ) );
+  }
+  decoded.normalize();
+  return decoded;
+}
+
 // Copied from specification
 static uint16_t zigZagDecode( uint16_t value )
 {
@@ -147,6 +166,20 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
       *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) );
     uint32_t length =
       *reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
+
+    if ( extensionId == normalsExtensionId )
+    {
+      mNormalCoords.reserve( mHeader.vertexCount * 3 );
+      for ( size_t i = 0; i < mHeader.vertexCount; i++ )
+      {
+        auto normal = oct16Decode(
+                        *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) ),
+                        *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) ) );
+        mNormalCoords.insert( mNormalCoords.end(), {normal.x(), normal.y(), normal.z()} );
+      }
+      continue;
+    }
+
     std::vector<char> data( length );
     const char *dataPtr = reinterpret_cast<const char *>( stream.read( length ) );
     std::copy( dataPtr, dataPtr + length, data.begin() );
@@ -348,6 +381,49 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth )
   primitive.attributes["POSITION"] = 0;
   primitive.indices = 1;
   primitive.mode = TINYGLTF_MODE_TRIANGLES;
+
+  if ( mNormalCoords.size() )
+  {
+    tinygltf::Buffer normalBuffer;
+    normalBuffer.data.resize( vertexBuffer.data.size() );
+    // Copy explicit normals, leave rest zeroed
+    size_t explicitNormalsBytes = mNormalCoords.size() * sizeof( float );
+    Q_ASSERT( vertexBuffer.data.size() >= explicitNormalsBytes );
+    const char *normData = reinterpret_cast<const char *>( mNormalCoords.data() );
+    std::copy( normData, normData + explicitNormalsBytes, normalBuffer.data.begin() );
+    memset( normalBuffer.data.data() + explicitNormalsBytes, 0, normalBuffer.data.size() - explicitNormalsBytes );
+    model.buffers.push_back( normalBuffer );
+
+    tinygltf::BufferView normalBufferView;
+    normalBufferView.buffer = 2;
+    normalBufferView.byteLength = normalBuffer.data.size();
+    normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
+    model.bufferViews.push_back( normalBufferView );
+
+    std::vector<double> normalMinimums = {1, 1, 1};
+    std::vector<double> normalMaximums = {-1, -1, -1};
+
+    for ( size_t i = 0; i < mNormalCoords.size(); i++ )
+    {
+      float coord = mNormalCoords[i];
+      if ( normalMinimums[i % 3] > coord )
+        normalMinimums[i % 3] = coord;
+      if ( normalMaximums[i % 3] < coord )
+        normalMaximums[i % 3] = coord;
+    }
+
+    tinygltf::Accessor normalAccessor;
+    normalAccessor.bufferView = 2;
+    normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+    normalAccessor.count = normalBuffer.data.size() / sizeof( float ) / 3;
+    normalAccessor.type = TINYGLTF_TYPE_VEC3;
+    normalAccessor.minValues = normalMinimums;
+    normalAccessor.maxValues = normalMaximums;
+    model.accessors.push_back( normalAccessor );
+
+    primitive.attributes["NORMAL"] = 2;
+  }
+
   mesh.primitives.push_back( primitive );
   model.meshes.push_back( mesh );
 
