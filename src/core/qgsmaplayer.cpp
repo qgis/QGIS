@@ -3278,7 +3278,7 @@ QString QgsMapLayer::customPropertyHtmlMetadata() const
   // custom properties
   if ( const auto keys = customPropertyKeys(); !keys.isEmpty() )
   {
-    metadata += QStringLiteral( "<h1>" ) + tr( "Custom Properties" ) + QStringLiteral( "</h1>\n<hr>\n" );
+    metadata += QStringLiteral( "<h1>" ) + tr( "Custom properties" ) + QStringLiteral( "</h1>\n<hr>\n" );
     metadata += QLatin1String( "<table class=\"list-view\">\n<tbody>" );
     for ( const QString &key : keys )
     {
