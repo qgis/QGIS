@@ -114,8 +114,6 @@ QgsField AttributeField::toQgsField() const
       break;
     case QgsHanaDataTypes::Numeric:
     case QgsHanaDataTypes::Decimal:
-      fieldType = QMetaType::Type::Double;
-      break;
     case QgsHanaDataTypes::Double:
     case QgsHanaDataTypes::Float:
     case QgsHanaDataTypes::Real:
@@ -129,6 +127,14 @@ QgsField AttributeField::toQgsField() const
     case QgsHanaDataTypes::WVarChar:
     case QgsHanaDataTypes::LongVarChar:
     case QgsHanaDataTypes::WLongVarChar:
+    // There are two options how to treat ST_GEOMETRY columns that are attributes:
+    // 1. Type is QMetaType::Type::QString. The value is provided as WKT and editable.
+    // 2. Type is QMetaType::Type::QByteArray. The value is in WKB format and uneditable.
+    case QgsHanaDataTypes::Geometry:
+    // There are two options how to treat REAL_VECTOR columns that are attributes:
+    // 1. Type is QMetaType::Type::QString. The value has string representation in the format '[1.0,3.2,0.6]'.
+    // 2. Type is QMetaType::Type::QByteArray. The value has fvecs representation and uneditable.
+    case QgsHanaDataTypes::RealVector:
       fieldType = QMetaType::Type::QString;
       break;
     case QgsHanaDataTypes::Binary:
@@ -147,16 +153,6 @@ QgsField AttributeField::toQgsField() const
     case QgsHanaDataTypes::Timestamp:
     case QgsHanaDataTypes::TypeTimestamp:
       fieldType = QMetaType::Type::QDateTime;
-      break;
-    case QgsHanaDataTypes::Geometry:
-      // There are two options how to treat ST_GEOMETRY columns that are attributes:
-      // 1. Type is QVariant::String. The value is provided as WKT and editable.
-      // 2. Type is QVariant::ByteArray. The value is provided as BLOB and uneditable.
-      fieldType = QMetaType::Type::QString;
-      break;
-    case QgsHanaDataTypes::RealVector:
-      // Controls how REAL_VECTOR type is treated, either as QVariant::ByteArray or QVariant::String.
-      fieldType = QMetaType::Type::QString;
       break;
     default:
       throw QgsHanaException( QString( "Field type '%1' is not supported" ).arg( QString::number( type ) ) );
@@ -1091,7 +1087,7 @@ PreparedStatementRef QgsHanaConnection::createPreparedStatement( const QString &
   PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toUtf16( sql ) );
   if ( !args.isEmpty() )
   {
-    for ( unsigned short i = 1; i <= args.size(); ++i )
+    for ( int i = 1; i <= args.size(); ++i )
     {
       const QVariant &value = args.at( i - 1 );
       switch ( value.userType() )
