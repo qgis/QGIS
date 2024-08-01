@@ -76,6 +76,7 @@ struct CORE_EXPORT QgsQuantizedMeshTile
 {
   QgsQuantizedMeshHeader mHeader;
   std::vector<uint16_t> mVertexCoords;
+  std::vector<float> mNormalCoords;
   std::vector<uint32_t> mTriangleIndices;
   std::vector<uint32_t> mWestVertices;
   std::vector<uint32_t> mSouthVertices;
