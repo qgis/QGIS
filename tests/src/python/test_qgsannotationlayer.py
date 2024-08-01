@@ -39,6 +39,7 @@ from qgis.core import (
     QgsRectangle,
     QgsRenderContext,
     QgsVertexId,
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -191,6 +192,11 @@ class TestQgsAnnotationLayer(QgisTestCase):
         layer.setScaleBasedVisibility(True)
         QgsLayerNotesUtils.setLayerNotes(layer, 'test layer notes')
 
+        other_layer = QgsVectorLayer('Point', 'test', 'memory')
+        QgsProject.instance().addMapLayer(other_layer)
+        layer.setLinkedVisibilityLayer(other_layer)
+        self.assertEqual(layer.linkedVisibilityLayer(), other_layer)
+
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
             QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
         linestring_item_id = layer.addItem(
@@ -202,9 +208,11 @@ class TestQgsAnnotationLayer(QgisTestCase):
 
         layer2 = QgsAnnotationLayer('test2', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer2.readLayerXml(elem, QgsReadWriteContext()))
+        layer2.resolveReferences(QgsProject.instance())
         self.assertEqual(layer2.crs().authid(), 'EPSG:4326')
         self.assertTrue(layer2.hasScaleBasedVisibility())
         self.assertEqual(QgsLayerNotesUtils.layerNotes(layer2), 'test layer notes')
+        self.assertEqual(layer2.linkedVisibilityLayer(), other_layer)
 
         self.assertEqual(len(layer2.items()), 3)
         self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
@@ -221,6 +229,10 @@ class TestQgsAnnotationLayer(QgisTestCase):
             QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
         marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
 
+        other_layer = QgsVectorLayer('Point', 'test', 'memory')
+        QgsProject.instance().addMapLayer(other_layer)
+        layer.setLinkedVisibilityLayer(other_layer)
+
         layer2 = layer.clone()
 
         self.assertEqual(len(layer2.items()), 3)
@@ -229,6 +241,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         self.assertNotEqual(layer.items()[polygon_item_id], layer2.items()[polygon_item_id])
         self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(layer2.items()[marker_item_id], QgsAnnotationMarkerItem)
+        self.assertEqual(layer2.linkedVisibilityLayer(), other_layer)
 
     def testProjectMainAnnotationLayer(self):
         p = QgsProject()
@@ -484,6 +497,74 @@ class TestQgsAnnotationLayer(QgisTestCase):
                          QgsRectangle(11, 13, 12, 15))
         self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
                          '11.4,12.4 : 12.6,13.6')
+
+    def testRenderLayerWithLinkedVisibility(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(3)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(1)
+        i3_id = layer.addItem(item)
+
+        other_layer = QgsVectorLayer('Point', 'test', 'memory')
+        layer.setLinkedVisibilityLayer(None)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(self.image_check('layer_render', 'layer_render', image))
+
+        # with linked visibility layer, annotations should not be drawn
+        layer.setLinkedVisibilityLayer(other_layer)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(
+            self.image_check('layer_render_not_visible', 'layer_render_not_visible', image))
 
     def test_render_via_job(self):
         """
