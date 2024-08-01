@@ -391,6 +391,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     try
     {
       QgsQuantizedMeshTile qmTile( tileContent );
+      qmTile.removeDegenerateTriangles();
       model = qmTile.toGltf();
     }
     catch ( QgsQuantizedMeshParsingException &ex )

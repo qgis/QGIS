@@ -100,6 +100,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       try
       {
         QgsQuantizedMeshTile qmTile( content );
+        qmTile.removeDegenerateTriangles();
         auto model = qmTile.toGltf();
         mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
       }
