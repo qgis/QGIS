@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,
+    QgsCoordinateReferenceSystem,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -462,6 +463,27 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertEqual(e.evaluate(context), "Test Context")
         e.setExpression("func_layer_name_operation('split')")
         self.assertEqual(e.evaluate(context), ["test", "context"])
+
+    def testLayerScopeVerticalCrs(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+
+        # vertical crs info should be present in layer expression context scope
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        scope = QgsExpressionContextUtils.layerScope(layer)
+        self.assertEqual(scope.variable('layer_vertical_crs'), 'EPSG:5703')
+        self.assertEqual(scope.variable('layer_vertical_crs_definition'),
+                         '+vunits=m +no_defs')
+        self.assertEqual(scope.variable('layer_vertical_crs_description'),
+                         'NAVD88 height')
+        self.assertEqual(scope.variable('layer_vertical_crs_wkt')[:7],
+                         'VERTCRS')
+
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem())
+        scope = QgsExpressionContextUtils.layerScope(layer)
+        self.assertFalse(scope.variable('layer_vertical_crs'))
+        self.assertFalse(scope.variable('layer_vertical_crs_definition'))
+        self.assertFalse(scope.variable('layer_vertical_crs_description'))
+        self.assertFalse(scope.variable('layer_vertical_crs_wkt'))
 
 
 if __name__ == "__main__":
