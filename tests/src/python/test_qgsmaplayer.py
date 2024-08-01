@@ -29,7 +29,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsReadWriteContext,
     QgsVectorLayer,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
+    QgsExpressionContextUtils
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -143,6 +144,21 @@ class TestQgsMapLayer(QgisTestCase):
         layer.setVerticalCrs(QgsCoordinateReferenceSystem())
         self.assertEqual(len(spy), 2)
         self.assertFalse(layer.verticalCrs().isValid())
+
+        # vertical crs info should be present in layer expression context scope
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem('EPSG:5703'))
+        scope = QgsExpressionContextUtils.layerScope(layer)
+        self.assertEqual(scope.variable('layer_vertical_crs'), 'EPSG:5703')
+        self.assertEqual(scope.variable('layer_vertical_crs_definition'), '+vunits=m +no_defs')
+        self.assertEqual(scope.variable('layer_vertical_crs_description'), 'NAVD88 height')
+        self.assertEqual(scope.variable('layer_vertical_crs_wkt')[:7], 'VERTCRS')
+
+        layer.setVerticalCrs(QgsCoordinateReferenceSystem())
+        scope = QgsExpressionContextUtils.layerScope(layer)
+        self.assertFalse(scope.variable('layer_vertical_crs'))
+        self.assertFalse(scope.variable('layer_vertical_crs_definition'))
+        self.assertFalse(scope.variable('layer_vertical_crs_description'))
+        self.assertFalse(scope.variable('layer_vertical_crs_wkt'))
 
     def test_vertical_crs_with_compound_project_crs(self):
         """

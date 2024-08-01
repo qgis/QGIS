@@ -386,6 +386,16 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer *>( layer ) ) ), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_crs_ellipsoid" ), layer->crs().ellipsoidAcronym(), true, true ) );
 
+
+  const QgsCoordinateReferenceSystem verticalCrs = layer->verticalCrs();
+  if ( verticalCrs.isValid() )
+  {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs" ), verticalCrs.authid(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_definition" ), verticalCrs.toProj(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_description" ), verticalCrs.description(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_wkt" ), verticalCrs.toWkt( Qgis::CrsWktVariant::Preferred ), true ) );
+  }
+
   const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );
   if ( vLayer )
   {
