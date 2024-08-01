@@ -121,7 +121,7 @@ To be used by implementations of ``addFeature``.
    the original layer's thread.
 %End
 
-    void refreshCache( const QgsFeature &feature );
+    void refreshCache( QgsFeature feature );
 %Docstring
 Changes a feature in the cache and the spatial index.
 To be used by implementations of ``updateFeature``.

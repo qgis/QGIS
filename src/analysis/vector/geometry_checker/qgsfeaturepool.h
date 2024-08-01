@@ -174,7 +174,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * \note This method can safely be called from a different thread vs the object's creation thread or
      * the original layer's thread.
      */
-    void refreshCache( const QgsFeature &feature );
+    void refreshCache( QgsFeature feature );
 
     /**
      * Removes a feature from the cache and the spatial index.
