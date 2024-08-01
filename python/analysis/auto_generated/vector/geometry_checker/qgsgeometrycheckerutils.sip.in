@@ -58,6 +58,7 @@ The geometry will not be reprojected regardless of useMapCrs.
 %End
 
 
+
         QString layerId() const;
 %Docstring
 The layer id.

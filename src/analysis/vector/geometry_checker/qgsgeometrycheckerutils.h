@@ -67,6 +67,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         QgsFeature feature() const;
 
         /**
+         * The layer CRS.
+         */
+        QgsCoordinateReferenceSystem layerCrs() const SIP_SKIP;
+
+        /**
          * The layer.
          */
         QPointer<QgsVectorLayer> layer() const SIP_SKIP;

@@ -57,6 +57,11 @@ QgsFeature QgsGeometryCheckerUtils::LayerFeature::feature() const
   return mFeature;
 }
 
+QgsCoordinateReferenceSystem QgsGeometryCheckerUtils::LayerFeature::layerCrs() const
+{
+  return mFeaturePool->crs();
+}
+
 QPointer<QgsVectorLayer> QgsGeometryCheckerUtils::LayerFeature::layer() const
 {
   return mFeaturePool->layerPtr();
