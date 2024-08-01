@@ -5914,6 +5914,8 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += htmlFormatter.historySectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
+  myMetadata += customPropertyHtmlMetadata();
+
   myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;
 }

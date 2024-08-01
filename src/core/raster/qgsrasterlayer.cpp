@@ -562,7 +562,7 @@ QString QgsRasterLayer::htmlMetadata() const
                  QStringLiteral( "<h1>" ) % tr( "History" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
                  htmlFormatter.historySectionHtml( ) %
                  QStringLiteral( "<br><br>\n" ) %
-
+                 customPropertyHtmlMetadata() %
                  QStringLiteral( "\n</body>\n</html>\n" );
   return myMetadata;
 }

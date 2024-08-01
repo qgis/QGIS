@@ -3269,6 +3269,12 @@ QString QgsMapLayer::generalHtmlMetadata() const
 
   metadata += QLatin1String( "</table>\n<br><br>" );
 
+  return metadata;
+}
+
+QString QgsMapLayer::customPropertyHtmlMetadata() const
+{
+  QString metadata;
   // custom properties
   if ( const auto keys = customPropertyKeys(); !keys.isEmpty() )
   {
