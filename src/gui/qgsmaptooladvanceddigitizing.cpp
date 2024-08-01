@@ -60,18 +60,10 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    if ( e->button() == Qt::RightButton )
+    mCadDockWidget->processCanvasReleaseEvent( e );
+    if ( !e->isAccepted() )
     {
-      mCadDockWidget->clear();
-    }
-    else
-    {
-      mCadDockWidget->applyConstraints( e ); // updates event's map point
-      mCadDockWidget->processCanvasReleaseEvent( e );
-      if ( !e->isAccepted() )
-      {
-        return; // The dock widget has taken the event
-      }
+      return; // The dock widget has taken the event
     }
   }
   else if ( isAutoSnapEnabled() )
