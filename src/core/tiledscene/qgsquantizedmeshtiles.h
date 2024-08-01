@@ -84,5 +84,9 @@ struct CORE_EXPORT QgsQuantizedMeshTile
   std::map<uint8_t, std::vector<char>> mExtensions;
 
   QgsQuantizedMeshTile( const QByteArray &data );
+  // For some reason, commonly available QM tiles often have a very high (as
+  // much as 50%) percentage of degenerate triangles. They don't harm our
+  // rendering, but removing them could improve performance
+  void removeDegenerateTriangles();
   tinygltf::Model toGltf();
 };

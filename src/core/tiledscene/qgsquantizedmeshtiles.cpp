@@ -152,6 +152,22 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
   }
 }
 
+void QgsQuantizedMeshTile::removeDegenerateTriangles()
+{
+  std::vector<uint32_t> newTriangleIndices;
+  for ( size_t i = 0; i < mTriangleIndices.size(); i += 3 )
+  {
+    uint32_t a = mTriangleIndices[i];
+    uint32_t b = mTriangleIndices[i + 1];
+    uint32_t c = mTriangleIndices[i + 2];
+    if ( a != b && b != c && a != c )
+    {
+      newTriangleIndices.insert( newTriangleIndices.end(), {a, b, c} );
+    }
+  }
+  mTriangleIndices = newTriangleIndices;
+}
+
 tinygltf::Model QgsQuantizedMeshTile::toGltf()
 {
   tinygltf::Model model;
