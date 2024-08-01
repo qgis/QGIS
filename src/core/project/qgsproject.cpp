@@ -2375,6 +2375,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     it.value()->resolveReferences( this );
   }
+  mMainAnnotationLayer->resolveReferences( this );
 
   mLayerTreeRegistryBridge->setEnabled( true );
 

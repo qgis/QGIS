@@ -12,7 +12,6 @@
 
 
 
-
 class QgsAnnotationLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -170,6 +169,8 @@ Returns ``True`` if the operation was successfully applied.
 
     virtual QString htmlMetadata() const;
 
+    virtual void resolveReferences( QgsProject *project );
+
 
     QgsPaintEffect *paintEffect() const;
 %Docstring
@@ -189,6 +190,26 @@ Ownership is transferred to the renderer.
 .. seealso:: :py:func:`paintEffect`
 
 .. versionadded:: 3.22
+%End
+
+    QgsMapLayer *linkedVisibilityLayer();
+%Docstring
+Returns a linked layer, where the items in this annotation layer
+will only be visible when the linked layer is also visible.
+
+.. seealso:: :py:func:`setLinkedVisibilityLayer`
+
+.. versionadded:: 3.40
+%End
+
+    void setLinkedVisibilityLayer( QgsMapLayer *layer );
+%Docstring
+Sets a linked ``layer``, where the items in this annotation layer
+will only be visible when the linked layer is also visible.
+
+.. seealso:: :py:func:`linkedVisibilityLayer`
+
+.. versionadded:: 3.40
 %End
 
 };

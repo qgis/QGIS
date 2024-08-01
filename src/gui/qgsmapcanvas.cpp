@@ -410,14 +410,13 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 {
-  QList<QgsMapLayer *> oldLayers = mSettings.layers();
+  const QList<QgsMapLayer *> oldLayers = mSettings.layers();
 
   // update only if needed
   if ( layers == oldLayers )
     return;
 
-  const auto constOldLayers = oldLayers;
-  for ( QgsMapLayer *layer : constOldLayers )
+  for ( QgsMapLayer *layer : oldLayers )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
@@ -451,8 +450,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
   mSettings.setLayers( layers );
 
-  const auto constLayers = layers;
-  for ( QgsMapLayer *layer : constLayers )
+  for ( QgsMapLayer *layer : std::as_const( layers ) )
   {
     if ( !layer )
       continue;
@@ -754,6 +752,24 @@ void QgsMapCanvas::refresh()
   mRenderedItemResultsOutdated = true;
 }
 
+QList< QgsMapLayer * > filterLayersForRender( const QList< QgsMapLayer * > &layers )
+{
+  QList<QgsMapLayer *> filteredLayers;
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( QgsAnnotationLayer *annotationLayer = qobject_cast< QgsAnnotationLayer * >( layer ) )
+    {
+      if ( QgsMapLayer *linkedLayer = annotationLayer->linkedVisibilityLayer() )
+      {
+        if ( !layers.contains( linkedLayer ) )
+          continue;
+      }
+    }
+    filteredLayers.append( layer );
+  }
+  return filteredLayers;
+}
+
 void QgsMapCanvas::refreshMap()
 {
   Q_ASSERT( mRefreshScheduled );
@@ -810,7 +826,8 @@ void QgsMapCanvas::refreshMap()
   QgsMapSettings renderSettings = mSettings;
   QList<QgsMapLayer *> allLayers = renderSettings.layers();
   allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
-  renderSettings.setLayers( allLayers );
+
+  renderSettings.setLayers( filterLayersForRender( allLayers ) );
 
   // create the renderer job
 
@@ -3577,7 +3594,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   {
     previewLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
   }
-  jobSettings.setLayers( previewLayers );
+  jobSettings.setLayers( filterLayersForRender( previewLayers ) );
 
   QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   job->setProperty( "number", number );

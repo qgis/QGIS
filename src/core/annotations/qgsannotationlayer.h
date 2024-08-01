@@ -21,7 +21,7 @@
 #include "qgis_sip.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerrenderer.h"
-
+#include "qgsmaplayerref.h"
 
 class QgsAnnotationItem;
 class QgsAbstractAnnotationItemEditOperation;
@@ -185,6 +185,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
     QString htmlMetadata() const override;
+    void resolveReferences( QgsProject *project ) override;
 
     /**
      * Returns the current paint effect for the layer.
@@ -203,6 +204,24 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
+    /**
+     * Returns a linked layer, where the items in this annotation layer
+     * will only be visible when the linked layer is also visible.
+     *
+     * \see setLinkedVisibilityLayer()
+     * \since QGIS 3.40
+     */
+    QgsMapLayer *linkedVisibilityLayer();
+
+    /**
+     * Sets a linked \a layer, where the items in this annotation layer
+     * will only be visible when the linked layer is also visible.
+     *
+     * \see linkedVisibilityLayer()
+     * \since QGIS 3.40
+     */
+    void setLinkedVisibilityLayer( QgsMapLayer *layer );
+
   private:
 
     QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
@@ -218,6 +237,8 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsDataProvider *mDataProvider = nullptr;
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
+
+    QgsMapLayerRef mLinkedLayer;
 
     friend class QgsAnnotationLayerRenderer;
 
